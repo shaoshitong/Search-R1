@@ -1,5 +1,5 @@
 """Focused CPU toy tests of append counters, real next update, and eval state."""
-import copy,inspect,json,random,shlex,subprocess,tempfile,unittest
+import copy,gc,inspect,json,random,shlex,subprocess,tempfile,unittest
 from pathlib import Path
 from unittest.mock import patch
 import numpy as np
@@ -50,6 +50,7 @@ class AppendTests(unittest.TestCase):
    u.restore_blob(loaded,m,e,o,device);r.train_update(m,e,o,Reader(),lookup,list(lookup),c,device,0)
    self.assertEqual(u.state_hashes(m,e,o,device),expected);self.assertEqual(u.steps(o),10722)
    self.assertEqual([u.rng_hash(x['rng']) for x in loaded['source_all_rank_states']],[u.rng_hash(x['rng']) for x in s['source_all_rank_states']])
+   del loaded;gc.collect()  # Release NFS mmap before removing its toy directory.
  def test_no_rank_losses_or_fake_mask(self):
   m,e,o,own,s,c,b=toy();c['recipe']['loss_kwargs']['inter_rank_weight']=1.
   with self.assertRaisesRegex(ValueError,'No failed ranking'):r.train_update(m,e,o,Reader(),{},[],c,torch.device('cpu'),0)
@@ -64,6 +65,7 @@ class AppendTests(unittest.TestCase):
   self.assertIn("plan['batches'][256]",source);self.assertIn('cursor=256',source);self.assertIn('cursor=257',source);self.assertIn('while cursor<938',source)
   self.assertNotIn('t.run(',source);self.assertNotIn('10464+cursor',source)
   self.assertIn('validate_source_checkpoint_metadata',source);self.assertIn('source[\'accepted_hashes\']',source)
+  self.assertLess(source.index('child.wait(timeout=180)'),source.index('while cursor<938'))
  def test_evaluation_checkpoint_first_state_restored_and_idempotent(self):
   m,e,o,own,s,c,b=toy();device=torch.device('cpu')
   with tempfile.TemporaryDirectory() as folder:

@@ -10,7 +10,7 @@ from . import peer_append_only_plan as planlib
 
 B=Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019')
 A=B/'algorithm-improvement-20261021';CONTROL=A/'peer-newseed8192-g10-train-v1'
-TARGET=A/'peer-expanded-append-only-train-v1';PKG='reproduction/operations/qwen7b_warmup/'
+TARGET=A/'peer-expanded-append-only-train-v2';PKG='reproduction/operations/qwen7b_warmup/'
 D8='d8f74420aa09fa56e8ec59207c6d1453fa86f95e';CALLBACK='48eb944281d2e3d6fa5ad66e4d6f0f9eaf18aeec'
 SOURCE_SHA='36d9bcc3be71ba94eaca3a1e1b292c0ed9a65297fb96a746ea5295432f09c000'
 SOURCE_CONFIG_SHA='16b2fd34e3e8907307b3866298b33216478fd77c2dc1b9ca80638e0929800130'
@@ -263,6 +263,9 @@ def run(expected_sha):
    cursor=257;u.save_checkpoint(TARGET,full_blob(model,ema,opt,device,cursor,binding,archive));accept(metrics)
   if [u.rng_hash(r['rng']) for r in archive]!=archive_hashes:raise ValueError('Historical original four-rank RNG archive changed')
   del source
+  # The allocation-local independent reader must accept the actual CP257
+  # before another optimizer update; a failed child cannot run silently to938.
+  if child.wait(timeout=180)!=0 or not (TARGET/'first-cp-independent-audit.json').exists():raise ValueError('Independent first full CP257 acceptance failed')
   for milestone in c['evaluation_cumulative_cursors']:
    if milestone<cursor and not (TARGET/'evaluations'/('cursor-%06d'%milestone)/'complete.json').exists():raise ValueError('A required earlier evaluation receipt is absent; do not silently skip')
    if milestone<=cursor:evaluate_at(milestone,ema,model,opt,device,evaluations,binding)
