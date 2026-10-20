@@ -1,0 +1,53 @@
+{
+  "source_commit": "05660c4a01d9d4c8746efcc35cdb6eaefdff3a14",
+  "groups": [
+    {
+      "group": "retrieval",
+      "controller_pid": 2013773,
+      "unit": "sst-q7b-g5-source5-extra-retrieval-v1-70188b8e50fd.service",
+      "model_gpus": [
+        0,
+        1,
+        2,
+        5
+      ],
+      "actual_ready": true,
+      "actual_kv_blocks": 8192,
+      "phases": [
+        {
+          "batch": "batch-000227",
+          "phase": "prefix",
+          "completed": 100
+        }
+      ],
+      "whole_batches": 0,
+      "actual": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-source-sublease-retrieval-status-1792528649833448000.json",
+      "actual_sha256": "4524405f90bb1c7772c45633a4555bd319404bfc215ebb93d497903ff15908e2"
+    },
+    {
+      "group": "model",
+      "controller_pid": 2021698,
+      "unit": "sst-q7b-g5-source5-extra-model-v1-70188b8e50fd.service",
+      "model_gpus": [
+        3,
+        4,
+        6,
+        7
+      ],
+      "actual_ready": true,
+      "actual_kv_blocks": 8192,
+      "phases": [
+        {
+          "batch": "batch-000229",
+          "phase": "prefix",
+          "completed": 100
+        }
+      ],
+      "whole_batches": 0,
+      "actual": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-source-sublease-model-status-1792528760179820000.json",
+      "actual_sha256": "02a555f6a386ac53822ec4929c3f00d6100083f5fedd9c58b7ae52aba8fc975e"
+    }
+  ],
+  "original_source_and_foreign_preserved": true,
+  "whole_goal_complete": false
+}
