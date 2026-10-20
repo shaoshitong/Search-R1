@@ -1,0 +1,124 @@
+{
+  "status": "SEALED_DIAGNOSTIC_AND_INDEPENDENT_SELECTION_RECOMPUTED",
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020",
+  "epoch": 2,
+  "steps": 11782,
+  "checkpoint_sha256": "6a970815ff3aec26eedf4d6a65589bbebac3c4ccbdf8eefdf859a83e2a11bd2d",
+  "diagnostic_stable_logit_metrics": {
+    "groups": 512,
+    "trajectories": 2560,
+    "trajectory_bce": 0.6950769480317831,
+    "group_bce": 0.9490671963430941,
+    "total_loss": 1.6441441443748772,
+    "mixed_accuracy": 0.49609375,
+    "mixed_balanced_accuracy": 0.535234766028442,
+    "trajectory_accuracy": 0.648828125,
+    "mean_predicted_mixed": 0.6314826747402549,
+    "true_mixed_fraction": 0.400390625,
+    "confusion": {
+      "tp": 150,
+      "fp": 203,
+      "fn": 55,
+      "tn": 104
+    },
+    "weight_kind": "EMA0.99",
+    "resampled": false,
+    "three_class_order": [
+      "all_wrong",
+      "mixed",
+      "all_correct"
+    ],
+    "three_class_confusion": [
+      [
+        166.0,
+        35.0,
+        27.0
+      ],
+      [
+        111.0,
+        58.0,
+        36.0
+      ],
+      [
+        36.0,
+        16.0,
+        27.0
+      ]
+    ],
+    "prediction_file_pattern": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/probe/predictions/epoch-0002-diagnostic-rank*.jsonl.gz"
+  },
+  "diagnostic_classwise": {
+    "all_wrong": {
+      "questions": 228,
+      "mixed_bce_from_rounded_probability": 1.1442570521592919,
+      "mean_predicted_q": 0.5600239133785005,
+      "predicted_mixed_fraction": 0.6052631578947368,
+      "all_five_p_identical": 0,
+      "mean_p_range": 0.1480491283459981,
+      "rounded_wrong_saturation": 0
+    },
+    "mixed": {
+      "questions": 205,
+      "mixed_bce_from_rounded_probability": 0.4933108307272233,
+      "mean_predicted_q": 0.6824270922054605,
+      "predicted_mixed_fraction": 0.7317073170731707,
+      "all_five_p_identical": 0,
+      "mean_p_range": 0.19659905370506572,
+      "rounded_wrong_saturation": 0
+    },
+    "all_correct": {
+      "questions": 79,
+      "mixed_bce_from_rounded_probability": 1.5683933753157502,
+      "mean_predicted_q": 0.7055205510386938,
+      "predicted_mixed_fraction": 0.8227848101265823,
+      "all_five_p_identical": 0,
+      "mean_p_range": 0.18698117851362198,
+      "rounded_wrong_saturation": 0
+    }
+  },
+  "diagnostic_rounded_probability_bce": 0.9490671969557491,
+  "diagnostic_prediction_files": [
+    {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/probe/predictions/epoch-0002-diagnostic-rank0.jsonl.gz",
+      "sha256": "1e83e3567f7ec792e3d5a7a6b8f96be98ffdf9c2953f16eae2e1d472348cf6da"
+    },
+    {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/probe/predictions/epoch-0002-diagnostic-rank1.jsonl.gz",
+      "sha256": "f5177caa26a3c472dae43a66b8ee9b5cc246d41256655b904b63038da437dd0c"
+    },
+    {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/probe/predictions/epoch-0002-diagnostic-rank2.jsonl.gz",
+      "sha256": "d24d3cc0c422394c045fda99d40691c9debc3aa51f6ab51811b0d2463811e31c"
+    },
+    {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/probe/predictions/epoch-0002-diagnostic-rank3.jsonl.gz",
+      "sha256": "1346937f0e0a91a2b362dfd82dea10b0ad05946e9397dfe606491330f7e403cc"
+    }
+  ],
+  "selection_prediction_sha256": "956ff2fd0c0e7ff2d7295a0944106712e3953ad7711283d2f26664facf3858a4",
+  "pool_K_histogram": [
+    1079,
+    164,
+    127,
+    153,
+    197,
+    328
+  ],
+  "selected_K_histogram": [
+    217,
+    42,
+    33,
+    36,
+    71,
+    113
+  ],
+  "pool_mixed": 641,
+  "selected_mixed": 182,
+  "selected_mixed_fraction": 0.35546875,
+  "ranked_without_truth": true,
+  "metrics_source": "sealed epoch receipt, never mutable metrics-latest",
+  "training_updated": false,
+  "time": 1792510048.085924,
+  "audit_source_sha256": "aa8f075cbe1d6345cbf42ea0d2d4026f57595f15df3de7e8d9f6b3a384835191",
+  "audit_source_commit": "6044c308ccc5ca233be98d262f98c3eacee17df0"
+}
