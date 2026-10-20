@@ -1,0 +1,66 @@
+{
+  "status": "VALIDATION_NEW_G10_SUBMISSIONS_RECONCILED",
+  "records": [
+    {
+      "status": "VALIDATION_REAL_G10_ARRAY_RELEASED_NOT_YET_VERIFIED",
+      "event": "A",
+      "job_id": "743024",
+      "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/event-A",
+      "questions": 2048,
+      "real_new_trajectories": 10240,
+      "gpus_per_task": 2,
+      "max_concurrent_tasks": 1,
+      "requested_partition": "acd_u",
+      "requested_qos": "normal",
+      "source_commit": "c8b02d3b22b6a3267481e7c632b2f7113b018e93",
+      "sampling_script": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/event-A/sampling.sbatch",
+        "sha256": "7b2d90d6ca89b2e1575c3661e68911457e6f4b0825353f33169334b57649aaf9"
+      },
+      "config": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/event-A/config.json",
+        "bytes": 332827,
+        "sha256": "d2697f12aac30e4f6130782cf4e980cd4fc92dcbe7904ed0e36454db45c8e976"
+      },
+      "fixed_G5": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/planned-g10-and-fixed-g5.json",
+        "bytes": 4348651,
+        "sha256": "e27af41898ed0a48d30965d2801b6eefd022609a248d7bd791f3ba0ec3c445e7"
+      },
+      "no_dependency": true,
+      "time": 1792517310.5519722,
+      "queue": "743024_[0-3%1]|q7b-validG10-A-20261021|PENDING|acd_u|(None)"
+    },
+    {
+      "status": "VALIDATION_REAL_G10_ARRAY_RELEASED_NOT_YET_VERIFIED",
+      "event": "B",
+      "job_id": "743025",
+      "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/event-B",
+      "questions": 2048,
+      "real_new_trajectories": 10240,
+      "gpus_per_task": 2,
+      "max_concurrent_tasks": 1,
+      "requested_partition": "acd_u",
+      "requested_qos": "normal",
+      "source_commit": "c8b02d3b22b6a3267481e7c632b2f7113b018e93",
+      "sampling_script": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/event-B/sampling.sbatch",
+        "sha256": "11f64e24c6546cce56863b04981d8748c7bb9f0dd6377e1095689f87daf76a11"
+      },
+      "config": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/event-B/config.json",
+        "bytes": 332827,
+        "sha256": "c08025b5cdcf836486f8889d3f2c96d81e8cfa8776b8ca0516c83fd6e65a828b"
+      },
+      "fixed_G5": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/planned-g10-and-fixed-g5.json",
+        "bytes": 4348651,
+        "sha256": "e27af41898ed0a48d30965d2801b6eefd022609a248d7bd791f3ba0ec3c445e7"
+      },
+      "no_dependency": true,
+      "time": 1792517311.8846905,
+      "queue": "743025_[0-3%1]|q7b-validG10-B-20261021|PENDING|acd_u|(None)"
+    }
+  ],
+  "time": 1792517311.9306319
+}

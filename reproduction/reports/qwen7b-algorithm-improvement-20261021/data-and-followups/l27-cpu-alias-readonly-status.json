@@ -1,0 +1,92 @@
+{
+  "observed_epoch": 1792517359.7231736,
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/l27-readout128-v1",
+  "source-publication.json": {
+    "commit": "16bb5e97875bbe98097b157e84753ca7cecbcf60",
+    "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/l27-readout128-v1/code-16bb5e97875b"
+  },
+  "cpu-alias-controller.json": {
+    "status": "ACTUAL_METADATA_ALIAS_AUDIT_FINISHED",
+    "pid": 1950590,
+    "returncode": 0,
+    "finished": 1792517292.4769166
+  },
+  "native-index-audit.json": {
+    "status": "NATIVE_L26_INDEX_METADATA_SHA_PASSED",
+    "checkpoint_tensors_loaded": false,
+    "manifests": 1352,
+    "entries_count": 1352
+  },
+  "prepared-inputs.json": {
+    "checkpoint_tensors_loaded_on_login": false,
+    "model_tensors_loaded_on_login": false
+  },
+  "preparation.json": {
+    "status": "L27_READOUT128_SUITE_PREPARED_ACTUAL_METADATA_ALIAS_AUDIT_PASSED",
+    "commit": "16bb5e97875bbe98097b157e84753ca7cecbcf60",
+    "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/l27-readout128-v1/code-16bb5e97875b",
+    "fit_questions": 6528,
+    "new_head_expected_steps": 0,
+    "checkpoint_tensors_loaded_on_login": false,
+    "model_tensors_loaded_on_login": false,
+    "variants": [
+      "attention-prefix",
+      "attention-question-prefix",
+      "flatten",
+      "last-prefix",
+      "mean-prefix",
+      "mean-question-prefix"
+    ],
+    "aliases": [
+      "last-question-prefix"
+    ]
+  },
+  "last-prefix/last-scope-alias-check.json": {
+    "status": "MATHEMATICAL_LAST_TOKEN_SCOPE_ALIAS_VERIFIED",
+    "eligible": true,
+    "roles": {
+      "fit": {
+        "trajectories": 32640,
+        "empty_prefix": 0,
+        "minimum_prefix": 7,
+        "maximum_prefix": 20
+      },
+      "diagnostic512": {
+        "trajectories": 2560,
+        "empty_prefix": 0,
+        "minimum_prefix": 7,
+        "maximum_prefix": 20
+      },
+      "selection2048": {
+        "trajectories": 10240,
+        "empty_prefix": 0,
+        "minimum_prefix": 18,
+        "maximum_prefix": 20
+      }
+    },
+    "scope_pair": [
+      "prefix_only",
+      "question_prefix"
+    ],
+    "reason": "Both select the same final real prefix token iff each declared trajectory has nonempty prefix",
+    "requires_same_block_head_seed_loss_batches_and_RNG": true,
+    "real_duplicate_GPU_execution_claimed": false
+  },
+  "cpu-alias-audit.log": {
+    "bytes": 654,
+    "mtime": 1792517292.477367,
+    "tail": "{\"status\": \"MATHEMATICAL_LAST_TOKEN_SCOPE_ALIAS_VERIFIED\", \"eligible\": true, \"roles\": {\"fit\": {\"trajectories\": 32640, \"empty_prefix\": 0, \"minimum_prefix\": 7, \"maximum_prefix\": 20}, \"diagnostic512\": {\"trajectories\": 2560, \"empty_prefix\": 0, \"minimum_prefix\": 7, \"maximum_prefix\": 20}, \"selection2048\": {\"trajectories\": 10240, \"empty_prefix\": 0, \"minimum_prefix\": 18, \"maximum_prefix\": 20}}, \"scope_pair\": [\"prefix_only\", \"question_prefix\"], \"reason\": \"Both select the same final real prefix token iff each declared trajectory has nonempty prefix\", \"requires_same_block_head_seed_loss_batches_and_RNG\": true, \"real_duplicate_GPU_execution_claimed\": false}\n"
+  },
+  "processes": {
+    "1950590": {
+      "exists": false
+    }
+  },
+  "current_account_cgroup_memory_snapshot_historical_counts_not_run_attributed": {
+    "memory.usage_in_bytes": "897359872",
+    "memory.limit_in_bytes": "8589934592",
+    "memory.max_usage_in_bytes": "8592019456",
+    "memory.failcnt": "0",
+    "memory.oom_control": "oom_kill_disable 0\nunder_oom 0\noom_kill 0"
+  }
+}
