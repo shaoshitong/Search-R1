@@ -175,13 +175,14 @@ def inventory(imported_binding, base=BASE, snapshot=SNAPSHOT):
             raise ValueError('Fresh delta input SHA/train identity differs')
         rows = batch['rows']; inp = Path(item['input'])
         cfg, cfg_ref = load(regular(base, str(Path('sampling')/inp.parent.name/'batches'/inp.stem/'config.json'))); contract(cfg)
-        own_ids, own_hashes, own_tids = [], [], []
+        own_ids, own_hashes, own_tids, own_domains = [], [], [], {}
         for row in rows:
             qid, qhash, ordinal = row['qid'], row['question_hash'], row['candidate_ordinal']
             if row['split'] != 'train' or type(ordinal) is not int or qid in ids or qid in old_ids or ordinal in candidates:
                 raise ValueError('Delta duplicate/imported question or ordinal overlap')
             ids.add(qid); hashes.add(qhash); candidates.add(ordinal); own_ids.append(qid); own_hashes.append(qhash)
             domain = json.loads(qid)[0]; domains[domain] = domains.get(domain,0)+1
+            own_domains[domain] = own_domains.get(domain,0)+1
             if qhash in old_hashes:overlap_hashes.add(qhash)
             own = [RUN+'-outer000001-c%04d-g%d' % (ordinal,j) for j in range(5)]
             if tids.intersection(own) or old_tids.intersection(own):
@@ -190,7 +191,7 @@ def inventory(imported_binding, base=BASE, snapshot=SNAPSHOT):
         if len(rows) != item['questions']:
             raise ValueError('Delta actual input question count differs')
         item.update(input_ref=input_ref, config=cfg_ref, ordered_qids_sha256=digest(own_ids),
-                    ordered_question_hashes_sha256=digest(own_hashes), expected_own_G5_IDs_sha256=digest(own_tids))
+                    ordered_question_hashes_sha256=digest(own_hashes), expected_own_G5_IDs_sha256=digest(own_tids),domain_counts=own_domains)
     audit_latest, audit_latest_ref = load(regular(base, 'audit/latest.json'))
     if (audit_latest.get('run_id') != RUN or audit_latest.get('seed') != SEED
             or audit_latest.get('model_revision') != REVISION or audit_latest.get('auditor_sha256') != AUDITOR):
@@ -199,6 +200,11 @@ def inventory(imported_binding, base=BASE, snapshot=SNAPSHOT):
                     'sealed_pending_batches','strict_em_recomputed','states_shards_independently_audited')}
     accepted = [v for v in delta if v['audit']['status']=='EXISTING_INDEPENDENT_AUDIT_CURRENT_FSTAT_BOUND']
     pending = [v for v in delta if v not in accepted]
+    def domain_totals(values):
+        out = {}
+        for value in values:
+            for name,count in value['domain_counts'].items():out[name]=out.get(name,0)+count
+        return out
     if len(ids) != sum(x['questions'] for x in delta) or len(tids) != 5*len(ids):
         raise ValueError('Delta canonical identity counts differ')
     plan = dict(schema='PEER_NEWSEED_SEALED_METADATA_DELTA_V1', source_base=str(base), source_run_id=RUN,
@@ -211,8 +217,11 @@ def inventory(imported_binding, base=BASE, snapshot=SNAPSHOT):
         current_audit_fstat_bound_batches=sum(x['audit']['status']=='EXISTING_INDEPENDENT_AUDIT_CURRENT_FSTAT_BOUND' for x in current),
         imported_batches=len(previous['selected_batches']), delta_batches=len(delta), delta_questions=len(ids), delta_trajectories=len(tids),
         audited_delta_batches=len(accepted), audited_delta_questions=sum(x['questions'] for x in accepted),
+        audited_delta_batch_inputs=[v['input'] for v in accepted], audited_delta_plan_sha256=digest(accepted),
         sealed_pending_audit_batches=len(pending), sealed_pending_audit_questions=sum(x['questions'] for x in pending),
-        domain_counts=domains, imported_overlap=dict(batch_paths=0,qids=0,trajectory_ids=0,question_hashes=len(overlap_hashes)),
+        pending_audit_batch_inputs=[v['input'] for v in pending], pending_audit_plan_sha256=digest(pending),
+        domain_counts=domains, audited_delta_domain_counts=domain_totals(accepted), pending_audit_domain_counts=domain_totals(pending),
+        imported_overlap=dict(batch_paths=0,qids=0,trajectory_ids=0,question_hashes=len(overlap_hashes)),
         delta_unique_question_hashes=len(hashes), old_archive_payload_SHA_recomputed=False,
         prefix_full_EM_payload_opened=False, strict_EM_tokenizer_recomputed=False,
         existing_audit_proofs_inherited_only_when_current_all_file_fstat_binding_matches=True,
