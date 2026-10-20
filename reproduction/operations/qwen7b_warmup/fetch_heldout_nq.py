@@ -37,11 +37,23 @@ def main():
     else:
         part = path.with_suffix('.jsonl.part')
         env = {k: v for k, v in os.environ.items() if k.lower() not in ('http_proxy', 'https_proxy', 'all_proxy')}
-        url = 'https://huggingface.co/datasets/RUC-NLPIR/FlashRAG_datasets/resolve/' + REVISION + '/nq/dev.jsonl'
-        command = ['curl', '--fail', '--location', '--silent', '--show-error', '--connect-timeout', '5',
-                   '--max-time', '45', '--retry', '2', '--retry-delay', '1', '--noproxy', '',
-                   '--proxy', args.proxy, '--continue-at', '-', '--output', str(part), url]
-        subprocess.run(command, env=env, check=True, timeout=150)
+        attempts = []
+        for proxy in dict.fromkeys([args.proxy, 'http://127.0.0.1:17897']):
+            for endpoint in ('https://huggingface.co', 'https://hf-mirror.com'):
+                url = endpoint + '/datasets/RUC-NLPIR/FlashRAG_datasets/resolve/' + REVISION + '/nq/dev.jsonl?download=true'
+                command = ['curl', '--ipv4', '--http1.1', '--fail', '--location', '--silent', '--show-error',
+                           '--connect-timeout', '8', '--max-time', '45', '--noproxy', '', '--proxy', proxy,
+                           '--continue-at', '-', '--output', str(part), url]
+                result = subprocess.run(command, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                        universal_newlines=True, timeout=55)
+                attempts.append(dict(endpoint=endpoint, proxy=proxy, code=result.returncode,
+                                     error=result.stderr[-300:], bytes=part.stat().st_size if part.exists() else 0))
+                (source / 'download-attempts.json').write_text(json.dumps(attempts, indent=2))
+                print(json.dumps(dict(stage='BOUNDED_REMOTE_DOWNLOAD_ATTEMPT', **attempts[-1])), flush=True)
+                if part.exists() and part.stat().st_size == EXPECTED_BYTES and sha(part) == EXPECTED_SHA:
+                    break
+            if part.exists() and part.stat().st_size == EXPECTED_BYTES and sha(part) == EXPECTED_SHA:
+                break
         assert part.stat().st_size == EXPECTED_BYTES and sha(part) == EXPECTED_SHA
         os.rename(str(part), str(path))
     rows = [json.loads(line) for line in path.open()]
