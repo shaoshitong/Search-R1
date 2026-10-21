@@ -12,11 +12,13 @@ for p in pathlib.Path('/proc').iterdir():
  if not p.name.isdigit() or int(p.name)==os.getpid():continue
  try:
   if p.stat().st_uid!=os.getuid():continue
+  exe=(p/'exe').resolve().name
+  if 'python' not in exe.lower():continue
   cmd=(p/'cmdline').read_bytes();env=(p/'environ').read_bytes()
   if b'external_joint_resume' not in cmd or b'direct_hidden_resume.py' not in cmd:continue
   if b'SLURM_JOB_ID='+JOB.encode()+b'\x00' not in env or b'QWEN7B_CODE_ROOT='+pub['code_root'].encode()+b'\x00' not in env:continue
   io={k:int(v.strip()) for k,v in [line.split(':',1) for line in (p/'io').read_text().splitlines()]};st=(p/'stat').read_text().split();rss=[r for r in (p/'status').read_text().splitlines() if r.startswith('VmRSS:')]
-  processes.append(dict(pid=int(p.name),rchar=io['rchar'],read_bytes=io['read_bytes'],user_ticks=int(st[13]),system_ticks=int(st[14]),RSS=rss[0] if rss else None))
+  processes.append(dict(pid=int(p.name),executable=exe,rchar=io['rchar'],read_bytes=io['read_bytes'],user_ticks=int(st[13]),system_ticks=int(st[14]),RSS=rss[0] if rss else None))
  except (OSError,ValueError):pass
 progress=json.loads((base/'progress.json').read_text());controller=json.loads((attempt/'controller.json').read_text()) if (attempt/'controller.json').exists() else None
 print(json.dumps(dict(job_id=JOB,original_job_id='743619',node=socket.gethostname(),time=time.time(),actual_resume_processes=processes,accepted_cursor=progress['cursor'],resume_controller=controller,failure_exists=(attempt/'failure.json').exists() or (base/'failure.json').exists(),read_only=True)))
