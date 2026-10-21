@@ -5,6 +5,10 @@ s=importlib.util.spec_from_file_location('intake',Path(__file__).with_name('hpc3
 def candidate(q='q',run='execution-a',priority=10):
  return dict(qid=q,question_hash='a'*64,trajectory_ids=[q+'-t%d'%i for i in range(5)],labels=[0,1,0,1,0],metadata_verified=True,full_source_qualified=False,execution_run_id=run,execution_host_cluster='HPC3',source_priority=priority,seal={'path':'/'+run+'/seal.json'})
 class WholeG5(unittest.TestCase):
+ def test_real_old_and_new_allG5_kinds_preserve_same_complete_group(self):
+  g={'qid':'q','question_hash':'a'*64,'candidate_ordinal':4};batch={'rows':[g]};selected=dict(g,trajectory_ids=[m.tid('run',4,j)for j in range(5)])
+  for new,kind in[(False,'ALL_G5_NO_SELECTION_NO_OVERSAMPLING'),(True,'ALL_G5_NO_SELECTION')]:m.all_selection({'kind':kind,'selected':[selected]},batch,'run',new)
+  with self.assertRaises(ValueError):m.all_selection({'kind':'ALL_G5_NO_SELECTION','selected':[]},batch,'run',True)
  def test_original_sha_only_descriptor_has_canonical_path(self):
   self.assertEqual(m.local_bank_ref({'bytes':5,'sha256':'a'*64},Path('/bank/groups.json'))['path'],'/bank/groups.json')
   with self.assertRaises(ValueError):m.local_bank_ref({'path':'/foreign/groups.json'},Path('/bank/groups.json'))

@@ -76,6 +76,13 @@ def payload_refs(seal,dest):
  for item in result.values():
   p=regular(item['path']);require(str(p.resolve()).startswith(str(dest.resolve())+'/')and p.stat().st_size==item['bytes']and len(item['sha256'])==64,'Source payload reference/size differs')
  return result
+def all_selection(selection,batch,run,new):
+ require(selection['kind']==('ALL_G5_NO_SELECTION'if new else'ALL_G5_NO_SELECTION_NO_OVERSAMPLING'),'Source all-G5 selection kind differs')
+ wanted={g['qid']:g for g in batch['rows']};seen=set()
+ for g in selection['selected']:
+  q=g['qid'];require(q in wanted and q not in seen,'Repeated/foreign selected question');source=wanted[q];seen.add(q)
+  require(g['question_hash']==source['question_hash']and g['candidate_ordinal']==source['candidate_ordinal']and len(g['trajectory_ids'])==5 and set(g['trajectory_ids'])=={tid(run,source['candidate_ordinal'],j)for j in range(5)},'Selected whole own G5 differs')
+ require(seen==set(wanted),'Selection does not preserve every original input group')
 
 def batch_metadata(inp,ref,conf,new=False):
  batch,actual=checked(ref);require(Path(actual['path'])==inp,'Frozen input path differs');dest=inp.parents[2]/'sampling'/inp.parent.name/'batches'/inp.stem
@@ -87,7 +94,7 @@ def batch_metadata(inp,ref,conf,new=False):
  require(pref['actual_compute_dtype']=='torch.bfloat16','Production BF16 protocol differs')
  outer=dest/'outers/outer-000001';scan,scref=load(outer/'prefix/scan.json');selection,selref=load(outer/'probe-score/selection.json')
  require(scan['ranks']==[pref]and full['prefix_scan_sha256']==scref['sha256']and full['selection_sha256']==selref['sha256'],'Current sealed prefix/full metadata chain differs')
- require(selection['kind']=='ALL_G5_NO_SELECTION','Label-based source selection forbidden')
+ all_selection(selection,batch,conf['run_id'],new)
  if new:
   require(seal['execution_run_id']==conf['execution_run_id']and seal['execution_host_cluster']=='HPC3'and seal['execution_source_commit']==conf['execution_source_commit']and seal['execution_job']in('745518','745519')and seal['potentialOverlap']and seal['donor_original_receipt_claim']is False and not seal['hidden_cached'],'Own HPC3 execution provenance differs')
   require(cfg['prefix_policy_tokens']==20 and cfg['capture_prefix_tokens']==20 and cfg['seed']==20261021,'Actual Prefix20/new seed config differs')
