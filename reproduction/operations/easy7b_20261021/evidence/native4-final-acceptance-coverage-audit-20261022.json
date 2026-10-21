@@ -1,0 +1,57 @@
+{
+  "status": "STATIC_FINAL_NATIVE4_ENTRYPOINT_AUDIT_NOT_FINAL_ACCEPTANCE",
+  "observed_unix": 1792599603.345406,
+  "training_job": "745371",
+  "training_source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+  "native_world_size": 4,
+  "model_saved_tensors_expected": 339,
+  "final_actual_writes_per_rank_required": 4000,
+  "actual_final_writes_measured": false,
+  "source_files": {
+    "reproduction/easy2560_joint4/final_cpu_acceptance.py": {
+      "bytes": 35350,
+      "sha256": "b423ea97f415e517695925fb0a503d4a13b8275473c6857b1c48aaba92352ad3",
+      "same_as_production_e082": true
+    },
+    "reproduction/easy2560_joint4/final_restore_only.py": {
+      "bytes": 30951,
+      "sha256": "fe7beaa258638b014bea5186f6eaf280c1ff8d0e8fa9327e7b0bf7f8214802ca",
+      "same_as_production_e082": true
+    },
+    "reproduction/easy2560_joint4/final_restore_acceptance.py": {
+      "bytes": 28543,
+      "sha256": "f694e55714fcd56b7ff6a6cb5b99930aac48c14647b87a6fae5989b6ebcaf2a1",
+      "same_as_production_e082": true
+    },
+    "search_g1/easy2560_final_checkpoint.py": {
+      "bytes": 25290,
+      "sha256": "dc8313ee263c49121be251b95e6ea541715a7b3cc99e3f531bd7d41379dd1e45",
+      "same_as_production_e082": true
+    },
+    "search_g1/full_state_restore.py": {
+      "bytes": 38469,
+      "sha256": "b7ec7efbc8a161658b1b2d42cce5d66adb5d3b0b26140d408fa75ffb5b0c2e8f",
+      "same_as_production_e082": true
+    }
+  },
+  "final_chain": [
+    "After actual200 +51713 +archive readiness: search_g1.easy2560_final_checkpoint create, explicitly bind traininge082",
+    "reproduction.easy2560_joint4.final_restore_only prepare to a new independent owned target, published operator source, native4/FA2",
+    "Independent4GPU restore-only execution, actual A/B model/Adam/scheduler/worker+driver RNG/dataequal, zero optimizer writes",
+    "source final_cpu_acceptance --training-commit e082... --final-restore-proof <actual target complete>",
+    "Separately inspect post-callback boundary/dependency children for50/100/150/200 and accepted CP5 before overall goal completion"
+  ],
+  "known_consumer_scope_limits": [
+    "Combined standardCPU/GPU consumer does not itself inspect new companion boundary/dependency archive children",
+    "Legacy consumer accepts fewer than4000actual writes; final audit must independently prove original CP1 prefix plus each outer through200 has20actual writes/rank and cumulative4000",
+    "scheduler _step_count201 at final means initialization counting, not optimizer update201; forbid actual outer201/update4001",
+    "Native4 final pad/unpad must yield exact51713 over7sources; do not reuse obsolete native8 padded51720/pad7 assumptions"
+  ],
+  "current_final200_achieved": false,
+  "current_final51713_achieved": false,
+  "current_final_actual_restore_achieved": false,
+  "training_startup_gates_added": false,
+  "code_modified": false,
+  "production_modified": false,
+  "audit_scope": "Read-only future evidence coverage; no new launch checks, no restart, no premature final job submission."
+}

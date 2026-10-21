@@ -1,0 +1,53 @@
+{
+  "status": "ACTUAL_FA2_OUTER10_PHASE_TIMING_AND_STATIC_FROZEN_REWARD_REVIEW",
+  "observed_unix": 1792599821.4888,
+  "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+  "source_job": "745371",
+  "receipt": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/training-progress-em-1792598317.json",
+  "receipt_sha256": "2028ae149076f1717acd638d34e37d9a61abc8fb75e6efdea5986376052772bb",
+  "previous_checkpoint_receipt": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/training-progress-em-1792596807.json",
+  "checkpoint9_to_checkpoint10_wall_seconds": 1663.5995745658875,
+  "logged_timing_seconds": {
+    "candidate_fill": 875.713,
+    "adv": 154.514,
+    "update_actor": 257.928,
+    "save_checkpoint": 162.277,
+    "step": 716.812
+  },
+  "logged_step_excludes_candidate_fill": true,
+  "candidate_fill_fraction_of_actual_wall": 0.5263965039354589,
+  "actor_update_fraction_of_actual_wall": 0.15504211707153492,
+  "fa3_whole_iteration_measurement": false,
+  "fa3_kernel_only_not_entire_actor": true,
+  "static_grounding_phase": {
+    "selected_trajectories": 2560,
+    "two_readouts": [
+      "commit_context",
+      "prompt_boundary"
+    ],
+    "frozen_encoder_micro": 4,
+    "frozen_encoder_attention": "SDPA",
+    "logical_gpu_ordinal": 3,
+    "base_forward_calls_for_2560_each_readout": 640,
+    "both_readouts_total_base_forwards": 1280,
+    "precedence": "Synchronous reward call and advantage finish before actor BEGIN",
+    "source_paths": [
+      "probe_server.py",
+      "reproduction/common8/run_pipeline.py",
+      "verl/trainer/main_ppo_eco.py",
+      "verl/trainer/ppo/ray_trainer.py",
+      "search_g1/mixed_runtime.py"
+    ]
+  },
+  "reviewed_future_micro8_16_candidate": {
+    "implemented": false,
+    "submitted": false,
+    "production_modified": false,
+    "numerical_risks": [
+      "Per-micro left padding maxima and default position_ids change",
+      "BF16/GEMM/SDPA shapes can affect features, head probabilities, reward and group-normalized advantages"
+    ],
+    "necessary_independent_measurement_if_pursued": "Original selected items/order, frozen bound encoder+heads once, repeatmicro4 then8/16 then4; actual wall/memory and features/probabilities/reward/advantages; no position_ids rewrite or text sorting/dedup."
+  },
+  "decision": "Continue current healthy200-outer FA2 production, preserve FA3 rejection. Do not infer whole-iteration1.7x from a single synthetic attention benchmark."
+}

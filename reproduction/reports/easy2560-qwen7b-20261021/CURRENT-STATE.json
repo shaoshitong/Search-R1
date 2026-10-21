@@ -1,6 +1,6 @@
 {
-  "epoch": 1792598991.0765467,
-  "status": "FA2_TRAINING_OUTER11_SAMPLING_CP10_SEALED_FA3_LAYER_DIAG_COMPLETE_FULL_NUMERICS_UNACCEPTED",
+  "epoch": 1792600128.4167607,
+  "status": "ACTUAL_OUTER11_COMPLETE_CP11_SEALED_OUTER12_GENERATING_FA2_CONTINUES",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "745371",
@@ -11,7 +11,7 @@
   "global_mini": 128,
   "logical_micro": 4,
   "accumulation": 4,
-  "actual_completed_outer": 10,
+  "actual_completed_outer": 11,
   "initialization_is_not_training_acceptance": true,
   "old3b": {
     "job": "734689",
@@ -53,9 +53,9 @@
     "physical_micro16": "Not raised blindly; needs actual measured memory/throughput",
     "enabled_scope": "Exact retrieval cache + original dense head + external2H100 service; no throughput speedup claimed yet"
   },
-  "previous_goal_turn_classification": "verified_wait",
-  "latest_turn_classification": "FA3_SHADOW_DIAGNOSTIC_COMPLETED; NO_PRODUCTION_SWITCH; FA2_GOAL_CONTINUES",
-  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/training-progress-em-1792598991.json",
+  "previous_goal_turn_classification": "progress",
+  "latest_turn_classification": "PROGRESS_ACTUAL_OUTER11_ALL4_20_WRITES_CP11_SEALED_NEXT_GENERATION_STARTED_NO_RESTART",
+  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/training-progress-em-1792600129.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "stage": "GRPO_1_TO_200",
@@ -147,11 +147,13 @@
   ],
   "archive_controller_for_current7b_not_yet_started": false,
   "remaining_goal_requirements": [
-    "continue200outer",
-    "fixed512 QA50/100/150/200",
-    "native51713 final evaluation",
-    "full50/100/150/200 core and post-callback archives",
-    "actual final200 native4 model/Adam/scheduler/RNG/driver/dataequal restore without201"
+    "Continue the unchanged native4 Qwen2.5-7B-Instruct Easy2560/Co recipe through actual outer200; every outer uses2560x5 original candidates, selects512x5 mixed-first/K5fallback/noK0 and reuses original tokens/samplingLP; globalmini128/LR1e-6/20actual optimizer writes per rank.",
+    "Measure identical fixed512 QA at50/100/150/200; QA5 is accepted.",
+    "After200, complete exact canonical51713/7sources with per-source and macro/weighted EM/F1; preserve actual native4 pad/unpad coverage.",
+    "Fresh SHA/archives for50/100/150/200 core checkpoints plus each post-callback boundary and grounding dependency closure; retain accepted CP5.",
+    "Independent final native4 A/B actual model/Adam/scheduler/worker+driver RNG/next-dataequal restore; independently prove20writes each outer including original CP1 prefix and4000cumulative/rank, with no outer201/update4001.",
+    "Continue clear-collapse monitoring/notification and full-state recovery when warranted; preserve real failure evidence and recover only this owned genuinely failed execution.",
+    "Publish current source/operators/config/proofs before owned resource cleanup; retain required remote artifacts and protected feature/model/cache/shared retrieval assets."
   ],
   "actual_state_restore_acceptance": "actual-cp1-state-acceptance-1792583368.json",
   "node": "ACD1-55",
@@ -181,14 +183,14 @@
     ],
     "same_birth_verified_twice": true,
     "latest_progress": {
+      "phase": "WAITING_CHECKPOINT",
+      "source_job": "745371",
+      "step": 50,
       "actual_job_state": "RUNNING",
-      "checked_unix": 1792595111.0736203,
       "completed_steps": [
         5
       ],
-      "phase": "WAITING_CHECKPOINT",
-      "source_job": "745371",
-      "step": 50
+      "checked_unix": 1792599114.652599
     },
     "completed_steps": [
       5
@@ -222,7 +224,16 @@
       "hk-archive-recovery-observation-1792587265.json",
       "hk-archive-recovery-observation-1792587305.json"
     ],
-    "last_same_birth_verified_unix": 1792591834.2842638
+    "last_same_birth_verified_unix": 1792599165.0858767,
+    "actual_same_birth": true,
+    "actual_process": {
+      "pid": 3603385,
+      "start_ticks": 1037896746,
+      "state": "S",
+      "uid": 1002,
+      "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+      "cwd": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/0830581f16eee86d5a89100cda91b175de63635c"
+    }
   },
   "actual_state_restore": {
     "model_tensors": 339,
@@ -268,13 +279,18 @@
   "outer2_started_not_complete": false,
   "outer2_completed_candidate_questions": 2560,
   "outer2_first_chunk_mixed_questions": 181,
-  "current_base_durable_checkpoint_outer": 10,
+  "current_base_durable_checkpoint_outer": 11,
   "most_recent_recoverable_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
-    "outer": 6,
-    "full_checkpoint_bytes": 91405505248,
-    "rolling_manifest_sha256": "eaceea0b97b3ce5e73a12ee5449b5808f245da93065886eca5209de944ba223d",
-    "bytes_scope": "checkpoint plus post-callback boundary members"
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_11",
+    "manager": "easy2560_per_outer_full_state_v1",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_11/full-manifest.json",
+    "manifest_sha256": "3a5abfb7ea71aeb69251041055f9c42261996340ed918447cdc7e9c77f2b95fd",
+    "published_unix": 1792599940.3014085,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+    "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+    "step": 11
   },
   "outer2_candidate_mixed_questions": 979,
   "outer2_candidate_mixed_fraction": 0.382421875,
@@ -447,7 +463,7 @@
       "replacement_has_completed_milestone5_archive": true
     }
   ],
-  "current_outer": 11,
+  "current_outer": 12,
   "outer3_selection": {
     "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/eefd4da7a7b445a4862963b159cbdfdc.json",
     "bytes": 2750777,
@@ -768,6 +784,17 @@
       "optimizer_writes": 200,
       "optimizer_writes_before": 180,
       "optimizer_writes_this_outer": 20
+    },
+    {
+      "step": 11,
+      "attempt_index": 11,
+      "reward": 0.6300367712974548,
+      "pg_loss": 0.005586632083425013,
+      "ppo_kl": 0.0012724943673674716,
+      "grad_norm": 2.6276173770064495,
+      "optimizer_writes": 220,
+      "optimizer_writes_before": 200,
+      "optimizer_writes_this_outer": 20
     }
   ],
   "fixed_validation_results_pending": [
@@ -934,7 +961,8 @@
       0.6239957809448242,
       0.6132726669311523,
       0.6176403760910034,
-      0.6393882036209106
+      0.6393882036209106,
+      0.6300367712974548
     ],
     "fixed512_baseline_step": 5,
     "fixed512_baseline_em": 0.376953125,
@@ -949,7 +977,8 @@
       "7": 0.36,
       "8": 0.373125,
       "9": 0.38421875,
-      "10": 0.38234375
+      "10": 0.38234375,
+      "11": 0.39890625
     },
     "selected_em_by_outer": {
       "2": 0.49375,
@@ -960,7 +989,8 @@
       "7": 0.5109375,
       "8": 0.501171875,
       "9": 0.50390625,
-      "10": 0.530078125
+      "10": 0.530078125,
+      "11": 0.513671875
     },
     "quality_scope": "Candidate and selected strict EM are pre-update varying training pools, not fixed512 validation. Only QA5 is measured; QA50/100/150/200 remain pending."
   },
@@ -1072,26 +1102,26 @@
     "fresh_remote_fetch_and_blob_sha_pass": true,
     "receipt": "source-publication-c3ce9a5f9f148a87308e5ef0c27ed2457003c19b-1792593993.json"
   },
-  "all4_actual_optimizer_writes": 200,
+  "all4_actual_optimizer_writes": 220,
   "current_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_10",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_11",
     "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_10/full-manifest.json",
-    "manifest_sha256": "1070a87785277207d86ae09f3470938829e30335ee0f2ccfb5d3964abc2dd751",
-    "published_unix": 1792598274.9121459,
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_11/full-manifest.json",
+    "manifest_sha256": "3a5abfb7ea71aeb69251041055f9c42261996340ed918447cdc7e9c77f2b95fd",
+    "published_unix": 1792599940.3014085,
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
     "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 10
+    "step": 11
   },
   "current_candidate_pool": {
-    "name": "89f23c532fb8484aaf7b6cd634d1eba3-pool-0",
-    "step": 11,
-    "completed_questions": 2048,
-    "reserved_questions": 2048,
-    "source_consumed": 28160,
-    "saved_chunk_files": 13,
+    "name": "37efb3128e824aeca2c8a0fba7ef2cdd-pool-0",
+    "step": 12,
+    "completed_questions": 512,
+    "reserved_questions": 512,
+    "source_consumed": 30720,
+    "saved_chunk_files": 4,
     "progress_error": null
   },
   "current_completed_selection_em": [
@@ -1454,17 +1484,57 @@
       "discarded_insufficient_pool_count": 0,
       "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
       "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
+    },
+    {
+      "step": 11,
+      "attempt_id": "89f23c532fb8484aaf7b6cd634d1eba3",
+      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:11:policy-89f23c532fb8484aaf7b6cd634d1eba3",
+      "status": "MEASURED_COMPLETED_SELECTION",
+      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/89f23c532fb8484aaf7b6cd634d1eba3.json",
+      "candidate_correct_count_histogram": {
+        "0": 1110,
+        "1": 204,
+        "2": 212,
+        "3": 209,
+        "4": 274,
+        "5": 551
+      },
+      "candidate_questions": 2560,
+      "candidate_trajectories": 12800,
+      "raw_generated_trajectories": 12800,
+      "candidate_trajectory_em": 0.39890625,
+      "candidate_mixed_questions": 899,
+      "candidate_mixed_fraction": 0.351171875,
+      "selected_correct_count_histogram": {
+        "0": 0,
+        "1": 124,
+        "2": 119,
+        "3": 123,
+        "4": 146,
+        "5": 0
+      },
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "selected_trajectory_em": 0.513671875,
+      "selected_mixed": 512,
+      "selected_mixed_fraction": 1.0,
+      "selected_all_correct_fallback": 0,
+      "selected_all_correct_fallback_fraction": 0.0,
+      "pool_retry": 0,
+      "discarded_insufficient_pool_count": 0,
+      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
+      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
     }
   ],
   "latest_completed_metrics": {
-    "step": 10,
-    "attempt_index": 10,
-    "reward": 0.6393882036209106,
-    "pg_loss": 0.04357814534082469,
-    "ppo_kl": 0.0006861575348011684,
-    "grad_norm": 2.5011894492280358,
-    "optimizer_writes": 200,
-    "optimizer_writes_before": 180,
+    "step": 11,
+    "attempt_index": 11,
+    "reward": 0.6300367712974548,
+    "pg_loss": 0.005586632083425013,
+    "ppo_kl": 0.0012724943673674716,
+    "grad_norm": 2.6276173770064495,
+    "optimizer_writes": 220,
+    "optimizer_writes_before": 200,
     "optimizer_writes_this_outer": 20
   },
   "archive5_grounding_dependency_closure": {
@@ -1509,7 +1579,7 @@
     },
     "state": "RUNNING",
     "progress": {
-      "checked_unix": 1792595151.7828472,
+      "checked_unix": 1792599117.3430262,
       "completed_steps": [],
       "core_controller": {
         "birth": {
@@ -1554,7 +1624,7 @@
           },
           "progress.json": {
             "actual_job_state": "RUNNING",
-            "checked_unix": 1792595111.0736203,
+            "checked_unix": 1792599114.652599,
             "completed_steps": [
               5
             ],
@@ -1596,7 +1666,19 @@
       "post-callback-future-resume-readback2-1792594112.json"
     ],
     "read_only_verification_evidence": "evidence/actual-cp5-dependency-and-companion-two-checks-20261021.json",
-    "last_same_birth_verified_unix": 1792595155.9075704
+    "last_same_birth_verified_unix": 1792595155.9075704,
+    "last_observation_unix": 1792599165.1297746,
+    "actual_process": {
+      "actual": {
+        "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+        "pid": 3881747,
+        "start_ticks": 1038573622,
+        "state": "S",
+        "uid": 1002
+      },
+      "same_birth": true,
+      "state": "LIVE"
+    }
   },
   "preserved_cpu_callback_failures": [
     {
@@ -1616,7 +1698,7 @@
       "terminal": true
     }
   ],
-  "current_progress_evidence": "evidence/actual10-complete-cp10-outer11-started-20261021.json",
+  "current_progress_evidence": "evidence/actual11-complete-cp11-and-next-outer-20261022.json",
   "published_progress_observer": {
     "commit": "b3f808a31d957799c82690cb6ddf97e2bdddd002",
     "source": "reproduction/operations/easy7b_20261021/watch_training_progress_local.py",
@@ -1635,7 +1717,12 @@
     "actual_final_writes_not_yet_measured": true,
     "final_native_world_size": 4,
     "weights_tensor_count_dynamic_expected339": true,
-    "review": "Local read-only entrypoint review: final200 paths unchanged from traininge082; scheduler count201 is initialization counting, not update201; actual final acceptance remains pending."
+    "review": "Local read-only entrypoint review: final200 paths unchanged from traininge082; scheduler count201 is initialization counting, not update201; actual final acceptance remains pending.",
+    "coverage_audit": "evidence/native4-final-acceptance-coverage-audit-20261022.json",
+    "additional_final_checks": [
+      "Separately inspect all post-callback boundary/dependency children for50/100/150/200",
+      "Prove20actual writes each outer incl restoredCP1 prefix and4000cumulative/rank; legacy consumer PASS alone does not prove this"
+    ]
   },
   "fa3_candidate": {
     "requested_after_complete9": true,
@@ -1667,5 +1754,12 @@
     "layer_shadow_evidence": "evidence/actual-fa3-layer-shadow-cp10-20261022.json",
     "full_iteration_speedup_measured": false
   },
-  "latest_full_checkpoint_outer": 10
+  "latest_full_checkpoint_outer": 11,
+  "latest_phase_timing_evidence": "evidence/actual-outer10-timing-and-grounding-phase-20261022.json",
+  "frozen_grounding_batch_optimization": {
+    "production_micro": 4,
+    "changed": false,
+    "benchmark_started": false,
+    "scope": "Static feasibility only; micro8/16 requires independent actual pad/position/features/probability/reward/adv qualification, no current transition."
+  }
 }

@@ -192,3 +192,35 @@ training outer including rollout and retrieval. No whole-iteration FA3 speedup
 or final-accuracy equivalence is claimed. Production continues with FA2; the
 full-model numerical rejection remains in force and no checkpoint transition
 was performed.
+
+Production subsequently completed outer11: all four ranks wrote20 updates
+(cumulative220) and advanced the scheduler once. Its23 checkpoint and7 boundary
+files were sealed under manifest
+3a5abfb7ea71aeb69251041055f9c42261996340ed918447cdc7e9c77f2b95fd.
+Outer12 then actually saved its first512 candidates. Outer11 reward was
+0.63003677, candidate strict EM39.890625%, selected-trajectory EM51.3671875%;
+all512 selected groups were mixed, with zero fallback/retry. These are varying
+pre-update training pools; fixed QA50/100/150/200 and final51713 remain pending.
+See `evidence/actual11-complete-cp11-and-next-outer-20261022.json`.
+
+The actual outer10 sealed-boundary wall time was1663.60s (27.73min), including
+candidate fill875.713s and actor update257.928s. Logged reward/advantage took
+154.514s and checkpoint save162.277s; its logged step716.812s excludes candidate
+fill. Actor update accounts for approximately15.5% of that complete wall time,
+and an attention-kernel speed ratio cannot be applied to the entire outer.
+The synchronous frozen grounding service uses logical GPU3 and SDPA, with
+micro4 for2560 commit plus2560 boundary texts before actor BEGIN. Micro8/16 is
+only a reviewed future hypothesis: grouping changes left padding and default
+positions as well as BF16/SDPA shapes. No batch change or new benchmark was
+started. The measured timing and review scope are preserved in
+`evidence/actual-outer10-timing-and-grounding-phase-20261022.json`.
+
+Both existing archive-controller births were freshly verified live, waiting
+for50 without failures or restart. The final native4 entrypoint coverage audit
+is in `evidence/native4-final-acceptance-coverage-audit-20261022.json`: five
+core modules remain byte-identical to productione082. Final overall acceptance
+must additionally inspect all post-callback boundary/dependency archive
+children and independently prove20 writes per outer/4000 per rank; a legacy
+CPU consumer PASS alone does not prove those broader requirements. These are
+final evidence checks, not new training-startup gates. No update201 or final
+recovery is being executed at outer11; the full200-outer goal remains active.
