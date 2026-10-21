@@ -1,4 +1,4 @@
-"""Allocate CPU RAM for the full-state source read, then submit normal training.
+"""Allocate RAM for the full-state source read, then submit normal training.
 
 The CPU job waits for the explicitly authorized old producer to terminate. It
 uses the already published transition entry; it does not cancel any job.
@@ -21,7 +21,13 @@ def main():
     prepared = json.loads((base/'preparation/fa3-transition-prepared.json').read_text())
     if prepared['commit'] != TRAINING_COMMIT or prepared['status'] != 'READY_FOR_AUTHORIZED_BOUNDARY_TRANSITION':
         raise ValueError('Prepared published transition differs')
-    claim = base/'preparation/fa3-transition-cpu-submit-claim.json'
+    # ACD rejects jobs without --gres even for CPU work. Preserve the original
+    # rejected command and use a separate once-only attempt with one reserved,
+    # unused GPU; the eventual production job still requests exactly four.
+    previous = json.loads((base/'preparation/fa3-transition-cpu-submission.json').read_text())
+    if previous.get('returncode') != 1 or previous.get('job') or '--gres=gpu:N' not in previous.get('stderr', ''):
+        raise ValueError('Original no-GPU submission was not conclusively rejected')
+    claim = base/'preparation/fa3-transition-state-read-r2-submit-claim.json'
     if claim.exists():
         print(json.dumps(dict(status='EXISTING_CPU_AUDIT_SUBMISSION_INSPECT_ACTUAL',
                               claim=json.loads(claim.read_text())))); return
@@ -29,14 +35,15 @@ def main():
                'reproduction.operations.easy7b_20261021.fa3_transition', 'submit',
                '--base', BASE, '--commit', TRAINING_COMMIT]
     argv = ['sbatch', '--parsable', '--partition=emergency_acd', '--qos=formal-user',
-            '--account=jxu957', '--nodes=1', '--ntasks=1', '--cpus-per-task=4',
+            '--account=jxu957', '--nodes=1', '--ntasks=1', '--cpus-per-task=4', '--gres=gpu:1',
             '--mem=128G', '--time=00:30:00', '--job-name=easy7b-fa3-state-read',
             '--dependency=afterany:745371', '--export=NONE', '--chdir='+str(base/'repo'),
             '--output='+str(base/'logs/fa3-transition-source-audit-%j.log'),
             '--error='+str(base/'logs/fa3-transition-source-audit-%j.log'),
             '--wrap='+shlex.join(command)]
     publish(claim, dict(command=argv, training_commit=TRAINING_COMMIT,
-        source_job='745371', cpu_only=True, gpu_allocations=0, created_unix=time.time()))
+        source_job='745371', computation_cpu_only=True, reserved_unused_gpu_count=1,
+        preserved_submission_failure=previous, created_unix=time.time()))
     result = subprocess.run(argv, capture_output=True, text=True, timeout=30)
     value = dict(command=argv, returncode=result.returncode, stdout=result.stdout,
                  stderr=result.stderr, checked_unix=time.time())
@@ -44,7 +51,7 @@ def main():
         job = result.stdout.strip().split(';')[0]
         if not job.isdecimal(): raise ValueError('Inspect unknown sbatch outcome')
         value['job'] = job
-    publish(base/'preparation/fa3-transition-cpu-submission.json', value)
+    publish(base/'preparation/fa3-transition-state-read-r2-submission.json', value)
     print(json.dumps(value), flush=True)
 
 
