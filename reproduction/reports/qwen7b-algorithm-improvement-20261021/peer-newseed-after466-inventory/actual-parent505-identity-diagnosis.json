@@ -1,0 +1,90 @@
+{
+  "status": "FINITE505_IDENTITY_OVERLAP_DIAGNOSIS",
+  "epoch": 1792576618.5898197,
+  "parent_sha256": "8e23374458fbeeccd8dcc9623e5493a4805ceeab4fe790da1c14cb20fca12de7",
+  "totals": {
+    "existing243": {
+      "questions": 31010,
+      "prior_qid_overlap": 0,
+      "prior_hash_overlap": 2,
+      "prior_tid_overlap": 0,
+      "within_qid_duplicates": 0,
+      "within_hash_duplicates": 1,
+      "within_tid_duplicates": 0
+    },
+    "missing262": {
+      "questions": 33536,
+      "prior_qid_overlap": 0,
+      "prior_hash_overlap": 0,
+      "prior_tid_overlap": 0,
+      "within_qid_duplicates": 0,
+      "within_hash_duplicates": 0,
+      "within_tid_duplicates": 0
+    }
+  },
+  "domains": {
+    "existing243": {
+      "hotpotqa": 28706,
+      "nq": 2304
+    },
+    "missing262": {
+      "hotpotqa": 629,
+      "nq": 32907
+    }
+  },
+  "prior_counts": {
+    "inputs": 466,
+    "qids": 59648,
+    "hashes": 59648,
+    "tids": 298240
+  },
+  "new_unique_counts": {
+    "qids": 64546,
+    "hashes": 64545,
+    "tids": 322730
+  },
+  "examples": [
+    {
+      "input": "inputs/shard-00/batch-000448.json",
+      "qid_sha256": "8156aaf9e60334c89c2621efe7bc524dab24de661fec962a014361edf4ef29a3",
+      "question_hash": "a7582045a7e05d4e826b25c04c653d5044e835b8c238a7cfcdbb7de5612cc229",
+      "flags": {
+        "prior_qid_overlap": 0,
+        "prior_hash_overlap": 1,
+        "prior_tid_overlap": 0,
+        "within_qid_duplicates": 0,
+        "within_hash_duplicates": 0,
+        "within_tid_duplicates": 0
+      }
+    },
+    {
+      "input": "inputs/shard-00/batch-000561.json",
+      "qid_sha256": "90a74dec04cfce877eacc818beaf048c35e68f76aaed83626fd0db0ca7656393",
+      "question_hash": "a6d784a7c3d58462d07e4bf33b4f1b60431baf36d5851481158a7b7f80e86d1b",
+      "flags": {
+        "prior_qid_overlap": 0,
+        "prior_hash_overlap": 1,
+        "prior_tid_overlap": 0,
+        "within_qid_duplicates": 0,
+        "within_hash_duplicates": 0,
+        "within_tid_duplicates": 0
+      }
+    },
+    {
+      "input": "inputs/shard-00/batch-000659.json",
+      "qid_sha256": "333f8f64220119c9f0950793856e4fddfa2a9c21c886a1d679ba6b3f75a8918a",
+      "question_hash": "a9703fe82e861bdda0675733ab6d9d87e03bd1ce73dea217fdbef6ff7a159e25",
+      "flags": {
+        "prior_qid_overlap": 0,
+        "prior_hash_overlap": 0,
+        "prior_tid_overlap": 0,
+        "within_qid_duplicates": 0,
+        "within_hash_duplicates": 1,
+        "within_tid_duplicates": 0
+      }
+    }
+  ],
+  "payload_read": false,
+  "EM_read": false,
+  "producer_modified": false
+}

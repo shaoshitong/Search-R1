@@ -14,7 +14,7 @@ remote_sha=subprocess.check_output(['git','ls-remote','origin','refs/heads/codex
 if remote_sha!=publication:raise ValueError('Remote branch must equal exact HEAD before source freeze')
 packet=dict(reference=reference,priors=priors,code=files,publication=publication)
 worker='''import sys,json,pathlib,types,hashlib,os,time
-p=json.loads(sys.stdin.buffer.read());root=pathlib.Path('/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/metadata-plans/after466-'+p['reference']['delta_records_sha256'][:12]);root.mkdir(parents=True,exist_ok=True)
+p=json.loads(sys.stdin.buffer.read());root=pathlib.Path('/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/metadata-plans/after466-'+p['reference']['delta_records_sha256'][:12]+'-'+p['publication'][:8]);root.mkdir(parents=True,exist_ok=True)
 for name,raw in p['code'].items():
  dest=root/name
  if dest.exists():assert dest.read_bytes()==raw.encode()
@@ -24,7 +24,7 @@ d=types.ModuleType('finite.peer_newseed_delta');exec(compile(p['code']['peer_new
 exec(compile(p['code']['peer_newseed_freeze_after466.py'],str(root/'peer_newseed_freeze_after466.py'),'exec'),mod.__dict__)
 refpath=root/'parent505-reference.json'
 if refpath.exists():assert json.loads(refpath.read_bytes())==p['reference']
-else:refpath.write_bytes(d.canonical(p['reference'])+b'\\n')
+else:refpath.write_bytes(d.canonical(p['reference'])+bytes([10]))
 result=mod.freeze(p['reference'],p['priors'],root/'audited243-plan.json',which='existing243')
 result['source_publication']=p['publication'];result['parent505_reference']=d.load(refpath)[1];result['root']=str(root)
 print(json.dumps(result))'''

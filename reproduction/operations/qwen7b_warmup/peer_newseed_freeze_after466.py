@@ -87,7 +87,7 @@ def freeze(reference,priors,output,*,which='existing243',audit_root=None):
         if manifest['questions']!=169028 or len(manifest['batches'])!=1322:raise ValueError('Canonical source budget differs')
         old,oldrefs=prior_membership(priors)
         if len(old['inputs'])!=466 or len(old['qids'])!=59648 or len(old['tids'])!=298240:raise ValueError('Exact accepted466 identities required')
-        selected=[];seen={k:set() for k in ('qids','hashes','tids')};domains={}
+        selected=[];seen={k:set() for k in ('qids','hashes','tids')};domains={};prior_hash_overlap=0;within_hash_duplicates=0
         for r in rows:
             if r['input'] in old['inputs']:raise ValueError('Prior accepted input reselected')
             seal,sref=d.load(d.regular(d.BASE,r['seal']))
@@ -100,8 +100,9 @@ def freeze(reference,priors,output,*,which='existing243',audit_root=None):
             qids=[];hashes=[];tids=[];own_domains={}
             for q in batch['rows']:
                 qid,h=q['qid'],q['question_hash'];ts=[d.RUN+'-outer000001-c%04d-g%d'%(q['candidate_ordinal'],j)for j in range(5)]
-                if q['split']!='train' or qid in old['qids'] or h in old['hashes'] or old['tids'].intersection(ts):raise ValueError('New question overlaps accepted466')
-                if qid in seen['qids'] or h in seen['hashes'] or seen['tids'].intersection(ts):raise ValueError('New identities repeat')
+                if q['split']!='train' or qid in old['qids'] or old['tids'].intersection(ts):raise ValueError('New question/trajectory identity overlaps accepted466')
+                prior_hash_overlap+=int(h in old['hashes']);within_hash_duplicates+=int(h in seen['hashes'])
+                if qid in seen['qids'] or seen['tids'].intersection(ts):raise ValueError('New question/trajectory identities repeat')
                 seen['qids'].add(qid);seen['hashes'].add(h);seen['tids'].update(ts);qids.append(qid);hashes.append(h);tids+=ts
                 domain=json.loads(qid)[0];domains[domain]=domains.get(domain,0)+1;own_domains[domain]=own_domains.get(domain,0)+1
             if len(qids)!=r['questions'] or d.digest(sorted(tids))!=audit['own_trajectory_ids_sha256']:raise ValueError('Input-derived sorted own-G5 proof differs')
@@ -113,7 +114,9 @@ def freeze(reference,priors,output,*,which='existing243',audit_root=None):
             source_base=str(d.BASE),source_run_id=d.RUN,seed=d.SEED,source_seed=1729,model_revision=d.REVISION,sampling_attempt_id=d.ATTEMPT,
             source_config=cref,input_manifest=mref,batches=n,questions=q,trajectories=5*q,domain_counts=domains,selected_batches=selected,
             batch_records_sha256=d.digest(selected),prior_snapshots=priors,accepted466_identity_membership_refs=oldrefs,
-            prior_identity_overlap={k:0 for k in ('batches','qids','question_hashes','trajectory_ids')},partition=which,
+            prior_identity_overlap=dict(batches=0,qids=0,question_hashes=prior_hash_overlap,trajectory_ids=0),partition=which,
+            training_text_hash_policy='retain canonical distinct qids/authentic trajectory IDs; train-only repeated text hashes are reported; evaluation qid/hash exclusion remains hard',
+            within_selected_training_hash_duplicates=within_hash_duplicates,selected_unique_question_hashes=len(seen['hashes']),
             parent505_records_sha256=reference['delta_records_sha256'],reference_observation_sha256=d.digest(reference),
             selection_rule='Exact finite parent505 difference after accepted466; fixed existing243 vs missing262 proof partition; no labels/scores',
             existing_audit_all_actual_file_fstat_matches=True,existing_audit_payload_SHA_inherited_only=True,fresh_payload_SHA_recomputed=False,
