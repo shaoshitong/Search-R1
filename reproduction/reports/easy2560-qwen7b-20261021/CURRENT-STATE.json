@@ -52,7 +52,7 @@
     "enabled_scope": "Exact retrieval cache + original dense head + external2H100 service; no throughput speedup claimed yet"
   },
   "previous_goal_turn_classification": "PROGRESS: actual CP2 full seal and outer3 start accepted",
-  "latest_turn_classification": "PROGRESS_OUTER4_COMPLETE_AND5_ACTUAL_SAMPLING_AUTHORIZED_OLD_CHECKPOINT_CLEANUP_PREPARED",
+  "latest_turn_classification": "PROGRESS_OUTER4_COMPLETE_5_SAMPLING_AUTHORIZED_LEGACY_CHECKPOINT_CLEANUP_COMPLETE",
   "last_observation": "training-progress-1792588434.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
@@ -520,7 +520,7 @@
     2,
     3
   ],
-  "manual_cleanup_performed_this_turn": false,
+  "manual_cleanup_performed_this_turn": true,
   "outer4_actual_update": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "step": 4,
@@ -625,7 +625,7 @@
     "healthy_training_runtime_modified": false
   },
   "authorized_old_checkpoint_cleanup": {
-    "status": "EXACT_PLAN_READY_NOT_EXECUTED",
+    "status": "COMPLETE_INDEPENDENTLY_VERIFIED_BOTH_UIDS",
     "plan_sha256": "3b66ba18c42321d1ab8ad12587205ce4f18ed94ed0018667c90870f95e3a33c1",
     "files": 258,
     "expected_reclaimable_allocated_bytes": 690876620800,
@@ -645,6 +645,13 @@
       "easy2560-corollout-joint4-recovery5-after730912-20261018",
       "easy2560-corollout-joint4-recovery5-after730961-20261018",
       "topd-20261008"
-    ]
+    ],
+    "deleted_files": 258,
+    "confirmed_lastlink_released_bytes": 690876620800,
+    "independent_verification_uids": [
+      14090,
+      21930
+    ],
+    "preserved_files_verified_by_each_uid": 20345
   }
 }
