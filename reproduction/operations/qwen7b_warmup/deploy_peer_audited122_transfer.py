@@ -31,7 +31,7 @@ TARGET=B/'peer-newseed-h100-20261021'/SNAPSHOT
 INGEST=B/'algorithm-improvement-20261021'/('peer-newseed-ingest-'+SNAPSHOT)
 HPCDEP=B/'algorithm-improvement-20261021'/('peer-delta-import-runtime-'+SNAPSHOT)
 SOURCE_FILES=tuple(P+n for n in ('peer_newseed_subset_export.py','peer_newseed_export.py','peer_newseed_delta.py','peer_newseed_audit_reference.py','test_peer_newseed_subset_export.py'))+(PLAN,)
-ACTIONS=('source-stage','source-start','source-status','hf-stage','hf-start','hf-status','hf-resume-failed','receive-stage','receive-preflight','receive-start','receive-status','ingest-stage','ingest-tests','ingest-prepare','ingest-start','ingest-status')
+ACTIONS=('source-stage','source-start','source-status','hf-stage','hf-start','hf-status','hf-first-archive','hf-resume-failed','receive-stage','receive-preflight','receive-start','receive-status','ingest-stage','ingest-tests','ingest-prepare','ingest-start','ingest-status')
 
 
 def canonical(v):return json.dumps(v,sort_keys=True,separators=(',',':')).encode()
@@ -179,6 +179,9 @@ def hf_action(repo,commit,action):
         return mgmt_call(v,'stage')
     if action in ('hf-start','hf-resume-failed'):
         return mgmt_call(v,action[3:],dict(hf_token=recv.token()))
+    if action=='hf-first-archive':
+        script='import pathlib,json; b=pathlib.Path(%r); p=b/"uploaded/group-00000.json"; v=json.loads(p.read_text()); assert v["status"]=="PEER_SOURCE_PRIVATE_HF_ARCHIVE_SHA_ACCEPTED"; print(json.dumps(dict(status="ACTUAL_FIRST_PRIVATE_HF_ARCHIVE_SHA_BINDING",first_group={k:v[k] for k in ("hf_archive_path","hf_archive_commit","archive_bytes","archive_sha256")},catalog_finalized=(b/"complete.json").exists())))'%v['base']
+        return json_call(['ssh','-T','-oBatchMode=yes','-oConnectTimeout=8','mgmt-host','python3 -c '+shlex.quote(script)])
     result=mgmt_call(v,'status')
     if 'complete' in result:
         script='import pathlib,json,hashlib; b=pathlib.Path(%r); v=json.loads((b/"complete.json").read_text()); g=v["groups"][0]; print(json.dumps(dict(catalog_commit=v["catalog_commit"],first_group={k:g[k] for k in ("hf_archive_path","hf_archive_commit","archive_bytes","archive_sha256")},source_questions=v["source_snapshot"]["questions"],source_trajectories=v["source_snapshot"]["trajectories"])))'%v['base']
