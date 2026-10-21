@@ -21,6 +21,7 @@ class Tests(unittest.TestCase):
    with patch.object(p,'_new_session',return_value=Session(data)):
     out=p.download(None,b,record,'a'*40,retries=1,workers=4);self.assertEqual(out.read_bytes(),data)
     self.assertEqual(p.download(None,b,record,'a'*40,retries=1,workers=4),out)
+    out.unlink();self.assertEqual(p.download(None,b,record,'a'*40,retries=1,workers=4).read_bytes(),data)
  def test_wrong_http_status_never_publishes_archive(self):
   data=b'synthetic'*100;record=dict(group='group-00000',archive='/synthetic/snapshot-group-00000.tar',archive_bytes=len(data),archive_sha256=hashlib.sha256(data).hexdigest(),hf_archive_path='prefix/archives/snapshot-group-00000.tar')
   with tempfile.TemporaryDirectory()as tmp:

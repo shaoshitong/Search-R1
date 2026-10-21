@@ -394,7 +394,7 @@ def verify_inventory(catalog,inventory):
 def range_layout(total,workers=8):
     if type(total)is not int or total<1 or workers not in(4,8):raise ValueError('Positive sealed size and four/eight bounded ranges required')
     workers=min(workers,total);size=(total+workers-1)//workers
-    return [(i,start,min(total-1,start+size-1))for i,start in enumerate(range(0,total,size))]
+    return [[i,start,min(total-1,start+size-1)]for i,start in enumerate(range(0,total,size))]
 
 
 def _new_session(template):
