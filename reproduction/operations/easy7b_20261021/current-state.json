@@ -1,5 +1,5 @@
 {
-  "epoch": 1792600128.4167607,
+  "epoch": 1792600670.0863903,
   "status": "ACTUAL_OUTER11_COMPLETE_CP11_SEALED_OUTER12_GENERATING_FA2_CONTINUES",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
@@ -54,8 +54,8 @@
     "enabled_scope": "Exact retrieval cache + original dense head + external2H100 service; no throughput speedup claimed yet"
   },
   "previous_goal_turn_classification": "progress",
-  "latest_turn_classification": "PROGRESS_ACTUAL_OUTER11_ALL4_20_WRITES_CP11_SEALED_NEXT_GENERATION_STARTED_NO_RESTART",
-  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/training-progress-em-1792600129.json",
+  "latest_turn_classification": "PROGRESS_FINAL_ONLY_STRICT_NATIVE4_RETAINED20_READER_TESTED_AND_LIVE_NEXT_CANDIDATES_ADVANCE; PRODUCTION_UNCHANGED",
+  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/training-progress-em-1792600671.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "stage": "GRPO_1_TO_200",
@@ -1118,10 +1118,10 @@
   "current_candidate_pool": {
     "name": "37efb3128e824aeca2c8a0fba7ef2cdd-pool-0",
     "step": 12,
-    "completed_questions": 512,
-    "reserved_questions": 512,
+    "completed_questions": 2048,
+    "reserved_questions": 2048,
     "source_consumed": 30720,
-    "saved_chunk_files": 4,
+    "saved_chunk_files": 13,
     "progress_error": null
   },
   "current_completed_selection_em": [
@@ -1722,7 +1722,11 @@
     "additional_final_checks": [
       "Separately inspect all post-callback boundary/dependency children for50/100/150/200",
       "Prove20actual writes each outer incl restoredCP1 prefix and4000cumulative/rank; legacy consumer PASS alone does not prove this"
-    ]
+    ],
+    "strict_write_audit_module": "reproduction.easy2560_joint4.strict_final_write_audit",
+    "strict_write_audit_validation": "evidence/strict-final-write-reader-validation-20261022.json",
+    "strict_write_audit_actual200_pending": true,
+    "strict_write_audit_not_startup_wired": true
   },
   "fa3_candidate": {
     "requested_after_complete9": true,

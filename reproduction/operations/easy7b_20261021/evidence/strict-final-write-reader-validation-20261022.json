@@ -1,0 +1,33 @@
+{
+  "status": "FINAL_ONLY_CPU_STRICT_WRITE_READER_TESTED_NOT_EXECUTED_ON_TRAINING",
+  "checked_unix": 1792600661.5326421,
+  "new_module_files": {
+    "reproduction/easy2560_joint4/strict_final_write_audit.py": {
+      "bytes": 5742,
+      "sha256": "7c4197b2fe7752cb4e5cd9573633a29da674e012877d54a6e5c3238dd379090f"
+    },
+    "reproduction/easy2560_joint4/test_strict_final_write_audit.py": {
+      "bytes": 15158,
+      "sha256": "871bd1a3e93660cb329215033b323fed06860549f2e38a4fd28bd5dfaefbbfc6"
+    }
+  },
+  "meaningful_cpu_tests": 10,
+  "tests_pass": true,
+  "python38_ast_pass": true,
+  "underlying_no201_module_unchanged_from_production": true,
+  "underlying_no201_module_sha256": "b423ea97f415e517695925fb0a503d4a13b8275473c6857b1c48aaba92352ad3",
+  "logical_basis": "Existing authenticated no201 proof establishes exactly200completed outers, each1..20 retained writes, failedattempts0 and actual per-rank write-event continuity. Requiring cumulative4000 forces20retained writes in every completed outer/native4rank, including authenticatedCP1 history.",
+  "source_commit_must_be_explicit": true,
+  "production_execution_performed": false,
+  "wired_into_training_startup": false,
+  "models_loaded": 0,
+  "gpu_allocations": 0,
+  "proof_scope_exclusions": [
+    "Zero extra historical Adam calls",
+    "Zero historical rollback",
+    "Physical CUDA execution",
+    "Actual final restore",
+    "Evaluation/archive/overall goal completion"
+  ],
+  "actual200_proof_pending": true
+}

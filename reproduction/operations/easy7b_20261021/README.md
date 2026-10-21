@@ -224,3 +224,29 @@ children and independently prove20 writes per outer/4000 per rank; a legacy
 CPU consumer PASS alone does not prove those broader requirements. These are
 final evidence checks, not new training-startup gates. No update201 or final
 recovery is being executed at outer11; the full200-outer goal remains active.
+
+`reproduction.easy2560_joint4.strict_final_write_audit` is an independent
+final-only CPU reader for the strict retained20 budget. The existing
+authenticated no201 reader already proves exactly200 successful outers, each
+with1..20 retained writes, zero retained writes for failed attempts, and each
+rank's complete actual write-event sequence. Requiring cumulative4000 therefore
+forces20 retained writes in every completed outer on each of the four ranks,
+including the original CP1 history. No scheduler or production consumer was
+changed, and this reader is not connected to startup or training.
+
+Only after actual200, run from a published immutable operator source containing
+the new module, with the original training commit explicitly bound:
+
+```bash
+python -B -m reproduction.easy2560_joint4.strict_final_write_audit \
+  --base /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021 \
+  --training-commit e082a23b5a65b302e2016aa0e5ab43b10b543d4f
+```
+
+It prints one JSON result and writes no files; it does not load Torch/models,
+allocate GPUs, submit jobs, or claim an actual CUDA restore or whole-goal
+completion. It also does not prove zero extra historical Adam calls or rollback.
+Ten CPU fixtures passed, including actual200-row/per-rank ledgers,3999 rejection,
+missing rank-write rejection and zero-write failed-attempt handling. Validation
+is recorded in `evidence/strict-final-write-reader-validation-20261022.json`.
+The reader has not been run against the still-incomplete production chain.
