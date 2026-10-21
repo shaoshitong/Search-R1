@@ -1,0 +1,147 @@
+{
+  "config": {
+    "bytes": 14625,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-fast-v1/config.json",
+    "sha256": "22098d5a4678db2f9c56d56cb5709829c3a4619c626e0b52d16ce726844402ac"
+  },
+  "controller": {
+    "config_sha256": "22098d5a4678db2f9c56d56cb5709829c3a4619c626e0b52d16ce726844402ac",
+    "job_id": "746220",
+    "pid": 4167145,
+    "receipt": {
+      "bytes": 246,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-fast-v1/controller.json",
+      "sha256": "1d410ec8e1e42cacd389cd5a4b3b29aaa99b65ccd3b7c0177bdfdbf2566b8f34"
+    },
+    "source_cursor": 373,
+    "stage": "OFFICIAL_FULL_SHA_AND_HIGHEST_FULL_STATE_RESTORE",
+    "time": 1792604704.3474042
+  },
+  "epoch": 1792605076.2648094,
+  "fast-durable-next-update-replay": {
+    "all9_state_hashes_exact": true,
+    "cursor": 375,
+    "group_head_changed": true,
+    "micro_questions": 32,
+    "native_changed": true,
+    "receipt": {
+      "bytes": 1749,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-fast-v1/fast-durable-next-update-replay.json",
+      "sha256": "2f407a01f4f4db7f131187168ece761a7550407614a014918f5b77fdd49bba55"
+    },
+    "source_cursor": 374,
+    "status": "PASSED"
+  },
+  "first-fast-cp-independent-audit": {
+    "GPU": 0,
+    "cursor": 374,
+    "global_clocks_not_reset": true,
+    "head_steps": 374,
+    "host": "ACD1-13",
+    "job_id": "746220",
+    "native_steps": 374,
+    "next_sampler_batch_identity_exact": true,
+    "receipt": {
+      "bytes": 1398,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-fast-v1/first-fast-cp-independent-audit.json",
+      "sha256": "6d8b5d168f6c25056e771a2d28c28d9352b294a5057cfafd7def981e793073ed"
+    },
+    "source_cursor": 373,
+    "status": "FAST_CONTINUATION_FIRST_CP_INDEPENDENT_CPU_FULL_NINE_STATE_PASSED"
+  },
+  "first-fast-update-replay": {
+    "all9_state_hashes_exact": true,
+    "cursor": 374,
+    "group_head_changed": true,
+    "micro_questions": 32,
+    "native_changed": true,
+    "receipt": {
+      "bytes": 1749,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-fast-v1/first-fast-update-replay.json",
+      "sha256": "57b29efcdb4d87ffb552c481383fe383656bd4cc127a3bbd52cbdcdeb9d9b01f"
+    },
+    "source_cursor": 373,
+    "status": "PASSED"
+  },
+  "independent_CPU_log": {
+    "bytes": 1317,
+    "mtime": 1792605010.918184
+  },
+  "job_id": "746220",
+  "latest": {
+    "bytes": 3778088282,
+    "cursor": 375,
+    "full_CPU_native_head_two_Adam_RNG_sampler_source_reload_passed": true,
+    "head_steps": 375,
+    "native_steps": 375,
+    "receipt": {
+      "bytes": 1825,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-fast-v1/latest.json",
+      "sha256": "019c190a77d1a930a7eb8f463fcd4c73b9771b0d7e0259fd3b151298d65155ec"
+    },
+    "sha256": "a6c99dae761ac1f1598ad05e8078012123e1abd357f44bbb3d8a9eba1fb20a32"
+  },
+  "main_sacct": "746220|RUNNING|0:0|00:06:23|ACD1-13",
+  "micro_questions": 32,
+  "migration": {
+    "all9_hashes_preserved": true,
+    "full_checkpoint_fresh_SHA_and_nine_state_restore_passed": true,
+    "global_Adam_sampler_RNG_preserved": true,
+    "receipt": {
+      "bytes": 5139,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-fast-v1/startup-binding-migration.json",
+      "sha256": "fa1092182abc1d693b361c5512374b184a9d51652a9591bdb58d00fbf153aabb"
+    },
+    "source_cursor": 373,
+    "status": "HIGHEST_SOURCE_FULL_STATE_RESTORED_BINDING_ONLY_MIGRATED"
+  },
+  "no_checkpoint_payload_read": true,
+  "parallel_workers": 8,
+  "prefetch_batches": 8,
+  "progress": {
+    "binary_Mixed_BCE": 0.7128964657895267,
+    "cursor": 376,
+    "group_head_gradient_L2": 1.0014773607254028,
+    "head_steps": 376,
+    "micro_questions": 32,
+    "native_gradient_L2": 0.5236003398895264,
+    "native_steps": 376,
+    "new_updates": 3,
+    "prefetch": {
+      "consumed_question_groups": 160,
+      "prepare_calls": 5,
+      "submitted_question_groups": 1024,
+      "wait_seconds": 1.0308246593922377
+    },
+    "reader_integrity_mode": "inherited_full_seal_with_fresh_metadata_and_each_row_SHA",
+    "receipt": {
+      "bytes": 1598,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-fast-v1/progress.json",
+      "sha256": "9854d1e02bc07bf1fc3e028b62151d310d102b17f1f7ebfe07eeac3dcab56ea3"
+    },
+    "seconds": 0.6765599939972162,
+    "source_cursor": 373,
+    "time": 1792605071.7713017
+  },
+  "published_new_files_checked": 25,
+  "reader-integrity": {
+    "disposable_CPU_queue_not_checkpoint_state": true,
+    "mode": "inherited_full_seal_with_fresh_metadata_and_each_row_SHA",
+    "per_used_row_SHA_required": true,
+    "receipt": {
+      "bytes": 3855,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-fast-v1/reader-integrity.json",
+      "sha256": "02b6f557170ba487cd214e39c1fa6a4e2a7cc8bcda31264e3b706dd19af070a2"
+    },
+    "whole_payload_fresh_SHA_claimed": false
+  },
+  "source_9_hashes_bound": true,
+  "source_checkpoint_SHA_from_inherited_verified_receipt": "f9157735659aca6dbd6030280c7c4b5c52e36bf57b974602a2b78dae32f8176f",
+  "source_cursor": 373,
+  "source_drift": [],
+  "source_publication": {
+    "bytes": 7750,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-fast-v1/source-publication.json",
+    "sha256": "dc34dcc787b3a52a5dbfe19d6d1fa39c9599ff158654bc4acdda56e71a8ace4a"
+  }
+}
