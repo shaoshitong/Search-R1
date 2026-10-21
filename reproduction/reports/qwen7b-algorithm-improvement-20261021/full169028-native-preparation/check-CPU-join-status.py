@@ -10,7 +10,11 @@ def proof(p):
     raw = p.read_bytes()
     return dict(path=str(p), bytes=len(raw), sha256=hashlib.sha256(raw).hexdigest())
 out = dict(epoch=time.time(), job_id='746061', GPU=0)
-out['squeue'] = subprocess.check_output(['squeue', '-h', '-j', '746061', '-o', '%i|%j|%T|%R'], universal_newlines=True)
+queue = subprocess.run(['squeue', '-h', '-j', '746061', '-o', '%i|%j|%T|%R'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+if queue.returncode and 'Invalid job id specified' not in queue.stderr:
+    raise RuntimeError(queue.stderr)
+out['squeue'] = queue.stdout
+out['retired_CPU_queue_id_expired'] = bool(queue.returncode)
 out['sacct'] = subprocess.check_output(['sacct', '-n', '-P', '-j', '746061', '--format=JobIDRaw,State,ExitCode,Elapsed,AllocCPUS,ReqMem,AllocTRES'], universal_newlines=True)
 if 'PENDING' in out['squeue']:
     out['estimated_start'] = subprocess.check_output(['squeue', '--start', '-h', '-j', '746061', '-o', '%i|%T|%S|%R'], universal_newlines=True)
