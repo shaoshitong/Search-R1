@@ -1,5 +1,5 @@
 """Code-only immutable CPU qualification; never submits or waits for GPU data."""
-import argparse,base64,hashlib,importlib.util,json,pathlib,shlex,subprocess
+import argparse,base64,hashlib,importlib.util,json,pathlib,shlex,subprocess,zlib
 ROOT=pathlib.Path(__file__).resolve().parents[4];CONTROL=ROOT.parents[1];OUT=pathlib.Path(__file__).parent;PKG='reproduction/operations/qwen7b_warmup/'
 p=argparse.ArgumentParser();p.add_argument('--commit',required=True);v=p.parse_args()
 remote=subprocess.check_output(['git','ls-remote','origin','refs/heads/codex/qwen7b-probe-warmup-20261019'],cwd=ROOT).decode().split()[0]
@@ -19,7 +19,7 @@ def proof(p):
  p=pathlib.Path(p);raw=p.read_bytes();return dict(path=str(p),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
 """
 def call(body,extra=None):
- script='v='+repr(dict(commit=v.commit,**(extra or {})))+'\n'+common+body;compile(script,'remote-code-only','exec');command='python3 -c '+shlex.quote(script)
+ script='v='+repr(dict(commit=v.commit,**(extra or {})))+'\n'+common+body;compile(script,'remote-code-only','exec');packed=base64.b64encode(zlib.compress(script.encode())).decode();command='python3 -c '+shlex.quote('import base64,zlib;exec(zlib.decompress(base64.b64decode('+repr(packed)+')))')
  if len(command.encode())>=16000:raise ValueError('Code-only command exceeds16KB')
  r=ctl.run(command,account='mou176',source_address=ip,timeout=70)
  if r.returncode:raise RuntimeError(r.stderr[-3000:])
