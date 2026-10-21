@@ -1,0 +1,48 @@
+{
+  "observed_UTC": "2026-10-21T10:34:21.967321+00:00",
+  "classification": "PROGRESS_WITH_REAL_STARTUP_FAILURES_FIXED_NO_TRAINING_SUCCESS_CLAIM",
+  "actual": {
+    "GPU_qualification": {
+      "job": 745177,
+      "namespace": "joint-balanced-native-E4-qualification-v3",
+      "commit": "919a277f94f12bb8e2d22b9bec056c0169617c7e",
+      "config_sha256": "a0aa78acee96ce25c98cc7c77c3bd5c6a20ffb91458fd217552d9a5e60a2355a",
+      "fresh_sacct": "RUNNING0:0 00:00:11 ACD1-13",
+      "observed_epoch": 1792578780.5560987,
+      "accepted_updates_verified": 0,
+      "main124194_training_claim": false
+    },
+    "prior_failures": [
+      {
+        "job": 745147,
+        "namespace": "qualification-v1",
+        "state": "FAILED1:0",
+        "accepted_updates": 0,
+        "cause": "Temporary sampler lookahead omitted same external exclusion binding; guard correctly rejected restore",
+        "repair": "Clone exact sampler including exclusion config; v2 immutable source",
+        "no_model_rollback": true
+      },
+      {
+        "job": 745155,
+        "namespace": "qualification-v2",
+        "state": "FAILED1:0",
+        "elapsed_seconds": 270,
+        "accepted_updates": 0,
+        "cause": "VJP adapter omitted import time before first update",
+        "repair": "919a277f import time; stdlib global references check undefined=[]; v3 separate immutable namespace",
+        "no_model_rollback": true
+      }
+    ],
+    "full_current_cohort": 124194,
+    "rollout_last_observed": 129442,
+    "new243_HF_actual_archives": [
+      14,
+      16
+    ],
+    "new262_source_proof": "261 original chain +1 separately attested metadata reseal; original failure preserved"
+  },
+  "next": "Native first real block and head updates, fullCP1 and exactnext replay, accepted1..7; remote raw ingest and only missing features before full124194 production",
+  "goal_complete": false,
+  "actor_updates": 0,
+  "final4096_outcomes_read": false
+}
