@@ -1,0 +1,120 @@
+{
+  "baseline": {
+    "domains": {
+      "HotpotQA": 0,
+      "NQ": 30016
+    },
+    "epochs": 20,
+    "questions": 30016,
+    "updates": 18760,
+    "updates_per_epoch": 938
+  },
+  "evaluation": {
+    "coverage": 0.25,
+    "domain_quotas_are_not_Mixed_class_balancing": true,
+    "domains": {
+      "HotpotQA": 2560,
+      "NQ": 2560
+    },
+    "existing_frozen_NQ_halves_retained": true,
+    "fixed_decision": 0.5,
+    "held_questions": 5120,
+    "labels": "these exact five own strict EM",
+    "metrics": [
+      "Mixed_BA",
+      "Mixed_TPR",
+      "nonMixed_TNR",
+      "allwrong_FPR",
+      "allcorrect_FPR",
+      "Mixed_AUC"
+    ],
+    "own_G5_source_indices": [
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "per_domain_Top": 640,
+    "pooled_Top": 1280
+  },
+  "expanded": {
+    "additional_batches": 728,
+    "additional_questions": 23296,
+    "domains": {
+      "HotpotQA": 13428,
+      "NQ": 39884
+    },
+    "epochs": 20,
+    "questions": 53312,
+    "updates": 33320,
+    "updates_per_epoch": 1666
+  },
+  "external2048_and_final4096_scope": "Identity-only exclusion refs inherited; no outcome/prediction access or new external selection authorized",
+  "external_or_final_scoring": false,
+  "initialization": "Exact real baseline CP0 raw/EMA/Adam0/RNG, not the trained CountE20 checkpoint; frozen E1 unchanged",
+  "matched18760_is_not_an_integer_epoch": true,
+  "matched_epoch_endpoint": {
+    "baseline_updates": 18760,
+    "epochs": 20,
+    "expanded_updates": 33320,
+    "interpretation": "Same epochs per question; data amount, domain composition and update count change together"
+  },
+  "matched_update_endpoint": {
+    "baseline_epochs": 20,
+    "expanded_complete_epochs": 11,
+    "expanded_updates_into_epoch12": 434,
+    "interpretation": "Same optimizer-update budget; question diversity and domain composition both change, so not a pure isolated sample-count causal effect",
+    "updates": 18760
+  },
+  "new_GPU_submission": false,
+  "old_family36_protocol": {
+    "bytes": 7114,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozenE1-head-objective-family-v1/family-protocol.json",
+    "sha256": "19f5e62fa39f4bde9790cadb29137a7e09cc91bd3fc1698a19f3a444326eed60"
+  },
+  "order": {
+    "all20epochs_repeat_same1666_batches_and_fixed_view_epochs": true,
+    "append728_from_existing_identity_only_plan": true,
+    "labels_or_scores_choose_questions_or_order": false,
+    "original938_batches_exact_prefix_each_epoch": true
+  },
+  "original_questions_seen_by_E1_warmup": true,
+  "priority": "Supersedes not-yet-submitted coarse forks; preserves all earlier family36 protocol/history without rewriting or retrospective acceptance",
+  "required_saved_evaluation_cursors": [
+    0,
+    1666,
+    3332,
+    6664,
+    13328,
+    18760,
+    33320
+  ],
+  "role": "COUNT53312_SAME_CP0_DATA_SCALING_PHASE",
+  "unchanged": {
+    "EMA_decay": 0.99,
+    "actor_updates": 0,
+    "effective_total_weight_per_question": 1,
+    "frozen_E1_updates": 0,
+    "global_questions": 32,
+    "grouping": {
+      "mode": "random",
+      "on_unbalance": "raise",
+      "seed": 1729,
+      "views_per_question": 4
+    },
+    "head_LR": 0.0001,
+    "native_hidden_dimension": 3584,
+    "objective": "native six-count NLL; frozen trajectory BCE logging only",
+    "prefix_tokens": 20,
+    "question_max_tokens": 273,
+    "view_weight": 0.25,
+    "views_per_question": 4,
+    "weight_decay": 0
+  },
+  "unseen_question_performance_claim": false,
+  "weights": [
+    "raw",
+    "EMA"
+  ]
+}
