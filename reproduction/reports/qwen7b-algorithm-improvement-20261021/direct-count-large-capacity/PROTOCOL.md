@@ -1,8 +1,9 @@
 # Frozen-E1 large-cohort count-head capacity protocol
 
 Prepared implementation only. No GPU has been submitted, no model tensors have
-been loaded by this preparation, and the new5120 input descriptors are awaiting
-their actual complete receipt. This diagnostic does not change743809 or743619.
+been loaded by this preparation. The5120 source metadata is now actually
+complete (source receipt SHA8a4ed0b2…); exact five descriptors and original30016/938
+proofs are frozen in INPUT-PACKET.json. CPU-only prepare is separately recorded. This diagnostic does not change743809 or743619.
 
 The question is whether a small count head can generalize after fitting a much
 larger training cohort when the original E1 native block27 and trajectory head

@@ -117,9 +117,14 @@ def prepare(packet_path,target=TARGET):
     if any(k not in packet for k in required):raise ValueError('Actual complete holdout/source descriptors required; no placeholders')
     for k in required:checked(packet[k])
     exclusion=read(checked(packet['identity_exclusion_acceptance']))
-    if (exclusion.get('external_and_final_identity_overlap')!=0
-            or exclusion.get('controlled6528_holdout_overlap')!=0
-            or exclusion.get('holdout_selected_without_labels')is not True):
+    if (exclusion.get('holdout_controlled6528_qid_overlap')!=0
+            or exclusion.get('holdout_controlled6528_hash_overlap')!=0
+            or exclusion.get('holdout_original30016_qid_overlap')!=0
+            or exclusion.get('holdout_original30016_hash_overlap')!=0
+            or any(v!=0 for v in exclusion.get('holdout_fixed_evaluation_qid_and_hash_overlap',{'missing':1}).values())
+            or any(v!=0 for v in exclusion.get('merged_fixed_evaluation_qid_and_hash_overlap',{'missing':1}).values())
+            or exclusion.get('labels_consulted_for_selection')is not False
+            or exclusion.get('scores_consulted_for_selection')is not False):
         raise ValueError('Identity-only exclusion and label-blind holdout acceptance required')
     c0=read(PRODUCTION/'config.json');publication=read(PRODUCTION/'source-publication.json')
     if (proof(PRODUCTION/'config.json')['sha256']!=old.CONFIG_SHA
@@ -129,6 +134,11 @@ def prepare(packet_path,target=TARGET):
     selection=read(checked(packet['internal_holdout_selection']))
     held_groups=read(checked(packet['internal_holdout_groups']))['internal_holdout']
     lookup,fit,held,counts=validate_cohorts(plan,groups,selection,held_groups)
+    original=read(checked(packet['original30016_fit']))['train']
+    if ({g['qid']:g for g in original}!={q:lookup[q]for q in fit}
+            or proof(checked(packet['original938_plan']))['sha256']!=c0['plan']['sha256']):
+        raise ValueError('Original30016 records and full938 byte-identical plan must be retained')
+    checked(packet['complete'])
     target.mkdir(parents=True,exist_ok=True)
     immutable(target/'cohort.json',dict(fit_qids=fit,holdout_qids=held,
         fit_qids_sha256=digest(fit),holdout_qids_sha256=digest(held),
@@ -147,10 +157,13 @@ def prepare(packet_path,target=TARGET):
         implementation=proof(__file__),capacity_helper=proof(old.__file__),
         model_dir=c0['model_dir'],model_config=c0['model_config'],source_plan=c0['plan'],
         input_packet=proof(packet_path),inputs={k:packet[k]for k in required},
+        accepted_input_complete=packet['complete'],original30016_groups=packet['original30016_fit'],
+        original938_byte_copy=packet['original938_plan'],
         cohort=proof(target/'cohort.json'),orders=proof(target/'orders.json'),
         fit_view_epochs=proof(target/'fit-view-epochs.json'),grouping=c0['grouping'],
         head_seed=1729,head_Adam0=True,head_LR=1e-4,head_weight_decay=0.,
         legacy_frozen=True,legacy_optimizer_created=False,legacy_updates=0,actor_updates=0,
+        fit_questions=30016,internal_holdout_questions=5120,
         epochs=20,questions_per_update=32,updates_per_epoch=938,update_budget=18760,
         EMA_decay=.99,evaluation_epochs=list(NODES),prefix_tokens=20,question_max_tokens=273,
         fit_views_per_question=4,fit_view_weight='1/4',
