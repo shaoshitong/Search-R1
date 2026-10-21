@@ -1,0 +1,1314 @@
+{
+  "actual21_saved_generation": {
+    "completed_questions": 512,
+    "name": "72e521d7f3bc4ea8953345334e20b2c6-pool-0",
+    "progress_error": null,
+    "reserved_questions": 512,
+    "saved_chunk_files": 4,
+    "source_consumed": 53760,
+    "step": 21
+  },
+  "actual_attempt20": {
+    "all_ranks_agreed": true,
+    "attempt_id": "8465de04dced4742a32e1a5fc0079174",
+    "complete_outer": true,
+    "completed_outer": 20,
+    "full_budget_complete": true,
+    "logical_update": 20,
+    "opportunities_processed": 20,
+    "opportunities_unattempted": 0,
+    "optimizer_calls_this_attempt": 20,
+    "optimizer_rollbacks_this_attempt": 0,
+    "optimizer_writes_after": 400,
+    "optimizer_writes_before": 380,
+    "optimizer_writes_this_attempt": 20,
+    "real_rank_count": 4,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "scheduler_advances": 1,
+    "slurm_job_id": "746125",
+    "status": "complete"
+  },
+  "actual_flash3_rank_execution20": {
+    "0": {
+      "actual_flash3_training_executed": true,
+      "actual_optimizer_writes": 400,
+      "attention_layers": 28,
+      "checked_unix": 1792616035.9613872,
+      "cuda_synchronized": true,
+      "flash3_enabled": true,
+      "forward_success_returns": {
+        "dense": 0,
+        "varlen": 40544
+      },
+      "global_transformers_patch": false,
+      "kernel_backward_success_returns": 17920,
+      "logical_update": 20,
+      "observed_shapes": [
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            8304,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            8304,
+            28,
+            128
+          ],
+          "v": [
+            8304,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            5128,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            5128,
+            28,
+            128
+          ],
+          "v": [
+            5128,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            8319,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            8319,
+            28,
+            128
+          ],
+          "v": [
+            8319,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            8090,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            8090,
+            28,
+            128
+          ],
+          "v": [
+            8090,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            5424,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            5424,
+            28,
+            128
+          ],
+          "v": [
+            5424,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            9637,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            9637,
+            28,
+            128
+          ],
+          "v": [
+            9637,
+            28,
+            128
+          ]
+        }
+      ],
+      "provenance": {
+        "compiled_torch_cuda": "12.1",
+        "cudart_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/libcudart.so.12",
+        "cudart_runtime_version": 12060,
+        "cudart_sha256": "095296727cfb5f51e5b3ae69a3cb88cbd7b6592f314ace0fdfc4e1d758c2aa85",
+        "extension_module": "flash_attn_3_cuda",
+        "extension_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+        "extension_sha256": "be3e87f7b0401f71be424916d4ca031f90aa21be70b479eec0c9898763dcb345",
+        "interface_module": "_search_g1_actor_flash3_a9690456d973461a895794f0514542b4",
+        "interface_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/flash_attn_interface.py",
+        "interface_sha256": "a50f564fa1fc4cdd85ffa61f79e913a463c2066e519f9c5e8bc2e5c74457fa38",
+        "interface_version": "3.0.0b1",
+        "source_scope": "private actor interface + explicit extension; no foreign site-packages path",
+        "torch_version": "2.4.0+cu121"
+      },
+      "qkv_gradient_returns": 17920,
+      "rank": 0,
+      "role": "easy7b_instance_local_flash3_execution",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+      "state_dict_keys_changed": false
+    },
+    "1": {
+      "actual_flash3_training_executed": true,
+      "actual_optimizer_writes": 400,
+      "attention_layers": 28,
+      "checked_unix": 1792616035.9614358,
+      "cuda_synchronized": true,
+      "flash3_enabled": true,
+      "forward_success_returns": {
+        "dense": 0,
+        "varlen": 40544
+      },
+      "global_transformers_patch": false,
+      "kernel_backward_success_returns": 17920,
+      "logical_update": 20,
+      "observed_shapes": [
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            7593,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            7593,
+            28,
+            128
+          ],
+          "v": [
+            7593,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            6766,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            6766,
+            28,
+            128
+          ],
+          "v": [
+            6766,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            7014,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            7014,
+            28,
+            128
+          ],
+          "v": [
+            7014,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            12292,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            12292,
+            28,
+            128
+          ],
+          "v": [
+            12292,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            7778,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            7778,
+            28,
+            128
+          ],
+          "v": [
+            7778,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            7680,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            7680,
+            28,
+            128
+          ],
+          "v": [
+            7680,
+            28,
+            128
+          ]
+        }
+      ],
+      "provenance": {
+        "compiled_torch_cuda": "12.1",
+        "cudart_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/libcudart.so.12",
+        "cudart_runtime_version": 12060,
+        "cudart_sha256": "095296727cfb5f51e5b3ae69a3cb88cbd7b6592f314ace0fdfc4e1d758c2aa85",
+        "extension_module": "flash_attn_3_cuda",
+        "extension_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+        "extension_sha256": "be3e87f7b0401f71be424916d4ca031f90aa21be70b479eec0c9898763dcb345",
+        "interface_module": "_search_g1_actor_flash3_bd041cc81d8f4198a93b0cad5c7663e3",
+        "interface_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/flash_attn_interface.py",
+        "interface_sha256": "a50f564fa1fc4cdd85ffa61f79e913a463c2066e519f9c5e8bc2e5c74457fa38",
+        "interface_version": "3.0.0b1",
+        "source_scope": "private actor interface + explicit extension; no foreign site-packages path",
+        "torch_version": "2.4.0+cu121"
+      },
+      "qkv_gradient_returns": 17920,
+      "rank": 1,
+      "role": "easy7b_instance_local_flash3_execution",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+      "state_dict_keys_changed": false
+    },
+    "2": {
+      "actual_flash3_training_executed": true,
+      "actual_optimizer_writes": 400,
+      "attention_layers": 28,
+      "checked_unix": 1792616035.96142,
+      "cuda_synchronized": true,
+      "flash3_enabled": true,
+      "forward_success_returns": {
+        "dense": 0,
+        "varlen": 40544
+      },
+      "global_transformers_patch": false,
+      "kernel_backward_success_returns": 17920,
+      "logical_update": 20,
+      "observed_shapes": [
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            8465,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            8465,
+            28,
+            128
+          ],
+          "v": [
+            8465,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            9620,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            9620,
+            28,
+            128
+          ],
+          "v": [
+            9620,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            8479,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            8479,
+            28,
+            128
+          ],
+          "v": [
+            8479,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            11319,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            11319,
+            28,
+            128
+          ],
+          "v": [
+            11319,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            6789,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            6789,
+            28,
+            128
+          ],
+          "v": [
+            6789,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            5991,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            5991,
+            28,
+            128
+          ],
+          "v": [
+            5991,
+            28,
+            128
+          ]
+        }
+      ],
+      "provenance": {
+        "compiled_torch_cuda": "12.1",
+        "cudart_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/libcudart.so.12",
+        "cudart_runtime_version": 12060,
+        "cudart_sha256": "095296727cfb5f51e5b3ae69a3cb88cbd7b6592f314ace0fdfc4e1d758c2aa85",
+        "extension_module": "flash_attn_3_cuda",
+        "extension_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+        "extension_sha256": "be3e87f7b0401f71be424916d4ca031f90aa21be70b479eec0c9898763dcb345",
+        "interface_module": "_search_g1_actor_flash3_32fe5dd04ee8476db9afa6074f66fba7",
+        "interface_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/flash_attn_interface.py",
+        "interface_sha256": "a50f564fa1fc4cdd85ffa61f79e913a463c2066e519f9c5e8bc2e5c74457fa38",
+        "interface_version": "3.0.0b1",
+        "source_scope": "private actor interface + explicit extension; no foreign site-packages path",
+        "torch_version": "2.4.0+cu121"
+      },
+      "qkv_gradient_returns": 17920,
+      "rank": 2,
+      "role": "easy7b_instance_local_flash3_execution",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+      "state_dict_keys_changed": false
+    },
+    "3": {
+      "actual_flash3_training_executed": true,
+      "actual_optimizer_writes": 400,
+      "attention_layers": 28,
+      "checked_unix": 1792616035.961389,
+      "cuda_synchronized": true,
+      "flash3_enabled": true,
+      "forward_success_returns": {
+        "dense": 0,
+        "varlen": 40544
+      },
+      "global_transformers_patch": false,
+      "kernel_backward_success_returns": 17920,
+      "logical_update": 20,
+      "observed_shapes": [
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            6500,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            6500,
+            28,
+            128
+          ],
+          "v": [
+            6500,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            7589,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            7589,
+            28,
+            128
+          ],
+          "v": [
+            7589,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            10012,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            10012,
+            28,
+            128
+          ],
+          "v": [
+            10012,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            8383,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            8383,
+            28,
+            128
+          ],
+          "v": [
+            8383,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            8982,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            8982,
+            28,
+            128
+          ],
+          "v": [
+            8982,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            8723,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            8723,
+            28,
+            128
+          ],
+          "v": [
+            8723,
+            28,
+            128
+          ]
+        }
+      ],
+      "provenance": {
+        "compiled_torch_cuda": "12.1",
+        "cudart_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/libcudart.so.12",
+        "cudart_runtime_version": 12060,
+        "cudart_sha256": "095296727cfb5f51e5b3ae69a3cb88cbd7b6592f314ace0fdfc4e1d758c2aa85",
+        "extension_module": "flash_attn_3_cuda",
+        "extension_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+        "extension_sha256": "be3e87f7b0401f71be424916d4ca031f90aa21be70b479eec0c9898763dcb345",
+        "interface_module": "_search_g1_actor_flash3_962ba41847ee487f89b800a3cf3adc66",
+        "interface_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/flash_attn_interface.py",
+        "interface_sha256": "a50f564fa1fc4cdd85ffa61f79e913a463c2066e519f9c5e8bc2e5c74457fa38",
+        "interface_version": "3.0.0b1",
+        "source_scope": "private actor interface + explicit extension; no foreign site-packages path",
+        "torch_version": "2.4.0+cu121"
+      },
+      "qkv_gradient_returns": 17920,
+      "rank": 3,
+      "role": "easy7b_instance_local_flash3_execution",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+      "state_dict_keys_changed": false
+    }
+  },
+  "actual_scheduler20": {
+    "0": [
+      {
+        "actual_optimizer_writes": 0,
+        "attempt_id": "8465de04dced4742a32e1a5fc0079174",
+        "kind": "BEGIN",
+        "logical_update": 20,
+        "opportunities_processed": 0,
+        "rank": 0,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 0,
+        "scheduler_last_epoch_after": 19,
+        "slurm_job_id": "746125",
+        "writes_after": 380,
+        "writes_before": 380
+      },
+      {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "8465de04dced4742a32e1a5fc0079174",
+        "full_budget_complete": true,
+        "kind": "COMMIT_PREPARED",
+        "logical_update": 20,
+        "opportunities_processed": 20,
+        "rank": 0,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 0,
+        "scheduler_last_epoch_after": 19,
+        "slurm_job_id": "746125",
+        "update_status": "complete",
+        "writes_after": 400,
+        "writes_before": 380
+      },
+      {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "8465de04dced4742a32e1a5fc0079174",
+        "full_budget_complete": true,
+        "kind": "COMPLETE",
+        "logical_update": 20,
+        "opportunities_processed": 20,
+        "rank": 0,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 1,
+        "scheduler_last_epoch_after": 20,
+        "slurm_job_id": "746125",
+        "update_status": "complete",
+        "writes_after": 400,
+        "writes_before": 380
+      }
+    ],
+    "1": [
+      {
+        "actual_optimizer_writes": 0,
+        "attempt_id": "8465de04dced4742a32e1a5fc0079174",
+        "kind": "BEGIN",
+        "logical_update": 20,
+        "opportunities_processed": 0,
+        "rank": 1,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 0,
+        "scheduler_last_epoch_after": 19,
+        "slurm_job_id": "746125",
+        "writes_after": 380,
+        "writes_before": 380
+      },
+      {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "8465de04dced4742a32e1a5fc0079174",
+        "full_budget_complete": true,
+        "kind": "COMMIT_PREPARED",
+        "logical_update": 20,
+        "opportunities_processed": 20,
+        "rank": 1,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 0,
+        "scheduler_last_epoch_after": 19,
+        "slurm_job_id": "746125",
+        "update_status": "complete",
+        "writes_after": 400,
+        "writes_before": 380
+      },
+      {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "8465de04dced4742a32e1a5fc0079174",
+        "full_budget_complete": true,
+        "kind": "COMPLETE",
+        "logical_update": 20,
+        "opportunities_processed": 20,
+        "rank": 1,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 1,
+        "scheduler_last_epoch_after": 20,
+        "slurm_job_id": "746125",
+        "update_status": "complete",
+        "writes_after": 400,
+        "writes_before": 380
+      }
+    ],
+    "2": [
+      {
+        "actual_optimizer_writes": 0,
+        "attempt_id": "8465de04dced4742a32e1a5fc0079174",
+        "kind": "BEGIN",
+        "logical_update": 20,
+        "opportunities_processed": 0,
+        "rank": 2,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 0,
+        "scheduler_last_epoch_after": 19,
+        "slurm_job_id": "746125",
+        "writes_after": 380,
+        "writes_before": 380
+      },
+      {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "8465de04dced4742a32e1a5fc0079174",
+        "full_budget_complete": true,
+        "kind": "COMMIT_PREPARED",
+        "logical_update": 20,
+        "opportunities_processed": 20,
+        "rank": 2,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 0,
+        "scheduler_last_epoch_after": 19,
+        "slurm_job_id": "746125",
+        "update_status": "complete",
+        "writes_after": 400,
+        "writes_before": 380
+      },
+      {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "8465de04dced4742a32e1a5fc0079174",
+        "full_budget_complete": true,
+        "kind": "COMPLETE",
+        "logical_update": 20,
+        "opportunities_processed": 20,
+        "rank": 2,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 1,
+        "scheduler_last_epoch_after": 20,
+        "slurm_job_id": "746125",
+        "update_status": "complete",
+        "writes_after": 400,
+        "writes_before": 380
+      }
+    ],
+    "3": [
+      {
+        "actual_optimizer_writes": 0,
+        "attempt_id": "8465de04dced4742a32e1a5fc0079174",
+        "kind": "BEGIN",
+        "logical_update": 20,
+        "opportunities_processed": 0,
+        "rank": 3,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 0,
+        "scheduler_last_epoch_after": 19,
+        "slurm_job_id": "746125",
+        "writes_after": 380,
+        "writes_before": 380
+      },
+      {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "8465de04dced4742a32e1a5fc0079174",
+        "full_budget_complete": true,
+        "kind": "COMMIT_PREPARED",
+        "logical_update": 20,
+        "opportunities_processed": 20,
+        "rank": 3,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 0,
+        "scheduler_last_epoch_after": 19,
+        "slurm_job_id": "746125",
+        "update_status": "complete",
+        "writes_after": 400,
+        "writes_before": 380
+      },
+      {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "8465de04dced4742a32e1a5fc0079174",
+        "full_budget_complete": true,
+        "kind": "COMPLETE",
+        "logical_update": 20,
+        "opportunities_processed": 20,
+        "rank": 3,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 1,
+        "scheduler_last_epoch_after": 20,
+        "slurm_job_id": "746125",
+        "update_status": "complete",
+        "writes_after": 400,
+        "writes_before": 380
+      }
+    ]
+  },
+  "actual_update20": {
+    "actual_optimizer_writes": 20,
+    "attempt_id": "8465de04dced4742a32e1a5fc0079174",
+    "full_budget_complete": true,
+    "opportunities_processed": 20,
+    "opportunities_unattempted": 0,
+    "optimizer_writes_after": 400,
+    "optimizer_writes_before": 380,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "step": 20,
+    "update_status": "complete"
+  },
+  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+  "checked_unix": 1792616521.2806425,
+  "checkpoint_metadata_and_small_sha_readback": {
+    "actual_cuda_restore_performed": false,
+    "checkpoint": {
+      "all_sealed_file_identities_verified": true,
+      "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_20",
+      "large_bytes_not_rehashed": 91387603244,
+      "large_files_identity_only": 11,
+      "latest_pointer": {
+        "bytes": 768,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/latest.json",
+        "sha256": "2571e5615f87fab87b851c4d9abd57b66e7e4277cf2b956c11f713a9d3cea8cd"
+      },
+      "manifest": {
+        "bytes": 15963,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_20/full-manifest.json",
+        "sha256": "c9e4e3e1a999e960f7fe4dda90b67bce3be2554b9907403da26618cfd98884ee"
+      },
+      "post_callback_boundary_verified": true,
+      "small_files_fresh_sha": [
+        {
+          "bytes": 605,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_20/added_tokens.json",
+          "sha256": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b"
+        },
+        {
+          "bytes": 2030,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_20/complete.json",
+          "sha256": "c1d24056c8ab81e12048c5afe6188af690430beab6bcee2b927c0326ae87a71e"
+        },
+        {
+          "bytes": 842,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_20/config.json",
+          "sha256": "97240c4095823cc86bfb963c4b314837facff51cc7e5873c1c6354f77f9fce61"
+        },
+        {
+          "bytes": 243,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_20/generation_config.json",
+          "sha256": "5cbc3d054b73e70801535a65ffc9b427481257fa29f896e48f68e9ea3c285b96"
+        },
+        {
+          "bytes": 1671853,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_20/merges.txt",
+          "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+        },
+        {
+          "bytes": 27752,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_20/model.safetensors.index.json",
+          "sha256": "3cb581aa586322d386864a9f80d0adbaa1f0f838cc310d7d7670990fa42121be"
+        },
+        {
+          "bytes": 613,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_20/special_tokens_map.json",
+          "sha256": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd"
+        },
+        {
+          "bytes": 11421896,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_20/tokenizer.json",
+          "sha256": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa"
+        },
+        {
+          "bytes": 7306,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_20/tokenizer_config.json",
+          "sha256": "7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6"
+        },
+        {
+          "bytes": 726812,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_20/training_state/driver.pt",
+          "sha256": "8c724156d02bc41b43b7bc2446bbfa1de1f63f4d7ffcb38fad2ea67b177883b7"
+        },
+        {
+          "bytes": 2111,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_20/training_state/manifest.json",
+          "sha256": "2054110ea78cb853dd133be7777e0c5428ea61d9ee4ad8d57503fc6ed739e7a5"
+        },
+        {
+          "bytes": 2776833,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_20/vocab.json",
+          "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+        },
+        {
+          "bytes": 726812,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_20/boundary/driver.pt",
+          "sha256": "5c3a23a83f20877a8293e49220c3ef73c73749cedde2730fd6b807a47b80e868"
+        },
+        {
+          "bytes": 2607,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_20/boundary/manifest.json",
+          "sha256": "511fc87a0dddcb56cca411d97ae772ce289bc773a30ea17560c27f4c91a80ad4"
+        },
+        {
+          "bytes": 17488,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_20/boundary/rank-0.pt",
+          "sha256": "ac4612f8f7fd5b2f6903bda4933f95205dd2e72d98ed6b196fad6fb9d303a5a2"
+        },
+        {
+          "bytes": 17488,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_20/boundary/rank-1.pt",
+          "sha256": "49f06769ebea1ec787d9d5ac8a300b5c670d0f51a17f3e4e5ea4ad4989aa0808"
+        },
+        {
+          "bytes": 17488,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_20/boundary/rank-2.pt",
+          "sha256": "1dd95257e1a120d1bdb1b49e82f91df8b28a528e7e581413dffbaf8bc9091829"
+        },
+        {
+          "bytes": 17488,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_20/boundary/rank-3.pt",
+          "sha256": "f65b4b374e23c262288c34de80b4a60507011ecdf115da8b571f4d1a44ec26e2"
+        },
+        {
+          "bytes": 468319,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_20/boundary/reward-probe-manifest.json",
+          "sha256": "79c7866510d0eac734ce4bace0ca832a6d88f610b45e431d108e3d76b24751fc"
+        }
+      ],
+      "step": 20
+    },
+    "complete": {
+      "actual_optimizer_writes_per_rank": 400,
+      "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_20",
+      "files_sha256": {
+        "config.json": "97240c4095823cc86bfb963c4b314837facff51cc7e5873c1c6354f77f9fce61",
+        "model-00001-of-00007.safetensors": "06cb3cfb56d84b388d27831d5f442cd8d4debb0c7ef472e23f9d6b3060d8a728",
+        "model-00002-of-00007.safetensors": "48bec72e30bed1baddf286d1c738ddeb0bb28aaec3d0c60c33784b0c2395cd49",
+        "model-00003-of-00007.safetensors": "4214eb3ccc187538ce08fb09d2257a586f283236b4744e9f4aa5eceac5a64b69",
+        "model-00004-of-00007.safetensors": "45a76bf06740237d53a6cf9472596b762901a311f3794c490207b12fbd5c0e91",
+        "model-00005-of-00007.safetensors": "a70dc2dddd2b1c6cf0f5b88e5045d11738ad0bcc6c5d5302aa7888b58503e069",
+        "model-00006-of-00007.safetensors": "4057b72ed0d3adc8c1181ea26c16000407a732a930e9b340b20a670747f5e5a1",
+        "model-00007-of-00007.safetensors": "63839aa755197d3ffa09b12a2b4f1325b56c57aa9b0bc25c1314d8ba74d8e587",
+        "model.safetensors.index.json": "3cb581aa586322d386864a9f80d0adbaa1f0f838cc310d7d7670990fa42121be",
+        "training_state/driver.pt": "8c724156d02bc41b43b7bc2446bbfa1de1f63f4d7ffcb38fad2ea67b177883b7",
+        "training_state/manifest.json": "2054110ea78cb853dd133be7777e0c5428ea61d9ee4ad8d57503fc6ed739e7a5",
+        "training_state/rank-0.pt": "8da8ddf474d4d6852b0c69d8096585e4722f0277a89c87622bd79fc3c8993c14",
+        "training_state/rank-1.pt": "7bf6f710510db7737ce291c1211d52898ac27ac4ab47a6b7b21d2e06a1c60d2a",
+        "training_state/rank-2.pt": "802a643c5cc2d9a6714fb231926da759f1e6b9af7f7f0f79d6ff929f3aba279d",
+        "training_state/rank-3.pt": "dc376b4591f16cf96bf924ad8b243d4270a37d66e97431f4495fcd4f2bd23433"
+      },
+      "finite_all_saved_tensors": true,
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "step": 20,
+      "training_state_readback": "all rank Adam/scheduler states and actual driver cursor verified; actual restart/reload pending",
+      "validated_tensor_count": 339
+    },
+    "epoch": 1792616521.2806425,
+    "jobs_submitted": 0,
+    "large_tensor_payloads_rehashed": false,
+    "read_only": true,
+    "small_state_file_bytes_hashed": true,
+    "status": "ACTUAL_CP20_SEAL_SMALL_SHA_AND_ALL_PAYLOAD_METADATA_PASS",
+    "training_changed": false
+  },
+  "collapse_review": {
+    "actual_fa3_complete_outer_rewards": [
+      {
+        "grad_norm": 2.527223024756102,
+        "pg_loss": 0.026009360975243374,
+        "ppo_kl": 0.0009061139965524489,
+        "reward": 0.6196612119674683,
+        "step": 13
+      },
+      {
+        "grad_norm": 2.5499742209405634,
+        "pg_loss": 0.04261230448434743,
+        "ppo_kl": 0.0012001553356640216,
+        "reward": 0.6631746888160706,
+        "step": 14
+      },
+      {
+        "grad_norm": 2.5254624806568686,
+        "pg_loss": -0.017395585529429828,
+        "ppo_kl": 0.001002151614829927,
+        "reward": 0.6497489213943481,
+        "step": 15
+      },
+      {
+        "grad_norm": 2.4427066418629613,
+        "pg_loss": 0.061081264760850705,
+        "ppo_kl": 0.0012863805626693648,
+        "reward": 0.6265769004821777,
+        "step": 16
+      },
+      {
+        "grad_norm": 2.567749827641844,
+        "pg_loss": 0.06405051577171214,
+        "ppo_kl": 0.0015417010832607047,
+        "reward": 0.6446403861045837,
+        "step": 17
+      },
+      {
+        "grad_norm": 2.5991397878065787,
+        "pg_loss": 0.04168646562515173,
+        "ppo_kl": 0.0011254913626771667,
+        "reward": 0.6486653089523315,
+        "step": 18
+      },
+      {
+        "grad_norm": 2.5223540001169167,
+        "pg_loss": 0.017825097018675823,
+        "ppo_kl": 0.001253067243942496,
+        "reward": 0.6637318730354309,
+        "step": 19
+      },
+      {
+        "grad_norm": 2.515260588988679,
+        "pg_loss": -0.014452597457687368,
+        "ppo_kl": 0.0013535742400563322,
+        "reward": 0.6598289012908936,
+        "step": 20
+      }
+    ],
+    "clear_collapse_observed": false,
+    "recovery_triggered": false,
+    "scope": "Changing pre-update training pools; fixed512 only QA5 currently available. This does not establish fixed-validation improvement or causal FA3 superiority."
+  },
+  "complete_cp19_to20_seal_interval_seconds": 1752.3528356552124,
+  "current_sealed_checkpoint": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_20",
+    "manager": "easy2560_per_outer_full_state_v1",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_20/full-manifest.json",
+    "manifest_sha256": "c9e4e3e1a999e960f7fe4dda90b67bce3be2554b9907403da26618cfd98884ee",
+    "published_unix": 1792616275.283263,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+    "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+    "step": 20
+  },
+  "final_restore_static_integration_review": {
+    "deployment_includes_fa3_runtime_python_and_shell": true,
+    "final200_independent_cuda_restore_pending": true,
+    "native4_dynamic339_restore_only_path_no_fit": true,
+    "new_identified_blockers": [],
+    "operator_commit_and_producer_commit_separate": true,
+    "scope": "Read-only integration review against published5d18d4fa; no tests, network, deployment or CUDA performed by reviewer",
+    "source_references": [
+      "reproduction/easy2560_joint4/final_restore_only.py:71,76-78,127-130,150,449,491-493",
+      "reproduction/easy2560_joint4/final_restore_acceptance.py:318-345",
+      "reproduction/easy2560_joint4/control.py:112-129,165-168",
+      "reproduction/common8/source_files.py:5,12-14",
+      "search_g1/full_state_restore.py:28-30,176-186"
+    ]
+  },
+  "format": "ACTUAL_FA3_NATIVE4_OUTER20_SEALED_NEXT21_SAVED_V1",
+  "goal_200_complete": false,
+  "job": "746125",
+  "local_metadata_receipt": {
+    "bytes": 9793,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-cp20-small-sha-metadata-readback-1792616520.json",
+    "sha256": "4b3d8a3a16fec64b3e91062b68375650cda426e905a4ed607323824467f88160"
+  },
+  "local_observation_receipt": {
+    "bytes": 390084,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792611313074978000/observation-084.json",
+    "sha256": "841e8fa6601a6a7d984ef6a663059c84fa974a9b02753bd93eb9aca1e9c2da10"
+  },
+  "outer20_logged_timings": {
+    "response_length/mean": 890.825,
+    "timing_s/adv": 165.305,
+    "timing_s/candidate_fill": 922.252,
+    "timing_s/save_checkpoint": 161.314,
+    "timing_s/step": 751.856,
+    "timing_s/update_actor": 267.979
+  },
+  "outer20_metrics": {
+    "attempt_index": 20,
+    "grad_norm": 2.515260588988679,
+    "optimizer_writes": 400,
+    "optimizer_writes_before": 380,
+    "optimizer_writes_this_outer": 20,
+    "pg_loss": -0.014452597457687368,
+    "ppo_kl": 0.0013535742400563322,
+    "reward": 0.6598289012908936,
+    "step": 20
+  },
+  "outer20_selection": {
+    "attempt_id": "8465de04dced4742a32e1a5fc0079174",
+    "candidate_correct_count_histogram": {
+      "0": 1065,
+      "1": 202,
+      "2": 160,
+      "3": 156,
+      "4": 256,
+      "5": 721
+    },
+    "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy",
+    "candidate_mixed_fraction": 0.30234375,
+    "candidate_mixed_questions": 774,
+    "candidate_questions": 2560,
+    "candidate_trajectories": 12800,
+    "candidate_trajectory_em": 0.438984375,
+    "discarded_insufficient_pool_count": 0,
+    "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:20:policy-8465de04dced4742a32e1a5fc0079174",
+    "pool_retry": 0,
+    "raw_generated_trajectories": 12800,
+    "selected_all_correct_fallback": 0,
+    "selected_all_correct_fallback_fraction": 0.0,
+    "selected_correct_count_histogram": {
+      "0": 0,
+      "1": 145,
+      "2": 106,
+      "3": 99,
+      "4": 162,
+      "5": 0
+    },
+    "selected_mixed": 512,
+    "selected_mixed_fraction": 1.0,
+    "selected_questions": 512,
+    "selected_trajectories": 2560,
+    "selected_trajectory_em": 0.50859375,
+    "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
+    "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/artifacts/mixed-selection/8465de04dced4742a32e1a5fc0079174.json",
+    "status": "MEASURED_COMPLETED_SELECTION",
+    "step": 20
+  },
+  "preceding_progress_evidence": "evidence/actual-fa3-outer19-sealed-and20-saved-20261022.json",
+  "read_only": true,
+  "read_only_progress_watcher": {
+    "new_progress_horizon": [
+      25,
+      26
+    ],
+    "new_recovery_gate": false,
+    "new_root": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792616499760067000",
+    "new_session": 28219,
+    "no_gpu_training_restart": true,
+    "old_exit_code": 0,
+    "old_session": 21851,
+    "total_training_goal": 200
+  },
+  "readback_probe_source": "import sys,json,time\nfrom pathlib import Path\nsys.dont_write_bytecode=True\nsys.path.insert(0,'/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/source/0110264b81133a61515e89af52854d7c0d8cefae')\nfrom reproduction.operations.easy7b_20261021 import verify_recovery_followup as v\nv.BASE=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022')\nv.RUN='232f20e112ac4a978c5aba52a0367195'\nv.COMMIT='ebb6844db6a1ae739a06d5cc31d3510e7b4779b1'\ntarget=20\nv.need((v.BASE/'job.id').read_text().strip()=='746125','Unexpected owned job')\nresult=v.verify_current_checkpoint()\nv.need(result['step']==target,'Expected sealed target for this observation')\ncomplete=json.loads((Path(result['checkpoint'])/'complete.json').read_text())\nv.need(complete['actual_optimizer_writes_per_rank']==target*20,'Wrong native4 cumulative writes')\nv.need('torch' not in sys.modules,'Unexpected torch import')\nprint(json.dumps(dict(status='ACTUAL_CP20_SEAL_SMALL_SHA_AND_ALL_PAYLOAD_METADATA_PASS',epoch=time.time(),checkpoint=result,complete=complete,read_only=True,small_state_file_bytes_hashed=True,large_tensor_payloads_rehashed=False,actual_cuda_restore_performed=False,training_changed=False,jobs_submitted=0),allow_nan=False))\n",
+  "run_id": "232f20e112ac4a978c5aba52a0367195",
+  "scientific_scope": [
+    "Fixed2560x5 original producer pool, strict EM mixed-first/K5-fallback512x5, noK0; original sampling tokens/LP reused",
+    "Full retained20 actual writes and one scheduler advance on each native4 rank",
+    "Small state hashes and all sealed file identities checked; no extra large payload rehash or CUDA/model reload",
+    "No restart, hot edit, optimizer change, new selection mechanism, or new validation schedule"
+  ],
+  "summary": {
+    "actual_all4_restore_observed": true,
+    "actual_flash3_counters": {
+      "0": {
+        "backward_returns": 17920,
+        "forward_returns": 40544,
+        "outer": 20,
+        "writes": 400
+      },
+      "1": {
+        "backward_returns": 17920,
+        "forward_returns": 40544,
+        "outer": 20,
+        "writes": 400
+      },
+      "2": {
+        "backward_returns": 17920,
+        "forward_returns": 40544,
+        "outer": 20,
+        "writes": 400
+      },
+      "3": {
+        "backward_returns": 17920,
+        "forward_returns": 40544,
+        "outer": 20,
+        "writes": 400
+      }
+    },
+    "all4_flash3_through_target_observed": true,
+    "all4_scheduler_epochs": {
+      "0": 20,
+      "1": 20,
+      "2": 20,
+      "3": 20
+    },
+    "all4_scheduler_writes_observed": true,
+    "candidate_pools": [
+      {
+        "completed_questions": 2560,
+        "name": "5b75b8776bcd4d90a609b2521f431f23-pool-0",
+        "saved_chunk_files": 15,
+        "step": 19
+      },
+      {
+        "completed_questions": 2560,
+        "name": "8465de04dced4742a32e1a5fc0079174-pool-0",
+        "saved_chunk_files": 15,
+        "step": 20
+      },
+      {
+        "completed_questions": 512,
+        "name": "72e521d7f3bc4ea8953345334e20b2c6-pool-0",
+        "saved_chunk_files": 4,
+        "step": 21
+      }
+    ],
+    "checkpoint_outer": 20,
+    "completed_outer": 20,
+    "epoch": 1792616490.8632267,
+    "error_lines": {
+      "slurm": [],
+      "trainer": [],
+      "training": []
+    },
+    "five_updates_observed": true,
+    "inspection_issues": [],
+    "job": "746125",
+    "job_state": "RUNNING",
+    "log_bytes": {
+      "slurm": 1668,
+      "trainer": 663733,
+      "training": 661624
+    },
+    "log_present": true,
+    "next_outer_saved": true,
+    "overall_goal_complete": false,
+    "phase": "GRPO_1_TO_200",
+    "production_mutated": false,
+    "requested_followup_observed": true,
+    "required_completed_outers": [
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+    ],
+    "retrieval_service_state": "RUNNING",
+    "reward": 0.6598289012908936,
+    "selected_update_writes": [
+      {
+        "step": 13,
+        "writes": 20
+      },
+      {
+        "step": 14,
+        "writes": 20
+      },
+      {
+        "step": 15,
+        "writes": 20
+      },
+      {
+        "step": 16,
+        "writes": 20
+      },
+      {
+        "step": 17,
+        "writes": 20
+      },
+      {
+        "step": 18,
+        "writes": 20
+      },
+      {
+        "step": 19,
+        "writes": 20
+      },
+      {
+        "step": 20,
+        "writes": 20
+      }
+    ]
+  },
+  "training_changed": false,
+  "training_runtime_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1"
+}
