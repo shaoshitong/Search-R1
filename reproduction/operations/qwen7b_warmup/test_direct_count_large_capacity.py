@@ -1,6 +1,10 @@
 """Narrow CPU metadata tests; no pretrained model/tensor/cache loading."""
 import copy
+import hashlib
+from pathlib import Path
+import tempfile
 import unittest
+from unittest import mock
 from . import direct_count_large_capacity as m
 
 
@@ -19,6 +23,15 @@ def fixture():
 
 
 class MetadataTests(unittest.TestCase):
+    def test_SHA_only_model_config_and_optional_bytes(self):
+        with tempfile.TemporaryDirectory()as temp:
+            path=Path(temp)/'config.json';path.write_bytes(b'{"hidden_size":3584}\n')
+            ref=dict(path=str(path.resolve()),sha256=hashlib.sha256(path.read_bytes()).hexdigest())
+            with mock.patch.object(m,'B',Path(temp).resolve()):
+                actual=m.checked_model_config(ref);self.assertEqual(actual['bytes'],21)
+                with self.assertRaises(ValueError):m.checked_model_config(dict(ref,bytes=999))
+                with self.assertRaises(ValueError):m.checked_model_config(dict(ref,sha256='0'*64))
+
     def test_exact_real_geometry_and_cost(self):
         p=m.memory_plan()
         self.assertEqual(p['hidden_shape'],[351360,20,3584])

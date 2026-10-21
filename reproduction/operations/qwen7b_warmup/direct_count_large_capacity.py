@@ -20,7 +20,7 @@ from . import direct_count_capacity as old
 
 B = old.B
 PRODUCTION = old.PRODUCTION
-TARGET = B/'algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v1'
+TARGET = B/'algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2'
 NODES = (0, 1, 2, 4, 8, 20)
 FIT = 30016
 HELD = 5120
@@ -29,6 +29,32 @@ EPOCHS = 20
 STOP = False
 canonical, digest, proof = old.canonical, old.digest, old.proof
 read, checked, atomic, immutable = old.read, old.checked, old.atomic, old.immutable
+
+
+def checked_model_config(ref):
+    """Legacy descriptor is path+SHA; byte count is optional, never inferred."""
+    p=Path(ref['path'])
+    if p.resolve()!=p or not p.is_relative_to(B):raise ValueError('Owned model config path required')
+    actual=proof(p)
+    if actual['sha256']!=ref['sha256']or('bytes'in ref and actual['bytes']!=ref['bytes']):
+        raise ValueError('Model config actual SHA/optional byte count differs')
+    return actual
+
+
+def startup_metadata_guards(c):
+    """CPU-only exact descriptor schema checks, no pretrained tensor load."""
+    model_config=checked_model_config(c['model_config'])
+    small=[c[k]for k in ('implementation','capacity_helper','cohort','orders','fit_view_epochs','source_plan','input_packet','accepted_input_complete','original30016_groups','original938_byte_copy','original_production_config','original_production_publication')]
+    small.extend(c['inputs'].values())
+    for ref in small:checked(ref)
+    source=c['source_checkpoint'];p=Path(source['path'])
+    if not {'path','bytes','sha256'}<=set(source)or p.stat().st_size!=source['bytes']:
+        raise ValueError('Actual source checkpoint descriptor/stat differs')
+    return dict(status='ACTUAL_SMALL_STARTUP_DESCRIPTORS_AND_MODEL_SHA_GUARDS_PASSED',
+        descriptor_files=len(small)+1,model_config=model_config,
+        source_checkpoint_actual_bytes=p.stat().st_size,
+        source_checkpoint_full_SHA_deferred_to_owned_GPU_allocation=True,
+        model_tensors_loaded=False,CUDA_used=False)
 
 
 def memory_plan(fit_questions=FIT, holdout_questions=HELD):
@@ -127,6 +153,7 @@ def prepare(packet_path,target=TARGET):
             or exclusion.get('scores_consulted_for_selection')is not False):
         raise ValueError('Identity-only exclusion and label-blind holdout acceptance required')
     c0=read(PRODUCTION/'config.json');publication=read(PRODUCTION/'source-publication.json')
+    model_config_guard=checked_model_config(c0['model_config'])
     if (proof(PRODUCTION/'config.json')['sha256']!=old.CONFIG_SHA
             or publication['commit']!='501cf80478b77f68c3e13a96d4659e3da0971b2e'):
         raise ValueError('Exact original control metadata required')
@@ -155,7 +182,7 @@ def prepare(packet_path,target=TARGET):
         original_production_publication=proof(PRODUCTION/'source-publication.json'),
         original_runtime=publication['code_root'],source_checkpoint=c0['source_checkpoint'],
         implementation=proof(__file__),capacity_helper=proof(old.__file__),
-        model_dir=c0['model_dir'],model_config=c0['model_config'],source_plan=c0['plan'],
+        model_dir=c0['model_dir'],model_config=model_config_guard,source_plan=c0['plan'],
         input_packet=proof(packet_path),inputs={k:packet[k]for k in required},
         accepted_input_complete=packet['complete'],original30016_groups=packet['original30016_fit'],
         original938_byte_copy=packet['original938_plan'],
@@ -175,10 +202,13 @@ def prepare(packet_path,target=TARGET):
         external_pool_access=False,final_pool_access=False,
         diagnostic_only_not_production_candidate_or_external_selection=True)
     immutable(target/'config.json',c)
+    qualification=startup_metadata_guards(c)
+    immutable(target/'actual-startup-metadata-qualification.json',qualification)
     result=dict(status='LARGE_FROZEN_E1_CAPACITY_METADATA_PREPARED_NO_SUBMISSION',
         config=proof(target/'config.json'),memory=c['memory'],fit_questions=FIT,
         holdout_questions=HELD,holdout_domain_counts=counts,
-        actual_GPU_or_model_tensor_loaded=False,GPU_submitted=False)
+        actual_GPU_or_model_tensor_loaded=False,GPU_submitted=False,
+        actual_startup_metadata_qualification=proof(target/'actual-startup-metadata-qualification.json'))
     immutable(target/'preparation.json',result)
     return result
 
@@ -199,7 +229,7 @@ def train(config_sha):
     if proof(TARGET/'config.json')['sha256']!=config_sha:raise ValueError('Actual immutable config SHA required')
     if proof(__file__)!=c['implementation']or proof(old.__file__)!=c['capacity_helper']:
         raise ValueError('Prepared implementation/helper differs')
-    checked(c['model_config'])
+    startup_metadata_guards(c)
     if not torch.cuda.is_available()or torch.cuda.device_count()!=1 or 'H100'not in torch.cuda.get_device_properties(0).name:
         raise ValueError('Explicit owned one-H100 allocation required')
     if read(TARGET/'preparation.json')['config']!=proof(TARGET/'config.json'):raise ValueError('Prepared config changed')

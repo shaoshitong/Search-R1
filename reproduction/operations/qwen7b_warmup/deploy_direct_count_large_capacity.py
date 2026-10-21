@@ -3,7 +3,7 @@ import argparse,base64,hashlib,importlib.util,json,pathlib,shlex,subprocess
 REPO=pathlib.Path(__file__).resolve().parents[3];CONTROL=REPO.parents[1]
 PKG='reproduction/operations/qwen7b_warmup/'
 OWN=('direct_count_large_capacity.py','direct_count_capacity.py','test_direct_count_large_capacity.py')
-BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v1'
+BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2'
 REFERENCE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2'
 HERE=REPO/'reproduction/reports/qwen7b-algorithm-improvement-20261021/direct-count-large-capacity'
 PACKET=HERE/'INPUT-PACKET.json'
@@ -63,5 +63,5 @@ else:
  print(json.dumps(read(b/'preparation.json')))""")
  else:
   result=call("out=dict(epoch=time.time(),GPU_submitted=False)\nfor name in ('source-publication.json','preparation.json'):\n if(b/name).exists():out[name[:-5]]=read(b/name)\nif(b/'config.json').exists():out['config']=read(b/'config.json')\nif(b/'cpu-prepare.log').exists():out['log_tail']=(b/'cpu-prepare.log').read_text()[-3000:]\nprint(json.dumps(out))")
- HERE.mkdir(exist_ok=True);(HERE/('actual-'+a.action+'.json')).write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result),flush=True)
+ HERE.mkdir(exist_ok=True);(HERE/('actual-v2-'+a.action+'.json')).write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result),flush=True)
 if __name__=='__main__':main()
