@@ -1,0 +1,48 @@
+{
+  "status": "ISOLATED_GPU4_TP1_PREPARED_NOT_SUBMITTED",
+  "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+  "scientific_runtime_commit": "82062fc12c6c0bdb50b9e8681e1af9e6e763af10",
+  "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "seed": 20261021,
+  "source_bundle_sha256": "4f2b3b3581d755ff6d851ba8ea36eb443ba48174fe6d25f7b89fc1e7bd7fd032",
+  "unit": "sst-q7b-g5-relaygen-queued-supp-v1-slot-gpu4-tp1-r1-70188b8e50fd.service",
+  "directory": "relay-generation-queued-supp-v1-slot-gpu4-tp1-r1",
+  "specification": {
+    "indices": [
+      4
+    ],
+    "tp": 1,
+    "seqs": 64,
+    "tokens": 8192,
+    "blocks": 4096,
+    "reserve": 1.0
+  },
+  "lifecycle_anchor": "gpu1-tp1",
+  "anchor_intent_sha256": "c733b17deda8b41b96d7cb62014632a5b54ea31de91f2be3010fa1ffa3c93ea4",
+  "anchor_terminal_proof_sha256": "2b35a0ba17b76899153a426323164eb32653c22a675a864e8ba4debc5f44c0b7",
+  "downstream_ready_sha256": "3427756fcc8885aeb0f234f324a174d1d7a7bc5a1703cb9a9dc980a441d69b40",
+  "native_max_seconds": 28800,
+  "sampler_max_seconds": 28500,
+  "actual_deadline_clipped_to_owner": true,
+  "source_files_sha256": {
+    "node10_supplementary_control.py": "134e778590c8f0a06d210f93b1a3676ce9f54265004ee8f884f096ce20f1ecc0",
+    "node10_supplementary_worker.py": "0018d5ec4d1c50a4432a3eacb0847315f3f76708296640bf28a3556ff4027329",
+    "test_node10_supplementary.py": "32378fdb60209ffda1666ec1b129e84ecb9d0a9e2d4a0ac34504283901378e9c"
+  },
+  "focused_cpu_tests": {
+    "tests": 4,
+    "exit_code": 0,
+    "seconds": 0.092,
+    "coverage": [
+      "actual immutable generated bootstrap and GPU4 args",
+      "actual main to generated REMOTE stage/once submit",
+      "original full terminal and downstream binding",
+      "GPU1 lifecycle and GPU4 model separate leases with cleanup"
+    ]
+  },
+  "production_model_initialized": false,
+  "production_first_whole_batch": false,
+  "existing_nine_samplers_modified": false,
+  "foreign_tasks_signalled": false,
+  "models_and_full_outputs_stay_on_own_nas10": true
+}
