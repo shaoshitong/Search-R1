@@ -41,16 +41,27 @@ for name,ref in v['files'].items():
 receipt=code/'cpu-qualification.json'
 if receipt.exists():raise RuntimeError('Existing immutable qualification; inspect instead of repeating')
 fixture="""+repr("""import os,resource,unittest,json,time
-os.sched_setaffinity(0,sorted(os.sched_getaffinity(0))[:2]);resource.setrlimit(resource.RLIMIT_AS,(3*1024**3,3*1024**3));resource.setrlimit(resource.RLIMIT_CPU,(55,55))
+os.sched_setaffinity(0,sorted(os.sched_getaffinity(0))[:2]);resource.setrlimit(resource.RLIMIT_CPU,(55,55))
 started=time.time();suite=unittest.defaultTestLoader.loadTestsFromName('reproduction.operations.qwen7b_warmup.test_coarse_event_cached_train');r=unittest.TextTestRunner(verbosity=2).run(suite);assert r.wasSuccessful()
 from reproduction.operations.qwen7b_warmup import coarse_event_cached_train as m
 print(json.dumps(dict(status='SYNTHETIC_COARSE_HEAD_CP0_REPLAY_RECOVERY_CPU_QUALIFIED_REAL_INPUTS_NOT_YET_ACCEPTED',tests=r.testsRun,actual_input_status=m.waiting_inputs(None),GPU_used=False,real_model_or_cache_tensors_loaded=False,new_model_scoring=False,active_Count_or_screen_modified=False,elapsed_seconds=time.time()-started,peak_RSS_KiB=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)))
 """)+"""
 env=dict(os.environ,QWEN7B_CODE_ROOT=str(code),CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONDONTWRITEBYTECODE='1')
 log=code/'cpu-fixtures.log'
-with log.open('w')as stream:r=subprocess.run(['bash',str(code/'reproduction/operations/qwen7b_warmup/runtime.sh'),'-u','-c',fixture],stdout=stream,stderr=subprocess.STDOUT,env=env,universal_newlines=True,timeout=65)
+monitor_peak_RSS_KiB=0;bounded_failure=None;deadline=time.monotonic()+60
+with log.open('w')as stream:
+ r=subprocess.Popen(['bash',str(code/'reproduction/operations/qwen7b_warmup/runtime.sh'),'-u','-c',fixture],stdout=stream,stderr=subprocess.STDOUT,env=env,universal_newlines=True)
+ while r.poll()is None:
+  try:
+   rss=[int(line.split()[1])for line in pathlib.Path('/proc/%d/status'%r.pid).read_text().splitlines()if line.startswith('VmRSS:')];monitor_peak_RSS_KiB=max([monitor_peak_RSS_KiB]+rss)
+  except FileNotFoundError:pass
+  if monitor_peak_RSS_KiB>3*1024**2 or time.monotonic()>deadline:
+   bounded_failure='owned_fixture_RSS_exceeded_3GiB'if monitor_peak_RSS_KiB>3*1024**2 else'owned_fixture_wall_exceeded_60s';r.kill();break
+  time.sleep(.1)
+ r.wait()
+if bounded_failure:raise RuntimeError(bounded_failure+'; '+log.read_text()[-3000:])
 text=log.read_text()
 if r.returncode:raise RuntimeError(text[-3000:])
-result=json.loads([s for s in text.splitlines()if s.startswith('{')][-1]);result.update(source_commit=v['commit'],small_checkpoint_helper_origin='282bc1597fd720c6e6fad5c836effb52d5e65d78',code_root=str(code),baseline_publication=proof(source),files={n:proof(code/('reproduction/operations/qwen7b_warmup/'+n))for n in v['files']},log=proof(log));receipt.write_text(json.dumps(result,sort_keys=True)+'\\n');print(json.dumps(dict(result=result,receipt=proof(receipt))))
+result=json.loads([s for s in text.splitlines()if s.startswith('{')][-1]);result.update(monitor_peak_RSS_KiB=monitor_peak_RSS_KiB,RSS_limit_bytes=3*1024**3,virtual_address_space_not_capped=True,wall_limit_seconds=60,synthetic_checkpoint_storage='/tmp (remote local scratch)',source_commit=v['commit'],small_checkpoint_helper_origin='282bc1597fd720c6e6fad5c836effb52d5e65d78',code_root=str(code),baseline_publication=proof(source),files={n:proof(code/('reproduction/operations/qwen7b_warmup/'+n))for n in v['files']},log=proof(log));receipt.write_text(json.dumps(result,sort_keys=True)+'\\n');print(json.dumps(dict(result=result,receipt=proof(receipt))))
 """
 result=call(body,dict(files=refs));(OUT/'actual-cpu-qualification.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))

@@ -19,7 +19,8 @@ class Tests(unittest.TestCase):
   self.assertIn('--time=02:00:00',entry);self.assertIn('--mem=128G',entry);self.assertNotIn('dependency',entry);self.assertNotIn('emergency',entry)
  def test_actual_small_CP0_restore_replay_save_reload_next_update(self):
   source=self.baseline();device=torch.device('cpu');torch.manual_seed(31);hidden=torch.randn(10,2,3584);mask=torch.ones(10,2,dtype=torch.bool);mask[-1]=False;frozen=torch.randn(10);idx=torch.tensor([[0,1,2,3,4],[1,2,3,4,5],[2,3,4,5,6],[3,4,5,6,7]]);own=torch.tensor([0,1,0,1,0,1,0,1,0,1]);labels=own[idx]
-  with tempfile.TemporaryDirectory()as tmp:
+  # mmap-backed toy checkpoints use remote local scratch to avoid NFS .nfs files.
+  with tempfile.TemporaryDirectory(prefix='coarse-head-synthetic-',dir='/tmp')as tmp:
    root=Path(tmp);path=root/'actual-small-CP0.pt';torch.save(source,path);small.zip_guard(path);loaded=torch.load(path,map_location='cpu',mmap=True,weights_only=False);small.geometry(loaded);self.assertEqual(small.component_hashes(loaded),source['accepted_hashes']);cp0=m.proof(path)
    for mode in m.MODES:
     base=root/mode;base.mkdir();c=self.config(source,mode,cp0);head,ema,opt=d.initialize_head(seed=999,device=device);d.restore_new_head(loaded['head'],head,ema,opt,device);u.restore_rng(loaded['rng'],device)
