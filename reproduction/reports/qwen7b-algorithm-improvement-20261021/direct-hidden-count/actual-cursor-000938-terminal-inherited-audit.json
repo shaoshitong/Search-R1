@@ -1,0 +1,148 @@
+{
+  "status": "TERMINAL938_INHERITED_PRODUCER_NINE_STATE_FRESH_FILE_SHA_OWN_EM_DIRECT_Q_ACCEPTED",
+  "mode": "stdlib_only_no_tensor_deserialization",
+  "host": "ACD-Login-2",
+  "checkpoint": {
+    "mode": "inherited_producer_allocation_full_nine_state_CPU_reload",
+    "fresh_checkpoint_tensor_reload": false,
+    "checkpoint": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/checkpoints/cursor-000938.pt",
+      "bytes": 3754035012,
+      "sha256": "8b97518ef0fadf5591625f82abbfe2f39d5c80093f16cfe7eaf03701164fa2ce"
+    },
+    "producer_accepted_hashes": {
+      "legacy_raw": "32db38e0f68e9dfe61f1cce0c39860eedd0b111ac6852be6eb8320b125628fef",
+      "legacy_ema": "db1be908a83a7cc117ccd11ec5e9cba279839ba19dbf6800783f01968fc0813b",
+      "legacy_adam": "9bdca0b195fcf30c943746129a7543597a248ed1d91ac697fcc46df3155f2045",
+      "legacy_raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "legacy_ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8",
+      "head_raw": "8a790661f4797d8a4240156edd172d38fdbf5200f36477b1f2d76f68026fa7a3",
+      "head_ema": "759f8dd8f9931e1303195c80a0c88fe4107f6eabc4aa0d66cefec095f2e19a13",
+      "head_adam": "a571c5cf39751c60d7b206b8a2c41ba1f984c14485db10398dc2d656638ca581"
+    },
+    "legacy_Adam": 11402,
+    "new_head_Adam": 938,
+    "original_four_rank_archive_preserved": true
+  },
+  "metrics": {
+    "diagnostic512": {
+      "pool": {
+        "questions": 512,
+        "mixed_questions": 205,
+        "mixed_fraction": 0.400390625,
+        "mixed_balanced_accuracy": 0.5,
+        "mixed_recall": 0.0,
+        "nonmixed_recall": 1.0,
+        "mixed_roc_auc": 0.5481687455311035,
+        "allwrong_FPR": 0.0,
+        "allcorrect_FPR": 0.0,
+        "confusion": {
+          "tp": 0,
+          "fn": 205,
+          "tn": 307,
+          "fp": 0
+        },
+        "k_histogram": [
+          228,
+          63,
+          50,
+          44,
+          48,
+          79
+        ]
+      },
+      "selected512": {
+        "questions": 512,
+        "mixed_questions": 205,
+        "mixed_fraction": 0.400390625,
+        "mixed_balanced_accuracy": 0.5,
+        "mixed_recall": 0.0,
+        "nonmixed_recall": 1.0,
+        "mixed_roc_auc": 0.5481687455311035,
+        "allwrong_FPR": 0.0,
+        "allcorrect_FPR": 0.0,
+        "confusion": {
+          "tp": 0,
+          "fn": 205,
+          "tn": 307,
+          "fp": 0
+        },
+        "k_histogram": [
+          228,
+          63,
+          50,
+          44,
+          48,
+          79
+        ]
+      }
+    },
+    "selection2048FreshG5HF": {
+      "pool": {
+        "questions": 2048,
+        "mixed_questions": 663,
+        "mixed_fraction": 0.32373046875,
+        "mixed_balanced_accuracy": 0.5,
+        "mixed_recall": 0.0,
+        "nonmixed_recall": 1.0,
+        "mixed_roc_auc": 0.5538543215119983,
+        "allwrong_FPR": 0.0,
+        "allcorrect_FPR": 0.0,
+        "confusion": {
+          "tp": 0,
+          "fn": 663,
+          "tn": 1385,
+          "fp": 0
+        },
+        "k_histogram": [
+          1055,
+          181,
+          136,
+          132,
+          214,
+          330
+        ]
+      },
+      "selected512": {
+        "questions": 512,
+        "mixed_questions": 183,
+        "mixed_fraction": 0.357421875,
+        "mixed_balanced_accuracy": 0.5,
+        "mixed_recall": 0.0,
+        "nonmixed_recall": 1.0,
+        "mixed_roc_auc": 0.5304698789177338,
+        "allwrong_FPR": 0.0,
+        "allcorrect_FPR": 0.0,
+        "confusion": {
+          "tp": 0,
+          "fn": 183,
+          "tn": 329,
+          "fp": 0
+        },
+        "k_histogram": [
+          217,
+          42,
+          33,
+          40,
+          68,
+          112
+        ]
+      }
+    }
+  },
+  "audit": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/evaluations/cursor-000938/terminal-inherited-independent-audit.json",
+    "bytes": 4952,
+    "sha256": "6a8b730441f23b1acbc69b67bc1d52e246ec03999d312d14730f199b1ddb00e4"
+  },
+  "source_commit": "806e3bd487ba9ba7281118db33500cba33261200",
+  "code_files": {
+    "audit_direct_hidden_count.py": {
+      "sha256": "6b18cae20e7e2e0300fba629fde50cf337300e6547dd0bd70b554d6e44deb74c"
+    },
+    "audit_direct_hidden_terminal.py": {
+      "sha256": "2600cef42f3ebb16938c3cb0ada6b9899c7f5eacdc895248883f010b641b9a9e"
+    }
+  }
+}

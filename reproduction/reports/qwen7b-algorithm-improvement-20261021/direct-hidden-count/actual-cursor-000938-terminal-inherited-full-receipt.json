@@ -1,0 +1,177 @@
+{
+  "actor_updates": 0,
+  "audit_mode": "stdlib_only_no_tensor_deserialization",
+  "checkpoint": {
+    "checkpoint": {
+      "bytes": 3754035012,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/checkpoints/cursor-000938.pt",
+      "sha256": "8b97518ef0fadf5591625f82abbfe2f39d5c80093f16cfe7eaf03701164fa2ce"
+    },
+    "fresh_checkpoint_tensor_reload": false,
+    "legacy_Adam": 11402,
+    "mode": "inherited_producer_allocation_full_nine_state_CPU_reload",
+    "new_head_Adam": 938,
+    "original_four_rank_archive_preserved": true,
+    "producer_accepted_hashes": {
+      "head_adam": "a571c5cf39751c60d7b206b8a2c41ba1f984c14485db10398dc2d656638ca581",
+      "head_ema": "759f8dd8f9931e1303195c80a0c88fe4107f6eabc4aa0d66cefec095f2e19a13",
+      "head_raw": "8a790661f4797d8a4240156edd172d38fdbf5200f36477b1f2d76f68026fa7a3",
+      "legacy_adam": "9bdca0b195fcf30c943746129a7543597a248ed1d91ac697fcc46df3155f2045",
+      "legacy_ema": "db1be908a83a7cc117ccd11ec5e9cba279839ba19dbf6800783f01968fc0813b",
+      "legacy_ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "legacy_raw": "32db38e0f68e9dfe61f1cce0c39860eedd0b111ac6852be6eb8320b125628fef",
+      "legacy_raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+    }
+  },
+  "config": {
+    "bytes": 16144,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/config.json",
+    "sha256": "3e910b12c0ff52eac70e61566c6135e2ec188bb47ec64ad79524abbd7a657526"
+  },
+  "cursor": 938,
+  "epoch": 1792551087.0667937,
+  "evaluation_receipt": {
+    "bytes": 9477,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/evaluations/cursor-000938/complete.json",
+    "sha256": "fecd65fd2b1629d68485dc107c2bb92cb03dcaf21420c42d4ea5aed3dd27b246"
+  },
+  "final_pool_read": false,
+  "host": "ACD-Login-2",
+  "job_id": "743872",
+  "joint_training_lock_free": true,
+  "metrics": {
+    "diagnostic512": {
+      "pool": {
+        "allcorrect_FPR": 0.0,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "fn": 205,
+          "fp": 0,
+          "tn": 307,
+          "tp": 0
+        },
+        "k_histogram": [
+          228,
+          63,
+          50,
+          44,
+          48,
+          79
+        ],
+        "mixed_balanced_accuracy": 0.5,
+        "mixed_fraction": 0.400390625,
+        "mixed_questions": 205,
+        "mixed_recall": 0.0,
+        "mixed_roc_auc": 0.5481687455311035,
+        "nonmixed_recall": 1.0,
+        "questions": 512
+      },
+      "selected512": {
+        "allcorrect_FPR": 0.0,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "fn": 205,
+          "fp": 0,
+          "tn": 307,
+          "tp": 0
+        },
+        "k_histogram": [
+          228,
+          63,
+          50,
+          44,
+          48,
+          79
+        ],
+        "mixed_balanced_accuracy": 0.5,
+        "mixed_fraction": 0.400390625,
+        "mixed_questions": 205,
+        "mixed_recall": 0.0,
+        "mixed_roc_auc": 0.5481687455311035,
+        "nonmixed_recall": 1.0,
+        "questions": 512
+      }
+    },
+    "selection2048FreshG5HF": {
+      "pool": {
+        "allcorrect_FPR": 0.0,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "fn": 663,
+          "fp": 0,
+          "tn": 1385,
+          "tp": 0
+        },
+        "k_histogram": [
+          1055,
+          181,
+          136,
+          132,
+          214,
+          330
+        ],
+        "mixed_balanced_accuracy": 0.5,
+        "mixed_fraction": 0.32373046875,
+        "mixed_questions": 663,
+        "mixed_recall": 0.0,
+        "mixed_roc_auc": 0.5538543215119983,
+        "nonmixed_recall": 1.0,
+        "questions": 2048
+      },
+      "selected512": {
+        "allcorrect_FPR": 0.0,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "fn": 183,
+          "fp": 0,
+          "tn": 329,
+          "tp": 0
+        },
+        "k_histogram": [
+          217,
+          42,
+          33,
+          40,
+          68,
+          112
+        ],
+        "mixed_balanced_accuracy": 0.5,
+        "mixed_fraction": 0.357421875,
+        "mixed_questions": 183,
+        "mixed_recall": 0.0,
+        "mixed_roc_auc": 0.5304698789177338,
+        "nonmixed_recall": 1.0,
+        "questions": 512
+      }
+    }
+  },
+  "original_job_id": "743619",
+  "predictions": {
+    "diagnostic512": {
+      "bytes": 71051,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/evaluations/cursor-000938/diagnostic512.jsonl.gz",
+      "sha256": "6702e00059b0a6baac60358e8e4edf9bc1932e4d319061d457d3300c5d52a815"
+    },
+    "selection2048FreshG5HF": {
+      "bytes": 280575,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/evaluations/cursor-000938/selection2048FreshG5HF.jsonl.gz",
+      "sha256": "4d4be474873cd7f6a1d55b47bce6f006b10cbd7bf13cb5be926e236b1fd090fb"
+    }
+  },
+  "producer_complete": {
+    "bytes": 3371,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/complete.json",
+    "sha256": "6e3fe7e9869d3244e6460084a4ffbc3db5ccd4ab10e3962095ceb1541cc94ad4"
+  },
+  "producer_latest": {
+    "bytes": 1986,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/latest.json",
+    "sha256": "879bdc69e4246b6142f6f760f3b775666956ce7a866210a1e1d7746e0bf1ab31"
+  },
+  "raw_predictions_stay_remote": true,
+  "slurm_main": "743872|COMPLETED|0:0|00:33:03\n",
+  "status": "TERMINAL938_INHERITED_PRODUCER_NINE_STATE_FRESH_FILE_SHA_OWN_EM_DIRECT_Q_ACCEPTED",
+  "threshold": 0.5,
+  "threshold_fitted": false
+}
