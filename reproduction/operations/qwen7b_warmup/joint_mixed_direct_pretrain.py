@@ -6,7 +6,7 @@ question supplies its four authentic class-balanced G5 views; the microquestion
 loss is immediately backpropagated, retaining no other question's native graph.
 All tensor/checkpoint/prediction IO requires the owned remote allocation.
 """
-import argparse,copy,fcntl,gc,gzip,json,math,os,platform,random,signal,subprocess,sys,time,traceback
+import argparse,copy,fcntl,gc,hashlib,json,math,os,platform,random,signal,subprocess,sys,time,traceback
 from collections import defaultdict
 from contextlib import nullcontext
 from pathlib import Path
@@ -41,13 +41,32 @@ def own_groups(c):
  return groups,blocked,hashes
 
 
+def official_sources(c):
+ """Fresh pinned official files; the inventory may live outside model_dir."""
+ root=Path(c['model_dir']);inventory=u.read(u.checked(c['official_inventory']))
+ if not root.is_absolute()or inventory.get('sha')!=OFFICIAL_REVISION or inventory.get('id')!='Qwen/Qwen2.5-7B-Instruct':raise ValueError('Exact official model inventory/revision required')
+ declared=c['model_files'];required={'config.json','model.safetensors.index.json'}
+ if not required<=set(declared):raise ValueError('Official actual config/index must be declared')
+ official={item['rfilename']:item for item in inventory['siblings']};proofs={}
+ for name,ref in sorted(declared.items()):
+  if Path(name).name!=name or name not in official or ('path'in ref and ref['path']!=str(root/name)):raise ValueError('Actual official asset filename/path differs')
+  path=u.checked(dict(ref,path=str(root/name)));proofs[name]=dict(path=str(path),bytes=path.stat().st_size,sha256=ref['sha256']);source=official[name]
+  if source.get('lfs'):
+   if ref['sha256']!=source['lfs']['sha256']:raise ValueError('Official LFS model asset SHA differs')
+  else:
+   raw=path.read_bytes();blob=hashlib.sha1(('blob %d\0'%len(raw)).encode()+raw).hexdigest()
+   if blob!=source['blobId']:raise ValueError('Official Git model metadata blob differs')
+ config=u.read(root/'config.json')
+ if tuple(config[k]for k in('num_hidden_layers','hidden_size','num_attention_heads','num_key_value_heads','intermediate_size'))!=(28,3584,28,4,18944):raise ValueError('Official7B native shape differs')
+ shards=set(u.read(root/'model.safetensors.index.json')['weight_map'].values())
+ if not shards<=set(declared):raise ValueError('Every actual official model shard must be freshly SHA verified')
+ return proofs
+
+
 def initialize(c,device):
  """Fresh official native block only; never opens any probe checkpoint."""
- from .replay_probe_layers import verify_model
  from .model import Probe
- proofs,_=verify_model(c['model_dir'],dict(model_files=c['model_files']))
- inventory=dict(path=str(Path(c['model_dir'])/'official-inventory.json'),**c['model_files']['official-inventory.json'])
- if inventory!=c['official_inventory']:raise ValueError('Official inventory differs from declared actual model directory')
+ proofs=official_sources(c);inventory=c['official_inventory']
  legacy=Probe(c['model_dir'],273,20)
  state=fresh_official_training_state(legacy,official_inventory=inventory,expected_block_hash=block_state_hash(legacy.block),head_seed=c['head_seed'],learning_rate=c['lr'],official_revision=OFFICIAL_REVISION)
  model=state['model'].to(device);ema=state['ema'].to(device).eval().requires_grad_(False)

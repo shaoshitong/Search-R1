@@ -1,12 +1,12 @@
 """Bounded synthetic worker math and full-state replay; no real assets/model."""
-import copy,gc,random,tempfile,unittest
+import copy,gc,hashlib,json,random,tempfile,unittest
 from pathlib import Path
 from unittest.mock import patch
 import numpy as np
 import torch
 from torch import nn
 from . import mixed_group_checkpoint as ck,probe_ablation_train as u
-from .joint_mixed_direct_pretrain import direct_update,selected_views,warm_gradient_buckets
+from .joint_mixed_direct_pretrain import direct_update,selected_views,warm_gradient_buckets,official_sources,OFFICIAL_REVISION
 from .balanced_hard_g10_sampler import BalancedHardG10Sampler
 
 
@@ -45,6 +45,18 @@ def snap(model,ema,bo,ho,sampler,cursor,seen=()):return ck.snapshot(model,ema,bo
 
 class Tests(unittest.TestCase):
  def setUp(self):torch.set_num_threads(2)
+
+ def test_explicit_external_official_inventory_full_asset_SHA_binding(self):
+  with tempfile.TemporaryDirectory(dir='/tmp')as tmp:
+   root=Path(tmp);assets=root/'assets';assets.mkdir();payloads={'config.json':json.dumps(dict(num_hidden_layers=28,hidden_size=3584,num_attention_heads=28,num_key_value_heads=4,intermediate_size=18944)).encode(),'model.safetensors.index.json':json.dumps(dict(weight_map={'model.layers.27.toy':'shard.safetensors'})).encode(),'shard.safetensors':b'synthetic-not-real-weights'};files={};siblings=[]
+   for name,raw in payloads.items():
+    p=assets/name;p.write_bytes(raw);digest=hashlib.sha256(raw).hexdigest();files[name]=dict(bytes=len(raw),sha256=digest);item=dict(rfilename=name)
+    if name.endswith('safetensors'):item['lfs']=dict(sha256=digest)
+    else:item['blobId']=hashlib.sha1(('blob %d\0'%len(raw)).encode()+raw).hexdigest()
+    siblings.append(item)
+   inv=root/'external-inventory.json';inv.write_text(json.dumps(dict(id='Qwen/Qwen2.5-7B-Instruct',sha=OFFICIAL_REVISION,siblings=siblings)));c=dict(model_dir=str(assets),model_files=files,official_inventory=dict(path=str(inv),bytes=inv.stat().st_size,sha256=u.sha(inv)));proofs=official_sources(c);self.assertEqual(set(proofs),set(files));self.assertFalse((assets/'official-inventory.json').exists())
+   (assets/'shard.safetensors').write_bytes(b'changed')
+   with self.assertRaisesRegex(ValueError,'mismatch'):official_sources(c)
 
  def test_microquestion_gradient_matches_full_question_objective_and_true_EM_order(self):
   model,ema,bo,ho,sampler,reader,lookup=setup();ref=copy.deepcopy(model);rs=copy.deepcopy(sampler);rng=u.rng_state(DEVICE);batch=rs.next_batch();by=selected_views(batch,lookup,4);full=[];expected_losses=[None]*16
