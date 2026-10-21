@@ -1,0 +1,92 @@
+{
+  "status": "ONE_FRESH_READ_ONLY_GENERATION_STATUS",
+  "epoch": 1792587783.263297,
+  "UTC": "2026-10-21T13:03:03Z",
+  "queue": "745519|q7b-tail-newseed-w1|RUNNING|ACD1-64|ACD1-64\n745518|q7b-tail-newseed-w0|RUNNING|ACD1-21|ACD1-21",
+  "sacct": "745518|q7b-tail-newseed-w0|RUNNING|0:0|00:21:15|ACD1-21\n745519|q7b-tail-newseed-w1|RUNNING|0:0|00:21:14|ACD1-64",
+  "workers": [
+    {
+      "worker": 0,
+      "job_id": "745518",
+      "controller": {
+        "fields": {
+          "Slurm_job_id": "745518",
+          "birth_ticks": "571937208",
+          "epoch": 1792586511.2419302,
+          "execution_host_cluster": "HPC3",
+          "execution_run_id": "36b784a3bf964e69a6130bcc41d68809",
+          "host": "ACD1-21",
+          "pid": 3181675,
+          "sampling_protocol_source_run_id": "70188b8e50fd4b45bc420ce58014f46e",
+          "source_commit": "2590d0b272013264b6d727a6a38493a790ee1305"
+        },
+        "ref": {
+          "bytes": 667,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-0/controller.json",
+          "sha256": "d2546f32c1881156bf7b4909c99980b0775560a678b9d5b15363805638c1fb04"
+        }
+      },
+      "completed_batches": 16,
+      "questions": 2048,
+      "trajectories": 10240,
+      "latest_seal": {
+        "epoch": 1792587724.7991893,
+        "questions": 128,
+        "ref": {
+          "bytes": 8981,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/sampling/shard-01/batches/batch-000450/complete.json",
+          "sha256": "995264e31e97bb8d15204b6c22e86db9d29fadd637740d2d3d78ead57c3dc56d"
+        },
+        "trajectories": 640,
+        "worker": 0
+      },
+      "complete": null,
+      "failure": null,
+      "recent_error_lines": []
+    },
+    {
+      "worker": 1,
+      "job_id": "745519",
+      "controller": {
+        "fields": {
+          "Slurm_job_id": "745519",
+          "birth_ticks": "847886196",
+          "epoch": 1792586511.241499,
+          "execution_host_cluster": "HPC3",
+          "execution_run_id": "36b784a3bf964e69a6130bcc41d68809",
+          "host": "ACD1-64",
+          "pid": 2326052,
+          "sampling_protocol_source_run_id": "70188b8e50fd4b45bc420ce58014f46e",
+          "source_commit": "2590d0b272013264b6d727a6a38493a790ee1305"
+        },
+        "ref": {
+          "bytes": 666,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-1/controller.json",
+          "sha256": "2648bd128a9c8debdfd67c32e8230637f66e40296a294aa3fccb027495418307"
+        }
+      },
+      "completed_batches": 17,
+      "questions": 2176,
+      "trajectories": 10880,
+      "latest_seal": {
+        "epoch": 1792587763.047751,
+        "questions": 128,
+        "ref": {
+          "bytes": 8980,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/sampling/shard-01/batches/batch-000453/complete.json",
+          "sha256": "658b060367987b05df6512d35bf8c191b739e732b13dcd630bbc7b04b1f8cc67"
+        },
+        "trajectories": 640,
+        "worker": 1
+      },
+      "complete": null,
+      "failure": null,
+      "recent_error_lines": []
+    }
+  ],
+  "sealed_questions": 4224,
+  "sealed_trajectories": 21120,
+  "potentialOverlap": true,
+  "new_jobs_or_watchers": 0,
+  "code_modified": false
+}

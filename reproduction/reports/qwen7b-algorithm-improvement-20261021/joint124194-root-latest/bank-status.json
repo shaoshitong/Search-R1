@@ -1,4 +1,189 @@
 {
-  "epoch": 1792580283.4769113,
-  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint124194-native-training-bank-v1"
+  "epoch": 1792585598.8346996,
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint124194-native-training-bank-v1",
+  "controller": {
+    "GPU": 0,
+    "birth": "129587145",
+    "commit": "2c353df424fa20bccd78602b69e98dfdd7de3649",
+    "config": {
+      "bytes": 2404,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint124194-native-training-bank-v1/config.json",
+      "sha256": "fe8ec7c1754d5bbdcaa22c83154a258032ee5786c9e3e2b6c156b18853eef10b"
+    },
+    "model_or_tensor_loaded": false,
+    "pid": 606286,
+    "started_epoch": 1792585281.0305297
+  },
+  "progress": {
+    "epoch": 1792585536.7439492,
+    "expected_manifests": 3952,
+    "expected_rows": 1241940,
+    "manifests": 3952,
+    "own_trajectory_rows": 1241940,
+    "packed_bytes": 201648675472,
+    "stage": "ACTUAL_MANIFEST_INDEX_ID_COVERAGE_ADVANCING"
+  },
+  "complete": {
+    "GPU_submitted": false,
+    "K10_histogram": {
+      "0": 52382,
+      "1": 9137,
+      "10": 11406,
+      "2": 6293,
+      "3": 5470,
+      "4": 5150,
+      "5": 5217,
+      "6": 5636,
+      "7": 6291,
+      "8": 7632,
+      "9": 9580
+    },
+    "Mixed_capable_questions": 60406,
+    "actor_updates": 0,
+    "canonical_ordered_qid_hash_own_tids_sha256": "db8bf24ede06c0a8b247a5e7fe9297d4ae0c383b568ee2bc5864307e0c09d8f1",
+    "canonical_train_repeated_text_questions": 3,
+    "complete169028_claim": false,
+    "config": {
+      "bytes": 2404,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint124194-native-training-bank-v1/config.json",
+      "sha256": "fe8ec7c1754d5bbdcaa22c83154a258032ee5786c9e3e2b6c156b18853eef10b"
+    },
+    "distinct_question_hashes": 124191,
+    "domains": {
+      "hotpotqa": 45323,
+      "nq": 78871
+    },
+    "epoch": 1792585538.0583885,
+    "evaluation_exclusions": {
+      "bytes": 847206,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-qualification-v3/evaluation-identity-exclusions.json",
+      "sha256": "a4ed20a3732984d13a099494d7bbb599aeb05b2868945b4f1f450786963b9b0a"
+    },
+    "external_evaluation_qid_or_hash_overlap": 0,
+    "features_layer26": {
+      "bytes": 1131918,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint124194-native-training-bank-v1/features-layer26.json",
+      "sha256": "06d59c5709b5694b75b814678be67afbb0596260caadf36600226a18fdac62b7"
+    },
+    "final_outcomes_read": false,
+    "former_internal5120_is_training": true,
+    "groups": {
+      "bytes": 92924364,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint124194-native-training-bank-v1/groups.json",
+      "sha256": "8df20117a45cb7af70f92100946f47df49deb9b43f3295764ee2444dd0d18364"
+    },
+    "label_based_identity_selection": false,
+    "manifests": 3952,
+    "ordered_qid_sha256": "0d2b58aa012b5523bda1a4c6c12ddc9c114d110582fb0dbfbd9aad8a12b8b4c1",
+    "original_warmup_unseen_question_claim": false,
+    "outputs": {
+      "features-layer26.json": {
+        "bytes": 1131918,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint124194-native-training-bank-v1/features-layer26.json",
+        "sha256": "06d59c5709b5694b75b814678be67afbb0596260caadf36600226a18fdac62b7"
+      },
+      "groups.json": {
+        "bytes": 92924364,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint124194-native-training-bank-v1/groups.json",
+        "sha256": "8df20117a45cb7af70f92100946f47df49deb9b43f3295764ee2444dd0d18364"
+      },
+      "source-refs.json": {
+        "bytes": 3333,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint124194-native-training-bank-v1/source-refs.json",
+        "sha256": "75077dc40b62bd4b67bdd02119447d94e0c53e4d747946d036b57ac4e2b213b6"
+      }
+    },
+    "own_EM_labels_preserved": true,
+    "own_trajectory_rows": 1241940,
+    "packed_bytes": 201648675472,
+    "payload_sizes_and_index_SHA_freshly_verified": true,
+    "payload_tensor_SHA_rehashed_in_this_metadata_join": false,
+    "probe_updates": 0,
+    "producer_full_payload_SHA_and_reader_qualifications_preserved": true,
+    "questions": 124194,
+    "source_frozen_batches": 971,
+    "source_refs": [
+      {
+        "complete": {
+          "bytes": 8321,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-threebank58432-internal5120-plan-v1/complete.json",
+          "sha256": "8a4ed0b24296ad8a5edc1bcecb249565b877d3bababb3f0221a8e7c26da72d06"
+        },
+        "features": {
+          "bytes": 540578,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-threebank58432-internal5120-plan-v1/features-layer26.json",
+          "sha256": "e1d17ea44fd56cad4e40ae571b2eb0625389b582b70a6056e4176444fd9cf560"
+        },
+        "groups": {
+          "bytes": 43507411,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-threebank58432-internal5120-plan-v1/merged-bank/groups.json",
+          "sha256": "ff78875397f3af73c4908be9bf330dda125427a7921988fe1ee8042f1d563216"
+        },
+        "key": "existing58432"
+      },
+      {
+        "complete": {
+          "bytes": 2733,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-joint124194-recovered1216-L26-v1/bank/complete.json",
+          "sha256": "cedfa2e1892b03803182ec38a3d1c8d159167a62294e646858c3563d0942672a"
+        },
+        "features": {
+          "bytes": 11602,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-joint124194-recovered1216-L26-v1/bank/features-layer26.json",
+          "sha256": "cd7f753281c075a3cf76baeee4bbf85c43e88f2f2dd7e8b646d6703bb6f4d08f"
+        },
+        "groups": {
+          "bytes": 898452,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-joint124194-recovered1216-L26-v1/bank/groups.json",
+          "sha256": "ac777e96bb10ba6cc32e028cffb2f25b932bf6fa781119d3579488a616ae7f10"
+        },
+        "key": "recovered1216"
+      },
+      {
+        "complete": {
+          "bytes": 2746,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-joint124194-audited243-L26-v1/bank/complete.json",
+          "sha256": "1ab70a74cf967b9214c8fe7c41d2796c9e50750c88e80e84511ab9443c6ac31d"
+        },
+        "features": {
+          "bytes": 278966,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-joint124194-audited243-L26-v1/bank/features-layer26.json",
+          "sha256": "bd273e6883b804c1852c0796c6a76639dfc73b1dfc6b6c8c70629e9a9c1a3a78"
+        },
+        "groups": {
+          "bytes": 23628121,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-joint124194-audited243-L26-v1/bank/groups.json",
+          "sha256": "e16b65997c2a46270b5428d04384aeb7b1df85d4684b335618e8e64fda43a30c"
+        },
+        "key": "audited243"
+      },
+      {
+        "complete": {
+          "bytes": 2746,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-joint124194-audited262-L26-v1/bank/complete.json",
+          "sha256": "6d096a50a76357ce2f6147c61b0e1cbd6d978e1bb826d7a6b049970c1e03efaf"
+        },
+        "features": {
+          "bytes": 300778,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-joint124194-audited262-L26-v1/bank/features-layer26.json",
+          "sha256": "4958ca3d22d759d943b8be8fdb83dea0550ee7da96788b4003a21e6977ce8d8e"
+        },
+        "groups": {
+          "bytes": 24890416,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-joint124194-audited262-L26-v1/bank/groups.json",
+          "sha256": "a181ab70195f2eb2e5160c5867451a356ddcb6672fb0428fee8e655ceeafd3cc"
+        },
+        "key": "audited262"
+      }
+    ],
+    "status": "FROZEN_FOUR_BANK_REAL_G10_124194_NATIVE_JOINT_INPUTS_ACCEPTED",
+    "training_reader_reconstructs_and_checks_own_retained_row_SHA": true,
+    "trajectories": 1241940
+  },
+  "same_process_birth": false,
+  "complete_ref": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint124194-native-training-bank-v1/complete.json",
+    "bytes": 6562,
+    "sha256": "a8fe2c2ea823087d50ac86b283eb361b51ae7ba5ba0571860193214338200801"
+  }
 }

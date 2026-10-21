@@ -1,0 +1,59 @@
+{
+  "status": "ACTUAL_NEW505_STRICT_EM_LABEL_DISTRIBUTION_NOT_PROBE_MODEL_RESULTS",
+  "source": {
+    "path": "reproduction/reports/qwen7b-algorithm-improvement-20261021/peer-after466-actual-delivery/RAW-FINAL.json",
+    "bytes": 19351,
+    "sha256": "2c3d0f0e9456c24e416bb1bf03ca0c85e64e3212deba251b445025aae3ce23b1"
+  },
+  "records": [
+    {
+      "snapshot": "audited243-after466-20261021-45227948",
+      "questions": 31010,
+      "K10_histogram": [
+        11150,
+        2568,
+        1896,
+        1683,
+        1642,
+        1753,
+        1808,
+        1923,
+        2118,
+        2318,
+        2151
+      ],
+      "strict_EM_mismatches": 0,
+      "true_oldG5_Mixed_fraction": 0.45366010964205095,
+      "true_newG5_Mixed_fraction": 0.44943566591422124,
+      "G10_Mixed_capable_fraction": 0.5710738471460819,
+      "uniform_own_realG5_subset_expected_Mixed_fraction": 0.4507399046902434
+    },
+    {
+      "snapshot": "audited262-after709-20261021-d3c45767",
+      "questions": 33536,
+      "K10_histogram": [
+        15512,
+        2292,
+        1457,
+        1260,
+        1117,
+        1153,
+        1216,
+        1437,
+        1928,
+        2656,
+        3508
+      ],
+      "strict_EM_mismatches": 0,
+      "true_oldG5_Mixed_fraction": 0.32764790076335876,
+      "true_newG5_Mixed_fraction": 0.3287511927480916,
+      "G10_Mixed_capable_fraction": 0.4328482824427481,
+      "uniform_own_realG5_subset_expected_Mixed_fraction": 0.32801554643008607
+    }
+  ],
+  "training_G5_view_class_target": {
+    "Mixed": 0.5,
+    "nonMixed": 0.5
+  },
+  "evaluation_labels_used_for_sampling": false
+}
