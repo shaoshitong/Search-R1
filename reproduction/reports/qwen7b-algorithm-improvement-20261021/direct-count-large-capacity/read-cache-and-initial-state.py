@@ -14,16 +14,16 @@ out=dict(epoch=time.time(),target=str(b),config=proof(b/'config.json'))
 p=b/'cache/complete.json'
 if p.exists():
  c=read(p);out['cache_complete']=dict(file=proof(p),status=c['status'],config_sha256=c['config_sha256'],trajectory_ids_sha256=c['trajectory_ids_sha256'],files=c['files'],chunks=len(c['chunks']),frozen_legacy_before=c['frozen_legacy_before'],frozen_legacy_after=c['frozen_legacy_after'],actual_native_hidden_dtype=c['actual_native_hidden_dtype'],same_api_golden=c['same_api_golden'],actor_updates=c['actor_updates'],legacy_updates=c['legacy_updates'])
-for name in ('latest.json','first-update-replay.json','failure.json'):
+for name in ('latest.json','progress.json','first-update-replay.json','failure.json','complete.json'):
  p=b/name
  if p.exists():out[name[:-5]]=read(p)
-for cursor in(0,1):
+for cursor in range(7):
  p=b/'checkpoints'/('cursor-%06d.pt'%cursor)
  if p.exists():out['CP%d_actual_stat'%cursor]=dict(path=str(p),bytes=p.stat().st_size)
 for epoch in(0,1,2,4,8,20):
  p=b/'evaluations'/('epoch-%02d'%epoch)/'complete.json'
  if p.exists():
-  n=read(p);out['epoch%d_complete'%epoch]=dict(file=proof(p),epoch=n['epoch'],cursor=n['cursor'],checkpoint=n['checkpoint'],training_components_unchanged=n['training_components_unchanged'])
+  n=read(p);out['epoch%d_complete'%epoch]=dict(file=proof(p),epoch=n['epoch'],cursor=n['cursor'],checkpoint=n['checkpoint'],metrics=n['metrics'],training_components_unchanged=n['training_components_unchanged'])
 print(json.dumps(out))"""
 cmd='python3 -c '+shlex.quote('BASE='+repr(BASE)+';CSHA='+repr(CSHA)+'\n'+body)
 assert len(cmd.encode())<16000

@@ -1,0 +1,146 @@
+{
+  "status": "LARGE_FROZEN_E1_REAL_HEAD_STARTUP_GATE_PASSED",
+  "job_id": "743978",
+  "source_commit": "805123aebf8af83a7c1c44947f39c294f7aeb624",
+  "config": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/config.json",
+    "bytes": 7450,
+    "sha256": "fb637c02812dd070cf392a58df75e0d219bbb10d1a2d24cd6e201f3638147767"
+  },
+  "cache": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/cache/complete.json",
+    "bytes": 366995,
+    "sha256": "b39168d130626151c5793887783c6c6db96474a74f90fb80216880a7c8bda350"
+  },
+  "frozen_legacy_before": {
+    "buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+    "raw": "7ceae381b54c70116af03168005dc338e58e607eae18a7ce671960f04f8c659e"
+  },
+  "frozen_legacy_after": {
+    "buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+    "raw": "7ceae381b54c70116af03168005dc338e58e607eae18a7ce671960f04f8c659e"
+  },
+  "first_real_update_replay": {
+    "Adam_after": 1,
+    "Adam_before": 0,
+    "actual": {
+      "adam": "9ef40b9bf349f1fec2a4deffb6fa04e0205ae18c939844f2125afdc7f36e3c55",
+      "ema": "49f620f3daccfa99a88e4a11ce2f688e59dc19af13506e8550d6d635258b6bc2",
+      "raw": "41ede68d2bce9fc38f146c55bed3703dfd05495099ab973eecf2d3317f2d139e",
+      "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+    },
+    "expected": {
+      "adam": "9ef40b9bf349f1fec2a4deffb6fa04e0205ae18c939844f2125afdc7f36e3c55",
+      "ema": "49f620f3daccfa99a88e4a11ce2f688e59dc19af13506e8550d6d635258b6bc2",
+      "raw": "41ede68d2bce9fc38f146c55bed3703dfd05495099ab973eecf2d3317f2d139e",
+      "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+    },
+    "status": "PASSED"
+  },
+  "actual_first_six_checkpoint_files": {
+    "CP0_actual_stat": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-000000.pt",
+      "bytes": 4175798
+    },
+    "CP1_actual_stat": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-000001.pt",
+      "bytes": 8281973
+    },
+    "CP2_actual_stat": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-000002.pt",
+      "bytes": 8281973
+    },
+    "CP3_actual_stat": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-000003.pt",
+      "bytes": 8281973
+    },
+    "CP4_actual_stat": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-000004.pt",
+      "bytes": 8281973
+    },
+    "CP5_actual_stat": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-000005.pt",
+      "bytes": 8281973
+    },
+    "CP6_actual_stat": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-000006.pt",
+      "bytes": 8281973
+    }
+  },
+  "first_six_state_claim_scope": "Files0..6 actually exist; immutable producer reloads each saved state. OnlyCP0/CP1 have additional independent small-state checks, not claiming independent reload of every2..6.",
+  "independent_CP1": {
+    "receipt": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-smallCP1-independent-v2/independent-CP1-acceptance.json",
+      "bytes": 3268,
+      "sha256": "31c429c8998b474329100350ef200b3d17bb014e782f66ee97510e2383eb9915"
+    },
+    "checkpoint": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-000001.pt",
+      "bytes": 8281973,
+      "sha256": "e67a38b1cd1a59f163f870c59ef3a1eaf7b797289f4aa930751f3d9f8b4aa50d"
+    },
+    "components": [
+      "new_head_raw",
+      "new_head_EMA",
+      "new_head_Adam1",
+      "RNG"
+    ],
+    "original_four_rank_archive_steps": 10464,
+    "existing_allocation_CPU": 2,
+    "CUDA_initialized": false,
+    "old_3point75GB_model_loaded": false,
+    "launcher_source": "7bd62da5",
+    "prior_guard_failure_preserved": true
+  },
+  "real_later_progress": [
+    {
+      "epoch": 1792555527.4257462,
+      "job_id": "743978",
+      "stage": "FROZEN_E1_LARGE_HEAD_FIT_ADVANCING",
+      "cache_trajectories": 351360,
+      "cache_complete": true,
+      "native_golden": "PASSED",
+      "head_cursor": 1617,
+      "head_Adam": 1617,
+      "head_full_CP": 1536,
+      "first_full_update_replay": "PASSED",
+      "failure": null,
+      "squeue": "743978|q7b-frozenE1-head30016|RUNNING|1:17:54|ACD1-24|ACD1-24",
+      "sacct": "743978|RUNNING|0:0|01:17:54|ACD1-24\n743978.batch|RUNNING|0:0|01:17:54|ACD1-24\n743978.extern|RUNNING|0:0|01:17:54|ACD1-24\n743978.0|RUNNING|0:0|01:17:54|ACD1-24\n743978.1|COMPLETED|0:0|00:00:00|ACD1-24\n743978.2|COMPLETED|0:0|00:00:00|ACD1-24\n743978.3|COMPLETED|0:0|00:00:00|ACD1-24\n743978.4|FAILED|1:0|00:00:15|ACD1-24\n743978.5|COMPLETED|0:0|00:00:00|ACD1-24\n743978.6|COMPLETED|0:0|00:00:05|ACD1-24\n743978.7|COMPLETED|0:0|00:00:00|ACD1-24\n743978.8|COMPLETED|0:0|00:00:21|ACD1-24"
+    },
+    {
+      "epoch": 1792555573.0152988,
+      "job_id": "743978",
+      "stage": "FROZEN_E1_LARGE_HEAD_FIT_ADVANCING",
+      "cache_trajectories": 351360,
+      "cache_complete": true,
+      "native_golden": "PASSED",
+      "head_cursor": 3752,
+      "head_Adam": 3752,
+      "head_full_CP": 3752,
+      "first_full_update_replay": "PASSED",
+      "failure": null,
+      "squeue": "743978|q7b-frozenE1-head30016|RUNNING|1:18:40|ACD1-24|ACD1-24",
+      "sacct": "743978|RUNNING|0:0|01:18:40|ACD1-24\n743978.batch|RUNNING|0:0|01:18:40|ACD1-24\n743978.extern|RUNNING|0:0|01:18:40|ACD1-24\n743978.0|RUNNING|0:0|01:18:40|ACD1-24\n743978.1|COMPLETED|0:0|00:00:00|ACD1-24\n743978.2|COMPLETED|0:0|00:00:00|ACD1-24\n743978.3|COMPLETED|0:0|00:00:00|ACD1-24\n743978.4|FAILED|1:0|00:00:15|ACD1-24\n743978.5|COMPLETED|0:0|00:00:00|ACD1-24\n743978.6|COMPLETED|0:0|00:00:05|ACD1-24\n743978.7|COMPLETED|0:0|00:00:00|ACD1-24\n743978.8|COMPLETED|0:0|00:00:21|ACD1-24"
+    },
+    {
+      "epoch": 1792555801.4853768,
+      "job_id": "743978",
+      "stage": "FROZEN_E1_LARGE_HEAD_FIT_ADVANCING",
+      "cache_trajectories": 351360,
+      "cache_complete": true,
+      "native_golden": "PASSED",
+      "head_cursor": 18760,
+      "head_Adam": 18760,
+      "head_full_CP": 18760,
+      "first_full_update_replay": "PASSED",
+      "failure": null,
+      "squeue": "743978|q7b-frozenE1-head30016|RUNNING|1:22:28|ACD1-24|ACD1-24",
+      "sacct": "743978|RUNNING|0:0|01:22:28|ACD1-24\n743978.batch|RUNNING|0:0|01:22:28|ACD1-24\n743978.extern|RUNNING|0:0|01:22:28|ACD1-24\n743978.0|RUNNING|0:0|01:22:28|ACD1-24\n743978.1|COMPLETED|0:0|00:00:00|ACD1-24\n743978.2|COMPLETED|0:0|00:00:00|ACD1-24\n743978.3|COMPLETED|0:0|00:00:00|ACD1-24\n743978.4|FAILED|1:0|00:00:15|ACD1-24\n743978.5|COMPLETED|0:0|00:00:00|ACD1-24\n743978.6|COMPLETED|0:0|00:00:05|ACD1-24\n743978.7|COMPLETED|0:0|00:00:00|ACD1-24\n743978.8|COMPLETED|0:0|00:00:21|ACD1-24\n743978.9|FAILED|1:0|00:00:06|ACD1-24\n743978.10|COMPLETED|0:0|00:00:06|ACD1-24"
+    }
+  ],
+  "actor_updates": 0,
+  "legacy_updates": 0,
+  "external_pool_read": false,
+  "final_pool_read": false
+}
