@@ -3,7 +3,7 @@ set -euo pipefail
 umask 007
 BASE="${1:?explicit remote run base required}"
 COMMIT="${2:?immutable source commit required}"
-ACTOR_MICRO="${3:-32}"
+ACTOR_MICRO="${3:-8}"
 RESTORE_RECEIPT="${4:-}"
 export SEARCH_G1_BASE="$BASE" SEARCH_G1_SOURCE_COMMIT="$COMMIT" SEARCH_G1_PROFILE=common8
 export QPROBE_SOURCE="$BASE/repo" SEARCH_G1_TRAINING_WORLD_SIZE=4

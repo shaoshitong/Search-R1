@@ -63,6 +63,9 @@ def derive_calibration(base):
 
 def verify_model(model, official_path):
     official=json.loads(Path(official_path).read_text())
+    from reproduction.easy2560_joint4.model7b import FORMAT as SEVEN_FORMAT, verify as verify_seven
+    if official.get('format') == SEVEN_FORMAT:
+        return verify_seven(model, official)
     if official.get('format') == 'hpc3-official-qwen-aa8e725-nine-files-v1':
         from reproduction.hpc3_qprobe.model_manifest import verify as verify_hpc3_model
         return verify_hpc3_model(model, official)
@@ -116,6 +119,13 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
     source={str(p.relative_to(repo)):digest(p) for p in runtime_files(repo)}
     budget=json.loads((repo/'reproduction/common8/budget.json').read_text())
     assert budget['model_revision']==REVISION and budget['fresh_actor']
+    official = json.loads(official_path.read_text())
+    from reproduction.easy2560_joint4.model7b import FORMAT as SEVEN_FORMAT, REPO as SEVEN_REPO, REVISION as SEVEN_REVISION
+    model_revision = REVISION
+    if official.get('format') == SEVEN_FORMAT:
+        assert easy2560_selection and execution_site == 'hpc3'
+        model_revision = SEVEN_REVISION
+        budget.update(model_id=SEVEN_REPO, model_revision=model_revision)
     assert budget['common_manifest_sha256']==data_proof['manifest_sha256']
     inputs={name:digest(base/'data'/name) for name in
         ('manifest.json','train.parquet','validation.parquet','stage.parquet','final.parquet',
@@ -123,7 +133,7 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
     method = write_method(base, commit, source,restoration=bool(restore_receipt))
     result=dict(policy_safety_required='actor_rollout_ref.actor.policy_safety.enabled=true' in json.loads((repo/'reproduction/common8/recipe.json').read_text()),profile='common8',run_id=uuid.uuid4().hex,started_unix=time.time(),
         mixed_first_selection=True,actor_micro_batch_per_rank=2,completed_updates=0,initial_model=str(model.resolve()),reference_model=str(model.resolve()),
-        initial_model_sha256=model_hashes,model_revision=REVISION, budget=budget,
+        initial_model_sha256=model_hashes,model_revision=model_revision, budget=budget,
         source_commit=commit,source_sha256=source,
         source_snapshot_semantics='disk fingerprint before launch; not proof of loaded modules',
         input_sha256=inputs,calibration_question_ids=audit['calibration_question_ids'],

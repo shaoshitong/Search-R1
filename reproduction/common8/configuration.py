@@ -23,6 +23,8 @@ def arguments(base):
     base = Path(base).resolve()
     run = json.loads((base / 'logs/run-manifest.json').read_text())
     budget = json.loads((REPO / 'reproduction/common8/budget.json').read_text())
+    from reproduction.common8.model_identity import budget_for_run
+    budget = budget_for_run(budget, run)
     budget.update(formal_mathematics(run))
     assert run['profile'] == 'common8' and run['budget'] == budget
     assert_formal_run(run)

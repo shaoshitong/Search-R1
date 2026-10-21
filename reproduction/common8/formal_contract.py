@@ -88,7 +88,8 @@ def assert_formal_run(run):
     assert type(run['target_updates']) is int and run['target_updates'] == TARGET_UPDATES
     assert type(run['acceptance_update']) is int and run['acceptance_update'] == 5
     assert run['initial_model'] == run['reference_model']
-    assert run['model_revision'] == 'aa8e72537993ba99e69dfaafa59ed015b17504d1'
+    from reproduction.common8.model_identity import identity
+    model_id, model_revision = identity(run)
     skip_initial_evaluation(run)
     size = world_size(run)
     if run.get('execution_backend', 'slurm') == 'ssh_local':
@@ -99,7 +100,7 @@ def assert_formal_run(run):
         assert size == 8 or (size == 4 and run.get('execution_site') == 'hpc3')
     budget = run['budget']
     assert budget['contract_kind'] == CONTRACT_KIND and budget['profile']=='common8'
-    assert budget['model_id']=='Qwen/Qwen2.5-3B-Instruct' and budget['model_revision']==run['model_revision']
+    assert budget['model_id']==model_id and budget['model_revision']==model_revision
     for name, value in formal_mathematics(run).items():
         assert canonical_bytes(budget[name]) == canonical_bytes(value), 'Formal budget differs: ' + name
     assert budget['common_manifest_sha256'] == '0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24'

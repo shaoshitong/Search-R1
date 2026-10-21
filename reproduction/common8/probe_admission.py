@@ -15,9 +15,11 @@ def check_common(base):
     assert run['profile']=='common8' and run['completed_updates']==0
     assert_formal_run(run)
     assert run['initial_model']==run['reference_model']
-    assert run['model_revision']=='aa8e72537993ba99e69dfaafa59ed015b17504d1'
+    from reproduction.common8.model_identity import budget_for_run, identity
+    identity(run)
     verify(base/'data')
     budget=json.loads((base/'repo/reproduction/common8/budget.json').read_text())
+    budget=budget_for_run(budget,run)
     budget.update(formal_mathematics(run))
     assert run['budget']==budget
     # These must be produced by real admission, never by prepare_run.

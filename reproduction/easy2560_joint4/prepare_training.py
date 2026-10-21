@@ -23,11 +23,11 @@ def selection_settings(predecessor, physical, restoring=False):
                 easy2560_rolling_checkpoint=True, save_interval=1,
                 checkpoint_milestone_steps=[5, 50, 100, 150, 200],
                 personal_storage_budget_bytes=2 * 10**12)
-    if not restoring: settings['initial_reward_probe_source_base'] = str(predecessor)
+    # 7B must fit its own official-actor round0 labels. No inherited 3B heads.
     return settings
 
 
-def prepare(base, commit, actor_micro=32, restore_receipt=None):
+def prepare(base, commit, actor_micro=8, restore_receipt=None):
     base = own_base(base)
     if os.environ.get('SEARCH_G1_TRAINING_WORLD_SIZE') != '4' or not os.environ.get('SLURM_JOB_ID', '').isdecimal():
         raise ValueError('EASY2560_ACTUAL_NATIVE4_SLURM_REQUIRED')
@@ -41,7 +41,7 @@ def prepare(base, commit, actor_micro=32, restore_receipt=None):
     predecessor = reuse['predecessor']
     manifest = base / 'preparation/official-model-manifest.json'
     if not manifest.is_file():
-        from reproduction.hpc3_qprobe.model_manifest import create
+        from .model7b import create
         create(Path(MODEL), manifest)
     settings = selection_settings(predecessor, actor_micro, restoring=bool(restore_receipt))
     from reproduction.common8.formal_contract import SKIP_INITIAL_EVALUATION_POLICY
@@ -86,7 +86,7 @@ def main():
     p = argparse.ArgumentParser(); p.add_argument('--base', default=BASE)
     p.add_argument('--commit', required=True)
     p.add_argument('--restore-receipt')
-    p.add_argument('--actor-micro', type=int, choices=MICROS, default=32); a = p.parse_args()
+    p.add_argument('--actor-micro', type=int, choices=MICROS, default=8); a = p.parse_args()
     print(json.dumps(prepare(a.base, a.commit, a.actor_micro, a.restore_receipt)), flush=True)
 
 

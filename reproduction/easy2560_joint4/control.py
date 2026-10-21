@@ -9,9 +9,9 @@ import shutil
 import subprocess
 import time
 
-BASE = '/data/user/jxu957/experiments/easy2560-corollout-joint4-20261017'
+BASE = '/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021'
 PREDECESSOR = '/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017'
-MODEL = '/data/user/jxu957/experiments/topd-20261008/runtime/assets/qwen2.5-3b-instruct-aa8e725'
+from .model7b import MODEL
 DATA_NAMES = ('manifest.json', 'train.parquet', 'validation.parquet', 'stage.parquet',
               'final.parquet', 'exclusions-audit.json')
 MICROS = (32, 16, 8, 4)
@@ -84,7 +84,7 @@ def prepare_environment(base, predecessor=PREDECESSOR):
     else:
         with python.open('x') as f: f.write(wrapper); f.flush(); os.fsync(f.fileno())
         python.chmod(0o755)
-    for name in ('probe-cpu-runtime.json', 'official-model-manifest.json'):
+    for name in ('probe-cpu-runtime.json',):
         source = old / 'preparation' / name
         target = base / 'preparation' / name
         if source.is_file() and not target.exists(): shutil.copy2(source, target)
@@ -130,13 +130,13 @@ def bind_repo(base, commit):
     return bound
 
 
-def launch_command(base, commit, actor_micro=32, restore_receipt=None):
+def launch_command(base, commit, actor_micro=8, restore_receipt=None):
     base = own_base(base)
     if actor_micro not in MICROS: raise ValueError('EASY2560_UNSUPPORTED_PHYSICAL_MICRO')
     return ['sbatch', '--parsable', '--partition=emergency_acd', '--qos=formal-user',
             '--account=jxu957', '--nodes=1', '--ntasks=1', '--gres=gpu:4',
             '--cpus-per-task=48', '--mem=512G', '--time=7-00:00:00',
-            '--job-name=easy2560-corollout200', '--export=NONE',
+            '--job-name=easy2560-7b-corollout200', '--export=NONE',
             '--chdir=' + str(base / 'repo'),
             '--output=' + str(base / 'logs/training-%j.log'),
             '--error=' + str(base / 'logs/training-%j.log'),
@@ -160,7 +160,7 @@ def bootstrap(base, commit, predecessor=PREDECESSOR):
     return dict(environment=environment, source=source, training_submitted=False)
 
 
-def submit(base, commit, actor_micro=32, predecessor=PREDECESSOR, restore_receipt=None):
+def submit(base, commit, actor_micro=8, predecessor=PREDECESSOR, restore_receipt=None):
     base = own_base(base); bootstrap(base, commit, predecessor)
     claim = base / 'preparation/training-submit-claim.json'
     receipt = base / 'preparation/training-submission.json'
@@ -191,7 +191,7 @@ def main():
     p.add_argument('--base', default=BASE); p.add_argument('--commit', required=True)
     p.add_argument('--predecessor', default=PREDECESSOR)
     p.add_argument('--restore-receipt')
-    p.add_argument('--actor-micro', type=int, choices=MICROS, default=32); a = p.parse_args()
+    p.add_argument('--actor-micro', type=int, choices=MICROS, default=8); a = p.parse_args()
     value = (bootstrap(a.base, a.commit, a.predecessor) if a.mode == 'bootstrap' else
              submit(a.base, a.commit, a.actor_micro, a.predecessor, a.restore_receipt))
     print(json.dumps(value), flush=True)
