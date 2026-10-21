@@ -1,0 +1,177 @@
+{
+  "status": "HEADLR1E4_MATCHED938_FULLY_ACCEPTED_JOINT_PERFORMANCE_GATE_FAILED",
+  "job_id": "743809",
+  "source_commit": "c7947e478cb96e99f0ebe4b08c9a5bb202945cae",
+  "config": {
+    "bytes": 17000,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-headlr1e4-v1/config.json",
+    "sha256": "71c3ee90f0232b889d4ced2d0cb50d69e852eb1ebbdbb55fdff03eaefdbbcc71"
+  },
+  "terminal_main_allocation": "743809|COMPLETED|0:0|02:06:55|ACD1-14",
+  "receipt": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-headlr1e4-v1/evaluations/cursor-000938/independent-audit.json",
+    "bytes": 5284,
+    "sha256": "205e78b8a3e1d4b088c8f358e12f5ebc5f9873614ec1a80d7336e051397b992a"
+  },
+  "checkpoint": {
+    "accepted_hashes": {
+      "head_adam": "3b96200d0b7b7dcd5487dc6e3cd97c027c8c024ee35d1e3ab8412ef05712b6da",
+      "head_ema": "f8944c53080b911bd5f7f35d57406ce86f7600db738aae4d6b1d587dc6830674",
+      "head_raw": "2aacea69c9ef79726745d99ba5e0806edc6327fdab5bdd3f73e05510d035a9e9",
+      "legacy_adam": "601e00b2067c8e4496a111235eae04d5c5c5684294aab30b45dfcd2c76382ab4",
+      "legacy_ema": "1badd9303fda9ef7b0896414f114da48d6755a7a7387d8e21802d78d06722aa4",
+      "legacy_ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "legacy_raw": "cdece6e714666252b8cc6e4a826fbb18e71377bd16234d481a89ba75b843d2fc",
+      "legacy_raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+    },
+    "actor_updates": 0,
+    "bytes": 3754035012,
+    "config_sha256": "5d58253b890c0da6428e7f12e16ab4bef6a39f2e3edc58a911a97c00802575d3",
+    "cursor": 938,
+    "data_cursor": {
+      "cursor": 938,
+      "plan_sha256": "8d6f5b046c8ee459c529f0750c80bac63455b2663f19cdcdce48d0fddd648cbf"
+    },
+    "epoch_time": 1792554327.314618,
+    "full_CPU_reload_passed": true,
+    "full_file_SHA256_verified": true,
+    "head_buffer_hashes": {
+      "ema": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "legacy_Adam_steps": 11402,
+    "matched_binding_sha256": "5d58253b890c0da6428e7f12e16ab4bef6a39f2e3edc58a911a97c00802575d3",
+    "new_head_Adam_steps": 938,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-headlr1e4-v1/checkpoints/cursor-000938.pt",
+    "phase": "accepted_update_complete",
+    "sha256": "14de7223746a741399e45662d56bfecf33a00b15727ba0ac6121008566eb76f0",
+    "source_all_four_RNG_preserved": true,
+    "source_archive_sha256": "d74c3923202a4cb902d08f71e115415168199459a6f7e6b282e330d6e0cdbfeb",
+    "steps": 11402
+  },
+  "metrics": {
+    "diagnostic512": {
+      "pool": {
+        "allcorrect_FPR": 0.0,
+        "allwrong_FPR": 0.0043859649122807015,
+        "confusion": {
+          "fn": 205,
+          "fp": 1,
+          "tn": 306,
+          "tp": 0
+        },
+        "k_histogram": [
+          228,
+          63,
+          50,
+          44,
+          48,
+          79
+        ],
+        "mixed_balanced_accuracy": 0.498371335504886,
+        "mixed_fraction": 0.400390625,
+        "mixed_questions": 205,
+        "mixed_recall": 0.0,
+        "mixed_roc_auc": 0.5829824422022721,
+        "nonmixed_recall": 0.996742671009772,
+        "questions": 512
+      },
+      "selected512": {
+        "allcorrect_FPR": 0.0,
+        "allwrong_FPR": 0.0043859649122807015,
+        "confusion": {
+          "fn": 205,
+          "fp": 1,
+          "tn": 306,
+          "tp": 0
+        },
+        "k_histogram": [
+          228,
+          63,
+          50,
+          44,
+          48,
+          79
+        ],
+        "mixed_balanced_accuracy": 0.498371335504886,
+        "mixed_fraction": 0.400390625,
+        "mixed_questions": 205,
+        "mixed_recall": 0.0,
+        "mixed_roc_auc": 0.5829824422022721,
+        "nonmixed_recall": 0.996742671009772,
+        "questions": 512
+      }
+    },
+    "selection2048FreshG5HF": {
+      "pool": {
+        "allcorrect_FPR": 0.0,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "fn": 663,
+          "fp": 0,
+          "tn": 1385,
+          "tp": 0
+        },
+        "k_histogram": [
+          1055,
+          181,
+          136,
+          132,
+          214,
+          330
+        ],
+        "mixed_balanced_accuracy": 0.5,
+        "mixed_fraction": 0.32373046875,
+        "mixed_questions": 663,
+        "mixed_recall": 0.0,
+        "mixed_roc_auc": 0.5803159253148635,
+        "nonmixed_recall": 1.0,
+        "questions": 2048
+      },
+      "selected512": {
+        "allcorrect_FPR": 0.0,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "fn": 199,
+          "fp": 0,
+          "tn": 313,
+          "tp": 0
+        },
+        "k_histogram": [
+          225,
+          45,
+          43,
+          45,
+          66,
+          88
+        ],
+        "mixed_balanced_accuracy": 0.5,
+        "mixed_fraction": 0.388671875,
+        "mixed_questions": 199,
+        "mixed_recall": 0.0,
+        "mixed_roc_auc": 0.48602437105656077,
+        "nonmixed_recall": 1.0,
+        "questions": 512
+      }
+    }
+  },
+  "all_fixed_nodes_independently_accepted": [
+    256,
+    512,
+    768,
+    938
+  ],
+  "terminal_full9_reload_mode": "Producer full9 CPU-reload proof inherited; no terminal independent large-tensor load",
+  "terminal_independent_checks": [
+    "fresh full checkpoint SHA256",
+    "typed config/namespace/headLR1e-4 identity",
+    "fixed own trajectory IDs and strict EM",
+    "direct count q formula",
+    "BA/recalls/class FP/AUC/Top512"
+  ],
+  "no_candidate_promoted": true,
+  "final_pool_read": false,
+  "training_actor_updates": 0,
+  "finite_observer_exit": 0
+}
