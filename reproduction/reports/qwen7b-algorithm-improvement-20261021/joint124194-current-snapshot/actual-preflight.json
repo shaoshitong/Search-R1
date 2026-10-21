@@ -1,0 +1,230 @@
+{
+  "epoch": 1792596563.1116006,
+  "squeue": "745501|q7b-native-joint124194|mou176|RUNNING|ACD1-28\n",
+  "latest": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-124194-v1/checkpoints/.rolling-accepted-cursor-001280-131d53a0e00c46e99795d242fcc10e92.pt",
+    "sha256": "f04a5ebe076db18f449d47b7bdd35ba321f8307bfcdb95a80792b381e3438d2a",
+    "bytes": 3751641818,
+    "cursor": 1280,
+    "steps": 15698,
+    "config_sha256": "5aaa63c9348f410357be92ce491ba6d18286d618ab86dae6e63f193f2b4367b6",
+    "matched_binding_sha256": "01071ad024af352d576a2d02f7e8d4a867f71bd7f6609ca9110db13e9b2f307f",
+    "epoch_time": 1792595892.0374882,
+    "accepted_hashes": {
+      "raw": "2c76f7a1a4485dab24a663c6c8c7de9644e3bf79c482a6d27dd025af5cc94a85",
+      "ema": "2c360df348af1254d47aa60a6ccc04a7ce653bb79f6a82b65a0e0e1b5bd07536",
+      "adam": "b2ba743b0f910ea3e0edda043e71cf08657aa6fc0fe1b076323f7705d460bc30",
+      "raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+    },
+    "sampler_state_sha256": "39916a7af9c22c0450a66795607a3f5c654e00c722a84d07f7e994700116098c",
+    "data_cursor": {
+      "cursor": 1280,
+      "sampler_binding": "c9281ec1c271c5d6db71a8d77789a436619e4d707f1a8426393638119e9cc45d",
+      "sampler_state_sha256": "39916a7af9c22c0450a66795607a3f5c654e00c722a84d07f7e994700116098c"
+    },
+    "pinned": false,
+    "full_CPU_six_state_reload_passed": true,
+    "sampler_full_state_and_cursor_reload_passed": true,
+    "saved_all_four_source_RNG_states": true,
+    "checkpoint_kind": "native_joint_rolling",
+    "allocation_job_id": "745501"
+  },
+  "config_sha256": "5aaa63c9348f410357be92ce491ba6d18286d618ab86dae6e63f193f2b4367b6",
+  "model_dir": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70",
+  "evaluation": {
+    "diagnostic_HF_bank": {
+      "bytes": 2756,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/bank-complete.json",
+      "sha256": "c593363dfaca0edf3f142e1fa5f93bd7f461432ce7b0f1e186101039ac163dc4"
+    },
+    "diagnostic_features": {
+      "bytes": 3194,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/inputs/diagnostic512-features-HF.json",
+      "sha256": "2895e5a8648e18fcfb7dece5a857b94b28416ee44978918137a82d118c4cdd82"
+    },
+    "diagnostic_groups": {
+      "bytes": 205127077,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/bank/groups.json",
+      "sha256": "03ffc0117f6ec71a43b874e34bd2e7ba6d5a5bb75d3df9b31e638f5a875da829"
+    },
+    "validation_complete": {
+      "bytes": 23003,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/complete.json",
+      "sha256": "54453790ae4f2ed2c1cdd0b87a17b383fe6737d5ada3dba640b3ee78b7605056"
+    },
+    "validation_reader_audit": {
+      "bytes": 2595,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/independent-reader-audit.json",
+      "sha256": "7c37920375dc13eff72cf0fef1b99153a03bed3113bd9e5c22646d60c99a8b6f"
+    }
+  },
+  "exclusions": {
+    "bytes": 848051,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-124194-v1/evaluation-identity-exclusions.json",
+    "sha256": "585893c9960fcb6b1934887ebb3034c7da1f479197ddd9e30201569ebdb5fdfc"
+  },
+  "pub": {
+    "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-124194-v1/code-3b56e583efe2",
+    "commit": "3b56e583efe2469ac9108873c31de7144a5201e6",
+    "controller": {
+      "path": "reproduction/operations/qwen7b_warmup/deploy_joint_balanced_native_main.py",
+      "sha256": "cfcb545b64c89a9904db9eacf3eef64d4664a8d11d1c60264419f3cf3a61c7c2"
+    },
+    "file_origins": {
+      "reproduction/operations/qwen7b_warmup/balanced_hard_g10_sampler.py": "c98ddcd7861b7023f3efa0d82d3c1fbea0664a13",
+      "reproduction/operations/qwen7b_warmup/download_model.py": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/evaluate_frozen_validation.py": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/g10_grouping.py": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/g10_question_loss.py": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/g10_question_update.py": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/g10_weighted_balanced.py": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/hard_enrichment_train.py": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/joint_balanced_native_evaluation.py": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/joint_balanced_native_main.py": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/joint_balanced_native_update.py": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/model.py": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/native_capture.py": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/native_joint_rolling_checkpoint.py": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/packed_features.py": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/probe_ablation_loss.py": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/probe_ablation_train.py": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/probe_g10_train.py": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/replay_feature_reader.py": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/replay_probe_layers.py": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/runtime.sh": "3b56e583efe2469ac9108873c31de7144a5201e6",
+      "reproduction/operations/qwen7b_warmup/score_training_candidates.py": "3b56e583efe2469ac9108873c31de7144a5201e6"
+    },
+    "files": {
+      "reproduction/operations/qwen7b_warmup/balanced_hard_g10_sampler.py": {
+        "bytes": 11103,
+        "sha256": "5d0fbb1e582ae4972957e0fbea18da6d12b61b7f7aac2f7094ba3de81a03e7d3"
+      },
+      "reproduction/operations/qwen7b_warmup/download_model.py": {
+        "bytes": 10662,
+        "sha256": "ddcb2520e11913ff899b21238a5c042346ff5f114bc7b1020e306925e26d384f"
+      },
+      "reproduction/operations/qwen7b_warmup/evaluate_frozen_validation.py": {
+        "bytes": 23018,
+        "sha256": "db481802b46f3e36be1280481a662e6c06b40b1528840b47ee45b63661d97066"
+      },
+      "reproduction/operations/qwen7b_warmup/g10_grouping.py": {
+        "bytes": 14093,
+        "sha256": "3a40d313e351f086ac5d3d6ba62165792c69c2847b64ba7a967aa9cf4f2cb9af"
+      },
+      "reproduction/operations/qwen7b_warmup/g10_question_loss.py": {
+        "bytes": 11391,
+        "sha256": "4a3dc5e9eb42adce000c1c3dd285f23027c693932d92a8ecd784cc15185c8aaa"
+      },
+      "reproduction/operations/qwen7b_warmup/g10_question_update.py": {
+        "bytes": 3346,
+        "sha256": "996617548ef407e12ad8dfeaa799da7d0ebc3ff0aba2e15f440e22177c38ee5f"
+      },
+      "reproduction/operations/qwen7b_warmup/g10_weighted_balanced.py": {
+        "bytes": 12500,
+        "sha256": "bc073cd4499de87893a6f1745c54ce7ba041b0e52e24f5c73d0fd072fecde550"
+      },
+      "reproduction/operations/qwen7b_warmup/hard_enrichment_train.py": {
+        "bytes": 18389,
+        "sha256": "2324d3ebcb2ac81b2450c66692ca9280ba83f0b0f189d6db8e5b2dde061a69da"
+      },
+      "reproduction/operations/qwen7b_warmup/joint_balanced_native_evaluation.py": {
+        "bytes": 5104,
+        "sha256": "047ecb5c4e54d8b88a6a8447e8697b05323f44c110f794c3eba6e9c4d5ca279d"
+      },
+      "reproduction/operations/qwen7b_warmup/joint_balanced_native_main.py": {
+        "bytes": 20263,
+        "sha256": "acbd9555d0fb833827ef7203b94f53ddd621864f20122dfb8d7cb3b7f1b60562"
+      },
+      "reproduction/operations/qwen7b_warmup/joint_balanced_native_update.py": {
+        "bytes": 7215,
+        "sha256": "78071358c023913b509bcb1cb404ff41e3f075aba9c945b811f9d6a9ac349b41"
+      },
+      "reproduction/operations/qwen7b_warmup/model.py": {
+        "bytes": 3672,
+        "sha256": "3b20179768b562d4f366cca9ebd398fe7720ed3b845e2eca0dbfd476d8e765ff"
+      },
+      "reproduction/operations/qwen7b_warmup/native_capture.py": {
+        "bytes": 8461,
+        "sha256": "f4e2570fd89bf65086dcf9f55ab97ca9c04f04cac0acf8af9e5dd797f6d43bd4"
+      },
+      "reproduction/operations/qwen7b_warmup/native_joint_rolling_checkpoint.py": {
+        "bytes": 8236,
+        "sha256": "c4e7a06a6c5d49ddc37d493b0a887423d22092ddebed13e87b4b11b457fae29a"
+      },
+      "reproduction/operations/qwen7b_warmup/packed_features.py": {
+        "bytes": 8993,
+        "sha256": "cfba55067bfa836e4d420097a3eb97b1a684ea313e1e0e3d0f7bc7db1dab6f54"
+      },
+      "reproduction/operations/qwen7b_warmup/probe_ablation_loss.py": {
+        "bytes": 8627,
+        "sha256": "b535312b1c0ed2a6fbd6a8012bf94012d891e8985018c61c9687a7b039bd312d"
+      },
+      "reproduction/operations/qwen7b_warmup/probe_ablation_train.py": {
+        "bytes": 28539,
+        "sha256": "bfeb89f5563149988b596dedf5ea67c5c80517055018a51b7cc974b704f19b52"
+      },
+      "reproduction/operations/qwen7b_warmup/probe_g10_train.py": {
+        "bytes": 28411,
+        "sha256": "cbf813893c0df939d21c1fa223ab4d0cd9c808be599549093638d356db78ee8b"
+      },
+      "reproduction/operations/qwen7b_warmup/replay_feature_reader.py": {
+        "bytes": 13280,
+        "sha256": "c85257af093caea5581ca5626b08b49895a373dda81e8292a7f9390ed6a273e1"
+      },
+      "reproduction/operations/qwen7b_warmup/replay_probe_layers.py": {
+        "bytes": 35121,
+        "sha256": "6a980269c8eab2b07845f8af88ea5aafb27d2a8ca07fbd803e3987719665deaa"
+      },
+      "reproduction/operations/qwen7b_warmup/runtime.sh": {
+        "bytes": 1575,
+        "sha256": "678d4e72c1c1fd90777d76ba63198658b735ecfe513439ee5f5b07f8664d8288"
+      },
+      "reproduction/operations/qwen7b_warmup/score_training_candidates.py": {
+        "bytes": 15242,
+        "sha256": "b1a3f251b18542685f37a68e4b044284c611e0020c0458b8d5bc828f04959118"
+      }
+    },
+    "sampler_commit": "c98ddcd7861b7023f3efa0d82d3c1fbea0664a13"
+  },
+  "config_keys": [
+    "actor_updates",
+    "base",
+    "canonical_duplicate_question_hashes",
+    "checkpoint_policy",
+    "code_hashes",
+    "complete_bank",
+    "current_world_size",
+    "ema_decay",
+    "epochs",
+    "evaluation",
+    "exclusions",
+    "expected_exclusion_questions",
+    "features",
+    "fit_questions",
+    "fit_real_trajectories",
+    "four_rank_bitexact_resume_claim",
+    "groups",
+    "loss_kwargs",
+    "lr",
+    "micro_trajectories",
+    "mode",
+    "model_config",
+    "model_dir",
+    "old_Count5120_is_training",
+    "old_Count5120_unseen_evaluation_claim",
+    "postblock_cache_used",
+    "requested_hours",
+    "sampler_source",
+    "save_every",
+    "source_bank",
+    "source_checkpoint",
+    "source_config",
+    "source_receipt",
+    "source_world_size",
+    "steps_per_epoch",
+    "untouched_final_evaluation_performed",
+    "update_budget"
+  ]
+}
