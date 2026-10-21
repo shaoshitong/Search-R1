@@ -129,3 +129,39 @@ are retained as unknown until producer progress arrives. An earlier ad-hoc
 observer stop predicate exited on that transient None value; its evidence is
 preserved, and no training process exited or restarted for that reader error.
 The published observer actually observed CP8 plus saved outer9 and exited0.
+
+The user's 2026-10-21 23:23:22 CST instruction conditionally authorizes an FA3
+transition after a complete checkpoint9. CP9 was sealed, and existing FA3
+3.0.0b1 binaries were found in the old TOPD Python3.10 environment. They require
+a process-private CUDA12.6 runtime preload; the shared Python3.12 environment
+named flash_attn3 does not itself contain the package. No production process or
+shared environment was changed. An independent H100 kernel diagnostic745988
+completed forward/backward and isolation tests. Its random28Q/4KV inputs do not
+establish full7B policy equivalence.
+
+The independent four-H100 full-model diagnostic746013 subsequently completed
+its numerical comparisons and exited1 because acceptance failed. On the same
+CP9 model and32 original trajectories, FA2 repeats had exact forward log-prob
+and loss equality, with1.08–1.11% backward gradient relativeL2 noise. FA3 had
+log-probability max error0.528578/RMS0.041631, aggregate gradient relativeL2
+25.02198% and cosine0.968835. These are not accepted small-error equivalence;
+thresholds were not relaxed. All parameter bytes and caller RNG were unchanged,
+and no optimizer or scheduler update occurred. This is an isolated diagnostic
+failure, not a production-training failure. Evidence is in
+`evidence/actual-fa3-full-model-numerical-rejection-20261021.json`.
+
+The real HF path expands KV to28 heads before attention, unlike the preceding
+random GQA kernel test. `submit_fa3_model_probe_hpc.py` therefore supports a
+separate `layer-shadow` mode with its own fixed base and exclusive submit claim.
+It runs one original FA2 forward, shadows the exact packed QKV with FA3 at each
+layer, and returns the FA2 result to the next layer. This diagnostic isolates
+local kernel error from propagation and records sampled FP32 references. It
+does not approve FA3, override the full-model rejection, run backward, or switch
+production. The original diagnostic root and its failure remain immutable.
+
+Meanwhile production745371 completed outer10 on all four ranks, wrote20 updates
+per rank (cumulative200), advanced the scheduler to10 and sealed CP10 manifest
+1070a87785277207d86ae09f3470938829e30335ee0f2ccfb5d3964abc2dd751.
+Reward was0.63938820; outer11 began afterwards. Production remains on its
+immutable e082 runtime using FA2. The200-outer goal and final acceptance remain
+pending. See `evidence/actual10-complete-cp10-outer11-started-20261021.json`.

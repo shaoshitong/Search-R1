@@ -148,6 +148,43 @@ class FA3QualificationTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError,'UPDATE_FORBIDDEN'):scheduler.step()
         self.assertEqual(counters,dict(optimizer_step=1,scheduler_step=1));self.assertFalse(optimizer.state)
 
+    def test_optional_shadow_is_one_fa2_forward_only_and_never_qualification(self):
+        actor=Actor();worker=SimpleNamespace(actor=actor,actor_module=actor.actor_module)
+        def shadow(value,micro,temperature,attention_module=None):
+            self.assertIs(value,actor);self.assertIs(attention_module,worker.actor_module)
+            saved=numerical._rng(torch.device('cpu'));mode=actor.flash3_enabled
+            try:
+                actor.flash3_enabled=False
+                with torch.no_grad():actor._forward_micro_batch(micro,temperature,False)
+            finally:
+                actor.flash3_enabled=mode;numerical._restore_rng(saved,torch.device('cpu'))
+            return dict(acceptance_status='DIAGNOSTIC_ONLY_NOT_QUALIFICATION',
+                        real_actor_forward_calls=1,backward_calls=0)
+        with patch.object(entry,'_layer_shadow_function',return_value=shadow), \
+                patch.object(entry,'qualify_flash3_policy') as full:
+            result=entry.diagnose_actor(worker,self.micro,1.,layer_shadow=True)
+            full.assert_not_called()
+        self.assertFalse(result['accepted']);self.assertTrue(result['diagnostic_completed'])
+        self.assertFalse(result['original_full_model_qualification_replaced'])
+        self.assertEqual(actor.attention_modes,[False]);self.assertTrue(actor.flash3_enabled)
+        self.assertTrue(all(p.grad is None for p in actor.actor_module.parameters()))
+        with patch.object(entry,'qualify_flash3_policy',return_value={'original':True}) as full, \
+                patch.object(entry,'_layer_shadow_function') as shadow_loader:
+            self.assertEqual(entry.diagnose_actor(worker,self.micro,1.),{'original':True})
+            full.assert_called_once_with(actor,self.micro,1.,attention_module=actor.actor_module)
+            shadow_loader.assert_not_called()
+
+    def test_shadow_parameter_mutation_or_wrong_call_contract_hardfails(self):
+        for bad in ('parameter','contract'):
+            actor=Actor();worker=SimpleNamespace(actor=actor,actor_module=actor.actor_module)
+            def shadow(*args,**kwargs):
+                if bad=='parameter':
+                    with torch.no_grad():next(actor.actor_module.parameters()).add_(1.)
+                return dict(acceptance_status='DIAGNOSTIC_ONLY_NOT_QUALIFICATION',
+                            real_actor_forward_calls=1,backward_calls=1 if bad=='contract' else 0)
+            with patch.object(entry,'_layer_shadow_function',return_value=shadow):
+                with self.assertRaisesRegex(ValueError,'SHADOW_'):entry.diagnose_actor(worker,self.micro,1.,layer_shadow=True)
+
     def test_dynamic_cp9_and_later_routes_real_successful_source_step(self):
         for step in (9,27):
             with tempfile.TemporaryDirectory() as name:

@@ -1,6 +1,6 @@
 {
-  "epoch": 1792596807.0160394,
-  "status": "ACTUAL_OUTER9_CP9_AND_SAVED10_PASS_ALL4_TWENTY_WRITES_NO_COLLAPSE",
+  "epoch": 1792598316.9255702,
+  "status": "ACTUAL_OUTER10_COMPLETE_CP10_SEALED_OUTER11_STARTED_FA3_MODEL_REJECTED_PRODUCTION_FA2_CONTINUES",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "745371",
@@ -11,7 +11,7 @@
   "global_mini": 128,
   "logical_micro": 4,
   "accumulation": 4,
-  "actual_completed_outer": 9,
+  "actual_completed_outer": 10,
   "initialization_is_not_training_acceptance": true,
   "old3b": {
     "job": "734689",
@@ -54,8 +54,8 @@
     "enabled_scope": "Exact retrieval cache + original dense head + external2H100 service; no throughput speedup claimed yet"
   },
   "previous_goal_turn_classification": "verified_wait",
-  "latest_turn_classification": "progress",
-  "last_observation": "training-progress-em-1792596807.json",
+  "latest_turn_classification": "FA3_FOUND_AND_ACTUAL_KERNEL_PASS_BUT_NATIVE4_FULL_MODEL_NUMERICAL_REJECTED; CP10_SEALED; PRODUCTION_UNCHANGED",
+  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/training-progress-em-1792598317.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "stage": "GRPO_1_TO_200",
@@ -268,7 +268,7 @@
   "outer2_started_not_complete": false,
   "outer2_completed_candidate_questions": 2560,
   "outer2_first_chunk_mixed_questions": 181,
-  "current_base_durable_checkpoint_outer": 9,
+  "current_base_durable_checkpoint_outer": 10,
   "most_recent_recoverable_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
     "outer": 6,
@@ -447,7 +447,7 @@
       "replacement_has_completed_milestone5_archive": true
     }
   ],
-  "current_outer": 10,
+  "current_outer": 11,
   "outer3_selection": {
     "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/eefd4da7a7b445a4862963b159cbdfdc.json",
     "bytes": 2750777,
@@ -757,6 +757,17 @@
       "optimizer_writes": 180,
       "optimizer_writes_before": 160,
       "optimizer_writes_this_outer": 20
+    },
+    {
+      "step": 10,
+      "attempt_index": 10,
+      "reward": 0.6393882036209106,
+      "pg_loss": 0.04357814534082469,
+      "ppo_kl": 0.0006861575348011684,
+      "grad_norm": 2.5011894492280358,
+      "optimizer_writes": 200,
+      "optimizer_writes_before": 180,
+      "optimizer_writes_this_outer": 20
     }
   ],
   "fixed_validation_results_pending": [
@@ -921,7 +932,9 @@
       0.6170238852500916,
       0.6223312020301819,
       0.6239957809448242,
-      0.6132726669311523
+      0.6132726669311523,
+      0.6176403760910034,
+      0.6393882036209106
     ],
     "fixed512_baseline_step": 5,
     "fixed512_baseline_em": 0.376953125,
@@ -934,7 +947,9 @@
       "5": 0.358984375,
       "6": 0.355703125,
       "7": 0.36,
-      "8": 0.373125
+      "8": 0.373125,
+      "9": 0.38421875,
+      "10": 0.38234375
     },
     "selected_em_by_outer": {
       "2": 0.49375,
@@ -943,7 +958,9 @@
       "5": 0.506640625,
       "6": 0.513671875,
       "7": 0.5109375,
-      "8": 0.501171875
+      "8": 0.501171875,
+      "9": 0.50390625,
+      "10": 0.530078125
     },
     "quality_scope": "Candidate and selected strict EM are pre-update varying training pools, not fixed512 validation. Only QA5 is measured; QA50/100/150/200 remain pending."
   },
@@ -1055,18 +1072,18 @@
     "fresh_remote_fetch_and_blob_sha_pass": true,
     "receipt": "source-publication-c3ce9a5f9f148a87308e5ef0c27ed2457003c19b-1792593993.json"
   },
-  "all4_actual_optimizer_writes": 180,
+  "all4_actual_optimizer_writes": 200,
   "current_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_9",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_10",
     "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_9/full-manifest.json",
-    "manifest_sha256": "d0126fc8f7466091a8c76eb5526debe591db48f5bf0fbb632c2203b5705a611f",
-    "published_unix": 1792596611.3125713,
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_10/full-manifest.json",
+    "manifest_sha256": "1070a87785277207d86ae09f3470938829e30335ee0f2ccfb5d3964abc2dd751",
+    "published_unix": 1792598274.9121459,
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
     "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 9
+    "step": 10
   },
   "current_candidate_pool": {
     "name": "439e064ef4af4c4e9d368ce395413249-pool-0",
@@ -1397,17 +1414,57 @@
       "discarded_insufficient_pool_count": 0,
       "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
       "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
+    },
+    {
+      "step": 10,
+      "attempt_id": "439e064ef4af4c4e9d368ce395413249",
+      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:10:policy-439e064ef4af4c4e9d368ce395413249",
+      "status": "MEASURED_COMPLETED_SELECTION",
+      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/439e064ef4af4c4e9d368ce395413249.json",
+      "candidate_correct_count_histogram": {
+        "0": 1141,
+        "1": 232,
+        "2": 174,
+        "3": 232,
+        "4": 287,
+        "5": 494
+      },
+      "candidate_questions": 2560,
+      "candidate_trajectories": 12800,
+      "raw_generated_trajectories": 12800,
+      "candidate_trajectory_em": 0.38234375,
+      "candidate_mixed_questions": 925,
+      "candidate_mixed_fraction": 0.361328125,
+      "selected_correct_count_histogram": {
+        "0": 0,
+        "1": 126,
+        "2": 93,
+        "3": 127,
+        "4": 166,
+        "5": 0
+      },
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "selected_trajectory_em": 0.530078125,
+      "selected_mixed": 512,
+      "selected_mixed_fraction": 1.0,
+      "selected_all_correct_fallback": 0,
+      "selected_all_correct_fallback_fraction": 0.0,
+      "pool_retry": 0,
+      "discarded_insufficient_pool_count": 0,
+      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
+      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
     }
   ],
   "latest_completed_metrics": {
-    "step": 9,
-    "attempt_index": 9,
-    "reward": 0.6176403760910034,
-    "pg_loss": 0.007115746500043642,
-    "ppo_kl": 0.0009657300526669133,
-    "grad_norm": 2.5217320670007575,
-    "optimizer_writes": 180,
-    "optimizer_writes_before": 160,
+    "step": 10,
+    "attempt_index": 10,
+    "reward": 0.6393882036209106,
+    "pg_loss": 0.04357814534082469,
+    "ppo_kl": 0.0006861575348011684,
+    "grad_norm": 2.5011894492280358,
+    "optimizer_writes": 200,
+    "optimizer_writes_before": 180,
     "optimizer_writes_this_outer": 20
   },
   "archive5_grounding_dependency_closure": {
@@ -1559,7 +1616,7 @@
       "terminal": true
     }
   ],
-  "current_progress_evidence": "evidence/actual9-complete-cp9-and-saved10-20261021.json",
+  "current_progress_evidence": "evidence/actual10-complete-cp10-outer11-started-20261021.json",
   "published_progress_observer": {
     "commit": "b3f808a31d957799c82690cb6ddf97e2bdddd002",
     "source": "reproduction/operations/easy7b_20261021/watch_training_progress_local.py",
@@ -1589,6 +1646,19 @@
     "cpu_import_with_private_cudart_pass": true,
     "kernel_probe_job": "745988",
     "full_model_numerical_qualified": false,
-    "training_modified": false
-  }
+    "training_modified": false,
+    "kernel_probe_pass": true,
+    "full_model_probe_job": "746013",
+    "full_model_probe_state": "FAILED_NUMERICAL_ACCEPTANCE",
+    "evidence": "evidence/actual-fa3-full-model-numerical-rejection-20261021.json",
+    "full_model_lp_max_abs": 0.5285778045654297,
+    "full_model_lp_rms": 0.041631003105347696,
+    "full_model_gradient_relative_l2": 0.25021981433374113,
+    "fa2_repeat_gradient_relative_l2": [
+      0.0111437007612922,
+      0.010802008543173968
+    ],
+    "next_action": "Independent single-FA2-forward per-layer FA3 shadow diagnostic; no optimizer update or automatic switch"
+  },
+  "latest_full_checkpoint_outer": 10
 }

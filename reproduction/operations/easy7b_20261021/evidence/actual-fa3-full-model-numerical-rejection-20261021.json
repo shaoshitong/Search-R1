@@ -1,0 +1,186 @@
+{
+  "status": "ACTUAL_FULL_MODEL_NUMERICAL_COMPARISON_REJECTED_NO_PRODUCTION_SWITCH",
+  "observed_unix": 1792598001.2183256,
+  "diagnostic_job": "746013",
+  "diagnostic_accounting": {
+    "rc": 0,
+    "stdout": "746013|FAILED|1:0|00:05:16|ACD1-32\n746013.batch|FAILED|1:0|00:05:16|ACD1-32\n746013.extern|COMPLETED|0:0|00:05:16|ACD1-32\n746013.0|COMPLETED|0:0|00:00:00|ACD1-32\n",
+    "stderr": ""
+  },
+  "diagnostic_source_commit": "33ad9f03b055afee424220041b2c5da0c8bb5a3a",
+  "source_step": 9,
+  "source_binding": {
+    "hf_saved_tensor_count": 339,
+    "model_layers": 28,
+    "original_context_mask_sampling_lp_preserved": true,
+    "raw_pool_bytes": 647894718,
+    "raw_pool_file": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-candidate-pools/b4595a0ced7e40ba8db6d4a1199d6d10-pool-0/0.pt",
+    "selection_audit": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/b4595a0ced7e40ba8db6d4a1199d6d10.json",
+    "selection_audit_sha256": "6ea10bfcc9c171e1c10918f0e3f58a55f04a79be6998ea3b36ffe68b1f6c611c",
+    "source_attempt_id": "b4595a0ced7e40ba8db6d4a1199d6d10",
+    "source_attempt_index": 9,
+    "source_base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+    "source_checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_9",
+    "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+    "source_policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:9:policy-b4595a0ced7e40ba8db6d4a1199d6d10",
+    "source_receipt": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-model-probe-20261021/preparation/model-probe-source-receipt.json",
+    "source_receipt_sha256": "ee59269d54035de9e73b7dc4c286555606405dfff0b98e32b92904680e051d9d",
+    "source_step": 9
+  },
+  "source_receipt_file": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-model-probe-observation-1792598000.json",
+  "source_receipt_sha256": "7ed92f5a3c8f346254b308bc2230057fb5df9174b80d29d2094e2660b842b6b3",
+  "production_job": "745371",
+  "production_runtime_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+  "production_stopped": false,
+  "production_switched": false,
+  "production_actor_backend": "FA2",
+  "optimizer_calls": 0,
+  "thresholds": {
+    "gradient_cosine_min": 0.99999,
+    "gradient_relative_l2": 0.001,
+    "log_probability_max_abs": 0.001,
+    "log_probability_rms": 0.0001,
+    "loss_abs": 1e-05
+  },
+  "fa2_repeats_pass": false,
+  "comparisons": {
+    "FA2-1_FA2-2": {
+      "accepted": false,
+      "checks": {
+        "gradient_cosine": false,
+        "gradient_relative_l2": false,
+        "log_probability_max_abs": true,
+        "log_probability_rms": true,
+        "loss_abs": true
+      },
+      "failed_checks": [
+        "gradient_relative_l2",
+        "gradient_cosine"
+      ],
+      "gradients": {
+        "actual_l2": 1.433441562564392,
+        "all_finite": true,
+        "cosine": 0.9999380158311035,
+        "difference_l2": 0.015967385650568933,
+        "global_compared_gradient_elements": 7615616512,
+        "global_parameter_shards_with_grad": 116,
+        "global_parameter_shards_without_grad": 0,
+        "max_absolute_error": 0.0006103515625,
+        "nonzero_reference_and_actual": true,
+        "reference_l2": 1.432862026054385,
+        "relative_l2": 0.0111437007612922,
+        "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+      },
+      "log_probabilities": {
+        "all_finite": true,
+        "exact_global_p99": true,
+        "global_authored_tokens": 3766,
+        "max_absolute_error": 0.0,
+        "p99_absolute_error": 0.0,
+        "relative_l2": 0.0,
+        "root_mean_square_error": 0.0,
+        "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+      },
+      "loss": {
+        "all_finite": true,
+        "max_rank_absolute_error": 0.0,
+        "max_rank_relative_error": 0.0
+      }
+    },
+    "FA2-1_FA2-3": {
+      "accepted": false,
+      "checks": {
+        "gradient_cosine": false,
+        "gradient_relative_l2": false,
+        "log_probability_max_abs": true,
+        "log_probability_rms": true,
+        "loss_abs": true
+      },
+      "failed_checks": [
+        "gradient_relative_l2",
+        "gradient_cosine"
+      ],
+      "gradients": {
+        "actual_l2": 1.432730591800935,
+        "all_finite": true,
+        "cosine": 0.999941657161075,
+        "difference_l2": 0.015477787846629027,
+        "global_compared_gradient_elements": 7615616512,
+        "global_parameter_shards_with_grad": 116,
+        "global_parameter_shards_without_grad": 0,
+        "max_absolute_error": 0.0003453493118286133,
+        "nonzero_reference_and_actual": true,
+        "reference_l2": 1.432862026054385,
+        "relative_l2": 0.010802008543173968,
+        "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+      },
+      "log_probabilities": {
+        "all_finite": true,
+        "exact_global_p99": true,
+        "global_authored_tokens": 3766,
+        "max_absolute_error": 0.0,
+        "p99_absolute_error": 0.0,
+        "relative_l2": 0.0,
+        "root_mean_square_error": 0.0,
+        "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+      },
+      "loss": {
+        "all_finite": true,
+        "max_rank_absolute_error": 0.0,
+        "max_rank_relative_error": 0.0
+      }
+    },
+    "FA2-1_FA3-1": {
+      "accepted": false,
+      "checks": {
+        "gradient_cosine": false,
+        "gradient_relative_l2": false,
+        "log_probability_max_abs": false,
+        "log_probability_rms": false,
+        "loss_abs": false
+      },
+      "failed_checks": [
+        "log_probability_max_abs",
+        "log_probability_rms",
+        "loss_abs",
+        "gradient_relative_l2",
+        "gradient_cosine"
+      ],
+      "gradients": {
+        "actual_l2": 1.4388918282137841,
+        "all_finite": true,
+        "cosine": 0.9688350259691949,
+        "difference_l2": 0.35853047012519634,
+        "global_compared_gradient_elements": 7615616512,
+        "global_parameter_shards_with_grad": 116,
+        "global_parameter_shards_without_grad": 0,
+        "max_absolute_error": 0.02585163712501526,
+        "nonzero_reference_and_actual": true,
+        "reference_l2": 1.432862026054385,
+        "relative_l2": 0.25021981433374113,
+        "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+      },
+      "log_probabilities": {
+        "all_finite": true,
+        "exact_global_p99": true,
+        "global_authored_tokens": 3766,
+        "max_absolute_error": 0.5285778045654297,
+        "p99_absolute_error": 0.14850549697875967,
+        "relative_l2": 0.035214502429727464,
+        "root_mean_square_error": 0.041631003105347696,
+        "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+      },
+      "loss": {
+        "all_finite": true,
+        "max_rank_absolute_error": 0.0002145540264474645,
+        "max_rank_relative_error": 0.13190538611172473
+      }
+    }
+  },
+  "all_four_ranks_parameter_bytes_unchanged": true,
+  "all_four_ranks_rng_restored": true,
+  "interpretation": "FA2 forward/log-probabilities/loss repeat exactly, but BF16 backward baseline fails inherited strict gradient thresholds. FA3 adds forward LP differences and a ~25% aggregate gradient difference. This is not established small-error equivalence and is not explained by baseline backward noise. Do not relax thresholds or switch production on this result.",
+  "next_diagnostic": "One original FA2 forward with per-layer FA3 shadow on identical real packed QKV, including expanded28KV/strides/ranges/actual kernel args and deterministic sampled FP32 math. No optimizer update or production mutation.",
+  "whole_training_equivalence_proven": false,
+  "final200_goal_complete": false
+}

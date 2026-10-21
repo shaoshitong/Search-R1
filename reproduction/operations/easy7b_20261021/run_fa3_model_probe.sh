@@ -5,6 +5,12 @@ umask 007
 BASE="${1:?private diagnostic base}"
 COMMIT="${2:?published source commit}"
 SOURCE_BASE="${3:?unchanged live production base}"
+MODE="${4:-model}"
+case "$MODE" in
+  model) PROBE_ARGS=(--output "$BASE/diagnostics/fa3-model-comparison.json") ;;
+  layer-shadow) PROBE_ARGS=(--layer-shadow --output "$BASE/diagnostics/fa3-layer-shadow.json") ;;
+  *) echo "Unknown independent diagnostic mode" >&2; exit 2 ;;
+esac
 export LD_PRELOAD="$BASE/preparation/flash3-runtime/libcudart.so.12"
 export SEARCH_G1_BASE="$BASE" SEARCH_G1_SOURCE_COMMIT="$COMMIT" SEARCH_G1_PROFILE=common8
 export QPROBE_SOURCE="$BASE/repo" SEARCH_G1_TRAINING_WORLD_SIZE=4
@@ -22,4 +28,4 @@ python -B -m reproduction.operations.easy7b_20261021.prepare_fa3_model_probe \
   --base "$BASE" --commit "$COMMIT" --source-base "$SOURCE_BASE"
 exec python -B -m torch.distributed.run --standalone --nnodes=1 --nproc_per_node=4 \
   --module reproduction.easy2560_joint4.qualify_fa3_model_cuda \
-  --base "$BASE" --output "$BASE/diagnostics/fa3-model-comparison.json"
+  --base "$BASE" "${PROBE_ARGS[@]}"

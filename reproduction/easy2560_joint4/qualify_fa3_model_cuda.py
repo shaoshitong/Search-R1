@@ -296,7 +296,37 @@ def _publish(path, value):
         stream.write('\n'); stream.flush(); os.fsync(stream.fileno())
 
 
-def run(base, output, raw_pool_file=None):
+def _layer_shadow_function():
+    from reproduction.easy2560_joint4.fa3_layer_shadow import run_layer_shadow
+    return run_layer_shadow
+
+
+def diagnose_actor(worker, micro, temperature, *, layer_shadow=False):
+    """The optional shadow is a separate diagnostic, never a passing qualifier."""
+    if not layer_shadow:
+        return qualify_flash3_policy(worker.actor,micro,temperature,attention_module=worker.actor_module)
+    from search_g1 import sparse_policy_qualification as numerical
+    parameters=list(worker.actor.actor_module.named_parameters())
+    _need(parameters and all(p.grad is None for _,p in parameters), 'SHADOW_PENDING_GRADIENTS_FORBIDDEN')
+    device=next((p.device for _,p in parameters if p.device.type=='cuda'),parameters[0][1].device)
+    before_rng=numerical._rng(device);before=parameter_digest(parameters)
+    observed=_layer_shadow_function()(worker.actor,micro,temperature,attention_module=worker.actor_module)
+    after=parameter_digest(parameters)
+    _need(before==after and all(p.grad is None for _,p in parameters), 'SHADOW_PARAMETERS_OR_GRADIENTS_CHANGED')
+    _need(_rng_equal(before_rng,numerical._rng(device)), 'SHADOW_CALLER_RNG_NOT_RESTORED')
+    _need(observed.get('acceptance_status')=='DIAGNOSTIC_ONLY_NOT_QUALIFICATION' and
+          observed.get('real_actor_forward_calls')==1 and observed.get('backward_calls')==0,
+          'SHADOW_SINGLE_FORWARD_ONLY_CONTRACT_DIFFERS')
+    return dict(format='actual_actor_FA2_single_forward_layer_shadow_v1',accepted=False,
+        acceptance_status='DIAGNOSTIC_ONLY_NOT_QUALIFICATION',diagnostic_completed=True,diagnostic_only=True,
+        layer_shadow=observed,all_local_parameter_bytes_unchanged=True,
+        local_parameter_bytes_before=before,local_parameter_bytes_after=after,caller_rng_restored=True,
+        real_actor_forward_calls=1,backward_calls=0,optimizer_calls=0,scheduler_calls=0,
+        gradient_clipping_calls=0,automatic_fallback=False,normal_training_auto_call=False,
+        original_full_model_qualification_replaced=False)
+
+
+def run(base, output, raw_pool_file=None, *, layer_shadow=False):
     import torch
     import torch.distributed as dist
     from omegaconf import open_dict
@@ -333,15 +363,17 @@ def run(base, output, raw_pool_file=None):
     scheduler_before=copy.deepcopy(worker.actor_lr_scheduler.state_dict()); calls=block_updates(worker)
     load_fsdp_param_and_grad(worker.actor_module_fsdp,device_id=torch.cuda.current_device(),load_grad=False)
     device=torch.device('cuda',torch.cuda.current_device());micro={k:v.to(device) for k,v in micro.items()}
-    result=qualify_flash3_policy(worker.actor,micro,float(config.actor_rollout_ref.rollout.temperature),
-                                attention_module=worker.actor_module)
+    result=diagnose_actor(worker,micro,float(config.actor_rollout_ref.rollout.temperature),layer_shadow=layer_shadow)
     _need(calls == dict(optimizer_step=0,scheduler_step=0) and len(worker.actor_optimizer.state)==0 and
           worker.actor_lr_scheduler.state_dict()==scheduler_before,'OPTIMIZER_OR_SCHEDULER_CHANGED')
     local=dict(rank=rank,local_rank=local_rank,hostname=socket.gethostname(),gpu_name=torch.cuda.get_device_name(),
         diagnostic_slurm_job_id=os.environ.get('SLURM_JOB_ID'),diagnostic_pid=os.getpid(),
-        selection=selection,update_calls=calls,fresh_adam_state_entries=0,scheduler_unchanged=True,numerical_comparison=result)
-    ranks=[None]*4;dist.all_gather_object(ranks,local);accepted=all(r['numerical_comparison']['accepted'] for r in ranks)
-    report=dict(format='easy7b_dynamic_cp_model_only_fa3_cuda_qualification_v1',accepted=accepted,
+        selection=selection,update_calls=calls,fresh_adam_state_entries=0,scheduler_unchanged=True)
+    local['layer_shadow_diagnostic' if layer_shadow else 'numerical_comparison']=result
+    ranks=[None]*4;dist.all_gather_object(ranks,local)
+    accepted=False if layer_shadow else all(r['numerical_comparison']['accepted'] for r in ranks)
+    report=dict(format=('easy7b_dynamic_cp_layer_shadow_diagnostic_v1' if layer_shadow else
+                        'easy7b_dynamic_cp_model_only_fa3_cuda_qualification_v1'),accepted=accepted,
         diagnostic_only=True,base=str(base),source_commit=bound['source_commit'],run_id=bound['run_id'],
         diagnostic_slurm_job_id=os.environ.get('SLURM_JOB_ID'),
         source_binding=binding,model_source_completed_outer=binding['source_step'],world_size=4,ranks=ranks,
@@ -353,12 +385,17 @@ def run(base, output, raw_pool_file=None):
         started_unix=started,completed_unix=time.time(),
         scope='Actual bound CP>=9 full actor forward/backward only on32 original source-step mixed-EM trajectories; '
               'five-EM diagnostic advantages are NOT production grounding rewards; no fullstate restore/whole-training claim')
+    if layer_shadow:
+        report.update(acceptance_status='DIAGNOSTIC_ONLY_NOT_QUALIFICATION',diagnostic_completed=True,
+            real_actor_forward_calls_per_rank=1,backward_calls=0,original_full_model_qualification_replaced=False,
+            scope='One original FA2 actor forward per rank with exact-QKV FA3 shadows; no backward or parameter update; '
+                  'not numerical qualification, fullstate restoration, or permission to switch production attention')
     if rank==0:
         _publish(output,report)
-        print('SEARCH_G1_FA3_MODEL_DIAGNOSTIC='+json.dumps(dict(accepted=accepted,output=str(output),
+        print(('SEARCH_G1_FA3_LAYER_SHADOW=' if layer_shadow else 'SEARCH_G1_FA3_MODEL_DIAGNOSTIC=')+json.dumps(dict(accepted=accepted,output=str(output),
             source_step=binding['source_step'],model_only=True,production_full_state_restore_still_required=True)),flush=True)
     dist.barrier();del micro,worker;gc.collect();torch.cuda.empty_cache();dist.destroy_process_group()
-    if not accepted:raise RuntimeError('FA3_MODEL_DIAGNOSTIC_NUMERICAL_THRESHOLDS_REJECTED; see '+str(output))
+    if not layer_shadow and not accepted:raise RuntimeError('FA3_MODEL_DIAGNOSTIC_NUMERICAL_THRESHOLDS_REJECTED; see '+str(output))
     return report
 
 
@@ -366,8 +403,10 @@ def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--base',required=True);parser.add_argument('--output',required=True)
     parser.add_argument('--raw-pool-file',help='Optional actual numeric .pt member of the bound source-step successful pool')
+    parser.add_argument('--layer-shadow',action='store_true',
+        help='One original FA2 forward with exact-QKV layer shadows; never a numerical qualification')
     args=parser.parse_args(argv)
-    try:run(args.base,args.output,args.raw_pool_file)
+    try:run(args.base,args.output,args.raw_pool_file,layer_shadow=args.layer_shadow)
     except BaseException as error:
         rank=os.environ.get('RANK','unknown');failure=Path(args.output).with_name(Path(args.output).stem+'-rank-'+rank+'-failure.json')
         try:

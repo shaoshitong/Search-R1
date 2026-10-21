@@ -1,0 +1,44 @@
+{
+  "status": "ISOLATED_LAYER_SHADOW_SOURCE_TESTED_NO_PRODUCTION_CHANGE",
+  "checked_unix": 1792598527.029239,
+  "targeted_tests": 32,
+  "targeted_tests_pass": true,
+  "python38_ast_pass": true,
+  "bash_syntax_pass": true,
+  "diff_check_pass": true,
+  "scope": "Independent forward-only real-QKV shadow, never a numerical qualification or production transition. Full model746013 numerical rejection remains in force. Source CP is allocated-time sealed latest>=9, so not necessarily CP9 failing batch.",
+  "known_unrelated_test_failure": "Historical reproduction.easy2560_joint4.test_common_contracts.test_reader_preserves_eight_logical_micro_mass_for_physical32 missing common8 monitor tensor hashes, already present before FA3; not changed or used to relax runtime.",
+  "files": {
+    "reproduction/easy2560_joint4/fa3_layer_shadow.py": {
+      "bytes": 13866,
+      "sha256": "f86749181a49744688d61812c750968ef5446e5d143014c4440a24fed2747c16"
+    },
+    "reproduction/easy2560_joint4/test_fa3_layer_shadow.py": {
+      "bytes": 8334,
+      "sha256": "0b22f7eedf372370daa0bb843d43fb35ca734554077e2012c5f24bb526e922b7"
+    },
+    "reproduction/easy2560_joint4/qualify_fa3_model_cuda.py": {
+      "bytes": 27896,
+      "sha256": "43c0a71b55312f58422bdd0226e85b8c880b98383a31202ccbc8d2933de8125a"
+    },
+    "reproduction/easy2560_joint4/test_qualify_fa3_model_cuda.py": {
+      "bytes": 13350,
+      "sha256": "9e0a6c08a90efcbdea41751b3486ba27a058544eb772091ec803082e400c4247"
+    },
+    "reproduction/operations/easy7b_20261021/submit_fa3_model_probe_hpc.py": {
+      "bytes": 3582,
+      "sha256": "d3a7db1ae3700b87551e0517f7ba36ca6946bc2d9db9763d0f79f74f26ac2f07"
+    },
+    "reproduction/operations/easy7b_20261021/run_fa3_model_probe.sh": {
+      "bytes": 1875,
+      "sha256": "5a447472f59e648d6790f9a71fe71020802f1c7c48dff23dda3db8580642245b"
+    },
+    "reproduction/operations/easy7b_20261021/observe_fa3_diagnostic_hpc.py": {
+      "bytes": 2330,
+      "sha256": "be6b854ccfbb4df35bdc205947039af038cb61b91a80660c6d4076262ea793b5"
+    }
+  },
+  "fp32_reference": "Explicit autocast disabled + TF32 disabled, sampled first/middle/last queries use original complete K/V and causal/window/scale/softcap; original settings restored in finally.",
+  "production_job": "745371",
+  "production_modified": false
+}
