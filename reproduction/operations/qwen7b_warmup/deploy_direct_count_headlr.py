@@ -1,4 +1,4 @@
-"""Stage/CPU-prepare ONLY the strict matched headLR1e-4 branch; no submit API."""
+"""Strict matched headLR1e-4 branch; submit needs explicit parent typed GO."""
 import argparse,base64,hashlib,importlib.util,json,pathlib,shlex,subprocess
 REPO=pathlib.Path(__file__).resolve().parents[3];CONTROL=REPO.parents[1];PKG='reproduction/operations/qwen7b_warmup/'
 OWN=('direct_count_headlr_train.py','direct_count_headlr_update.py','test_direct_count_headlr.py')
@@ -11,7 +11,8 @@ def proof(p):
  p=pathlib.Path(p);raw=p.read_bytes();return dict(path=str(p),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
 '''
 def main():
- p=argparse.ArgumentParser();p.add_argument('--action',choices=('stage','prepare','status'),required=True);a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--action',choices=('stage','prepare','submit','status'),required=True);p.add_argument('--submit-authorized',action='store_true');a=p.parse_args()
+ if a.action=='submit'and not a.submit_authorized:p.error('Explicit parent typed GO plus --submit-authorized required')
  spec=importlib.util.spec_from_file_location('matched_headlr_prepare_private_control',CONTROL/'work/prefix-schedule-cp50-20261018/reproduction/hpc3_prefix5/direct_control.py');ctl=importlib.util.module_from_spec(spec);spec.loader.exec_module(ctl);ip=subprocess.check_output(['/usr/sbin/ipconfig','getifaddr','en0']).decode().strip()
  def call(body,**values):
   values.update(base=BASE,reference=REFERENCE,pkg=PKG);cmd='python3 -c '+shlex.quote('v='+repr(values)+'\n'+COMMON+body)
@@ -51,7 +52,27 @@ else:
  with (b/'cpu-prepare.log').open('ab')as log:r=subprocess.run(['bash',root+'/reproduction/operations/qwen7b_warmup/runtime.sh','-u','-c',code],stdout=log,stderr=subprocess.STDOUT,env=env,timeout=48)
  assert r.returncode==0,(b/'cpu-prepare.log').read_text()[-3500:]
  print(json.dumps(dict(preparation=read(b/'preparation.json'),focused_CPU_tests=2,actual_pretrained_tensors_loaded=False,GPU_submitted=False)))""")
+ elif a.action=='submit':
+  result=call("""prep=read(b/'preparation.json');assert prep['config']['sha256']=='71c3ee90f0232b889d4ced2d0cb50d69e852eb1ebbdbb55fdff03eaefdbbcc71';assert prep['sbatch']['sha256']=='8f966ce8dacec3473774837faced274a02f71be5cf301ed75f0ebef0c5899d5c';assert proof(b/'config.json')==prep['config'];assert proof(b/'training.sbatch')==prep['sbatch']
+ownlock=(b/'joint-training.lock').open('a');fcntl.flock(ownlock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+if (b/'job.id').exists():print(json.dumps(dict(status='EXISTING_MATCHED_HEADLR_JOB_PRESERVED',job_id=(b/'job.id').read_text().strip())))
+else:
+ assert not (b/'submit-intent.json').exists(),'Unknown submission outcome: reconcile before any retry'
+ q=subprocess.run(['squeue','-h','-u','mou176','-n','q7b-direct-count-headlr1e4','-o','%i|%j|%T|%Z'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True);assert q.returncode==0 and not q.stdout.strip(),q.stdout
+ with (b/'submit-intent.json').open('x')as f:json.dump(dict(config=prep['config'],sbatch=prep['sbatch'],parent_typed_binding_accepted=True,epoch=time.time()),f);f.flush();os.fsync(f.fileno())
+ r=subprocess.run(['sbatch','--parsable',str(b/'training.sbatch')],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True);assert r.returncode==0,r.stderr;jid=r.stdout.strip().split(';')[0];assert jid.isdigit(),r.stdout
+ (b/'job.id').write_text(jid+'\\n');result=dict(status='ONE_STRICT_MATCHED_HEADLR1E4_NORMAL_JOB_SUBMITTED',job_id=jid,config=prep['config'],sbatch=prep['sbatch'],resources=dict(GPU=1,CPU=8,memory='64G',walltime='03:00:00',partition='acd_u',QoS='normal',dependency=None),epoch=time.time());(b/'submission.json').write_text(json.dumps(result)+'\\n');print(json.dumps(result))""")
  else:
-  result=call("out=dict(GPU_submission_available=False)\nfor n in ['source-publication.json','preparation.json','config.json']:\n if (b/n).exists():out[n[:-5]]=proof(b/n)\nif (b/'cpu-prepare.log').exists():out['CPU_log_tail']=(b/'cpu-prepare.log').read_text()[-1800:]\nout['unexpected_job_id_exists']=(b/'job.id').exists();print(json.dumps(out))")
+  result=call("""out=dict(epoch=time.time())
+for n in ['source-publication.json','preparation.json','submission.json','progress.json','failure.json','next-update-replay.json','first-cp-independent-audit.json','latest.json','complete.json','interrupted.json']:
+ if (b/n).exists():
+  value=read(b/n)
+  if n=='source-publication.json':value={k:value[k]for k in ['commit','code_root']}
+  out[n[:-5]]=value
+if (b/'job.id').exists():
+ jid=(b/'job.id').read_text().strip();assert jid.isdigit();out['job_id']=jid
+ for name,args in [('squeue',['squeue','-h','-j',jid,'-o','%i|%j|%T|%M|%R|%N']),('sacct',['sacct','-j',jid,'-n','-P','--format=JobIDRaw,State,ExitCode,Elapsed,NodeList'])]:
+  r=subprocess.run(args,stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True);out[name]=dict(returncode=r.returncode,stdout=r.stdout,stderr=r.stderr)
+print(json.dumps(out))""")
  out=REPO/'reproduction/reports/qwen7b-algorithm-improvement-20261021/direct-count-headlr1e4';out.mkdir(exist_ok=True);(out/('actual-'+a.action+'.json')).write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result),flush=True)
 if __name__=='__main__':main()
