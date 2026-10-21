@@ -8,7 +8,7 @@ def main():
  if a.action=='audit':body=source.decode()+"\nresult=audit();print(json.dumps(result,sort_keys=True))\n"
  elif a.action=='evidence':body=source.decode()+"\ncp=proof(SNAP/'complete.json');p=SNAP/'E0-CP128-CP512-independent-audit.json';accepted=read(p);assert accepted['complete_refs']['CP512']==cp;print(json.dumps(dict(status='CP512_TERMINAL_COMPLETE_AND_INDEPENDENT_AUDIT_FRESH_METADATA_REVERIFIED',complete=cp,independent_audit=proof(p),initial_complete=accepted['complete_refs']['E0'],source_config=proof(SNAP/'source-config.json'),checkpoint_payload_read=False),sort_keys=True))\n"
  else:body="""import json,pathlib,subprocess,time
-b=pathlib.Path(BASE);out=dict(epoch=time.time(),main_job='746154');r=subprocess.run(['sacct','-X','-n','-P','-j','746154','--format=JobIDRaw,State,ExitCode,Elapsed'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=15);out['main_sacct']=r.stdout.strip();out['sacct_returncode']=r.returncode
+b=pathlib.Path(BASE);out=dict(epoch=time.time(),main_job='746247');r=subprocess.run(['sacct','-X','-n','-P','-j','746247','--format=JobIDRaw,State,ExitCode,Elapsed'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=15);out['main_sacct']=r.stdout.strip();out['sacct_returncode']=r.returncode
 for name in('controller.json','evaluation-progress.json','failure.json'):
  try:out[name[:-5]]=json.loads((b/name).read_bytes())
  except FileNotFoundError:pass
