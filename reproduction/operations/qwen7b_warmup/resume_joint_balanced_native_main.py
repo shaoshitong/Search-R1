@@ -53,12 +53,20 @@ assert latest['sampler_state_sha256']==stop['sampler_state_sha256']==latest['dat
 assert set(latest['accepted_hashes'])==set(('raw','ema','adam','raw_buffers','ema_buffers','rng'))and all(re.fullmatch('[0-9a-f]{64}',s)for s in latest['accepted_hashes'].values())
 cp=pathlib.Path(latest['path']);assert cp.parent==b/'checkpoints'and cp.is_file()and not cp.is_symlink();assert proof(cp)=={k:latest[k]for k in('path','bytes','sha256')},'Highest complete checkpoint fresh full SHA differs'
 for ep in range(cursor//3882):assert(b/'evaluations'/('epoch-%02d'%ep)/'complete.json').is_file(),'Past required epoch evaluation missing'
+pending_ref=None;pending=b/'pending-evaluation.json'
+if pending.exists():
+ pe=read(pending)
+ # An old completed pending marker may remain; only an unevaluated current epoch is due.
+ if not(b/'evaluations'/('epoch-%02d'%pe['epoch'])/'complete.json').exists():
+  assert pe['cursor']==cursor and cursor%3882==0 and pe['epoch']==cursor//3882 and pe['checkpoint']==latest,'Pending epoch phase must match exact current checkpoint'
+  pending_ref=proof(pending)
+resume_phase='fixed_epoch_evaluation_due_before_next_update'if cursor%3882==0 and not(b/'evaluations'/('epoch-%02d'%(cursor//3882))/'complete.json').exists()else'next_native_optimizer_update'
 recovery.mkdir(exist_ok=True);entry=(b/'training.sbatch').read_text().replace('--job-name=q7b-native-joint124194','--job-name=q7b-native-joint124194-resume').replace('--time=1-00:00:00','--time=2-00:00:00')
 script=recovery/'training.sbatch'
 if script.exists():assert script.read_text()==entry
 else:script.write_text(entry)
 subprocess.check_call(['bash','-n',str(script)])
-ready=dict(status='EXACT_HIGHEST_NATIVE_MAIN_CHECKPOINT_RECOVERY_READY',epoch=time.time(),original_main_terminal=main[0],checkpoint=latest,config=proof(b/'config.json'),publication=proof(b/'source-publication.json'),original_entry=proof(b/'training.sbatch'),recovery_entry=proof(script),interrupted=proof(b/'interrupted.json'),intent=proof(b/'update-intent.json'),journal=proof(b/'native-checkpoint-transaction.json'),runtime_source_commit='3b56e583efe2469ac9108873c31de7144a5201e6',current_world_size=1,remaining_updates=15528-cursor,old_Adam_steps=14418+cursor,source_E4_restart=False,checkpoint_tensor_load_deferred_to_owned_recovery_allocation=True,exact_native_and_sampler_next_update_double_replay_required=True,controller=v['controller'])
+ready=dict(status='EXACT_HIGHEST_NATIVE_MAIN_CHECKPOINT_RECOVERY_READY',epoch=time.time(),resume_phase=resume_phase,pending_evaluation=pending_ref,all_preceding_epoch_evaluations_preserved=True,original_main_terminal=main[0],checkpoint=latest,config=proof(b/'config.json'),publication=proof(b/'source-publication.json'),original_entry=proof(b/'training.sbatch'),recovery_entry=proof(script),interrupted=proof(b/'interrupted.json'),intent=proof(b/'update-intent.json'),journal=proof(b/'native-checkpoint-transaction.json'),runtime_source_commit='3b56e583efe2469ac9108873c31de7144a5201e6',current_world_size=1,remaining_updates=15528-cursor,old_Adam_steps=14418+cursor,source_E4_restart=False,checkpoint_tensor_load_deferred_to_owned_recovery_allocation=True,exact_native_and_sampler_next_update_double_replay_required=True,controller=v['controller'])
 # Epoch time must not make a repeated unchanged prepare mutate an existing receipt.
 if(recovery/'preparation.json').exists():
  old=read(recovery/'preparation.json');ready['epoch']=old['epoch'];assert old==ready
