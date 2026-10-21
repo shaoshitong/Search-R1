@@ -10,10 +10,10 @@ def compact(s):
   if key in s:out[key]=s[key]
  return out
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--commit',required=True);p.add_argument('--max-seconds',type=int,default=9000);a=p.parse_args();lock=(HERE/'follow-existing.lock').open('a+');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB);end=time.monotonic()+a.max_seconds;last=None;seq=0
- (HERE/'observer-handle.json').write_text(json.dumps(dict(pid=os.getpid(),commit=a.commit,start_epoch=time.time(),max_seconds=a.max_seconds,remote_actions='status only; never submit or mutate active source'))+'\n')
+ p=argparse.ArgumentParser();p.add_argument('--commit',required=True);p.add_argument('--helper-commit');p.add_argument('--max-seconds',type=int,default=9000);a=p.parse_args();lock=(HERE/'follow-existing.lock').open('a+');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB);end=time.monotonic()+a.max_seconds;last=None;seq=0
+ (HERE/'observer-handle.json').write_text(json.dumps(dict(pid=os.getpid(),commit=a.commit,helper_commit=a.helper_commit or a.commit,start_epoch=time.time(),max_seconds=a.max_seconds,remote_actions='status only; never submit or mutate active source'))+'\n')
  while time.monotonic()<end:
-  r=subprocess.run(['python3',str(HELPER),'--action','status','--commit',a.commit],cwd=R,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,timeout=75)
+  r=subprocess.run(['python3',str(HELPER),'--action','status','--commit',a.helper_commit or a.commit,'--runtime-commit',a.commit],cwd=R,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,timeout=75)
   if r.returncode:raise RuntimeError(r.stderr[-1800:]+r.stdout[-1800:])
   s=json.loads(r.stdout.splitlines()[-1]);v=compact(s);seq+=1;v['read_number']=seq;(HERE/'live-latest.json').write_text(json.dumps(v,indent=2)+'\n')
   with(HERE/'actual-progress.jsonl').open('a')as f:f.write(json.dumps(v)+'\n')

@@ -80,7 +80,9 @@ for i in range(4):
  for name in('progress.json','failure.json','complete.json'):
   p=cap/name
   if p.exists():
-   x=read(p);own[name]=dict(ref=fp(p),**{k:x[k]for k in('status','trajectories','expected_trajectories','completed_chunks','job_id','elapsed_seconds','error','error_type')if k in x})
+   try:
+    raw=p.read_bytes();x=json.loads(raw);own[name]=dict(ref=dict(path=str(p),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest()),**{k:x[k]for k in('status','trajectories','expected_trajectories','completed_chunks','job_id','elapsed_seconds','error','error_type')if k in x})
+   except FileNotFoundError:own[name]=dict(transient_atomic_snapshot_visibility=True)
  out[str(i)]=own
 for name in('prepare.log',):
  p=b/name
@@ -115,12 +117,13 @@ bash "@@QUALIFIED@@/reproduction/operations/qwen7b_warmup/runtime.sh" -u "@@NEW@
 bash "@@QUALIFIED@@/reproduction/operations/qwen7b_warmup/runtime.sh" -u "@@NEW@@/merge_donor14080_l26.py"
 '''
 def main():
- p=argparse.ArgumentParser();p.add_argument('--action',choices=('stage','finalize','submit','status'),required=True);p.add_argument('--commit',required=True);p.add_argument('--submit-authorized',action='store_true');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--action',choices=('stage','finalize','submit','status'),required=True);p.add_argument('--commit',required=True);p.add_argument('--runtime-commit');p.add_argument('--submit-authorized',action='store_true');a=p.parse_args()
+ if a.runtime_commit and a.action!='status':p.error('Runtime commit override is read-only status only')
  if a.action=='submit'and not a.submit_authorized:p.error('Explicit submit authorization flag required')
  own=Path(__file__);commit=a.commit;remote=subprocess.check_output(['git','ls-remote','origin','refs/heads/codex/donor14080-l26-prepare-20261021'],cwd=R).decode().split()[0];subprocess.check_call(['git','merge-base','--is-ancestor',commit,remote],cwd=R);assert own.read_bytes()==subprocess.check_output(['git','show',commit+':'+str(own.relative_to(R))],cwd=R)
  spec=importlib.util.spec_from_file_location('donor14080_l26_private',CONTROL/'work/prefix-schedule-cp50-20261018/reproduction/hpc3_prefix5/direct_control.py');ctl=importlib.util.module_from_spec(spec);spec.loader.exec_module(ctl);ip=subprocess.check_output(['/usr/sbin/ipconfig','getifaddr','en0']).decode().strip()
  def call(block,extra=None):
-  args=dict(base=BASE,qualified=QUALIFIED,raw=RAW,raw_sha=RAW_SHA,commit=commit);args.update(extra or {});source='v='+repr(args)+'\n'+COMMON+block;compile(source,'donor14080-control','exec');packed=base64.b64encode(zlib.compress(source.encode())).decode();cmd='python3 -c '+shlex.quote('import base64,zlib;exec(zlib.decompress(base64.b64decode('+repr(packed)+')))');assert len(cmd.encode())<16000;r=ctl.run(cmd,account='mou176',source_address=ip,timeout=55)
+  args=dict(base=BASE,qualified=QUALIFIED,raw=RAW,raw_sha=RAW_SHA,commit=a.runtime_commit or commit);args.update(extra or {});source='v='+repr(args)+'\n'+COMMON+block;compile(source,'donor14080-control','exec');packed=base64.b64encode(zlib.compress(source.encode())).decode();cmd='python3 -c '+shlex.quote('import base64,zlib;exec(zlib.decompress(base64.b64decode('+repr(packed)+')))');assert len(cmd.encode())<16000;r=ctl.run(cmd,account='mou176',source_address=ip,timeout=55)
   if r.returncode:raise RuntimeError(r.stdout[-2000:]+r.stderr[-1500:])
   return json.loads(r.stdout.splitlines()[-1])
  if a.action=='stage':
