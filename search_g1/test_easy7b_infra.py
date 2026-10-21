@@ -1,8 +1,23 @@
 import unittest
-from search_g1.easy7b_infra import flags
+from search_g1.easy7b_infra import flags, profile_flags
 
 
 class InfraFlagsTest(unittest.TestCase):
+    def test_profile_launch_keeps_geometry_and_recipe(self):
+        import tempfile
+        from reproduction.easy2560_joint4.control import BASE, launch_command
+        from reproduction.easy2560_joint4.prepare_training import selection_settings
+        original = launch_command(BASE, 'a'*40, 8)
+        candidate = launch_command(BASE, 'a'*40, 8, infra_profile='sparse-exact-v1')
+        self.assertEqual(candidate[:-1], original)
+        self.assertEqual(candidate[-1], 'sparse-exact-v1')
+        with tempfile.TemporaryDirectory() as td:
+            baseline = selection_settings(td, 8)
+            optimized = selection_settings(td, 8, infra_profile='sparse-exact-v1')
+        self.assertEqual(optimized.pop('infra_optimizations'), profile_flags('sparse-exact-v1'))
+        self.assertEqual(optimized, baseline)
+        with self.assertRaises(ValueError):profile_flags('unknown')
+
     def test_old_and_current_manifests_remain_disabled(self):
         self.assertEqual(flags({}),dict(selected_policy_logits=False,exact_retrieval_cache=False))
         self.assertEqual(flags({'infra_optimizations':dict(selected_policy_logits=False,exact_retrieval_cache=False)}),

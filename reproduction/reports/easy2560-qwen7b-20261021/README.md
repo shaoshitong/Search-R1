@@ -1,8 +1,8 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
 This is a fresh 7B actor experiment, adapted from the 3B Easy implementation at
-6956d9ffa0ec497c13a66061bd6460a471e9aa0d. The original 3B checkout and live job
-734689 are unchanged. No other thread is messaged or modified.
+6956d9ffa0ec497c13a66061bd6460a471e9aa0d. The original 3B checkout is preserved. Original job734689 was subsequently
+stopped at the user’s explicit request, as recorded below. No other thread is messaged or modified.
 
 Official source: Qwen/Qwen2.5-7B-Instruct, revision
 a09a35458c702b33eeacc393d103063234e8bc28. The complete existing HPC3 asset is
@@ -107,3 +107,42 @@ Already-existing optimizations are not new savings: sampled oldLP reuse, zero-KL
 reference forward skip and zero-entropy skip. Same-actor five-phase weight-sync
 reuse, unused reference initialization removal and minimal grounding-head request
 routing are further measured-work candidates; they are not silently enabled.
+
+## Launchable optimization candidate and measured progress update
+
+A future independent run can explicitly select `control submit --infra-profile
+sparse-exact-v1`. The single profile is pinned through submit claim, shell and
+prepared run manifest; baseline remains default and its launch argv is unchanged.
+This is code preparation, not activation on745022. It does not raise micro8.
+
+`search_g1/benchmark_selected_qwen_head.py` measures only a randomly initialized
+7B-shape LM head in RAM (3584 hidden,152064 vocabulary). Both modes use the same
+full vocabulary, positions, labels and signed objective. It reports CUDA forward/
+backward time, synchronized wall, allocation/reservation peaks and full LP/loss/
+all-gradient differences. Dense OOM is reported independently without reducing
+size or fabricating a speed ratio. No GPU benchmark has been run yet, and this
+script cannot establish complete7B FSDP throughput or safe micro16.
+
+At18:16CST the actual7B calibration had fitted both heads after1500 rollouts,
+1180 valid; its feature NPZ was48,956,084 bytes. Commit CV AUC0.892 and boundary
+CV AUC0.691 are calibration measurements, not final QA performance. At18:17:32
+the pipeline entered GRPO_1_TO_200 and began actor initialization. No completed
+actor outer was present in the latest receipt. Two measured checks showed
+generation completion, feature publication and final fitting rather than merely
+a Slurm RUNNING flag.
+
+The completed Oct21 root scan exposed at least5,095,177,170,944 allocated bytes
+under the shared experiments root as jxu957, despite permission gaps. The
+secondUID scan exposed4,991,155,515,392; these overlap and must not be summed.
+The priorOct20 2.354TB observation is historical. The32-file approved cleanup
+released16.865GB but does not resolve the global2TB cap. Other directories and
+raw rollout/feature contents are not authorized by this checkpoint cleanup. A
+low-priority per-directory distribution audit is prepared; no broad deletion.
+
+Further reviewed synchronization opportunity: preserve five original RNG/KV
+phases but retain the same frozen vLLM policy weights between candidate chunks,
+reducing each rank’s sync calls5→1 (20→4 across four ranks). This is80% fewer
+weight syncs, not80% faster training. Current offload replaces GPU weight storage
+with CPU placeholders, so simply skipping sync would be incorrect. This change
+is not implemented or enabled. Removing idle reference initialization and
+requesting only reward-required grounding features remain additional candidates.

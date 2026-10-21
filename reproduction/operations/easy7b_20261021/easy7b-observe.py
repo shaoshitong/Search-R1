@@ -3,7 +3,7 @@ from pathlib import Path
 b=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021');job=(b/'job.id').read_text().strip();d=dict(epoch=time.time(),job=job)
 for key,cmd in [('queue',['squeue','-j',job,'-h','-o','%i|%T|%N|%R|%S']),('accounting',['sacct','-j',job,'-n','-P','-o','JobIDRaw,State,ExitCode,NodeList,Elapsed'])]:
  x=subprocess.run(cmd,capture_output=True,text=True,timeout=8);d[key]=dict(rc=x.returncode,stdout=x.stdout,stderr=x.stderr)
-for n in ['logs/run-manifest.json','logs/pipeline-status.json','logs/easy2560-configuration-prepared.json','logs/cleanup-status.json','logs/actual-updates.jsonl','preparation/rolling-checkpoints/latest.json']:
+for n in ['logs/run-manifest.json','logs/pipeline-status.json','logs/easy2560-configuration-prepared.json','logs/cleanup-status.json','logs/process-ledger.json','logs/actual-updates.jsonl','preparation/rolling-checkpoints/latest.json']:
  p=b/n
  if not p.exists():continue
  if n.endswith('jsonl'):
@@ -13,7 +13,7 @@ for n in ['logs/run-manifest.json','logs/pipeline-status.json','logs/easy2560-co
   z=json.loads(p.read_text())
   if n.endswith('run-manifest.json'):z={k:z.get(k)for k in ['run_id','source_commit','initial_model','reference_model','model_revision','training_world_size','actor_micro_batch_per_rank','all_correct_virtual_zero','initial_reward_probe_source_base','initial_probe_version']}
   d[n]=z
-logs=[*b.glob('logs/training-*.log'),*b.glob('logs/*initial-calibration*.log'),*b.glob('logs/*retriever*.log'),*b.glob('logs/*retrieval-stage*.log'),*b.glob('artifacts/round_0-*/calibration.log')]
+logs=[*b.glob('logs/training-*.log'),*b.glob('logs/*trainer*.log'),*b.glob('logs/search-g1-common8-training.log'),*b.glob('logs/*initial-calibration*.log'),*b.glob('logs/*retriever*.log'),*b.glob('logs/*retrieval-stage*.log'),*b.glob('artifacts/round_0-*/calibration.log')]
 d['logs']=[]
 for p in logs:
  s=p.stat()
@@ -23,4 +23,8 @@ d['calibration_dumps']=[dict(path=str(p.relative_to(b)),bytes=p.stat().st_size)f
 for c in [b/'control/storage-current',Path('/tmp/easy7b-storage-current-20261021-21930')]:
  for p in c.glob('result-*.json'):
   d[str(p)]=json.loads(p.read_text())
+g=b/('logs/gpu-samples-'+d.get('logs/run-manifest.json',{}).get('run_id','')+'.jsonl')
+if g.is_file():
+ with g.open('rb') as f:f.seek(max(0,g.stat().st_size-20000));lines=f.read().decode(errors='replace').splitlines()
+ d['latest_gpu_samples']=[json.loads(z) for z in lines[-2:] if z]
 print(json.dumps(d))

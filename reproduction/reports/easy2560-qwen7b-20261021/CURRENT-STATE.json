@@ -1,0 +1,64 @@
+{
+  "epoch": 1792577999.314186,
+  "status": "7B_GENUINE_INITIAL_CALIBRATION_COMPLETE_ACTOR_INITIALIZING",
+  "active_goal_achieved": false,
+  "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
+  "job": "745022",
+  "run_id": "232f20e112ac4a978c5aba52a0367195",
+  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021",
+  "runtime_commit": "d6690e86152cbd6f9400317646de04d9f36ac2e1",
+  "actor_physical_micro": 8,
+  "global_mini": 128,
+  "logical_micro": 4,
+  "accumulation": 4,
+  "actual_completed_outer": 0,
+  "initialization_is_not_training_acceptance": true,
+  "old3b": {
+    "job": "734689",
+    "state": "HUMAN_REQUESTED_CANCELLED",
+    "last_completed_outer": 145,
+    "preserved_durable_checkpoint": 100,
+    "authorizing_current_message_observation_unix": 1792576538.0,
+    "scope": "Only3B stopped; 7B goal continues; never resume 3B from stale200 goal"
+  },
+  "cleanup": {
+    "authorization": "Current2026-10-21 human approval stopped old QProbe checkpoints only",
+    "exact_removed_files": 32,
+    "confirmed_lastlink_released_bytes": 16865304576,
+    "raw_archives_untouched": true,
+    "personal_storage_budget_bytes": 2000000000000,
+    "current_global_usage": {
+      "visible_allocated_lower_bound_bytes": 5095177170944,
+      "checked_unix": 1792577381.3862753,
+      "uid": 14090,
+      "permission_incomplete": true,
+      "under_budget": false,
+      "root_scans_complete": true
+    }
+  },
+  "infra": {
+    "actual_training_optimization_enabled": false,
+    "selected_LM_head": "Three real tinyQwen CPU model/logprob/PPO/all-gradient/checkpointing tests passed in existing745022 CPU-only substep; no7B CUDA equivalence yet",
+    "exact_query_cache": "11 CPU tests passed; preserves exact original fullbatch/context/score mode/version and logical search counts",
+    "pending": "Opt-in sparse-exact-v1 wired through future immutable launch; not enabled on745022. Head-only CUDA benchmark ready but not run; no full7B CUDA throughput/micro16 proof.",
+    "physical_micro16": "Not raised blindly; needs actual measured memory/throughput"
+  },
+  "previous_goal_turn_classification": "PROGRESS",
+  "latest_turn_classification": "PROGRESS: published+deployed7B adapter, real9tests, uniquejob745022 allocated, realretrieval staging; authorized32retirements; explicit3Bstopverified; optionalinfra actualCPU numeric validation",
+  "last_observation": "actual-observation-1792577946.json",
+  "pipeline": {
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "stage": "GRPO_1_TO_200",
+    "unix": 1792577852.1353621,
+    "execution_role": "production"
+  },
+  "calibration": {
+    "actual_rollouts": 1500,
+    "valid_rollouts": 1180,
+    "feature_dump_bytes": 48956084,
+    "both_heads_fitted": true,
+    "commit_cv_auc": 0.892,
+    "boundary_cv_auc": 0.691,
+    "one_time_not_actor_outer": true
+  }
+}

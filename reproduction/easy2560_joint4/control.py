@@ -130,10 +130,12 @@ def bind_repo(base, commit):
     return bound
 
 
-def launch_command(base, commit, actor_micro=8, restore_receipt=None):
+def launch_command(base, commit, actor_micro=8, restore_receipt=None, infra_profile='baseline'):
+    from search_g1.easy7b_infra import profile_flags
+    profile_flags(infra_profile)
     base = own_base(base)
     if actor_micro not in MICROS: raise ValueError('EASY2560_UNSUPPORTED_PHYSICAL_MICRO')
-    return ['sbatch', '--parsable', '--partition=emergency_acd', '--qos=formal-user',
+    command = ['sbatch', '--parsable', '--partition=emergency_acd', '--qos=formal-user',
             '--account=jxu957', '--nodes=1', '--ntasks=1', '--gres=gpu:4',
             '--cpus-per-task=48', '--mem=512G', '--time=7-00:00:00',
             '--job-name=easy2560-7b-corollout200', '--export=NONE',
@@ -142,6 +144,9 @@ def launch_command(base, commit, actor_micro=8, restore_receipt=None):
             '--error=' + str(base / 'logs/training-%j.log'),
             str(base / 'source' / commit / 'reproduction/easy2560_joint4/train.sh'),
             str(base), commit, str(actor_micro), str(restore_receipt) if restore_receipt else '']
+    if infra_profile != 'baseline':
+        command.append(infra_profile)
+    return command
 
 
 def restore_binding(receipt):
@@ -160,22 +165,24 @@ def bootstrap(base, commit, predecessor=PREDECESSOR):
     return dict(environment=environment, source=source, training_submitted=False)
 
 
-def submit(base, commit, actor_micro=8, predecessor=PREDECESSOR, restore_receipt=None):
+def submit(base, commit, actor_micro=8, predecessor=PREDECESSOR, restore_receipt=None, infra_profile='baseline'):
     base = own_base(base); bootstrap(base, commit, predecessor)
     claim = base / 'preparation/training-submit-claim.json'
     receipt = base / 'preparation/training-submission.json'
     if any(p.exists() for p in (claim, receipt, base / 'job.id', base / 'logs/run-manifest.json')):
         raise ValueError('EASY2560_SUBMISSION_ALREADY_ATTEMPTED_INSPECT_ACTUAL_JOB')
     restoration = restore_binding(restore_receipt)
-    command = launch_command(base, commit, actor_micro, restoration['restore_receipt'])
+    command = launch_command(base, commit, actor_micro, restoration['restore_receipt'], infra_profile)
     publish(claim, dict(source_commit=commit, command=command,
                         actor_micro_batch_per_rank=actor_micro, logical_micro_batch_per_rank=4,
+                        infra_profile=infra_profile,
                         **restoration,
                         personal_storage_budget_bytes=2 * 10**12, created_unix=time.time()))
     result = subprocess.run(command, capture_output=True, text=True, timeout=30)
     value = dict(source_commit=commit, command=command, returncode=result.returncode,
                  stdout=result.stdout, stderr=result.stderr, checked_unix=time.time(),
                  actor_micro_batch_per_rank=actor_micro, training_world_size=4, **restoration)
+    value['infra_profile'] = infra_profile
     if result.returncode == 0:
         job = result.stdout.strip().split(';')[0]
         if not job.isdecimal(): raise ValueError('EASY2560_UNKNOWN_SUBMISSION_RESULT_INSPECT_CLAIM')
@@ -191,9 +198,11 @@ def main():
     p.add_argument('--base', default=BASE); p.add_argument('--commit', required=True)
     p.add_argument('--predecessor', default=PREDECESSOR)
     p.add_argument('--restore-receipt')
+    from search_g1.easy7b_infra import PROFILES
+    p.add_argument('--infra-profile', choices=PROFILES, default='baseline')
     p.add_argument('--actor-micro', type=int, choices=MICROS, default=8); a = p.parse_args()
     value = (bootstrap(a.base, a.commit, a.predecessor) if a.mode == 'bootstrap' else
-             submit(a.base, a.commit, a.actor_micro, a.predecessor, a.restore_receipt))
+             submit(a.base, a.commit, a.actor_micro, a.predecessor, a.restore_receipt, a.infra_profile))
     print(json.dumps(value), flush=True)
 
 

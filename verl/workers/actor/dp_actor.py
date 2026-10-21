@@ -146,7 +146,7 @@ class DataParallelPPOActor(BasePPOActor):
                     print('SEARCH_G1_SELECTED_POLICY_LOGITS=' + json.dumps(dict(
                         packed_decoder_tokens=input_ids_rmpad_rolled.numel(),
                         actual_projected_tokens=logits_rmpad.size(0),
-                        authored_only=not compute_entropy and 'loss_mask' in micro_batch,
+                        authored_only_requested=not compute_entropy and 'loss_mask' in micro_batch,
                         full_decoder_context_preserved=True,actual_forward=True)),flush=True)
                     self._selected_projection_logged = True
 

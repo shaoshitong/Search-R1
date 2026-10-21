@@ -8,7 +8,9 @@ import time
 from .control import BASE, MODEL, PREDECESSOR, MICROS, own_base, publish, restore_binding
 
 
-def selection_settings(predecessor, physical, restoring=False):
+def selection_settings(predecessor, physical, restoring=False, infra_profile='baseline'):
+    from search_g1.easy7b_infra import profile_flags
+    infra = profile_flags(infra_profile)
     if physical not in MICROS: raise ValueError('EASY2560_UNSUPPORTED_PHYSICAL_MICRO')
     old = Path(predecessor)
     previous = old / 'logs/run-manifest.json'
@@ -24,14 +26,18 @@ def selection_settings(predecessor, physical, restoring=False):
                 checkpoint_milestone_steps=[5, 50, 100, 150, 200],
                 personal_storage_budget_bytes=2 * 10**12)
     # 7B must fit its own official-actor round0 labels. No inherited 3B heads.
+    if infra_profile != 'baseline':
+        settings['infra_optimizations'] = infra
     return settings
 
 
-def prepare(base, commit, actor_micro=8, restore_receipt=None):
+def prepare(base, commit, actor_micro=8, restore_receipt=None, infra_profile='baseline'):
     base = own_base(base)
     if os.environ.get('SEARCH_G1_TRAINING_WORLD_SIZE') != '4' or not os.environ.get('SLURM_JOB_ID', '').isdecimal():
         raise ValueError('EASY2560_ACTUAL_NATIVE4_SLURM_REQUIRED')
     submitted = json.loads((base / 'preparation/training-submit-claim.json').read_text())
+    if submitted.get('infra_profile', 'baseline') != infra_profile:
+        raise ValueError('EASY2560_SUBMITTED_INFRA_PROFILE_DIFFERS')
     if submitted['source_commit'] != commit or submitted['actor_micro_batch_per_rank'] != actor_micro:
         raise ValueError('EASY2560_SUBMITTED_SOURCE_OR_MICRO_DIFFERS')
     restoration = restore_binding(restore_receipt)
@@ -43,7 +49,7 @@ def prepare(base, commit, actor_micro=8, restore_receipt=None):
     if not manifest.is_file():
         from .model7b import create
         create(Path(MODEL), manifest)
-    settings = selection_settings(predecessor, actor_micro, restoring=bool(restore_receipt))
+    settings = selection_settings(predecessor, actor_micro, restoring=bool(restore_receipt), infra_profile=infra_profile)
     from reproduction.common8.formal_contract import SKIP_INITIAL_EVALUATION_POLICY
     from search_g1.rollout_phase_contract import DEFAULT_ROLLOUT_PHASE, validate
     settings['pretraining_baseline_policy'] = ('reuse_historical' if restore_receipt else
@@ -67,6 +73,7 @@ def prepare(base, commit, actor_micro=8, restore_receipt=None):
     proof = dict(stage='easy2560_native4_configuration_prepared', run_id=run['run_id'],
                  source_commit=commit, slurm_job_id=os.environ['SLURM_JOB_ID'],
                  target_outers=200, training_world_size=4,
+                 infra_profile=infra_profile,
                  actor_micro_batch_per_rank=actor_micro, actor_logical_micro_batch_per_rank=4,
                  gradient_accumulation_steps=32 // actor_micro,
                  question_selection_probe_enabled=False, teacher_warmup_updates=0,
@@ -86,8 +93,10 @@ def main():
     p = argparse.ArgumentParser(); p.add_argument('--base', default=BASE)
     p.add_argument('--commit', required=True)
     p.add_argument('--restore-receipt')
+    from search_g1.easy7b_infra import PROFILES
+    p.add_argument('--infra-profile', choices=PROFILES, default='baseline')
     p.add_argument('--actor-micro', type=int, choices=MICROS, default=8); a = p.parse_args()
-    print(json.dumps(prepare(a.base, a.commit, a.actor_micro, a.restore_receipt)), flush=True)
+    print(json.dumps(prepare(a.base, a.commit, a.actor_micro, a.restore_receipt, a.infra_profile)), flush=True)
 
 
 if __name__ == '__main__': main()
