@@ -105,7 +105,7 @@ else:
  with p.open('rb') as f:f.seek(v['offset']);assert f.read(len(x))==x
 print(json.dumps(dict(status='PUBLISHED_METADATA_CODE_CHUNK_ACCEPTED',offset=v['offset'],bytes=len(x))))
 ''')
-    values=dict(root=root,files=files,bundle_sha=sha(raw),bundle_bytes=len(raw),commit=commit,source_selection=CONFIG['source_selection'])
+    values=dict(root=root,files=files,bundle_sha=sha(raw),bundle_bytes=len(raw),commit=commit,source_selection=CONFIG['source_selection'],expected_new=CONFIG['expected_new'],expected_prior=CONFIG['expected_prior'],record_sha256=CONFIG['selected_batch_records_sha256'])
     return source_call('v='+repr(values)+'\n'+r'''
 import hashlib,io,json,pathlib,tarfile,os,socket
 assert socket.gethostname().split('.')[0]=='h100-10'
@@ -121,6 +121,8 @@ with tarfile.open(fileobj=io.BytesIO(raw),mode='r:gz') as tar:
    with p.open('xb') as f:f.write(x);f.flush();os.fsync(f.fileno())
    p.chmod(0o444)
 ref=v['source_selection'];source=pathlib.Path(ref['path']);assert source.stat().st_size==ref['bytes'] and hashlib.sha256(source.read_bytes()).hexdigest()==ref['sha256'];target=b/'frozen-selection.json'
+plan=json.loads(source.read_text());expected=v['expected_new'];assert all(plan[k]==expected[k] for k in ('batches','questions','trajectories')) and plan['domain_counts']==expected['domains'] and plan['batch_records_sha256']==v['record_sha256']
+prior=v['expected_prior'];assert all(sum(p['expected_'+k] for p in plan['prior_snapshots'])==prior[k] for k in ('batches','questions','trajectories'))
 if target.exists():assert target.read_bytes()==source.read_bytes()
 else:target.write_bytes(source.read_bytes());target.chmod(0o444)
 files=dict(v['files']);files['frozen-selection.json']=dict(bytes=ref['bytes'],sha256=ref['sha256'])
