@@ -1,0 +1,7 @@
+# Actual shared-input metadata is ready
+
+The shared native cache, real small CP0, and epoch0 evaluation now exist. The resolver accepted actual descriptors and verified metadata lineage for 35,136 questions / 351,360 authentic trajectories, 1,373 chunks, original 938-batch order and view epochs, frozen own-newseed-five heldout truth and domains, finite small cached logits, small CP0 SHA and bounded ZIP geometry, epoch0 save-before-evaluate binding, initial head four hashes, source805/configfb637, and the preregistered family protocol.
+
+The actual typed packet is remote `frozenE1-head-objective-family-v1/coarse-fork-inputs.json`, 9,776 bytes, SHA256 `d40bddcc05f7d5319e1f77040264b8e5f10f799b7d6013ce4f44f4b9dfdc9f10`. The earlier WAIT record is preserved. The resolver did not load a large model, hidden tensor bank, optimizer state, or real head state on the controller. Complete hidden-payload qualification is inherited explicitly from the immutable producer; chunk metadata and authentic ID ranges were checked freshly.
+
+Future binary/three-event fork allocations must each restore actual small CP0 raw/EMA/Adam0/RNG and compare all four hashes before any update. This metadata readiness is not fork-update qualification or GPU authorization. There were no GPU submissions or external/final outcome reads by this operator. The independent real CP1 CPU reload separately confirms the small-state schema while preserving the per-fork restore requirement.
