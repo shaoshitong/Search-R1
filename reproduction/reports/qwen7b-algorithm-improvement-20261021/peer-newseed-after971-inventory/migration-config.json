@@ -1,0 +1,47 @@
+{
+  "Mac_payload_transfer": false,
+  "canonical_training_text_hash_policy": "retain canonical distinct qids/authentic trajectory IDs; train-only repeated text hashes are reported; evaluation qid/hash exclusion remains hard",
+  "current124194_training_cohort_changed": false,
+  "donor_and_HPC3_tail_whole_G5_source_choice_deferred": true,
+  "expected_new": {
+    "batches": 138,
+    "domains": {
+      "hotpotqa": 17664
+    },
+    "questions": 17664,
+    "trajectories": 88320
+  },
+  "expected_prior": {
+    "batches": 971,
+    "questions": 124194,
+    "trajectories": 620970
+  },
+  "expected_train_hash_repeats": {
+    "prior_overlap_questions": 1,
+    "within_selected": 1
+  },
+  "no_GPU_or_training": true,
+  "no_source_discovery": true,
+  "role": "frozen_audited_delta_transfer",
+  "route": [
+    "H100",
+    "management bounded RAM",
+    "private HF",
+    "HKUST2",
+    "HKUST3",
+    "HPC3"
+  ],
+  "selected_batch_records_sha256": "7e0553541d532699ca5cf209ee80b7cde6cbbddbb6b747fd854c2c879a1ee964",
+  "snapshot": "audited138-after971-20261021-51057f37",
+  "source_and_previous_snapshots_preserved": true,
+  "source_qualification": {
+    "bytes": 1670,
+    "path": "/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/source-proof-after971-51057f377942/complete.json",
+    "sha256": "3c05011247e8fa691af012cc0baddfdfe0d6dd88892d058e025820c193d36f31"
+  },
+  "source_selection": {
+    "bytes": 274282,
+    "path": "/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/metadata-plans/after971-51057f377942/audited138-plan.json",
+    "sha256": "ecec9cbb76934cf300b532f985562338aaa74bfe4cd895d83a5d46abcd476d00"
+  }
+}

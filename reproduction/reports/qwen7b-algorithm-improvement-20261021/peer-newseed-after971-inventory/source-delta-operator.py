@@ -5,7 +5,7 @@ PREFIX='reproduction/operations/qwen7b_warmup/'
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--action',choices=('launch','status','fetch-plan','worker'),required=True);p.add_argument('--commit',required=True);p.add_argument('--branch',default='codex/peer-donor-after971-20261021');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--action',choices=('launch','status','fetch-plan','alias-plan','worker'),required=True);p.add_argument('--commit',required=True);p.add_argument('--branch',default='codex/peer-donor-after971-20261021');a=p.parse_args()
     source=json.loads((HERE/'actual-source-after971.json').read_text());h=source['delta_records_sha256']
     root='/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/source-proof-after971-'+h[:12]
     req=dict(action=a.action,root=root,commit=a.commit)
@@ -26,6 +26,14 @@ if p['action']=='worker':
  if proc.exists():
   st=(proc/'stat').read_text().rsplit(')',1)[1].split();cmd=(proc/'cmdline').read_bytes();out.update(birth_ticks=int(st[19]),state=st[0],cmdline_sha256=hashlib.sha256(cmd).hexdigest(),sampling_worker_command=(b'prefix_selection200' in cmd or b'pool' in cmd or b'sample' in cmd),source_run_id_present=b'70188b8e50fd' in cmd)
  print(json.dumps(out));sys.exit(0)
+if p['action']=='alias-plan':
+ complete,cref=load(root/'complete.json');assert complete['status']=='FINITE_DONOR_DELTA_FRESH_SHA_CAUSAL_OWN_G5_AUDIT_AND_FROZEN_PLAN_COMPLETE'
+ plan,ref=load(pathlib.Path(complete['plan']['path']));assert ref==complete['plan'] and plan['batches']==138 and plan['questions']==17664
+ dest=root.parent/'metadata-plans/after971-51057f377942/audited138-plan.json';dest.parent.mkdir(parents=True,exist_ok=True);blob=pathlib.Path(ref['path']).read_bytes()
+ if dest.exists():assert dest.read_bytes()==blob
+ else:
+  with dest.open('xb')as stream:stream.write(blob);stream.flush();os.fsync(stream.fileno())
+ assert load(dest)[0]==plan;print(json.dumps(dict(status='QUALIFIED_FROZEN_PLAN_BYTE_IDENTICAL_ALIAS_ACCEPTED',source_complete=cref,source_plan=ref,plan=load(dest)[1])));sys.exit(0)
 if p['action']=='launch':
  root.mkdir(parents=True,exist_ok=True)
  with(root/'launch.lock').open('a')as lock:
