@@ -9,3 +9,5 @@ Each optimizer update:32questions,320own native trajectory rows,128realG5 views 
 Initial independent2048test before any optimization: MixedBCE0.772123, BA49.4109%, AUC0.501164, Top512 trueMixed164/512. Raw and EMA match exactly. No trained-epoch independent result exists yet; no claim of algorithmic improvement.
 
 Four obsolete terminal checkpoint paths were removed under human instruction;15,005,276,200logical bytes. Models/data/features/code/statistics and other threads were preserved. All training state remains remote.
+
+Latest continuation observation: actual native/head clocks33/33, same job746083 still RUNNING with no error. The longer ordinary window9→33 accepted24updates in172.509s:7.188s/update,267.12question visits/minute (2671trajectory-row visits/minute). This supersedes the shorter early8–14throughput sample as the current estimate; the first14startup proofs remain historical and valid.
