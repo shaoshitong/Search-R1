@@ -25,7 +25,7 @@ def load(p):
  p=regular(p);before=stamp(p);raw=p.read_bytes();value=json.loads(raw);require(before==stamp(p),'Metadata changed during read')
  return value,dict(path=str(p),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
 def checked(ref):
- value,actual=load(ref['path']);require(all(actual[k]==ref[k]for k in('path','bytes','sha256')),'Bound metadata SHA differs');return value,actual
+ value,actual=load(ref['path']);require(actual['path']==ref['path']and actual['sha256']==ref['sha256']and('bytes'not in ref or actual['bytes']==ref['bytes']),'Bound metadata SHA differs');return value,actual
 def local_bank_ref(ref,path):
  require(ref.get('path',str(path))==str(path),'Original bank descriptor path differs')
  return dict(ref,path=str(path))
