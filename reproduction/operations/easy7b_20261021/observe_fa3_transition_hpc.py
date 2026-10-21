@@ -84,6 +84,9 @@ def observe():
     result = dict(epoch=time.time(), base=str(BASE), read_only=True, tensor_files_read=False,
                   credentials_read=False, jobs=jobs, new_job_record=job_record,
                   training_runtime_edited=False, jobs_submitted=False)
+    result['new_training_slurm_log'] = (
+        reader.tail(BASE/('logs/training-%s.log' % job), 18000) if job is not None else
+        dict(present=False, observation_error='New numeric job.id not yet observed'))
     result['queue'] = reader.command(['squeue', '-j', identifiers, '-h', '-o', '%i|%T|%N|%R|%S|%L'])
     result['accounting'] = reader.command(['sacct', '-j', identifiers, '-n', '-P', '-o',
                                             'JobIDRaw,State,ExitCode,Elapsed,NodeList'])

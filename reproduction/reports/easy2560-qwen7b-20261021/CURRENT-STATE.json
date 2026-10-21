@@ -1,17 +1,17 @@
 {
-  "epoch": 1792600670.0863903,
-  "status": "ACTUAL_OUTER11_COMPLETE_CP11_SEALED_OUTER12_GENERATING_FA2_CONTINUES",
+  "epoch": 1792602047.7620668,
+  "status": "AUTHORIZED_FA3_TRANSITION_CP12_CPU_STATES_PASS_NEW746125_LOADING_ACTUAL_RESTORE_PENDING",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
-  "job": "745371",
+  "job": "746125",
   "run_id": "232f20e112ac4a978c5aba52a0367195",
-  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
-  "runtime_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+  "runtime_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
   "actor_physical_micro": 8,
   "global_mini": 128,
   "logical_micro": 4,
   "accumulation": 4,
-  "actual_completed_outer": 11,
+  "actual_completed_outer": 12,
   "initialization_is_not_training_acceptance": true,
   "old3b": {
     "job": "734689",
@@ -54,8 +54,8 @@
     "enabled_scope": "Exact retrieval cache + original dense head + external2H100 service; no throughput speedup claimed yet"
   },
   "previous_goal_turn_classification": "progress",
-  "latest_turn_classification": "PROGRESS_FINAL_ONLY_STRICT_NATIVE4_RETAINED20_READER_TESTED_AND_LIVE_NEXT_CANDIDATES_ADVANCE; PRODUCTION_UNCHANGED",
-  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/training-progress-em-1792600671.json",
+  "latest_turn_classification": "PROGRESS_EXPLICIT_HUMAN_SDPA_BASED_FA3_BOUNDARY_TRANSITION_EXECUTED",
+  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-current-1792601975.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "stage": "GRPO_1_TO_200",
@@ -73,7 +73,7 @@
   },
   "old_7b_job": "745022",
   "old_7b_state": "CANCELLED_BY_AUTHORIZED_CP1_TRANSITION",
-  "actual_cuda_restore_accepted": true,
+  "actual_cuda_restore_accepted": false,
   "first_outer": {
     "completed": true,
     "optimizer_writes_per_rank": 20,
@@ -128,23 +128,14 @@
     "source_cp1_intact": true
   },
   "recovery_followup_required_complete_outers": [
-    2,
-    3,
-    4,
-    5,
-    6
+    13,
+    14,
+    15,
+    16,
+    17
   ],
-  "recovery_followup_required_next_outer_started": 7,
-  "actual_new_completed_outers": [
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9
-  ],
+  "recovery_followup_required_next_outer_started": 18,
+  "actual_new_completed_outers": [],
   "archive_controller_for_current7b_not_yet_started": false,
   "remaining_goal_requirements": [
     "Continue the unchanged native4 Qwen2.5-7B-Instruct Easy2560/Co recipe through actual outer200; every outer uses2560x5 original candidates, selects512x5 mixed-first/K5fallback/noK0 and reuses original tokens/samplingLP; globalmini128/LR1e-6/20actual optimizer writes per rank.",
@@ -156,84 +147,140 @@
     "Publish current source/operators/config/proofs before owned resource cleanup; retain required remote artifacts and protected feature/model/cache/shared retrieval assets."
   ],
   "actual_state_restore_acceptance": "actual-cp1-state-acceptance-1792583368.json",
-  "node": "ACD1-55",
-  "allocation_started_cst": "2026-10-21T19:41:06+08:00",
+  "node": "ACD1-32",
+  "allocation_started_cst": "2026-10-22 00:58:19 CST",
   "archive_controller": {
-    "host": "xielab3",
-    "pid": 3603385,
-    "start_ticks": 1037896746,
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+    "job": "746125",
+    "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+    "controller_commit": "0110264b81133a61515e89af52854d7c0d8cefae",
     "birth": {
-      "pid": 3603385,
-      "start_ticks": 1037896746,
-      "state": "R",
-      "uid": 1002,
-      "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae"
-    },
-    "root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371/recovery-transport-r1-20261021",
-    "source_root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/0830581f16eee86d5a89100cda91b175de63635c",
-    "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
-    "controller_commit": "0830581f16eee86d5a89100cda91b175de63635c",
-    "source_job": "745371",
-    "requested_steps": [
-      5,
-      50,
-      100,
-      150,
-      200
-    ],
-    "same_birth_verified_twice": true,
-    "latest_progress": {
-      "phase": "WAITING_CHECKPOINT",
-      "source_job": "745371",
-      "step": 50,
-      "actual_job_state": "RUNNING",
-      "completed_steps": [
-        5
-      ],
-      "checked_unix": 1792599114.652599
-    },
-    "completed_steps": [
-      5
-    ],
-    "cpu_only": true,
-    "gpu_allocations": 0,
-    "models_loaded": 0,
-    "manual_deletions": 0,
-    "parent_failure_unchanged": true,
-    "controller_source_sha_deployment": {
-      "source_commit": "0830581f16eee86d5a89100cda91b175de63635c",
-      "source_root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/0830581f16eee86d5a89100cda91b175de63635c",
-      "verified_files": 1576,
-      "verified_bytes": 19872126,
-      "fresh_source_all_files_sha_verified": true,
-      "checked_unix": 1792587217.459024
-    },
-    "observer": "reproduction/operations/easy7b_20261021/observe_hk_archive_transport_recovery.py",
-    "old_controller_terminal_evidence": "archive-controller-terminal-20261021-2046.json",
-    "read_only_transport_retry": {
-      "attempts": 3,
-      "retry_seconds": 15,
-      "retried_returncodes": [
-        5,
-        255
-      ],
-      "timeouts_retried": true,
-      "archive_writers_replayed": false
-    },
-    "measured_observations": [
-      "hk-archive-recovery-observation-1792587265.json",
-      "hk-archive-recovery-observation-1792587305.json"
-    ],
-    "last_same_birth_verified_unix": 1792599165.0858767,
-    "actual_same_birth": true,
-    "actual_process": {
-      "pid": 3603385,
-      "start_ticks": 1037896746,
-      "state": "S",
-      "uid": 1002,
       "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
-      "cwd": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/0830581f16eee86d5a89100cda91b175de63635c"
-    }
+      "hostname": "xielab3",
+      "pid": 16110,
+      "start_ticks": 1039368105,
+      "state": "R",
+      "uid": 1002
+    },
+    "current_observation": {
+      "records": {
+        "actual_process": {
+          "actual": {
+            "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+            "pid": 16110,
+            "start_ticks": 1039368105,
+            "state": "S",
+            "uid": 1002
+          },
+          "same_birth": true,
+          "state": "LIVE"
+        },
+        "claim.json": {
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+          "birth": {
+            "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+            "pid": 16110,
+            "start_ticks": 1039368105,
+            "uid": 1002
+          },
+          "checked_unix": 1792601954.3214104,
+          "controller_suffix": null,
+          "credentials_persisted": false,
+          "recovery_parent": null,
+          "requested_steps": [
+            50,
+            100,
+            150,
+            200
+          ],
+          "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+          "source_job": "746125"
+        },
+        "detached_launch": {
+          "automatic_retry": false,
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+          "birth": {
+            "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+            "hostname": "xielab3",
+            "pid": 16110,
+            "start_ticks": 1039368105,
+            "state": "R",
+            "uid": 1002
+          },
+          "checked_unix": 1792601954.2443132,
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "-m",
+            "reproduction.easy2560_joint4.archive_controller",
+            "--base",
+            "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+            "--commit",
+            "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+            "--job",
+            "746125",
+            "--first-step",
+            "50"
+          ],
+          "controller_commit": "0110264b81133a61515e89af52854d7c0d8cefae",
+          "credentials_persisted": false,
+          "detached": true,
+          "first_step": 50,
+          "historical_CP5_replayed": false,
+          "old_controllers_modified": false,
+          "public_source_files": {
+            "reproduction/easy2560_joint4/archive_controller.py": {
+              "bytes": 12395,
+              "sha256": "8fe071fb1d0629abdff9cf13d3baa4c744950aeb0808b6665893bf6b7f53ccab"
+            },
+            "reproduction/easy2560_joint4/checkpoint_archive.py": {
+              "bytes": 12305,
+              "sha256": "0bea6308f5688d82f0a952933b44d729a443f508303da1cc4afd399baed4a3ec"
+            },
+            "reproduction/easy2560_joint4/post_callback_dependencies.py": {
+              "bytes": 43740,
+              "sha256": "047be619b8b5f6b300158b85b65472d9880e5ddb523a28504e295915159f2005"
+            },
+            "reproduction/operations/easy7b_20261021/archive_post_callback_future_hk.py": {
+              "bytes": 26330,
+              "sha256": "65d29b4eab2464a2710fcffe8e1c69b70e17a92e5bfca30c300fe0e934079e59"
+            },
+            "reproduction/operations/easy7b_20261021/fa3_archive_consumers_hk.py": {
+              "bytes": 17519,
+              "sha256": "9d45cea3c489cc912a79662300ce51506301a41eff536de89c0a09dbf9265595"
+            },
+            "reproduction/prefix20_joint4/archive_supervisor.py": {
+              "bytes": 61566,
+              "sha256": "3a40d7566ad390792ce1606518790bedfaf30a375c7f727e9ed87e71082fc55d"
+            }
+          },
+          "requested_steps": [
+            50,
+            100,
+            150,
+            200
+          ],
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_job": "746125",
+          "source_root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/0110264b81133a61515e89af52854d7c0d8cefae",
+          "training_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+          "training_jobs_submitted": 0,
+          "training_modified": false
+        },
+        "progress.json": {
+          "actual_job_state": "RUNNING",
+          "checked_unix": 1792602077.146972,
+          "completed_steps": [],
+          "phase": "WAITING_CHECKPOINT",
+          "source_job": "746125",
+          "step": 50
+        }
+      },
+      "root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-746125"
+    },
+    "first_step": 50,
+    "preserves_old_cp5": true,
+    "receipt": "fa3-archive-consumers-observe-1792602090.json"
   },
   "actual_state_restore": {
     "model_tensors": 339,
@@ -279,7 +326,7 @@
   "outer2_started_not_complete": false,
   "outer2_completed_candidate_questions": 2560,
   "outer2_first_chunk_mixed_questions": 181,
-  "current_base_durable_checkpoint_outer": 11,
+  "current_base_durable_checkpoint_outer": null,
   "most_recent_recoverable_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
     "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_11",
@@ -376,7 +423,7 @@
   },
   "outer3_started": true,
   "actual_outer2_complete_receipt": "training-progress-1792585062.json",
-  "recovery_followup_accepted": true,
+  "recovery_followup_accepted": false,
   "actual_retrieval_cache": {
     "checked_unix": 1792585356.4676752,
     "job": "745371",
@@ -463,7 +510,7 @@
       "replacement_has_completed_milestone5_archive": true
     }
   ],
-  "current_outer": 12,
+  "current_outer": 13,
   "outer3_selection": {
     "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/eefd4da7a7b445a4862963b159cbdfdc.json",
     "bytes": 2750777,
@@ -803,7 +850,13 @@
     150,
     200
   ],
-  "remaining_recovery_followup": [],
+  "remaining_recovery_followup": [
+    13,
+    14,
+    15,
+    16,
+    17
+  ],
   "archive_boundary_supplement_todo": "CP5 complete and independently verified. Preserve equivalent post-callback boundaries after actual core acceptance at50/100/150/200; CP200 boundary precedes final51713. Do not replay CP5 one-shot launcher.",
   "actual_fixed512": {
     "step": 5,
@@ -1096,13 +1149,11 @@
     "actual_reload_performed": false
   },
   "published_operator_source": {
-    "commit": "c3ce9a5f9f148a87308e5ef0c27ed2457003c19b",
-    "branch": "codex/easy2560-qwen7b-20261021",
-    "remote_sha": "c3ce9a5f9f148a87308e5ef0c27ed2457003c19b",
-    "fresh_remote_fetch_and_blob_sha_pass": true,
-    "receipt": "source-publication-c3ce9a5f9f148a87308e5ef0c27ed2457003c19b-1792593993.json"
+    "commit": "0110264b81133a61515e89af52854d7c0d8cefae",
+    "formal_training_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+    "fresh_remote_fetch_and_blob_sha_pass": true
   },
-  "all4_actual_optimizer_writes": 220,
+  "all4_actual_optimizer_writes": null,
   "current_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
     "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_11",
@@ -1570,115 +1621,199 @@
     "all8_encoder_mappings_core_ack_and_identity_only": true
   },
   "future_post_callback_companion": {
-    "root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/post-callback-boundary-control/job-745371/future-50-200/recovery-accepted-r2",
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+    "job": "746125",
+    "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+    "controller_commit": "0110264b81133a61515e89af52854d7c0d8cefae",
     "birth": {
       "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
-      "pid": 3881747,
-      "start_ticks": 1038573622,
+      "hostname": "xielab3",
+      "pid": 16111,
+      "start_ticks": 1039368108,
+      "state": "R",
       "uid": 1002
     },
-    "state": "RUNNING",
-    "progress": {
-      "checked_unix": 1792599117.3430262,
-      "completed_steps": [],
-      "core_controller": {
-        "birth": {
-          "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
-          "pid": 3603385,
-          "start_ticks": 1037896746,
-          "uid": 1002
-        },
-        "process": {
+    "current_observation": {
+      "records": {
+        "actual_process": {
           "actual": {
             "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
-            "pid": 3603385,
-            "start_ticks": 1037896746,
+            "pid": 16111,
+            "start_ticks": 1039368108,
             "state": "S",
             "uid": 1002
           },
           "same_birth": true,
           "state": "LIVE"
         },
-        "records": {
-          "claim.json": {
-            "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+        "claim.json": {
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+          "birth": {
+            "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+            "hostname": "xielab3",
+            "pid": 16111,
+            "start_ticks": 1039368108,
+            "state": "R",
+            "uid": 1002
+          },
+          "checked_unix": 1792601954.4340599,
+          "controller_commit": "0110264b81133a61515e89af52854d7c0d8cefae",
+          "credentials_persisted": false,
+          "historical_CP5_replayed": false,
+          "jobs_submitted": 0,
+          "old_controllers_modified": false,
+          "requested_steps": [
+            50,
+            100,
+            150,
+            200
+          ],
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_job": "746125",
+          "training_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+          "training_modified": false
+        },
+        "detached_launch": {
+          "automatic_retry": false,
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+          "birth": {
+            "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+            "hostname": "xielab3",
+            "pid": 16111,
+            "start_ticks": 1039368108,
+            "state": "R",
+            "uid": 1002
+          },
+          "checked_unix": 1792601954.2780337,
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/0110264b81133a61515e89af52854d7c0d8cefae/reproduction/operations/easy7b_20261021/fa3_archive_consumers_hk.py",
+            "companion",
+            "--base",
+            "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+            "--commit",
+            "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+            "--job",
+            "746125",
+            "--controller-commit",
+            "0110264b81133a61515e89af52854d7c0d8cefae"
+          ],
+          "controller_commit": "0110264b81133a61515e89af52854d7c0d8cefae",
+          "credentials_persisted": false,
+          "detached": true,
+          "first_step": 50,
+          "historical_CP5_replayed": false,
+          "old_controllers_modified": false,
+          "public_source_files": {
+            "reproduction/easy2560_joint4/archive_controller.py": {
+              "bytes": 12395,
+              "sha256": "8fe071fb1d0629abdff9cf13d3baa4c744950aeb0808b6665893bf6b7f53ccab"
+            },
+            "reproduction/easy2560_joint4/checkpoint_archive.py": {
+              "bytes": 12305,
+              "sha256": "0bea6308f5688d82f0a952933b44d729a443f508303da1cc4afd399baed4a3ec"
+            },
+            "reproduction/easy2560_joint4/post_callback_dependencies.py": {
+              "bytes": 43740,
+              "sha256": "047be619b8b5f6b300158b85b65472d9880e5ddb523a28504e295915159f2005"
+            },
+            "reproduction/operations/easy7b_20261021/archive_post_callback_future_hk.py": {
+              "bytes": 26330,
+              "sha256": "65d29b4eab2464a2710fcffe8e1c69b70e17a92e5bfca30c300fe0e934079e59"
+            },
+            "reproduction/operations/easy7b_20261021/fa3_archive_consumers_hk.py": {
+              "bytes": 17519,
+              "sha256": "9d45cea3c489cc912a79662300ce51506301a41eff536de89c0a09dbf9265595"
+            },
+            "reproduction/prefix20_joint4/archive_supervisor.py": {
+              "bytes": 61566,
+              "sha256": "3a40d7566ad390792ce1606518790bedfaf30a375c7f727e9ed87e71082fc55d"
+            }
+          },
+          "requested_steps": [
+            50,
+            100,
+            150,
+            200
+          ],
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_job": "746125",
+          "source_root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/0110264b81133a61515e89af52854d7c0d8cefae",
+          "training_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+          "training_jobs_submitted": 0,
+          "training_modified": false
+        },
+        "progress.json": {
+          "checked_unix": 1792602074.742741,
+          "completed_steps": [],
+          "core_controller": {
             "birth": {
               "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
-              "pid": 3603385,
-              "start_ticks": 1037896746,
+              "pid": 16110,
+              "start_ticks": 1039368105,
               "uid": 1002
             },
-            "checked_unix": 1792587239.6944954,
-            "controller_suffix": "transport-r1-20261021",
-            "credentials_persisted": false,
-            "recovery_parent": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371",
-            "requested_steps": [
-              5,
-              50,
-              100,
-              150,
-              200
-            ],
-            "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
-            "source_job": "745371"
+            "process": {
+              "actual": {
+                "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+                "pid": 16110,
+                "start_ticks": 1039368105,
+                "state": "S",
+                "uid": 1002
+              },
+              "same_birth": true,
+              "state": "LIVE"
+            },
+            "records": {
+              "claim.json": {
+                "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+                "birth": {
+                  "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+                  "pid": 16110,
+                  "start_ticks": 1039368105,
+                  "uid": 1002
+                },
+                "checked_unix": 1792601954.3214104,
+                "controller_suffix": null,
+                "credentials_persisted": false,
+                "recovery_parent": null,
+                "requested_steps": [
+                  50,
+                  100,
+                  150,
+                  200
+                ],
+                "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+                "source_job": "746125"
+              },
+              "progress.json": {
+                "actual_job_state": "RUNNING",
+                "checked_unix": 1792602016.224437,
+                "completed_steps": [],
+                "phase": "WAITING_CHECKPOINT",
+                "source_job": "746125",
+                "step": 50
+              }
+            },
+            "state": "LIVE"
           },
-          "progress.json": {
-            "actual_job_state": "RUNNING",
-            "checked_unix": 1792599114.652599,
-            "completed_steps": [
-              5
-            ],
-            "phase": "WAITING_CHECKPOINT",
-            "source_job": "745371",
-            "step": 50
-          }
-        },
-        "state": "LIVE"
+          "healthy_controller_modified": false,
+          "jobs_submitted": 0,
+          "phase": "WAITING_CORE_ACTUAL_ACK",
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_job": "746125",
+          "source_ssh_called": false,
+          "step": 50,
+          "training_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+          "training_modified": false
+        }
       },
-      "healthy_controller_modified": false,
-      "jobs_submitted": 0,
-      "phase": "WAITING_CORE_ACTUAL_ACK",
-      "run_id": "232f20e112ac4a978c5aba52a0367195",
-      "source_job": "745371",
-      "source_ssh_called": false,
-      "step": 50,
-      "training_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
-      "training_modified": false
+      "root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/post-callback-boundary-control/job-746125/future-50-200"
     },
-    "operator_commit": "c3ce9a5f9f148a87308e5ef0c27ed2457003c19b",
-    "dependencies_commit": "c3ce9a5f9f148a87308e5ef0c27ed2457003c19b",
-    "dependencies_sha256": "047be619b8b5f6b300158b85b65472d9880e5ddb523a28504e295915159f2005",
-    "boundary_module_commit": "b87a0c3d7a7ca2d9f6751a99179897d8d8aca56d",
-    "qualified_cp5_read_only": true,
-    "remaining_steps": [
-      50,
-      100,
-      150,
-      200
-    ],
-    "actual_cuda_restore_accepted": false,
-    "training_restarted": false,
-    "core_controller_restarted": false,
-    "observation": "post-callback-future-resume-observe-1792595155.json",
-    "same_birth_verified_twice": true,
-    "observations": [
-      "post-callback-future-resume-observe-1792594023.json",
-      "post-callback-future-resume-readback2-1792594112.json"
-    ],
-    "read_only_verification_evidence": "evidence/actual-cp5-dependency-and-companion-two-checks-20261021.json",
-    "last_same_birth_verified_unix": 1792595155.9075704,
-    "last_observation_unix": 1792599165.1297746,
-    "actual_process": {
-      "actual": {
-        "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
-        "pid": 3881747,
-        "start_ticks": 1038573622,
-        "state": "S",
-        "uid": 1002
-      },
-      "same_birth": true,
-      "state": "LIVE"
-    }
+    "first_step": 50,
+    "old_consumers_untouched": true,
+    "receipt": "fa3-archive-consumers-observe-1792602090.json"
   },
   "preserved_cpu_callback_failures": [
     {
@@ -1709,7 +1844,7 @@
     "training_modified": false
   },
   "final_acceptance_entrypoint_note": {
-    "training_commit_must_be_explicit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+    "training_commit_must_be_explicit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
     "cpu_module": "reproduction.easy2560_joint4.final_cpu_acceptance",
     "cuda_restore_module": "reproduction.easy2560_joint4.final_restore_only",
     "source_receipt_module": "search_g1.easy2560_final_checkpoint",
@@ -1731,7 +1866,7 @@
   "fa3_candidate": {
     "requested_after_complete9": true,
     "production_switched": false,
-    "current_actor_backend": "FA2",
+    "current_actor_backend": "FA3_CONFIGURED_ACTUAL_EXECUTION_PENDING",
     "current_rollout_backend": "XFORMERS",
     "existing_binary": "/data/user/jxu957/experiments/topd-20261008/runtime/env/lib/python3.10/site-packages/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
     "cpu_import_with_private_cudart_pass": true,
@@ -1749,21 +1884,240 @@
       0.0111437007612922,
       0.010802008543173968
     ],
-    "next_action": "Continue authorized FA2 training toward200; retain full-model numerical rejection. Kernel timings do not establish whole-iteration speedup.",
+    "next_action": "Observe actual native4 full-state CUDA/dataequal restoration and FA3 forward/backward, complete13..17 and saved18; continue200",
     "layer_shadow_job": "746054",
     "layer_shadow_source_step": 10,
     "layer_shadow_state": "COMPLETED0_NOT_QUALIFICATION",
     "layer_shadow_comparisons": 112,
     "layer_shadow_max_relative_l2": 0.0007373100603352897,
     "layer_shadow_evidence": "evidence/actual-fa3-layer-shadow-cp10-20261022.json",
-    "full_iteration_speedup_measured": false
+    "full_iteration_speedup_measured": false,
+    "formal_fa3_job_launched": true,
+    "sdpa_reference_pass": true,
+    "sdpa_reference_job": "746114",
+    "fa2_closeness_gate_superseded_by_latest_user": true
   },
-  "latest_full_checkpoint_outer": 11,
+  "latest_full_checkpoint_outer": 12,
   "latest_phase_timing_evidence": "evidence/actual-outer10-timing-and-grounding-phase-20261022.json",
   "frozen_grounding_batch_optimization": {
     "production_micro": 4,
     "changed": false,
     "benchmark_started": false,
     "scope": "Static feasibility only; micro8/16 requires independent actual pad/position/features/probability/reward/adv qualification, no current transition."
+  },
+  "previous_fa2_execution": {
+    "job": "745371",
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+    "runtime_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+    "node": "ACD1-55",
+    "actual_cuda_restore_accepted": true,
+    "actual_state_restore_acceptance": "actual-cp1-state-acceptance-1792583368.json",
+    "archive_controller": {
+      "host": "xielab3",
+      "pid": 3603385,
+      "start_ticks": 1037896746,
+      "birth": {
+        "pid": 3603385,
+        "start_ticks": 1037896746,
+        "state": "R",
+        "uid": 1002,
+        "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae"
+      },
+      "root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371/recovery-transport-r1-20261021",
+      "source_root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/0830581f16eee86d5a89100cda91b175de63635c",
+      "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+      "controller_commit": "0830581f16eee86d5a89100cda91b175de63635c",
+      "source_job": "745371",
+      "requested_steps": [
+        5,
+        50,
+        100,
+        150,
+        200
+      ],
+      "same_birth_verified_twice": true,
+      "latest_progress": {
+        "phase": "WAITING_CHECKPOINT",
+        "source_job": "745371",
+        "step": 50,
+        "actual_job_state": "RUNNING",
+        "completed_steps": [
+          5
+        ],
+        "checked_unix": 1792599114.652599
+      },
+      "completed_steps": [
+        5
+      ],
+      "cpu_only": true,
+      "gpu_allocations": 0,
+      "models_loaded": 0,
+      "manual_deletions": 0,
+      "parent_failure_unchanged": true,
+      "controller_source_sha_deployment": {
+        "source_commit": "0830581f16eee86d5a89100cda91b175de63635c",
+        "source_root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/0830581f16eee86d5a89100cda91b175de63635c",
+        "verified_files": 1576,
+        "verified_bytes": 19872126,
+        "fresh_source_all_files_sha_verified": true,
+        "checked_unix": 1792587217.459024
+      },
+      "observer": "reproduction/operations/easy7b_20261021/observe_hk_archive_transport_recovery.py",
+      "old_controller_terminal_evidence": "archive-controller-terminal-20261021-2046.json",
+      "read_only_transport_retry": {
+        "attempts": 3,
+        "retry_seconds": 15,
+        "retried_returncodes": [
+          5,
+          255
+        ],
+        "timeouts_retried": true,
+        "archive_writers_replayed": false
+      },
+      "measured_observations": [
+        "hk-archive-recovery-observation-1792587265.json",
+        "hk-archive-recovery-observation-1792587305.json"
+      ],
+      "last_same_birth_verified_unix": 1792599165.0858767,
+      "actual_same_birth": true,
+      "actual_process": {
+        "pid": 3603385,
+        "start_ticks": 1037896746,
+        "state": "S",
+        "uid": 1002,
+        "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+        "cwd": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/0830581f16eee86d5a89100cda91b175de63635c"
+      }
+    },
+    "future_post_callback_companion": {
+      "root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/post-callback-boundary-control/job-745371/future-50-200/recovery-accepted-r2",
+      "birth": {
+        "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+        "pid": 3881747,
+        "start_ticks": 1038573622,
+        "uid": 1002
+      },
+      "state": "RUNNING",
+      "progress": {
+        "checked_unix": 1792599117.3430262,
+        "completed_steps": [],
+        "core_controller": {
+          "birth": {
+            "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+            "pid": 3603385,
+            "start_ticks": 1037896746,
+            "uid": 1002
+          },
+          "process": {
+            "actual": {
+              "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+              "pid": 3603385,
+              "start_ticks": 1037896746,
+              "state": "S",
+              "uid": 1002
+            },
+            "same_birth": true,
+            "state": "LIVE"
+          },
+          "records": {
+            "claim.json": {
+              "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+              "birth": {
+                "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+                "pid": 3603385,
+                "start_ticks": 1037896746,
+                "uid": 1002
+              },
+              "checked_unix": 1792587239.6944954,
+              "controller_suffix": "transport-r1-20261021",
+              "credentials_persisted": false,
+              "recovery_parent": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371",
+              "requested_steps": [
+                5,
+                50,
+                100,
+                150,
+                200
+              ],
+              "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+              "source_job": "745371"
+            },
+            "progress.json": {
+              "actual_job_state": "RUNNING",
+              "checked_unix": 1792599114.652599,
+              "completed_steps": [
+                5
+              ],
+              "phase": "WAITING_CHECKPOINT",
+              "source_job": "745371",
+              "step": 50
+            }
+          },
+          "state": "LIVE"
+        },
+        "healthy_controller_modified": false,
+        "jobs_submitted": 0,
+        "phase": "WAITING_CORE_ACTUAL_ACK",
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "source_job": "745371",
+        "source_ssh_called": false,
+        "step": 50,
+        "training_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+        "training_modified": false
+      },
+      "operator_commit": "c3ce9a5f9f148a87308e5ef0c27ed2457003c19b",
+      "dependencies_commit": "c3ce9a5f9f148a87308e5ef0c27ed2457003c19b",
+      "dependencies_sha256": "047be619b8b5f6b300158b85b65472d9880e5ddb523a28504e295915159f2005",
+      "boundary_module_commit": "b87a0c3d7a7ca2d9f6751a99179897d8d8aca56d",
+      "qualified_cp5_read_only": true,
+      "remaining_steps": [
+        50,
+        100,
+        150,
+        200
+      ],
+      "actual_cuda_restore_accepted": false,
+      "training_restarted": false,
+      "core_controller_restarted": false,
+      "observation": "post-callback-future-resume-observe-1792595155.json",
+      "same_birth_verified_twice": true,
+      "observations": [
+        "post-callback-future-resume-observe-1792594023.json",
+        "post-callback-future-resume-readback2-1792594112.json"
+      ],
+      "read_only_verification_evidence": "evidence/actual-cp5-dependency-and-companion-two-checks-20261021.json",
+      "last_same_birth_verified_unix": 1792595155.9075704,
+      "last_observation_unix": 1792599165.1297746,
+      "actual_process": {
+        "actual": {
+          "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+          "pid": 3881747,
+          "start_ticks": 1038573622,
+          "state": "S",
+          "uid": 1002
+        },
+        "same_birth": true,
+        "state": "LIVE"
+      }
+    }
+  },
+  "fa3_transition": {
+    "authorization": "human-fa3-sdpa-transition-authorization.json",
+    "source_job": "745371",
+    "source_state": "CANCELLED_BY_AUTHORIZED_COMPLETE_CP12_TRANSITION",
+    "source_checkpoint_outer": 12,
+    "source_checkpoint_seal_sha256": "9d17b361da61b68cf884fdfb3b2d7f4808d3179dd69fcbb394121d65367bdf26",
+    "source_actual_optimizer_writes_per_rank": 240,
+    "source_data_cursor": 30720,
+    "source_receipt_sha256": "ecb92758bc63d712004fa7fc92b0d0dc4e1fe9f4452d5237f12922af7555cab4",
+    "source_cpu_audit_job": "746117",
+    "target_job": "746125",
+    "target_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+    "new_calibration_or_LR_reset": false,
+    "sdpa_reference_evidence": "evidence/actual-fa3-sdpa-math-reference-20261022.json",
+    "historical_fa2_numerical_rejection_preserved": true,
+    "actual_target_restore_accepted": false,
+    "actual_target_actor_fa3_execution_observed": false,
+    "goal_remains_active": true
   }
 }

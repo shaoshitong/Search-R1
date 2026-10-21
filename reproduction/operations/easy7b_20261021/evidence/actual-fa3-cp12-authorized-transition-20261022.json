@@ -1,0 +1,103 @@
+{
+  "status": "AUTHORIZED_CP12_FA2_TO_FA3_NEW_JOB_STARTED_ACTUAL_RESTORE_PENDING",
+  "human_authorization": "human-fa3-sdpa-transition-authorization.json",
+  "source_terminal": {
+    "accounting_returncode": 0,
+    "accounting_stdout": "745371|jxu957|CANCELLED by 14090|0:0\n",
+    "checked_unix": 1792601721.9233592,
+    "observed_source_exit_code": "0:0",
+    "observed_source_state": "CANCELLED by 14090",
+    "queue_returncode": 0,
+    "queue_stdout": "",
+    "source_job": "745371"
+  },
+  "source_boundary": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_12",
+    "manager": "easy2560_per_outer_full_state_v1",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_12/full-manifest.json",
+    "manifest_sha256": "9d17b361da61b68cf884fdfb3b2d7f4808d3179dd69fcbb394121d65367bdf26",
+    "published_unix": 1792601628.678006,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+    "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+    "step": 12
+  },
+  "source_cpu_receipt": {
+    "actual_cuda_restore_accepted": false,
+    "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/fa3-full-state-source-receipt.json",
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "sha256": "ecb92758bc63d712004fa7fc92b0d0dc4e1fe9f4452d5237f12922af7555cab4",
+    "status": "EASY2560_NATIVE4_FULL_SHA_CPU_STATES_PASS",
+    "step": 12,
+    "world_size": 4
+  },
+  "source_summary": {
+    "actual_optimizer_writes_per_rank": 240,
+    "attempt_progress": {
+      "aborted_attempts": 0,
+      "attempt_index": 12,
+      "completed_outer": 12,
+      "cumulative_writes": 240,
+      "full_budget_outer": 12
+    },
+    "candidate_cursor": 30720,
+    "next_outer": 13,
+    "preserved_source_cursor_not_reset": true,
+    "reward_probe_manifest": {
+      "bytes": 468327,
+      "device": 49,
+      "full_read_sha256": "a3aa29a31dba750c8a1d6bbe9d09ea105a4fba0a99216ce1b736865be51ec54f",
+      "inode": 11117959546,
+      "mtime_ns": 1792601558133050000,
+      "observed_source_bytes": 468327,
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_12/boundary/reward-probe-manifest.json",
+      "prefix_only": false,
+      "relative_path": "grounding/version-manifest.json",
+      "uid": 14090
+    },
+    "reward_probe_round": 0,
+    "reward_probe_version": "232f20e112ac4a978c5aba52a0367195:0:c7f8da3ab2f84097ae6430983e5329af",
+    "source_consumed": 30720,
+    "source_model_optimizer_scheduler_rng_data_real_readback_pending": true,
+    "source_step": 12
+  },
+  "source_cpu_audit_job": "746117",
+  "target_base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+  "target_job": "746125",
+  "training_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+  "operator_commit": "0110264b81133a61515e89af52854d7c0d8cefae",
+  "actual_queue": {
+    "rc": 0,
+    "stdout": "746125|RUNNING|ACD1-32|ACD1-32|2026-10-22T00:58:19|6-23:56:47\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-17:38:18\n",
+    "stderr": ""
+  },
+  "observer_receipt": "fa3-transition-current-1792602093.json",
+  "actual_cuda_restore_accepted": false,
+  "actual_actor_fa3_execution_observed": false,
+  "sdpa_reference_evidence": "actual-fa3-sdpa-math-reference-20261022.json",
+  "source_no_gpu_submission_rejected_and_preserved": true,
+  "source_read_gpu_reservation_r2_unused_for_compute": true,
+  "new_archive_consumers": {
+    "core": {
+      "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+      "hostname": "xielab3",
+      "pid": 16110,
+      "start_ticks": 1039368105,
+      "state": "R",
+      "uid": 1002
+    },
+    "companion": {
+      "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+      "hostname": "xielab3",
+      "pid": 16111,
+      "start_ticks": 1039368108,
+      "state": "R",
+      "uid": 1002
+    }
+  },
+  "historical_cp5_archive_replayed": false,
+  "retrieval745198_unchanged": true,
+  "goal_complete": false,
+  "checked_unix": 1792602153.8646731
+}
