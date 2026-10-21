@@ -9,6 +9,7 @@ import argparse
 import fcntl
 import gzip
 import json
+import os
 from pathlib import Path
 import time
 
@@ -143,6 +144,12 @@ def run(config_path, config_sha):
             raise ValueError('True512/2048/4096 identity-only exclusions required')
         # Recheck the canonical source fingerprint without loading another full copy.
         r.checked_file(c['canonical_groups'])
+        raw = checked(c['full_raw_G10_acceptance'])
+        if (raw['status'] != 'EXACT_CANONICAL_169028_TRAINING_QUESTIONS_FULL_REAL_RAW_G10_UNION_QUALIFIED'
+                or raw['questions'] != 169028 or raw['trajectories'] != 1690280
+                or raw['chosen_ordered_qid_sha256'] != QID_SHA
+                or raw['canonical_missing_qids'] or raw['canonical_extra_qids']):
+            raise ValueError('Completed canonical full169028 real raw G10 required')
         banks, refs, lineage = {}, [], []
         for item in c['banks']:
             done = checked(item['complete'])
@@ -172,7 +179,8 @@ def run(config_path, config_sha):
                 features=feature_ref, physical_source_identity_audit=proof))
             r.atomic(TARGET / 'progress.json', dict(stage='ACTUAL_FULL169028_SOURCE_BANKS_ADVANCING',
                 banks=len(lineage), questions=sum(len(v) for v in banks.values()), epoch=time.time()))
-        groups, summary = old.merge_groups(banks, exclusion['groups'], expected_counts=COUNTS)
+        groups, summary = old.merge_groups(banks, exclusion['groups'], expected_counts=COUNTS,
+            expected_domains=dict(nq=78871, hotpotqa=90157), expected_text_repeats=6)
         if len(groups) != 169028 or old.digest(sorted(g['qid'] for g in groups)) != QID_SHA:
             raise ValueError('Merged actual canonical169028 ID set differs')
         features, feature_proof = old.verify_features(refs, groups,
@@ -184,6 +192,7 @@ def run(config_path, config_sha):
         done = dict(status=STATUS, config=config_ref, outputs=outputs, **summary, **feature_proof,
             groups=outputs['groups.json'], features_layer26=outputs['features-layer26.json'],
             canonical_groups=c['canonical_groups'], canonical_qid_sha256=QID_SHA,
+            full_raw_G10_acceptance=c['full_raw_G10_acceptance'],
             evaluation_exclusions=c['evaluation_exclusions'], source_refs=lineage,
             whole_G5_source_selection_before_packed_union=True, current124194_fit_expanded=False,
             actor_updates=0, probe_updates=0, GPU_submitted=False, final_outcomes_read=False, epoch=time.time())
@@ -196,4 +205,15 @@ if __name__ == '__main__':
     parser.add_argument('--config', required=True)
     parser.add_argument('--config-sha256', required=True)
     args = parser.parse_args()
-    print(json.dumps(run(args.config, args.config_sha256), sort_keys=True))
+    target = Path(args.config).parent
+    stat = Path('/proc/self/stat').read_text().rsplit(')', 1)[1].split()
+    r.atomic(target / 'worker.json', dict(pid=os.getpid(), birth=stat[19],
+        allocation_job=os.environ.get('SLURM_JOB_ID'), GPU=0,
+        model_or_tensor_loaded=False, config_sha256=args.config_sha256, epoch=time.time()))
+    try:
+        print(json.dumps(run(args.config, args.config_sha256), sort_keys=True))
+    except Exception as exc:
+        r.atomic(target / 'failure.json', dict(error_type=type(exc).__name__,
+            error=str(exc), pid=os.getpid(), allocation_job=os.environ.get('SLURM_JOB_ID'),
+            config_sha256=args.config_sha256, epoch=time.time()))
+        raise
