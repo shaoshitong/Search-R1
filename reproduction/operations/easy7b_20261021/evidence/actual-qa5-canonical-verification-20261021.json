@@ -1,0 +1,78 @@
+{
+  "epoch": 1792590165.2485158,
+  "job": "745371",
+  "run_id": "232f20e112ac4a978c5aba52a0367195",
+  "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+  "status": "ACTUAL_FIXED_QA5_CANONICAL_OCCURRENCES_SCORES_AND_SEALED_NATIVE4_BOUNDARY_PASS",
+  "fixed512": {
+    "step": 5,
+    "question_count": 512,
+    "counts": {
+      "nq": 256,
+      "hotpotqa": 256
+    },
+    "correct": 193,
+    "per_source": {
+      "hotpotqa": {
+        "count": 256,
+        "correct": 105,
+        "em": 0.41015625,
+        "f1": 0.47302396239999034
+      },
+      "nq": {
+        "count": 256,
+        "correct": 88,
+        "em": 0.34375,
+        "f1": 0.47581812328630135
+      }
+    },
+    "weighted_em": 0.376953125,
+    "weighted_f1": 0.47442104284314585,
+    "macro_em": 0.376953125,
+    "macro_f1": 0.47442104284314585,
+    "canonical_occurrences_retained": true,
+    "deduplicated": false
+  },
+  "formal_artifact_rows_equal": true,
+  "rolling_manifest_sha256": "ce9e904667fc1f2f90487ec6301d156ca3c0f9fd51d631dfb9f5dad3dd82e1f2",
+  "all4_updates": [
+    {
+      "rank": 0,
+      "writes_before": 80,
+      "writes_after": 100,
+      "actual_optimizer_writes": 20,
+      "scheduler_advances": 1,
+      "scheduler_epoch": 5
+    },
+    {
+      "rank": 1,
+      "writes_before": 80,
+      "writes_after": 100,
+      "actual_optimizer_writes": 20,
+      "scheduler_advances": 1,
+      "scheduler_epoch": 5
+    },
+    {
+      "rank": 2,
+      "writes_before": 80,
+      "writes_after": 100,
+      "actual_optimizer_writes": 20,
+      "scheduler_advances": 1,
+      "scheduler_epoch": 5
+    },
+    {
+      "rank": 3,
+      "writes_before": 80,
+      "writes_after": 100,
+      "actual_optimizer_writes": 20,
+      "scheduler_advances": 1,
+      "scheduler_epoch": 5
+    }
+  ],
+  "model_tensors": 339,
+  "checkpoint_metadata_and_rolling_boundary_verified": true,
+  "model_state_reloaded": false,
+  "gpu_allocations": 0,
+  "training_modified": false,
+  "actual_cuda_restore_accepted": false
+}

@@ -1,6 +1,6 @@
 {
-  "epoch": 1792589563.9650617,
-  "status": "OUTER4_SEALED_OUTER5_UPDATING_LEGACY_CHECKPOINT_CLEANUP_COMPLETE",
+  "epoch": 1792590270.3853297,
+  "status": "OUTER5_FIXED512_VERIFIED_AND_FULLY_SEALED_OUTER6_ACTUAL_SAMPLING",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "745371",
@@ -11,7 +11,7 @@
   "global_mini": 128,
   "logical_micro": 4,
   "accumulation": 4,
-  "actual_completed_outer": 4,
+  "actual_completed_outer": 5,
   "initialization_is_not_training_acceptance": true,
   "old3b": {
     "job": "734689",
@@ -52,8 +52,8 @@
     "enabled_scope": "Exact retrieval cache + original dense head + external2H100 service; no throughput speedup claimed yet"
   },
   "previous_goal_turn_classification": "PROGRESS: actual CP2 full seal and outer3 start accepted",
-  "latest_turn_classification": "PROGRESS_OUTER4_COMPLETE_5_SAMPLING_AUTHORIZED_LEGACY_CHECKPOINT_CLEANUP_COMPLETE",
-  "last_observation": "training-progress-1792589564.json",
+  "latest_turn_classification": "PROGRESS_OUTER5_NATIVE4_SEAL_FIXED512_VERIFIED_ACTUAL6_SAMPLING_CORE_ARCHIVE_STREAMING",
+  "last_observation": "training-progress-1792590270.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "stage": "GRPO_1_TO_200",
@@ -97,13 +97,13 @@
     "actor_visible_token_lists_exact_equal": 64,
     "http_and_projection_seconds": 3.5052835568785667,
     "last_actual_statistics": {
-      "logical_requests": 50673,
-      "logical_queries": 50799,
-      "completed_requests": 50673,
-      "completed_queries": 50799,
+      "logical_requests": 54546,
+      "logical_queries": 54672,
+      "completed_requests": 54546,
+      "completed_queries": 54672,
       "failed_requests": 0,
-      "backend_seconds": 2092.440773891285,
-      "last_completed_unix": 1792589040.362856
+      "backend_seconds": 2251.160828413442,
+      "last_completed_unix": 1792590271.1442728
     }
   },
   "failed_diagnostic_job": "745258",
@@ -111,7 +111,7 @@
   "storage_inventory_report": "HPC3-storage-distribution-20261021.txt",
   "last_measured_queue": {
     "rc": 0,
-    "stdout": "745371|RUNNING|ACD1-55|ACD1-55|2026-10-21T19:41:06|6-22:08:23\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-21:07:07\n",
+    "stdout": "745371|RUNNING|ACD1-55|ACD1-55|2026-10-21T19:41:06|6-21:56:36\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-20:55:20\n",
     "stderr": ""
   },
   "new_recovery_base_allocated_bytes": 62230528,
@@ -136,7 +136,8 @@
   "actual_new_completed_outers": [
     2,
     3,
-    4
+    4,
+    5
   ],
   "archive_controller_for_current7b_not_yet_started": false,
   "remaining_goal_requirements": [
@@ -174,12 +175,11 @@
     ],
     "same_birth_verified_twice": true,
     "latest_progress": {
-      "phase": "WAITING_CHECKPOINT",
-      "source_job": "745371",
+      "phase": "STREAMING_SOURCE_TO_HKUST3",
       "step": 5,
-      "actual_job_state": "RUNNING",
+      "total_bytes": 106690057725,
       "completed_steps": [],
-      "checked_unix": 1792587301.308314
+      "checked_unix": 1792589954.8211646
     },
     "completed_steps": [],
     "cpu_only": true,
@@ -226,15 +226,6 @@
   },
   "current_candidate_pools": [
     {
-      "name": "eefd4da7a7b445a4862963b159cbdfdc-pool-0",
-      "step": 3,
-      "completed_questions": 2560,
-      "reserved_questions": 2560,
-      "source_consumed": 7680,
-      "saved_chunk_files": 15,
-      "progress_error": null
-    },
-    {
       "name": "af99f949b92f4d4bbce7de3a55fa66ef-pool-0",
       "step": 4,
       "completed_questions": 2560,
@@ -251,17 +242,26 @@
       "source_consumed": 12800,
       "saved_chunk_files": 15,
       "progress_error": null
+    },
+    {
+      "name": "e2db2510d7b845f1ae0e7d9ccc056938-pool-0",
+      "step": 6,
+      "completed_questions": 512,
+      "reserved_questions": 512,
+      "source_consumed": 15360,
+      "saved_chunk_files": 4,
+      "progress_error": null
     }
   ],
   "outer2_started_not_complete": false,
   "outer2_completed_candidate_questions": 2560,
   "outer2_first_chunk_mixed_questions": 181,
-  "current_base_durable_checkpoint_outer": 4,
+  "current_base_durable_checkpoint_outer": 5,
   "most_recent_recoverable_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
-    "outer": 4,
-    "full_checkpoint_bytes": 91404239577,
-    "rolling_manifest_sha256": "939d216d1b4b64ce062e83620964faf8c9a9fa62aa73501a9ff01cf3a5373d3c"
+    "outer": 5,
+    "full_checkpoint_bytes": 91404239582,
+    "rolling_manifest_sha256": "ce9e904667fc1f2f90487ec6301d156ca3c0f9fd51d631dfb9f5dad3dd82e1f2"
   },
   "outer2_candidate_mixed_questions": 979,
   "outer2_candidate_mixed_fraction": 0.382421875,
@@ -328,15 +328,15 @@
   },
   "rolling_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_4",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_5",
     "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_4/full-manifest.json",
-    "manifest_sha256": "939d216d1b4b64ce062e83620964faf8c9a9fa62aa73501a9ff01cf3a5373d3c",
-    "published_unix": 1792588229.3996043,
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_5/full-manifest.json",
+    "manifest_sha256": "ce9e904667fc1f2f90487ec6301d156ca3c0f9fd51d631dfb9f5dad3dd82e1f2",
+    "published_unix": 1792590068.9034464,
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
     "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 4
+    "step": 5
   },
   "outer2_timings_seconds": {
     "timing_s/candidate_fill": 864.349,
@@ -433,7 +433,7 @@
       "replacement_root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371/recovery-transport-r1-20261021"
     }
   ],
-  "current_outer": 5,
+  "current_outer": 6,
   "outer3_selection": {
     "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/eefd4da7a7b445a4862963b159cbdfdc.json",
     "bytes": 2750777,
@@ -518,7 +518,8 @@
   },
   "automatic_rolling_retired_nonmilestone_steps": [
     2,
-    3
+    3,
+    4
   ],
   "manual_cleanup_performed_this_turn": true,
   "outer4_actual_update": {
@@ -687,19 +688,153 @@
       "optimizer_writes": 80,
       "optimizer_writes_before": 60,
       "optimizer_writes_this_outer": 20
+    },
+    {
+      "step": 5,
+      "attempt_index": 5,
+      "reward": 0.6170238852500916,
+      "pg_loss": 0.019132038444649984,
+      "ppo_kl": 0.0008824761084724742,
+      "grad_norm": 2.7477209717350455,
+      "optimizer_writes": 100,
+      "optimizer_writes_before": 80,
+      "optimizer_writes_this_outer": 20
     }
   ],
   "fixed_validation_results_pending": [
-    5,
     50,
     100,
     150,
     200
   ],
   "remaining_recovery_followup": [
-    "complete5",
     "complete6",
     "actual7sampling"
   ],
-  "archive_boundary_supplement_todo": "After core archive acceptance, preserve the seven post-callback boundary files plus rolling full-manifest separately, bound to checkpoint complete SHA; do not claim current core snapshot alone contains post-QA RNG. CP200 boundary is before final51713."
+  "archive_boundary_supplement_todo": "After core archive acceptance, preserve the seven post-callback boundary files plus rolling full-manifest separately, bound to checkpoint complete SHA; do not claim current core snapshot alone contains post-QA RNG. CP200 boundary is before final51713.",
+  "actual_fixed512": {
+    "step": 5,
+    "question_count": 512,
+    "counts": {
+      "nq": 256,
+      "hotpotqa": 256
+    },
+    "correct": 193,
+    "per_source": {
+      "hotpotqa": {
+        "count": 256,
+        "correct": 105,
+        "em": 0.41015625,
+        "f1": 0.47302396239999034
+      },
+      "nq": {
+        "count": 256,
+        "correct": 88,
+        "em": 0.34375,
+        "f1": 0.47581812328630135
+      }
+    },
+    "weighted_em": 0.376953125,
+    "weighted_f1": 0.47442104284314585,
+    "macro_em": 0.376953125,
+    "macro_f1": 0.47442104284314585,
+    "canonical_occurrences_retained": true,
+    "deduplicated": false
+  },
+  "outer5_selection": {
+    "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/bd4e2ec20d514d55810b4f07d5007207.json",
+    "bytes": 2750964,
+    "mtime": 1792589058.246985,
+    "step": 5,
+    "attempted_candidates": 2560,
+    "responses_per_group": 5,
+    "selected_groups": 512,
+    "selected_mixed": 512,
+    "selected_all_correct_fallback": 0,
+    "raw_generated_trajectories": 12800,
+    "raw_actual_retrieval_calls": 15758,
+    "candidate_fill_seconds": 828.6697305012494,
+    "candidate_generation_timings": {},
+    "source_consumed": 12800,
+    "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:5:policy-bd4e2ec20d514d55810b4f07d5007207",
+    "candidate_correct_count_histogram": {
+      "0": 1164,
+      "1": 262,
+      "2": 220,
+      "3": 209,
+      "4": 259,
+      "5": 446
+    },
+    "candidate_mixed_fraction": 0.37109375,
+    "candidate_trajectory_em": 0.358984375
+  },
+  "outer5_parameter_update_evidence": [
+    {
+      "rank": 0,
+      "writes_before": 80,
+      "writes_after": 100,
+      "actual_optimizer_writes": 20,
+      "scheduler_advances": 1,
+      "scheduler_epoch": 5
+    },
+    {
+      "rank": 1,
+      "writes_before": 80,
+      "writes_after": 100,
+      "actual_optimizer_writes": 20,
+      "scheduler_advances": 1,
+      "scheduler_epoch": 5
+    },
+    {
+      "rank": 2,
+      "writes_before": 80,
+      "writes_after": 100,
+      "actual_optimizer_writes": 20,
+      "scheduler_advances": 1,
+      "scheduler_epoch": 5
+    },
+    {
+      "rank": 3,
+      "writes_before": 80,
+      "writes_after": 100,
+      "actual_optimizer_writes": 20,
+      "scheduler_advances": 1,
+      "scheduler_epoch": 5
+    }
+  ],
+  "archive5_transfer_progress": {
+    "epoch": 1792590248.032979,
+    "read_only": true,
+    "target": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5",
+    "target_exists": true,
+    "files": 13,
+    "apparent_bytes": 28119742781,
+    "allocated_bytes": 28119793664,
+    "controller/progress.json": {
+      "phase": "STREAMING_SOURCE_TO_HKUST3",
+      "step": 5,
+      "total_bytes": 106690057725,
+      "completed_steps": [],
+      "checked_unix": 1792589954.8211646
+    },
+    "snapshot": {
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "step": 5,
+      "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+      "files": 1072,
+      "total_bytes": 106690057725
+    }
+  },
+  "collapse_monitor_actual": {
+    "completed_outer_rewards": [
+      0.5900579690933228,
+      0.623258650302887,
+      0.6241274476051331,
+      0.6170238852500916
+    ],
+    "fixed512_baseline_step": 5,
+    "fixed512_baseline_em": 0.376953125,
+    "clear_collapse_observed": false,
+    "training_resume_triggered": false
+  }
 }
