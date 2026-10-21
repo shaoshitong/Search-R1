@@ -59,6 +59,13 @@ def immutable(path, value):
         tmp.replace(p)
 
 
+def normalized_domain(value):
+    aliases={'nq':'NQ','NQ':'NQ','hotpotqa':'HotpotQA','HotpotQA':'HotpotQA'}
+    if value not in aliases:
+        raise ValueError('Only the two source-bound domain names are accepted')
+    return aliases[value]
+
+
 def rank_auc(rows):
     """Independent pair-concordance count, with one half for score ties."""
     positives = sum(0 < r['K'] < 5 for r in rows)
@@ -153,8 +160,8 @@ def validate_sources(c, cohort, selection, fixed_rows, all_groups):
         g, f, s = groups[q], fixed[q], selected[q]
         if s['source_indices'] != [5, 6, 7, 8, 9] or s['trajectory_ids'] != g['trajectory_ids'][5:] or f['trajectory_ids'] != s['trajectory_ids'] or f['labels'] != g['labels'][5:] or f['question_hash'] != g['question_hash'] or s['question_hash'] != g['question_hash']:
             raise ValueError('Committed own-new5 IDs/EM/question hash changed')
-        name = s['domain']
-        if name not in domains or f['domain'] != name:
+        name = normalized_domain(s['domain'])
+        if normalized_domain(f['domain']) != name:
             raise ValueError('Frozen domain metadata differs')
         domains[name] += 1
     if domains != dict(NQ=2560, HotpotQA=2560) or len(set(tids)) != len(tids):
@@ -173,7 +180,7 @@ def verify_rows(path, qids, fixed):
                 raise ValueError('Duplicate or foreign holdout qid')
             seen.add(q)
             own = fixed[q]
-            if type(r['K']) is not int or r['K'] != sum(own['labels']) or r['domain'] != own['domain']:
+            if type(r['K']) is not int or r['K'] != sum(own['labels']) or normalized_domain(r['domain']) != normalized_domain(own['domain']):
                 raise ValueError('Prediction K/domain does not match own strict EM')
             if 'trajectory_ids' in r and r['trajectory_ids'] != own['trajectory_ids']:
                 raise ValueError('Prediction own IDs differ')
@@ -231,7 +238,7 @@ def audit(packet_path, output):
         raise ValueError('Identity-only holdout exclusion proof differs')
     fixed, tids = validate_sources(c, cohort, values['internal_holdout_selection'], values['internal_holdout_groups']['internal_holdout'], values['merged_groups']['train'])
     qids = cohort['holdout_qids']
-    halves = expected_halves([q for q in qids if fixed[q]['domain'] == 'NQ'])
+    halves = expected_halves([q for q in qids if normalized_domain(fixed[q]['domain']) == 'NQ'])
     if frozen['config'] != config_ref or frozen['selection'] != source_refs['internal_holdout_selection'] or frozen['halves'] != halves or frozen['half_SHA256'] != [digest(h) for h in halves] or frozen['labels_read'] or frozen['scores_read']:
         raise ValueError('Frozen half identity reconstruction differs')
     cache_path = base / 'cache/complete.json'
@@ -291,7 +298,7 @@ def audit(packet_path, output):
             declared=done['metrics'][mode]['internal_holdout_new5']
             compare_producer(rows,actual['pooled'],declared)
             for name in ('NQ','HotpotQA'):
-                domain_rows=[r for r in rows if r['domain']==name]
+                domain_rows=[r for r in rows if normalized_domain(r['domain'])==name]
                 compare_producer(domain_rows,actual[name],declared['by_domain'][name])
             value=dict(status='INDEPENDENT_NODE_OWN_NEW5_AND_METRICS_PASSED',epoch=epoch,model=mode,
                 metrics=actual,screen_gate=gate(actual,baseline),prediction=ref,evaluation_complete=done_ref,

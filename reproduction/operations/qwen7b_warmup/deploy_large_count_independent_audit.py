@@ -11,7 +11,7 @@ import subprocess
 
 P='reproduction/operations/qwen7b_warmup/'
 FILES=[P+n for n in ('direct_count_large_independent_audit.py','test_direct_count_large_independent_audit.py','deploy_large_count_independent_audit.py')]
-BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v2'
+BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v3'
 BRANCH='codex/large-count-independent-audit-20261021'
 COMMON=r'''
 import pathlib,json,hashlib,os,fcntl,time,subprocess,base64,gzip,resource
@@ -54,7 +54,9 @@ for item in pub['files'].values():assert proof(item['path'])==item
 def limits():
  os.sched_setaffinity(0,sorted(os.sched_getaffinity(0))[:2]);resource.setrlimit(resource.RLIMIT_AS,(3*1024**3,3*1024**3))
 started=time.time();r=subprocess.run(['python3',str(code/'direct_count_large_independent_audit.py'),'--input-packet',str(code/'input-packet.json'),'--output',str(b/'audits')],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=42,preexec_fn=limits)
-if r.returncode:raise RuntimeError(r.stderr[-2200:])
+if r.returncode:
+ failure=dict(status='INDEPENDENT_AUDIT_FAIL_CLOSED',returncode=r.returncode,error=r.stderr[-2200:],epoch=time.time(),publication=proof(b/'source-publication.json'))
+ immutable(b/('failure-'+v['commit'][:12]+'.json'),failure);raise RuntimeError(r.stderr[-2200:])
 value=json.loads(r.stdout);answer=dict(status='FINITE_AVAILABLE_NODE_AUDIT_RETURNED',result=value,seconds=time.time()-started,returncode=r.returncode,publication=proof(b/'source-publication.json'),GPU=0)
 name='run-'+hashlib.sha256(r.stdout.encode()).hexdigest()[:16]+'.json';immutable(b/name,answer)
 print(json.dumps(dict(answer,execution_receipt=proof(b/name))))

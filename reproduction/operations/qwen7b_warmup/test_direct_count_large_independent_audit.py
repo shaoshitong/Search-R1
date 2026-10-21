@@ -46,9 +46,9 @@ class IndependentAuditTests(unittest.TestCase):
         self.assertFalse(a.gate(candidate,base)['pass_internal_node'])
 
     def test_row_own_em_order_and_optional_ids_are_checked(self):
-        fixed={'q0':dict(labels=[0,1,0,0,0],trajectory_ids=['t%d'%i for i in range(5)],domain='NQ'),
-            'q1':dict(labels=[1]*5,trajectory_ids=['u%d'%i for i in range(5)],domain='HotpotQA')}
-        rows=[dict(qid=q,K=sum(fixed[q]['labels']),q=.8,domain=fixed[q]['domain'],count_NLL=.2,predicted_K=1)for q in fixed]
+        fixed={'q0':dict(labels=[0,1,0,0,0],trajectory_ids=['t%d'%i for i in range(5)],domain='nq'),
+            'q1':dict(labels=[1]*5,trajectory_ids=['u%d'%i for i in range(5)],domain='hotpotqa')}
+        rows=[dict(qid=q,K=sum(fixed[q]['labels']),q=.8,domain=a.normalized_domain(fixed[q]['domain']),count_NLL=.2,predicted_K=1)for q in fixed]
         with tempfile.TemporaryDirectory()as temp:
             p=Path(temp)/'rows.gz'
             def write(values):

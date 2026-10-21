@@ -1,0 +1,14 @@
+{
+  "actual_scored_nodes": 0,
+  "cause": "Auditor compared canonical display domain to source metadata spelling; source uses nq/hotpotqa, producer rows NQ/HotpotQA",
+  "failed_auditor_publication": {
+    "bytes": 1876,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v2/source-publication.json",
+    "sha256": "c6a60851e2bd7c5c56ec6bcb7e0067f6eb564671912a48c5bc898b73b9799d1e"
+  },
+  "failed_auditor_source": "8b643d06f08cc1667081104a21665b0a1dcc9388",
+  "failed_source_preserved": true,
+  "fix": "Explicit closed alias map for those two domain names; preserve source fields and all identities, add lower-source/upper-row regression fixture",
+  "status": "AUDITOR_METADATA_DOMAIN_ALIAS_CORRECTED_BEFORE_ANY_SCORING",
+  "training_changed": false
+}
