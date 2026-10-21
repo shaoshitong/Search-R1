@@ -6,9 +6,12 @@ remote=subprocess.check_output(['git','ls-remote','origin','refs/heads/codex/qwe
 if remote!=v.commit:raise ValueError('Publish exact source before code-only CPU qualification')
 names=('coarse_event_cached_train.py','test_coarse_event_cached_train.py','prior_logit_event_loss.py','direct_count_large_small_checkpoint.py');blobs={}
 for n in names:
- raw=subprocess.check_output(['git','show',v.commit+':'+PKG+n],cwd=ROOT)
+ origin='97d5e7953ceab8db74932d9abad2a2701bc6e67e'if n=='direct_count_large_small_checkpoint.py'else v.commit
+ raw=subprocess.check_output(['git','show',origin+':'+PKG+n],cwd=ROOT)
  if raw!=(ROOT/PKG/n).read_bytes():raise ValueError('Unpublished source differs')
  blobs[n]=raw
+helper_remote=subprocess.check_output(['git','ls-remote','origin','refs/heads/codex/large-count-smallcp-audit-20261021'],cwd=ROOT).decode().split()[0]
+if helper_remote!='97d5e7953ceab8db74932d9abad2a2701bc6e67e':raise ValueError('Published small-checkpoint helper origin differs')
 spec=importlib.util.spec_from_file_location('coarse_prepare_private_control',CONTROL/'work/prefix-schedule-cp50-20261018/reproduction/hpc3_prefix5/direct_control.py');ctl=importlib.util.module_from_spec(spec);spec.loader.exec_module(ctl);ip=subprocess.check_output(['/usr/sbin/ipconfig','getifaddr','en0']).decode().strip()
 common="""import pathlib,json,hashlib,base64,fcntl,subprocess,os,shutil,time
 b=pathlib.Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/coarse-event-cached-prepare-code-v1');b.mkdir(exist_ok=True);lock=(b/'operator.lock').open('a+');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB);code=b/('code-'+v['commit'][:12]);code.mkdir(exist_ok=True)
@@ -46,6 +49,6 @@ print(json.dumps(dict(status='SYNTHETIC_COARSE_HEAD_CP0_REPLAY_RECOVERY_CPU_QUAL
 env=dict(os.environ,QWEN7B_CODE_ROOT=str(code),CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONDONTWRITEBYTECODE='1')
 r=subprocess.run(['bash',str(code/'reproduction/operations/qwen7b_warmup/runtime.sh'),'-u','-c',fixture],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,env=env,universal_newlines=True,timeout=65);log=code/'cpu-fixtures.log';log.write_text(r.stdout)
 if r.returncode:raise RuntimeError(r.stdout[-3000:])
-result=json.loads([s for s in r.stdout.splitlines()if s.startswith('{')][-1]);result.update(source_commit=v['commit'],code_root=str(code),baseline_publication=proof(source),files={n:proof(code/('reproduction/operations/qwen7b_warmup/'+n))for n in v['files']},log=proof(log));receipt.write_text(json.dumps(result,sort_keys=True)+'\\n');print(json.dumps(dict(result=result,receipt=proof(receipt))))
+result=json.loads([s for s in r.stdout.splitlines()if s.startswith('{')][-1]);result.update(source_commit=v['commit'],small_checkpoint_helper_origin='97d5e7953ceab8db74932d9abad2a2701bc6e67e',code_root=str(code),baseline_publication=proof(source),files={n:proof(code/('reproduction/operations/qwen7b_warmup/'+n))for n in v['files']},log=proof(log));receipt.write_text(json.dumps(result,sort_keys=True)+'\\n');print(json.dumps(dict(result=result,receipt=proof(receipt))))
 """
 result=call(body,dict(files=refs));(OUT/'actual-cpu-qualification.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
