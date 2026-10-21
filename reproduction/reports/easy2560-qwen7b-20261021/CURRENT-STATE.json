@@ -1,17 +1,17 @@
 {
-  "epoch": 1792577999.314186,
-  "status": "7B_GENUINE_INITIAL_CALIBRATION_COMPLETE_ACTOR_INITIALIZING",
+  "epoch": 1792581458.9141939,
+  "status": "SPARSE_CUDA_GRADIENT_QUALIFICATION_INCONCLUSIVE_PREPARING_DENSE_EXACT_FALLBACK",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
-  "job": "745022",
+  "job": null,
   "run_id": "232f20e112ac4a978c5aba52a0367195",
-  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021",
-  "runtime_commit": "d6690e86152cbd6f9400317646de04d9f36ac2e1",
+  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-20261021",
+  "runtime_commit": "921610632eece86be319098351c21b450fd4a236",
   "actor_physical_micro": 8,
   "global_mini": 128,
   "logical_micro": 4,
   "accumulation": 4,
-  "actual_completed_outer": 0,
+  "actual_completed_outer": 1,
   "initialization_is_not_training_acceptance": true,
   "old3b": {
     "job": "734689",
@@ -28,24 +28,31 @@
     "raw_archives_untouched": true,
     "personal_storage_budget_bytes": 2000000000000,
     "current_global_usage": {
-      "visible_allocated_lower_bound_bytes": 5095177170944,
-      "checked_unix": 1792577381.3862753,
+      "visible_allocated_lower_bound_bytes": 5210737463296,
+      "checked_unix": 1792581189.6611936,
       "uid": 14090,
       "permission_incomplete": true,
       "under_budget": false,
-      "root_scans_complete": true
-    }
+      "root_scans_complete": true,
+      "largest_component": {
+        "path": "dynrpo-qwen25-7b-probe-warmup-20261019",
+        "allocated_bytes": 2960187000000,
+        "approximate": true,
+        "other_task_assets_and_features_not_authorized_for_deletion": true
+      }
+    },
+    "latest_human_no_delete_features": true
   },
   "infra": {
     "actual_training_optimization_enabled": false,
-    "selected_LM_head": "Three real tinyQwen CPU model/logprob/PPO/all-gradient/checkpointing tests passed in existing745022 CPU-only substep; no7B CUDA equivalence yet",
+    "selected_LM_head": "Actual 7B CUDA LPmax3.8147e-6/loss1.6925e-9, but gradient thresholds not met; dense repeat relativeL2 0.00904/0.00964, sparse0.01149; INCONCLUSIVE strictgrad; NOT ENABLED",
     "exact_query_cache": "11 CPU tests passed; preserves exact original fullbatch/context/score mode/version and logical search counts",
-    "pending": "Opt-in sparse-exact-v1 wired through future immutable launch; not enabled on745022. Head-only CUDA benchmark ready but not run; no full7B CUDA throughput/micro16 proof.",
+    "pending": "Dense original actor with exact cache + separate2GPU retriever; full CUDA Adam/RNG/dataequal restore still required",
     "physical_micro16": "Not raised blindly; needs actual measured memory/throughput"
   },
   "previous_goal_turn_classification": "PROGRESS",
   "latest_turn_classification": "PROGRESS: published+deployed7B adapter, real9tests, uniquejob745022 allocated, realretrieval staging; authorized32retirements; explicit3Bstopverified; optionalinfra actualCPU numeric validation",
-  "last_observation": "actual-observation-1792577946.json",
+  "last_observation": "cp1-new-observation-1792581322.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "stage": "GRPO_1_TO_200",
@@ -60,5 +67,34 @@
     "commit_cv_auc": 0.892,
     "boundary_cv_auc": 0.691,
     "one_time_not_actor_outer": true
-  }
+  },
+  "old_7b_job": "745022",
+  "old_7b_state": "CANCELLED_BY_AUTHORIZED_CP1_TRANSITION",
+  "actual_cuda_restore_accepted": false,
+  "first_outer": {
+    "completed": true,
+    "optimizer_writes_per_rank": 20,
+    "selected_questions": 512,
+    "actual_mixed_selected_questions": 512,
+    "candidate_questions": 2560,
+    "candidate_mixed_questions": 984,
+    "full_checkpoint_bytes": 91404238199,
+    "rolling_pointer_complete": true,
+    "model_tensors": 339
+  },
+  "external_retrieval": {
+    "job": "745198",
+    "node": "ACD1-26",
+    "physical_h100": 2,
+    "logical_shards": 4,
+    "endpoint": "http://ACD1-26:18020/retrieve",
+    "ready": true,
+    "stage64_ordered_document_ids_and_hashes_equal": true,
+    "stage64_score_max_abs_error": 0.0,
+    "actual_saved_observations_compared": 64,
+    "actor_visible_token_lists_exact_equal": 64,
+    "http_and_projection_seconds": 3.5052835568785667
+  },
+  "failed_diagnostic_job": "745258",
+  "fallback_profile": "exact-cache-v1"
 }

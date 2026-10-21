@@ -1,0 +1,1981 @@
+HPC3 实验目录存储分布（本地保存观测生成，2026-10-21）
+生成时间：2026-10-21T19:17:10+08:00
+统计根目录：/data/user/jxu957/experiments
+扫描状态：两份du进程均结束，根目录总计均已收到
+删除操作：无。本报告生成器不执行远端命令、文件删除、chmod或训练操作。
+范围：仅上述实验根目录；不是整个HPC3文件系统、账号硬配额或Mac本地磁盘。
+单位：十进制GB=10^9 B，TB=10^12 B；du -B1为实际分配块占用，不是apparent-size。
+两个UID扫描的是同一根目录，属于不同权限视图；绝不将两个账号的数值相加。
+同一次du默认只统计一次硬链接；归属受遍历顺序/权限影响。符号链接不跟随，
+因此目录显示大小不等于单独删除该目录可释放的字节数，跨UID逐目录取最大值也不能冒充去重总量。
+扫描会跨越多个时刻，活动作业可能同时写入；这是扫描区间观测，不是原子文件系统快照。
+权限漏读：存在；所有根总量均为权限可见下限。
+错误清单完整性：已提供行的UTF-8字节数与错误文件长度一致。
+
+jxu 权限视图：UID=14090
+  输入：/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/space-user-observation-jxu-1792581232.json
+  开始：2026-10-21T19:01:38+08:00；结束：2026-10-21T19:13:09+08:00；最后观测：2026-10-21T19:13:53+08:00
+  du命令：nice -n 15 ionice -c3 du -x -B1 --max-depth=2 /data/user/jxu957/experiments
+  结束记录：{"completed_unix": 1792581189.6611936, "returncode": 1, "started_unix": 1792580498.9704077, "uid": 14090}
+  根目录总计：5,210.737463 GB (5,210,737,463,296 B)
+  已输出直接子目录数：63
+  直接子目录小计：5,210.737459 GB (5,210,737,459,200 B)
+  根总计减直接子目录小计：4096 B
+  小计复核：差额为非负且<=1MiB，符合根目录自身/根直属小文件开销。
+
+mou 权限视图：UID=21930
+  输入：/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/space-user-observation-mou-1792581232.json
+  开始：2026-10-21T19:01:39+08:00；结束：2026-10-21T19:13:09+08:00；最后观测：2026-10-21T19:13:53+08:00
+  du命令：nice -n 15 ionice -c3 du -x -B1 --max-depth=2 /data/user/jxu957/experiments
+  结束记录：{"completed_unix": 1792581189.6611784, "returncode": 1, "started_unix": 1792580499.7225926, "uid": 21930}
+  根目录总计：5,106.473435 GB (5,106,473,435,136 B)
+  已输出直接子目录数：63
+  直接子目录小计：5,106.473431 GB (5,106,473,431,040 B)
+  根总计减直接子目录小计：4096 B
+  小计复核：差额为非负且<=1MiB，符合根目录自身/根直属小文件开销。
+
+全部直接子目录（jxu主视图降序；两列不可相加）
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+          2,991.781802           2,991.781970   dynrpo-qwen25-7b-probe-warmup-20261019
+            599.927378             599.927378   topd-20261008
+            262.837502             262.843056   dynrpo-prefix5-thread5-20261017-r2
+            230.415766             230.422966   dynrpo-prefix5-thread5-20261017-r4
+            162.805756             162.806223   dynrpo-prefix5-thread5-20261017
+            156.152201             119.585346   qprobe-teacher-warmup200-sigma3-20261015
+            133.362741              92.309242   easy2560-corollout-joint4-micro8-after731063-20261018
+            109.618561             109.618590   cosearch-continue300-x203-20261008
+            105.028866             105.029480   dynrpo-prefix5-thread5-20261017-r3
+             95.128838              94.886466   easy2560-corollout-joint4-qwen7b-20261021
+             88.494236              66.935001   qprobe-teacher-warmup200-4gpu-jxu957-recovery718650-20261014
+             78.835343              61.889884   qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017
+             77.661417              77.661417   qprobe-teacher-warmup200-native-thread5-20261015
+             46.693872              45.476979   easy2560-corollout-joint4-micro16-after730080-20261018
+             20.864770              11.819889   easy2560-corollout-joint4-recovery5-after730961-20261018
+             15.775781              15.775457   qprobe-teacher-warmup200-20261014
+             11.805819              10.606604   qprobe-teacher-warmup200-4gpu-jxu957-recovery718509-20261014
+              7.501738               7.020036   easy2560-corollout-joint4-20261017
+              3.561660               3.562025   grounding-eval-strict-20261019
+              2.473058               3.184370   qprobe-teacher-warmup200-periodic25-thread5-20261016-r17
+              1.403703               1.403703   qprobe-teacher-warmup200-4gpu-jxu957-recovery718322-20261014
+              1.334497               1.146331   qprobe-teacher-warmup200-prefix20-joint4-recovery727251-20261017
+              0.974860               0.974938   qprobe-teacher-warmup200-periodic25-thread5-20261016-r12
+              0.624968               0.624968   qprobe-teacher-warmup200-prefix20-joint4-20261016
+              0.559448              21.500482   qprobe-teacher-warmup200-periodic25-thread5-20261016-r16
+              0.495239               0.495165   qprobe-teacher-warmup200-prefix20-joint4-recovery727148-20261016
+              0.473371               0.473321   qprobe-teacher-warmup200-prefix20-joint4-recovery727050-20261016
+              0.432177               0.432128   qprobe-teacher-warmup200-prefix20-joint4-recovery727000-20261016
+              0.429617               0.429568   qprobe-teacher-warmup200-prefix20-joint4-recovery726927-20261016
+              0.325579               0.325579   dynrpo-reference-b-thread5-prepared-20261019
+              0.227348               0.227348   qprobe-teacher-warmup200-periodic25-thread5-20261016-r4
+              0.216699               1.394278   qprobe-teacher-warmup200-periodic25-thread5-20261016-r13
+              0.215720               0.215720   qprobe-teacher-warmup200-periodic25-thread5-20261016-r10
+              0.203280               0.203280   qprobe-teacher-warmup200-periodic25-thread5-20261016-r11
+              0.201937               0.201937   qprobe-teacher-warmup200-periodic25-thread5-20261016-r7
+              0.201654               0.201654   qprobe-teacher-warmup200-periodic25-thread5-20261016-r8
+              0.201318               0.201318   qprobe-teacher-warmup200-periodic25-thread5-20261016-r5
+              0.201269               0.201269   qprobe-teacher-warmup200-periodic25-thread5-20261016-r6
+              0.200503               0.200503   qprobe-teacher-warmup200-periodic25-thread5-20261016-r9
+              0.191603               1.582096   qprobe-teacher-warmup200-periodic25-thread5-20261016-r15
+              0.167875               0.167875   qprobe-teacher-warmup200-periodic25-thread5-20261016-r14
+              0.167776               0.167776   qprobe-teacher-warmup200-periodic25-thread5-20261016-r18
+              0.109203               0.109203   qprobe-teacher-warmup200-periodic25-thread5-20261016
+              0.071487               0.071487   dynrpo-nq-grounding-20261020
+              0.068948               0.068948   easy2560-corollout-joint4-retrieval-service2-20261021
+              0.065397               0.065397   easy2560-corollout-joint4-recovery5-after730912-20261018
+              0.064483               0.064422   easy2560-corollout-joint4-recovery5-after730226-20261018
+              0.048062               0.048062   qprobe-teacher-warmup200-4gpu-jxu957-recovery718288-20261014
+              0.046277               0.046277   easy2560-corollout-joint4-qwen7b-sparse-cp1-20261021
+              0.030949               0.030949   qprobe-teacher-warmup200-periodic25-thread5-20261016-r3
+              0.029217               0.029217   qprobe-teacher-warmup200-periodic25-thread5-20261016-r1
+              0.016736               0.016736   qprobe-teacher-warmup200-periodic25-thread5-20261016-r2
+              0.002367               0.002367   qprobe-teacher-warmup200-4gpu-jxu957-recovery717765-20261014
+              0.001458               0.001421   qprobe-teacher-warmup200-4gpu-jxu957-recovery717607-20261014
+              0.001446               0.001446   qprobe-teacher-warmup200-4gpu-jxu957-recovery717698-20261014
+              0.001237               0.001237   qprobe-teacher-warmup200-4gpu-jxu957-recovery717827-20261014
+              0.001180               0.001180   qprobe-teacher-warmup200-4gpu-jxu957-recovery717637-20261014
+              0.000557               0.000557   qprobe-teacher-warmup200-4gpu-jxu957-20261014
+              0.000549               0.000549   qprobe-teacher-warmup200-4gpu-jxu957-recovery717554-20261014
+              0.000311               0.000311   qprobe-teacher-warmup200-4gpu-jxu957-recovery717938-20261014
+              0.000033               0.000033   qprobe-teacher-warmup200-prefix20-storage-refresh727586-3c36089bffe34694b8dc13696332d4a7
+              0.000008               0.000008   qprobe-teacher-warmup200-prefix20-storage-refresh727586-2c8883647a9c4f9780ea959bfb0c49f5
+              0.000004               0.000004   .thread5-prefix5-gpu-uuid-locks
+
+每个顶层目录的完整第二层清单（深层内容已递归计入这些du数值；本表显示至第二层）
+
+/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019
+  父目录：jxu=2,991.781802 GB (2,991,781,801,984 B)；mou=2,991.781970 GB (2,991,781,969,920 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+          2,483.336434           2,483.336434   algorithm-improvement-20261021
+            213.413675             213.413675   sampling
+            170.654294             170.654294   migration-export-h100-20261020
+             26.597851              26.597851   balanced-rank1-from-epoch1-prefix20-20261020
+             23.976215              23.976215   replay-matched9088-bank-v2-20261021
+             20.672094              20.672094   probe
+             15.242076              15.242076   replay-layer-qualification-20261021
+             11.473011              11.473011   mixed-only-ft-cp2-prefix20-20261020
+              9.031954               9.031954   peer-newseed-h100-20261021
+              6.999732               6.999732   migration-export-h100-lite-20261020
+              3.744993               3.744993   qualification-740358
+              3.744977               3.744977   checkpoint-audit
+              1.797108               1.797108   selection-2048-20261020
+              0.548598               0.548598   inputs
+              0.140698               0.140698   mixed-only-ft-cp2-20261020
+              0.111518               0.111518   bank
+              0.064483               0.064483   replay-extended-qualification-20261021
+              0.053985               0.053985   confirmation-materialization-deploy-20261021
+              0.031830               0.031830   preparation
+              0.029290               0.029290   repo-postprocess-96df5a23f23f
+              0.029278               0.029278   repo-postprocess-5138364dbd3c
+              0.029274               0.029274   repo-postprocess-cf4418e5c11f
+              0.029270               0.029270   repo
+              0.011510               0.011510   assets
+              0.005042               0.005042   algorithm-data-preparation-code-20261021
+              0.005042               0.005042   matched-g10-collector-code-20261021
+              0.003146               0.003146   training-candidate-e4-scoring-20261021
+              0.001552               0.001552   logs
+              0.000786               0.000786   frozen-validation-ema3-20261021
+              0.000311               0.000311   control-tools
+              0.000307               0.000307   replay-downstream-comparison-20261021
+              0.000287               0.000287   replay-matched9088-bank-20261021
+              0.000279               0.000279   delivery-four-epoch-selection
+              0.000180               0.000180   auditors
+              0.000180               0.000180   interim-epoch0004
+              0.000168               0.000168   peer-newseed-receiver-stdlib-fixture-20261021
+              0.000160               0.000160   control
+              0.000082               0.000082   cache
+              0.000053               0.000221   tmp
+              0.000045               0.000045   prediction-audit
+              0.000008               0.000008   audit
+              0.000008               0.000008   peer-newseed-network-probes-20261021
+              0.000008               0.000008   probe-qualification
+
+/data/user/jxu957/experiments/topd-20261008
+  父目录：jxu=599.927378 GB (599,927,377,920 B)；mou=599.927378 GB (599,927,377,920 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+            333.488595             333.488595   runtime
+            217.616560             217.616560   bundle
+             48.820728              48.820728   environment
+              0.000840               0.000840   migration
+              0.000651               0.000651   outputs
+
+/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2
+  父目录：jxu=262.837502 GB (262,837,501,952 B)；mou=262.843056 GB (262,843,056,128 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+            176.402174             176.402174   outers
+             78.674538              78.674538   actor
+              7.454667               7.454667   probe
+              0.117862               0.117862   logs
+              0.076976               0.076976   preparation
+              0.070078               0.070078   grounding
+              0.023446               0.023446   repo
+              0.006779               0.006779   reference-assets
+              0.001470               0.001470   analysis
+              0.001077               0.001077   question-pool
+              0.000930               0.006484   tmp
+              0.000029               0.000029   env
+              0.000025               0.000025   cache
+              0.000008               0.000008   retrieval-cache
+
+/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4
+  父目录：jxu=230.415766 GB (230,415,765,504 B)；mou=230.422966 GB (230,422,966,272 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+             90.451243              90.451243   outers
+             85.856559              85.856559   actor
+             42.540990              42.540990   probe-refreshes
+              8.399712               8.399712   preparation
+              1.789059               1.789059   logs
+              0.932708               0.932708   probe
+              0.251073               0.251073   final-evaluation
+              0.093975               0.093975   grounding
+              0.023859               0.023859   repo
+              0.001204               0.008405   tmp
+              0.001077               0.001077   question-pool
+              0.000029               0.000029   env
+              0.000025               0.000025   cache
+              0.000008               0.000008   retrieval-cache
+
+/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017
+  父目录：jxu=162.805756 GB (162,805,755,904 B)；mou=162.806223 GB (162,806,222,848 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+            114.970280             114.970280   actor
+             28.161872              28.161872   retrieval-cache
+             18.758480              18.758480   outers
+              0.353436               0.353436   reference-assets
+              0.192455               0.192455   source
+              0.005337               0.005337   logs
+              0.002605               0.002605   preparation
+              0.001073               0.001073   question-pool
+              0.000225               0.000225   grounding
+              0.000082               0.000549   tmp
+              0.000029               0.000029   env
+              0.000025               0.000025   cache
+              0.000012               0.000012   probe
+              0.000004               0.000004   assets
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015
+  父目录：jxu=156.152201 GB (156,152,201,216 B)；mou=119.585346 GB (119,585,345,536 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+            148.806554             112.239698   artifacts
+              6.706229               6.706229   teacher-warmup-cache
+              0.559059               0.559059   logs
+              0.079782               0.079782   checkpoints
+              0.000344               0.000344   preparation
+              0.000102               0.000102   data
+              0.000033               0.000033   cache
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000012               0.000012   failed-job-721449
+              0.000008               0.000008   assets
+              0.000008               0.000008   source
+              0.000004               0.000004   ray
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018
+  父目录：jxu=133.362741 GB (133,362,741,248 B)；mou=92.309242 GB (92,309,241,856 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+             76.586062              76.586062   checkpoints
+             54.918160              13.864997   artifacts
+              1.345847               1.345847   logs
+              0.333890               0.333566   preparation
+              0.154903               0.154903   source
+              0.023589               0.023589   repo
+              0.000102               0.000102   data
+              0.000098               0.000098   cache
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000020               0.000008   tmp
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/cosearch-continue300-x203-20261008
+  父目录：jxu=109.618561 GB (109,618,561,024 B)；mou=109.618590 GB (109,618,589,696 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+             90.930221              90.930250   runtime
+             18.669097              18.669097   source
+              0.008385               0.008385   migration-flash-build-20261009
+              0.008069               0.008069   migration-hf-20261009
+              0.002777               0.002777   cleanup-audit-20261014
+
+/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3
+  父目录：jxu=105.028866 GB (105,028,866,048 B)；mou=105.029480 GB (105,029,480,448 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+             76.756681              76.756681   actor
+             18.667713              18.667713   probe-refreshes
+              9.565061               9.565061   outers
+              0.023658               0.023658   repo
+              0.010543               0.010543   logs
+              0.001978               0.001978   recovered-validation
+              0.001077               0.001077   question-pool
+              0.000975               0.000975   preparation
+              0.000238               0.000238   grounding
+              0.000106               0.000721   tmp
+              0.000029               0.000029   env
+              0.000025               0.000025   cache
+              0.000012               0.000012   probe
+              0.000008               0.000008   retrieval-cache
+
+/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021
+  父目录：jxu=95.128838 GB (95,128,838,144 B)；mou=94.886466 GB (94,886,465,536 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+             91.404308              91.404308   checkpoints
+              3.663675               3.421315   artifacts
+              0.024154               0.024154   repo
+              0.022540               0.022540   source
+              0.011993               0.011993   logs
+              0.001630               0.001630   preparation
+              0.000205               0.000205   control
+              0.000102               0.000102   data
+              0.000098               0.000098   cache
+              0.000041               0.000041   optimizations
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000020               0.000008   tmp
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery718650-20261014
+  父目录：jxu=88.494236 GB (88,494,235,648 B)；mou=66.935001 GB (66,935,001,088 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+             88.174117              66.614882   artifacts
+              0.287875               0.287875   logs
+              0.031932               0.031932   checkpoints
+              0.000102               0.000102   data
+              0.000090               0.000090   preparation
+              0.000033               0.000033   cache
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000008               0.000008   source
+              0.000004               0.000004   ray
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017
+  父目录：jxu=78.835343 GB (78,835,343,360 B)；mou=61.889884 GB (61,889,884,160 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+             77.889155              60.943708   artifacts
+              0.475820               0.475820   logs
+              0.349737               0.349737   assets
+              0.047886               0.047886   checkpoints
+              0.040632               0.040632   source
+              0.022090               0.022090   repo
+              0.009740               0.009740   preparation
+              0.000102               0.000102   data
+              0.000098               0.000098   cache
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000020               0.000008   tmp
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-native-thread5-20261015
+  父目录：jxu=77.661417 GB (77,661,417,472 B)；mou=77.661417 GB (77,661,417,472 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+             75.293184              75.293184   token-features
+              2.281009               2.281009   warmup-token-features
+              0.046481               0.046481   source
+              0.039932               0.039932   preparation
+              0.000561               0.000561   logs
+              0.000123               0.000123   warmup
+              0.000029               0.000029   cache
+              0.000029               0.000029   data
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018
+  父目录：jxu=46.693872 GB (46,693,871,616 B)；mou=45.476979 GB (45,476,978,688 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+             38.292873              38.292873   checkpoints
+              8.226681               7.009878   artifacts
+              0.074093               0.074015   preparation
+              0.051941               0.051941   logs
+              0.022352               0.022352   repo
+              0.020763               0.020763   source
+              0.004878               0.004878   failed-job-730226
+              0.000102               0.000102   data
+              0.000098               0.000098   cache
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000020               0.000008   tmp
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730961-20261018
+  父目录：jxu=20.864770 GB (20,864,770,048 B)；mou=11.819889 GB (11,819,888,640 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+             20.157530              11.112792   artifacts
+              0.308187               0.308187   failed-job-731063
+              0.307970               0.307970   logs
+              0.065237               0.065237   source
+              0.023282               0.023282   repo
+              0.002224               0.002130   preparation
+              0.000102               0.000102   data
+              0.000098               0.000098   cache
+              0.000070               0.000020   tmp
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014
+  父目录：jxu=15.775781 GB (15,775,780,864 B)；mou=15.775457 GB (15,775,457,280 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+             12.539130              12.539130   archives
+              2.252485               2.252485   source
+              0.730149               0.730149   question-features
+              0.179864               0.179864   runtime
+              0.051950               0.051950   preparation
+              0.012128               0.011805   observations
+              0.004649               0.004649   analysis
+              0.002589               0.002589   final-control
+              0.001729               0.001729   followthrough
+              0.000635               0.000635   logs
+              0.000315               0.000315   cache
+              0.000029               0.000029   data
+              0.000025               0.000025   env
+              0.000025               0.000025   formal-failure-control
+              0.000020               0.000020   bootstrap-tools
+              0.000020               0.000020   recovery718650-control
+              0.000016               0.000016   recovery718650-control-repair1
+              0.000008               0.000008   assets
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery718509-20261014
+  父目录：jxu=11.805819 GB (11,805,818,880 B)；mou=10.606604 GB (10,606,604,288 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              6.706229               6.706229   teacher-warmup-cache
+              4.994417               3.795202   artifacts
+              0.084296               0.084296   failed-job-718650
+              0.020414               0.020414   logs
+              0.000217               0.000217   preparation
+              0.000102               0.000102   data
+              0.000033               0.000033   cache
+              0.000025               0.000025   checkpoints
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000008               0.000008   source
+              0.000004               0.000004   ray
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/easy2560-corollout-joint4-20261017
+  父目录：jxu=7.501738 GB (7,501,737,984 B)；mou=7.020036 GB (7,020,036,096 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              7.436030               6.954480   artifacts
+              0.022049               0.022049   repo
+              0.021377               0.021377   logs
+              0.020550               0.020550   source
+              0.000991               0.000991   failed-job-730080
+              0.000401               0.000299   preparation
+              0.000102               0.000102   data
+              0.000098               0.000098   cache
+              0.000070               0.000020   tmp
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/grounding-eval-strict-20261019
+  父目录：jxu=3.561660 GB (3,561,660,416 B)；mou=3.562025 GB (3,562,024,960 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              2.573033               2.573033   a800-mirror
+              0.603050               0.603050   topd-alpha01-v4
+              0.382685               0.382685   opd-alpha1-v4
+              0.001642               0.001642   dynrpo-nq-token-cost-20261019
+              0.000270               0.000270   strict-v5-audit40-cpu-3b3122d5
+              0.000262               0.000262   strict-v5-audit40-cpu-draft
+              0.000213               0.000213   runtime-strict-v5-16c36aa7-hpc3
+              0.000201               0.000201   hpc3-topd-opd-strict-v5
+              0.000180               0.000180   deliverables
+              0.000025               0.000025   audit-runtime-62f1a7a4-hpc3
+              0.000025               0.000025   audit-runtime-808d264c-hpc3
+              0.000020               0.000020   acceptance-runtime-3e8b4c0f
+              0.000008               0.000008   assets
+              0.000004               0.000369   runtime-e8c5bcb7
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r17
+  父目录：jxu=2.473058 GB (2,473,058,304 B)；mou=3.184370 GB (3,184,369,664 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              2.230727               2.941944   artifacts
+              0.163938               0.163938   env
+              0.033927               0.033927   preparation
+              0.028086               0.028086   source
+              0.014840               0.014840   logs
+              0.001348               0.001348   cache
+              0.000102               0.000102   data
+              0.000037               0.000131   tmp
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000008               0.000008   warmup
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery718322-20261014
+  父目录：jxu=1.403703 GB (1,403,703,296 B)；mou=1.403703 GB (1,403,703,296 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              1.353150               1.353150   teacher-warmup-cache
+              0.031338               0.031338   artifacts
+              0.014385               0.014385   failed-job-718509
+              0.004395               0.004395   logs
+              0.000193               0.000193   preparation
+              0.000102               0.000102   data
+              0.000033               0.000033   cache
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000020               0.000020   failure-cleanup718509
+              0.000008               0.000008   assets
+              0.000008               0.000008   source
+              0.000004               0.000004   ray
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727251-20261017
+  父目录：jxu=1.334497 GB (1,334,497,280 B)；mou=1.146331 GB (1,146,331,136 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.874402               0.686248   artifacts
+              0.349737               0.349737   assets
+              0.060744               0.060744   source
+              0.021823               0.021823   repo
+              0.020001               0.020001   repo.prelaunch-retired-fa149b83ee56fc51ef4f8b1a0df5501d7975da86
+              0.006668               0.006668   logs
+              0.000840               0.000840   preparation
+              0.000102               0.000102   data
+              0.000098               0.000098   cache
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000020               0.000008   tmp
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r12
+  父目录：jxu=0.974860 GB (974,860,288 B)；mou=0.974938 GB (974,938,112 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.786645               0.786645   artifacts
+              0.153506               0.153506   env
+              0.027742               0.027742   source
+              0.004907               0.004907   logs
+              0.001348               0.001348   cache
+              0.000332               0.000332   preparation
+              0.000213               0.000213   warmup
+              0.000102               0.000102   data
+              0.000020               0.000020   bootstrap-tools
+              0.000020               0.000098   tmp
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-20261016
+  父目录：jxu=0.624968 GB (624,967,680 B)；mou=0.624968 GB (624,967,680 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.349737               0.349737   assets
+              0.196493               0.196493   source
+              0.019542               0.019542   repo
+              0.019145               0.019145   repo.prelaunch-retired-e5b1b026a11b41a14e6b14c8e6f259ce0d6d7cbb
+              0.019071               0.019071   repo.prelaunch-retired-b97d6143c8097f9aea50238e0e725f071ea71511
+              0.019050               0.019050   repo.prelaunch-retired-ab85b5cc96dc062778c3049ad8b3a3910d94acaa
+              0.001606               0.001606   preparation
+              0.000131               0.000131   logs
+              0.000102               0.000102   data
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000020               0.000020   cache
+              0.000004               0.000004   artifacts
+              0.000004               0.000004   ray
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r16
+  父目录：jxu=0.559448 GB (559,448,064 B)；mou=21.500482 GB (21,500,481,536 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.304882               0.304882   logs
+              0.153506               0.153506   env
+              0.072344              21.013357   artifacts
+              0.027963               0.027963   source
+              0.000344               0.000344   preparation
+              0.000152               0.000152   diagnostics
+              0.000102               0.000102   data
+              0.000078               0.000078   cache
+              0.000029               0.000049   tmp
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+              0.000004               0.000004   warmup
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727148-20261016
+  父目录：jxu=0.495239 GB (495,239,168 B)；mou=0.495165 GB (495,165,440 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.349737               0.349737   assets
+              0.080585               0.080585   source
+              0.030388               0.030388   artifacts
+              0.021426               0.021426   repo
+              0.007680               0.007680   preparation
+              0.003744               0.003744   logs
+              0.001425               0.001425   cache
+              0.000102               0.000102   data
+              0.000090               0.000016   tmp
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727050-20261016
+  父目录：jxu=0.473371 GB (473,370,624 B)；mou=0.473321 GB (473,321,472 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.349737               0.349737   assets
+              0.099914               0.099914   source
+              0.020767               0.020767   repo
+              0.001343               0.001343   cache
+              0.000778               0.000778   logs
+              0.000602               0.000602   preparation
+              0.000102               0.000102   data
+              0.000061               0.000012   tmp
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000004               0.000004   artifacts
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727000-20261016
+  父目录：jxu=0.432177 GB (432,177,152 B)；mou=0.432128 GB (432,128,000 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.349737               0.349737   assets
+              0.059572               0.059572   source
+              0.020398               0.020398   repo
+              0.001343               0.001343   cache
+              0.000459               0.000459   preparation
+              0.000438               0.000438   logs
+              0.000102               0.000102   data
+              0.000061               0.000012   tmp
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000004               0.000004   artifacts
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery726927-20261016
+  父目录：jxu=0.429617 GB (429,617,152 B)；mou=0.429568 GB (429,568,000 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.349737               0.349737   assets
+              0.058802               0.058802   source
+              0.019616               0.019616   repo
+              0.000487               0.000487   preparation
+              0.000377               0.000377   cache
+              0.000365               0.000365   logs
+              0.000102               0.000102   data
+              0.000066               0.000016   tmp
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000004               0.000004   artifacts
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/dynrpo-reference-b-thread5-prepared-20261019
+  父目录：jxu=0.325579 GB (325,578,752 B)；mou=0.325579 GB (325,578,752 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.159453               0.159453   env
+              0.128647               0.128647   retriever-gpu-lib
+              0.029098               0.029098   repo
+              0.008352               0.008352   preparation
+              0.000016               0.000016   cache
+              0.000004               0.000004   logs
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r4
+  父目录：jxu=0.227348 GB (227,348,480 B)；mou=0.227348 GB (227,348,480 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.157360               0.157360   env
+              0.069059               0.069059   source
+              0.000614               0.000614   preparation
+              0.000213               0.000213   warmup
+              0.000029               0.000029   data
+              0.000020               0.000020   bootstrap-tools
+              0.000020               0.000020   cache
+              0.000008               0.000008   assets
+              0.000008               0.000008   logs
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r13
+  父目录：jxu=0.216699 GB (216,698,880 B)；mou=1.394278 GB (1,394,278,400 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.153506               0.153506   env
+              0.031572               1.209074   artifacts
+              0.015794               0.015794   logs
+              0.013922               0.013922   source
+              0.001348               0.001348   cache
+              0.000213               0.000213   warmup
+              0.000176               0.000176   preparation
+              0.000102               0.000102   data
+              0.000020               0.000020   bootstrap-tools
+              0.000020               0.000098   tmp
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r10
+  父目录：jxu=0.215720 GB (215,719,936 B)；mou=0.215720 GB (215,719,936 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.153506               0.153506   env
+              0.030986               0.030986   artifacts
+              0.027664               0.027664   source
+              0.001487               0.001487   logs
+              0.001298               0.001298   cache
+              0.000328               0.000328   preparation
+              0.000213               0.000213   warmup
+              0.000102               0.000102   data
+              0.000090               0.000090   tmp
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r11
+  父目录：jxu=0.203280 GB (203,280,384 B)；mou=0.203280 GB (203,280,384 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.153506               0.153506   env
+              0.031568               0.031568   artifacts
+              0.014004               0.014004   source
+              0.002179               0.002179   logs
+              0.001348               0.001348   cache
+              0.000213               0.000213   warmup
+              0.000184               0.000184   preparation
+              0.000131               0.000131   tmp
+              0.000102               0.000102   data
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r7
+  父目录：jxu=0.201937 GB (201,936,896 B)；mou=0.201937 GB (201,936,896 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.153506               0.153506   env
+              0.030401               0.030401   artifacts
+              0.014062               0.014062   source
+              0.002044               0.002044   logs
+              0.001298               0.001298   cache
+              0.000213               0.000213   warmup
+              0.000176               0.000176   preparation
+              0.000102               0.000102   data
+              0.000090               0.000090   tmp
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r8
+  父目录：jxu=0.201654 GB (201,654,272 B)；mou=0.201654 GB (201,654,272 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.153506               0.153506   env
+              0.030401               0.030401   artifacts
+              0.013885               0.013885   source
+              0.001929               0.001929   logs
+              0.001298               0.001298   cache
+              0.000213               0.000213   warmup
+              0.000184               0.000184   preparation
+              0.000102               0.000102   data
+              0.000090               0.000090   tmp
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r5
+  父目录：jxu=0.201318 GB (201,318,400 B)；mou=0.201318 GB (201,318,400 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.153506               0.153506   env
+              0.030401               0.030401   artifacts
+              0.013812               0.013812   source
+              0.001679               0.001679   logs
+              0.001290               0.001290   cache
+              0.000213               0.000213   warmup
+              0.000180               0.000180   preparation
+              0.000102               0.000102   data
+              0.000090               0.000090   tmp
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r6
+  父目录：jxu=0.201269 GB (201,269,248 B)；mou=0.201269 GB (201,269,248 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.153506               0.153506   env
+              0.030401               0.030401   artifacts
+              0.013816               0.013816   source
+              0.001634               0.001634   logs
+              0.001290               0.001290   cache
+              0.000213               0.000213   warmup
+              0.000172               0.000172   preparation
+              0.000102               0.000102   data
+              0.000090               0.000090   tmp
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r9
+  父目录：jxu=0.200503 GB (200,503,296 B)；mou=0.200503 GB (200,503,296 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.153506               0.153506   env
+              0.030401               0.030401   artifacts
+              0.013840               0.013840   source
+              0.001266               0.001266   cache
+              0.000856               0.000856   logs
+              0.000213               0.000213   warmup
+              0.000184               0.000184   preparation
+              0.000102               0.000102   data
+              0.000090               0.000090   tmp
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r15
+  父目录：jxu=0.191603 GB (191,602,688 B)；mou=1.582096 GB (1,582,096,384 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.153506               0.153506   env
+              0.017699               0.017699   logs
+              0.013955               0.013955   source
+              0.006021               1.396494   artifacts
+              0.000168               0.000168   preparation
+              0.000102               0.000102   data
+              0.000078               0.000078   cache
+              0.000025               0.000045   tmp
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+              0.000004               0.000004   warmup
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r14
+  父目录：jxu=0.167875 GB (167,874,560 B)；mou=0.167875 GB (167,874,560 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.153506               0.153506   env
+              0.013898               0.013898   source
+              0.000168               0.000168   preparation
+              0.000115               0.000115   logs
+              0.000102               0.000102   data
+              0.000029               0.000029   cache
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000004               0.000004   artifacts
+              0.000004               0.000004   ray
+              0.000004               0.000004   tmp
+              0.000004               0.000004   warmup
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r18
+  父目录：jxu=0.167776 GB (167,776,256 B)；mou=0.167776 GB (167,776,256 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.153506               0.153506   env
+              0.014012               0.014012   source
+              0.000156               0.000156   preparation
+              0.000029               0.000029   data
+              0.000020               0.000020   bootstrap-tools
+              0.000020               0.000020   cache
+              0.000008               0.000008   assets
+              0.000004               0.000004   logs
+              0.000004               0.000004   tmp
+              0.000004               0.000004   warmup
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016
+  父目录：jxu=0.109203 GB (109,203,456 B)；mou=0.109203 GB (109,203,456 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.107123               0.107123   source
+              0.000774               0.000774   preparation
+              0.000475               0.000475   logs
+              0.000385               0.000385   cache
+              0.000209               0.000209   warmup
+              0.000102               0.000102   data
+              0.000049               0.000049   tmp
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000016               0.000016   artifacts
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/dynrpo-nq-grounding-20261020
+  父目录：jxu=0.071487 GB (71,487,488 B)；mou=0.071487 GB (71,487,488 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.026554               0.026554   cf-v4
+              0.016757               0.016757   cf-v5
+              0.015372               0.015372   source
+              0.012571               0.012571   normal
+              0.000168               0.000168   control
+              0.000049               0.000049   failed-job-742547
+
+/data/user/jxu957/experiments/easy2560-corollout-joint4-retrieval-service2-20261021
+  父目录：jxu=0.068948 GB (68,947,968 B)；mou=0.068948 GB (68,947,968 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.045785               0.045785   source
+              0.022544               0.022544   repo
+              0.000303               0.000303   preparation
+              0.000102               0.000102   diagnostics
+              0.000086               0.000086   logs
+              0.000029               0.000029   data
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000016               0.000016   cache
+              0.000008               0.000008   assets
+              0.000004               0.000004   artifacts
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730912-20261018
+  父目录：jxu=0.065397 GB (65,396,736 B)；mou=0.065397 GB (65,396,736 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.043119               0.043119   source
+              0.021201               0.021201   repo
+              0.000438               0.000438   failed-job-730961
+              0.000283               0.000283   preparation
+              0.000156               0.000156   logs
+              0.000102               0.000102   data
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000020               0.000020   cache
+              0.000008               0.000008   assets
+              0.000004               0.000004   artifacts
+              0.000004               0.000004   ray
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730226-20261018
+  父目录：jxu=0.064483 GB (64,483,328 B)；mou=0.064422 GB (64,421,888 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.042639               0.042639   source
+              0.021045               0.021045   repo
+              0.000377               0.000315   preparation
+              0.000291               0.000291   failed-job-730912
+              0.000029               0.000029   data
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000020               0.000020   cache
+              0.000008               0.000008   assets
+              0.000008               0.000008   logs
+              0.000004               0.000004   artifacts
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery718288-20261014
+  父目录：jxu=0.048062 GB (48,062,464 B)；mou=0.048062 GB (48,062,464 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.030466               0.030466   artifacts
+              0.012128               0.012128   failed-job-718322
+              0.004272               0.004272   logs
+              0.000799               0.000799   teacher-warmup-cache
+              0.000180               0.000180   preparation
+              0.000102               0.000102   data
+              0.000029               0.000029   cache
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000008               0.000008   source
+              0.000004               0.000004   ray
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-sparse-cp1-20261021
+  父目录：jxu=0.046277 GB (46,276,608 B)；mou=0.046277 GB (46,276,608 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.022987               0.022987   source
+              0.022700               0.022700   repo
+              0.000475               0.000475   preparation
+              0.000029               0.000029   data
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000008               0.000008   cache
+              0.000004               0.000004   artifacts
+              0.000004               0.000004   logs
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r3
+  父目录：jxu=0.030949 GB (30,949,376 B)；mou=0.030949 GB (30,949,376 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.028426               0.028426   source
+              0.001257               0.001257   cache
+              0.000631               0.000631   logs
+              0.000213               0.000213   warmup
+              0.000172               0.000172   preparation
+              0.000102               0.000102   data
+              0.000061               0.000061   tmp
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000016               0.000016   artifacts
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r1
+  父目录：jxu=0.029217 GB (29,216,768 B)；mou=0.029217 GB (29,216,768 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.026898               0.026898   source
+              0.001257               0.001257   cache
+              0.000319               0.000319   preparation
+              0.000279               0.000279   logs
+              0.000213               0.000213   warmup
+              0.000102               0.000102   data
+              0.000061               0.000061   tmp
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000016               0.000016   artifacts
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r2
+  父目录：jxu=0.016736 GB (16,736,256 B)；mou=0.016736 GB (16,736,256 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.014397               0.014397   source
+              0.001257               0.001257   cache
+              0.000446               0.000446   logs
+              0.000213               0.000213   warmup
+              0.000172               0.000172   preparation
+              0.000102               0.000102   data
+              0.000061               0.000061   tmp
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000016               0.000016   artifacts
+              0.000008               0.000008   assets
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery717765-20261014
+  父目录：jxu=0.002367 GB (2,367,488 B)；mou=0.002367 GB (2,367,488 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.000774               0.000774   failed-job-717827
+              0.000774               0.000774   logs
+              0.000176               0.000176   preparation
+              0.000147               0.000147   failed-job-717934-observer
+              0.000147               0.000147   failure-cleanup717827-recovery717934
+              0.000119               0.000119   failure-cleanup717827
+              0.000102               0.000102   data
+              0.000029               0.000029   cache
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000008               0.000008   failed-job-717934
+              0.000008               0.000008   source
+              0.000004               0.000004   artifacts
+              0.000004               0.000004   ray
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery717607-20261014
+  父目录：jxu=0.001458 GB (1,458,176 B)；mou=0.001421 GB (1,421,312 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.000373               0.000373   cache
+              0.000352               0.000352   failed-job-717637
+              0.000348               0.000348   logs
+              0.000147               0.000147   preparation
+              0.000102               0.000102   data
+              0.000049               0.000012   tmp
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000008               0.000008   source
+              0.000004               0.000004   artifacts
+              0.000004               0.000004   ray
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery717698-20261014
+  父目录：jxu=0.001446 GB (1,445,888 B)；mou=0.001446 GB (1,445,888 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.000545               0.000545   failed-job-717765
+              0.000532               0.000532   logs
+              0.000147               0.000147   preparation
+              0.000102               0.000102   data
+              0.000029               0.000029   cache
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000008               0.000008   source
+              0.000004               0.000004   artifacts
+              0.000004               0.000004   ray
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery717827-20261014
+  父目录：jxu=0.001237 GB (1,236,992 B)；mou=0.001237 GB (1,236,992 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.000430               0.000430   failed-job-717938-observer
+              0.000406               0.000406   logs
+              0.000164               0.000164   preparation
+              0.000102               0.000102   data
+              0.000029               0.000029   cache
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000016               0.000016   failed-job-717938
+              0.000008               0.000008   assets
+              0.000008               0.000008   source
+              0.000004               0.000004   artifacts
+              0.000004               0.000004   ray
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery717637-20261014
+  父目录：jxu=0.001180 GB (1,179,648 B)；mou=0.001180 GB (1,179,648 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.000410               0.000410   failed-job-717698
+              0.000401               0.000401   logs
+              0.000147               0.000147   preparation
+              0.000102               0.000102   data
+              0.000029               0.000029   cache
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000008               0.000008   assets
+              0.000008               0.000008   source
+              0.000004               0.000004   artifacts
+              0.000004               0.000004   ray
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-20261014
+  父目录：jxu=0.000557 GB (557,056 B)；mou=0.000557 GB (557,056 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.000152               0.000152   preparation
+              0.000102               0.000102   data
+              0.000098               0.000098   failed-job-717554
+              0.000094               0.000094   logs
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000020               0.000020   cache
+              0.000008               0.000008   assets
+              0.000008               0.000008   source
+              0.000004               0.000004   artifacts
+              0.000004               0.000004   ray
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery717554-20261014
+  父目录：jxu=0.000549 GB (548,864 B)；mou=0.000549 GB (548,864 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.000143               0.000143   preparation
+              0.000102               0.000102   data
+              0.000098               0.000098   failed-job-717607
+              0.000094               0.000094   logs
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000020               0.000020   cache
+              0.000008               0.000008   assets
+              0.000008               0.000008   source
+              0.000004               0.000004   artifacts
+              0.000004               0.000004   ray
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery717938-20261014
+  父目录：jxu=0.000311 GB (311,296 B)；mou=0.000311 GB (311,296 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.000086               0.000086   failed-job-718288
+              0.000082               0.000082   preparation
+              0.000029               0.000029   data
+              0.000025               0.000025   env
+              0.000020               0.000020   bootstrap-tools
+              0.000020               0.000020   cache
+              0.000008               0.000008   assets
+              0.000008               0.000008   logs
+              0.000008               0.000008   source
+              0.000004               0.000004   artifacts
+              0.000004               0.000004   tmp
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-storage-refresh727586-3c36089bffe34694b8dc13696332d4a7
+  父目录：jxu=0.000033 GB (32,768 B)；mou=0.000033 GB (32,768 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.000029               0.000029   preparation
+
+/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-storage-refresh727586-2c8883647a9c4f9780ea959bfb0c49f5
+  父目录：jxu=0.000008 GB (8,192 B)；mou=0.000008 GB (8,192 B)
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+              0.000004               0.000004   preparation
+
+/data/user/jxu957/experiments/.thread5-prefix5-gpu-uuid-locks
+  父目录：jxu=0.000004 GB (4,096 B)；mou=0.000004 GB (4,096 B)
+  未提供第二层目录行。
+
+当前Easy7B原作业目录专列：/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+             95.128838              94.886466   /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021
+             91.404308              91.404308   /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/checkpoints
+              3.663675               3.421315   /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/artifacts
+              0.024154               0.024154   /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/repo
+              0.022540               0.022540   /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/source
+              0.011993               0.011993   /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/logs
+              0.001630               0.001630   /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/preparation
+              0.000205               0.000205   /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/control
+              0.000102               0.000102   /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/data
+              0.000098               0.000098   /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/cache
+              0.000041               0.000041   /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/optimizations
+              0.000025               0.000025   /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/env
+              0.000020               0.000020   /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/bootstrap-tools
+              0.000020               0.000008   /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/tmp
+              0.000008               0.000008   /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/assets
+              0.000004               0.000004   /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/ray
+
+大型共享来源目录：/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019
+  下列为真实第二层占用；不把algorithm-improvement等父目录的全部内容推断为features。
+  jxu957 (UID14090) GB       mou176 (UID21930) GB       路径
+          2,483.336434           2,483.336434   algorithm-improvement-20261021
+            213.413675             213.413675   sampling
+            170.654294             170.654294   migration-export-h100-20261020
+             26.597851              26.597851   balanced-rank1-from-epoch1-prefix20-20261020
+             23.976215              23.976215   replay-matched9088-bank-v2-20261021
+             20.672094              20.672094   probe
+             15.242076              15.242076   replay-layer-qualification-20261021
+             11.473011              11.473011   mixed-only-ft-cp2-prefix20-20261020
+              9.031954               9.031954   peer-newseed-h100-20261021
+              6.999732               6.999732   migration-export-h100-lite-20261020
+              3.744993               3.744993   qualification-740358
+              3.744977               3.744977   checkpoint-audit
+              1.797108               1.797108   selection-2048-20261020
+              0.548598               0.548598   inputs
+              0.140698               0.140698   mixed-only-ft-cp2-20261020
+              0.111518               0.111518   bank
+              0.064483               0.064483   replay-extended-qualification-20261021
+              0.053985               0.053985   confirmation-materialization-deploy-20261021
+              0.031830               0.031830   preparation
+              0.029290               0.029290   repo-postprocess-96df5a23f23f
+              0.029278               0.029278   repo-postprocess-5138364dbd3c
+              0.029274               0.029274   repo-postprocess-cf4418e5c11f
+              0.029270               0.029270   repo
+              0.011510               0.011510   assets
+              0.005042               0.005042   algorithm-data-preparation-code-20261021
+              0.005042               0.005042   matched-g10-collector-code-20261021
+              0.003146               0.003146   training-candidate-e4-scoring-20261021
+              0.001552               0.001552   logs
+              0.000786               0.000786   frozen-validation-ema3-20261021
+              0.000311               0.000311   control-tools
+              0.000307               0.000307   replay-downstream-comparison-20261021
+              0.000287               0.000287   replay-matched9088-bank-20261021
+              0.000279               0.000279   delivery-four-epoch-selection
+              0.000180               0.000180   auditors
+              0.000180               0.000180   interim-epoch0004
+              0.000168               0.000168   peer-newseed-receiver-stdlib-fixture-20261021
+              0.000160               0.000160   control
+              0.000082               0.000082   cache
+              0.000053               0.000221   tmp
+              0.000045               0.000045   prediction-audit
+              0.000008               0.000008   audit
+              0.000008               0.000008   peer-newseed-network-probes-20261021
+              0.000008               0.000008   probe-qualification
+  第二层路径名含feature的条目数：0；更深层features的归属不能仅由depth2清单进一步细分。
+
+训练与独立检索服务（时间为此份保存观测的时间）
+状态输入：/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp1-new-observation-1792581322.json
+观测时间：2026-10-21T19:15:21+08:00
+新训练作业：745258
+queue 原始输出（rc=0）：
+745198|jxu957|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50
+accounting 原始输出（rc=0）：
+745022|CANCELLED by 14090|0:0|00:57:43|ACD1-22
+745022.batch|CANCELLED|0:9|00:58:21|ACD1-22
+745022.extern|COMPLETED|0:0|00:57:43|ACD1-22
+745022.0|COMPLETED|0:0|00:01:16|ACD1-22
+745198|RUNNING|0:0|00:35:31|ACD1-26
+745198.batch|RUNNING|0:0|00:35:31|ACD1-26
+745198.extern|RUNNING|0:0|00:35:31|ACD1-26
+745198.0|COMPLETED|0:0|00:00:22|ACD1-26
+745198.1|COMPLETED|0:0|00:05:32|ACD1-26
+745198.2|COMPLETED|0:0|00:00:01|ACD1-26
+745198.3|COMPLETED|0:0|00:00:01|ACD1-26
+745198.4|COMPLETED|0:0|00:00:01|ACD1-26
+745258|FAILED|1:0|00:02:57|ACD1-64
+745258.batch|FAILED|1:0|00:02:57|ACD1-64
+745258.extern|COMPLETED|0:0|00:02:57|ACD1-64
+service_health：
+{
+  "endpoint": "http://ACD1-26:18020/retrieve",
+  "hostname": "ACD1-26",
+  "logical_shards": 4,
+  "observed_unix": 1792581322.5339134,
+  "ok": true,
+  "physical_gpu_count": 2,
+  "service_job_id": "745198",
+  "statistics": {
+    "backend_seconds": 3.220445366576314,
+    "completed_queries": 64,
+    "completed_requests": 64,
+    "failed_requests": 0,
+    "last_completed_unix": 1792579846.8758671,
+    "logical_queries": 64,
+    "logical_requests": 64
+  },
+  "training_run_id": "232f20e112ac4a978c5aba52a0367195"
+}
+cp1_cpu_receipt：
+{
+  "actual_cuda_restore_accepted": false,
+  "actual_optimizer_writes_per_rank": 20,
+  "hf_saved_tensor_count": 339,
+  "status": "EASY2560_NATIVE4_FULL_SHA_CPU_STATES_PASS",
+  "step": 1,
+  "world_size": 4
+}
+completed_old_outer：
+{
+  "actual_optimizer_writes": 20,
+  "full_budget_complete": true,
+  "step": 1,
+  "update_status": "complete"
+}
+restore_receipts：
+{}
+diagnostic_failures：
+{
+  "cp1-sparse-numerical-qualification-rank-0-failure.json": {
+    "accepted": false,
+    "checked_unix": 1792581295.641867,
+    "diagnostic_only": true,
+    "error": "SPARSE_MODEL_DIAGNOSTIC_NUMERICAL_THRESHOLDS_REJECTED; see /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-sparse-cp1-20261021/diagnostics/cp1-sparse-numerical-qualification.json",
+    "error_type": "RuntimeError",
+    "formal_actual_restore_receipt_written": false,
+    "rank": "0",
+    "worker_reuse_permitted": false
+  },
+  "cp1-sparse-numerical-qualification-rank-1-failure.json": {
+    "accepted": false,
+    "checked_unix": 1792581295.5925806,
+    "diagnostic_only": true,
+    "error": "SPARSE_MODEL_DIAGNOSTIC_NUMERICAL_THRESHOLDS_REJECTED; see /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-sparse-cp1-20261021/diagnostics/cp1-sparse-numerical-qualification.json",
+    "error_type": "RuntimeError",
+    "formal_actual_restore_receipt_written": false,
+    "rank": "1",
+    "worker_reuse_permitted": false
+  },
+  "cp1-sparse-numerical-qualification-rank-2-failure.json": {
+    "accepted": false,
+    "checked_unix": 1792581295.6278968,
+    "diagnostic_only": true,
+    "error": "SPARSE_MODEL_DIAGNOSTIC_NUMERICAL_THRESHOLDS_REJECTED; see /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-sparse-cp1-20261021/diagnostics/cp1-sparse-numerical-qualification.json",
+    "error_type": "RuntimeError",
+    "formal_actual_restore_receipt_written": false,
+    "rank": "2",
+    "worker_reuse_permitted": false
+  },
+  "cp1-sparse-numerical-qualification-rank-3-failure.json": {
+    "accepted": false,
+    "checked_unix": 1792581295.738126,
+    "diagnostic_only": true,
+    "error": "SPARSE_MODEL_DIAGNOSTIC_NUMERICAL_THRESHOLDS_REJECTED; see /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-sparse-cp1-20261021/diagnostics/cp1-sparse-numerical-qualification.json",
+    "error_type": "RuntimeError",
+    "formal_actual_restore_receipt_written": false,
+    "rank": "3",
+    "worker_reuse_permitted": false
+  }
+}
+训练解释：Saved observation only; PENDING/RUNNING and CPU-state receipt do not prove resumed training progress
+
+权限错误及其影响的顶层目录（保留所有已提供错误行）
+
+jxu：错误文件=84490 B，已提供=608行；受影响顶层目录=12
+  1 行  /data/user/jxu957/experiments/cosearch-continue300-x203-20261008
+  19 行  /data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017
+  226 行  /data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2
+  25 行  /data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3
+  293 行  /data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4
+  12 行  /data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019
+  1 行  /data/user/jxu957/experiments/grounding-eval-strict-20261019
+  4 行  /data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r12
+  5 行  /data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r13
+  6 行  /data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r15
+  7 行  /data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r16
+  9 行  /data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r17
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r12/tmp/tmp320uh0sq': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r12/tmp/torchelastic_lnobzazg': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r12/tmp/torchelastic_cnw2fdsp': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r12/tmp/torchelastic_jbbyik45': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r17/artifacts/behavior-traces': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r17/tmp/torchelastic__xasg9lk': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r17/tmp/tmp8b9rivkp': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r17/tmp/tmpvtjukp6n': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r17/tmp/tmpuec8ki6u': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r17/tmp/tmp1sprzzt2': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r17/tmp/torchelastic_d1lqho_6': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r17/tmp/torchelastic_2mh8y3wk': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r17/tmp/tmppvloarff': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_qjv9yygz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_3qve05ml': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_unjb9a5x': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_pr0rcr9j': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_0i4bhxx7': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_8ykdd37e': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_meujmhfr': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_rku5jo2b': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_f9ljat3e': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_erkd42lc': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_r3lzs8nn': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_uum8fb0n': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic__ozh7mh1': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_1qjgox7w': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_soyb3sp9': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_uhbvquft': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic__stce8vw': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_coaawmed': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_ny9471fh': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_8b2vwbey': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_r65fe0yk': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_zh669vo0': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_zu88uetz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_e6ydiwkp': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/tmp/torchelastic_woaymjet': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/preparation/cp200-tensor-retirement/19ec0e1bc6224d8e85bbcba0b8ba9eb8/failed-source-attempt-d45-pid110273-start96708929': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r13/artifacts/behavior-traces': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r13/tmp/torchelastic_4pcpf26s': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r13/tmp/tmph9o0ucgu': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r13/tmp/torchelastic_s2zc7mgr': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r13/tmp/torchelastic_ix_at9mm': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r16/artifacts/behavior-traces': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r16/tmp/tmpy3_1d_fa': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r16/tmp/tmpi55rv4z6': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r16/tmp/tmpfehw9jlv': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r16/tmp/tmpdu_4oy5j': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r16/tmp/ray-thread-smoke-72d37ba2': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r16/tmp/tmp65scbhc9': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_g8zuclgh': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_523wuol7': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_979r7qu5': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_9jbarhkm': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_83w_uipz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_2wb8w9h2': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_w3ci00tt': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_bu_zfhcb': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_hzdqpew_': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_i48i9buh': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_00lxtgvb': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_lntc_5hx': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_jmaspe6i': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_7ele_t10': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_rrc79l9k': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_yyn_26mc': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_j8w08nuj': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_cd3zotd3': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic__23oy379': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_8zco2bvv': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_c1x1t4j3': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_3kvhm6sm': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_4rt_dzyt': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_1_5rtch2': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_v_2kg2gb': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_h87oa7bb': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_s1eba07q': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_spjjub0e': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_2332ghyx': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_bzcf1csf': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_y_e6smbr': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_y4f6mhr3': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_ycqd6u_x': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_v_t7n02c': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_hinfi8lc': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_vdex32sa': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_jzkj7ja6': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_8m4kkmkm': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_rjzruwcr': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_wvsvs2ta': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_64_mucdu': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_z1gyi8xq': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_1l2ieoh9': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_k6hs1lfc': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_0as94fp_': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_8g_re8r5': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_hjx336up': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_ci830jb1': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_v2ru6_sj': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_7xmv37_g': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_js0j1ah4': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_h6s178et': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_wgaramr9': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_hleiah67': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_631lt4n_': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_te78gtqe': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_0q3h2pdn': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_2su4npl_': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_qf8crdyt': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_z9gq367r': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_zwtso17e': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_80pxw1rf': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_0bb5k2hl': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_uqfol296': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_2nuwsumf': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_6iu5qb2h': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_85lmmhgz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_j2so0a3p': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_i4ntie12': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_5e0atkx3': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_dh2wyv_1': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_raodh45e': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_fdezdfor': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_b4ezx8k7': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_46rprnrb': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_z__32c8z': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_4y3w_74h': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_bn28_rrc': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_9l6vmoek': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_oxdpbpqf': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_zaxe3dml': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_1i1z9chf': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_al_w0mog': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_rwa4_w5l': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_9uxssq2r': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_kkk56fdr': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_42h_4thy': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_jn3ltvi0': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_na2352gq': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_4ah0l6hl': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_wn3v7r4e': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_xryu3mpk': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_u4_5oxrt': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_nn5ny5af': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_xkfp_79a': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_qe9mgrbr': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_rn0xfjgd': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_x3yvxr02': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_lmraadsk': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_yg1l5x95': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_8k8f3_ci': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_q2nl0uhz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_diy6lwue': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_8e6ocf_g': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_3nbw35nc': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_r6l7ozoj': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_rcr39ruv': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_ho_0s12w': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_jb0xhmp1': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_2gy72e_6': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_q0x1dnxz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_o3sjdw6r': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_kyh6dx48': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_oqmjs4_y': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_imso590m': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_emo3pu80': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_wtmcj_pa': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_e9_17wd2': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_dveefaw2': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_5l6cggu0': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_hizaylov': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_m8nj005d': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_hr9bp9nz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_ekoz2ouf': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_ndg0m1mo': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_omidh4oo': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_4ejus167': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_dthquazz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_hefqfode': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_h966o4vj': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic___9b_b5s': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_h8k9wuac': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic__she21ko': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_hqz6201w': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_sw_oz25f': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_y15vczee': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_8v1mp92z': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_l346l_yf': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_169l3b6u': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_t76dbs2f': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_l0z6g0t6': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_gsid9mil': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_lhsj5l25': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_lo8mk94w': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_ny_hh9vm': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_fart9_36': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_i41e3vn9': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_323trxnc': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_eh2t1r31': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_7ty7ni8x': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_rc94aasd': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_vsjze8w5': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_at3ej_57': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_u88u25r9': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_kchz0ynv': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_xd10mikc': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_cymjmx4e': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_dyeqytwb': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_nk5at0wz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_krcu12bi': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_c11jck66': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_0v9zj508': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_a8neivdy': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_4frjjqrw': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_ih8t2a7w': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_u1a3lupk': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_h9lgcqz3': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_i1fvu76a': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_ndjddhk2': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_qpbaq9yg': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_cbl85bhj': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_7dhdykko': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_e3313bg2': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_d4e64ivl': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_qyrjomaz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_v_0wxva7': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_grt5u003': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_cvm7ap4y': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_3a01qldu': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_la811b0n': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_xt3u_qby': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_so6ybgvh': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_44wkv_hs': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_qe9ndjry': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_w5h4jx9y': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_z392jnmd': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_jw0r66t2': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_7fk4wc_7': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_yevflikb': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_nb4akqdx': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_tzcxyurn': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_z0mn7i8b': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic__wmfkuoj': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_725qf15y': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_5nz4wqtn': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_nrvv29_k': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_nxh5ilu6': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_ps0r1tz3': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_l_7zk4aa': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_wc2x7755': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_znw3ns1q': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_hbv5yxxk': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_bvhj1itw': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_4404lshx': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_0lcu4i24': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_a099tilp': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_mviod6l3': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_wg6vuuxx': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_x5yt5qds': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_bc0b6s06': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_xx82ucgi': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_nxvr90k2': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_vh17vdx5': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_o19cqlcd': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_88fbo16v': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_815rxsvj': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_4lbwm6_l': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_qc59v_ae': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_d1gd7864': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_8fxlob_r': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_d0evo6xb': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_bmfq9j4p': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_3etkwt3s': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_siut_oci': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_8xkol2gg': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/tmp/torchelastic_4h3qwzuw': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r15/artifacts/behavior-traces': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r15/tmp/tmp5_z6jlvu': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r15/tmp/tmpp8vqir_4': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r15/tmp/tmpq236yx8a': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r15/tmp/tmp3ie8lrfk': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r15/tmp/tmpg0g7_5p_': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_rrqpyef1': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_rpj9bpib': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_bahm2q26': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_ej135f5_': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic__6_270k4': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic__3ebbdel': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic__2u22wrx': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_ijh9bgv7': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic__9a1xroo': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_nav0knnq': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_5ir50cys': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_8v992v_d': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_gb75hmnp': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_a993ufk6': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_udg7o0zu': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_codh6eki': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_6pdb9jul': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_ek8rb1lz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_bzvpucfh': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_dgartqap': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_cqc0b496': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_4h4pzeh_': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_l9nirtbv': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_wuvj2znp': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_9hr_nzsz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_085_crlz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_aypj7exd': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_27cph7_0': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_qtesijaz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_8_8zwdk_': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_00k_3p8t': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_szi30kli': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_f2peac60': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_eitegklt': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_risxmz8f': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_hwxihgb_': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_v8rqqe3o': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_yz87j7d6': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_xa87_ey3': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_kiibfclm': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_u4a5ia9w': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_18zf0pfj': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_s857jg1b': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_ftxkg3ul': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_66_r5beu': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_qui8lb6x': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_m45p2371': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_3uyr_afv': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_p1dksui3': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic__utbjn_a': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_5g_4gxpp': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_5f97pmz_': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_d3z9s5f1': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_foh0xbct': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_psxbabxf': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_svxx3xyy': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_uxw6iydb': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_sls4fvsc': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_p0asf2a5': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_06wc_vws': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_0nwmtzqp': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_3bj6l8iq': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_yeq19mbt': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_q9lcemv_': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_xxhy_8a8': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_tv0m45ue': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_urnvqivp': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_ydblc11k': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_rfddgtod': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_8bxhh0yz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_gjo8fil2': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_oq2cqc6z': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_kn3cofx3': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic__x6j9b65': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_s9atn1rt': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_8fagmqx7': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_q1ncbtg2': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_c7wexr7v': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_wk57aljn': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_zstv2eom': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_m7bayss0': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_9endh_n0': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_advsanwn': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_079v445o': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_kovzcc2m': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_uim3sfzw': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_s5jliq7u': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_i55i3ufx': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_idfl4aax': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_560au8lx': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_7r1y7tem': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_mt8zvjeb': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_vaegocue': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_douk0rzx': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_hjf58s8q': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_4hhen7au': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_unrtq0gv': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_gb6iamzk': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_kb6dezpm': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_rnp_l6zh': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_z_f4bazo': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_3j1vzbn1': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic__mimvxuy': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_p0drbzhn': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_dnn6unvj': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_cum4i68v': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_o8jgmzor': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_coac4bsq': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_kcb4i0ph': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_g3baxoza': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_lwxijnp3': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_68nnnrqp': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_9ojieq2s': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_av4c6m5i': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_eju6g5vo': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_3_cddrp2': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_xrzkkomk': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_n77_ot0w': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_kifesnpv': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_p3u1f6kn': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_94no8xbk': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_sond__do': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_zfcfccba': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_ud5gak9m': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_wk4pqgli': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_d0oqqbu9': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_guv0ishb': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_1i_v_gnc': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_pgrkc_ai': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_vzexhasy': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_yhgfgp5h': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_qctwnp8p': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_5kvmusrm': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_y49bsuno': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_e70a97d7': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_cqg3scmz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_o6tepwu_': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_x22ph73q': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_t1w8vuvx': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_22gal82n': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_xgpa7dz8': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_cgdo36wv': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic__g7gueur': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_9mj8kvm4': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_j6_sihty': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_4xtizmr_': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_e44afva4': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_pykesas7': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_k8i6msgj': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_sxtb7nwk': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_40v82lzh': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_5gtjquoo': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_csn5gu3j': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_f2fh793u': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_rald8fr3': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_ke0zt8r6': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_hu4aszwk': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_oot41i6b': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_xqr21e56': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_jbmqjs7c': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_e8qvu7al': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_7xdv_gwm': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_1ylq5lk_': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_mtk_86pd': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_72reobkp': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_5cscc28x': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_zvpoo83g': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_8vqg444g': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_i95ui8fn': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_7f7u3090': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_9qz_dabj': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_upuigrwo': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_ub_pnmwj': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_vkf3knlu': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_b2_23qnq': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_ezjy351k': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_5urc_2j1': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_co9k1b2d': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_b28ffgsg': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_l0_v9bb5': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_99t191jh': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_32d61_pq': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic___47gcvn': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_vdttw3_5': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_m4pfqkn4': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_lbdx220c': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_uxn9k2eq': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_8r_erjpx': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_m19zify7': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_keste6lj': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_k_niedch': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_ppquju67': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_ual2vayb': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_m5c04uhb': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_3r8b27v7': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_lx8an9_7': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_kpqovxdu': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_0fdk9fr9': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_t1fg822s': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_l2kf9tdj': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_0734kiy_': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_hwssvka2': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_p0zmdjzz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_p6vjug1h': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_0kczkoli': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_4cpctd0k': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_kfhxaofc': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_3h2s0mth': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_zzkyo0gh': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_dd2z44gk': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_lmf0uj9m': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_gj30knrr': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_l99gtww2': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_6c60j4xc': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_pvduonc2': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_3utvuuwv': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_zbvit_ey': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_w0izzj9m': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic__kw343ll': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_tpcwa6yz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_9wq1z6oz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_5za9rw_m': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_81ab5u3e': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_z4k3qvfb': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_83horg0n': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_9fv1ku4z': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_h8pemnkc': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_l3v_xq3x': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_1uxwzba5': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_ncj_ly8q': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_2v3kgpir': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_0q67wylq': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_g_q1dzha': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_yq_7dozs': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_sp4dh1o2': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_jyx03ncr': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_04j92kid': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_7g4udnn_': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_ptn9z091': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_kua5d1kg': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_egsl6a4r': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_8g5kdok1': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_ggxv9vyp': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_2_1o1qth': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_hhyn1qti': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_z57lncdg': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_bxj5r9ol': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_5gupyer3': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_0yu5vivk': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_a3e5xkbh': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_9iz8icok': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_l_4_rzhl': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_bwyzs06l': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_9g137q7p': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_yfp6_05c': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_e6dg9gw6': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_fnzw2bk9': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_ehrpsj_7': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_zuagfv4x': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_ttxhjjl7': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_n0ve00as': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_v9iwfk1e': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_pxsvrjsj': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_kt7x9e5l': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_fi46n8nf': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_g35ergoj': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_i_qau3yi': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_9lsb39p1': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_xcici3kr': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_mvlpcrw3': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_znghmbks': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_6koxwt9p': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_d1qzqxsq': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_ftoommk6': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_zx70pvsr': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_rw01s4nk': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_ipepwjt6': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_c5f9bu6b': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_vq6j3xhe': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_1t8dkij2': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_gbkagbbf': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_f0gcx06b': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_6r6jcxvl': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_sfl7t2_5': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_rzlx51wb': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_jgqv96fs': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_bjxf1b5f': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_1o1toj55': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_dea4i7ws': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_2y5unomc': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_tqk9ja4y': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_d27cd_5x': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/tmp/torchelastic_75gu7mho': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/grounding-eval-strict-20261019/runtime-e8c5bcb7': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/tmp/torchelastic_g_5299bf': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/tmp/torchelastic_fj549plj': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/tmp/torchelastic_ipjh6wr3': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/tmp/torchelastic_u2065bzr': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/tmp/torchelastic_eg15dygo': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/tmp/torchelastic_lw7inl9h': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/tmp/torchelastic_24nuf1ob': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/tmp/torchelastic_spu0adxr': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/tmp/torchelastic_hgn7zw6h': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/tmp/torchelastic_k8biwgyc': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/tmp/torchelastic_1clnoht7': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/tmp/torchelastic_smx10xhu': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/tmp/torchelastic_7zncb6xg': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/tmp/torchelastic_l_1t_jol': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/tmp/torchelastic_e07xc0at': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/tmp/torchelastic_4uhdrlpc': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/tmp/torchelastic_q9z2aqqk': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/tmp/torchelastic_g8nqnxni': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/tmp/torchelastic_4jvrywvo': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/tmp/tmpzsmw0425': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/tmp/torchelastic_widx0cp9': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/tmp/torchelastic_n6i87ayh': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/tmp/torchelastic_kldznydl': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/tmp/tmpzawfqfh7': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/tmp/torchelastic_glihaba_': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/tmp/tmpcd92jqtg': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/tmp/qualification-zv471u57': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/tmp/tmpi5_a6fly': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/tmp/torchelastic_k_8jrxbm': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/tmp/torchelastic_eyprar2d': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/tmp/tmpf91oycnt': Permission denied
+
+mou：错误文件=7105 B，已提供=45行；受影响顶层目录=17
+  7 行  /data/user/jxu957/experiments/easy2560-corollout-joint4-20261017
+  4 行  /data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018
+  3 行  /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018
+  2 行  /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021
+  1 行  /data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730226-20261018
+  6 行  /data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730961-20261018
+  3 行  /data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014
+  2 行  /data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery717607-20261014
+  1 行  /data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery718509-20261014
+  1 行  /data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery718650-20261014
+  3 行  /data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery726927-20261016
+  2 行  /data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727000-20261016
+  2 行  /data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727050-20261016
+  3 行  /data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727148-20261016
+  2 行  /data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727251-20261017
+  2 行  /data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017
+  1 行  /data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727251-20261017/artifacts/behavior-traces': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727251-20261017/tmp/tmpwa4ao5_8': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery717607-20261014/tmp/tmpcyc88syo': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery717607-20261014/tmp/torchelastic_k9r107hq': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-20261017/artifacts/behavior-traces': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-20261017/preparation/candidate-raw-maintenance-code': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-20261017/preparation/candidate-raw-maintenance-runner': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-20261017/tmp/tmpgwozrc1a': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-20261017/tmp/tmp6qo6b018': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-20261017/tmp/tmp13tdy8km': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-20261017/tmp/tmpjr11npp4': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/artifacts/behavior-traces': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/tmp/tmp9i_r5f70': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727050-20261016/tmp/torchelastic_kkyrdfym': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727050-20261016/tmp/torchelastic_hagvcyy2': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730226-20261018/preparation/cp5-cpu-seal-5a16192': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/artifacts/behavior-traces': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/candidate-raw-maintenance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/candidate-raw-maintenance-runner': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/tmp/tmppvjaxzyf': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730961-20261018/artifacts/behavior-traces': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730961-20261018/preparation/candidate-raw-maintenance-runner': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730961-20261018/tmp/tmpwfi1m7kb': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730961-20261018/tmp/tmpvssn3ji8': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730961-20261018/tmp/tmpy4nfw3sz': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730961-20261018/tmp/tmpvp4ewi1z': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery718509-20261014/artifacts/behavior-traces': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/observations/old100-retention-readcheck-20261016': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/observations/old-original-reserve-20261016': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/observations/retire-exact78-old-originals-20261016': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/behavior-traces': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727000-20261016/tmp/torchelastic_owz47u2z': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727000-20261016/tmp/torchelastic_g0dzwm_z': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery718650-20261014/artifacts/behavior-traces': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery726927-20261016/tmp/tmpaybz48s8': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery726927-20261016/tmp/torchelastic_va4auvch': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery726927-20261016/tmp/tmp75uf922z': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727148-20261016/tmp/torchelastic_qoz361yq': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727148-20261016/tmp/torchelastic_m3felgvv': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727148-20261016/tmp/torchelastic_sc5euxar': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017/artifacts/behavior-traces': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017/tmp/tmpvcn5b4f5': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/artifacts/behavior-traces': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/preparation/candidate-raw-maintenance-runner': Permission denied
+du: cannot read directory '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/tmp/tmp90fnryi2': Permission denied

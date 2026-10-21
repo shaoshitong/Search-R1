@@ -1,0 +1,1820 @@
+{
+  "accepted": false,
+  "actual_optimizer_state_restored": false,
+  "actual_scheduler_state_restored": false,
+  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-sparse-cp1-20261021",
+  "completed_unix": 1792581294.7579622,
+  "cp1_hf_model": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/checkpoints/search-g1-common8/actor/global_step_1",
+  "data_cursor_restored": false,
+  "diagnostic_only": true,
+  "formal_actual_restore_receipt_written": false,
+  "format": "easy7b_cp1_model_only_sparse_cuda_qualification_v1",
+  "logical_micro_per_rank": 4,
+  "model_initialized_from_cp1": true,
+  "model_source_completed_outer": 1,
+  "normal_training_auto_call": false,
+  "optimizer_calls": 0,
+  "physical_micro_per_rank": 8,
+  "production_full_state_restore_still_required": true,
+  "ranks": [
+    {
+      "fresh_adam_state_entries": 0,
+      "hostname": "ACD1-64",
+      "local_rank": 0,
+      "numerical_comparison": {
+        "accepted": false,
+        "all_local_gradient_elements_compared": true,
+        "clip_ratio": 0.2,
+        "comparisons": {
+          "D1_D2": {
+            "accepted": false,
+            "actual": "D2",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.8677264891249468,
+              "all_finite": true,
+              "cosine": 0.9999591600186662,
+              "difference_l2": 0.016882062538415524,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.0005030632019042969,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.009040545062790437,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 0.0,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 0.0,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 0.0
+            },
+            "reference": "D1"
+          },
+          "D1_D3": {
+            "accepted": false,
+            "actual": "D3",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.8683591724437631,
+              "all_finite": true,
+              "cosine": 0.9999537057232191,
+              "difference_l2": 0.018000231970847123,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.00063323974609375,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.009639338078675182,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 0.0,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 0.0,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 0.0
+            },
+            "reference": "D1"
+          },
+          "D1_S1": {
+            "accepted": false,
+            "actual": "S1",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.866972582536255,
+              "all_finite": true,
+              "cosine": 0.999933976090441,
+              "difference_l2": 0.021459783910351225,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.000518798828125,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.011491969244741596,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 3.814697265625e-06,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 9.839671230750235e-08,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 1.6925025408953687e-09
+            },
+            "reference": "D1"
+          }
+        },
+        "completed_unix": 1792581294.711858,
+        "dense_repeat_noise": {
+          "D1_D2": {
+            "accepted": false,
+            "actual": "D2",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.8677264891249468,
+              "all_finite": true,
+              "cosine": 0.9999591600186662,
+              "difference_l2": 0.016882062538415524,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.0005030632019042969,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.009040545062790437,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 0.0,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 0.0,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 0.0
+            },
+            "reference": "D1"
+          },
+          "D1_D3": {
+            "accepted": false,
+            "actual": "D3",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.8683591724437631,
+              "all_finite": true,
+              "cosine": 0.9999537057232191,
+              "difference_l2": 0.018000231970847123,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.00063323974609375,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.009639338078675182,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 0.0,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 0.0,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 0.0
+            },
+            "reference": "D1"
+          }
+        },
+        "dual_clip": 3.0,
+        "format": "actual_actor_sparse_policy_D1_D2_D3_S1_v1",
+        "gradient_accumulation": 4,
+        "gradient_clipping_calls": 0,
+        "local_runs": [
+          {
+            "baseline_gradient_norm": {
+              "actual_l2": 1.8673722016938588,
+              "all_finite": true,
+              "cosine": 1.0,
+              "difference_l2": 0.0,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.0,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.0,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "local_authored_tokens": 536,
+            "local_loss": -0.029823299821715436,
+            "run": "D1",
+            "selected_policy_logits": false
+          },
+          {
+            "local_authored_tokens": 536,
+            "local_loss": -0.029823299821715436,
+            "run": "D2",
+            "selected_policy_logits": false
+          },
+          {
+            "local_authored_tokens": 536,
+            "local_loss": -0.029823299821715436,
+            "run": "D3",
+            "selected_policy_logits": false
+          },
+          {
+            "local_authored_tokens": 536,
+            "local_loss": -0.029823298129212895,
+            "run": "S1",
+            "selected_policy_logits": true
+          }
+        ],
+        "logical_micro_per_rank": 4,
+        "normal_training_auto_call": false,
+        "optimizer_calls": 0,
+        "physical_micro_per_rank": 8,
+        "rank": 0,
+        "same_rng_start_for_every_forward": true,
+        "scheduler_calls": 0,
+        "scope": "One original restored-actor micro8 only; not proof for all training batches or whole-outer throughput",
+        "started_unix": 1792581267.6370473,
+        "temperature": 1.0,
+        "thresholds": {
+          "gradient_cosine_min": 0.99999,
+          "gradient_relative_l2": 0.001,
+          "log_probability_max_abs": 0.001,
+          "log_probability_rms": 0.0001,
+          "loss_abs": 1e-05
+        },
+        "world_size": 4
+      },
+      "rank": 0,
+      "scheduler_unchanged": true,
+      "selection": {
+        "advantages": {
+          "all_five_labels_used_before_selection": true,
+          "formula": "(EM - mean(original five EMs))/(sample_std(original five EMs) + 1e-6)",
+          "role": "qualification_only_binary_EM_test_advantages_NOT_production_grounding_rewards",
+          "virtual_zero": false
+        },
+        "context_width": 4516,
+        "global_selected_pool_rows": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          10,
+          11,
+          12,
+          13,
+          14,
+          30,
+          31,
+          32,
+          33,
+          34,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          65,
+          66
+        ],
+        "loss_mask": "Original info_mask[:, -response_width:]; no response/tool token reassembly",
+        "old_log_probabilities": "Original saved sampling_log_probs; no extra policy forward",
+        "original_mixed_questions": 203,
+        "original_questions": 512,
+        "original_trajectories": 2560,
+        "rank": 0,
+        "raw_pool_identity": {
+          "attempt_id": "857092f9bb234821ab62664bf273a1f0",
+          "attempt_index": 1,
+          "logical_update": 1,
+          "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:1:policy-857092f9bb234821ab62664bf273a1f0",
+          "run_id": "232f20e112ac4a978c5aba52a0367195"
+        },
+        "response_width": 2468,
+        "rows": [
+          {
+            "authored_tokens": 58,
+            "binary_em": 0,
+            "correct_count": 1,
+            "pool_row": 0,
+            "qualification_only_advantage": -0.4472126066684723,
+            "question_index": 0,
+            "question_ordinal": 0,
+            "trajectory_index": 0
+          },
+          {
+            "authored_tokens": 93,
+            "binary_em": 0,
+            "correct_count": 1,
+            "pool_row": 1,
+            "qualification_only_advantage": -0.4472126066684723,
+            "question_index": 0,
+            "question_ordinal": 0,
+            "trajectory_index": 1
+          },
+          {
+            "authored_tokens": 44,
+            "binary_em": 0,
+            "correct_count": 1,
+            "pool_row": 2,
+            "qualification_only_advantage": -0.4472126066684723,
+            "question_index": 0,
+            "question_ordinal": 0,
+            "trajectory_index": 2
+          },
+          {
+            "authored_tokens": 31,
+            "binary_em": 1,
+            "correct_count": 1,
+            "pool_row": 3,
+            "qualification_only_advantage": 1.7888504266738892,
+            "question_index": 0,
+            "question_ordinal": 0,
+            "trajectory_index": 3
+          },
+          {
+            "authored_tokens": 58,
+            "binary_em": 0,
+            "correct_count": 1,
+            "pool_row": 4,
+            "qualification_only_advantage": -0.4472126066684723,
+            "question_index": 0,
+            "question_ordinal": 0,
+            "trajectory_index": 4
+          },
+          {
+            "authored_tokens": 73,
+            "binary_em": 0,
+            "correct_count": 2,
+            "pool_row": 10,
+            "qualification_only_advantage": -0.7302953600883484,
+            "question_index": 2,
+            "question_ordinal": 2,
+            "trajectory_index": 0
+          },
+          {
+            "authored_tokens": 79,
+            "binary_em": 1,
+            "correct_count": 2,
+            "pool_row": 11,
+            "qualification_only_advantage": 1.0954431295394897,
+            "question_index": 2,
+            "question_ordinal": 2,
+            "trajectory_index": 1
+          },
+          {
+            "authored_tokens": 100,
+            "binary_em": 1,
+            "correct_count": 2,
+            "pool_row": 12,
+            "qualification_only_advantage": 1.0954431295394897,
+            "question_index": 2,
+            "question_ordinal": 2,
+            "trajectory_index": 2
+          }
+        ],
+        "selected_pool_rows": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          10,
+          11,
+          12
+        ]
+      },
+      "update_calls": {
+        "optimizer_step": 0,
+        "scheduler_step": 0
+      }
+    },
+    {
+      "fresh_adam_state_entries": 0,
+      "hostname": "ACD1-64",
+      "local_rank": 1,
+      "numerical_comparison": {
+        "accepted": false,
+        "all_local_gradient_elements_compared": true,
+        "clip_ratio": 0.2,
+        "comparisons": {
+          "D1_D2": {
+            "accepted": false,
+            "actual": "D2",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.8677264891249468,
+              "all_finite": true,
+              "cosine": 0.9999591600186662,
+              "difference_l2": 0.016882062538415524,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.0005030632019042969,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.009040545062790437,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 0.0,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 0.0,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 0.0
+            },
+            "reference": "D1"
+          },
+          "D1_D3": {
+            "accepted": false,
+            "actual": "D3",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.8683591724437631,
+              "all_finite": true,
+              "cosine": 0.9999537057232191,
+              "difference_l2": 0.018000231970847123,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.00063323974609375,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.009639338078675182,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 0.0,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 0.0,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 0.0
+            },
+            "reference": "D1"
+          },
+          "D1_S1": {
+            "accepted": false,
+            "actual": "S1",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.866972582536255,
+              "all_finite": true,
+              "cosine": 0.999933976090441,
+              "difference_l2": 0.021459783910351225,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.000518798828125,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.011491969244741596,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 3.814697265625e-06,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 9.839671230750235e-08,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 1.6925025408953687e-09
+            },
+            "reference": "D1"
+          }
+        },
+        "completed_unix": 1792581294.7117043,
+        "dense_repeat_noise": {
+          "D1_D2": {
+            "accepted": false,
+            "actual": "D2",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.8677264891249468,
+              "all_finite": true,
+              "cosine": 0.9999591600186662,
+              "difference_l2": 0.016882062538415524,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.0005030632019042969,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.009040545062790437,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 0.0,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 0.0,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 0.0
+            },
+            "reference": "D1"
+          },
+          "D1_D3": {
+            "accepted": false,
+            "actual": "D3",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.8683591724437631,
+              "all_finite": true,
+              "cosine": 0.9999537057232191,
+              "difference_l2": 0.018000231970847123,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.00063323974609375,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.009639338078675182,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 0.0,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 0.0,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 0.0
+            },
+            "reference": "D1"
+          }
+        },
+        "dual_clip": 3.0,
+        "format": "actual_actor_sparse_policy_D1_D2_D3_S1_v1",
+        "gradient_accumulation": 4,
+        "gradient_clipping_calls": 0,
+        "local_runs": [
+          {
+            "baseline_gradient_norm": {
+              "actual_l2": 1.8673722016938588,
+              "all_finite": true,
+              "cosine": 1.0,
+              "difference_l2": 0.0,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.0,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.0,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "local_authored_tokens": 667,
+            "local_loss": 0.07285731351689853,
+            "run": "D1",
+            "selected_policy_logits": false
+          },
+          {
+            "local_authored_tokens": 667,
+            "local_loss": 0.07285731351689853,
+            "run": "D2",
+            "selected_policy_logits": false
+          },
+          {
+            "local_authored_tokens": 667,
+            "local_loss": 0.07285731351689853,
+            "run": "D3",
+            "selected_policy_logits": false
+          },
+          {
+            "local_authored_tokens": 667,
+            "local_loss": 0.07285731351536419,
+            "run": "S1",
+            "selected_policy_logits": true
+          }
+        ],
+        "logical_micro_per_rank": 4,
+        "normal_training_auto_call": false,
+        "optimizer_calls": 0,
+        "physical_micro_per_rank": 8,
+        "rank": 1,
+        "same_rng_start_for_every_forward": true,
+        "scheduler_calls": 0,
+        "scope": "One original restored-actor micro8 only; not proof for all training batches or whole-outer throughput",
+        "started_unix": 1792581267.636283,
+        "temperature": 1.0,
+        "thresholds": {
+          "gradient_cosine_min": 0.99999,
+          "gradient_relative_l2": 0.001,
+          "log_probability_max_abs": 0.001,
+          "log_probability_rms": 0.0001,
+          "loss_abs": 1e-05
+        },
+        "world_size": 4
+      },
+      "rank": 1,
+      "scheduler_unchanged": true,
+      "selection": {
+        "advantages": {
+          "all_five_labels_used_before_selection": true,
+          "formula": "(EM - mean(original five EMs))/(sample_std(original five EMs) + 1e-6)",
+          "role": "qualification_only_binary_EM_test_advantages_NOT_production_grounding_rewards",
+          "virtual_zero": false
+        },
+        "context_width": 4516,
+        "global_selected_pool_rows": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          10,
+          11,
+          12,
+          13,
+          14,
+          30,
+          31,
+          32,
+          33,
+          34,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          65,
+          66
+        ],
+        "loss_mask": "Original info_mask[:, -response_width:]; no response/tool token reassembly",
+        "old_log_probabilities": "Original saved sampling_log_probs; no extra policy forward",
+        "original_mixed_questions": 203,
+        "original_questions": 512,
+        "original_trajectories": 2560,
+        "rank": 1,
+        "raw_pool_identity": {
+          "attempt_id": "857092f9bb234821ab62664bf273a1f0",
+          "attempt_index": 1,
+          "logical_update": 1,
+          "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:1:policy-857092f9bb234821ab62664bf273a1f0",
+          "run_id": "232f20e112ac4a978c5aba52a0367195"
+        },
+        "response_width": 2468,
+        "rows": [
+          {
+            "authored_tokens": 57,
+            "binary_em": 0,
+            "correct_count": 2,
+            "pool_row": 13,
+            "qualification_only_advantage": -0.7302953600883484,
+            "question_index": 2,
+            "question_ordinal": 2,
+            "trajectory_index": 3
+          },
+          {
+            "authored_tokens": 119,
+            "binary_em": 0,
+            "correct_count": 2,
+            "pool_row": 14,
+            "qualification_only_advantage": -0.7302953600883484,
+            "question_index": 2,
+            "question_ordinal": 2,
+            "trajectory_index": 4
+          },
+          {
+            "authored_tokens": 67,
+            "binary_em": 1,
+            "correct_count": 4,
+            "pool_row": 30,
+            "qualification_only_advantage": 0.4472125470638275,
+            "question_index": 6,
+            "question_ordinal": 6,
+            "trajectory_index": 0
+          },
+          {
+            "authored_tokens": 71,
+            "binary_em": 1,
+            "correct_count": 4,
+            "pool_row": 31,
+            "qualification_only_advantage": 0.4472125470638275,
+            "question_index": 6,
+            "question_ordinal": 6,
+            "trajectory_index": 1
+          },
+          {
+            "authored_tokens": 68,
+            "binary_em": 1,
+            "correct_count": 4,
+            "pool_row": 32,
+            "qualification_only_advantage": 0.4472125470638275,
+            "question_index": 6,
+            "question_ordinal": 6,
+            "trajectory_index": 2
+          },
+          {
+            "authored_tokens": 76,
+            "binary_em": 0,
+            "correct_count": 4,
+            "pool_row": 33,
+            "qualification_only_advantage": -1.7888504266738892,
+            "question_index": 6,
+            "question_ordinal": 6,
+            "trajectory_index": 3
+          },
+          {
+            "authored_tokens": 77,
+            "binary_em": 1,
+            "correct_count": 4,
+            "pool_row": 34,
+            "qualification_only_advantage": 0.4472125470638275,
+            "question_index": 6,
+            "question_ordinal": 6,
+            "trajectory_index": 4
+          },
+          {
+            "authored_tokens": 132,
+            "binary_em": 0,
+            "correct_count": 1,
+            "pool_row": 45,
+            "qualification_only_advantage": -0.4472126066684723,
+            "question_index": 9,
+            "question_ordinal": 9,
+            "trajectory_index": 0
+          }
+        ],
+        "selected_pool_rows": [
+          13,
+          14,
+          30,
+          31,
+          32,
+          33,
+          34,
+          45
+        ]
+      },
+      "update_calls": {
+        "optimizer_step": 0,
+        "scheduler_step": 0
+      }
+    },
+    {
+      "fresh_adam_state_entries": 0,
+      "hostname": "ACD1-64",
+      "local_rank": 2,
+      "numerical_comparison": {
+        "accepted": false,
+        "all_local_gradient_elements_compared": true,
+        "clip_ratio": 0.2,
+        "comparisons": {
+          "D1_D2": {
+            "accepted": false,
+            "actual": "D2",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.8677264891249468,
+              "all_finite": true,
+              "cosine": 0.9999591600186662,
+              "difference_l2": 0.016882062538415524,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.0005030632019042969,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.009040545062790437,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 0.0,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 0.0,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 0.0
+            },
+            "reference": "D1"
+          },
+          "D1_D3": {
+            "accepted": false,
+            "actual": "D3",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.8683591724437631,
+              "all_finite": true,
+              "cosine": 0.9999537057232191,
+              "difference_l2": 0.018000231970847123,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.00063323974609375,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.009639338078675182,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 0.0,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 0.0,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 0.0
+            },
+            "reference": "D1"
+          },
+          "D1_S1": {
+            "accepted": false,
+            "actual": "S1",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.866972582536255,
+              "all_finite": true,
+              "cosine": 0.999933976090441,
+              "difference_l2": 0.021459783910351225,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.000518798828125,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.011491969244741596,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 3.814697265625e-06,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 9.839671230750235e-08,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 1.6925025408953687e-09
+            },
+            "reference": "D1"
+          }
+        },
+        "completed_unix": 1792581294.711905,
+        "dense_repeat_noise": {
+          "D1_D2": {
+            "accepted": false,
+            "actual": "D2",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.8677264891249468,
+              "all_finite": true,
+              "cosine": 0.9999591600186662,
+              "difference_l2": 0.016882062538415524,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.0005030632019042969,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.009040545062790437,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 0.0,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 0.0,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 0.0
+            },
+            "reference": "D1"
+          },
+          "D1_D3": {
+            "accepted": false,
+            "actual": "D3",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.8683591724437631,
+              "all_finite": true,
+              "cosine": 0.9999537057232191,
+              "difference_l2": 0.018000231970847123,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.00063323974609375,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.009639338078675182,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 0.0,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 0.0,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 0.0
+            },
+            "reference": "D1"
+          }
+        },
+        "dual_clip": 3.0,
+        "format": "actual_actor_sparse_policy_D1_D2_D3_S1_v1",
+        "gradient_accumulation": 4,
+        "gradient_clipping_calls": 0,
+        "local_runs": [
+          {
+            "baseline_gradient_norm": {
+              "actual_l2": 1.8673722016938588,
+              "all_finite": true,
+              "cosine": 1.0,
+              "difference_l2": 0.0,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.0,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.0,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "local_authored_tokens": 1054,
+            "local_loss": -0.07088365230081346,
+            "run": "D1",
+            "selected_policy_logits": false
+          },
+          {
+            "local_authored_tokens": 1054,
+            "local_loss": -0.07088365230081346,
+            "run": "D2",
+            "selected_policy_logits": false
+          },
+          {
+            "local_authored_tokens": 1054,
+            "local_loss": -0.07088365230081346,
+            "run": "D3",
+            "selected_policy_logits": false
+          },
+          {
+            "local_authored_tokens": 1054,
+            "local_loss": -0.07088365196789578,
+            "run": "S1",
+            "selected_policy_logits": true
+          }
+        ],
+        "logical_micro_per_rank": 4,
+        "normal_training_auto_call": false,
+        "optimizer_calls": 0,
+        "physical_micro_per_rank": 8,
+        "rank": 2,
+        "same_rng_start_for_every_forward": true,
+        "scheduler_calls": 0,
+        "scope": "One original restored-actor micro8 only; not proof for all training batches or whole-outer throughput",
+        "started_unix": 1792581267.6356437,
+        "temperature": 1.0,
+        "thresholds": {
+          "gradient_cosine_min": 0.99999,
+          "gradient_relative_l2": 0.001,
+          "log_probability_max_abs": 0.001,
+          "log_probability_rms": 0.0001,
+          "loss_abs": 1e-05
+        },
+        "world_size": 4
+      },
+      "rank": 2,
+      "scheduler_unchanged": true,
+      "selection": {
+        "advantages": {
+          "all_five_labels_used_before_selection": true,
+          "formula": "(EM - mean(original five EMs))/(sample_std(original five EMs) + 1e-6)",
+          "role": "qualification_only_binary_EM_test_advantages_NOT_production_grounding_rewards",
+          "virtual_zero": false
+        },
+        "context_width": 4516,
+        "global_selected_pool_rows": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          10,
+          11,
+          12,
+          13,
+          14,
+          30,
+          31,
+          32,
+          33,
+          34,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          65,
+          66
+        ],
+        "loss_mask": "Original info_mask[:, -response_width:]; no response/tool token reassembly",
+        "old_log_probabilities": "Original saved sampling_log_probs; no extra policy forward",
+        "original_mixed_questions": 203,
+        "original_questions": 512,
+        "original_trajectories": 2560,
+        "rank": 2,
+        "raw_pool_identity": {
+          "attempt_id": "857092f9bb234821ab62664bf273a1f0",
+          "attempt_index": 1,
+          "logical_update": 1,
+          "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:1:policy-857092f9bb234821ab62664bf273a1f0",
+          "run_id": "232f20e112ac4a978c5aba52a0367195"
+        },
+        "response_width": 2468,
+        "rows": [
+          {
+            "authored_tokens": 160,
+            "binary_em": 1,
+            "correct_count": 1,
+            "pool_row": 46,
+            "qualification_only_advantage": 1.7888504266738892,
+            "question_index": 9,
+            "question_ordinal": 9,
+            "trajectory_index": 1
+          },
+          {
+            "authored_tokens": 167,
+            "binary_em": 0,
+            "correct_count": 1,
+            "pool_row": 47,
+            "qualification_only_advantage": -0.4472126066684723,
+            "question_index": 9,
+            "question_ordinal": 9,
+            "trajectory_index": 2
+          },
+          {
+            "authored_tokens": 69,
+            "binary_em": 0,
+            "correct_count": 1,
+            "pool_row": 48,
+            "qualification_only_advantage": -0.4472126066684723,
+            "question_index": 9,
+            "question_ordinal": 9,
+            "trajectory_index": 3
+          },
+          {
+            "authored_tokens": 135,
+            "binary_em": 0,
+            "correct_count": 1,
+            "pool_row": 49,
+            "qualification_only_advantage": -0.4472126066684723,
+            "question_index": 9,
+            "question_ordinal": 9,
+            "trajectory_index": 4
+          },
+          {
+            "authored_tokens": 112,
+            "binary_em": 0,
+            "correct_count": 3,
+            "pool_row": 50,
+            "qualification_only_advantage": -1.0954431295394897,
+            "question_index": 10,
+            "question_ordinal": 10,
+            "trajectory_index": 0
+          },
+          {
+            "authored_tokens": 128,
+            "binary_em": 1,
+            "correct_count": 3,
+            "pool_row": 51,
+            "qualification_only_advantage": 0.7302953004837036,
+            "question_index": 10,
+            "question_ordinal": 10,
+            "trajectory_index": 1
+          },
+          {
+            "authored_tokens": 107,
+            "binary_em": 1,
+            "correct_count": 3,
+            "pool_row": 52,
+            "qualification_only_advantage": 0.7302953004837036,
+            "question_index": 10,
+            "question_ordinal": 10,
+            "trajectory_index": 2
+          },
+          {
+            "authored_tokens": 176,
+            "binary_em": 1,
+            "correct_count": 3,
+            "pool_row": 53,
+            "qualification_only_advantage": 0.7302953004837036,
+            "question_index": 10,
+            "question_ordinal": 10,
+            "trajectory_index": 3
+          }
+        ],
+        "selected_pool_rows": [
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53
+        ]
+      },
+      "update_calls": {
+        "optimizer_step": 0,
+        "scheduler_step": 0
+      }
+    },
+    {
+      "fresh_adam_state_entries": 0,
+      "hostname": "ACD1-64",
+      "local_rank": 3,
+      "numerical_comparison": {
+        "accepted": false,
+        "all_local_gradient_elements_compared": true,
+        "clip_ratio": 0.2,
+        "comparisons": {
+          "D1_D2": {
+            "accepted": false,
+            "actual": "D2",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.8677264891249468,
+              "all_finite": true,
+              "cosine": 0.9999591600186662,
+              "difference_l2": 0.016882062538415524,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.0005030632019042969,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.009040545062790437,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 0.0,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 0.0,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 0.0
+            },
+            "reference": "D1"
+          },
+          "D1_D3": {
+            "accepted": false,
+            "actual": "D3",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.8683591724437631,
+              "all_finite": true,
+              "cosine": 0.9999537057232191,
+              "difference_l2": 0.018000231970847123,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.00063323974609375,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.009639338078675182,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 0.0,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 0.0,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 0.0
+            },
+            "reference": "D1"
+          },
+          "D1_S1": {
+            "accepted": false,
+            "actual": "S1",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.866972582536255,
+              "all_finite": true,
+              "cosine": 0.999933976090441,
+              "difference_l2": 0.021459783910351225,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.000518798828125,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.011491969244741596,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 3.814697265625e-06,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 9.839671230750235e-08,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 1.6925025408953687e-09
+            },
+            "reference": "D1"
+          }
+        },
+        "completed_unix": 1792581294.7120183,
+        "dense_repeat_noise": {
+          "D1_D2": {
+            "accepted": false,
+            "actual": "D2",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.8677264891249468,
+              "all_finite": true,
+              "cosine": 0.9999591600186662,
+              "difference_l2": 0.016882062538415524,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.0005030632019042969,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.009040545062790437,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 0.0,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 0.0,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 0.0
+            },
+            "reference": "D1"
+          },
+          "D1_D3": {
+            "accepted": false,
+            "actual": "D3",
+            "checks": {
+              "gradient_cosine": false,
+              "gradient_relative_l2": false,
+              "log_probability_max_abs": true,
+              "log_probability_rms": true,
+              "loss_abs": true
+            },
+            "failed_checks": [
+              "gradient_relative_l2",
+              "gradient_cosine"
+            ],
+            "gradients": {
+              "actual_l2": 1.8683591724437631,
+              "all_finite": true,
+              "cosine": 0.9999537057232191,
+              "difference_l2": 0.018000231970847123,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.00063323974609375,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.009639338078675182,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "log_probabilities": {
+              "all_finite": true,
+              "exact_global_p99": true,
+              "global_authored_tokens": 3006,
+              "max_absolute_error": 0.0,
+              "p99_absolute_error": 0.0,
+              "root_mean_square_error": 0.0,
+              "scope": "Every authored loss-mask token across all ranks; padding/tool-only positions excluded"
+            },
+            "loss": {
+              "all_finite": true,
+              "max_rank_absolute_error": 0.0
+            },
+            "reference": "D1"
+          }
+        },
+        "dual_clip": 3.0,
+        "format": "actual_actor_sparse_policy_D1_D2_D3_S1_v1",
+        "gradient_accumulation": 4,
+        "gradient_clipping_calls": 0,
+        "local_runs": [
+          {
+            "baseline_gradient_norm": {
+              "actual_l2": 1.8673722016938588,
+              "all_finite": true,
+              "cosine": 1.0,
+              "difference_l2": 0.0,
+              "global_compared_gradient_elements": 7615616512,
+              "global_parameter_shards_with_grad": 116,
+              "global_parameter_shards_without_grad": 0,
+              "max_absolute_error": 0.0,
+              "nonzero_reference_and_actual": true,
+              "reference_l2": 1.8673722016938588,
+              "relative_l2": 0.0,
+              "scope": "All actual local FSDP gradient shards concatenated across all ranks; no sampled gradient subset"
+            },
+            "local_authored_tokens": 749,
+            "local_loss": 0.0398678394244669,
+            "run": "D1",
+            "selected_policy_logits": false
+          },
+          {
+            "local_authored_tokens": 749,
+            "local_loss": 0.0398678394244669,
+            "run": "D2",
+            "selected_policy_logits": false
+          },
+          {
+            "local_authored_tokens": 749,
+            "local_loss": 0.0398678394244669,
+            "run": "D3",
+            "selected_policy_logits": false
+          },
+          {
+            "local_authored_tokens": 749,
+            "local_loss": 0.0398678394244669,
+            "run": "S1",
+            "selected_policy_logits": true
+          }
+        ],
+        "logical_micro_per_rank": 4,
+        "normal_training_auto_call": false,
+        "optimizer_calls": 0,
+        "physical_micro_per_rank": 8,
+        "rank": 3,
+        "same_rng_start_for_every_forward": true,
+        "scheduler_calls": 0,
+        "scope": "One original restored-actor micro8 only; not proof for all training batches or whole-outer throughput",
+        "started_unix": 1792581267.6355207,
+        "temperature": 1.0,
+        "thresholds": {
+          "gradient_cosine_min": 0.99999,
+          "gradient_relative_l2": 0.001,
+          "log_probability_max_abs": 0.001,
+          "log_probability_rms": 0.0001,
+          "loss_abs": 1e-05
+        },
+        "world_size": 4
+      },
+      "rank": 3,
+      "scheduler_unchanged": true,
+      "selection": {
+        "advantages": {
+          "all_five_labels_used_before_selection": true,
+          "formula": "(EM - mean(original five EMs))/(sample_std(original five EMs) + 1e-6)",
+          "role": "qualification_only_binary_EM_test_advantages_NOT_production_grounding_rewards",
+          "virtual_zero": false
+        },
+        "context_width": 4516,
+        "global_selected_pool_rows": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          10,
+          11,
+          12,
+          13,
+          14,
+          30,
+          31,
+          32,
+          33,
+          34,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          65,
+          66
+        ],
+        "loss_mask": "Original info_mask[:, -response_width:]; no response/tool token reassembly",
+        "old_log_probabilities": "Original saved sampling_log_probs; no extra policy forward",
+        "original_mixed_questions": 203,
+        "original_questions": 512,
+        "original_trajectories": 2560,
+        "rank": 3,
+        "raw_pool_identity": {
+          "attempt_id": "857092f9bb234821ab62664bf273a1f0",
+          "attempt_index": 1,
+          "logical_update": 1,
+          "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:1:policy-857092f9bb234821ab62664bf273a1f0",
+          "run_id": "232f20e112ac4a978c5aba52a0367195"
+        },
+        "response_width": 2468,
+        "rows": [
+          {
+            "authored_tokens": 149,
+            "binary_em": 0,
+            "correct_count": 3,
+            "pool_row": 54,
+            "qualification_only_advantage": -1.0954431295394897,
+            "question_index": 10,
+            "question_ordinal": 10,
+            "trajectory_index": 4
+          },
+          {
+            "authored_tokens": 49,
+            "binary_em": 0,
+            "correct_count": 1,
+            "pool_row": 55,
+            "qualification_only_advantage": -0.4472126066684723,
+            "question_index": 11,
+            "question_ordinal": 11,
+            "trajectory_index": 0
+          },
+          {
+            "authored_tokens": 80,
+            "binary_em": 0,
+            "correct_count": 1,
+            "pool_row": 56,
+            "qualification_only_advantage": -0.4472126066684723,
+            "question_index": 11,
+            "question_ordinal": 11,
+            "trajectory_index": 1
+          },
+          {
+            "authored_tokens": 121,
+            "binary_em": 0,
+            "correct_count": 1,
+            "pool_row": 57,
+            "qualification_only_advantage": -0.4472126066684723,
+            "question_index": 11,
+            "question_ordinal": 11,
+            "trajectory_index": 2
+          },
+          {
+            "authored_tokens": 53,
+            "binary_em": 0,
+            "correct_count": 1,
+            "pool_row": 58,
+            "qualification_only_advantage": -0.4472126066684723,
+            "question_index": 11,
+            "question_ordinal": 11,
+            "trajectory_index": 3
+          },
+          {
+            "authored_tokens": 151,
+            "binary_em": 1,
+            "correct_count": 1,
+            "pool_row": 59,
+            "qualification_only_advantage": 1.7888504266738892,
+            "question_index": 11,
+            "question_ordinal": 11,
+            "trajectory_index": 4
+          },
+          {
+            "authored_tokens": 64,
+            "binary_em": 1,
+            "correct_count": 4,
+            "pool_row": 65,
+            "qualification_only_advantage": 0.4472125470638275,
+            "question_index": 13,
+            "question_ordinal": 13,
+            "trajectory_index": 0
+          },
+          {
+            "authored_tokens": 82,
+            "binary_em": 0,
+            "correct_count": 4,
+            "pool_row": 66,
+            "qualification_only_advantage": -1.7888504266738892,
+            "question_index": 13,
+            "question_ordinal": 13,
+            "trajectory_index": 1
+          }
+        ],
+        "selected_pool_rows": [
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          65,
+          66
+        ]
+      },
+      "update_calls": {
+        "optimizer_step": 0,
+        "scheduler_step": 0
+      }
+    }
+  ],
+  "raw_pool_bytes": 657311998,
+  "raw_pool_file": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/artifacts/mixed-candidate-pools/857092f9bb234821ab62664bf273a1f0-pool-0/0.pt",
+  "rollout_or_reference_model_initialized": false,
+  "run_id": "232f20e112ac4a978c5aba52a0367195",
+  "sampling_calls": 0,
+  "saved_training_rng_restored": false,
+  "scheduler_calls_after_construction": 0,
+  "scope": "CP1 model forward/backward only on32 original outer1 mixed-EM trajectories; binary-EM test advantages are NOT production grounding rewards; no whole-training equivalence or throughput claim",
+  "source_commit": "921610632eece86be319098351c21b450fd4a236",
+  "started_unix": 1792581219.8379338,
+  "world_size": 4
+}

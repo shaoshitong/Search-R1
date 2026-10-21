@@ -3,14 +3,14 @@ import json
 import os
 from pathlib import Path
 
-PROFILES = ('baseline', 'sparse-exact-v1')
+PROFILES = ('baseline', 'sparse-exact-v1', 'exact-cache-v1')
 
 
 def profile_flags(profile):
     if profile not in PROFILES:
         raise ValueError('Unknown Easy7B infrastructure profile')
-    enabled = profile == 'sparse-exact-v1'
-    return dict(selected_policy_logits=enabled, exact_retrieval_cache=enabled)
+    return dict(selected_policy_logits=profile == 'sparse-exact-v1',
+                exact_retrieval_cache=profile in ('sparse-exact-v1', 'exact-cache-v1'))
 
 
 def flags(run=None):

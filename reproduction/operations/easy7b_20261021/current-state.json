@@ -1,11 +1,11 @@
 {
-  "epoch": 1792580431.403093,
-  "status": "CP1_COMPLETE_HUMAN_AUTHORIZED_TRANSITION_CPU_SOURCE_AUDIT",
+  "epoch": 1792581458.9141939,
+  "status": "SPARSE_CUDA_GRADIENT_QUALIFICATION_INCONCLUSIVE_PREPARING_DENSE_EXACT_FALLBACK",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": null,
   "run_id": "232f20e112ac4a978c5aba52a0367195",
-  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-sparse-cp1-20261021",
+  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-20261021",
   "runtime_commit": "921610632eece86be319098351c21b450fd4a236",
   "actor_physical_micro": 8,
   "global_mini": 128,
@@ -28,8 +28,8 @@
     "raw_archives_untouched": true,
     "personal_storage_budget_bytes": 2000000000000,
     "current_global_usage": {
-      "visible_allocated_lower_bound_bytes": 5095177170944,
-      "checked_unix": 1792577381.3862753,
+      "visible_allocated_lower_bound_bytes": 5210737463296,
+      "checked_unix": 1792581189.6611936,
       "uid": 14090,
       "permission_incomplete": true,
       "under_budget": false,
@@ -40,18 +40,19 @@
         "approximate": true,
         "other_task_assets_and_features_not_authorized_for_deletion": true
       }
-    }
+    },
+    "latest_human_no_delete_features": true
   },
   "infra": {
     "actual_training_optimization_enabled": false,
-    "selected_LM_head": "Three real tinyQwen CPU model/logprob/PPO/all-gradient/checkpointing tests passed in existing745022 CPU-only substep; no7B CUDA equivalence yet",
+    "selected_LM_head": "Actual 7B CUDA LPmax3.8147e-6/loss1.6925e-9, but gradient thresholds not met; dense repeat relativeL2 0.00904/0.00964, sparse0.01149; INCONCLUSIVE strictgrad; NOT ENABLED",
     "exact_query_cache": "11 CPU tests passed; preserves exact original fullbatch/context/score mode/version and logical search counts",
-    "pending": "Explicit single-allocation CP1 sparse CUDA diagnosis, then independent production full-state restoration; no 7B CUDA pass/throughput claim yet",
+    "pending": "Dense original actor with exact cache + separate2GPU retriever; full CUDA Adam/RNG/dataequal restore still required",
     "physical_micro16": "Not raised blindly; needs actual measured memory/throughput"
   },
   "previous_goal_turn_classification": "PROGRESS",
   "latest_turn_classification": "PROGRESS: published+deployed7B adapter, real9tests, uniquejob745022 allocated, realretrieval staging; authorized32retirements; explicit3Bstopverified; optionalinfra actualCPU numeric validation",
-  "last_observation": "cp1-new-observation-1792580375.json",
+  "last_observation": "cp1-new-observation-1792581322.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "stage": "GRPO_1_TO_200",
@@ -93,5 +94,7 @@
     "actual_saved_observations_compared": 64,
     "actor_visible_token_lists_exact_equal": 64,
     "http_and_projection_seconds": 3.5052835568785667
-  }
+  },
+  "failed_diagnostic_job": "745258",
+  "fallback_profile": "exact-cache-v1"
 }
