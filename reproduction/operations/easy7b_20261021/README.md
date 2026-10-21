@@ -104,3 +104,12 @@ companion freshly inspects the accepted CP5 child using the corrected nested
 binding. No accept, receive, emission or snapshot is replayed. Both failed CPU
 roots remain immutable evidence. A fixture now exercises the real complete
 dependency archive lifecycle and its actual receipt schema through the reader.
+
+Actual r2 execution is now qualified: PID3881747/start1038573622 onxielab3,
+operator c3ce9a5f9f148a87308e5ef0c27ed2457003c19b, completed the CP5 fresh
+transferred-dependency SHA readback and accepted-core identity/ACK checks, reused
+the10-reference/6-transfer child without writer replay and entered
+WAITING_CORE_ACTUAL_ACK for50. Encoder payload bodies were not rehashed.
+Core controller3603385 and both GPU jobs remain unchanged. The first readback
+is in `evidence/actual-cp5-dependency-closure-and-future-wait50-20261021.json`;
+the50/100/150/200 transfers and final CUDA recovery are still pending.

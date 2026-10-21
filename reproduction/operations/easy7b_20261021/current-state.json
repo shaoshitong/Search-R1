@@ -1,6 +1,6 @@
 {
-  "epoch": 1792591939.4368865,
-  "status": "ACTUAL_CP1_RECOVERY_FOLLOWUP_2_TO6_AND_SAVED7_PASS_CP5_CORE_AND_POST_QA_ARCHIVE_ACCEPTED",
+  "epoch": 1792594113.8064802,
+  "status": "ACTUAL_OUTER7_CP7_SAVED8_AND_CP5_DEPENDENCY_CLOSURE_PASS_FUTURE_COMPANION_WAITING50",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "745371",
@@ -11,7 +11,7 @@
   "global_mini": 128,
   "logical_micro": 4,
   "accumulation": 4,
-  "actual_completed_outer": 6,
+  "actual_completed_outer": 7,
   "initialization_is_not_training_acceptance": true,
   "old3b": {
     "job": "734689",
@@ -54,8 +54,8 @@
     "enabled_scope": "Exact retrieval cache + original dense head + external2H100 service; no throughput speedup claimed yet"
   },
   "previous_goal_turn_classification": "PROGRESS: actual CP2 full seal and outer3 start accepted",
-  "latest_turn_classification": "PROGRESS_ACTUAL2_TO6_ALL4_WRITES_AND_SAVED7_VERIFIED_CP5_FULL_ARCHIVE_AND_POST_QA_BOUNDARY_SHA_PASS",
-  "last_observation": "training-progress-1792591917.json",
+  "latest_turn_classification": "PROGRESS_ACTUAL7_COMPLETE_CP7_SEALED_SAVED8_AND_EXPLICIT_FAILED_CPU_COMPANION_RECOVERY_WITH_NO_RETRANSFER",
+  "last_observation": "training-progress-em-1792594114.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "stage": "GRPO_1_TO_200",
@@ -99,13 +99,13 @@
     "actor_visible_token_lists_exact_equal": 64,
     "http_and_projection_seconds": 3.5052835568785667,
     "last_actual_statistics": {
-      "logical_requests": 67808,
-      "logical_queries": 67934,
-      "completed_requests": 67808,
-      "completed_queries": 67934,
+      "logical_requests": 90042,
+      "logical_queries": 90168,
+      "completed_requests": 90042,
+      "completed_queries": 90168,
       "failed_requests": 0,
-      "backend_seconds": 2788.6009433995932,
-      "last_completed_unix": 1792591917.7815564
+      "backend_seconds": 3690.5244548413903,
+      "last_completed_unix": 1792594115.477243
     }
   },
   "failed_diagnostic_job": "745258",
@@ -113,7 +113,7 @@
   "storage_inventory_report": "HPC3-storage-distribution-20261021.txt",
   "last_measured_queue": {
     "rc": 0,
-    "stdout": "745371|RUNNING|ACD1-55|ACD1-55|2026-10-21T19:41:06|6-21:29:09\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-20:27:53\n",
+    "stdout": "745371|RUNNING|ACD1-55|ACD1-55|2026-10-21T19:41:06|6-20:52:33\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-19:51:17\n",
     "stderr": ""
   },
   "new_recovery_base_allocated_bytes": 62230528,
@@ -140,7 +140,8 @@
     3,
     4,
     5,
-    6
+    6,
+    7
   ],
   "archive_controller_for_current7b_not_yet_started": false,
   "remaining_goal_requirements": [
@@ -178,14 +179,14 @@
     ],
     "same_birth_verified_twice": true,
     "latest_progress": {
-      "phase": "WAITING_CHECKPOINT",
-      "source_job": "745371",
-      "step": 50,
       "actual_job_state": "RUNNING",
+      "checked_unix": 1792594014.1486664,
       "completed_steps": [
         5
       ],
-      "checked_unix": 1792591822.1434107
+      "phase": "WAITING_CHECKPOINT",
+      "source_job": "745371",
+      "step": 50
     },
     "completed_steps": [
       5
@@ -883,12 +884,29 @@
       0.623258650302887,
       0.6241274476051331,
       0.6170238852500916,
-      0.6223312020301819
+      0.6223312020301819,
+      0.6239957809448242
     ],
     "fixed512_baseline_step": 5,
     "fixed512_baseline_em": 0.376953125,
     "clear_collapse_observed": false,
-    "training_resume_triggered": false
+    "training_resume_triggered": false,
+    "candidate_em_by_outer": {
+      "2": 0.34671875,
+      "3": 0.339765625,
+      "4": 0.341015625,
+      "5": 0.358984375,
+      "6": 0.355703125,
+      "7": 0.36
+    },
+    "selected_em_by_outer": {
+      "2": 0.49375,
+      "3": 0.519921875,
+      "4": 0.51953125,
+      "5": 0.506640625,
+      "6": 0.513671875,
+      "7": 0.5109375
+    }
   },
   "session_id": "01a157e6-7a0b-71e3-a852-b74235cfe836",
   "archive5_core_acceptance": {
@@ -992,10 +1010,433 @@
     "actual_reload_performed": false
   },
   "published_operator_source": {
-    "commit": "9a5025a2471c5a3cf4476a0f5981e1c99af8dc06",
+    "commit": "c3ce9a5f9f148a87308e5ef0c27ed2457003c19b",
     "branch": "codex/easy2560-qwen7b-20261021",
-    "remote_sha": "9a5025a2471c5a3cf4476a0f5981e1c99af8dc06",
+    "remote_sha": "c3ce9a5f9f148a87308e5ef0c27ed2457003c19b",
     "fresh_remote_fetch_and_blob_sha_pass": true,
-    "receipt": "source-publication-9a5025a2471c5a3cf4476a0f5981e1c99af8dc06-1792591701.json"
-  }
+    "receipt": "source-publication-c3ce9a5f9f148a87308e5ef0c27ed2457003c19b-1792593993.json"
+  },
+  "all4_actual_optimizer_writes": 140,
+  "current_checkpoint": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_7",
+    "manager": "easy2560_per_outer_full_state_v1",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_7/full-manifest.json",
+    "manifest_sha256": "cd630490da74d1933519e0b41c1011b9170a41ac3a7de70c542bbe4b22cb3425",
+    "published_unix": 1792593326.855741,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+    "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+    "step": 7
+  },
+  "current_candidate_pool": {
+    "name": "5c150fa24b7b46fc9b70d26f662f71cf-pool-0",
+    "step": 8,
+    "completed_questions": 2048,
+    "reserved_questions": 2048,
+    "source_consumed": 20480,
+    "saved_chunk_files": 13,
+    "progress_error": null
+  },
+  "current_completed_selection_em": [
+    {
+      "step": 2,
+      "attempt_id": "6b65b308ae474a81bb78d6277b4d9a8c",
+      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:2:policy-6b65b308ae474a81bb78d6277b4d9a8c",
+      "status": "MEASURED_COMPLETED_SELECTION",
+      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/6b65b308ae474a81bb78d6277b4d9a8c.json",
+      "candidate_correct_count_histogram": {
+        "0": 1174,
+        "1": 281,
+        "2": 238,
+        "3": 194,
+        "4": 266,
+        "5": 407
+      },
+      "candidate_questions": 2560,
+      "candidate_trajectories": 12800,
+      "raw_generated_trajectories": 12800,
+      "candidate_trajectory_em": 0.34671875,
+      "candidate_mixed_questions": 979,
+      "candidate_mixed_fraction": 0.382421875,
+      "selected_correct_count_histogram": {
+        "0": 0,
+        "1": 145,
+        "2": 123,
+        "3": 103,
+        "4": 141,
+        "5": 0
+      },
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "selected_trajectory_em": 0.49375,
+      "selected_mixed": 512,
+      "selected_mixed_fraction": 1.0,
+      "selected_all_correct_fallback": 0,
+      "selected_all_correct_fallback_fraction": 0.0,
+      "pool_retry": 0,
+      "discarded_insufficient_pool_count": 0,
+      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
+      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
+    },
+    {
+      "step": 3,
+      "attempt_id": "eefd4da7a7b445a4862963b159cbdfdc",
+      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:3:policy-eefd4da7a7b445a4862963b159cbdfdc",
+      "status": "MEASURED_COMPLETED_SELECTION",
+      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/eefd4da7a7b445a4862963b159cbdfdc.json",
+      "candidate_correct_count_histogram": {
+        "0": 1175,
+        "1": 270,
+        "2": 241,
+        "3": 249,
+        "4": 275,
+        "5": 350
+      },
+      "candidate_questions": 2560,
+      "candidate_trajectories": 12800,
+      "raw_generated_trajectories": 12800,
+      "candidate_trajectory_em": 0.339765625,
+      "candidate_mixed_questions": 1035,
+      "candidate_mixed_fraction": 0.404296875,
+      "selected_correct_count_histogram": {
+        "0": 0,
+        "1": 123,
+        "2": 105,
+        "3": 138,
+        "4": 146,
+        "5": 0
+      },
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "selected_trajectory_em": 0.519921875,
+      "selected_mixed": 512,
+      "selected_mixed_fraction": 1.0,
+      "selected_all_correct_fallback": 0,
+      "selected_all_correct_fallback_fraction": 0.0,
+      "pool_retry": 0,
+      "discarded_insufficient_pool_count": 0,
+      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
+      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
+    },
+    {
+      "step": 4,
+      "attempt_id": "af99f949b92f4d4bbce7de3a55fa66ef",
+      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:4:policy-af99f949b92f4d4bbce7de3a55fa66ef",
+      "status": "MEASURED_COMPLETED_SELECTION",
+      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/af99f949b92f4d4bbce7de3a55fa66ef.json",
+      "candidate_correct_count_histogram": {
+        "0": 1203,
+        "1": 251,
+        "2": 214,
+        "3": 246,
+        "4": 282,
+        "5": 364
+      },
+      "candidate_questions": 2560,
+      "candidate_trajectories": 12800,
+      "raw_generated_trajectories": 12800,
+      "candidate_trajectory_em": 0.341015625,
+      "candidate_mixed_questions": 993,
+      "candidate_mixed_fraction": 0.387890625,
+      "selected_correct_count_histogram": {
+        "0": 0,
+        "1": 119,
+        "2": 112,
+        "3": 137,
+        "4": 144,
+        "5": 0
+      },
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "selected_trajectory_em": 0.51953125,
+      "selected_mixed": 512,
+      "selected_mixed_fraction": 1.0,
+      "selected_all_correct_fallback": 0,
+      "selected_all_correct_fallback_fraction": 0.0,
+      "pool_retry": 0,
+      "discarded_insufficient_pool_count": 0,
+      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
+      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
+    },
+    {
+      "step": 5,
+      "attempt_id": "bd4e2ec20d514d55810b4f07d5007207",
+      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:5:policy-bd4e2ec20d514d55810b4f07d5007207",
+      "status": "MEASURED_COMPLETED_SELECTION",
+      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/bd4e2ec20d514d55810b4f07d5007207.json",
+      "candidate_correct_count_histogram": {
+        "0": 1164,
+        "1": 262,
+        "2": 220,
+        "3": 209,
+        "4": 259,
+        "5": 446
+      },
+      "candidate_questions": 2560,
+      "candidate_trajectories": 12800,
+      "raw_generated_trajectories": 12800,
+      "candidate_trajectory_em": 0.358984375,
+      "candidate_mixed_questions": 950,
+      "candidate_mixed_fraction": 0.37109375,
+      "selected_correct_count_histogram": {
+        "0": 0,
+        "1": 135,
+        "2": 125,
+        "3": 96,
+        "4": 156,
+        "5": 0
+      },
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "selected_trajectory_em": 0.506640625,
+      "selected_mixed": 512,
+      "selected_mixed_fraction": 1.0,
+      "selected_all_correct_fallback": 0,
+      "selected_all_correct_fallback_fraction": 0.0,
+      "pool_retry": 0,
+      "discarded_insufficient_pool_count": 0,
+      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
+      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
+    },
+    {
+      "step": 6,
+      "attempt_id": "e2db2510d7b845f1ae0e7d9ccc056938",
+      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:6:policy-e2db2510d7b845f1ae0e7d9ccc056938",
+      "status": "MEASURED_COMPLETED_SELECTION",
+      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/e2db2510d7b845f1ae0e7d9ccc056938.json",
+      "candidate_correct_count_histogram": {
+        "0": 1171,
+        "1": 250,
+        "2": 212,
+        "3": 239,
+        "4": 278,
+        "5": 410
+      },
+      "candidate_questions": 2560,
+      "candidate_trajectories": 12800,
+      "raw_generated_trajectories": 12800,
+      "candidate_trajectory_em": 0.355703125,
+      "candidate_mixed_questions": 979,
+      "candidate_mixed_fraction": 0.382421875,
+      "selected_correct_count_histogram": {
+        "0": 0,
+        "1": 126,
+        "2": 115,
+        "3": 125,
+        "4": 146,
+        "5": 0
+      },
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "selected_trajectory_em": 0.513671875,
+      "selected_mixed": 512,
+      "selected_mixed_fraction": 1.0,
+      "selected_all_correct_fallback": 0,
+      "selected_all_correct_fallback_fraction": 0.0,
+      "pool_retry": 0,
+      "discarded_insufficient_pool_count": 0,
+      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
+      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
+    },
+    {
+      "step": 7,
+      "attempt_id": "ef893814f0a24d058072385e67194516",
+      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:7:policy-ef893814f0a24d058072385e67194516",
+      "status": "MEASURED_COMPLETED_SELECTION",
+      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/ef893814f0a24d058072385e67194516.json",
+      "candidate_correct_count_histogram": {
+        "0": 1186,
+        "1": 240,
+        "2": 205,
+        "3": 216,
+        "4": 255,
+        "5": 458
+      },
+      "candidate_questions": 2560,
+      "candidate_trajectories": 12800,
+      "raw_generated_trajectories": 12800,
+      "candidate_trajectory_em": 0.36,
+      "candidate_mixed_questions": 916,
+      "candidate_mixed_fraction": 0.3578125,
+      "selected_correct_count_histogram": {
+        "0": 0,
+        "1": 133,
+        "2": 109,
+        "3": 123,
+        "4": 147,
+        "5": 0
+      },
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "selected_trajectory_em": 0.5109375,
+      "selected_mixed": 512,
+      "selected_mixed_fraction": 1.0,
+      "selected_all_correct_fallback": 0,
+      "selected_all_correct_fallback_fraction": 0.0,
+      "pool_retry": 0,
+      "discarded_insufficient_pool_count": 0,
+      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
+      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
+    }
+  ],
+  "latest_completed_metrics": {
+    "step": 7,
+    "attempt_index": 7,
+    "reward": 0.6239957809448242,
+    "pg_loss": 0.04565451578826571,
+    "ppo_kl": 0.0010343020474465447,
+    "grad_norm": 2.6558660615025613,
+    "optimizer_writes": 140,
+    "optimizer_writes_before": 120,
+    "optimizer_writes_this_outer": 20
+  },
+  "archive5_grounding_dependency_closure": {
+    "status": "EASY2560_POST_CALLBACK_DEPENDENCIES_SHA_FSYNC_PASS",
+    "binding": {
+      "boundary_archive_receipt_sha256": "54b0062f0a120b9a8a4b435b567ac7878c6d84983fd88c439c89d24d50d9a1c2",
+      "boundary_reward_manifest_sha256": "a3aa29a31dba750c8a1d6bbe9d09ea105a4fba0a99216ce1b736865be51ec54f",
+      "boundary_source_snapshot_sha256": "f52b6b8a31a3639d4cd33810feb82ba6bd112bb12ff7d291b6bc534028be4728",
+      "core": {
+        "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+        "core_archive": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5",
+        "core_archive_receipt_sha256": "9dcdb4a44860bc45b758fcc81b52edc6b238175dc95aa05b40d76e30edf82700",
+        "core_checkpoint_complete_sha256": "3d4582a5f02b3d33595cb05e97715b98282f4106e6ac7c0b67c1dbe63ee90442",
+        "core_source_acceptance_sha256": "9d866b468cdbfe47cedbb313d7c88debd5e1f6d5bf86c98cce03a763d16f9944",
+        "core_source_snapshot_sha256": "e0ab2957af7fda875de8409d3cca6905fe2411df3c6259f28526e68f473e8ed0",
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+        "step": 5
+      }
+    },
+    "file_count": 10,
+    "transfer_file_count": 6,
+    "transfer_bytes": 50580970,
+    "encoder_file_count": 8,
+    "all_manifest_dependencies_covered": true,
+    "fresh_transferred_dependency_sha_checked": true,
+    "covered_core_sha_ack_verified": true,
+    "core_covered_payload_rehashed": false,
+    "actual_cuda_restore_accepted": false,
+    "receipt_sha256": "db349c30ea0519e367ce44ec25f6092875656a0f79f94aa0b6e3bee7b0559506",
+    "evidence": "evidence/actual-cp5-dependency-closure-and-future-wait50-20261021.json",
+    "source_snapshot_emit_receive_replayed": false,
+    "all8_encoder_mappings_core_ack_and_identity_only": true
+  },
+  "future_post_callback_companion": {
+    "root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/post-callback-boundary-control/job-745371/future-50-200/recovery-accepted-r2",
+    "birth": {
+      "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+      "pid": 3881747,
+      "start_ticks": 1038573622,
+      "uid": 1002
+    },
+    "state": "RUNNING",
+    "progress": {
+      "checked_unix": 1792594070.4285128,
+      "completed_steps": [],
+      "core_controller": {
+        "birth": {
+          "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+          "pid": 3603385,
+          "start_ticks": 1037896746,
+          "uid": 1002
+        },
+        "process": {
+          "actual": {
+            "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+            "pid": 3603385,
+            "start_ticks": 1037896746,
+            "state": "S",
+            "uid": 1002
+          },
+          "same_birth": true,
+          "state": "LIVE"
+        },
+        "records": {
+          "claim.json": {
+            "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+            "birth": {
+              "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+              "pid": 3603385,
+              "start_ticks": 1037896746,
+              "uid": 1002
+            },
+            "checked_unix": 1792587239.6944954,
+            "controller_suffix": "transport-r1-20261021",
+            "credentials_persisted": false,
+            "recovery_parent": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371",
+            "requested_steps": [
+              5,
+              50,
+              100,
+              150,
+              200
+            ],
+            "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+            "source_job": "745371"
+          },
+          "progress.json": {
+            "actual_job_state": "RUNNING",
+            "checked_unix": 1792594014.1486664,
+            "completed_steps": [
+              5
+            ],
+            "phase": "WAITING_CHECKPOINT",
+            "source_job": "745371",
+            "step": 50
+          }
+        },
+        "state": "LIVE"
+      },
+      "healthy_controller_modified": false,
+      "jobs_submitted": 0,
+      "phase": "WAITING_CORE_ACTUAL_ACK",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "source_job": "745371",
+      "source_ssh_called": false,
+      "step": 50,
+      "training_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+      "training_modified": false
+    },
+    "operator_commit": "c3ce9a5f9f148a87308e5ef0c27ed2457003c19b",
+    "dependencies_commit": "c3ce9a5f9f148a87308e5ef0c27ed2457003c19b",
+    "dependencies_sha256": "047be619b8b5f6b300158b85b65472d9880e5ddb523a28504e295915159f2005",
+    "boundary_module_commit": "b87a0c3d7a7ca2d9f6751a99179897d8d8aca56d",
+    "qualified_cp5_read_only": true,
+    "remaining_steps": [
+      50,
+      100,
+      150,
+      200
+    ],
+    "actual_cuda_restore_accepted": false,
+    "training_restarted": false,
+    "core_controller_restarted": false,
+    "observation": "post-callback-future-resume-observe-1792594023.json",
+    "same_birth_verified_twice": true,
+    "observations": [
+      "post-callback-future-resume-observe-1792594023.json",
+      "post-callback-future-resume-readback2-1792594112.json"
+    ],
+    "read_only_verification_evidence": "evidence/actual-cp5-dependency-and-companion-two-checks-20261021.json"
+  },
+  "preserved_cpu_callback_failures": [
+    {
+      "pid": 3844281,
+      "commit": "6cbafbb2d602b567a21da6f6fce36af767157f48",
+      "error": "Python3.8 Path.is_relative_to unavailable",
+      "failure_sha256": "03df604d14fa957ff9238e6fa955fa07342323bd6d5a2c5d349eaf3a0a4deee2",
+      "evidence": "evidence/post-callback-python38-actual-failure-preserved-20261021.json",
+      "terminal": true
+    },
+    {
+      "pid": 3867549,
+      "commit": "50e639876a027597816769bab0314d409b0ccf46",
+      "error": "Reader compared nested dependency binding as flat boundary binding after successful data acceptance",
+      "failure_sha256": "87f2a6600e62302504302c6b42529209fd684dc443d1726d7170d44e846f1a56",
+      "evidence": "evidence/post-callback-dependencies-accepted-binding-reader-failure-20261021.json",
+      "terminal": true
+    }
+  ]
 }
