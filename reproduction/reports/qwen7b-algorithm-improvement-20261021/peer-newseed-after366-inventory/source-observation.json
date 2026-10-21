@@ -1,0 +1,171 @@
+{
+  "GPU_started": false,
+  "Mac_payload_transit": false,
+  "accepted_baseline": {
+    "accepted122_raw_ingest": {
+      "bytes": 8685,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited122-delta-20261021-673b8cb6/complete.json",
+      "sha256": "13f7e6a24699dd9858387210552a4d922ab521bd9a9c7c99648dab147f36048e"
+    },
+    "accepted122_source_complete": {
+      "bytes": 403981,
+      "path": "/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/audited122-delta-20261021-673b8cb6/complete.json",
+      "sha256": "bb20a9e0f9e9dfea5ebdaf2ce6000d60d0c9ac0cdad0636b0afa9cd16f2733c4"
+    },
+    "accepted122_source_plan": {
+      "bytes": 73781,
+      "path": "/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/audited122-delta-20261021-673b8cb6/plan.json",
+      "sha256": "3465c82e0d930569013b8d054e714f20cdb9f35972cbe7570829d13878e729da"
+    },
+    "accepted122_target_complete": {
+      "bytes": 720,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/peer-newseed-h100-20261021/audited122-delta-20261021-673b8cb6/complete.json",
+      "sha256": "6397e1c7137a4da66c45c3ba145603059dd67d37734019056072cb22726fabd5"
+    },
+    "batches": 366,
+    "first244_source_complete": {
+      "bytes": 798018,
+      "path": "/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/newseed-20261021-185747-445fc691/complete.json",
+      "sha256": "b533f3275da2d747cd3eea8f1993e57e73fc36b69d245c37ac95db816504e8d6"
+    },
+    "newseed5_trajectories": 234240,
+    "questions": 46848
+  },
+  "all169028_sealed": false,
+  "current_independent_audit_metadata": {
+    "bytes": 32235,
+    "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/audit/latest.json",
+    "sha256": "c073ad51f0fdb07176af570f4f6c90c6a9ed084dbadfad0073f17fa3e2467ab4"
+  },
+  "current_independent_audit_summary": {
+    "epoch": 1792542461.22412,
+    "failed_batches": 0,
+    "questions": 59648,
+    "sealed_pending_batches": 1,
+    "states_shards_independently_audited": false,
+    "status": "INCOMPLETE",
+    "strict_em_recomputed": false,
+    "trajectories": 298240,
+    "verified_batches": 466
+  },
+  "current_sealed": {
+    "batches": 494,
+    "existing_audit_current_fstat_bound_batches": 466,
+    "questions": 63232,
+    "trajectories": 316160
+  },
+  "elapsed_seconds": 1.4054720401763916,
+  "epoch": 1792543593.7789602,
+  "existing_audit_is_only_cached_fstat_bound_not_fresh_payload_SHA": true,
+  "export_or_payload_migration_started": false,
+  "metadata_binding": {
+    "inherited_full_sealed_inventory_plan_sha256": "4cd758d233eb5f5f47203be7b308745dd4d8d3a872729fbc004e75557161ae26",
+    "input_manifest": {
+      "bytes": 354510,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/inputs/manifest.json",
+      "sha256": "445fc6914ab291bbdad52e1200642653b21c2dd62d3eaa7741631bcf61f71bfd"
+    },
+    "remaining_batch_records": 128,
+    "remaining_batch_records_sha256": "d2453003c9061af5309e674c6dcefe38ba19dae24b27da734093275b6e7e8edb",
+    "source_config": {
+      "bytes": 2860,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/config.json",
+      "sha256": "856a5580c9faf6968aee9535bbc600d9c07f0b018dc13e85611fa76105bba789"
+    }
+  },
+  "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "new_existing_independent_audit_current_fstat": {
+    "batches": 100,
+    "domains": {
+      "hotpotqa": 12672,
+      "nq": 128
+    },
+    "questions": 12800,
+    "trajectories": 64000
+  },
+  "new_sealed_pending_current_independent_audit": {
+    "batches": 28,
+    "domains": {
+      "hotpotqa": 3584
+    },
+    "questions": 3584,
+    "trajectories": 17920
+  },
+  "newly_sealed_complete_G5_metadata": {
+    "batches": 128,
+    "domains": {
+      "hotpotqa": 16256,
+      "nq": 128
+    },
+    "questions": 16384,
+    "trajectories": 81920
+  },
+  "newly_sealed_data_already_on_HPC3_claim": false,
+  "oldest_latest_new_existing_proof_epoch": {
+    "latest_UTC": "2026-10-21 00:27:38 UTC",
+    "latest_epoch": 1792542458.0383215,
+    "oldest_UTC": "2026-10-20 23:21:06 UTC",
+    "oldest_epoch": 1792538466.6571963
+  },
+  "oldest_latest_new_seal_epoch_if_present": {
+    "latest_UTC": "2026-10-21 00:44:41 UTC",
+    "latest_epoch": 1792543481.8730338,
+    "oldest_UTC": "2026-10-20 22:54:25 UTC",
+    "oldest_epoch": 1792536865.946329
+  },
+  "oldest_latest_new_seal_file_mtime": {
+    "latest_UTC": "2026-10-21 00:44:41 UTC",
+    "latest_epoch": 1792543481.869654,
+    "oldest_UTC": "2026-10-20 22:54:25 UTC",
+    "oldest_epoch": 1792536865.944526
+  },
+  "peer_thread_messaged": false,
+  "prefix_full_ownEM_payload_opened": false,
+  "remaining_unsealed_input_batches": 828,
+  "second_actual_audit_status": {
+    "epoch": 1792542461.22412,
+    "failed_batches": 0,
+    "questions": 59648,
+    "sealed_pending_batches": 1,
+    "status": "INCOMPLETE",
+    "trajectories": 298240,
+    "verified_batches": 466
+  },
+  "second_actual_audit_status_metadata": {
+    "bytes": 32235,
+    "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/audit/latest.json",
+    "sha256": "c073ad51f0fdb07176af570f4f6c90c6a9ed084dbadfad0073f17fa3e2467ab4"
+  },
+  "seed": 20261021,
+  "source_base": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020",
+  "source_failure_and_completion_markers": {
+    "complete.json": {
+      "exists": false
+    },
+    "failure.json": {
+      "epoch": 1792512875.2817047,
+      "error_type": "RuntimeError",
+      "ref": {
+        "bytes": 150,
+        "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/failure.json",
+        "sha256": "314647bc03dc3f48c1a70e7177ba37f178e166f8a28150800bd3c8faffb90a5f"
+      },
+      "status": null
+    }
+  },
+  "source_input_batches": 1322,
+  "source_input_questions": 169028,
+  "source_or_peer_process_modified": false,
+  "source_run_id": "70188b8e50fd4b45bc420ce58014f46e",
+  "started_epoch": 1792543592.3734884,
+  "status": "READONLY_SOURCE_G5_REMAINING_AFTER_ACCEPTED366_NOT_MIGRATED",
+  "strict_EM_recomputed": false,
+  "source_commit": "42e3f5521b2258bec5d8f3cfbb6d243dbcadf34e",
+  "remote_sha": "42e3f5521b2258bec5d8f3cfbb6d243dbcadf34e",
+  "worker_source_hashes": [
+    "154e22b150562baf3945308c300fd6292b1724988d093c8d9d92c9a5cad798e5",
+    "54966d94d8ef99f09073452b86e92b862072930ec47a923d19656743b12a2ebd"
+  ],
+  "operator_sha256": "f543b6f906ef7273c52b012d6e8127e694916f212d1529b35767bbeb5f4cb00f",
+  "operator_elapsed_seconds": 7.989458084106445
+}
