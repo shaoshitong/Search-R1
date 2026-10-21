@@ -1,0 +1,157 @@
+{
+  "GPU_operation": false,
+  "H100_NAS_path_shared_on_HPC3": false,
+  "assets": {
+    "model_dir": {
+      "bytes": null,
+      "exists": true,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70"
+    },
+    "retrieval_corpus": {
+      "bytes": 14393579520,
+      "exists": true,
+      "path": "/data/user/jxu957/experiments/topd-20261008/bundle/retrieval/wiki/wiki-18.jsonl"
+    },
+    "retrieval_data_cache": {
+      "bytes": null,
+      "exists": true,
+      "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017/retrieval-cache"
+    },
+    "retrieval_encoder": {
+      "bytes": null,
+      "exists": true,
+      "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/source/assets-root/assets/e5-base-v2"
+    },
+    "retrieval_index": {
+      "bytes": 64559075373,
+      "exists": true,
+      "path": "/data/user/jxu957/experiments/topd-20261008/bundle/retrieval/wiki/e5_Flat.index"
+    }
+  },
+  "collector_config": {
+    "bytes": 8613,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/config.json",
+    "sha256": "3957642964d692329b98b2de216c9b7cb2ebe9866a667283e0055bb36223aa67"
+  },
+  "config_fields": {
+    "canonical_train": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/train.parquet",
+    "capture_prefix_tokens": 20,
+    "common_manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+    "feature_dimension": 3584,
+    "feature_layer": 26,
+    "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "question_max_tokens": 273,
+    "run_id": "bdbb550fd9324cefab979728acb0f5e1",
+    "seed": 1729,
+    "source_commit": "f2d5ae7de92d198692abf5bf82143e309d91c271"
+  },
+  "epoch": 1792584260.074377,
+  "input_manifest": {
+    "bytes": 377318,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/inputs/manifest.json",
+    "sha256": "b6f18320975bc0fe067937bc6d7e46e95d1466d8bdbd80d79ab0c46718db05e2"
+  },
+  "official_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "official_snapshot_complete": {
+    "bytes": 3544,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/complete.json",
+    "sha256": "0a6f93fb501dd84b128a017961c7fd7980d68d22957bc8c2eed173bd1f037f83"
+  },
+  "official_status": "MIGRATION_ALL_SELECTED_ASSETS_VERIFIED",
+  "original_config": {
+    "bytes": 2468,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/config.json",
+    "sha256": "7ec5eca1afe1fcc92f8a156bece5f7f93d9e3b8df3bf8ab2c571dbdafa01dd18"
+  },
+  "qualified_code_files": {
+    "reproduction/operations/qwen7b_warmup/extra_g5_merge.py": {
+      "bytes": 13111,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/matched-g10-collector-code-20261021/code-2b293d6e6a0b/reproduction/operations/qwen7b_warmup/extra_g5_merge.py",
+      "sha256": "d2eab1026193f486c44ab444a1efe42c408d1946536a0403523c6a8384094df6"
+    },
+    "reproduction/operations/qwen7b_warmup/extra_g5_prepare.py": {
+      "bytes": 19637,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/matched-g10-collector-code-20261021/code-2b293d6e6a0b/reproduction/operations/qwen7b_warmup/extra_g5_prepare.py",
+      "sha256": "d337650a00ddfc295d4882a9c59f246babfe1c653dbef02956cf150c42a411f0"
+    },
+    "reproduction/operations/qwen7b_warmup/extra_g5_sampler.py": {
+      "bytes": 3896,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/matched-g10-collector-code-20261021/code-2b293d6e6a0b/reproduction/operations/qwen7b_warmup/extra_g5_sampler.py",
+      "sha256": "0af985c9127b02c6440a5526ddb83a8704bf935902a41fdf4a5a513dcf097808"
+    },
+    "reproduction/operations/qwen7b_warmup/native_capture.py": {
+      "bytes": 8461,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/matched-g10-collector-code-20261021/code-2b293d6e6a0b/reproduction/operations/qwen7b_warmup/native_capture.py",
+      "sha256": "f4e2570fd89bf65086dcf9f55ab97ca9c04f04cac0acf8af9e5dd797f6d43bd4"
+    },
+    "reproduction/operations/qwen7b_warmup/packed_features.py": {
+      "bytes": 8993,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/matched-g10-collector-code-20261021/code-2b293d6e6a0b/reproduction/operations/qwen7b_warmup/packed_features.py",
+      "sha256": "cfba55067bfa836e4d420097a3eb97b1a684ea313e1e0e3d0f7bc7db1dab6f54"
+    },
+    "reproduction/operations/qwen7b_warmup/runtime.sh": {
+      "bytes": 1575,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/matched-g10-collector-code-20261021/code-2b293d6e6a0b/reproduction/operations/qwen7b_warmup/runtime.sh",
+      "sha256": "678d4e72c1c1fd90777d76ba63198658b735ecfe513439ee5f5b07f8664d8288"
+    },
+    "reproduction/operations/qwen7b_warmup/sampling.py": {
+      "bytes": 23942,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/matched-g10-collector-code-20261021/code-2b293d6e6a0b/reproduction/operations/qwen7b_warmup/sampling.py",
+      "sha256": "e3a6fe42fef3ac7bb11ba5cfcbb38d86cbc965eddb5430a3e1172a46f221ffc9"
+    },
+    "reproduction/operations/qwen7b_warmup/shard.py": {
+      "bytes": 9257,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/matched-g10-collector-code-20261021/code-2b293d6e6a0b/reproduction/operations/qwen7b_warmup/shard.py",
+      "sha256": "9a3b5f4f0df4735d5518c640c27fa68dae15fc1d33fd648d261fcb1d126dfcdf"
+    },
+    "reproduction/prefix20_online/pool.py": {
+      "bytes": 13595,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/matched-g10-collector-code-20261021/code-2b293d6e6a0b/reproduction/prefix20_online/pool.py",
+      "sha256": "361c4333fc31fe90ab10387e5643d64ce729bd6faf8e5b685d8bba73de04e67e"
+    },
+    "reproduction/prefix20_online/rollout.py": {
+      "bytes": 24322,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/matched-g10-collector-code-20261021/code-2b293d6e6a0b/reproduction/prefix20_online/rollout.py",
+      "sha256": "97518e07fcaa360eaa575770e3c605a782ca711917a2ba655ed79183f3b0db25"
+    },
+    "reproduction/prefix_selection200/b_progressive.py": {
+      "bytes": 5224,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/matched-g10-collector-code-20261021/code-2b293d6e6a0b/reproduction/prefix_selection200/b_progressive.py",
+      "sha256": "46c44911145ce865e3ee5cc933cf23a577ff7af9f39b18659b95c9c489d4e716"
+    },
+    "reproduction/prefix_selection200/contract.py": {
+      "bytes": 1075,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/matched-g10-collector-code-20261021/code-2b293d6e6a0b/reproduction/prefix_selection200/contract.py",
+      "sha256": "a080f55643580f384e4c40bd6b5215b22e4578c9d6219e08e14804dd43886240"
+    },
+    "reproduction/prefix_selection200/interaction_protocol.py": {
+      "bytes": 12706,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/matched-g10-collector-code-20261021/code-2b293d6e6a0b/reproduction/prefix_selection200/interaction_protocol.py",
+      "sha256": "e64534bb841c361c60ed598a9aba9401a0e7579c637e1d5d7a139bad0bc088a3"
+    },
+    "reproduction/prefix_selection200/prefix_diversity.py": {
+      "bytes": 3312,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/matched-g10-collector-code-20261021/code-2b293d6e6a0b/reproduction/prefix_selection200/prefix_diversity.py",
+      "sha256": "5c3e50146862ac321518307610ce0b84ca6e61827de62cf049a77a27fda52215"
+    },
+    "reproduction/prefix_selection200/rollout.py": {
+      "bytes": 57445,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/matched-g10-collector-code-20261021/code-2b293d6e6a0b/reproduction/prefix_selection200/rollout.py",
+      "sha256": "e547edb93236f9b2a9e91eafb1699ca780441289c9cb328395eb6a4e5c988209"
+    },
+    "search_g1/async_rollout_runtime.py": {
+      "bytes": 20785,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/matched-g10-collector-code-20261021/code-2b293d6e6a0b/search_g1/async_rollout_runtime.py",
+      "sha256": "7c38741d727bd0ef5b1b30fe612d185f9c0b3a00353a12aa2fb384a811f180a2"
+    },
+    "search_r1/llm_agent/generation.py": {
+      "bytes": 22127,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/matched-g10-collector-code-20261021/code-2b293d6e6a0b/search_r1/llm_agent/generation.py",
+      "sha256": "38785f5f611f35fbaf8911c21c0434d915a83498d6d705c01fe27946129afc4f"
+    }
+  },
+  "qualified_code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/matched-g10-collector-code-20261021/code-2b293d6e6a0b",
+  "qualified_source_commit": "2b293d6e6a0be5a8b99f976b3ac0c2b15e19ee40",
+  "status": "HPC3_TAIL_ASSET_AND_QUALIFIED_RUNTIME_METADATA",
+  "tensor_loaded": false
+}
