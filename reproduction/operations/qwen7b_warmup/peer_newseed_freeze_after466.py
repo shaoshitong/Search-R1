@@ -40,7 +40,7 @@ def prior_membership(priors):
     return old,refs
 
 
-def sidecar_audit(base,rel,config_sha,input_sha,questions,audit_root):
+def sidecar_audit(base,rel,config_sha,input_sha,questions,audit_root,override=None):
     """Same pinned auditor/file-stat contract as donor cache, alternate own root."""
     inp=Path(rel);dest=base/'sampling'/inp.parent.name/'batches'/inp.stem;outer=dest/'outers/outer-000001'
     files=dict(batch_seal=dest/'complete.json',config=dest/'config.json',questions=outer/'questions.json',
@@ -52,7 +52,15 @@ def sidecar_audit(base,rel,config_sha,input_sha,questions,audit_root):
         raise ValueError('Separate real absolute own audit root required')
     proof_path=root/'batches'/inp.parent.name/(inp.stem+'.json')
     proof,ref=d.load(d.regular(root,str(proof_path.relative_to(root))))
-    expected=dict(cache_version=1,auditor_sha256=d.AUDITOR,run_id=d.RUN,seed=d.SEED,root_config_sha256=config_sha,input_sha256=input_sha,
+    approved_sha=d.AUDITOR
+    if override:
+        if rel!='inputs/shard-01/batch-000300.json' or override['auditor_sha256']!='e01c2b14c7e78f10141f03fd22385d08c65017379f7b515f75b705f82fd9ceae':raise ValueError('Only explicitly published one-batch attestation is approved')
+        attestation,attref=checked(override['attestation'])
+        if attestation['status']!='ONE_METADATA_RESEALED_BATCH_FRESH_SHA_AND_ORIGINAL_CHAIN_CAUSAL_RECONCILIATION_PASSED' or attestation['input']!=rel or attestation['proof']!=ref:raise ValueError('Explicit one-batch attestation differs')
+        approved_sha=override['auditor_sha256']
+        flags=proof['proof']['metadata_reseal_attestation']
+        if flags['original_receipt_chain_equal_current'] is not False or not flags['same_prefix_rank_receipt_and_payload'] or not flags['same_all_G5_IDs'] or not flags['full_rows_original_chain_and_current_prefix_causal_tokens_exact'] or flags['producer_metadata_modified']:raise ValueError('Metadata rewrap did not retain original payload/causal identity')
+    expected=dict(cache_version=1,auditor_sha256=approved_sha,run_id=d.RUN,seed=d.SEED,root_config_sha256=config_sha,input_sha256=input_sha,
                   files={k:d.fstat(p) for k,p in files.items()})
     if proof.get('status')!='VERIFIED' or proof.get('binding')!=expected:
         raise ValueError('Independent sidecar proof is not currently fstat bound')
@@ -61,10 +69,11 @@ def sidecar_audit(base,rel,config_sha,input_sha,questions,audit_root):
         raise ValueError('Sidecar own-G5 counts differ')
     return dict(status='EXISTING_INDEPENDENT_AUDIT_CURRENT_FSTAT_BOUND',proof=ref,verified_epoch=proof['verified_epoch'],
         own_trajectory_ids_sha256=counts['actual_trajectory_ids_sha256'],bulk_payload_SHA_recomputed=False,
-        strict_EM_tokenizer_recomputed=False,independent_sidecar_audit_root=str(root))
+        strict_EM_tokenizer_recomputed=False,independent_sidecar_audit_root=str(root),auditor_sha256=approved_sha,
+        metadata_resealed_attestation=(override['attestation'] if override else None),original_receipt_chain_equal_current=(False if override else True))
 
 
-def freeze(reference,priors,output,*,which='existing243',audit_root=None):
+def freeze(reference,priors,output,*,which='existing243',audit_root=None,audit_overrides=None):
     if (reference['status']!='FRESH_SOURCE_SEALED_METADATA_MINUS_ACCEPTED466' or reference['accepted_prior_batches']!=466
         or reference['delta_batches']!=505 or reference['delta_questions']!=64546
         or d.digest(reference['delta_batches_metadata'])!=reference['delta_records_sha256']):
@@ -95,7 +104,8 @@ def freeze(reference,priors,output,*,which='existing243',audit_root=None):
             batch,iref=d.load(d.regular(d.BASE,r['input']))
             if sref['sha256']!=r['seal_sha256'] or iref['sha256']!=r['input_sha256']:raise ValueError('Finite parent input/seal changed')
             inp=Path(r['input']);config,configref=d.load(d.regular(d.BASE,str(Path('sampling')/inp.parent.name/'batches'/inp.stem/'config.json')));d.contract(config)
-            audit=(sidecar_audit(d.BASE,r['input'],cref['sha256'],iref['sha256'],r['questions'],audit_root) if audit_root else d.cached_audit(d.BASE,r['input'],cref['sha256'],iref['sha256'],r['questions']))
+            audit=(sidecar_audit(d.BASE,r['input'],cref['sha256'],iref['sha256'],r['questions'],Path(audit_overrides[r['input']]['audit_root']) if audit_overrides and r['input'] in audit_overrides else audit_root,
+                audit_overrides.get(r['input']) if audit_overrides else None) if audit_root else d.cached_audit(d.BASE,r['input'],cref['sha256'],iref['sha256'],r['questions']))
             if audit['status']!='EXISTING_INDEPENDENT_AUDIT_CURRENT_FSTAT_BOUND':raise ValueError('No current independent proof: '+r['input'])
             if not audit_root and audit['proof']['sha256']!=r['existing_audit']['proof']['sha256']:raise ValueError('Parent selected proof changed')
             qids=[];hashes=[];tids=[];own_domains={}
