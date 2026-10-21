@@ -33,7 +33,7 @@ if intent.exists():
 else:
  q=subprocess.run(['squeue','-h','-u','mou176','-n',name,'-o','%i|%T|%j'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True);assert not q.stdout.strip(),'Unknown existing same-name CPU allocation; reconcile'
  receipt=dict(status='CPU_ONLY_SUBMISSION_INTENT',root=str(r),source_publication=p['publication'],job_name=name,cpus=2,memory='8G',GPUs=0,time_limit='00:05:00',epoch=time.time());intent.write_text(json.dumps(receipt))
- wrap=shlex.join(['env','CUDA_VISIBLE_DEVICES=','OMP_NUM_THREADS=2','MKL_NUM_THREADS=2','OPENBLAS_NUM_THREADS=2','QWEN7B_CODE_ROOT='+str(old),'bash',str(runtime),'-c',bootstrap])
+ wrap=' '.join(shlex.quote(arg)for arg in ['env','CUDA_VISIBLE_DEVICES=','OMP_NUM_THREADS=2','MKL_NUM_THREADS=2','OPENBLAS_NUM_THREADS=2','QWEN7B_CODE_ROOT='+str(old),'bash',str(runtime),'-c',bootstrap])
  cmd=['sbatch','--parsable','--hold','--partition=acd_u','--qos=normal','--nodes=1','--ntasks=1','--cpus-per-task=2','--gres=gpu:0','--mem=8G','--time=00:05:00','--job-name='+name,'--output='+str(r/'CPU-%j.log'),'--wrap='+wrap]
  x=subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=30);assert x.returncode==0,x.stderr;job=x.stdout.strip().split(';')[0];assert job.isdigit();receipt.update(status='CPU_ONLY_JOB_HELD',job_id=job);(r/'CPU-submission.json').write_text(json.dumps(receipt))
  detail=subprocess.check_output(['scontrol','show','job','-o',job],universal_newlines=True);assert('JobName='+name)in detail and'UserId=mou176('in detail and'NumCPUs=2'in detail and'Partition=acd_u'in detail and'JobState=PENDING'in detail and'TimeLimit=00:05:00'in detail and all(int(v)==0 for v in re.findall(r'gres/gpu[=:]([0-9]+)',detail)),detail
