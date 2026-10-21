@@ -1,0 +1,64 @@
+{
+  "status": "OPTIONAL_READ_ONLY_CURRENT_MANIFEST_ORDINAL_ACTUALLY_OBSERVED",
+  "observer_source_commit": "0c97d33f11ae519c1f4cb054e350a9d9026a765e",
+  "observer_source_sha256": "bb330e9d3a3f8f2e9c288bc901c2d775c1bcf8c8d9f15c55f01863b688096f13",
+  "job_id": "746083",
+  "job_identity_verified": true,
+  "pid": 3521320,
+  "birth_ticks": 841056146,
+  "node": "ACD1-25",
+  "current_manifest": {
+    "completion_or_completed_byte_claim": false,
+    "current_manifest_ordinal": 2060,
+    "features": {
+      "bytes": 1543830,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint169028-native-training-bank-v1/features-layer26.json",
+      "sha256": "692f723e39f4347959216874042db7733d2d7347f5149b82eaf841199ab764db"
+    },
+    "manifest_total": 5356,
+    "matched_manifest_ordinals": [
+      2060
+    ],
+    "matched_open_files": [
+      {
+        "fd": "46",
+        "manifest_ordinals": [
+          2060
+        ],
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-joint124194-audited243-L26-v1/shard-00/capture/chunk-00127/layer-26/policy.bin"
+      }
+    ],
+    "ordinal_semantics": "one-based frozen list position of currently open whitelisted file parent; not a completion count",
+    "status": "OPEN_FD_MANIFEST_PARENT_MATCH"
+  },
+  "actual_io_delta": {
+    "same_verified_process_identity": true,
+    "pid_change_is_observation_only": true,
+    "seconds": 193.98725080490112,
+    "io_delta": {
+      "cancelled_write_bytes": 0,
+      "rchar": 34249892610,
+      "read_bytes": 0,
+      "syscr": 35888,
+      "syscw": 0,
+      "wchar": 0,
+      "write_bytes": 0
+    },
+    "CPU_user_ticks_delta": 3232,
+    "CPU_system_ticks_delta": 202,
+    "main_read_MiB_per_second": 168.3782969566368,
+    "I_O_growth_is_optimizer_progress_claim": false
+  },
+  "accepted_updates_reported": null,
+  "failure_present": false,
+  "fd_errors": 0,
+  "fd_close_races": 0,
+  "observation": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/mixed-direct-official-live-observations/observation-1792600343130.json",
+    "bytes": 9524,
+    "sha256": "a25d204484f76007d77acfa6210afea71a8751e941edbc10ca343f2c094202a9"
+  },
+  "training_changed": false,
+  "watcher_started": false,
+  "tensor_payload_read_by_observer": false
+}

@@ -1,0 +1,201 @@
+{
+  "actual_accepted_updates_reported": null,
+  "allocation_step": {
+    "returncode": 0,
+    "stderr": "",
+    "timeout": false
+  },
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-v1",
+  "config_binding_verified": true,
+  "controller": {
+    "config_sha256": "2a7f039f4172f5284e3b8282e8ca6200e566bd92bb3013e9802306eca84e7393",
+    "features": {
+      "bytes": 1543830,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint169028-native-training-bank-v1/features-layer26.json",
+      "sha256": "692f723e39f4347959216874042db7733d2d7347f5149b82eaf841199ab764db"
+    },
+    "initialization_source": "official_initial",
+    "job_id": "746083",
+    "matched_binding_sha256": "e8f0e0f9ea8ede107c651c8b75ba9c22a6c2e3fc4f4e3dbced4387717b4989b9",
+    "official_inventory": {
+      "bytes": 10931,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/official-snapshot-view/official-inventory.json",
+      "sha256": "1c074aba09f1e0a65e07bb36aebeab07e9cedfe62d0c9fd0594d4d2360e82b36"
+    },
+    "official_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "pid": 3521320,
+    "sampler_source": "c98ddcd7861b7023f3efa0d82d3c1fbea0664a13",
+    "stage": "OFFICIAL_SOURCE_SHA_AND_LAYER26_READER",
+    "time": 1792599688.657925,
+    "training_groups": {
+      "bytes": 127068810,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint169028-native-training-bank-v1/groups.json",
+      "sha256": "9b6616b041170e7b3fc3de5128376e12f971842360b7a79b178991941038915f"
+    }
+  },
+  "epoch": 1792600343.1546555,
+  "healthy_training_qualification_complete": false,
+  "job_id": "746083",
+  "job_identity": {
+    "actual": {
+      "Account": "mou176",
+      "Command": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-v1/training.sbatch",
+      "JobId": "746083",
+      "JobName": "q7b-mixed-direct169028",
+      "UserId": "mou176(21930)",
+      "WorkDir": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-v1"
+    },
+    "checks": {
+      "Account": true,
+      "Command": true,
+      "JobId": true,
+      "JobName": true,
+      "UserId": true,
+      "WorkDir": true
+    },
+    "expected": {
+      "Account": "mou176",
+      "Command": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-v1/training.sbatch",
+      "JobId": "746083",
+      "JobName": "q7b-mixed-direct169028",
+      "UserId": "mou176(21930)",
+      "WorkDir": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-v1"
+    },
+    "verified": true
+  },
+  "log": {
+    "bytes": 0,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-v1/logs/train-746083.log",
+    "tail": ""
+  },
+  "main_sacct": {
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "746083|RUNNING|0:0|00:11:14\n"
+  },
+  "manifest_position": {
+    "completion_or_completed_byte_claim": false,
+    "current_manifest_ordinal": 2060,
+    "features": {
+      "bytes": 1543830,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint169028-native-training-bank-v1/features-layer26.json",
+      "sha256": "692f723e39f4347959216874042db7733d2d7347f5149b82eaf841199ab764db"
+    },
+    "manifest_total": 5356,
+    "matched_manifest_ordinals": [
+      2060
+    ],
+    "matched_open_files": [
+      {
+        "fd": "46",
+        "manifest_ordinals": [
+          2060
+        ],
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-joint124194-audited243-L26-v1/shard-00/capture/chunk-00127/layer-26/policy.bin"
+      }
+    ],
+    "ordinal_semantics": "one-based frozen list position of currently open whitelisted file parent; not a completion count",
+    "status": "OPEN_FD_MANIFEST_PARENT_MATCH"
+  },
+  "model_or_tensor_loaded": false,
+  "nodes": "ACD1-25",
+  "process": {
+    "CPU": 1,
+    "GPU": 0,
+    "allocation_job": "746083",
+    "birth_ticks": 841056146,
+    "cgroup_job_matches": true,
+    "cgroup_paths": [
+      "12:cpuset:/slurm/uid_21930/job_746083/step_0",
+      "11:freezer:/slurm/uid_21930/job_746083/step_0",
+      "10:perf_event:/",
+      "9:blkio:/system.slice/slurmd.service",
+      "8:pids:/system.slice/slurmd.service",
+      "7:devices:/slurm/uid_21930/job_746083/step_0/task_0",
+      "6:cpu,cpuacct:/system.slice/slurmd.service",
+      "5:net_cls,net_prio:/",
+      "4:hugetlb:/",
+      "3:memory:/slurm/uid_21930/job_746083/step_0/task_0",
+      "2:rdma:/",
+      "1:name=systemd:/system.slice/slurmd.service"
+    ],
+    "command_identity_matches": true,
+    "controller_pid": 3521320,
+    "cpu_clock_ticks_per_second": 100,
+    "epoch": 1792600343.745747,
+    "fd_diagnostic_errors": 0,
+    "fd_readlink_races": 0,
+    "fd_scan_truncated": false,
+    "host": "ACD1-25",
+    "io": {
+      "cancelled_write_bytes": 0,
+      "rchar": 119311196673,
+      "read_bytes": 1494802432,
+      "syscr": 122125,
+      "syscw": 22,
+      "wchar": 3514,
+      "write_bytes": 0
+    },
+    "open_whitelisted_fds": [
+      {
+        "fd": "46",
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-joint124194-audited243-L26-v1/shard-00/capture/chunk-00127/layer-26/policy.bin"
+      }
+    ],
+    "process_exists": true,
+    "same_birth_through_observation": true,
+    "state": "D",
+    "status": "OWNED_MAIN_PROCESS_OBSERVED",
+    "status_fields": [
+      "VmSize:\t24413776 kB",
+      "VmRSS:\t 3251380 kB",
+      "Threads:\t25"
+    ],
+    "system_ticks": 1170,
+    "user_ticks": 12835
+  },
+  "read_only": true,
+  "reason": "None",
+  "scontrol_observation": {
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "JobId=746083 JobName=q7b-mixed-direct169028 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3344 Nice=0 Account=mou176 QOS=normal JobState=RUNNING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:11:14 TimeLimit=2-00:00:00 TimeMin=N/A SubmitTime=2026-10-22T00:20:41 EligibleTime=2026-10-22T00:20:41 AccrueTime=2026-10-22T00:20:41 StartTime=2026-10-22T00:21:09 EndTime=2026-10-24T00:21:09 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-22T00:21:09 Scheduler=Backfill Partition=acd_u AllocNode:Sid=ACD-Login-2:640064 ReqNodeList=(null) ExcNodeList=(null) NodeList=ACD1-25 BatchHost=ACD1-25 NumNodes=1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=8,mem=128G,node=1,billing=8,gres/gpu=1 AllocTRES=cpu=8,mem=128G,node=1,billing=8,gres/gpu=1 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=8 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-v1/training.sbatch WorkDir=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-v1 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-v1/logs/train-746083.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-v1/logs/train-746083.log Power= TresPerNode=gres/gpu:1 TresPerTask=cpu:8 \n"
+  },
+  "slurm_state": "RUNNING",
+  "start_time": "2026-10-22T00:21:09",
+  "status": "LOADING_OR_INITIAL_EVALUATION_NO_ACCEPTED_UPDATE_YET",
+  "submission": {
+    "config": {
+      "bytes": 9615,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-v1/config.json",
+      "sha256": "2a7f039f4172f5284e3b8282e8ca6200e566bd92bb3013e9802306eca84e7393"
+    },
+    "identity": {
+      "bytes": 3360,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-v1/submission-identity.json",
+      "sha256": "6d459704f0299cdd08d2255f3afa43ecd5e20b4a4e0705903ab1fe2abf7a2114"
+    },
+    "job_id": "746083",
+    "status": "OFFICIAL_MIXED_ONLY169028_JOB_RELEASED_NOT_PROGRESS_VERIFIED"
+  },
+  "watcher_started": false,
+  "observer_source_sha256": "bb330e9d3a3f8f2e9c288bc901c2d775c1bcf8c8d9f15c55f01863b688096f13",
+  "since_previous": {
+    "same_verified_process_identity": true,
+    "pid_change_is_observation_only": true,
+    "seconds": 193.98725080490112,
+    "io_delta": {
+      "cancelled_write_bytes": 0,
+      "rchar": 34249892610,
+      "read_bytes": 0,
+      "syscr": 35888,
+      "syscw": 0,
+      "wchar": 0,
+      "write_bytes": 0
+    },
+    "CPU_user_ticks_delta": 3232,
+    "CPU_system_ticks_delta": 202,
+    "main_read_MiB_per_second": 168.3782969566368,
+    "I_O_growth_is_optimizer_progress_claim": false
+  }
+}
