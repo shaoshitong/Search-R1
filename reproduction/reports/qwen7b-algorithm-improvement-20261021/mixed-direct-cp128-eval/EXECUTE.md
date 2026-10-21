@@ -9,3 +9,5 @@ python3 reproduction/operations/qwen7b_warmup/deploy_mixed_direct_cp128_eval.py 
 ```
 
 Single normal/acd_u one-H100,8-CPU,128-GiB,one-hour job. Immutable intent, same-name query, held-resource verification and explicit release protect submission. Unknown result preserves intent and requires reconciliation. No dependency, training update, main pause or final scoring.
+
+Historical execution is now complete as job746154. Do not rerun submit; its immutable intent and terminal evidence must remain intact.
