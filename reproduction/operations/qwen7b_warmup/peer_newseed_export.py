@@ -105,6 +105,10 @@ def summary(plan):
 
 
 def load_auditor(base,snapshot):
+ plan=read(Path(snapshot)/'plan.json')
+ if any(x.get('audit_dispatch')for x in plan['selected_batches']):
+  from .peer_newseed_source_audit_dispatch import Dispatch
+  return Dispatch(base,snapshot,plan)
  path=Path(__file__).with_name('peer_newseed_audit_reference.py')
  if sha(path)!=AUDIT_SHA:raise ValueError('Exact peer standalone CPU auditor is required')
  spec=importlib.util.spec_from_file_location('pinned_peer_newseed_cpu_auditor',path);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
@@ -238,7 +242,7 @@ def export(base,output_root,snapshot_id,*,batches_per_archive=16):
     files={key:regular(base,path) for key,path in batch_files(base,inp).items()}
     before={str(p):fs(p) for p in files.values()}
     cache=base/'audit/batches'/inp.parent.name/(inp.stem+'.json');dest=root/'audit-proof-cache/batches'/inp.parent.name/(inp.stem+'.json')
-    if cache.is_file() and not dest.exists():stable_copy(base,cache,dest)
+    if cache.is_file() and not dest.exists() and not item.get('audit_dispatch'):stable_copy(base,cache,dest)
     proof=auditor.batch(inp,batch,item['input_sha256'])
     if not proof or proof.get('deferred'):raise ValueError('Frozen batch is not genuinely fully sealed/verified')
     if before!={str(p):fs(p) for p in files.values()}:raise ValueError('Source files changed during real data audit')
@@ -250,7 +254,7 @@ def export(base,output_root,snapshot_id,*,batches_per_archive=16):
       deduplicated+=1;continue
      if seen_tids.intersection(g['trajectory_ids']):raise ValueError('Real trajectory ID reused by another question')
      admitted[qid]=signature;seen_tids.update(g['trajectory_ids']);new.append(signature)
-    source_stats.update(before);validated.append(dict(input=item['input'],files=files,new_groups=new,source_questions=len(groups)))
+    source_stats.update(before);validated.append(dict(input=item['input'],files=files,new_groups=new,source_questions=len(groups),audit_dispatch=item.get('audit_dispatch')))
     atomic(root/'controller.json',dict(status='FROZEN_SOURCE_BATCHES_ADVANCING',validated_batches=number+1,total_batches=len(plan['selected_batches']),questions=len(admitted),trajectories=len(seen_tids),epoch=time.time()))
    if len({g['source_ordinal'] for g in admitted.values()})!=len(admitted) or len({g['candidate_ordinal'] for g in admitted.values()})!=len(admitted):raise ValueError('Canonical source/candidate ordinal reused by distinct question')
    ordered=sorted(admitted.values(),key=lambda g:g['source_ordinal'])
@@ -258,7 +262,7 @@ def export(base,output_root,snapshot_id,*,batches_per_archive=16):
    groups_out=[];common=[base/'config.json',base/'inputs/manifest.json']
    # Copy/archive fixed subsets; archive members are unique snapshot/group paths.
    for start in range(0,len(validated),batches_per_archive):
-    group_number=start//batches_per_archive;name='group-%05d'%group_number;payload=root/'payload'/name;paths={};membership=[];source_bytes=0
+    group_number=start//batches_per_archive;name='group-%05d'%group_number;payload=root/'payload'/name;paths={};membership=[];source_bytes=0;metadata_resealed_audits={}
     for source in common:
      relative='source/'+str(source.relative_to(base));value=stable_copy(base,source,payload/relative);paths[relative]=value;source_stats[str(source)]=value['source_stat'];source_bytes+=value['bytes']
     for value in validated[start:start+batches_per_archive]:
@@ -271,8 +275,15 @@ def export(base,output_root,snapshot_id,*,batches_per_archive=16):
       if expected and mapped(base,expected['path'])!=source:raise ValueError('Producer artifact path differs from sealed batch role')
       if fs(source)!=source_stats[str(source)]:raise ValueError('Sealed source changed between validation and copy')
       copied=stable_copy(base,source,payload/relative,expected);paths[relative]=copied;source_bytes+=copied['bytes']
+    for value in validated[start:start+batches_per_archive]:
+     info=value.get('audit_dispatch')
+     if not info or not info.get('metadata_resealed_attestation'):continue
+     inp=Path(value['input']);mapping=dict(auditor_sha256=info['auditor_sha256'],original_receipt_chain_equal_current=False)
+     for role,key in (('proof','proof'),('attestation','metadata_resealed_attestation')):
+      ref=info[key];src=Path(ref['path']);relative='provenance/audit/'+inp.parent.name+'/'+inp.stem+'-'+role+'.json';copied=stable_copy(src.parent,src,payload/relative,ref);paths[relative]=copied;mapping[role]=dict(path=relative,bytes=copied['bytes'],sha256=copied['sha256'])
+     metadata_resealed_audits[value['input']]=mapping
     cohort=dict(source_run_id=RUN_ID,seed=SEED,sampling_attempt_id=ATTEMPT,revision=REVISION,prefix_tokens=20,groups=membership,questions=len(membership),trajectories=5*len(membership),source_base=str(base),recorded_base=RECORDED,
-     no_label_selection=True,duplicate_policy='deduplicate only exact same question/hash/ordinal/own-five IDs and labels; conflicting duplicate fails closed',strict_em_recomputed=False,own_em_full_correspondence_verified=True,hidden_exported=False)
+     metadata_resealed_audits=metadata_resealed_audits,no_label_selection=True,duplicate_policy='deduplicate only exact same question/hash/ordinal/own-five IDs and labels; conflicting duplicate fails closed',strict_em_recomputed=False,own_em_full_correspondence_verified=True,hidden_exported=False)
     immutable(payload/'cohort.json',cohort);paths['cohort.json']=dict(bytes=(payload/'cohort.json').stat().st_size,sha256=sha(payload/'cohort.json'))
     if group_number==0:
      for own_name in ('plan.json','canonical-membership.json'):
