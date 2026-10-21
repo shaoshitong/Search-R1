@@ -1,0 +1,426 @@
+{
+  "format": "local_saved_FA2_e082_completed_outer_timing_baseline_v1",
+  "source_job": "745371",
+  "runtime_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+  "run_id": "232f20e112ac4a978c5aba52a0367195",
+  "source_glob": "training-progress-em-*.json",
+  "source_observation_count": 120,
+  "network_calls": 0,
+  "training_modified": false,
+  "raw_tensors_read": false,
+  "timing_units": "seconds",
+  "printed_metric_precision": "0.001; token length means and timing from original trainer log lines",
+  "actual_update_ledger_scope": "Only rows with update_status=complete and full_budget_complete=true; timing/token lines joined by outer. The actual-updates ledger itself does not retain timing_s metrics.",
+  "rows": [
+    {
+      "outer": 2,
+      "actual_completed_update": {
+        "attempt_id": "6b65b308ae474a81bb78d6277b4d9a8c",
+        "attempt_index": 2,
+        "actual_optimizer_writes_this_outer": 20,
+        "optimizer_writes_after": 40,
+        "source_observation": "training-progress-em-1792601688.json"
+      },
+      "timing_and_token_metrics": null,
+      "rolling_seal": null,
+      "rolling_seal_interval_from_previous_outer_seconds": null,
+      "missing_reason": "No complete timing/token metric line for this outer in the specified training-progress-em-*.json observations; COMPLETE ledger is present."
+    },
+    {
+      "outer": 3,
+      "actual_completed_update": {
+        "attempt_id": "eefd4da7a7b445a4862963b159cbdfdc",
+        "attempt_index": 3,
+        "actual_optimizer_writes_this_outer": 20,
+        "optimizer_writes_after": 60,
+        "source_observation": "training-progress-em-1792601688.json"
+      },
+      "timing_and_token_metrics": null,
+      "rolling_seal": null,
+      "rolling_seal_interval_from_previous_outer_seconds": null,
+      "missing_reason": "No complete timing/token metric line for this outer in the specified training-progress-em-*.json observations; COMPLETE ledger is present."
+    },
+    {
+      "outer": 4,
+      "actual_completed_update": {
+        "attempt_id": "af99f949b92f4d4bbce7de3a55fa66ef",
+        "attempt_index": 4,
+        "actual_optimizer_writes_this_outer": 20,
+        "optimizer_writes_after": 80,
+        "source_observation": "training-progress-em-1792601688.json"
+      },
+      "timing_and_token_metrics": null,
+      "rolling_seal": null,
+      "rolling_seal_interval_from_previous_outer_seconds": null,
+      "missing_reason": "No complete timing/token metric line for this outer in the specified training-progress-em-*.json observations; COMPLETE ledger is present."
+    },
+    {
+      "outer": 5,
+      "actual_completed_update": {
+        "attempt_id": "bd4e2ec20d514d55810b4f07d5007207",
+        "attempt_index": 5,
+        "actual_optimizer_writes_this_outer": 20,
+        "optimizer_writes_after": 100,
+        "source_observation": "training-progress-em-1792601688.json"
+      },
+      "timing_and_token_metrics": null,
+      "rolling_seal": null,
+      "rolling_seal_interval_from_previous_outer_seconds": null,
+      "missing_reason": "No complete timing/token metric line for this outer in the specified training-progress-em-*.json observations; COMPLETE ledger is present."
+    },
+    {
+      "outer": 6,
+      "actual_completed_update": {
+        "attempt_id": "e2db2510d7b845f1ae0e7d9ccc056938",
+        "attempt_index": 6,
+        "actual_optimizer_writes_this_outer": 20,
+        "optimizer_writes_after": 120,
+        "source_observation": "training-progress-em-1792601688.json"
+      },
+      "timing_and_token_metrics": {
+        "metrics": {
+          "timing_s/candidate_fill": 861.667,
+          "timing_s/adv": 139.331,
+          "timing_s/update_actor": 247.004,
+          "timing_s/save_checkpoint": 163.44,
+          "timing_s/step": 694.094,
+          "response_length/mean": 712.701,
+          "response_length/min": 25.0,
+          "response_length/max": 2482.0,
+          "prompt_length/mean": 138.588,
+          "prompt_length/min": 126.0,
+          "prompt_length/max": 220.0,
+          "global_seqlen/mean": 544824.75,
+          "selection/raw_generated_policy_tokens": 1456583.0,
+          "state_tokens/total": 283945.0
+        },
+        "source_observation": "training-progress-em-1792592380.json",
+        "channel": "training_log"
+      },
+      "rolling_seal": {
+        "published_unix": 1792591697.1895242,
+        "manifest_sha256": "eaceea0b97b3ce5e73a12ee5449b5808f245da93065886eca5209de944ba223d",
+        "source_observation": "training-progress-em-1792592380.json"
+      },
+      "rolling_seal_interval_from_previous_outer_seconds": null,
+      "selected_nonpad_context_tokens_all_four_ranks": 2179299
+    },
+    {
+      "outer": 7,
+      "actual_completed_update": {
+        "attempt_id": "ef893814f0a24d058072385e67194516",
+        "attempt_index": 7,
+        "actual_optimizer_writes_this_outer": 20,
+        "optimizer_writes_after": 140,
+        "source_observation": "training-progress-em-1792601688.json"
+      },
+      "timing_and_token_metrics": {
+        "metrics": {
+          "timing_s/candidate_fill": 856.452,
+          "timing_s/adv": 139.009,
+          "timing_s/update_actor": 250.826,
+          "timing_s/save_checkpoint": 166.342,
+          "timing_s/step": 699.424,
+          "response_length/mean": 717.691,
+          "response_length/min": 26.0,
+          "response_length/max": 2484.0,
+          "prompt_length/mean": 138.354,
+          "prompt_length/min": 128.0,
+          "prompt_length/max": 225.0,
+          "global_seqlen/mean": 547868.5,
+          "selection/raw_generated_policy_tokens": 1434941.0,
+          "state_tokens/total": 284262.0
+        },
+        "source_observation": "training-progress-em-1792594541.json",
+        "channel": "training_log"
+      },
+      "rolling_seal": {
+        "published_unix": 1792593326.855741,
+        "manifest_sha256": "cd630490da74d1933519e0b41c1011b9170a41ac3a7de70c542bbe4b22cb3425",
+        "source_observation": "training-progress-em-1792594928.json"
+      },
+      "rolling_seal_interval_from_previous_outer_seconds": 1629.6662168502808,
+      "selected_nonpad_context_tokens_all_four_ranks": 2191474
+    },
+    {
+      "outer": 8,
+      "actual_completed_update": {
+        "attempt_id": "5c150fa24b7b46fc9b70d26f662f71cf",
+        "attempt_index": 8,
+        "actual_optimizer_writes_this_outer": 20,
+        "optimizer_writes_after": 160,
+        "source_observation": "training-progress-em-1792601688.json"
+      },
+      "timing_and_token_metrics": {
+        "metrics": {
+          "timing_s/candidate_fill": 860.689,
+          "timing_s/adv": 142.479,
+          "timing_s/update_actor": 254.338,
+          "timing_s/save_checkpoint": 168.273,
+          "timing_s/step": 707.053,
+          "response_length/mean": 742.639,
+          "response_length/min": 21.0,
+          "response_length/max": 2485.0,
+          "prompt_length/mean": 139.316,
+          "prompt_length/min": 128.0,
+          "prompt_length/max": 234.0,
+          "global_seqlen/mean": 564451.25,
+          "selection/raw_generated_policy_tokens": 1437179.0,
+          "state_tokens/total": 289472.0
+        },
+        "source_observation": "training-progress-em-1792596133.json",
+        "channel": "training_log"
+      },
+      "rolling_seal": {
+        "published_unix": 1792594965.9095876,
+        "manifest_sha256": "52f85a226a3e2e9acddd61738dfa237e2f056466944f32e5bcb7b11053d9f816",
+        "source_observation": "training-progress-em-1792596570.json"
+      },
+      "rolling_seal_interval_from_previous_outer_seconds": 1639.0538465976715,
+      "selected_nonpad_context_tokens_all_four_ranks": 2257805
+    },
+    {
+      "outer": 9,
+      "actual_completed_update": {
+        "attempt_id": "b4595a0ced7e40ba8db6d4a1199d6d10",
+        "attempt_index": 9,
+        "actual_optimizer_writes_this_outer": 20,
+        "optimizer_writes_after": 180,
+        "source_observation": "training-progress-em-1792601688.json"
+      },
+      "timing_and_token_metrics": {
+        "metrics": {
+          "timing_s/candidate_fill": 854.556,
+          "timing_s/adv": 150.496,
+          "timing_s/update_actor": 256.414,
+          "timing_s/save_checkpoint": 163.773,
+          "timing_s/step": 719.352,
+          "response_length/mean": 766.834,
+          "response_length/min": 25.0,
+          "response_length/max": 2419.0,
+          "prompt_length/mean": 139.246,
+          "prompt_length/min": 128.0,
+          "prompt_length/max": 234.0,
+          "global_seqlen/mean": 579891.5,
+          "selection/raw_generated_policy_tokens": 1420642.0,
+          "state_tokens/total": 293138.0
+        },
+        "source_observation": "training-progress-em-1792597816.json",
+        "channel": "training_log"
+      },
+      "rolling_seal": {
+        "published_unix": 1792596611.3125713,
+        "manifest_sha256": "d0126fc8f7466091a8c76eb5526debe591db48f5bf0fbb632c2203b5705a611f",
+        "source_observation": "training-progress-em-1792598254.json"
+      },
+      "rolling_seal_interval_from_previous_outer_seconds": 1645.4029836654663,
+      "selected_nonpad_context_tokens_all_four_ranks": 2319566
+    },
+    {
+      "outer": 10,
+      "actual_completed_update": {
+        "attempt_id": "439e064ef4af4c4e9d368ce395413249",
+        "attempt_index": 10,
+        "actual_optimizer_writes_this_outer": 20,
+        "optimizer_writes_after": 200,
+        "source_observation": "training-progress-em-1792601688.json"
+      },
+      "timing_and_token_metrics": {
+        "metrics": {
+          "timing_s/candidate_fill": 875.713,
+          "timing_s/adv": 154.514,
+          "timing_s/update_actor": 257.928,
+          "timing_s/save_checkpoint": 162.277,
+          "timing_s/step": 716.812,
+          "response_length/mean": 800.567,
+          "response_length/min": 23.0,
+          "response_length/max": 2444.0,
+          "prompt_length/mean": 139.396,
+          "prompt_length/min": 127.0,
+          "prompt_length/max": 246.0,
+          "global_seqlen/mean": 601576.5,
+          "selection/raw_generated_policy_tokens": 1452498.0,
+          "state_tokens/total": 303803.0
+        },
+        "source_observation": "training-progress-em-1792599493.json",
+        "channel": "training_log"
+      },
+      "rolling_seal": {
+        "published_unix": 1792598274.9121459,
+        "manifest_sha256": "1070a87785277207d86ae09f3470938829e30335ee0f2ccfb5d3964abc2dd751",
+        "source_observation": "training-progress-em-1792599938.json"
+      },
+      "rolling_seal_interval_from_previous_outer_seconds": 1663.5995745658875,
+      "selected_nonpad_context_tokens_all_four_ranks": 2406306
+    },
+    {
+      "outer": 11,
+      "actual_completed_update": {
+        "attempt_id": "89f23c532fb8484aaf7b6cd634d1eba3",
+        "attempt_index": 11,
+        "actual_optimizer_writes_this_outer": 20,
+        "optimizer_writes_after": 220,
+        "source_observation": "training-progress-em-1792601688.json"
+      },
+      "timing_and_token_metrics": {
+        "metrics": {
+          "timing_s/candidate_fill": 866.446,
+          "timing_s/adv": 149.226,
+          "timing_s/update_actor": 256.979,
+          "timing_s/save_checkpoint": 167.307,
+          "timing_s/step": 724.312,
+          "response_length/mean": 771.479,
+          "response_length/min": 28.0,
+          "response_length/max": 2368.0,
+          "prompt_length/mean": 138.969,
+          "prompt_length/min": 128.0,
+          "prompt_length/max": 224.0,
+          "global_seqlen/mean": 582686.25,
+          "selection/raw_generated_policy_tokens": 1410321.0,
+          "state_tokens/total": 291347.0
+        },
+        "source_observation": "training-progress-em-1792601180.json",
+        "channel": "training_log"
+      },
+      "rolling_seal": {
+        "published_unix": 1792599940.3014085,
+        "manifest_sha256": "3a5abfb7ea71aeb69251041055f9c42261996340ed918447cdc7e9c77f2b95fd",
+        "source_observation": "training-progress-em-1792601624.json"
+      },
+      "rolling_seal_interval_from_previous_outer_seconds": 1665.389262676239,
+      "selected_nonpad_context_tokens_all_four_ranks": 2330745
+    },
+    {
+      "outer": 12,
+      "actual_completed_update": {
+        "attempt_id": "37efb3128e824aeca2c8a0fba7ef2cdd",
+        "attempt_index": 12,
+        "actual_optimizer_writes_this_outer": 20,
+        "optimizer_writes_after": 240,
+        "source_observation": "training-progress-em-1792601688.json"
+      },
+      "timing_and_token_metrics": {
+        "metrics": {
+          "timing_s/candidate_fill": 877.039,
+          "timing_s/adv": 153.173,
+          "timing_s/update_actor": 263.76,
+          "timing_s/save_checkpoint": 167.444,
+          "timing_s/step": 739.176,
+          "response_length/mean": 806.024,
+          "response_length/min": 23.0,
+          "response_length/max": 2656.0,
+          "prompt_length/mean": 138.852,
+          "prompt_length/min": 127.0,
+          "prompt_length/max": 194.0,
+          "global_seqlen/mean": 604720.5,
+          "selection/raw_generated_policy_tokens": 1401849.0,
+          "state_tokens/total": 295410.0
+        },
+        "source_observation": "training-progress-em-1792601688.json",
+        "channel": "trainer_log"
+      },
+      "rolling_seal": {
+        "published_unix": 1792601628.678006,
+        "manifest_sha256": "9d17b361da61b68cf884fdfb3b2d7f4808d3179dd69fcbb394121d65367bdf26",
+        "source_observation": "training-progress-em-1792601688.json"
+      },
+      "rolling_seal_interval_from_previous_outer_seconds": 1688.37659740448,
+      "selected_nonpad_context_tokens_all_four_ranks": 2418882
+    }
+  ],
+  "all_requested_2_12_available_subset": {
+    "requested_outers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "available_timing_outers": [
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "actor_update_seconds_median": 256.414,
+    "timing_seconds_medians": {
+      "timing_s/candidate_fill": 861.667,
+      "timing_s/adv": 149.226,
+      "timing_s/update_actor": 256.414,
+      "timing_s/save_checkpoint": 166.342,
+      "timing_s/step": 716.812
+    },
+    "available_adjacent_seal_interval_count": 6,
+    "adjacent_seal_interval_seconds_median": 1654.5012791156769,
+    "response_length_mean_min_max_across_outers": [
+      712.701,
+      806.024
+    ],
+    "selected_nonpad_context_tokens_min_max": [
+      2179299,
+      2418882
+    ]
+  },
+  "recent_9_12": {
+    "requested_outers": [
+      9,
+      10,
+      11,
+      12
+    ],
+    "available_timing_outers": [
+      9,
+      10,
+      11,
+      12
+    ],
+    "actor_update_seconds_median": 257.45349999999996,
+    "timing_seconds_medians": {
+      "timing_s/candidate_fill": 871.0795,
+      "timing_s/adv": 151.8345,
+      "timing_s/update_actor": 257.45349999999996,
+      "timing_s/save_checkpoint": 165.54,
+      "timing_s/step": 721.832
+    },
+    "available_adjacent_seal_interval_count": 4,
+    "adjacent_seal_interval_seconds_median": 1664.4944186210632,
+    "response_length_mean_min_max_across_outers": [
+      766.834,
+      806.024
+    ],
+    "selected_nonpad_context_tokens_min_max": [
+      2319566,
+      2418882
+    ]
+  },
+  "comparison_limits": [
+    "Candidate pools and token length distributions vary by outer; these are observational baselines, not same-input A/B benchmark.",
+    "timing_s/step excludes candidate_fill and is not whole outer elapsed time. Adjacent sealed-checkpoint publication timestamps are the whole outer boundary comparison, including any callback/seal I/O between boundaries.",
+    "Kernel speedup near1.7x does not imply actor update or whole outer speedup1.7x.",
+    "Outer2..5 full timing/token lines are not present in the specified observation set; no values were inferred from later outers.",
+    "No FA3 outer13 training result has been included."
+  ],
+  "evidence_file_sha256": {
+    "training-progress-em-1792592380.json": "740d283cca6f1c223a9c6d8f785ea51afa863b278f12e78efbbff060508e6406",
+    "training-progress-em-1792594541.json": "28bb0549bc3e6472093793341237edcb2e7aef38e079d6d1337f6396ff3565bb",
+    "training-progress-em-1792594928.json": "3c1ac3f7130ee5a8dd1f8f9680f392ee3e615a754a5f25e92bcaca42fcc64eda",
+    "training-progress-em-1792596133.json": "53b390a9706e354b10c962a78023fd3a1fbb3d8d58ddc59e9adb5c8c9705afb3",
+    "training-progress-em-1792596570.json": "b1b4879b625b0e4afb42ff089189e2477b4ff0d83ceafd613147db3b6cc54761",
+    "training-progress-em-1792597816.json": "254f041c7bb402f98f54167856a5de45f809555f7ce31a673e6f3104e8b12521",
+    "training-progress-em-1792598254.json": "b46f167fea3d1a367339fdc51076f4fa9329b4318a07c4b130d4319045823ce1",
+    "training-progress-em-1792599493.json": "b4efbe23618f665961bfd78c6b3f11021039c7b73a23b3f95f1afaf2fbc8558a",
+    "training-progress-em-1792599938.json": "a787fbe1ff35f3719cda0f1dcda1d4e9268444940b5689685e48838c75b01282",
+    "training-progress-em-1792601180.json": "bf008a33ecfb926068de047a6cd165ba4508a63d7095ce5709e3a7c58224eae7",
+    "training-progress-em-1792601624.json": "8df634451eb0041519ff0b58d4ce0d23702633676e9c358db32cf0dfd5768f07",
+    "training-progress-em-1792601688.json": "38a1bac81d172999056703fa37d6057261838a9ec6cfb858e7f348cfe80eec0e"
+  }
+}

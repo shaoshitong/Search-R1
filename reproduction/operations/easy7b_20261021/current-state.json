@@ -1,6 +1,6 @@
 {
-  "epoch": 1792602047.7620668,
-  "status": "AUTHORIZED_FA3_TRANSITION_CP12_CPU_STATES_PASS_NEW746125_LOADING_ACTUAL_RESTORE_PENDING",
+  "epoch": 1792602401.8019774,
+  "status": "ACTUAL_NATIVE4_CP12_RESTORE_DATAEQUAL_PASS_OUTER13_GENERATING_FA3_CONFIGURED",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "746125",
@@ -55,7 +55,7 @@
   },
   "previous_goal_turn_classification": "progress",
   "latest_turn_classification": "PROGRESS_EXPLICIT_HUMAN_SDPA_BASED_FA3_BOUNDARY_TRANSITION_EXECUTED",
-  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-current-1792601975.json",
+  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792602336293720000/observation-002.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "stage": "GRPO_1_TO_200",
@@ -73,7 +73,7 @@
   },
   "old_7b_job": "745022",
   "old_7b_state": "CANCELLED_BY_AUTHORIZED_CP1_TRANSITION",
-  "actual_cuda_restore_accepted": false,
+  "actual_cuda_restore_accepted": true,
   "first_outer": {
     "completed": true,
     "optimizer_writes_per_rank": 20,
@@ -146,7 +146,7 @@
     "Continue clear-collapse monitoring/notification and full-state recovery when warranted; preserve real failure evidence and recover only this owned genuinely failed execution.",
     "Publish current source/operators/config/proofs before owned resource cleanup; retain required remote artifacts and protected feature/model/cache/shared retrieval assets."
   ],
-  "actual_state_restore_acceptance": "actual-cp1-state-acceptance-1792583368.json",
+  "actual_state_restore_acceptance": "evidence/actual-fa3-native4-cp12-restore-dataequal-20261022.json",
   "node": "ACD1-32",
   "allocation_started_cst": "2026-10-22 00:58:19 CST",
   "archive_controller": {
@@ -1153,7 +1153,7 @@
     "formal_training_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
     "fresh_remote_fetch_and_blob_sha_pass": true
   },
-  "all4_actual_optimizer_writes": null,
+  "all4_actual_optimizer_writes": 240,
   "current_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
     "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_11",
@@ -2116,8 +2116,15 @@
     "new_calibration_or_LR_reset": false,
     "sdpa_reference_evidence": "evidence/actual-fa3-sdpa-math-reference-20261022.json",
     "historical_fa2_numerical_rejection_preserved": true,
-    "actual_target_restore_accepted": false,
+    "actual_target_restore_accepted": true,
     "actual_target_actor_fa3_execution_observed": false,
-    "goal_remains_active": true
+    "goal_remains_active": true,
+    "restore_evidence": "evidence/actual-fa3-native4-cp12-restore-dataequal-20261022.json"
+  },
+  "active_local_watcher": {
+    "session_id": 66450,
+    "root": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792602336293720000",
+    "target17_and_saved18": true,
+    "source_commit": "0bdfd3300a8dc9725604bd94caa59b770c77b1b8"
   }
 }
