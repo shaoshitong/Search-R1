@@ -1,0 +1,52 @@
+{
+  "receipt": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v2/pre-submit-physical-readback.json",
+    "bytes": 1579,
+    "sha256": "62ed01ed8547cf4cd7cceecf1bba9bdd8f48c78a141c76a9bbb3ab7287ecff28"
+  },
+  "status": "FIXED9344_PROJECTED_ROWS_PHYSICAL_SOURCE_FINAL_SHA_AND_BOTH_ACTUAL_CAUSAL_INPUTS_PASSED",
+  "preparation": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v2/preparation.json",
+    "bytes": 3805,
+    "sha256": "c63010438f4571efd247441168a43c4966e8c2017d099fd0f452f42947b6e77c"
+  },
+  "questions": 9344,
+  "trajectories": 93440,
+  "shard_counts": [
+    23360,
+    23360,
+    23360,
+    23360
+  ],
+  "source_prefix_files": 149,
+  "source_seal_files": 149,
+  "fresh_source_prefix_and_seal_SHA_after_projection": true,
+  "canonical_row_SHA_to_exact_physical_file_and_execution_verified": true,
+  "actual_old_and_new_core_input_examples": {
+    "old5": {
+      "trajectory_id_sha256": "816d582801d665e8240c0fe302ecc48d49a983d19078c0aaaa6f6cbf90ed5fe3",
+      "canonical_prefix_row_sha256": "d282961b94f3464f459a9484b07427113bcb542d376484b9f78153ae5772312f",
+      "causal_prefix_sha256": "1f93923fa4580bdd14b19ff2b0c8926e2e60ca8da35c51dc90ef6691ec06c669",
+      "question_tokens": 142,
+      "policy_tokens": 20
+    },
+    "HPC3_new5": {
+      "trajectory_id_sha256": "b49a47b061c83739456127c071087829f11f59f3b2dd1203041f4412a2758b1b",
+      "canonical_prefix_row_sha256": "ef4a0975844f5219e58e7db9740fd3083c61655b6e5632e3518d400f9813243d",
+      "causal_prefix_sha256": "a778a701ce06e6956ef28d239b1c83abbe5bdf67ef61b4de392f417e82bef632",
+      "question_tokens": 142,
+      "policy_tokens": 20
+    }
+  },
+  "original_source_files_read_once_final": true,
+  "prefix_processing_streamed_by_file": true,
+  "CPU_affinity": [
+    0,
+    1
+  ],
+  "RSS_peak_KiB": 54944,
+  "elapsed_seconds": 14.679131507873535,
+  "model_or_tensor_loaded": false,
+  "GPU_submitted": false,
+  "epoch": 1792591584.1332767
+}

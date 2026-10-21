@@ -1,16 +1,58 @@
 {
-  "epoch": 1792591205.017103,
-  "same_name_jobs": "",
-  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v1",
+  "epoch": 1792591653.2053883,
+  "same_name_jobs": "745731|RUNNING|ACD1-36",
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v2",
   "cpu-prepare-launch.json": {
     "ref": {
-      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v1/cpu-prepare-launch.json",
-      "bytes": 449,
-      "sha256": "25eb92846c35f86f2472e9f4af52afc8db430d27d64397216904663eff7aa33b"
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v2/cpu-prepare-launch.json",
+      "bytes": 448,
+      "sha256": "e864643662f324a6048f1407f0f1f9e4cd2461f466bfa4c61bbe31bfb102b6f1"
     },
     "status": "ACTUAL_FIXED9344_CPU_PREFIX_PROJECTION_STARTED_NOT_YET_READY",
-    "pid": 2480837,
-    "birth_ticks": "130175672"
+    "pid": 2550037,
+    "birth_ticks": "130191888"
+  },
+  "progress.json": {
+    "ref": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v2/progress.json",
+      "bytes": 175,
+      "sha256": "cd06add90f1ffebe47d1b40485ae23e6447c892a9ba76eff0dc6ae408ec3df4e"
+    },
+    "trajectories": 93184,
+    "counts": [
+      23295,
+      23300,
+      23309,
+      23280
+    ]
+  },
+  "preparation.json": {
+    "ref": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v2/preparation.json",
+      "bytes": 3805,
+      "sha256": "c63010438f4571efd247441168a43c4966e8c2017d099fd0f452f42947b6e77c"
+    },
+    "status": "FIXED9344_FULL_QUALIFIED_G10_SOURCE_RESOLVED_L26_INPUTS_PREPARED_NO_GPU",
+    "questions": 9344,
+    "trajectories": 93440,
+    "elapsed_seconds": 27.35530924797058
+  },
+  "submission-plan.json": {
+    "ref": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v2/submission-plan.json",
+      "bytes": 1113,
+      "sha256": "727636126d24ac926ef535ac8b924683f2c4df1d126b431e68a09b986118e12b"
+    },
+    "status": "FIXED9344_ONE_NORMAL_H100_SEQUENTIAL_FOUR_SHARDS_READY_NOT_SUBMITTED"
+  },
+  "submission-result.json": {
+    "ref": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v2/submission-result.json",
+      "bytes": 401,
+      "sha256": "f79b8d987f7de92e9a52f4c6b23e6a9ab927ae67f501576c8557293c1b4a3e34"
+    },
+    "status": "FIXED9344_ONE_H100_CAPTURE_RELEASED_NOT_PROGRESS_VERIFIED",
+    "job_id": "745731"
   },
   "0": {
     "chunks": 0
@@ -24,5 +66,9 @@
   "3": {
     "chunks": 0
   },
-  "cpu-prepare.log": "Traceback (most recent call last):\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v1/code-0d8728865744/prepare_hpc3_tail9344_l26.py\", line 81, in <module>\n    p=argparse.ArgumentParser();p.add_argument('--prepare-only',action='store_true',required=True);p.add_argument('--raw-sha256',required=True);args=p.parse_args();print(json.dumps(prepare(args.raw_sha256),sort_keys=True))\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v1/code-0d8728865744/prepare_hpc3_tail9344_l26.py\", line 65, in prepare\n    seal=read(checked(source['seal']));path=checked(source['prefix'])\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v1/code-0d8728865744/prepare_hpc3_tail9344_l26.py\", line 20, in checked\n    actual=fp(ref['path']);assert actual==ref,'Bound accepted metadata/file differs';return Path(actual['path'])\nAssertionError: Bound accepted metadata/file differs\n"
+  "cpu-prepare.log": "iments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v2/shard-01/inputs/selection.json\", \"sha256\": \"45e2086674f8a1bbe00494ec9b8079ff2ecdaa40ff75d8e44783f74330954905\"}, {\"bytes\": 2922162, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v2/shard-02/inputs/selection.json\", \"sha256\": \"78411a663e4e57522c2f695619c83b1dcf694d6e0c3b78f990d85b8c9ee87bf9\"}, {\"bytes\": 2922112, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v2/shard-03/inputs/selection.json\", \"sha256\": \"f24bdd82efa692b581c55184447a2728dc7e97d57282b5fbee742a3e457e5bb0\"}], \"source\": {\"bytes\": 9198, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v2/code-772381da4073/prepare_hpc3_tail9344_l26.py\", \"sha256\": \"9d98761d6aef38aa114145372c29d9c23b466f2c4290a0ca42e43baaab25e179\"}, \"source_raw_complete\": {\"bytes\": 24395, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-old5-qualified-g10-v1/complete.json\", \"sha256\": \"0898b54516068d5b2c0fd1e2d95befb47d58ed2e96ca1065fc9b556387abbbfd\"}, \"source_resolution_contract\": {\"bytes\": 485, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-old5-qualified-g10-v1/raw-g10/source-resolution-contract.json\", \"sha256\": \"229710cbfccc53c92be96081535eeeee308cc52b969b07713258212c2b0d86c2\"}, \"status\": \"FIXED9344_FULL_QUALIFIED_G10_SOURCE_RESOLVED_L26_INPUTS_PREPARED_NO_GPU\", \"trajectories\": 93440}\n",
+  "main_sacct": "745731|RUNNING|0:0|00:00:38",
+  "log_tail": {
+    "capture-745731.log": ""
+  }
 }
