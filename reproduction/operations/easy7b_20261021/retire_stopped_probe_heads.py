@@ -35,7 +35,8 @@ def main():
     assert query.returncode == 0
     assert all('qprobe' not in line.lower() for line in query.stdout.splitlines()), 'An old QProbe job may be active'
     sha = hashlib.sha256(raw.encode()).hexdigest()
-    CONTROL.mkdir(exist_ok=True); CONTROL.chmod(0o770)
+    CONTROL.mkdir(exist_ok=True)
+    if CONTROL.stat().st_uid == os.getuid(): CONTROL.chmod(0o770)
     frozen = CONTROL/'plan.json'
     if frozen.exists(): assert frozen.read_text() == raw
     else:
