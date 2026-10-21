@@ -184,6 +184,9 @@ def train(config_sha):
     for sig in (signal.SIGTERM,signal.SIGINT,signal.SIGUSR1):signal.signal(sig,stop)
     c=read(TARGET/'config.json')
     if proof(TARGET/'config.json')['sha256']!=config_sha:raise ValueError('Actual immutable config SHA required')
+    if proof(__file__)!=c['implementation']or proof(old.__file__)!=c['capacity_helper']:
+        raise ValueError('Prepared implementation/helper differs')
+    checked(c['model_config'])
     if not torch.cuda.is_available()or torch.cuda.device_count()!=1 or 'H100'not in torch.cuda.get_device_properties(0).name:
         raise ValueError('Explicit owned one-H100 allocation required')
     if read(TARGET/'preparation.json')['config']!=proof(TARGET/'config.json'):raise ValueError('Prepared config changed')
@@ -210,6 +213,8 @@ def train(config_sha):
     legacy.load_state_dict(source['raw'],strict=True);u.restore_buffers(legacy,source['raw_buffers']);legacy.eval().requires_grad_(False)
     u.restore_rng(next(x['rng']for x in archive if x['rank']==0),device)
     frozen=dict(raw=u.model_hash(legacy),buffers=u.tensor_hash(u.buffers(legacy)))
+    if len(archive)!=4 or any(item['model_sha256']!=frozen['raw']for item in archive):
+        raise ValueError('Exact E1 raw/four-rank source archive differs')
     del source
     files=dict(hidden=cache_root/'hidden.bf16',mask=cache_root/'mask.bool',logits=cache_root/'logits.f32')
     tids=[t for q in qids for t in lookup[q]['trajectory_ids']]
