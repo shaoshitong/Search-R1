@@ -15,8 +15,8 @@ RUNNER="import sys,pathlib,importlib.util,unittest,resource,json,os,time\nold='/
 blob=json.dumps(dict(files=files,publication=pub,runner=RUNNER)).encode();encoded=base64.b64encode(zlib.compress(blob)).decode();identity=hashlib.sha256(blob).hexdigest();root='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/native-joint-rolling-smallstate-cpu-v1/code-'+identity[:12]
 for index in range(0,len(encoded),4096):
  chunk=encoded[index:index+4096];worker="import pathlib; r=pathlib.Path(%r);r.mkdir(parents=True,exist_ok=True);p=r/%r;v=%r.encode();assert not p.exists()or p.read_bytes()==v;p.write_bytes(v)"%(root,'chunk-%04d'%(index//4096),chunk);call('python3 -c '+shlex.quote(worker))
-worker='''import pathlib,json,base64,zlib,hashlib,subprocess,os,time
-r=pathlib.Path(ROOT);blob=zlib.decompress(base64.b64decode(b''.join(p.read_bytes()for p in sorted(r.glob('chunk-*')))));assert hashlib.sha256(blob).hexdigest()==IDENTITY;p=json.loads(blob)
+worker='''import pathlib,json,base64,zlib,hashlib,subprocess,os,time,re
+r=pathlib.Path(@@ROOT@@);blob=zlib.decompress(base64.b64decode(b''.join(p.read_bytes()for p in sorted(r.glob('chunk-*')))));assert hashlib.sha256(blob).hexdigest()==@@IDENTITY@@;p=json.loads(blob)
 for n,raw in p['files'].items():
  f=r/n
  if f.exists():assert f.read_bytes()==raw.encode()
@@ -27,7 +27,7 @@ runner=r/'run-toy.py';runner.write_text(p['runner'])
 # before importing tempfile, so all synthetic temporary tensors stay remote/tmp.
 bootstrap="import os,runpy;os.environ['TMPDIR']='/tmp';runpy.run_path("+repr(str(runner))+",run_name='__main__')"
 import shlex
-name='q7b-rolling-smallcpu-'+IDENTITY[:8];intent=r/'CPU-submission-intent.json'
+name='q7b-rolling-smallcpu-'+@@IDENTITY@@[:8];intent=r/'CPU-submission-intent.json'
 if intent.exists():
  print(json.dumps(dict(status='EXISTING_CPU_SUBMISSION_PRESERVED',root=str(r),intent=json.loads(intent.read_bytes()))))
 else:
@@ -36,7 +36,7 @@ else:
  wrap=shlex.join(['env','CUDA_VISIBLE_DEVICES=','OMP_NUM_THREADS=2','MKL_NUM_THREADS=2','OPENBLAS_NUM_THREADS=2','QWEN7B_CODE_ROOT='+str(old),'bash',str(runtime),'-c',bootstrap])
  cmd=['sbatch','--parsable','--hold','--partition=acd_u','--qos=normal','--nodes=1','--ntasks=1','--cpus-per-task=2','--gres=gpu:0','--mem=8G','--time=00:05:00','--job-name='+name,'--output='+str(r/'CPU-%j.log'),'--wrap='+wrap]
  x=subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=30);assert x.returncode==0,x.stderr;job=x.stdout.strip().split(';')[0];assert job.isdigit();receipt.update(status='CPU_ONLY_JOB_HELD',job_id=job);(r/'CPU-submission.json').write_text(json.dumps(receipt))
- detail=subprocess.check_output(['scontrol','show','job','-o',job],universal_newlines=True);assert('JobName='+name)in detail and'UserId=mou176('in detail and'NumCPUs=2'in detail and'Partition=acd_u'in detail and'JobState=PENDING'in detail and'TimeLimit=00:05:00'in detail and'gres/gpu='not in detail,detail
+ detail=subprocess.check_output(['scontrol','show','job','-o',job],universal_newlines=True);assert('JobName='+name)in detail and'UserId=mou176('in detail and'NumCPUs=2'in detail and'Partition=acd_u'in detail and'JobState=PENDING'in detail and'TimeLimit=00:05:00'in detail and all(int(v)==0 for v in re.findall(r'gres/gpu[=:]([0-9]+)',detail)),detail
  subprocess.check_call(['scontrol','release',job]);receipt.update(status='CPU_ONLY_JOB_RELEASED',job_identity=detail);(r/'CPU-submission.json').write_text(json.dumps(receipt));print(json.dumps(receipt))
-'''.replace('ROOT',repr(root)).replace('IDENTITY',repr(identity))
+'''.replace('@@ROOT@@',repr(root)).replace('@@IDENTITY@@',repr(identity))
 result=call('python3 -c '+shlex.quote(worker),timeout=150);v=json.loads(result.splitlines()[-1]);(HERE/'actual-smallstate-CPU-submission.json').write_text(json.dumps(v,indent=2)+'\n');print(json.dumps(v))
