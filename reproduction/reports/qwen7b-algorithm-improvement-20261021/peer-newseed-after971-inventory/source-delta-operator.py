@@ -1,5 +1,5 @@
 """Bounded source-side CPU audit operator. No producer writes or GPU work."""
-import argparse, hashlib, importlib.util, json, pathlib, shlex, subprocess
+import argparse, hashlib, importlib.util, json, pathlib, shlex, subprocess, zlib
 R=pathlib.Path(__file__).resolve().parents[4];HERE=pathlib.Path(__file__).parent
 PREFIX='reproduction/operations/qwen7b_warmup/'
 
@@ -17,8 +17,8 @@ def main():
         ex=(R.parents[1]/'outputs/qwen7b-warmup-20261019/after971-evaluation-identity-exclusions.json').read_bytes().strip()+b'\n'
         if len(ex)!=848051 or hashlib.sha256(ex).hexdigest()!='585893c9960fcb6b1934887ebb3034c7da1f479197ddd9e30201569ebdb5fdfc':raise ValueError('Actual frozen evaluation identity metadata differs')
         req.update(reference=source,exclusions=ex.decode())
-    worker=r'''import pathlib,json,sys,hashlib,fcntl,os,subprocess,time
-p=json.loads(sys.stdin.buffer.read());root=pathlib.Path(p['root'])
+    worker=r'''import pathlib,json,sys,hashlib,fcntl,os,subprocess,time,zlib
+p=json.loads(zlib.decompress(sys.stdin.buffer.read()));root=pathlib.Path(p['root'])
 def load(path):
  raw=path.read_bytes();return json.loads(raw),dict(path=str(path),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
 if p['action']=='worker':
@@ -64,7 +64,8 @@ if p['action']=='fetch-plan':
 print(json.dumps(out))'''
     spec=importlib.util.spec_from_file_location('ctl','/Users/shaoshitong/Documents/remote_codex_control/control.py');ctl=importlib.util.module_from_spec(spec);spec.loader.exec_module(ctl)
     host='h100-5'if a.action=='worker'else'h100-10';cmd='python3 -c '+shlex.quote(worker);assert len(cmd.encode())<16000
-    r=subprocess.run(ctl.route(host,cmd),input=json.dumps(req).encode(),stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=55)
+    wire=zlib.compress(json.dumps(req).encode(),6)
+    r=subprocess.run(ctl.route(host,cmd),input=wire,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=55)
     if r.returncode:raise RuntimeError(r.stderr.decode(errors='replace')[-1800:])
     v=json.loads(r.stdout.decode().splitlines()[-1]);out=HERE/('actual-'+a.action+'.json');out.write_text(json.dumps(v,indent=2)+'\n')
     if a.action=='fetch-plan':(HERE/'frozen-audited-delta-plan.json').write_text(json.dumps(v['frozen_plan'],indent=2)+'\n');v.pop('frozen_plan')
