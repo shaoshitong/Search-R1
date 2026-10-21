@@ -13,7 +13,7 @@ from . import probe_ablation_train as u,hard_enrichment_train as inherited
 from .balanced_hard_g10_sampler import BalancedHardG10Sampler
 from .joint_balanced_native_update import balanced_native_update
 SOURCE_SHA=inherited.SOURCE_SHA;SOURCE_STEPS=14418;LOSS=dict(trajectory_weight=1.,binary_mixed_weight=1.);STOP=False
-B=Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019');A=B/'algorithm-improvement-20261021';QUAL=A/'joint-balanced-native-E4-qualification-v1';MAIN=A/'joint-balanced-native-E4-124194-v1'
+B=Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019');A=B/'algorithm-improvement-20261021';QUAL=A/'joint-balanced-native-E4-qualification-v2';MAIN=A/'joint-balanced-native-E4-124194-v1'
 
 
 def own_groups(c):
@@ -75,7 +75,7 @@ def selected_reader(c,groups,sampler):
  from .replay_feature_reader import ReplayFeatureReader
  refs=u.read(u.checked(c['features']));needed={t for g in groups for t in g['trajectory_ids']};lookahead=None
  if c['mode']=='qualification':
-  state=sampler.state_dict();temporary=BalancedHardG10Sampler(groups,seed=1729,batch_questions=32,steps_per_epoch=c['steps_per_epoch']);temporary.load_state_dict(state);wanted=set();lookahead=[]
+  state=sampler.state_dict();temporary=copy.deepcopy(sampler);temporary.load_state_dict(state);wanted=set();lookahead=[]
   for _ in range(c['update_budget']):
    batch=temporary.next_batch();lookahead.append(dict(qids=batch['source_qids'],views_sha256=u.digest(batch['grouping']['groups'])));wanted.update(batch['source_qids']);temporary.observe(batch,[0.]*128)
   needed={t for g in groups if g['qid']in wanted for t in g['trajectory_ids']}
