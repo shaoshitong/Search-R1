@@ -30,7 +30,7 @@ def inspect(job,name,script):
  text=call(['scontrol','show','job',job,'--oneliner']);f=dict(re.findall(r'(\w+)=([^ ]+)',text))
  assert f['JobName']==name and f['Account']=='mou176'and f['UserId'].startswith('mou176(')
  assert f['Partition']=='acd_u'and f['QOS']=='normal'and f['Command']==script
- assert int(f['NumNodes'])==1 and int(f['NumCPUs'])==16 and int(f.get('NumTasks','1'))==1
+ assert f['NumNodes']in ('1','1-1') and int(f['NumCPUs'])==16 and int(f.get('NumTasks','1'))==1
  assert 'gres/gpu=2'in f.get('TRES',f.get('ReqTRES',''))or f.get('TresPerNode','')=='gres/gpu:2'
  assert f.get('Dependency','(null)')in ['(null)','None','none']
  return{k:f[k]for k in ['JobId','JobName','Account','UserId','Partition','QOS','JobState','Reason','NumNodes','NumCPUs','NumTasks','TRES','ReqTRES','TresPerNode','Dependency','Command','WorkDir','StdOut']if k in f}
