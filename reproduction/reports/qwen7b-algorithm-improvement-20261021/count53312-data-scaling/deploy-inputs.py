@@ -7,7 +7,7 @@ assert subprocess.check_output(['git','ls-remote','origin','refs/heads/'+branch]
 payload={}
 for n in ('PROTOCOL.json','SOURCE-INPUTS.json','prepare-inputs.py','deploy-inputs.py','PROTOCOL.md'):
  data=subprocess.check_output(['git','show',a.commit+':'+Q+n],cwd=repo);assert data==(repo/Q/n).read_bytes();payload[n]=base64.b64encode(data).decode()
-blob=gzip.compress(json.dumps(payload,sort_keys=True).encode(),mtime=0);root='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/count53312-data-scaling-inputs-v1'
+blob=gzip.compress(json.dumps(payload,sort_keys=True).encode(),mtime=0);root='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/count53312-data-scaling-inputs-v2'
 def call(script):
  path=O/'scale-inputs-current-control.py';path.write_text(script);r=subprocess.run(['python3',str(O/'balanced-control.py'),str(path),'--timeout','50'],capture_output=True,text=True,timeout=65)
  if r.returncode:raise RuntimeError(r.stdout[-1800:]+r.stderr[-1800:])

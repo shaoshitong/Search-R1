@@ -27,8 +27,10 @@ for key in ('complete','future1666_append_plan','future53312_fit','original938_p
 accepted=read(t['complete']['path']);old=read(baseline['source_plan']['path']);append=read(t['future1666_append_plan']['path']);cohort=read(baseline['cohort']['path']);fit=read(t['future53312_fit']['path'])['train']
 assert accepted['fit_questions']==53312 and accepted['historical_prefix_preserved_exactly'] and accepted['fixed_evaluation_identity_overlap']==0
 assert len(fit)==53312 and len(append['batches'])==1666 and append['batches'][:938]==old['batches'] and append['batch_epochs'][:938]==old['batch_epochs']
-qs=[g['qid']for g in fit];assert qs[:30016]==cohort['fit_qids'] and qs==append['cohort_qids'] and len(set(qs))==53312 and len({g['question_hash']for g in fit})==53312
-assert [q for batch in append['batches']for q in batch]==qs and all(len(batch)==32 for batch in append['batches'])
+by={g['qid']:g for g in fit};qs=[q for batch in append['batches']for q in batch]
+assert qs[:30016]==cohort['fit_qids'] and len(by)==len(fit)==53312 and set(qs)==set(append['cohort_qids'])==set(by) and len(set(qs))==53312 and len({g['question_hash']for g in fit})==53312
+assert all(len(batch)==32 for batch in append['batches'])
+fit=[by[q]for q in qs] # Actual training order comes from batches, never source-record order.
 held=read(t['internal_holdout_groups']['path'])['internal_holdout'];hm={g['qid']:g for g in held};assert len(hm)==5120 and set(hm)==set(cohort['holdout_qids']) and not(set(qs)&set(hm))
 assert bc['inputs']['internal_holdout_groups']==t['internal_holdout_groups'] and bc['inputs']['internal_holdout_selection']==t['internal_holdout_selection']
 counts={'NQ':0,'HotpotQA':0};tids=[]
