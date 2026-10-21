@@ -4,6 +4,7 @@ Reuses the qualified two-pass native-logit VJP. No postblock cache, no frozen
 block, no new classifier, no actor update and no extra scoring forward.
 """
 from contextlib import nullcontext
+import time
 import torch
 import torch.nn.functional as F
 from . import probe_ablation_train as u
@@ -105,4 +106,3 @@ def balanced_native_update(model,ema,optimizer,reader,groups,device,*,
         mixed_recall=tpr,nonmixed_recall=tnr,
         mixed_balanced_accuracy=(tpr+tnr)/2 if tpr is not None and tnr is not None else None,
         seconds=time.monotonic()-started,actor_updates=0,supports_G20=False)
-

@@ -2,7 +2,7 @@
 import argparse,base64,gzip,hashlib,importlib.util,io,json,shlex,subprocess,tarfile,zlib
 from pathlib import Path
 from .deploy_confirmation_materialization import import_closure
-R=Path(__file__).resolve().parents[3];CONTROL=R.parents[1];PKG='reproduction/operations/qwen7b_warmup/';A='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021';BASE=A+'/joint-balanced-native-E4-qualification-v2';OUT=R/'reproduction/reports/qwen7b-algorithm-improvement-20261021/joint-balanced-native'
+R=Path(__file__).resolve().parents[3];CONTROL=R.parents[1];PKG='reproduction/operations/qwen7b_warmup/';A='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021';BASE=A+'/joint-balanced-native-E4-qualification-v3';OUT=R/'reproduction/reports/qwen7b-algorithm-improvement-20261021/joint-balanced-native'
 SEEDS=(PKG+'joint_balanced_native_train.py',PKG+'joint_balanced_native_update.py',PKG+'runtime.sh');SAMPLER='c98ddcd7861b7023f3efa0d82d3c1fbea0664a13'
 COMMON='''import pathlib,json,hashlib,base64,subprocess,fcntl,os,time,re,tarfile,io
 b=pathlib.Path(v['base']);b.mkdir(exist_ok=True);lock=(b/'deployment.lock').open('a+');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB);code=b/('code-'+v['commit'][:12]);code.mkdir(exist_ok=True)

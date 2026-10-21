@@ -13,7 +13,7 @@ from . import probe_ablation_train as u,hard_enrichment_train as inherited
 from .balanced_hard_g10_sampler import BalancedHardG10Sampler
 from .joint_balanced_native_update import balanced_native_update
 SOURCE_SHA=inherited.SOURCE_SHA;SOURCE_STEPS=14418;LOSS=dict(trajectory_weight=1.,binary_mixed_weight=1.);STOP=False
-B=Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019');A=B/'algorithm-improvement-20261021';QUAL=A/'joint-balanced-native-E4-qualification-v2';MAIN=A/'joint-balanced-native-E4-124194-v1'
+B=Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019');A=B/'algorithm-improvement-20261021';QUAL=A/'joint-balanced-native-E4-qualification-v3';MAIN=A/'joint-balanced-native-E4-124194-v1'
 
 
 def own_groups(c):
