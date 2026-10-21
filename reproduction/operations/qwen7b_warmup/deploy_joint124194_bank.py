@@ -11,8 +11,6 @@ import subprocess
 import tarfile
 import tempfile
 
-from .deploy_confirmation_materialization import import_closure
-
 R = Path(__file__).resolve().parents[3]
 CONTROL = R.parents[1]
 PKG = 'reproduction/operations/qwen7b_warmup/'
@@ -67,11 +65,12 @@ def remote(script, timeout=45):
 
 
 def bundle(commit):
-    paths = [str(p.relative_to(R)) for folder in ('reproduction', 'search_g1', 'search_r1', 'verl')
-             for p in (R/folder).rglob('*.py') if '__pycache__' not in p.parts]
-    names, _, missing = import_closure(paths, lambda n: (R/n).read_bytes(),
-        seeds=(PKG+'joint124194_bank.py',), resource_files=())
-    if missing: raise ValueError('Missing exact source closure '+str(missing))
+    # This metadata-only path never calls r's GPU/capture functions. Their
+    # function-local optional backend imports do not belong in this worker.
+    names = [PKG+n for n in ('joint124194_bank.py', 'replay_probe_layers.py',
+                            'replay_feature_reader.py', 'g10_grouping.py')]
+    for folder in ('reproduction', 'reproduction/operations', PKG.rstrip('/')):
+        if (R/folder/'__init__.py').exists(): names.append(folder+'/__init__.py')
     output = io.BytesIO(); refs = {}
     with gzip.GzipFile(fileobj=output, mode='wb', filename='', mtime=0) as gz:
         with tarfile.open(fileobj=gz, mode='w') as archive:

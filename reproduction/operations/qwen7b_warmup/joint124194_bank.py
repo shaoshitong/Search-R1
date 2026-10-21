@@ -14,7 +14,6 @@ from pathlib import Path
 import time
 
 from . import replay_probe_layers as r
-from . import peer_newseed_ingest as raw
 from .g10_grouping import _validate
 from .replay_feature_reader import ReplayFeatureReader, hexadecimal
 
@@ -23,6 +22,15 @@ A = Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/a
 TARGET = A / 'joint124194-native-training-bank-v1'
 COUNTS = dict(existing58432=58432, recovered1216=1216, audited243=31010, audited262=33536)
 SUBSET_STATUS = 'JOINT_TRAIN_SUBSET_REAL_G10_LAYER26_FEATURE_BANK_ACCEPTED'
+RAW_STATUS = 'RECEIVED_NEWSEED5_PLUS_CANONICAL_OLD5_RAW_G10_STRICT_EM_CAUSAL_SEEDS_ACCEPTED'
+
+
+def immutable(path, value):
+    if path.exists():
+        if r.read(path) != value:
+            raise ValueError('Conflicting immutable metadata join artifact: ' + str(path))
+    else:
+        r.atomic(path, value)
 
 
 def digest(value):
@@ -80,7 +88,7 @@ def subset_lineage(item, done):
     identity = r.read(r.checked_file(done['identity_plan'])['path'])
     accepted = r.read(r.checked_file(done['raw_complete'])['path'])
     if (done['raw_complete'] != prep['raw_complete'] or config['raw_complete'] != done['raw_complete'] or
-            accepted['status'] != raw.STATUS or accepted['strict_EM_mismatches'] or accepted['actor_updates'] or
+            accepted['status'] != RAW_STATUS or accepted['strict_EM_mismatches'] or accepted['actor_updates'] or
             not done['all_own_IDs_strictEM_and_metadata_SHA_verified'] or
             identity['summary']['labels_consulted'] or identity['summary']['scores_consulted']):
         raise ValueError('Actual ownEM and label-blind subset lineage required')
@@ -198,21 +206,21 @@ def run(config_path, config_sha):
             banks[item['key']] = r.read(group_ref['path'])['train']
             refs.extend(r.read(feature_ref['path']))
             sources.append(dict(key=item['key'], complete=complete_ref, groups=group_ref, features=feature_ref))
-            raw.atomic(TARGET/'progress.json', dict(stage='ACTUAL_ACCEPTED_BANK_METADATA_READ', banks=len(sources),
+            r.atomic(TARGET/'progress.json', dict(stage='ACTUAL_ACCEPTED_BANK_METADATA_READ', banks=len(sources),
                 questions=sum(len(values) for values in banks.values()), actor_updates=0, epoch=time.time()))
         groups, summary = merge_groups(banks, excluded['groups'], expected_domains=config['domains'],
                                        expected_text_repeats=config['canonical_train_repeated_text_questions'])
-        features, proof = verify_features(refs, groups, lambda value: raw.atomic(TARGET/'progress.json', value))
-        raw.immutable(TARGET/'groups.json', dict(train=groups))
-        raw.immutable(TARGET/'features-layer26.json', features)
-        raw.immutable(TARGET/'source-refs.json', sources)
+        features, proof = verify_features(refs, groups, lambda value: r.atomic(TARGET/'progress.json', value))
+        immutable(TARGET/'groups.json', dict(train=groups))
+        immutable(TARGET/'features-layer26.json', features)
+        immutable(TARGET/'source-refs.json', sources)
         outputs = {name: r.fingerprints(TARGET/name) for name in ('groups.json', 'features-layer26.json', 'source-refs.json')}
         done = dict(status=STATUS, config=config_ref, **summary, **proof,
             outputs=outputs, groups=outputs['groups.json'], features_layer26=outputs['features-layer26.json'],
             source_refs=sources, evaluation_exclusions=exclusion_ref, source_frozen_batches=971,
             complete169028_claim=False,
             actor_updates=0, probe_updates=0, GPU_submitted=False, final_outcomes_read=False, epoch=time.time())
-        raw.immutable(TARGET/'complete.json', done)
+        immutable(TARGET/'complete.json', done)
         return done
 
 
@@ -223,6 +231,6 @@ if __name__ == '__main__':
         result = run(a.config, a.config_sha256)
     except BaseException as error:
         if TARGET.exists():
-            raw.atomic(TARGET/'failure.json', dict(type=type(error).__name__, message=str(error), epoch=time.time()))
+            r.atomic(TARGET/'failure.json', dict(type=type(error).__name__, message=str(error), epoch=time.time()))
         raise
     print(json.dumps(result, sort_keys=True), flush=True)
