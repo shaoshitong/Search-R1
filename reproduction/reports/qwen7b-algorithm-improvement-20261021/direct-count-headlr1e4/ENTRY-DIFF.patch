@@ -1,0 +1,150 @@
+--- immutable501/direct_hidden_count_update.py
++++ newcandidate/direct_count_headlr_update.py
+@@ -1,4 +1,4 @@
+-"""Bounded first-order joint hidden VJP, no model/actor/job initialization."""
++"""Isolated501 VJP: ONLY head Adam LR changes5e-6 to1e-4; legacy stays5e-6."""
+ from contextlib import nullcontext
+ import time
+ import torch
+@@ -20,9 +20,9 @@
+     """
+     _validate(source_groups,True)
+     if micro_trajectories<1 or not 0<=ema_decay<1:raise ValueError('Positive micro and valid EMA required')
+-    for optimizer in (legacy_optimizer,head_optimizer):
+-        if any(g['lr']!=5e-6 or g['weight_decay']!=0 for g in optimizer.param_groups):
+-            raise ValueError('Declared old/new Adam LR5e-6/weightdecay0 required')
++    for optimizer,declared_lr in ((legacy_optimizer,5e-6),(head_optimizer,1e-4)):
++        if any(g['lr']!=declared_lr or g['weight_decay']!=0 for g in optimizer.param_groups):
++            raise ValueError('Matched headLR-only requires legacy5e-6/head1e-4/weightdecay0')
+     grouping=build_training_views(source_groups,role='train',**grouping_kwargs)
+     if len(grouping['groups'])!=4*len(source_groups) or not grouping['summary']['per_question_total_weight_exactly_one']:
+         raise ValueError('Declared four realG5 views/q and total weight1 required')
+--- immutable501/direct_hidden_count_train.py
++++ newcandidate/direct_count_headlr_train.py
+@@ -9,24 +9,32 @@
+ from pathlib import Path
+ from . import peer_append_train as a,direct_hidden_count_prepare as prep
+ 
+-TARGET=a.A/'direct-hidden-count30016-train-v2'
++TARGET=a.A/'direct-hidden-count30016-headlr1e4-v1'
+ STOP=False
+ MILESTONES=(256,512,768,938)
+ 
+ 
+-def configured(prepared,publication,preparation_ref):
+-    c=copy.deepcopy(prepared)
+-    if (c.get('source_cursor')!=0 or c.get('source_adam_steps')!=10464
+-            or c.get('update_budget')!=938 or c.get('global_questions')!=32
+-            or c.get('fit_questions')!=30016 or c.get('fit_real_trajectories')!=300160
+-            or c.get('evaluation_cumulative_cursors')!=list(MILESTONES)
+-            or c.get('grouping')!=dict(mode='random',views_per_question=4,seed=1729,on_unbalance='raise')
+-            or c.get('recipe')!=dict(id='hidden-direct-count6-from-E1',trajectory_BCE_weight=1.,count_NLL_weight=1.,product_group_loss_weight=0.)):
+-        raise ValueError('Exact preregistered E1/B32×938/four-view direct count recipe required')
+-    c.update(source_commit=publication['commit'],code_hashes={n:r['sha256'] for n,r in publication['files'].items()},
+-        prepare_only=False,preparation_reference=preparation_ref,
+-        GPU_submission_requires_explicit_parent_GO=True,first_checkpoint_independent_CPU_gate=True,
+-        checkpoint_components=9,first_new_head_Adam=0,final_new_head_Adam=938)
++CONTROL_TARGET=a.A/'direct-hidden-count30016-train-v2'
++CONTROL_CONFIG_SHA='3e910b12c0ff52eac70e61566c6135e2ec188bb47ec64ad79524abbd7a657526'
++
++def configured(control,publication):
++    if (control.get('source_cursor')!=0 or control.get('source_adam_steps')!=10464
++            or control.get('update_budget')!=938 or control.get('global_questions')!=32
++            or control.get('fit_questions')!=30016 or control['new_head']['learning_rate']!=5e-6
++            or control['grouping']!=dict(mode='random',views_per_question=4,seed=1729,on_unbalance='raise')
++            or control['recipe']!=dict(id='hidden-direct-count6-from-E1',trajectory_BCE_weight=1.,count_NLL_weight=1.,product_group_loss_weight=0.)):
++        raise ValueError('Exact501 control E1/full30016/938 recipe required')
++    c=copy.deepcopy(control);c['new_head']['learning_rate']=1e-4
++    c.update(source_commit=publication['commit'],code_hashes={n:r['sha256']for n,r in publication['files'].items()},
++        reference_control_config=a.proof(CONTROL_TARGET/'config.json'),
++        headLR_only_change=dict(control_head_LR=5e-6,candidate_head_LR=1e-4,legacy_LR=5e-6),
++        submission_requires_parent_typed_binding_acceptance=True)
++    # Equality of every scientific control except the declared head LR.
++    before=copy.deepcopy(control);after=copy.deepcopy(c)
++    for key in ('source_commit','code_hashes','reference_control_config','headLR_only_change','submission_requires_parent_typed_binding_acceptance'):
++        before.pop(key,None);after.pop(key,None)
++    after['new_head']['learning_rate']=5e-6
++    if before!=after:raise ValueError('Unexpected scientific control difference')
+     return c
+ 
+ 
+@@ -43,7 +51,7 @@
+ 
+ def render(code,sha):
+     return '''#!/usr/bin/env bash
+-#SBATCH --job-name=q7b-direct-count938
++#SBATCH --job-name=q7b-direct-count-headlr1e4
+ #SBATCH --partition=acd_u
+ #SBATCH --account=mou176
+ #SBATCH --qos=normal
+@@ -52,7 +60,7 @@
+ #SBATCH --cpus-per-task=8
+ #SBATCH --mem=64G
+ #SBATCH --gres=gpu:1
+-#SBATCH --time=02:00:00
++#SBATCH --time=03:00:00
+ #SBATCH --signal=USR1@180
+ #SBATCH --output=@@BASE@@/logs/train-%j.log
+ #SBATCH --chdir=@@BASE@@
+@@ -60,32 +68,30 @@
+ export QWEN7B_CODE_ROOT=@@CODE@@
+ export FLASH_ATTENTION_DETERMINISTIC=1 CUBLAS_WORKSPACE_CONFIG=:4096:8
+ export OMP_NUM_THREADS=8 MKL_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8 PYTHONDONTWRITEBYTECODE=1
+-srun --kill-on-bad-exit=1 bash "$QWEN7B_CODE_ROOT/reproduction/operations/qwen7b_warmup/runtime.sh" -u -m reproduction.operations.qwen7b_warmup.direct_hidden_count_train --action train --config-sha256 @@SHA@@
++srun --kill-on-bad-exit=1 bash "$QWEN7B_CODE_ROOT/reproduction/operations/qwen7b_warmup/runtime.sh" -u -m reproduction.operations.qwen7b_warmup.direct_count_headlr_train --action train --config-sha256 @@SHA@@
+ '''.replace('@@BASE@@',str(TARGET)).replace('@@CODE@@',shlex.quote(str(code))).replace('@@SHA@@',sha)
+ 
+ 
+ def prepare():
+-    prior=a.read(prep.TARGET/'preparation.json')
+-    if prior['status']!='HIDDEN_DIRECT_COUNT_PREPARED_ONLY_NO_GPU_TRAINING_SUBMITTED':raise ValueError('Actual CPU preparation required')
+-    qualified=a.read(prep.TARGET/'cpu-qualification.json')
+-    if qualified['tests']!=10 or qualified['GPU_used'] is not False:raise ValueError('Actual focused CPU API qualification required')
++    if a.proof(CONTROL_TARGET/'config.json')['sha256']!=CONTROL_CONFIG_SHA:
++        raise ValueError('Actual immutable control config changed')
+     pub=a.read(TARGET/'source-publication.json');root=Path(pub['code_root'])
+     for n,v in pub['files'].items():a.checked(dict(path=str(root/n),**v))
+-    c=configured(a.read(a.checked(prior['config'])),pub,a.proof(prep.TARGET/'preparation.json'))
++    c=configured(a.read(CONTROL_TARGET/'config.json'),pub)
+     groups,refs,plan,evaluations,_=actual_inputs(c)
+     a.immutable(TARGET/'config.json',c);path=TARGET/'training.sbatch';text=render(root,a.proof(TARGET/'config.json')['sha256'])
+-    if path.exists() and path.read_text()!=text:raise ValueError('Immutable sbatch differs')
++    if path.exists()and path.read_text()!=text:raise ValueError('Immutable candidate sbatch differs')
+     if not path.exists():path.write_text(text)
+-    result=dict(status='JOINT_HIDDEN_COUNT938_ENTRY_PREPARED_NOT_GPU_QUALIFIED_OR_SUBMITTED',
+-        config=a.proof(TARGET/'config.json'),sbatch=a.proof(path),actual_questions=len(groups),actual_G10=300160,
+-        batches=len(plan['batches']),feature_manifests=len(refs),legacy_Adam=10464,new_head_Adam=0,
+-        final_legacy_Adam=11402,final_new_head_Adam=938,evaluation_cursors=list(MILESTONES),
+-        actual_E1_tensor_loaded=False,actual_GPU_next_update_still_required=True,final_pool_read=False)
++    result=dict(status='HEADLR_ONLY_MATCHED938_TYPED_PREPARED_NOT_SUBMITTED',config=a.proof(TARGET/'config.json'),sbatch=a.proof(path),
++        reference_control_config=c['reference_control_config'],source_checkpoint=c['source_checkpoint'],plan=c['plan'],g10_complete=c['g10_complete'],
++        actual_questions=len(groups),B32_batches=len(plan['batches']),reference_legacy_LR=5e-6,control_head_LR=5e-6,candidate_head_LR=1e-4,
++        E1_legacy_Adam=10464,new_head_Adam=0,final_legacy_Adam=11402,final_head_Adam=938,evaluation_cursors=list(MILESTONES),
++        actual_E1_tensor_loaded=False,GPU_submission_performed=False,all_other_scientific_controls_exactly_equal=True)
+     a.immutable(TARGET/'preparation.json',result);return result
+ 
+ 
+ def joint_update(legacy,ema,adam,head,head_ema,head_adam,reader,lookup,qids,c,device,epoch):
+-    from .direct_hidden_count_update import bounded_update
++    from .direct_count_headlr_update import bounded_update
+     grouping=dict(c['grouping']);grouping['epoch']=epoch
+     return bounded_update(legacy,ema,adam,head,head_ema,head_adam,reader,[lookup[q] for q in qids],device,
+         grouping_kwargs=grouping,micro_trajectories=c['micro_trajectories'],ema_decay=c['new_head']['EMA_decay'])
+@@ -212,6 +218,8 @@
+     before=u.state_hashes(legacy,ema,adam,device)
+     head,head_ema,head_adam=initialize_head(seed=c['new_head']['initialization_seed'],device=device)
+     if before!=u.state_hashes(legacy,ema,adam,device):raise ValueError('New head initialization changed inherited state/RNG')
++    if c['new_head']['learning_rate']!=1e-4:raise ValueError('Explicit headLR-only1e-4 required')
++    for group in head_adam.param_groups:group['lr']=1e-4
+     initial_head=copy.deepcopy(new_head_state(head,head_ema,head_adam))
+     binding=dict(config=a.proof(TARGET/'config.json'),source_checkpoint=c['source_checkpoint'],source_config=c['source_config'],
+         source_bank=c['source_bank'],g10_complete=c['g10_complete'],plan=c['plan'],plan_sha256=c['plan']['sha256'],recipe=c['recipe'])
+@@ -222,7 +230,7 @@
+     for sig in (signal.SIGTERM,signal.SIGUSR1,signal.SIGINT):signal.signal(sig,request_stop)
+     env=dict(os.environ,CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1')
+     log=(TARGET/'first-cp-independent-audit.log').open('ab',0)
+-    child=subprocess.Popen([sys.executable,'-u','-m','reproduction.operations.qwen7b_warmup.direct_hidden_count_train','--action','audit-first'],stdout=log,stderr=subprocess.STDOUT,env=env)
++    child=subprocess.Popen([sys.executable,'-u','-m','reproduction.operations.qwen7b_warmup.direct_count_headlr_train','--action','audit-first'],stdout=log,stderr=subprocess.STDOUT,env=env)
+     a.atomic(TARGET/'first-cp-audit-controller.json',dict(pid=child.pid,job_id=os.environ.get('SLURM_JOB_ID'),inside_allocated_job=True))
+     cursor=0
+     def hashes():return cp.state_hashes(legacy,ema,adam,head,head_ema,head_adam,device)
