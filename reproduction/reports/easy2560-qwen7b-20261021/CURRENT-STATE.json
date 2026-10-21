@@ -1,6 +1,6 @@
 {
-  "epoch": 1792588434.4679072,
-  "status": "OUTER3_FULLY_SEALED_OUTER4_SAMPLING_CPU_ARCHIVER_RECOVERED",
+  "epoch": 1792589563.9650617,
+  "status": "OUTER4_SEALED_OUTER5_UPDATING_LEGACY_CHECKPOINT_CLEANUP_COMPLETE",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "745371",
@@ -53,7 +53,7 @@
   },
   "previous_goal_turn_classification": "PROGRESS: actual CP2 full seal and outer3 start accepted",
   "latest_turn_classification": "PROGRESS_OUTER4_COMPLETE_5_SAMPLING_AUTHORIZED_LEGACY_CHECKPOINT_CLEANUP_COMPLETE",
-  "last_observation": "training-progress-1792588434.json",
+  "last_observation": "training-progress-1792589564.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "stage": "GRPO_1_TO_200",
@@ -97,13 +97,13 @@
     "actor_visible_token_lists_exact_equal": 64,
     "http_and_projection_seconds": 3.5052835568785667,
     "last_actual_statistics": {
-      "logical_requests": 41130,
-      "logical_queries": 41256,
-      "completed_requests": 41130,
-      "completed_queries": 41256,
+      "logical_requests": 50673,
+      "logical_queries": 50799,
+      "completed_requests": 50673,
+      "completed_queries": 50799,
       "failed_requests": 0,
-      "backend_seconds": 1691.6922633256763,
-      "last_completed_unix": 1792588435.1683931
+      "backend_seconds": 2092.440773891285,
+      "last_completed_unix": 1792589040.362856
     }
   },
   "failed_diagnostic_job": "745258",
@@ -111,7 +111,7 @@
   "storage_inventory_report": "HPC3-storage-distribution-20261021.txt",
   "last_measured_queue": {
     "rc": 0,
-    "stdout": "745371|RUNNING|ACD1-55|ACD1-55|2026-10-21T19:41:06|6-22:27:12\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-21:25:56\n",
+    "stdout": "745371|RUNNING|ACD1-55|ACD1-55|2026-10-21T19:41:06|6-22:08:23\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-21:07:07\n",
     "stderr": ""
   },
   "new_recovery_base_allocated_bytes": 62230528,
@@ -246,10 +246,10 @@
     {
       "name": "bd4e2ec20d514d55810b4f07d5007207-pool-0",
       "step": 5,
-      "completed_questions": 512,
-      "reserved_questions": 512,
+      "completed_questions": 2560,
+      "reserved_questions": 2560,
       "source_consumed": 12800,
-      "saved_chunk_files": 4,
+      "saved_chunk_files": 15,
       "progress_error": null
     }
   ],
@@ -653,5 +653,53 @@
       21930
     ],
     "preserved_files_verified_by_each_uid": 20345
-  }
+  },
+  "completed_outer_metrics": [
+    {
+      "step": 2,
+      "attempt_index": 2,
+      "reward": 0.5900579690933228,
+      "pg_loss": 0.014852828604378953,
+      "ppo_kl": 0.0011101450561909587,
+      "grad_norm": 2.819140896890212,
+      "optimizer_writes": 40,
+      "optimizer_writes_before": 20,
+      "optimizer_writes_this_outer": 20
+    },
+    {
+      "step": 3,
+      "attempt_index": 3,
+      "reward": 0.623258650302887,
+      "pg_loss": 0.019469811245919826,
+      "ppo_kl": 0.000992791779754043,
+      "grad_norm": 2.757454656531884,
+      "optimizer_writes": 60,
+      "optimizer_writes_before": 40,
+      "optimizer_writes_this_outer": 20
+    },
+    {
+      "step": 4,
+      "attempt_index": 4,
+      "reward": 0.6241274476051331,
+      "pg_loss": 0.059337858842134474,
+      "ppo_kl": 0.001153127943052823,
+      "grad_norm": 2.7814474127204813,
+      "optimizer_writes": 80,
+      "optimizer_writes_before": 60,
+      "optimizer_writes_this_outer": 20
+    }
+  ],
+  "fixed_validation_results_pending": [
+    5,
+    50,
+    100,
+    150,
+    200
+  ],
+  "remaining_recovery_followup": [
+    "complete5",
+    "complete6",
+    "actual7sampling"
+  ],
+  "archive_boundary_supplement_todo": "After core archive acceptance, preserve the seven post-callback boundary files plus rolling full-manifest separately, bound to checkpoint complete SHA; do not claim current core snapshot alone contains post-QA RNG. CP200 boundary is before final51713."
 }
