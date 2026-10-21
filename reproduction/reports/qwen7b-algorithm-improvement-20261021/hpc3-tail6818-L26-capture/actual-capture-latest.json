@@ -1,0 +1,87 @@
+{
+  "epoch": 1792595788.8196526,
+  "job_id": "745953",
+  "squeue": "745953|RUNNING|4:57|2:00:00|ACD1-21",
+  "main_sacct": "745953|RUNNING|0:0|00:04:57",
+  "shards": {
+    "0": {
+      "complete_chunks": 44,
+      "actual_packed_bytes": 2401127212,
+      "progress.json": {
+        "actor_updates": 0,
+        "batching": {
+          "actor_optimizer_updates": 0,
+          "contexts": 14375,
+          "elapsed_seconds": 102.14573135972023,
+          "model_calls": 456,
+          "native_bitexact_claim": false,
+          "padded_tokens": 2555231,
+          "scalar_batch_bitexact_claim": false,
+          "valid_tokens": 2361414
+        },
+        "completed_chunks": 44,
+        "compute_layers": [
+          20,
+          23,
+          26
+        ],
+        "elapsed_seconds": 241.3460673429072,
+        "expected_trajectories": 17050,
+        "persist_layers": [
+          26
+        ],
+        "status": "ACTUAL_ADDITIONAL_G10_LAYER26_FEATURES_ADVANCING",
+        "time": 1792595789.2045932,
+        "trajectories": 14368
+      },
+      "device.json": {
+        "actor_updates": 0,
+        "device_name": "NVIDIA H100 80GB HBM3",
+        "job_id": "745953",
+        "local_rank": "0",
+        "time": 1792595523.220717,
+        "visible_device_count": 1
+      }
+    },
+    "1": {
+      "complete_chunks": 0,
+      "actual_packed_bytes": 0
+    },
+    "2": {
+      "complete_chunks": 0,
+      "actual_packed_bytes": 0
+    },
+    "3": {
+      "complete_chunks": 0,
+      "actual_packed_bytes": 0
+    }
+  },
+  "process_probe_returncode": 0,
+  "process_probe": {
+    "epoch": 1792595790.2687042,
+    "allocation_job": "745953",
+    "own_processes": [
+      {
+        "pid": 799369,
+        "birth_ticks": "572835462",
+        "state": "R",
+        "CPU_user_ticks": 92713,
+        "CPU_system_ticks": 2617,
+        "io": {
+          "rchar": 15396319285,
+          "wchar": 2420460892,
+          "syscr": 11823,
+          "syscw": 16980,
+          "read_bytes": 16784842752,
+          "write_bytes": 0,
+          "cancelled_write_bytes": 0
+        },
+        "cmdline_matches": true,
+        "action": "capture"
+      }
+    ]
+  },
+  "log_tail": {
+    "capture-745953.log": "You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n\nLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\nLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:00<00:01,  1.82it/s]\nLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:01<00:01,  1.18it/s]\nLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:02<00:00,  1.23it/s]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:02<00:00,  1.65it/s]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:02<00:00,  1.50it/s]\n"
+  }
+}
