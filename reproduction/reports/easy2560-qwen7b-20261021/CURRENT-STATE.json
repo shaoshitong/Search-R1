@@ -1,5 +1,5 @@
 {
-  "epoch": 1792583369.5866544,
+  "epoch": 1792583523.1332765,
   "status": "ACTUAL_CP1_ALL4_STATE_RESTORE_PASS_OUTER2_SAMPLING",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
@@ -52,8 +52,8 @@
     "enabled_scope": "Exact retrieval cache + original dense head + external2H100 service; no throughput speedup claimed yet"
   },
   "previous_goal_turn_classification": "PROGRESS",
-  "latest_turn_classification": "PROGRESS: actual339model/all4Adam20/scheduler1/RNG/drivercursor2560 and pre-next stream exact; outer2sampling started; independent HK CPUarchive3420413 live twice, waiting5",
-  "last_observation": "training-progress-1792583369.json",
+  "latest_turn_classification": "PROGRESS: actual all4CP1 restore accepted; outer2 first512questions2560trajectories complete,181mixed; external GPU queries192to2807 zeroerrors; HK CPU archivecontroller live twice, waiting5; original dense forward retained",
+  "last_observation": "training-progress-1792583523.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "stage": "GRPO_1_TO_200",
@@ -95,14 +95,23 @@
     "stage64_score_max_abs_error": 0.0,
     "actual_saved_observations_compared": 64,
     "actor_visible_token_lists_exact_equal": 64,
-    "http_and_projection_seconds": 3.5052835568785667
+    "http_and_projection_seconds": 3.5052835568785667,
+    "last_actual_statistics": {
+      "logical_requests": 2681,
+      "logical_queries": 2807,
+      "completed_requests": 2681,
+      "completed_queries": 2807,
+      "failed_requests": 0,
+      "backend_seconds": 111.40624066069722,
+      "last_completed_unix": 1792583497.1318378
+    }
   },
   "failed_diagnostic_job": "745258",
   "fallback_profile": "exact-cache-v1",
   "storage_inventory_report": "HPC3-storage-distribution-20261021.txt",
   "last_measured_queue": {
     "rc": 0,
-    "stdout": "745371|RUNNING|ACD1-55|ACD1-55|2026-10-21T19:41:06|6-23:51:37\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-22:50:21\n",
+    "stdout": "745371|RUNNING|ACD1-55|ACD1-55|2026-10-21T19:41:06|6-23:49:03\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-22:47:47\n",
     "stderr": ""
   },
   "new_recovery_base_allocated_bytes": 62230528,
@@ -176,5 +185,25 @@
     "all4_model_adam_scheduler_rng_driver_dataequal": true,
     "pre_outer_stream_second_readback_equal": true,
     "post_callback_rng_captured": true
+  },
+  "current_candidate_pools": [
+    {
+      "name": "6b65b308ae474a81bb78d6277b4d9a8c-pool-0",
+      "step": 2,
+      "completed_questions": 512,
+      "reserved_questions": 512,
+      "source_consumed": 5120,
+      "saved_chunk_files": 4,
+      "progress_error": null
+    }
+  ],
+  "outer2_started_not_complete": true,
+  "outer2_completed_candidate_questions": 512,
+  "outer2_first_chunk_mixed_questions": 181,
+  "current_base_durable_checkpoint_outer": null,
+  "most_recent_recoverable_checkpoint": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021",
+    "outer": 1,
+    "full_checkpoint_bytes": 91404238199
   }
 }
