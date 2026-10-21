@@ -11,7 +11,10 @@ def main():
  name=P+('direct_head_family_protocol.py'if a.action in ('freeze','status')else 'direct_head_family_inputs.py');raw=subprocess.check_output(['git','show',a.commit+':'+name],cwd=repo);assert raw==(repo/name).read_bytes()
  if a.action!='status':assert subprocess.check_output(['git','ls-remote','origin','refs/heads/'+BRANCH],cwd=repo,text=True).split()[0]==a.commit
  spec=importlib.util.spec_from_file_location('head_family_private_control',a.control_root/'work/prefix-schedule-cp50-20261018/reproduction/hpc3_prefix5/direct_control.py');ctl=importlib.util.module_from_spec(spec);spec.loader.exec_module(ctl);ip=subprocess.check_output(['/usr/sbin/ipconfig','getifaddr','en0'],text=True).strip()
- payload=base64.b64encode(gzip.compress(raw,mtime=0)).decode();values=dict(base=BASE,count=COUNT,commit=a.commit,name=Path(name).name,source_sha=hashlib.sha256(raw).hexdigest(),source_bytes=len(raw),payload=payload,action=a.action)
+ extras={}
+ if a.action=='resolve':
+  key=P+'direct_head_family_row_audit.py';extra=subprocess.check_output(['git','show',a.commit+':'+key],cwd=repo);assert extra==(repo/key).read_bytes();extras[Path(key).name]=dict(payload=base64.b64encode(gzip.compress(extra,mtime=0)).decode(),bytes=len(extra),sha256=hashlib.sha256(extra).hexdigest())
+ payload=base64.b64encode(gzip.compress(raw,mtime=0)).decode();values=dict(base=BASE,count=COUNT,commit=a.commit,name=Path(name).name,source_sha=hashlib.sha256(raw).hexdigest(),source_bytes=len(raw),payload=payload,extras=extras,action=a.action)
  script=r'''
 import pathlib,base64,gzip,hashlib,json,sys,runpy,fcntl,os
 b=pathlib.Path(v['base']);b.mkdir(exist_ok=True);lock=(b/'metadata.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
@@ -23,7 +26,13 @@ if v['action']=='status':
 code=b/('code-'+v['commit'][:12]);code.mkdir(exist_ok=True);raw=gzip.decompress(base64.b64decode(v['payload']));assert len(raw)==v['source_bytes']and hashlib.sha256(raw).hexdigest()==v['source_sha'];p=code/v['name']
 if p.exists():assert p.read_bytes()==raw
 else:p.write_bytes(raw);p.chmod(0o444)
-pub=dict(commit=v['commit'],source=proof(p),GPU_submitted=False);q=code/'publication.json';encoded=json.dumps(pub,sort_keys=True).encode()+b'\n'
+extra_sources={}
+for name,item in v['extras'].items():
+ content=gzip.decompress(base64.b64decode(item['payload']));assert len(content)==item['bytes']and hashlib.sha256(content).hexdigest()==item['sha256'];extra=code/name
+ if extra.exists():assert extra.read_bytes()==content
+ else:extra.write_bytes(content);extra.chmod(0o444)
+ extra_sources[name]=proof(extra)
+pub=dict(commit=v['commit'],source=proof(p),extra_sources=extra_sources,GPU_submitted=False);q=code/'publication.json';encoded=json.dumps(pub,sort_keys=True).encode()+b'\n'
 if q.exists():assert q.read_bytes()==encoded
 else:q.write_bytes(encoded)
 os.sched_setaffinity(0,sorted(os.sched_getaffinity(0))[:2])
