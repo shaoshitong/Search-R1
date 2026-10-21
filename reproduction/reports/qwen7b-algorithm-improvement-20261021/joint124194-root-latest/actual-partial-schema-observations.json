@@ -1,0 +1,118 @@
+{
+  "exit_code": 0,
+  "observations": [
+    {
+      "stage": "ACTUAL_RECOVERED1216_SUBSET_LINEAGE_ACCEPTED",
+      "elapsed_seconds": 0.28093507909215987
+    },
+    {
+      "stage": "ACTUAL_TWO_BANK_59648_OWN_ID_EM_MERGE_ACCEPTED",
+      "questions": 59648,
+      "trajectories": 596480,
+      "elapsed_seconds": 2.2108901059255004
+    },
+    {
+      "CPU_affinity": [
+        0,
+        1
+      ],
+      "GPU_used": false,
+      "checked_code_SHA256": {
+        "reproduction/operations/qwen7b_warmup/g10_grouping.py": "3a40d313e351f086ac5d3d6ba62165792c69c2847b64ba7a967aa9cf4f2cb9af",
+        "reproduction/operations/qwen7b_warmup/joint124194_bank.py": "d95298798406894720814e2650521615840b61d08dae77c9a1c3adcfc53fa263",
+        "reproduction/operations/qwen7b_warmup/replay_feature_reader.py": "c85257af093caea5581ca5626b08b49895a373dda81e8292a7f9390ed6a273e1",
+        "reproduction/operations/qwen7b_warmup/replay_probe_layers.py": "6a980269c8eab2b07845f8af88ea5aafb27d2a8ca07fbd803e3987719665deaa"
+      },
+      "elapsed_seconds": 4.794851952930912,
+      "epoch": 1792580636.1693332,
+      "exclusion_questions": 6656,
+      "external_or_final_outcomes_read": false,
+      "final124194_join_written": false,
+      "max_RSS_bytes": 299765760,
+      "merged_summary": {
+        "K10_histogram": {
+          "0": 25720,
+          "1": 4277,
+          "10": 5747,
+          "2": 2940,
+          "3": 2527,
+          "4": 2391,
+          "5": 2311,
+          "6": 2612,
+          "7": 2931,
+          "8": 3586,
+          "9": 4606
+        },
+        "Mixed_capable_questions": 28181,
+        "canonical_ordered_qid_hash_own_tids_sha256": "61fd1e2c4cabd987aa436269752cc68947b9a1f361dd771e16c43ea40015d9ff",
+        "canonical_train_repeated_text_questions": 0,
+        "distinct_question_hashes": 59648,
+        "domains": {
+          "hotpotqa": 15988,
+          "nq": 43660
+        },
+        "external_evaluation_qid_or_hash_overlap": 0,
+        "former_internal5120_is_training": true,
+        "label_based_identity_selection": false,
+        "ordered_qid_sha256": "2ff12e58117739307422ffc75c6d7ac94ad4a9ea8fafb40e75402c48e20b7376",
+        "original_warmup_unseen_question_claim": false,
+        "own_EM_labels_preserved": true,
+        "questions": 59648,
+        "trajectories": 596480
+      },
+      "model_or_tensor_loaded": false,
+      "recovered1216_features": {
+        "manifests": 40,
+        "own_trajectory_rows": 12160,
+        "packed_bytes": 1942525289,
+        "payload_sizes_and_index_SHA_freshly_verified": true,
+        "payload_tensor_SHA_rehashed_in_this_metadata_join": false,
+        "producer_full_payload_SHA_and_reader_qualifications_preserved": true,
+        "training_reader_reconstructs_and_checks_own_retained_row_SHA": true
+      },
+      "remote_artifacts_written": false,
+      "source_commit": "2c353df424fa20bccd78602b69e98dfdd7de3649",
+      "source_completions": {
+        "existing58432": {
+          "bytes": 8321,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-threebank58432-internal5120-plan-v1/complete.json",
+          "sha256": "8a4ed0b24296ad8a5edc1bcecb249565b877d3bababb3f0221a8e7c26da72d06"
+        },
+        "recovered1216": {
+          "bytes": 2733,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-joint124194-recovered1216-L26-v1/bank/complete.json",
+          "sha256": "cedfa2e1892b03803182ec38a3d1c8d159167a62294e646858c3563d0942672a"
+        }
+      },
+      "source_publication": {
+        "bytes": 889,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint124194-native-training-bank-v1/source-publication.json",
+        "sha256": "757b8616d0e80c6ccaab57e4317c41551135f5f74251d06b80ca7a1bcfbacce6"
+      },
+      "status": "ACTUAL_TWO_BANK_SCHEMA_LINEAGE_AND_RECOVERED1216_INDEX_CHECK_PASSED",
+      "subset_lineage": {
+        "identity_plan": {
+          "bytes": 861897,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-joint124194-recovered1216-L26-v1/identity-plan.json",
+          "sha256": "1caa75e09b2bec9119992062a8f9720cad0476f314a21479d2b00f1bbb93d4b1"
+        },
+        "preparation": {
+          "bytes": 3851,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-joint124194-recovered1216-L26-v1/preparation.json",
+          "sha256": "87b1e98a3ab3ea35de3a9f48026f7155399032e52120cc8cae5ce9b6c30a69e9"
+        },
+        "raw_complete": {
+          "bytes": 10971,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-newseed-20261021-185747-445fc691/complete.json",
+          "sha256": "1fd5c29862267bc202419973ba6238d9c7b66de7ef2199dba725dda7fecf0804"
+        }
+      },
+      "true_evaluation_identity_exclusions": {
+        "bytes": 847206,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-qualification-v3/evaluation-identity-exclusions.json",
+        "sha256": "a4ed20a3732984d13a099494d7bbb599aeb05b2868945b4f1f450786963b9b0a"
+      }
+    }
+  ],
+  "stderr": "\rmou176@hpc3login.hpc.hkust-gz.edu.cn's [SSH password prompt]\n"
+}
