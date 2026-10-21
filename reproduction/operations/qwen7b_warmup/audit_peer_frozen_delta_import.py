@@ -49,7 +49,13 @@ def run(ingest,selection,selection_sha,record_sha):
             or not r['all_archive_SHA256'] or not r['fresh_all_file_SHA256'] or done['strict_EM_mismatches']!=0
             or done['actual_same_question_old_new_seed_collisions']!=0 or done['own_strict_EM_recomputed']!=done['trajectories']):raise ValueError('Actual target/strictEM/causal-seed acceptance required')
     root=receiver/'raw'/receiver.name;sourceplan=read(root/'group-00000/provenance/plan.json')
-    if sourceplan['subset_batch_records_sha256']!=RECORD_SHA or sourceplan['prior_identity_overlap']!={'batches':0,'qids':0,'question_hashes':0,'trajectory_ids':0}:raise ValueError('Fresh subset provenance differs')
+    expected_overlap=dict(batches=0,qids=0,question_hashes=0,trajectory_ids=0)
+    if s.get('training_text_hash_policy')is not None:
+        if s['training_text_hash_policy']!='retain canonical distinct qids/authentic trajectory IDs; train-only repeated text hashes are reported; evaluation qid/hash exclusion remains hard':raise ValueError('Unknown canonical training text policy')
+        expected_overlap['question_hashes']=s['prior_identity_overlap']['question_hashes']
+        counts=sourceplan['canonical_train_text_hash_repeats']
+        if counts['prior_hash_overlap_questions']!=s['prior_identity_overlap']['question_hashes']or counts['internal_duplicate_hash_questions']!=s['within_selected_training_hash_duplicates']:raise ValueError('Actual retained canonical train text-repeat counts differ')
+    if sourceplan['subset_batch_records_sha256']!=RECORD_SHA or sourceplan['prior_identity_overlap']!=expected_overlap:raise ValueError('Fresh subset provenance differs')
     if [x['input'] for x in sourceplan['selected_batches']]!=[x['input'] for x in s['selected_batches']]:raise ValueError('Subset selected input list differs')
     bank=read(checked(c['original_bank']));old={g['qid']:g for g in bank['train']};new={};newtids=set();domains={}
     input_bindings={x['input']:x for x in s['selected_batches']};actual_inputs=set()
@@ -87,7 +93,9 @@ def run(ingest,selection,selection_sha,record_sha):
     overlap=read(checked(done['outputs']['overlap']))
     if overlap['excluded_by_qid']!=rejected or overlap['additional_excluded_by_question_hash']!=hash_excluded:raise ValueError('Independent identity exclusion count differs')
     if fp(ingest/'config.json')!=done['config']:raise ValueError('Config changed during terminal audit')
-    result=dict(status=STATUS,selection=fp(selection),ingest_complete=fp(ingest/'complete.json'),receiver_complete=c['receiver_complete'],groups=done['outputs']['groups'],source_events=done['outputs']['source-events'],subset_record_sha256=RECORD_SHA,
+    resealed_expected=sum(bool(x['audit'].get('metadata_resealed_attestation'))for x in s['selected_batches']);events=read(checked(done['outputs']['source-events']));actual_resealed=[b for event in events['events']if event['event']=='newseed20261021'for b in event['batches']if b.get('metadata_resealed_attestation')]
+    if len(actual_resealed)!=resealed_expected or any(b.get('original_receipt_chain_equal_current')is not False for b in actual_resealed):raise ValueError('Explicit one-batch resealed-metadata provenance differs')
+    result=dict(status=STATUS,retained_canonical_training_hash_overlap=expected_overlap['question_hashes'],metadata_resealed_attestation_batches=resealed_expected,original_metadata_receipt_chain_not_silently_rewritten=True,selection=fp(selection),ingest_complete=fp(ingest/'complete.json'),receiver_complete=c['receiver_complete'],groups=done['outputs']['groups'],source_events=done['outputs']['source-events'],subset_record_sha256=RECORD_SHA,
         received_questions=count,received_newseed5_trajectories=trajectories,received_batches=batches,archive_groups=archives,received_domains=domains,
         eligible_training_questions=len(groups),eligible_authentic_G10_trajectories=len(tids),eligible_domains=outdomains,excluded_by_qid=rejected,additional_excluded_by_question_hash=hash_excluded,
         histogram_K0_to10=hist,old5_histogram_K0_to5=oldhist,new5_histogram_K0_to5=newhist,
