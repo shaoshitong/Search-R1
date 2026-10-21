@@ -35,7 +35,11 @@ elif v['action']=='submit':
 elif v['action']=='status':
  out=dict(epoch=time.time(),base=str(b))
  for name in('submission.json','fullstep-timing.json','complete.json'):
-  if(b/name).exists():out[name]=read(b/name)
+  if(b/name).exists():
+   out[name]=read(b/name)
+   if name=='fullstep-timing.json':
+    out[name].get('index_setup',{}).pop('scanned_metadata_refs',None)
+    for row in out[name].get('results',[]):row.pop('reader_get_calls',None)
  if(b/'submission.json').exists():
   job=read(b/'submission.json')['job_id'];out['sacct']=command(['sacct','-X','-n','-P','-j',job,'--format=JobIDRaw,State,ExitCode,Elapsed']);log=b/'logs'/('profile-'+job+'.log')
   if log.exists():
