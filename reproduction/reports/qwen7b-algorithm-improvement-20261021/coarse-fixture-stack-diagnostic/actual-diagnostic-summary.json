@@ -1,0 +1,43 @@
+{
+  "address_space_attempt": {
+    "RLIMIT_AS_bytes": 3221225472,
+    "error": "cannot allocate memory for thread-local data: ABORT",
+    "log": {
+      "bytes": 52,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/coarse-event-cached-prepare-code-v1/first-synthetic-stack-debug.log",
+      "sha256": "c55ecded62d6efaef44c458a9c8a4d3239e6bfc6dcbd26bb141f8ba20a073019"
+    },
+    "returncode": 127,
+    "seconds": 8.491755485534668,
+    "stack_captured": false
+  },
+  "learned_parameters_exported": false,
+  "new_GPU_submitted": false,
+  "no_matching_prior_worker": true,
+  "no_more_tests_run": true,
+  "no_source_edits": true,
+  "physical_memory_attempt": {
+    "CPU": 2,
+    "GPU": 0,
+    "actual_test_error": "test_coarse_event_cached_train.py:22 TemporaryDirectory.__exit__ -> shutil.rmtree -> OSError[Errno39] Directory not empty: checkpoints",
+    "diagnostic_process_returncode": 0,
+    "first10s_stack": "importlib._bootstrap_external.get_data -> torch/_dispatch/python.py:3 -> torch/fx/passes/shape_prop.py:7 -> torch/__init__.py:2118 -> test_coarse_event_cached_train.py:5",
+    "jobid": 743978,
+    "log": {
+      "bytes": 7580,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/coarse-event-cached-prepare-code-v1/first-synthetic-stack-physical3G.log",
+      "sha256": "095cd0e74efe1ddc3cc09ca7bfe5c415f3fc49559a3603cb037d22509fab2dbe"
+    },
+    "requested_step_memory_bytes": 3221225472,
+    "seconds": 21.260898113250732,
+    "synthetic_test_body_seconds": 8.48,
+    "synthetic_test_success": false,
+    "timed_out": false
+  },
+  "producer_code_qualification_lock_was_free": true,
+  "real_cache_or_checkpoint_or_model_loaded": false,
+  "source_commit": "149ab8a7399cee7284f60f34a60c77b0fc8e8445",
+  "status": "BOUNDED_SAME_SYNTHETIC_FIXTURE_DIAGNOSIS_COMPLETE_NOT_QUALIFICATION",
+  "test": "test_actual_small_CP0_restore_replay_save_reload_next_update",
+  "update_or_restore_assertion_failure_observed": false
+}
