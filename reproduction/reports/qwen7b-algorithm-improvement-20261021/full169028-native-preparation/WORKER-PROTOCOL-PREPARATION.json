@@ -1,0 +1,54 @@
+{
+  "epoch": 1792594703.5081542,
+  "status": "INDEPENDENT_FULL169028_WORKER_CADENCE_PREPARED_NO_GPU_SUBMITTED",
+  "source_qualified_124194_commit": "3b56e583efe2469ac9108873c31de7144a5201e6",
+  "new_namespace": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-169028-v1",
+  "original_math_restore_reader_functions_AST_identical": [
+    "own_groups",
+    "source_parts",
+    "snapshot",
+    "restore",
+    "do_update",
+    "independent_cpu",
+    "selected_reader"
+  ],
+  "qualified_HF_validation_reader_AST_identical": true,
+  "CPU_protocol_tests_passed": 4,
+  "Python36_syntax_passed": true,
+  "full_pool_questions": 169028,
+  "questions_per_update": 32,
+  "steps_per_epoch": 5283,
+  "new_epochs": 4,
+  "update_budget": 21132,
+  "matched_reference_update_nodes": [
+    3882,
+    7764,
+    11646,
+    15528
+  ],
+  "same_E4_Adam_steps": 14418,
+  "new_training_started": false,
+  "running124194_hotpatch": false,
+  "full_data_bank_not_yet_ready": true,
+  "GPU_or_model_validation_of_new_entry_yet": false,
+  "actor_updates": 0,
+  "final4096_outcomes_read": false,
+  "files": {
+    "reproduction/operations/qwen7b_warmup/full169028_protocol.py": {
+      "bytes": 2766,
+      "sha256": "800cc1955636b4aa0108b238ba4fb76610d9f787b970e7235913c7f94fbe99c1"
+    },
+    "reproduction/operations/qwen7b_warmup/test_full169028_protocol.py": {
+      "bytes": 2891,
+      "sha256": "419133e766ab926d10815c4faa72d5811671ebeb82b319164371119a5f7d66db"
+    },
+    "reproduction/operations/qwen7b_warmup/joint_balanced_native_full169028.py": {
+      "bytes": 20232,
+      "sha256": "36ee82069a98e5d508752425647c13b1c46c7ae9e98091e0e76b0bad74a90e7d"
+    },
+    "reproduction/operations/qwen7b_warmup/joint_balanced_native_full169028_evaluation.py": {
+      "bytes": 5246,
+      "sha256": "de175831bef3ab8da509adae784d48e1c710c100b18144e6a732fca6568a4411"
+    }
+  }
+}
