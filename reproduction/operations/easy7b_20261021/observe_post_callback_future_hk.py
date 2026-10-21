@@ -85,9 +85,11 @@ def observe(verify_files=False):
             'post-callback-dependencies/dependency-archive-receipt.json'))
         boundary = accepted.get('post-callback-boundary/boundary-archive-receipt.json')
         dependencies = accepted.get('post-callback-dependencies/dependency-archive-receipt.json')
-        for receipt in (boundary, dependencies):
+        for receipt, dependency_receipt in ((boundary, False), (dependencies, True)):
             if receipt is not None:
-                need(all(receipt.get('binding', {}).get(key) == value for key, value in dict(
+                binding = receipt.get('binding', {})
+                if dependency_receipt: binding = binding.get('core', {})
+                need(all(binding.get(key) == value for key, value in dict(
                     base=BASE, run_id=RUN, source_commit=TRAINING, step=step, core_archive=str(core)).items()),
                     'MILESTONE_ARCHIVE_IDENTITY_DIFFERS')
         checks = None

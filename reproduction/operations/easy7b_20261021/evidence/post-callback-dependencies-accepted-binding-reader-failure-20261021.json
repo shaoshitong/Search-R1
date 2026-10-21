@@ -1,0 +1,399 @@
+{
+  "checked_unix": 1792593821.2202835,
+  "status": "ACTUAL_DEPENDENCIES_ACCEPTED_READER_NESTED_BINDING_FAILURE",
+  "records": {
+    "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/post-callback-boundary-control/job-745371/future-50-200/recovery-python38-r1/failure.json": {
+      "bytes": 542,
+      "sha256": "87f2a6600e62302504302c6b42529209fd684dc443d1726d7170d44e846f1a56",
+      "value": {
+        "automatic_writer_replay": false,
+        "checked_unix": 1792593695.6472747,
+        "credentials_persisted": false,
+        "error": "POST_CALLBACK_FUTURE_GROUNDING_DEPENDENCY_CLOSURE_NOT_ACTUALLY_ACCEPTED",
+        "error_type": "ValueError",
+        "jobs_submitted": 0,
+        "original_failure_preserved": true,
+        "original_parent": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/post-callback-boundary-control/job-745371/future-50-200",
+        "source_job": "745371",
+        "status": "FAILED",
+        "training_failure_inferred": false,
+        "training_modified": false
+      }
+    },
+    "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/post-callback-boundary-control/job-745371/future-50-200/recovery-python38-r1/recovery-failure.json": {
+      "bytes": 542,
+      "sha256": "87f2a6600e62302504302c6b42529209fd684dc443d1726d7170d44e846f1a56",
+      "value": {
+        "automatic_writer_replay": false,
+        "checked_unix": 1792593695.6472747,
+        "credentials_persisted": false,
+        "error": "POST_CALLBACK_FUTURE_GROUNDING_DEPENDENCY_CLOSURE_NOT_ACTUALLY_ACCEPTED",
+        "error_type": "ValueError",
+        "jobs_submitted": 0,
+        "original_failure_preserved": true,
+        "original_parent": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/post-callback-boundary-control/job-745371/future-50-200",
+        "source_job": "745371",
+        "status": "FAILED",
+        "training_failure_inferred": false,
+        "training_modified": false
+      }
+    },
+    "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/.post-callback-dependencies-global_step_5/accept-failure.json": {
+      "bytes": 142,
+      "sha256": "bdbebd720a16ab80c095fbf42ee1b5bad385b113ff10032c4c19a7a06f353f31",
+      "value": {
+        "checked_unix": 1792593172.6437902,
+        "error": "'PosixPath' object has no attribute 'is_relative_to'",
+        "error_type": "AttributeError"
+      }
+    },
+    "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/.post-callback-dependencies-global_step_5/recover-python38-result.json": {
+      "bytes": 1094,
+      "sha256": "a6e04baa157effaac601fcf97fc3f2250b4a77a626d176f0ad97bfa25b08a45a",
+      "value": {
+        "checked_unix": 1792593695.4973497,
+        "destination": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/post-callback-dependencies",
+        "recovery": {
+          "emit_repeated": false,
+          "kind": "explicit_python38_accept_compatibility_recovery",
+          "original_accept_claim_sha256": "f38b3f100544026588c795ca95bf7236fbb9e27642853de38908c16f61b65ac2",
+          "original_accept_failure_sha256": "bdbebd720a16ab80c095fbf42ee1b5bad385b113ff10032c4c19a7a06f353f31",
+          "parent_birth": {
+            "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+            "hostname": "xielab3",
+            "pid": 3844281,
+            "start_ticks": 1038489500,
+            "uid": 1002
+          },
+          "parent_observation": {
+            "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+            "reason": "recorded_pid_absent",
+            "terminal": true
+          },
+          "receive_repeated": false,
+          "snapshot_repeated": false,
+          "terminal_proof_sha256": "07b68c3bf63416378f78ef6c0fd04782b752a0785f0a8fdbf26acdc4216e16eb"
+        },
+        "status": "EASY2560_POST_CALLBACK_DEPENDENCIES_SHA_FSYNC_PASS"
+      }
+    },
+    "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/post-callback-dependencies/dependency-archive-receipt.json": {
+      "bytes": 16378,
+      "sha256": "db349c30ea0519e367ce44ec25f6092875656a0f79f94aa0b6e3bee7b0559506",
+      "value": {
+        "actual_cuda_restore_accepted": false,
+        "actual_model_optimizer_rng_dataequal_accepted": false,
+        "all_manifest_dependencies_covered": true,
+        "binding": {
+          "boundary_archive_receipt_sha256": "54b0062f0a120b9a8a4b435b567ac7878c6d84983fd88c439c89d24d50d9a1c2",
+          "boundary_reward_manifest_sha256": "a3aa29a31dba750c8a1d6bbe9d09ea105a4fba0a99216ce1b736865be51ec54f",
+          "boundary_source_snapshot_sha256": "f52b6b8a31a3639d4cd33810feb82ba6bd112bb12ff7d291b6bc534028be4728",
+          "core": {
+            "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+            "core_archive": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5",
+            "core_archive_receipt_sha256": "9dcdb4a44860bc45b758fcc81b52edc6b238175dc95aa05b40d76e30edf82700",
+            "core_checkpoint_complete_sha256": "3d4582a5f02b3d33595cb05e97715b98282f4106e6ac7c0b67c1dbe63ee90442",
+            "core_source_acceptance_sha256": "9d866b468cdbfe47cedbb313d7c88debd5e1f6d5bf86c98cce03a763d16f9944",
+            "core_source_snapshot_sha256": "e0ab2957af7fda875de8409d3cca6905fe2411df3c6259f28526e68f473e8ed0",
+            "run_id": "232f20e112ac4a978c5aba52a0367195",
+            "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+            "step": 5
+          }
+        },
+        "checked_unix": 1792593695.4236233,
+        "core_covered_payload_rehashed": false,
+        "core_payload_unmodified": true,
+        "covered_core_sha_ack_verified": true,
+        "destination": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/post-callback-dependencies",
+        "destination_fsynced": true,
+        "eight_file_boundary_unmodified": true,
+        "encoder_file_count": 8,
+        "encoder_weights_copied": false,
+        "explicit_accept_recovery": {
+          "emit_repeated": false,
+          "kind": "explicit_python38_accept_compatibility_recovery",
+          "original_accept_claim_sha256": "f38b3f100544026588c795ca95bf7236fbb9e27642853de38908c16f61b65ac2",
+          "original_accept_failure_sha256": "bdbebd720a16ab80c095fbf42ee1b5bad385b113ff10032c4c19a7a06f353f31",
+          "parent_birth": {
+            "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+            "hostname": "xielab3",
+            "pid": 3844281,
+            "start_ticks": 1038489500,
+            "uid": 1002
+          },
+          "parent_observation": {
+            "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+            "reason": "recorded_pid_absent",
+            "terminal": true
+          },
+          "receive_repeated": false,
+          "snapshot_repeated": false,
+          "terminal_proof_sha256": "07b68c3bf63416378f78ef6c0fd04782b752a0785f0a8fdbf26acdc4216e16eb"
+        },
+        "file_count": 10,
+        "fresh_transferred_dependency_sha_checked": true,
+        "fresh_transferred_destination_sha_verified": true,
+        "mappings": {
+          "encoder/config.json": {
+            "archive_identity": {
+              "bytes": 663,
+              "inode": 136450919,
+              "mtime_ns": 1792591032335092937
+            },
+            "archive_path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/encoders/round-0/config.json",
+            "bytes": 663,
+            "sha256": "7463bb0ea78315365e6c6b74de4e73bbcc8359dfb0c5a737584e077d42c0b03c",
+            "sha_basis": "accepted_core_fresh_ack",
+            "source_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/config.json",
+            "storage": "core"
+          },
+          "encoder/model-00001-of-00004.safetensors": {
+            "archive_identity": {
+              "bytes": 3945441440,
+              "inode": 136450917,
+              "mtime_ns": 1792591067840021620
+            },
+            "archive_path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/encoders/round-0/model-00001-of-00004.safetensors",
+            "bytes": 3945441440,
+            "sha256": "a1333e6293854747c481288ea83b348226af178dd565c49b6f9495ba1966aba7",
+            "sha_basis": "accepted_core_fresh_ack",
+            "source_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/model-00001-of-00004.safetensors",
+            "storage": "core"
+          },
+          "encoder/model-00002-of-00004.safetensors": {
+            "archive_identity": {
+              "bytes": 3864726352,
+              "inode": 136450920,
+              "mtime_ns": 1792591117355738316
+            },
+            "archive_path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/encoders/round-0/model-00002-of-00004.safetensors",
+            "bytes": 3864726352,
+            "sha256": "f5d25a2772cb825164a2a2c0fb6d51a87e282abf21e4dd75bc5cfb3cd0ea6185",
+            "sha_basis": "accepted_core_fresh_ack",
+            "source_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/model-00002-of-00004.safetensors",
+            "storage": "core"
+          },
+          "encoder/model-00003-of-00004.safetensors": {
+            "archive_identity": {
+              "bytes": 3864726424,
+              "inode": 136450921,
+              "mtime_ns": 1792591161399928319
+            },
+            "archive_path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/encoders/round-0/model-00003-of-00004.safetensors",
+            "bytes": 3864726424,
+            "sha256": "8efdec4c1bc12317ae1a38dc42b595ce777738a64deea3fcb8a0a91381bcdfd5",
+            "sha_basis": "accepted_core_fresh_ack",
+            "source_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/model-00003-of-00004.safetensors",
+            "storage": "core"
+          },
+          "encoder/model-00004-of-00004.safetensors": {
+            "archive_identity": {
+              "bytes": 3556377672,
+              "inode": 136450922,
+              "mtime_ns": 1792591205828085109
+            },
+            "archive_path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/encoders/round-0/model-00004-of-00004.safetensors",
+            "bytes": 3556377672,
+            "sha256": "1a72d403cdf0c1ec3cb7f289f17b394a01e64394c2e9b3c0f94dbce3faf879bd",
+            "sha_basis": "accepted_core_fresh_ack",
+            "source_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/model-00004-of-00004.safetensors",
+            "storage": "core"
+          },
+          "encoder/model.safetensors.index.json": {
+            "archive_identity": {
+              "bytes": 27752,
+              "inode": 136450923,
+              "mtime_ns": 1792591219978861010
+            },
+            "archive_path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/encoders/round-0/model.safetensors.index.json",
+            "bytes": 27752,
+            "sha256": "624bf7c47cd12468fdc16e38a47cf4f19e0415b859a223ba3c027eed2f0e1028",
+            "sha_basis": "accepted_core_fresh_ack",
+            "source_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/model.safetensors.index.json",
+            "storage": "core"
+          },
+          "encoder/tokenizer.json": {
+            "archive_identity": {
+              "bytes": 7031645,
+              "inode": 136450924,
+              "mtime_ns": 1792591220074852707
+            },
+            "archive_path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/encoders/round-0/tokenizer.json",
+            "bytes": 7031645,
+            "sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+            "sha_basis": "accepted_core_fresh_ack",
+            "source_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/tokenizer.json",
+            "storage": "core"
+          },
+          "encoder/tokenizer_config.json": {
+            "archive_identity": {
+              "bytes": 7305,
+              "inode": 136450925,
+              "mtime_ns": 1792591220134847517
+            },
+            "archive_path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/encoders/round-0/tokenizer_config.json",
+            "bytes": 7305,
+            "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+            "sha_basis": "accepted_core_fresh_ack",
+            "source_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/tokenizer_config.json",
+            "storage": "core"
+          },
+          "grounding/dumps/calibration-label-proof.json": {
+            "archive_identity": {
+              "bytes": 388331,
+              "inode": 136452136,
+              "mtime_ns": 1792593171334061093
+            },
+            "archive_path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/post-callback-dependencies/grounding/dumps/calibration-label-proof.json",
+            "bytes": 388331,
+            "sha256": "c142564851501c1ff573be81134da9e513cb50cef1fdaa4662239e773d58c87b",
+            "sha_basis": "fresh_transferred_readback",
+            "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/artifacts/round_0-attempt-e0086aba4f4043e1acbf20dca55c634a/dumps/calibration-label-proof.json",
+            "storage": "transfer"
+          },
+          "grounding/dumps/nq-hotpot-common_0.jsonl": {
+            "archive_identity": {
+              "bytes": 246572,
+              "inode": 136452137,
+              "mtime_ns": 1792593171366058325
+            },
+            "archive_path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/post-callback-dependencies/grounding/dumps/nq-hotpot-common_0.jsonl",
+            "bytes": 246572,
+            "sha256": "00111fd7b85129972a0e26532ac3e346ce055ab01ea5e03349f0663426d8f7f5",
+            "sha_basis": "fresh_transferred_readback",
+            "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/artifacts/round_0-attempt-e0086aba4f4043e1acbf20dca55c634a/dumps/nq-hotpot-common_0.jsonl",
+            "storage": "transfer"
+          },
+          "grounding/dumps/nq-hotpot-common_0.npz": {
+            "archive_identity": {
+              "bytes": 48956084,
+              "inode": 136452138,
+              "mtime_ns": 1792593171850016461
+            },
+            "archive_path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/post-callback-dependencies/grounding/dumps/nq-hotpot-common_0.npz",
+            "bytes": 48956084,
+            "sha256": "0876cbc1072d01a26b06af60ba0010446b8b4238f60c92b9cdd6985fa8efb397",
+            "sha_basis": "fresh_transferred_readback",
+            "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/artifacts/round_0-attempt-e0086aba4f4043e1acbf20dca55c634a/dumps/nq-hotpot-common_0.npz",
+            "storage": "transfer"
+          },
+          "grounding/heads/boundary_probe.pkl": {
+            "archive_identity": {
+              "bytes": 5599980,
+              "inode": 136450930,
+              "mtime_ns": 1792591220286834369
+            },
+            "archive_path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/grounding/round_0-restored-cb419d0b950846208121053d3d382e62/heads/boundary_probe.pkl",
+            "bytes": 5599980,
+            "sha256": "a2c33da3d37f779a6792b36aea80b4e095c2e6cfaed2900a75042de2e0af7b75",
+            "sha_basis": "accepted_core_fresh_ack",
+            "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/round_0-restored-cb419d0b950846208121053d3d382e62/heads/boundary_probe.pkl",
+            "storage": "core"
+          },
+          "grounding/heads/calibration-report.json": {
+            "archive_identity": {
+              "bytes": 438,
+              "inode": 136450927,
+              "mtime_ns": 1792591220334830217
+            },
+            "archive_path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/grounding/round_0-restored-cb419d0b950846208121053d3d382e62/heads/calibration-report.json",
+            "bytes": 438,
+            "sha256": "463881bd070b8919f4591fd8ffcaee657e23d98faf096b56feb76b11c26d4872",
+            "sha_basis": "accepted_core_fresh_ack",
+            "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/round_0-restored-cb419d0b950846208121053d3d382e62/heads/calibration-report.json",
+            "storage": "core"
+          },
+          "grounding/heads/commit_probe.pkl": {
+            "archive_identity": {
+              "bytes": 5600038,
+              "inode": 136450931,
+              "mtime_ns": 1792591220442820876
+            },
+            "archive_path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/grounding/round_0-restored-cb419d0b950846208121053d3d382e62/heads/commit_probe.pkl",
+            "bytes": 5600038,
+            "sha256": "b4e402c811e5d09a1df15716666528e008e9bc576ccb1a9fc0ccb4ef85a4a143",
+            "sha_basis": "accepted_core_fresh_ack",
+            "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/round_0-restored-cb419d0b950846208121053d3d382e62/heads/commit_probe.pkl",
+            "storage": "core"
+          },
+          "grounding/version-manifest.json": {
+            "archive_identity": {
+              "bytes": 468328,
+              "inode": 136450932,
+              "mtime_ns": 1792591220502815687
+            },
+            "archive_path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/grounding/round_0-restored-cb419d0b950846208121053d3d382e62/version-manifest.json",
+            "bytes": 468328,
+            "sha256": "893fe8c21df2c30044d63a03884bef6ef98443f0010d38219e7dc96ae0b17286",
+            "sha_basis": "accepted_core_fresh_ack",
+            "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/round_0-restored-cb419d0b950846208121053d3d382e62/version-manifest.json",
+            "storage": "core"
+          },
+          "provenance/origin-reward-manifest.json": {
+            "archive_identity": {
+              "bytes": 468299,
+              "inode": 136452140,
+              "mtime_ns": 1792593172197986361
+            },
+            "archive_path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/post-callback-dependencies/provenance/origin-reward-manifest.json",
+            "bytes": 468299,
+            "sha256": "c7a7ebfd06d32424f06a7f94c74e41d828c842f1b7c884497800daba400e1ab3",
+            "sha_basis": "fresh_transferred_readback",
+            "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/preparation/rolling-checkpoints/global_step_1/boundary/reward-probe-manifest.json",
+            "storage": "transfer"
+          },
+          "provenance/origin-version-manifest.json": {
+            "archive_identity": {
+              "bytes": 468299,
+              "inode": 136452141,
+              "mtime_ns": 1792593172233983247
+            },
+            "archive_path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/post-callback-dependencies/provenance/origin-version-manifest.json",
+            "bytes": 468299,
+            "sha256": "c7a7ebfd06d32424f06a7f94c74e41d828c842f1b7c884497800daba400e1ab3",
+            "sha_basis": "fresh_transferred_readback",
+            "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/artifacts/round_0-attempt-e0086aba4f4043e1acbf20dca55c634a/version-manifest.json",
+            "storage": "transfer"
+          },
+          "provenance/restore-source-receipt.json": {
+            "archive_identity": {
+              "bytes": 53385,
+              "inode": 136452142,
+              "mtime_ns": 1792593172257981170
+            },
+            "archive_path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/post-callback-dependencies/provenance/restore-source-receipt.json",
+            "bytes": 53385,
+            "sha256": "0a671ffd2941bfb417cd6968ee7b60d62e02ee67f0c400d929f1127aab7e5984",
+            "sha_basis": "fresh_transferred_readback",
+            "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-sparse-cp1-20261021/preparation/cp1-full-state-source-receipt.json",
+            "storage": "transfer"
+          }
+        },
+        "reward_round": 0,
+        "reward_version": "232f20e112ac4a978c5aba52a0367195:0:c7f8da3ab2f84097ae6430983e5329af",
+        "source_snapshot_sha256": "56ae5690a97146361e1595407cdf494905e0c56897d4decbde865e6f4643c077",
+        "status": "EASY2560_POST_CALLBACK_DEPENDENCIES_SHA_FSYNC_PASS",
+        "transfer_bytes": 50580970,
+        "transfer_file_count": 6
+      }
+    }
+  },
+  "processes": {
+    "3867549": {
+      "state": "MISSING"
+    },
+    "3844281": {
+      "state": "MISSING"
+    },
+    "3603385": {
+      "state": "S",
+      "start_ticks": 1037896746,
+      "uid": 1002
+    }
+  },
+  "stage_exists": false,
+  "raw_receipt_sha256": "8701df4422774acdf15215f89ea864891c2d5c4c24b8c66794afc6d317228c46",
+  "training_modified": false,
+  "retransfer_performed": false,
+  "resume_r2_pending": true
+}

@@ -266,7 +266,7 @@ def inspect_closure(helper, dependencies):
     need(value.get('status') == dependencies.STATUS and value.get('all_manifest_dependencies_covered') is True and
          value.get('fresh_transferred_dependency_sha_checked') is True and
          value.get('covered_core_sha_ack_verified') is True and value.get('core_covered_payload_rehashed') is False and
-         all(value.get('binding', {}).get(k) == v for k, v in dict(base=str(helper.BASE), run_id=helper.RUN,
+         all(value.get('binding', {}).get('core', {}).get(k) == v for k, v in dict(base=str(helper.BASE), run_id=helper.RUN,
              source_commit=helper.TRAINING, step=helper.STEP, core_archive=str(helper.CORE)).items()),
          'GROUNDING_DEPENDENCY_CLOSURE_NOT_ACTUALLY_ACCEPTED')
     return value

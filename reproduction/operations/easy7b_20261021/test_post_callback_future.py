@@ -201,12 +201,50 @@ class CompanionTests(unittest.TestCase):
             helper = fixture_helper(Path(name))
             accepted = dict(status='PASS', all_manifest_dependencies_covered=True, fresh_transferred_dependency_sha_checked=True,
                 covered_core_sha_ack_verified=True, core_covered_payload_rehashed=False,
-                binding=dict(base=str(helper.BASE),run_id=helper.RUN,source_commit=helper.TRAINING,step=5,core_archive=str(helper.CORE)))
+                binding=dict(core=dict(base=str(helper.BASE),run_id=helper.RUN,source_commit=helper.TRAINING,step=5,core_archive=str(helper.CORE))))
             dependencies = SimpleNamespace(STATUS='PASS', inspect=Mock(return_value=accepted))
             self.assertEqual(future.inspect_closure(helper,dependencies), accepted)
             for key in ('all_manifest_dependencies_covered','fresh_transferred_dependency_sha_checked','covered_core_sha_ack_verified'):
                 wrong = copy.deepcopy(accepted); wrong[key] = False; dependencies.inspect.return_value = wrong
                 with self.assertRaisesRegex(ValueError,'CLOSURE'): future.inspect_closure(helper,dependencies)
+
+    def test_actual_dependency_inspector_nested_core_binding_and_observer(self):
+        from reproduction.easy2560_joint4 import post_callback_dependencies as dependencies
+        from reproduction.easy2560_joint4 import test_post_callback_dependencies as dependency_fixtures
+        with tempfile.TemporaryDirectory() as name:
+            root = Path(name).resolve()
+            base, archive, _, saved, _ = dependency_fixtures.DependencyArchiveTests().prepared(
+                root, step=5, covered=True, restored=True)
+            stream = io.BytesIO(); dependencies.emit(saved['snapshot'], stream); stream.seek(0)
+            stage = dependencies.receive(archive, stream)['stage']; dependencies.accept(archive, stage)
+            helper = SimpleNamespace(BASE=base, RUN='b'*32, TRAINING='c'*40, STEP=5, CORE=archive)
+            # This is the real inspector and real accepted receipts, including
+            # all provenance and payload SHA checks, not a fabricated schema.
+            actual = future.inspect_closure(helper, dependencies)
+            self.assertEqual(actual['binding']['core']['core_archive'], str(archive))
+            self.assertNotIn('base', actual['binding'])
+            self.assertIn('boundary_source_snapshot_sha256', actual['binding'])
+            control = root/'control'; control.mkdir()
+            identity = dict(base=str(base), run_id=helper.RUN, source_job='fixture-job',
+                            training_commit=helper.TRAINING, birth={'pid':123})
+            for filename in ('claim.json', 'launch-receipt.json'):
+                (control/filename).write_text(json.dumps(identity))
+            runner = SimpleNamespace(process_observation=lambda birth:dict(state='LIVE'))
+            with patch.multiple(observer, ROOT=control, HK=root/'HK', BASE=str(base),
+                                RUN=helper.RUN, JOB='fixture-job', TRAINING=helper.TRAINING), \
+                    patch.object(observer.socket, 'gethostname', return_value='xielab3'), \
+                    patch.object(observer.os, 'getuid', return_value=1002), \
+                    patch.object(observer, 'load_runner', return_value=runner):
+                observed = observer.observe()
+                self.assertTrue(observed['milestones']['5']['boundary_accepted'])
+                self.assertTrue(observed['milestones']['5']['dependencies_accepted'])
+                self.assertEqual(observed['state'], 'RUNNING')
+                receipt_path = archive/'post-callback-dependencies/dependency-archive-receipt.json'
+                receipt = json.loads(receipt_path.read_text())
+                receipt['binding']['core']['source_commit'] = 'f'*40
+                receipt_path.write_text(json.dumps(receipt))
+                with self.assertRaisesRegex(ValueError, 'MILESTONE_ARCHIVE_IDENTITY_DIFFERS'):
+                    observer.observe()
 
     def test_emit_must_exit_zero_before_accept_writer_never_retries(self):
         for rc in (0, 7):

@@ -92,3 +92,15 @@ At the time of publishing this repair, actual recovery execution is still
 pending. Training is healthy: outer7 is complete with20 writes per rank, CP7 is
 sealed and outer8 has a real saved512-question chunk. No training, retrieval or
 healthy core-controller restart is part of this CPU repair.
+
+That Python3.8 recovery actually accepted CP5's10 dependency references, including
+the6 transferred files/50,580,970 bytes. It then exited in a reader that compared
+the dependency receipt's nested `binding.core` as though it were the boundary
+receipt's flat `binding`. The data is already accepted; its original partial no
+longer exists. `resume_post_callback_future_local.py --mode resume` continues
+only from that accepted archive under `future-50-200/recovery-accepted-r2`.
+It authenticates the exact r1 failure and terminal birth, and the normal
+companion freshly inspects the accepted CP5 child using the corrected nested
+binding. No accept, receive, emission or snapshot is replayed. Both failed CPU
+roots remain immutable evidence. A fixture now exercises the real complete
+dependency archive lifecycle and its actual receipt schema through the reader.
