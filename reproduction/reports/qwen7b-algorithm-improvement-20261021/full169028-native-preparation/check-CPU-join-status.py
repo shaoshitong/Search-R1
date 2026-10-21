@@ -18,6 +18,16 @@ if 'PENDING' in out['squeue']:
 for name in ('worker.json', 'progress.json', 'failure.json', 'complete.json'):
     p = b / name
     out[name] = dict(reference=proof(p), value=json.loads(p.read_bytes())) if p.exists() else None
+controller = b / 'login-CPU-controller.json'
+if controller.exists():
+    c = json.loads(controller.read_bytes()); out['bounded_remote_CPU_controller'] = c
+    proc = Path('/proc') / str(c['pid'])
+    same = proc.exists() and proc.joinpath('stat').read_text().rsplit(')', 1)[1].split()[19] == c['birth']
+    out['bounded_remote_CPU_same_process_birth'] = same
+    if same:
+        out['bounded_remote_CPU_memory'] = [s for s in proc.joinpath('status').read_text().splitlines() if s.startswith(('VmPeak:', 'VmSize:', 'VmRSS:', 'VmHWM:', 'State:', 'Cpus_allowed_list:'))]
+    p = b / 'login-CPU-join.log'
+    out['bounded_remote_CPU_log_tail'] = p.read_text()[-2200:] if p.exists() else None
 if out['complete.json']:
     done = out['complete.json']['value']
     assert done['status'] == 'FROZEN_FIVE_BANK_REAL_G10_169028_NATIVE_JOINT_INPUTS_ACCEPTED'
