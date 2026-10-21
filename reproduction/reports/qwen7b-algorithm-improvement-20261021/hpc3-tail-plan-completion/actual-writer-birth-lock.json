@@ -1,0 +1,40 @@
+{
+  "status": "ONE_FRESH_OWN_WRITER_PROCESS_BIRTH_AND_LOCK_CHECK",
+  "epoch": 1792592348.2729821,
+  "rows": [
+    {
+      "job_id": "745518",
+      "worker": 0,
+      "host": "ACD1-21",
+      "pid": 3181675,
+      "birth_ticks": "571937208",
+      "worker_lock_held": true,
+      "proc_state": "R (running)",
+      "RSS_kB": 1755388,
+      "io_safe": {
+        "rchar": 6216144132,
+        "syscr": 202549,
+        "read_bytes": 22004051968
+      },
+      "CPU_step_GPUs": 0
+    },
+    {
+      "job_id": "745519",
+      "worker": 1,
+      "host": "ACD1-64",
+      "pid": 2326052,
+      "birth_ticks": "847886196",
+      "worker_lock_held": true,
+      "proc_state": "R (running)",
+      "RSS_kB": 1606636,
+      "io_safe": {
+        "rchar": 6284047728,
+        "syscr": 204636,
+        "read_bytes": 21568565248
+      },
+      "CPU_step_GPUs": 0
+    }
+  ],
+  "steps": "745518.0|%T|%C|ACD1-21\n745518.batch|%T|%C|ACD1-21\n745518.extern|%T|%C|ACD1-21\n745519.0|%T|%C|ACD1-64\n745519.batch|%T|%C|ACD1-64\n745519.extern|%T|%C|ACD1-64",
+  "new_GPUjobs": 0
+}
