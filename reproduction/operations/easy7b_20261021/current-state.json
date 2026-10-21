@@ -51,8 +51,8 @@
     "physical_micro16": "Not raised blindly; needs actual measured memory/throughput",
     "enabled_scope": "Exact retrieval cache + original dense head + external2H100 service; no throughput speedup claimed yet"
   },
-  "previous_goal_turn_classification": "PROGRESS",
-  "latest_turn_classification": "PROGRESS: all4 outer2 actual20updates and1scheduleradvance, CP2 23files91.404GB SHAsealed, nextouter3samplingandexternalGPUqueries13233to14176, zeroerrors; no restarts/hotedits/deletions",
+  "previous_goal_turn_classification": "PROGRESS: actual CP2 full seal and outer3 start accepted",
+  "latest_turn_classification": "PROGRESS: actual outer3 first512questions2560trajectories complete216mixed; cache4466/22793 exactpayloadhits, zero backenderrors; liveCPUarchiver samebirth confirmed waiting5",
   "last_observation": "training-progress-1792585062.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
@@ -168,13 +168,14 @@
       "step": 5,
       "actual_job_state": "RUNNING",
       "completed_steps": [],
-      "checked_unix": 1792582949.495787
+      "checked_unix": 1792585255.1192741
     },
     "completed_steps": [],
     "cpu_only": true,
     "model_reloads": 0,
     "gpu_allocations": 0,
-    "manual_deletions": 0
+    "manual_deletions": 0,
+    "last_same_birth_verified_unix": 1792585255.3271797
   },
   "actual_state_restore": {
     "model_tensors": 339,
@@ -302,5 +303,48 @@
   },
   "outer3_started": true,
   "actual_outer2_complete_receipt": "training-progress-1792585062.json",
-  "recovery_followup_accepted": false
+  "recovery_followup_accepted": false,
+  "actual_retrieval_cache": {
+    "checked_unix": 1792585356.4676752,
+    "job": "745371",
+    "physical_gpu_count": 2,
+    "local_proxy_gpu_count": 0,
+    "cache_key_unit": "complete_original_HTTP_payload_including_original_batch_order",
+    "logical_requests": 22793,
+    "logical_queries": 22856,
+    "cache": {
+      "logical_calls": 22793,
+      "logical_queries": 22793,
+      "backend_calls": 18327,
+      "backend_queries": 18327,
+      "served_hit_queries": 4466,
+      "lookup_hit_queries": 4466,
+      "lookup_miss_queries": 18327,
+      "backend_exceptions": 0,
+      "uncacheable_calls": 0,
+      "evictions": 14231,
+      "enabled": true,
+      "entries": 4096,
+      "capacity": 4096,
+      "versions": {
+        "encoder": "0e51c42039045a324717bdf5ecab00a2bbe94e3a34648d9e7be5923447edac38",
+        "index": "69c98463fdb41fc08737d88513c597725f311c44f7ba6dca4b05d8c7c658d166",
+        "corpus": "85a787a692e73fdd657e86411bfd1ac810ed193b1eea4a478de449d4871c06b9"
+      },
+      "served_hit_rate": 0.19593734918615363
+    },
+    "upstream_statistics": {
+      "logical_requests": 18392,
+      "logical_queries": 18518,
+      "completed_requests": 18392,
+      "completed_queries": 18518,
+      "failed_requests": 0,
+      "backend_seconds": 752.148162657395,
+      "last_completed_unix": 1792585356.4190757
+    },
+    "training_forward": "unchanged dense",
+    "speedup_claim": "none; exact request reuse count only",
+    "live_job_restarted": false,
+    "training_source_edited": false
+  }
 }
