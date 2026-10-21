@@ -1,0 +1,26 @@
+{
+  "status": "COMPUTE_PROFILE_CODE_AND_FOCUSED_STATIC_CHECKS_READY_GPU_NOT_RUN",
+  "script": {
+    "path": "reproduction/operations/qwen7b_warmup/native_mixed_compute_benchmark.py",
+    "bytes": 13392,
+    "sha256": "a66f3257f82f9ed0d0ea9ea3749c6261be2aa4b98e73394f287d93f8151381f5"
+  },
+  "head_layers": 2,
+  "actual_meta_head_parameters": 2573825,
+  "expected_native_parameters_from_architecture": 233057792,
+  "analytical_native_dense_linear_forward_FLOPs_per_B32": 43700788920320,
+  "warmup": 1,
+  "repeats": 3,
+  "micro_questions": [
+    1,
+    4,
+    8,
+    16,
+    32
+  ],
+  "static_AST_passed": true,
+  "own_G5_view_offset_fixture_passed": true,
+  "real_payload_or_checkpoint_loaded": false,
+  "main_source_modified": false,
+  "GPU_submitted": false
+}
