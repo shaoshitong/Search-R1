@@ -1,0 +1,65 @@
+{
+  "status": "TAIL_PREPARE_RETURNED",
+  "prepared": {
+    "GPU_submitted": false,
+    "actor_updates": 0,
+    "config": {
+      "bytes": 8430,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/config.json",
+      "sha256": "368ad5d8df9e0238bdee8033964b56f0f4a6426e606f9514114fac0dcb05d835"
+    },
+    "domains": {
+      "hotpotqa": 30754
+    },
+    "donor_claim_performed": false,
+    "epoch": 1792584750.8729577,
+    "execution_run_id": "36b784a3bf964e69a6130bcc41d68809",
+    "frozen_main_cohort_expanded": false,
+    "inputs": {
+      "bytes": 109103,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/inputs/manifest.json",
+      "sha256": "e6f4f19cd89813da805f7b6d3fc9e818ccef05eb5fba9d02af6f82b4e1c58cab"
+    },
+    "potentialOverlap": true,
+    "questions": 30754,
+    "scripts": [
+      {
+        "bytes": 1178,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/worker-0.sbatch",
+        "sha256": "19afeb39b6305d3bcfdeea4ece5c5ec331f883d6985c740be87bdca14e0d2fc7"
+      },
+      {
+        "bytes": 1178,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/worker-1.sbatch",
+        "sha256": "ca9c4248d46be1b133f7ee4f6b5687a5fbd79d1d113f64505b773d3a97c297e9"
+      }
+    ],
+    "source_commit": "2590d0b272013264b6d727a6a38493a790ee1305",
+    "source_protocol_exact_input_SHA": true,
+    "source_tail_plan": {
+      "bytes": 84525,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/code-2590d0b27201/source-tail-plan.json",
+      "sha256": "482a6e136775ed3b8facbda00d0047e7a2a304a2eea62a3d589412a80be68596"
+    },
+    "status": "HPC3_INDEPENDENT_TAIL_READY_GPU_NOT_SUBMITTED",
+    "trajectories": 153770,
+    "workers": [
+      {
+        "batches": 121,
+        "questions": 15394,
+        "worker": 0
+      },
+      {
+        "batches": 120,
+        "questions": 15360,
+        "worker": 1
+      }
+    ]
+  },
+  "tests": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/actual-static-tests.log",
+    "bytes": 101,
+    "sha256": "921b60a7fd52e978fbb551cacd29df2d6708879400278e1fcc70fceeb0c6f8e0"
+  },
+  "GPU_submitted": false
+}
