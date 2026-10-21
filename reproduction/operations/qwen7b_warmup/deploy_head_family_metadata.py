@@ -9,7 +9,9 @@ BRANCH='codex/frozenE1-head-family-20261021'
 def main():
  p=argparse.ArgumentParser();p.add_argument('--control-root',type=Path,required=True);p.add_argument('--commit',required=True);p.add_argument('--action',choices=('freeze','resolve','status'),required=True);a=p.parse_args();repo=Path(__file__).resolve().parents[3]
  name=P+('direct_head_family_protocol.py'if a.action in ('freeze','status')else 'direct_head_family_inputs.py');raw=subprocess.check_output(['git','show',a.commit+':'+name],cwd=repo);assert raw==(repo/name).read_bytes()
- if a.action!='status':assert subprocess.check_output(['git','ls-remote','origin','refs/heads/'+BRANCH],cwd=repo,text=True).split()[0]==a.commit
+ if a.action!='status':
+  remote=subprocess.check_output(['git','ls-remote','origin','refs/heads/'+BRANCH],cwd=repo,text=True).split()[0]
+  subprocess.run(['git','merge-base','--is-ancestor',a.commit,remote],cwd=repo,check=True)
  spec=importlib.util.spec_from_file_location('head_family_private_control',a.control_root/'work/prefix-schedule-cp50-20261018/reproduction/hpc3_prefix5/direct_control.py');ctl=importlib.util.module_from_spec(spec);spec.loader.exec_module(ctl);ip=subprocess.check_output(['/usr/sbin/ipconfig','getifaddr','en0'],text=True).strip()
  extras={}
  if a.action=='resolve':
