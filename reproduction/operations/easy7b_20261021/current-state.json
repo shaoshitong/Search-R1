@@ -1,6 +1,6 @@
 {
-  "epoch": 1792602401.8019774,
-  "status": "ACTUAL_NATIVE4_CP12_RESTORE_DATAEQUAL_PASS_OUTER13_GENERATING_FA3_CONFIGURED",
+  "epoch": 1792604228.2291622,
+  "status": "ACTUAL_NATIVE4_FA3_OUTER13_COMPLETE_CP13_FULL_STATE_SEALED_FIVE_OUTER_FOLLOWUP_PENDING",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "746125",
@@ -11,7 +11,7 @@
   "global_mini": 128,
   "logical_micro": 4,
   "accumulation": 4,
-  "actual_completed_outer": 12,
+  "actual_completed_outer": 13,
   "initialization_is_not_training_acceptance": true,
   "old3b": {
     "job": "734689",
@@ -51,11 +51,11 @@
     "exact_query_cache": "11 CPU tests passed; preserves exact original fullbatch/context/score mode/version and logical search counts",
     "pending": "Continue200outer; fixedQA50/100/150/200; final native51713; remaining milestone core/post-callback archives; actual final200 native4 restore without201",
     "physical_micro16": "Not raised blindly; needs actual measured memory/throughput",
-    "enabled_scope": "Exact retrieval cache + original dense head + external2H100 service; no throughput speedup claimed yet"
+    "enabled_scope": "Exact retrieval cache + original dense head + separate2H100 retrieval service + authorized actor-local FA3; vLLM rollout XFormers and grounding SDPA unchanged"
   },
   "previous_goal_turn_classification": "progress",
-  "latest_turn_classification": "PROGRESS_EXPLICIT_HUMAN_SDPA_BASED_FA3_BOUNDARY_TRANSITION_EXECUTED",
-  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792602336293720000/observation-002.json",
+  "latest_turn_classification": "PROGRESS_ACTUAL_FA3_NATIVE4_UPDATE13_AND_FULL_STATE_SEAL",
+  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792602336293720000/observation-028.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "stage": "GRPO_1_TO_200",
@@ -99,13 +99,13 @@
     "actor_visible_token_lists_exact_equal": 64,
     "http_and_projection_seconds": 3.5052835568785667,
     "last_actual_statistics": {
-      "logical_requests": 93462,
-      "logical_queries": 93588,
-      "completed_requests": 93462,
-      "completed_queries": 93588,
+      "backend_seconds": 6572.6480917446315,
+      "completed_queries": 160103,
+      "completed_requests": 159914,
       "failed_requests": 0,
-      "backend_seconds": 3829.7479075249285,
-      "last_completed_unix": 1792595117.8614714
+      "last_completed_unix": 1792603271.2261248,
+      "logical_queries": 160103,
+      "logical_requests": 159914
     }
   },
   "failed_diagnostic_job": "745258",
@@ -113,8 +113,8 @@
   "storage_inventory_report": "HPC3-storage-distribution-20261021.txt",
   "last_measured_queue": {
     "rc": 0,
-    "stdout": "745371|RUNNING|ACD1-55|ACD1-55|2026-10-21T19:41:06|6-20:35:26\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-19:34:10\n",
-    "stderr": ""
+    "stderr": "",
+    "stdout": "746125|RUNNING|ACD1-32|ACD1-32|2026-10-22T00:58:19|6-23:24:23\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-17:05:54\n"
   },
   "new_recovery_base_allocated_bytes": 62230528,
   "training_startup_is_not_completed_outer": true,
@@ -135,7 +135,9 @@
     17
   ],
   "recovery_followup_required_next_outer_started": 18,
-  "actual_new_completed_outers": [],
+  "actual_new_completed_outers": [
+    13
+  ],
   "archive_controller_for_current7b_not_yet_started": false,
   "remaining_goal_requirements": [
     "Continue the unchanged native4 Qwen2.5-7B-Instruct Easy2560/Co recipe through actual outer200; every outer uses2560x5 original candidates, selects512x5 mixed-first/K5fallback/noK0 and reuses original tokens/samplingLP; globalmini128/LR1e-6/20actual optimizer writes per rank.",
@@ -280,19 +282,126 @@
     },
     "first_step": 50,
     "preserves_old_cp5": true,
-    "receipt": "fa3-archive-consumers-observe-1792602090.json"
+    "receipt": "fa3-archive-consumers-observe-1792602090.json",
+    "latest_actual_compact_observation": {
+      "companion": {
+        "root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/post-callback-boundary-control/job-746125/future-50-200",
+        "process": {
+          "actual": {
+            "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+            "pid": 16111,
+            "start_ticks": 1039368108,
+            "state": "S",
+            "uid": 1002
+          },
+          "same_birth": true,
+          "state": "LIVE"
+        },
+        "progress": {
+          "checked_unix": 1792604177.7950363,
+          "completed_steps": [],
+          "core_controller": {
+            "birth": {
+              "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+              "pid": 16110,
+              "start_ticks": 1039368105,
+              "uid": 1002
+            },
+            "process": {
+              "actual": {
+                "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+                "pid": 16110,
+                "start_ticks": 1039368105,
+                "state": "S",
+                "uid": 1002
+              },
+              "same_birth": true,
+              "state": "LIVE"
+            },
+            "records": {
+              "claim.json": {
+                "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+                "birth": {
+                  "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+                  "pid": 16110,
+                  "start_ticks": 1039368105,
+                  "uid": 1002
+                },
+                "checked_unix": 1792601954.3214104,
+                "controller_suffix": null,
+                "credentials_persisted": false,
+                "recovery_parent": null,
+                "requested_steps": [
+                  50,
+                  100,
+                  150,
+                  200
+                ],
+                "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+                "source_job": "746125"
+              },
+              "progress.json": {
+                "actual_job_state": "RUNNING",
+                "checked_unix": 1792604146.3139563,
+                "completed_steps": [],
+                "phase": "WAITING_CHECKPOINT",
+                "source_job": "746125",
+                "step": 50
+              }
+            },
+            "state": "LIVE"
+          },
+          "healthy_controller_modified": false,
+          "jobs_submitted": 0,
+          "phase": "WAITING_CORE_ACTUAL_ACK",
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_job": "746125",
+          "source_ssh_called": false,
+          "step": 50,
+          "training_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+          "training_modified": false
+        },
+        "failure": null
+      },
+      "core": {
+        "root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-746125",
+        "process": {
+          "actual": {
+            "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+            "pid": 16110,
+            "start_ticks": 1039368105,
+            "state": "S",
+            "uid": 1002
+          },
+          "same_birth": true,
+          "state": "LIVE"
+        },
+        "progress": {
+          "actual_job_state": "RUNNING",
+          "checked_unix": 1792604207.3327389,
+          "completed_steps": [],
+          "phase": "WAITING_CHECKPOINT",
+          "source_job": "746125",
+          "step": 50
+        },
+        "failure": null
+      }
+    },
+    "latest_checked_unix": 1792604227.088244
   },
   "actual_state_restore": {
+    "source_job": "745371",
+    "source_outer": 12,
     "model_tensors": 339,
     "world_size": 4,
-    "source_job": "745022",
-    "source_outer": 1,
-    "actual_optimizer_writes_per_rank": 20,
-    "scheduler_outer": 1,
-    "candidate_source_cursor": 2560,
+    "actual_optimizer_writes_per_rank": 240,
+    "scheduler_outer": 12,
+    "candidate_source_cursor": 30720,
     "all4_model_adam_scheduler_rng_driver_dataequal": true,
     "pre_outer_stream_second_readback_equal": true,
-    "post_callback_rng_captured": true
+    "post_callback_rng_captured": true,
+    "evidence": "evidence/actual-fa3-native4-cp12-restore-dataequal-20261022.json",
+    "five_outer_followup_accepted": false
   },
   "current_candidate_pools": [
     {
@@ -326,18 +435,18 @@
   "outer2_started_not_complete": false,
   "outer2_completed_candidate_questions": 2560,
   "outer2_first_chunk_mixed_questions": 181,
-  "current_base_durable_checkpoint_outer": null,
+  "current_base_durable_checkpoint_outer": 13,
   "most_recent_recoverable_checkpoint": {
-    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_11",
-    "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_11/full-manifest.json",
-    "manifest_sha256": "3a5abfb7ea71aeb69251041055f9c42261996340ed918447cdc7e9c77f2b95fd",
-    "published_unix": 1792599940.3014085,
-    "run_id": "232f20e112ac4a978c5aba52a0367195",
-    "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
-    "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 11
+    "completed_outer": 13,
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_13/full-manifest.json",
+    "sealed_manifest_sha256": "96569c55126acce8394777e87f190c8b0b82d5a31db66b40cc519751f86b7d1e",
+    "producer_full_sha_fsync_complete": true,
+    "independent_small_manifest_sha_and_payload_metadata_pass": true,
+    "independent_full_payload_rehash_this_observation": false,
+    "actual_restore_from_this_checkpoint_not_performed": true,
+    "prior_actual_native4_restore_from_source12_pass": true
   },
   "outer2_candidate_mixed_questions": 979,
   "outer2_candidate_mixed_fraction": 0.382421875,
@@ -403,16 +512,16 @@
     "no_intervention": true
   },
   "rolling_checkpoint": {
-    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_9",
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13",
     "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_9/full-manifest.json",
-    "manifest_sha256": "d0126fc8f7466091a8c76eb5526debe591db48f5bf0fbb632c2203b5705a611f",
-    "published_unix": 1792596611.3125713,
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_13/full-manifest.json",
+    "manifest_sha256": "96569c55126acce8394777e87f190c8b0b82d5a31db66b40cc519751f86b7d1e",
+    "published_unix": 1792604091.6507738,
     "run_id": "232f20e112ac4a978c5aba52a0367195",
-    "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+    "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
     "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 9
+    "step": 13
   },
   "outer2_timings_seconds": {
     "timing_s/candidate_fill": 864.349,
@@ -734,114 +843,15 @@
   },
   "completed_outer_metrics": [
     {
-      "step": 2,
-      "attempt_index": 2,
-      "reward": 0.5900579690933228,
-      "pg_loss": 0.014852828604378953,
-      "ppo_kl": 0.0011101450561909587,
-      "grad_norm": 2.819140896890212,
-      "optimizer_writes": 40,
-      "optimizer_writes_before": 20,
-      "optimizer_writes_this_outer": 20
-    },
-    {
-      "step": 3,
-      "attempt_index": 3,
-      "reward": 0.623258650302887,
-      "pg_loss": 0.019469811245919826,
-      "ppo_kl": 0.000992791779754043,
-      "grad_norm": 2.757454656531884,
-      "optimizer_writes": 60,
-      "optimizer_writes_before": 40,
-      "optimizer_writes_this_outer": 20
-    },
-    {
-      "step": 4,
-      "attempt_index": 4,
-      "reward": 0.6241274476051331,
-      "pg_loss": 0.059337858842134474,
-      "ppo_kl": 0.001153127943052823,
-      "grad_norm": 2.7814474127204813,
-      "optimizer_writes": 80,
-      "optimizer_writes_before": 60,
-      "optimizer_writes_this_outer": 20
-    },
-    {
-      "step": 5,
-      "attempt_index": 5,
-      "reward": 0.6170238852500916,
-      "pg_loss": 0.019132038444649984,
-      "ppo_kl": 0.0008824761084724742,
-      "grad_norm": 2.7477209717350455,
-      "optimizer_writes": 100,
-      "optimizer_writes_before": 80,
-      "optimizer_writes_this_outer": 20
-    },
-    {
-      "step": 6,
-      "attempt_index": 6,
-      "reward": 0.6223312020301819,
-      "pg_loss": 0.03754782245990292,
-      "ppo_kl": 0.000950373702471552,
-      "grad_norm": 2.690039113151089,
-      "optimizer_writes": 120,
-      "optimizer_writes_before": 100,
-      "optimizer_writes_this_outer": 20
-    },
-    {
-      "step": 7,
-      "attempt_index": 7,
-      "reward": 0.6239957809448242,
-      "pg_loss": 0.04565451578826571,
-      "ppo_kl": 0.0010343020474465447,
-      "grad_norm": 2.6558660615025613,
-      "optimizer_writes": 140,
-      "optimizer_writes_before": 120,
-      "optimizer_writes_this_outer": 20
-    },
-    {
-      "step": 8,
-      "attempt_index": 8,
-      "reward": 0.6132726669311523,
-      "pg_loss": 0.08307626103863788,
-      "ppo_kl": 0.0008330603134254488,
-      "grad_norm": 2.6595899645029566,
-      "optimizer_writes": 160,
-      "optimizer_writes_before": 140,
-      "optimizer_writes_this_outer": 20
-    },
-    {
-      "step": 9,
-      "attempt_index": 9,
-      "reward": 0.6176403760910034,
-      "pg_loss": 0.007115746500043642,
-      "ppo_kl": 0.0009657300526669133,
-      "grad_norm": 2.5217320670007575,
-      "optimizer_writes": 180,
-      "optimizer_writes_before": 160,
-      "optimizer_writes_this_outer": 20
-    },
-    {
-      "step": 10,
-      "attempt_index": 10,
-      "reward": 0.6393882036209106,
-      "pg_loss": 0.04357814534082469,
-      "ppo_kl": 0.0006861575348011684,
-      "grad_norm": 2.5011894492280358,
-      "optimizer_writes": 200,
-      "optimizer_writes_before": 180,
-      "optimizer_writes_this_outer": 20
-    },
-    {
-      "step": 11,
-      "attempt_index": 11,
-      "reward": 0.6300367712974548,
-      "pg_loss": 0.005586632083425013,
-      "ppo_kl": 0.0012724943673674716,
-      "grad_norm": 2.6276173770064495,
-      "optimizer_writes": 220,
-      "optimizer_writes_before": 200,
-      "optimizer_writes_this_outer": 20
+      "attempt_index": 13,
+      "grad_norm": 2.527223024756102,
+      "optimizer_writes": 260,
+      "optimizer_writes_before": 240,
+      "optimizer_writes_this_outer": 20,
+      "pg_loss": 0.026009360975243374,
+      "ppo_kl": 0.0009061139965524489,
+      "reward": 0.6196612119674683,
+      "step": 13
     }
   ],
   "fixed_validation_results_pending": [
@@ -850,13 +860,18 @@
     150,
     200
   ],
-  "remaining_recovery_followup": [
-    13,
-    14,
-    15,
-    16,
-    17
-  ],
+  "remaining_recovery_followup": {
+    "completed": [
+      13
+    ],
+    "pending": [
+      14,
+      15,
+      16,
+      17
+    ],
+    "next_saved_required": 18
+  },
   "archive_boundary_supplement_todo": "CP5 complete and independently verified. Preserve equivalent post-callback boundaries after actual core acceptance at50/100/150/200; CP200 boundary precedes final51713. Do not replay CP5 one-shot launcher.",
   "actual_fixed512": {
     "step": 5,
@@ -1153,440 +1168,77 @@
     "formal_training_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
     "fresh_remote_fetch_and_blob_sha_pass": true
   },
-  "all4_actual_optimizer_writes": 240,
+  "all4_actual_optimizer_writes": 260,
   "current_checkpoint": {
-    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_11",
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13",
     "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_11/full-manifest.json",
-    "manifest_sha256": "3a5abfb7ea71aeb69251041055f9c42261996340ed918447cdc7e9c77f2b95fd",
-    "published_unix": 1792599940.3014085,
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_13/full-manifest.json",
+    "manifest_sha256": "96569c55126acce8394777e87f190c8b0b82d5a31db66b40cc519751f86b7d1e",
+    "published_unix": 1792604091.6507738,
     "run_id": "232f20e112ac4a978c5aba52a0367195",
-    "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+    "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
     "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 11
+    "step": 13
   },
   "current_candidate_pool": {
-    "name": "37efb3128e824aeca2c8a0fba7ef2cdd-pool-0",
-    "step": 12,
-    "completed_questions": 2048,
-    "reserved_questions": 2048,
-    "source_consumed": 30720,
-    "saved_chunk_files": 13,
-    "progress_error": null
+    "step": 13,
+    "attempt": "e3d5408ee5414e85ba86fc5820889b6c",
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+    "source_cursor_after_reservation": 33280
   },
   "current_completed_selection_em": [
     {
-      "step": 2,
-      "attempt_id": "6b65b308ae474a81bb78d6277b4d9a8c",
-      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:2:policy-6b65b308ae474a81bb78d6277b4d9a8c",
-      "status": "MEASURED_COMPLETED_SELECTION",
-      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/6b65b308ae474a81bb78d6277b4d9a8c.json",
+      "attempt_id": "e3d5408ee5414e85ba86fc5820889b6c",
       "candidate_correct_count_histogram": {
-        "0": 1174,
-        "1": 281,
-        "2": 238,
-        "3": 194,
-        "4": 266,
-        "5": 407
+        "0": 1108,
+        "1": 236,
+        "2": 186,
+        "3": 181,
+        "4": 260,
+        "5": 589
       },
+      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy",
+      "candidate_mixed_fraction": 0.337109375,
+      "candidate_mixed_questions": 863,
       "candidate_questions": 2560,
       "candidate_trajectories": 12800,
+      "candidate_trajectory_em": 0.40125,
+      "discarded_insufficient_pool_count": 0,
+      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:13:policy-e3d5408ee5414e85ba86fc5820889b6c",
+      "pool_retry": 0,
       "raw_generated_trajectories": 12800,
-      "candidate_trajectory_em": 0.34671875,
-      "candidate_mixed_questions": 979,
-      "candidate_mixed_fraction": 0.382421875,
-      "selected_correct_count_histogram": {
-        "0": 0,
-        "1": 145,
-        "2": 123,
-        "3": 103,
-        "4": 141,
-        "5": 0
-      },
-      "selected_questions": 512,
-      "selected_trajectories": 2560,
-      "selected_trajectory_em": 0.49375,
-      "selected_mixed": 512,
-      "selected_mixed_fraction": 1.0,
       "selected_all_correct_fallback": 0,
       "selected_all_correct_fallback_fraction": 0.0,
-      "pool_retry": 0,
-      "discarded_insufficient_pool_count": 0,
-      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
-      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
-    },
-    {
-      "step": 3,
-      "attempt_id": "eefd4da7a7b445a4862963b159cbdfdc",
-      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:3:policy-eefd4da7a7b445a4862963b159cbdfdc",
-      "status": "MEASURED_COMPLETED_SELECTION",
-      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/eefd4da7a7b445a4862963b159cbdfdc.json",
-      "candidate_correct_count_histogram": {
-        "0": 1175,
-        "1": 270,
-        "2": 241,
-        "3": 249,
-        "4": 275,
-        "5": 350
-      },
-      "candidate_questions": 2560,
-      "candidate_trajectories": 12800,
-      "raw_generated_trajectories": 12800,
-      "candidate_trajectory_em": 0.339765625,
-      "candidate_mixed_questions": 1035,
-      "candidate_mixed_fraction": 0.404296875,
       "selected_correct_count_histogram": {
         "0": 0,
-        "1": 123,
-        "2": 105,
-        "3": 138,
+        "1": 139,
+        "2": 120,
+        "3": 107,
         "4": 146,
         "5": 0
       },
-      "selected_questions": 512,
-      "selected_trajectories": 2560,
-      "selected_trajectory_em": 0.519921875,
       "selected_mixed": 512,
       "selected_mixed_fraction": 1.0,
-      "selected_all_correct_fallback": 0,
-      "selected_all_correct_fallback_fraction": 0.0,
-      "pool_retry": 0,
-      "discarded_insufficient_pool_count": 0,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "selected_trajectory_em": 0.5015625,
       "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
-      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
-    },
-    {
-      "step": 4,
-      "attempt_id": "af99f949b92f4d4bbce7de3a55fa66ef",
-      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:4:policy-af99f949b92f4d4bbce7de3a55fa66ef",
+      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/artifacts/mixed-selection/e3d5408ee5414e85ba86fc5820889b6c.json",
       "status": "MEASURED_COMPLETED_SELECTION",
-      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/af99f949b92f4d4bbce7de3a55fa66ef.json",
-      "candidate_correct_count_histogram": {
-        "0": 1203,
-        "1": 251,
-        "2": 214,
-        "3": 246,
-        "4": 282,
-        "5": 364
-      },
-      "candidate_questions": 2560,
-      "candidate_trajectories": 12800,
-      "raw_generated_trajectories": 12800,
-      "candidate_trajectory_em": 0.341015625,
-      "candidate_mixed_questions": 993,
-      "candidate_mixed_fraction": 0.387890625,
-      "selected_correct_count_histogram": {
-        "0": 0,
-        "1": 119,
-        "2": 112,
-        "3": 137,
-        "4": 144,
-        "5": 0
-      },
-      "selected_questions": 512,
-      "selected_trajectories": 2560,
-      "selected_trajectory_em": 0.51953125,
-      "selected_mixed": 512,
-      "selected_mixed_fraction": 1.0,
-      "selected_all_correct_fallback": 0,
-      "selected_all_correct_fallback_fraction": 0.0,
-      "pool_retry": 0,
-      "discarded_insufficient_pool_count": 0,
-      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
-      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
-    },
-    {
-      "step": 5,
-      "attempt_id": "bd4e2ec20d514d55810b4f07d5007207",
-      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:5:policy-bd4e2ec20d514d55810b4f07d5007207",
-      "status": "MEASURED_COMPLETED_SELECTION",
-      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/bd4e2ec20d514d55810b4f07d5007207.json",
-      "candidate_correct_count_histogram": {
-        "0": 1164,
-        "1": 262,
-        "2": 220,
-        "3": 209,
-        "4": 259,
-        "5": 446
-      },
-      "candidate_questions": 2560,
-      "candidate_trajectories": 12800,
-      "raw_generated_trajectories": 12800,
-      "candidate_trajectory_em": 0.358984375,
-      "candidate_mixed_questions": 950,
-      "candidate_mixed_fraction": 0.37109375,
-      "selected_correct_count_histogram": {
-        "0": 0,
-        "1": 135,
-        "2": 125,
-        "3": 96,
-        "4": 156,
-        "5": 0
-      },
-      "selected_questions": 512,
-      "selected_trajectories": 2560,
-      "selected_trajectory_em": 0.506640625,
-      "selected_mixed": 512,
-      "selected_mixed_fraction": 1.0,
-      "selected_all_correct_fallback": 0,
-      "selected_all_correct_fallback_fraction": 0.0,
-      "pool_retry": 0,
-      "discarded_insufficient_pool_count": 0,
-      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
-      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
-    },
-    {
-      "step": 6,
-      "attempt_id": "e2db2510d7b845f1ae0e7d9ccc056938",
-      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:6:policy-e2db2510d7b845f1ae0e7d9ccc056938",
-      "status": "MEASURED_COMPLETED_SELECTION",
-      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/e2db2510d7b845f1ae0e7d9ccc056938.json",
-      "candidate_correct_count_histogram": {
-        "0": 1171,
-        "1": 250,
-        "2": 212,
-        "3": 239,
-        "4": 278,
-        "5": 410
-      },
-      "candidate_questions": 2560,
-      "candidate_trajectories": 12800,
-      "raw_generated_trajectories": 12800,
-      "candidate_trajectory_em": 0.355703125,
-      "candidate_mixed_questions": 979,
-      "candidate_mixed_fraction": 0.382421875,
-      "selected_correct_count_histogram": {
-        "0": 0,
-        "1": 126,
-        "2": 115,
-        "3": 125,
-        "4": 146,
-        "5": 0
-      },
-      "selected_questions": 512,
-      "selected_trajectories": 2560,
-      "selected_trajectory_em": 0.513671875,
-      "selected_mixed": 512,
-      "selected_mixed_fraction": 1.0,
-      "selected_all_correct_fallback": 0,
-      "selected_all_correct_fallback_fraction": 0.0,
-      "pool_retry": 0,
-      "discarded_insufficient_pool_count": 0,
-      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
-      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
-    },
-    {
-      "step": 7,
-      "attempt_id": "ef893814f0a24d058072385e67194516",
-      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:7:policy-ef893814f0a24d058072385e67194516",
-      "status": "MEASURED_COMPLETED_SELECTION",
-      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/ef893814f0a24d058072385e67194516.json",
-      "candidate_correct_count_histogram": {
-        "0": 1186,
-        "1": 240,
-        "2": 205,
-        "3": 216,
-        "4": 255,
-        "5": 458
-      },
-      "candidate_questions": 2560,
-      "candidate_trajectories": 12800,
-      "raw_generated_trajectories": 12800,
-      "candidate_trajectory_em": 0.36,
-      "candidate_mixed_questions": 916,
-      "candidate_mixed_fraction": 0.3578125,
-      "selected_correct_count_histogram": {
-        "0": 0,
-        "1": 133,
-        "2": 109,
-        "3": 123,
-        "4": 147,
-        "5": 0
-      },
-      "selected_questions": 512,
-      "selected_trajectories": 2560,
-      "selected_trajectory_em": 0.5109375,
-      "selected_mixed": 512,
-      "selected_mixed_fraction": 1.0,
-      "selected_all_correct_fallback": 0,
-      "selected_all_correct_fallback_fraction": 0.0,
-      "pool_retry": 0,
-      "discarded_insufficient_pool_count": 0,
-      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
-      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
-    },
-    {
-      "step": 8,
-      "attempt_id": "5c150fa24b7b46fc9b70d26f662f71cf",
-      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:8:policy-5c150fa24b7b46fc9b70d26f662f71cf",
-      "status": "MEASURED_COMPLETED_SELECTION",
-      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/5c150fa24b7b46fc9b70d26f662f71cf.json",
-      "candidate_correct_count_histogram": {
-        "0": 1126,
-        "1": 272,
-        "2": 215,
-        "3": 188,
-        "4": 285,
-        "5": 474
-      },
-      "candidate_questions": 2560,
-      "candidate_trajectories": 12800,
-      "raw_generated_trajectories": 12800,
-      "candidate_trajectory_em": 0.373125,
-      "candidate_mixed_questions": 960,
-      "candidate_mixed_fraction": 0.375,
-      "selected_correct_count_histogram": {
-        "0": 0,
-        "1": 141,
-        "2": 119,
-        "3": 104,
-        "4": 148,
-        "5": 0
-      },
-      "selected_questions": 512,
-      "selected_trajectories": 2560,
-      "selected_trajectory_em": 0.501171875,
-      "selected_mixed": 512,
-      "selected_mixed_fraction": 1.0,
-      "selected_all_correct_fallback": 0,
-      "selected_all_correct_fallback_fraction": 0.0,
-      "pool_retry": 0,
-      "discarded_insufficient_pool_count": 0,
-      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
-      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
-    },
-    {
-      "step": 9,
-      "attempt_id": "b4595a0ced7e40ba8db6d4a1199d6d10",
-      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:9:policy-b4595a0ced7e40ba8db6d4a1199d6d10",
-      "status": "MEASURED_COMPLETED_SELECTION",
-      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/b4595a0ced7e40ba8db6d4a1199d6d10.json",
-      "candidate_correct_count_histogram": {
-        "0": 1099,
-        "1": 274,
-        "2": 198,
-        "3": 204,
-        "4": 289,
-        "5": 496
-      },
-      "candidate_questions": 2560,
-      "candidate_trajectories": 12800,
-      "raw_generated_trajectories": 12800,
-      "candidate_trajectory_em": 0.38421875,
-      "candidate_mixed_questions": 965,
-      "candidate_mixed_fraction": 0.376953125,
-      "selected_correct_count_histogram": {
-        "0": 0,
-        "1": 152,
-        "2": 94,
-        "3": 114,
-        "4": 152,
-        "5": 0
-      },
-      "selected_questions": 512,
-      "selected_trajectories": 2560,
-      "selected_trajectory_em": 0.50390625,
-      "selected_mixed": 512,
-      "selected_mixed_fraction": 1.0,
-      "selected_all_correct_fallback": 0,
-      "selected_all_correct_fallback_fraction": 0.0,
-      "pool_retry": 0,
-      "discarded_insufficient_pool_count": 0,
-      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
-      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
-    },
-    {
-      "step": 10,
-      "attempt_id": "439e064ef4af4c4e9d368ce395413249",
-      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:10:policy-439e064ef4af4c4e9d368ce395413249",
-      "status": "MEASURED_COMPLETED_SELECTION",
-      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/439e064ef4af4c4e9d368ce395413249.json",
-      "candidate_correct_count_histogram": {
-        "0": 1141,
-        "1": 232,
-        "2": 174,
-        "3": 232,
-        "4": 287,
-        "5": 494
-      },
-      "candidate_questions": 2560,
-      "candidate_trajectories": 12800,
-      "raw_generated_trajectories": 12800,
-      "candidate_trajectory_em": 0.38234375,
-      "candidate_mixed_questions": 925,
-      "candidate_mixed_fraction": 0.361328125,
-      "selected_correct_count_histogram": {
-        "0": 0,
-        "1": 126,
-        "2": 93,
-        "3": 127,
-        "4": 166,
-        "5": 0
-      },
-      "selected_questions": 512,
-      "selected_trajectories": 2560,
-      "selected_trajectory_em": 0.530078125,
-      "selected_mixed": 512,
-      "selected_mixed_fraction": 1.0,
-      "selected_all_correct_fallback": 0,
-      "selected_all_correct_fallback_fraction": 0.0,
-      "pool_retry": 0,
-      "discarded_insufficient_pool_count": 0,
-      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
-      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
-    },
-    {
-      "step": 11,
-      "attempt_id": "89f23c532fb8484aaf7b6cd634d1eba3",
-      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:11:policy-89f23c532fb8484aaf7b6cd634d1eba3",
-      "status": "MEASURED_COMPLETED_SELECTION",
-      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/89f23c532fb8484aaf7b6cd634d1eba3.json",
-      "candidate_correct_count_histogram": {
-        "0": 1110,
-        "1": 204,
-        "2": 212,
-        "3": 209,
-        "4": 274,
-        "5": 551
-      },
-      "candidate_questions": 2560,
-      "candidate_trajectories": 12800,
-      "raw_generated_trajectories": 12800,
-      "candidate_trajectory_em": 0.39890625,
-      "candidate_mixed_questions": 899,
-      "candidate_mixed_fraction": 0.351171875,
-      "selected_correct_count_histogram": {
-        "0": 0,
-        "1": 124,
-        "2": 119,
-        "3": 123,
-        "4": 146,
-        "5": 0
-      },
-      "selected_questions": 512,
-      "selected_trajectories": 2560,
-      "selected_trajectory_em": 0.513671875,
-      "selected_mixed": 512,
-      "selected_mixed_fraction": 1.0,
-      "selected_all_correct_fallback": 0,
-      "selected_all_correct_fallback_fraction": 0.0,
-      "pool_retry": 0,
-      "discarded_insufficient_pool_count": 0,
-      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
-      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
+      "step": 13
     }
   ],
   "latest_completed_metrics": {
-    "step": 11,
-    "attempt_index": 11,
-    "reward": 0.6300367712974548,
-    "pg_loss": 0.005586632083425013,
-    "ppo_kl": 0.0012724943673674716,
-    "grad_norm": 2.6276173770064495,
-    "optimizer_writes": 220,
-    "optimizer_writes_before": 200,
-    "optimizer_writes_this_outer": 20
+    "attempt_index": 13,
+    "grad_norm": 2.527223024756102,
+    "optimizer_writes": 260,
+    "optimizer_writes_before": 240,
+    "optimizer_writes_this_outer": 20,
+    "pg_loss": 0.026009360975243374,
+    "ppo_kl": 0.0009061139965524489,
+    "reward": 0.6196612119674683,
+    "step": 13
   },
   "archive5_grounding_dependency_closure": {
     "status": "EASY2560_POST_CALLBACK_DEPENDENCIES_SHA_FSYNC_PASS",
@@ -1833,7 +1485,7 @@
       "terminal": true
     }
   ],
-  "current_progress_evidence": "evidence/actual11-complete-cp11-and-next-outer-20261022.json",
+  "current_progress_evidence": "evidence/actual-fa3-outer13-full-update-and-sealed-checkpoint-20261022.json",
   "published_progress_observer": {
     "commit": "b3f808a31d957799c82690cb6ddf97e2bdddd002",
     "source": "reproduction/operations/easy7b_20261021/watch_training_progress_local.py",
@@ -1865,14 +1517,14 @@
   },
   "fa3_candidate": {
     "requested_after_complete9": true,
-    "production_switched": false,
-    "current_actor_backend": "FA3_CONFIGURED_ACTUAL_EXECUTION_PENDING",
+    "production_switched": true,
+    "current_actor_backend": "FLASH_ATTENTION_3_INSTANCE_LOCAL_VARLEN_ACTUAL_EXECUTED",
     "current_rollout_backend": "XFORMERS",
     "existing_binary": "/data/user/jxu957/experiments/topd-20261008/runtime/env/lib/python3.10/site-packages/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
     "cpu_import_with_private_cudart_pass": true,
     "kernel_probe_job": "745988",
     "full_model_numerical_qualified": false,
-    "training_modified": false,
+    "training_modified": true,
     "kernel_probe_pass": true,
     "full_model_probe_job": "746013",
     "full_model_probe_state": "FAILED_NUMERICAL_ACCEPTANCE",
@@ -1884,7 +1536,7 @@
       0.0111437007612922,
       0.010802008543173968
     ],
-    "next_action": "Observe actual native4 full-state CUDA/dataequal restoration and FA3 forward/backward, complete13..17 and saved18; continue200",
+    "next_action": "Continue the same healthy job through13..17 plus saved18 followup, then continue200; no new stop/hot edit/duplicate submission",
     "layer_shadow_job": "746054",
     "layer_shadow_source_step": 10,
     "layer_shadow_state": "COMPLETED0_NOT_QUALIFICATION",
@@ -1895,10 +1547,17 @@
     "formal_fa3_job_launched": true,
     "sdpa_reference_pass": true,
     "sdpa_reference_job": "746114",
-    "fa2_closeness_gate_superseded_by_latest_user": true
+    "fa2_closeness_gate_superseded_by_latest_user": true,
+    "acceptance_criterion_current": "Latest human authorization: correct attention implementation versus FP32 SDPA-MATH; prior FA2-closeness rejection retained historically",
+    "runtime_hot_edited": false,
+    "actual_execution_evidence": "evidence/actual-fa3-outer13-full-update-and-sealed-checkpoint-20261022.json",
+    "actual_completed_outer": 13,
+    "actual_forward_returns_per_rank": 5068,
+    "actual_backward_returns_per_rank": 2240,
+    "first_actor_update_seconds": 264.853
   },
-  "latest_full_checkpoint_outer": 12,
-  "latest_phase_timing_evidence": "evidence/actual-outer10-timing-and-grounding-phase-20261022.json",
+  "latest_full_checkpoint_outer": 13,
+  "latest_phase_timing_evidence": "evidence/actual-fa3-outer13-full-update-and-sealed-checkpoint-20261022.json",
   "frozen_grounding_batch_optimization": {
     "production_micro": 4,
     "changed": false,
@@ -2117,14 +1776,29 @@
     "sdpa_reference_evidence": "evidence/actual-fa3-sdpa-math-reference-20261022.json",
     "historical_fa2_numerical_rejection_preserved": true,
     "actual_target_restore_accepted": true,
-    "actual_target_actor_fa3_execution_observed": false,
+    "actual_target_actor_fa3_execution_observed": true,
     "goal_remains_active": true,
-    "restore_evidence": "evidence/actual-fa3-native4-cp12-restore-dataequal-20261022.json"
+    "restore_evidence": "evidence/actual-fa3-native4-cp12-restore-dataequal-20261022.json",
+    "first_target_complete_outer": 13,
+    "first_target_full_checkpoint_sealed": 13,
+    "actual_execution_evidence": "evidence/actual-fa3-outer13-full-update-and-sealed-checkpoint-20261022.json"
   },
   "active_local_watcher": {
     "session_id": 66450,
     "root": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792602336293720000",
     "target17_and_saved18": true,
     "source_commit": "0bdfd3300a8dc9725604bd94caa59b770c77b1b8"
+  },
+  "historical_cp1_actual_state_restore": {
+    "model_tensors": 339,
+    "world_size": 4,
+    "source_job": "745022",
+    "source_outer": 1,
+    "actual_optimizer_writes_per_rank": 20,
+    "scheduler_outer": 1,
+    "candidate_source_cursor": 2560,
+    "all4_model_adam_scheduler_rng_driver_dataequal": true,
+    "pre_outer_stream_second_readback_equal": true,
+    "post_callback_rng_captured": true
   }
 }

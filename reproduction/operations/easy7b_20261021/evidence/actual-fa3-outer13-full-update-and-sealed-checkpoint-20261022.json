@@ -1,0 +1,1326 @@
+{
+  "format": "ACTUAL_FA3_NATIVE4_OUTER13_EXECUTION_AND_SEALED_FULL_STATE_V1",
+  "epoch": 1792604228.2291622,
+  "job": "746125",
+  "run_id": "232f20e112ac4a978c5aba52a0367195",
+  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+  "runtime_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+  "authorization": "human-fa3-sdpa-transition-authorization.json",
+  "sdpa_math_reference": "evidence/actual-fa3-sdpa-math-reference-20261022.json",
+  "historical_fa2_full_model_rejection_preserved": true,
+  "actor_attention_backend": "instance-local FA3 varlen forward and autograd backward",
+  "rollout_backend": "vLLM XFORMERS unchanged",
+  "grounding_backend": "SDPA unchanged",
+  "actual_flash3_per_rank": {
+    "0": {
+      "actual_flash3_training_executed": true,
+      "actual_optimizer_writes": 260,
+      "attention_layers": 28,
+      "checked_unix": 1792603854.8114917,
+      "cuda_synchronized": true,
+      "flash3_enabled": true,
+      "forward_success_returns": {
+        "dense": 0,
+        "varlen": 5068
+      },
+      "global_transformers_patch": false,
+      "kernel_backward_success_returns": 2240,
+      "logical_update": 13,
+      "observed_shapes": [
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            8304,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            8304,
+            28,
+            128
+          ],
+          "v": [
+            8304,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            5128,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            5128,
+            28,
+            128
+          ],
+          "v": [
+            5128,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            8319,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            8319,
+            28,
+            128
+          ],
+          "v": [
+            8319,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            8090,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            8090,
+            28,
+            128
+          ],
+          "v": [
+            8090,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            5424,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            5424,
+            28,
+            128
+          ],
+          "v": [
+            5424,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            9637,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            9637,
+            28,
+            128
+          ],
+          "v": [
+            9637,
+            28,
+            128
+          ]
+        }
+      ],
+      "provenance": {
+        "compiled_torch_cuda": "12.1",
+        "cudart_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/libcudart.so.12",
+        "cudart_runtime_version": 12060,
+        "cudart_sha256": "095296727cfb5f51e5b3ae69a3cb88cbd7b6592f314ace0fdfc4e1d758c2aa85",
+        "extension_module": "flash_attn_3_cuda",
+        "extension_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+        "extension_sha256": "be3e87f7b0401f71be424916d4ca031f90aa21be70b479eec0c9898763dcb345",
+        "interface_module": "_search_g1_actor_flash3_a9690456d973461a895794f0514542b4",
+        "interface_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/flash_attn_interface.py",
+        "interface_sha256": "a50f564fa1fc4cdd85ffa61f79e913a463c2066e519f9c5e8bc2e5c74457fa38",
+        "interface_version": "3.0.0b1",
+        "source_scope": "private actor interface + explicit extension; no foreign site-packages path",
+        "torch_version": "2.4.0+cu121"
+      },
+      "qkv_gradient_returns": 2240,
+      "rank": 0,
+      "role": "easy7b_instance_local_flash3_execution",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+      "state_dict_keys_changed": false
+    },
+    "1": {
+      "actual_flash3_training_executed": true,
+      "actual_optimizer_writes": 260,
+      "attention_layers": 28,
+      "checked_unix": 1792603854.8114812,
+      "cuda_synchronized": true,
+      "flash3_enabled": true,
+      "forward_success_returns": {
+        "dense": 0,
+        "varlen": 5068
+      },
+      "global_transformers_patch": false,
+      "kernel_backward_success_returns": 2240,
+      "logical_update": 13,
+      "observed_shapes": [
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            7593,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            7593,
+            28,
+            128
+          ],
+          "v": [
+            7593,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            6766,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            6766,
+            28,
+            128
+          ],
+          "v": [
+            6766,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            7014,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            7014,
+            28,
+            128
+          ],
+          "v": [
+            7014,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            12292,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            12292,
+            28,
+            128
+          ],
+          "v": [
+            12292,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            7778,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            7778,
+            28,
+            128
+          ],
+          "v": [
+            7778,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            7680,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            7680,
+            28,
+            128
+          ],
+          "v": [
+            7680,
+            28,
+            128
+          ]
+        }
+      ],
+      "provenance": {
+        "compiled_torch_cuda": "12.1",
+        "cudart_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/libcudart.so.12",
+        "cudart_runtime_version": 12060,
+        "cudart_sha256": "095296727cfb5f51e5b3ae69a3cb88cbd7b6592f314ace0fdfc4e1d758c2aa85",
+        "extension_module": "flash_attn_3_cuda",
+        "extension_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+        "extension_sha256": "be3e87f7b0401f71be424916d4ca031f90aa21be70b479eec0c9898763dcb345",
+        "interface_module": "_search_g1_actor_flash3_bd041cc81d8f4198a93b0cad5c7663e3",
+        "interface_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/flash_attn_interface.py",
+        "interface_sha256": "a50f564fa1fc4cdd85ffa61f79e913a463c2066e519f9c5e8bc2e5c74457fa38",
+        "interface_version": "3.0.0b1",
+        "source_scope": "private actor interface + explicit extension; no foreign site-packages path",
+        "torch_version": "2.4.0+cu121"
+      },
+      "qkv_gradient_returns": 2240,
+      "rank": 1,
+      "role": "easy7b_instance_local_flash3_execution",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+      "state_dict_keys_changed": false
+    },
+    "2": {
+      "actual_flash3_training_executed": true,
+      "actual_optimizer_writes": 260,
+      "attention_layers": 28,
+      "checked_unix": 1792603854.811495,
+      "cuda_synchronized": true,
+      "flash3_enabled": true,
+      "forward_success_returns": {
+        "dense": 0,
+        "varlen": 5068
+      },
+      "global_transformers_patch": false,
+      "kernel_backward_success_returns": 2240,
+      "logical_update": 13,
+      "observed_shapes": [
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            8465,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            8465,
+            28,
+            128
+          ],
+          "v": [
+            8465,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            9620,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            9620,
+            28,
+            128
+          ],
+          "v": [
+            9620,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            8479,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            8479,
+            28,
+            128
+          ],
+          "v": [
+            8479,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            11319,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            11319,
+            28,
+            128
+          ],
+          "v": [
+            11319,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            6789,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            6789,
+            28,
+            128
+          ],
+          "v": [
+            6789,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            5991,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            5991,
+            28,
+            128
+          ],
+          "v": [
+            5991,
+            28,
+            128
+          ]
+        }
+      ],
+      "provenance": {
+        "compiled_torch_cuda": "12.1",
+        "cudart_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/libcudart.so.12",
+        "cudart_runtime_version": 12060,
+        "cudart_sha256": "095296727cfb5f51e5b3ae69a3cb88cbd7b6592f314ace0fdfc4e1d758c2aa85",
+        "extension_module": "flash_attn_3_cuda",
+        "extension_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+        "extension_sha256": "be3e87f7b0401f71be424916d4ca031f90aa21be70b479eec0c9898763dcb345",
+        "interface_module": "_search_g1_actor_flash3_32fe5dd04ee8476db9afa6074f66fba7",
+        "interface_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/flash_attn_interface.py",
+        "interface_sha256": "a50f564fa1fc4cdd85ffa61f79e913a463c2066e519f9c5e8bc2e5c74457fa38",
+        "interface_version": "3.0.0b1",
+        "source_scope": "private actor interface + explicit extension; no foreign site-packages path",
+        "torch_version": "2.4.0+cu121"
+      },
+      "qkv_gradient_returns": 2240,
+      "rank": 2,
+      "role": "easy7b_instance_local_flash3_execution",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+      "state_dict_keys_changed": false
+    },
+    "3": {
+      "actual_flash3_training_executed": true,
+      "actual_optimizer_writes": 260,
+      "attention_layers": 28,
+      "checked_unix": 1792603854.8115652,
+      "cuda_synchronized": true,
+      "flash3_enabled": true,
+      "forward_success_returns": {
+        "dense": 0,
+        "varlen": 5068
+      },
+      "global_transformers_patch": false,
+      "kernel_backward_success_returns": 2240,
+      "logical_update": 13,
+      "observed_shapes": [
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            6500,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            6500,
+            28,
+            128
+          ],
+          "v": [
+            6500,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            7589,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            7589,
+            28,
+            128
+          ],
+          "v": [
+            7589,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            10012,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            10012,
+            28,
+            128
+          ],
+          "v": [
+            10012,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            8383,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            8383,
+            28,
+            128
+          ],
+          "v": [
+            8383,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            8982,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            8982,
+            28,
+            128
+          ],
+          "v": [
+            8982,
+            28,
+            128
+          ]
+        },
+        {
+          "dtype": "torch.bfloat16",
+          "k": [
+            8723,
+            28,
+            128
+          ],
+          "kind": "varlen",
+          "q": [
+            8723,
+            28,
+            128
+          ],
+          "v": [
+            8723,
+            28,
+            128
+          ]
+        }
+      ],
+      "provenance": {
+        "compiled_torch_cuda": "12.1",
+        "cudart_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/libcudart.so.12",
+        "cudart_runtime_version": 12060,
+        "cudart_sha256": "095296727cfb5f51e5b3ae69a3cb88cbd7b6592f314ace0fdfc4e1d758c2aa85",
+        "extension_module": "flash_attn_3_cuda",
+        "extension_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+        "extension_sha256": "be3e87f7b0401f71be424916d4ca031f90aa21be70b479eec0c9898763dcb345",
+        "interface_module": "_search_g1_actor_flash3_962ba41847ee487f89b800a3cf3adc66",
+        "interface_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/flash_attn_interface.py",
+        "interface_sha256": "a50f564fa1fc4cdd85ffa61f79e913a463c2066e519f9c5e8bc2e5c74457fa38",
+        "interface_version": "3.0.0b1",
+        "source_scope": "private actor interface + explicit extension; no foreign site-packages path",
+        "torch_version": "2.4.0+cu121"
+      },
+      "qkv_gradient_returns": 2240,
+      "rank": 3,
+      "role": "easy7b_instance_local_flash3_execution",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+      "state_dict_keys_changed": false
+    }
+  },
+  "actual_update_records": [
+    {
+      "actual_optimizer_writes": 20,
+      "attempt_id": "e3d5408ee5414e85ba86fc5820889b6c",
+      "full_budget_complete": true,
+      "opportunities_processed": 20,
+      "opportunities_unattempted": 0,
+      "optimizer_writes_after": 260,
+      "optimizer_writes_before": 240,
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "step": 13,
+      "update_status": "complete"
+    }
+  ],
+  "actual_attempts": [
+    {
+      "all_ranks_agreed": true,
+      "attempt_id": "e3d5408ee5414e85ba86fc5820889b6c",
+      "complete_outer": true,
+      "completed_outer": 13,
+      "full_budget_complete": true,
+      "logical_update": 13,
+      "opportunities_processed": 20,
+      "opportunities_unattempted": 0,
+      "optimizer_calls_this_attempt": 20,
+      "optimizer_rollbacks_this_attempt": 0,
+      "optimizer_writes_after": 260,
+      "optimizer_writes_before": 240,
+      "optimizer_writes_this_attempt": 20,
+      "real_rank_count": 4,
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "scheduler_advances": 1,
+      "slurm_job_id": "746125",
+      "status": "complete"
+    }
+  ],
+  "actual_scheduler_records": {
+    "0": [
+      {
+        "actual_optimizer_writes": 0,
+        "attempt_id": "e3d5408ee5414e85ba86fc5820889b6c",
+        "kind": "BEGIN",
+        "logical_update": 13,
+        "opportunities_processed": 0,
+        "rank": 0,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 0,
+        "scheduler_last_epoch_after": 12,
+        "slurm_job_id": "746125",
+        "writes_after": 240,
+        "writes_before": 240
+      },
+      {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "e3d5408ee5414e85ba86fc5820889b6c",
+        "full_budget_complete": true,
+        "kind": "COMMIT_PREPARED",
+        "logical_update": 13,
+        "opportunities_processed": 20,
+        "rank": 0,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 0,
+        "scheduler_last_epoch_after": 12,
+        "slurm_job_id": "746125",
+        "update_status": "complete",
+        "writes_after": 260,
+        "writes_before": 240
+      },
+      {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "e3d5408ee5414e85ba86fc5820889b6c",
+        "full_budget_complete": true,
+        "kind": "COMPLETE",
+        "logical_update": 13,
+        "opportunities_processed": 20,
+        "rank": 0,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 1,
+        "scheduler_last_epoch_after": 13,
+        "slurm_job_id": "746125",
+        "update_status": "complete",
+        "writes_after": 260,
+        "writes_before": 240
+      }
+    ],
+    "1": [
+      {
+        "actual_optimizer_writes": 0,
+        "attempt_id": "e3d5408ee5414e85ba86fc5820889b6c",
+        "kind": "BEGIN",
+        "logical_update": 13,
+        "opportunities_processed": 0,
+        "rank": 1,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 0,
+        "scheduler_last_epoch_after": 12,
+        "slurm_job_id": "746125",
+        "writes_after": 240,
+        "writes_before": 240
+      },
+      {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "e3d5408ee5414e85ba86fc5820889b6c",
+        "full_budget_complete": true,
+        "kind": "COMMIT_PREPARED",
+        "logical_update": 13,
+        "opportunities_processed": 20,
+        "rank": 1,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 0,
+        "scheduler_last_epoch_after": 12,
+        "slurm_job_id": "746125",
+        "update_status": "complete",
+        "writes_after": 260,
+        "writes_before": 240
+      },
+      {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "e3d5408ee5414e85ba86fc5820889b6c",
+        "full_budget_complete": true,
+        "kind": "COMPLETE",
+        "logical_update": 13,
+        "opportunities_processed": 20,
+        "rank": 1,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 1,
+        "scheduler_last_epoch_after": 13,
+        "slurm_job_id": "746125",
+        "update_status": "complete",
+        "writes_after": 260,
+        "writes_before": 240
+      }
+    ],
+    "2": [
+      {
+        "actual_optimizer_writes": 0,
+        "attempt_id": "e3d5408ee5414e85ba86fc5820889b6c",
+        "kind": "BEGIN",
+        "logical_update": 13,
+        "opportunities_processed": 0,
+        "rank": 2,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 0,
+        "scheduler_last_epoch_after": 12,
+        "slurm_job_id": "746125",
+        "writes_after": 240,
+        "writes_before": 240
+      },
+      {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "e3d5408ee5414e85ba86fc5820889b6c",
+        "full_budget_complete": true,
+        "kind": "COMMIT_PREPARED",
+        "logical_update": 13,
+        "opportunities_processed": 20,
+        "rank": 2,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 0,
+        "scheduler_last_epoch_after": 12,
+        "slurm_job_id": "746125",
+        "update_status": "complete",
+        "writes_after": 260,
+        "writes_before": 240
+      },
+      {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "e3d5408ee5414e85ba86fc5820889b6c",
+        "full_budget_complete": true,
+        "kind": "COMPLETE",
+        "logical_update": 13,
+        "opportunities_processed": 20,
+        "rank": 2,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 1,
+        "scheduler_last_epoch_after": 13,
+        "slurm_job_id": "746125",
+        "update_status": "complete",
+        "writes_after": 260,
+        "writes_before": 240
+      }
+    ],
+    "3": [
+      {
+        "actual_optimizer_writes": 0,
+        "attempt_id": "e3d5408ee5414e85ba86fc5820889b6c",
+        "kind": "BEGIN",
+        "logical_update": 13,
+        "opportunities_processed": 0,
+        "rank": 3,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 0,
+        "scheduler_last_epoch_after": 12,
+        "slurm_job_id": "746125",
+        "writes_after": 240,
+        "writes_before": 240
+      },
+      {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "e3d5408ee5414e85ba86fc5820889b6c",
+        "full_budget_complete": true,
+        "kind": "COMMIT_PREPARED",
+        "logical_update": 13,
+        "opportunities_processed": 20,
+        "rank": 3,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 0,
+        "scheduler_last_epoch_after": 12,
+        "slurm_job_id": "746125",
+        "update_status": "complete",
+        "writes_after": 260,
+        "writes_before": 240
+      },
+      {
+        "actual_optimizer_writes": 20,
+        "attempt_id": "e3d5408ee5414e85ba86fc5820889b6c",
+        "full_budget_complete": true,
+        "kind": "COMPLETE",
+        "logical_update": 13,
+        "opportunities_processed": 20,
+        "rank": 3,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scheduler_advances": 1,
+        "scheduler_last_epoch_after": 13,
+        "slurm_job_id": "746125",
+        "update_status": "complete",
+        "writes_after": 260,
+        "writes_before": 240
+      }
+    ]
+  },
+  "completed_metrics": [
+    {
+      "attempt_index": 13,
+      "grad_norm": 2.527223024756102,
+      "optimizer_writes": 260,
+      "optimizer_writes_before": 240,
+      "optimizer_writes_this_outer": 20,
+      "pg_loss": 0.026009360975243374,
+      "ppo_kl": 0.0009061139965524489,
+      "reward": 0.6196612119674683,
+      "step": 13
+    }
+  ],
+  "actual_selection": [
+    {
+      "attempt_id": "e3d5408ee5414e85ba86fc5820889b6c",
+      "candidate_correct_count_histogram": {
+        "0": 1108,
+        "1": 236,
+        "2": 186,
+        "3": 181,
+        "4": 260,
+        "5": 589
+      },
+      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy",
+      "candidate_mixed_fraction": 0.337109375,
+      "candidate_mixed_questions": 863,
+      "candidate_questions": 2560,
+      "candidate_trajectories": 12800,
+      "candidate_trajectory_em": 0.40125,
+      "discarded_insufficient_pool_count": 0,
+      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:13:policy-e3d5408ee5414e85ba86fc5820889b6c",
+      "pool_retry": 0,
+      "raw_generated_trajectories": 12800,
+      "selected_all_correct_fallback": 0,
+      "selected_all_correct_fallback_fraction": 0.0,
+      "selected_correct_count_histogram": {
+        "0": 0,
+        "1": 139,
+        "2": 120,
+        "3": 107,
+        "4": 146,
+        "5": 0
+      },
+      "selected_mixed": 512,
+      "selected_mixed_fraction": 1.0,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "selected_trajectory_em": 0.5015625,
+      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
+      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/artifacts/mixed-selection/e3d5408ee5414e85ba86fc5820889b6c.json",
+      "status": "MEASURED_COMPLETED_SELECTION",
+      "step": 13
+    }
+  ],
+  "timing_metrics": {
+    "selection/attempted_candidates": 2560.0,
+    "selection/selected_mixed": 512.0,
+    "selection/selected_all_correct_fallback": 0.0,
+    "selection/raw_generated_trajectories": 12800.0,
+    "selection/raw_generated_policy_tokens": 1398710.0,
+    "selection/raw_actual_retrieval_calls": 18139.0,
+    "selection/candidate_fill_seconds": 892.046,
+    "selection/selected_mixed_fraction": 1.0,
+    "selection/selected_all_correct_fraction": 0.0,
+    "selection/insufficient_pool_retries": 0.0,
+    "global_seqlen/min": 602450.0,
+    "global_seqlen/max": 648969.0,
+    "global_seqlen/minmax_diff": 46519.0,
+    "global_seqlen/balanced_min": 621776.0,
+    "global_seqlen/balanced_max": 621776.0,
+    "global_seqlen/mean": 621776.0,
+    "train/perf/em": 0.502,
+    "selection/mixed/trajectories": 2560.0,
+    "selection/mixed/original_reward_mean": 0.62,
+    "selection/mixed/original_advantage_mean": -0.026,
+    "selection/mixed/original_advantage_abs_mean": 0.781,
+    "selection/all_correct_fallback/trajectories": 0.0,
+    "response_length/mean": 832.882,
+    "response_length/max": 2423.0,
+    "response_length/min": 23.0,
+    "response_length/clip_ratio": 0.0,
+    "prompt_length/mean": 138.643,
+    "prompt_length/max": 200.0,
+    "prompt_length/min": 128.0,
+    "prompt_length/clip_ratio": 0.0,
+    "timing_s/candidate_fill": 892.046,
+    "timing_s/adv": 158.94,
+    "timing_s/update_actor": 264.853,
+    "timing_s/save_checkpoint": 160.441,
+    "timing_s/step": 728.402
+  },
+  "performance_comparison": {
+    "fa2_rows": [
+      {
+        "outer": 9,
+        "tokens": 2319566,
+        "actor_seconds": 256.414,
+        "tokens_per_second": 9046.175325840242
+      },
+      {
+        "outer": 10,
+        "tokens": 2406306,
+        "actor_seconds": 257.928,
+        "tokens_per_second": 9329.370987252256
+      },
+      {
+        "outer": 11,
+        "tokens": 2330745,
+        "actor_seconds": 256.979,
+        "tokens_per_second": 9069.787803672674
+      },
+      {
+        "outer": 12,
+        "tokens": 2418882,
+        "actor_seconds": 263.76,
+        "tokens_per_second": 9170.768880800728
+      }
+    ],
+    "fa2_actor_seconds_median": 257.45349999999996,
+    "fa2_token_rate_median": 9120.278342236701,
+    "fa3_outer13_tokens": 2487104,
+    "fa3_outer13_actor_seconds": 264.853,
+    "fa3_outer13_token_rate": 9390.507187005622,
+    "observed_token_rate_ratio": 1.0296294514957367,
+    "causal_speedup_established": false,
+    "steady_full_outer_speedup_established": false,
+    "limitations": [
+      "One FA3 outer and different candidate pool/token length distribution; first outer after restart/cache warmup.",
+      "CP12 to CP13 seal interval includes authorized stop/source audit/restore; do not compare with steady FA2 outer intervals.",
+      "Kernel-only1.7x does not establish actor or whole-outer1.7x."
+    ]
+  },
+  "sealed_checkpoint_readback": {
+    "epoch": 1792604228.2291622,
+    "read_only": true,
+    "tensor_bytes_read": false,
+    "payload_sha_recalculated": false,
+    "latest": {
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+      "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13",
+      "manager": "easy2560_per_outer_full_state_v1",
+      "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_13/full-manifest.json",
+      "manifest_sha256": "96569c55126acce8394777e87f190c8b0b82d5a31db66b40cc519751f86b7d1e",
+      "published_unix": 1792604091.6507738,
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+      "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+      "step": 13
+    },
+    "manifest_sha256_readback": "96569c55126acce8394777e87f190c8b0b82d5a31db66b40cc519751f86b7d1e",
+    "manifest_summary": {
+      "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+      "step": 13,
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+      "sealed_unix": 1792604091.6285396,
+      "total_bytes": 91405507782,
+      "actual_cuda_restore_accepted": false,
+      "boundary": {
+        "callbacks_complete": true,
+        "checked_unix": 1792604021.6734424,
+        "completed_outer": 13,
+        "driver_file": {
+          "bytes": 726812,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_13/boundary/driver.pt",
+          "sha256": "b3d400e2782329e47c7db2d91f2e68ecdd6dfb3720cc4d845017eac3f487555e"
+        },
+        "probe_round": 0,
+        "probe_version": "232f20e112ac4a978c5aba52a0367195:0:c7f8da3ab2f84097ae6430983e5329af",
+        "reward_probe_manifest": {
+          "bytes": 468319,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_13/boundary/reward-probe-manifest.json",
+          "sha256": "79c7866510d0eac734ce4bace0ca832a6d88f610b45e431d108e3d76b24751fc"
+        },
+        "reward_refresh_pending": false,
+        "role": "easy2560_completed_callback_boundary",
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "schema_version": 1,
+        "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+        "worker_files": [
+          {
+            "actual_optimizer_writes": 260,
+            "bytes": 17232,
+            "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_13/boundary/rank-0.pt",
+            "rank": 0,
+            "run_id": "232f20e112ac4a978c5aba52a0367195",
+            "sha256": "d79c976ccea7b587705f3818f0846f3c94c18e452b3edaf51faecba545ba316e"
+          },
+          {
+            "actual_optimizer_writes": 260,
+            "bytes": 17232,
+            "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_13/boundary/rank-1.pt",
+            "rank": 1,
+            "run_id": "232f20e112ac4a978c5aba52a0367195",
+            "sha256": "4a230e2f12bbd2c780eb2f9889da393c016d217accf751a2ae9190f55ec04aea"
+          },
+          {
+            "actual_optimizer_writes": 260,
+            "bytes": 17232,
+            "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_13/boundary/rank-2.pt",
+            "rank": 2,
+            "run_id": "232f20e112ac4a978c5aba52a0367195",
+            "sha256": "8d5ec2b1f600105e7156d060fb664c009f4c2f8d5da2135ffaca7fff742f9336"
+          },
+          {
+            "actual_optimizer_writes": 260,
+            "bytes": 17232,
+            "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_13/boundary/rank-3.pt",
+            "rank": 3,
+            "run_id": "232f20e112ac4a978c5aba52a0367195",
+            "sha256": "421c90e26a3ce92ee4db6f0364b593cab4fdf7bcabc71f992a84cdf6f736101c"
+          }
+        ]
+      }
+    },
+    "core_files": {
+      "added_tokens.json": {
+        "bytes": 605,
+        "device": 46,
+        "inode": 11121693779,
+        "mtime_ns": 1792603875879246000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/added_tokens.json",
+        "sha256": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b"
+      },
+      "complete.json": {
+        "bytes": 2030,
+        "device": 46,
+        "inode": 11121759291,
+        "mtime_ns": 1792604020977606000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/complete.json",
+        "sha256": "a5e482b5569885d1c7f1d963004a440ca54ff151b1d048893490a96e33020eae"
+      },
+      "config.json": {
+        "bytes": 842,
+        "device": 46,
+        "inode": 11121421888,
+        "mtime_ns": 1792603872942279000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/config.json",
+        "sha256": "97240c4095823cc86bfb963c4b314837facff51cc7e5873c1c6354f77f9fce61"
+      },
+      "generation_config.json": {
+        "bytes": 243,
+        "device": 46,
+        "inode": 11121693703,
+        "mtime_ns": 1792603872943860000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/generation_config.json",
+        "sha256": "5cbc3d054b73e70801535a65ffc9b427481257fa29f896e48f68e9ea3c285b96"
+      },
+      "merges.txt": {
+        "bytes": 1671853,
+        "device": 46,
+        "inode": 11121682106,
+        "mtime_ns": 1792603876013430000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/merges.txt",
+        "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+      },
+      "model-00001-of-00007.safetensors": {
+        "bytes": 4976687216,
+        "device": 46,
+        "inode": 11121616309,
+        "mtime_ns": 1792603873648121000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/model-00001-of-00007.safetensors",
+        "sha256": "1c09f7702e5afab096bda93591168a8fa773fdc34a6d34122daa12127233ce94"
+      },
+      "model-00002-of-00007.safetensors": {
+        "bytes": 4778622352,
+        "device": 46,
+        "inode": 11121616311,
+        "mtime_ns": 1792603873848600000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/model-00002-of-00007.safetensors",
+        "sha256": "5b923ce6e4f89cf5b5ac14687e57e5fe78ee010cd92fd12e3ba06e6be660b426"
+      },
+      "model-00003-of-00007.safetensors": {
+        "bytes": 4932743960,
+        "device": 46,
+        "inode": 11121437665,
+        "mtime_ns": 1792603874448338000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/model-00003-of-00007.safetensors",
+        "sha256": "0bbae0b26fe2f2bc1d19a24102e032c0fdf4cb8109fcda494790eff110ce6edb"
+      },
+      "model-00004-of-00007.safetensors": {
+        "bytes": 4932743992,
+        "device": 46,
+        "inode": 11121437669,
+        "mtime_ns": 1792603875184220000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/model-00004-of-00007.safetensors",
+        "sha256": "aa51b5bbfc85c15ffca840c528cc25a6f264c3f6c72c5bd07a5c1bf4dbd0ede7"
+      },
+      "model-00005-of-00007.safetensors": {
+        "bytes": 4998852296,
+        "device": 46,
+        "inode": 11121437678,
+        "mtime_ns": 1792603875515362000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/model-00005-of-00007.safetensors",
+        "sha256": "a58b14c1003e3e40ac9900c508914efc13dd449266e119c13013c498882e4aa8"
+      },
+      "model-00006-of-00007.safetensors": {
+        "bytes": 3662865184,
+        "device": 46,
+        "inode": 11121616319,
+        "mtime_ns": 1792603875794235000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/model-00006-of-00007.safetensors",
+        "sha256": "ed17738c9e9379145936e80796cc4361ae31346a4595e6ba1b64ff590becb168"
+      },
+      "model-00007-of-00007.safetensors": {
+        "bytes": 2179989632,
+        "device": 46,
+        "inode": 11121535780,
+        "mtime_ns": 1792603876179722000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/model-00007-of-00007.safetensors",
+        "sha256": "54acdee183b4fd0d00ff812b573146a1b721162366ed8e503f54ccc73cc3fb03"
+      },
+      "model.safetensors.index.json": {
+        "bytes": 27752,
+        "device": 46,
+        "inode": 11121682105,
+        "mtime_ns": 1792603875874779000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/model.safetensors.index.json",
+        "sha256": "3cb581aa586322d386864a9f80d0adbaa1f0f838cc310d7d7670990fa42121be"
+      },
+      "special_tokens_map.json": {
+        "bytes": 613,
+        "device": 46,
+        "inode": 11121535781,
+        "mtime_ns": 1792603875877437000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/special_tokens_map.json",
+        "sha256": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd"
+      },
+      "tokenizer.json": {
+        "bytes": 11421896,
+        "device": 46,
+        "inode": 11121682108,
+        "mtime_ns": 1792603876039329000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/tokenizer.json",
+        "sha256": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa"
+      },
+      "tokenizer_config.json": {
+        "bytes": 7306,
+        "device": 46,
+        "inode": 11121661344,
+        "mtime_ns": 1792603875876241000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/tokenizer_config.json",
+        "sha256": "7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6"
+      },
+      "training_state/driver.pt": {
+        "bytes": 726812,
+        "device": 46,
+        "inode": 11121642119,
+        "mtime_ns": 1792603895437657000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/training_state/driver.pt",
+        "sha256": "b4501ce903ff4390903724f7c5925b2ca4459b524bc7059061d387a737bb4dc6"
+      },
+      "training_state/manifest.json": {
+        "bytes": 2111,
+        "device": 46,
+        "inode": 11121588783,
+        "mtime_ns": 1792603895445846000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/training_state/manifest.json",
+        "sha256": "a01c8af34bab1a0823e4a74710a192aa68b0aee44575e36e8eba194717189e47"
+      },
+      "training_state/rank-0.pt": {
+        "bytes": 15231274397,
+        "device": 46,
+        "inode": 11121701389,
+        "mtime_ns": 1792603884085043000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/training_state/rank-0.pt",
+        "sha256": "389f7d14ecf19f9304329f589557bd6eb8c4292310d3de27e535d9c4cfd99add"
+      },
+      "training_state/rank-1.pt": {
+        "bytes": 15231274397,
+        "device": 46,
+        "inode": 11121649697,
+        "mtime_ns": 1792603883983009000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/training_state/rank-1.pt",
+        "sha256": "fa25a39cf56257566c50d80b724a3cc3c3c111fa94463d886bc6ecff96ab2bcb"
+      },
+      "training_state/rank-2.pt": {
+        "bytes": 15231274397,
+        "device": 46,
+        "inode": 11121588569,
+        "mtime_ns": 1792603884243355000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/training_state/rank-2.pt",
+        "sha256": "0a802f5c1353018e954f68e3b286ab75849fde8cb14f768628b8a2cf6319408c"
+      },
+      "training_state/rank-3.pt": {
+        "bytes": 15231274397,
+        "device": 46,
+        "inode": 11121454228,
+        "mtime_ns": 1792603884008607000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/training_state/rank-3.pt",
+        "sha256": "ee8e2534e0a70c4ebad50524a2b3e94360c0db27d343e325576a8e67b73f1a49"
+      },
+      "vocab.json": {
+        "bytes": 2776833,
+        "device": 46,
+        "inode": 11121437704,
+        "mtime_ns": 1792603875957046000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_13/vocab.json",
+        "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      }
+    },
+    "boundary_files": {
+      "driver.pt": {
+        "bytes": 726812,
+        "device": 46,
+        "inode": 11121968377,
+        "mtime_ns": 1792604021601898000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_13/boundary/driver.pt",
+        "sha256": "b3d400e2782329e47c7db2d91f2e68ecdd6dfb3720cc4d845017eac3f487555e"
+      },
+      "manifest.json": {
+        "bytes": 2607,
+        "device": 46,
+        "inode": 11121873383,
+        "mtime_ns": 1792604021674877000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_13/boundary/manifest.json",
+        "sha256": "649a72dc82c161021351aaf7408838a60283537a093350d4075477af5917d9f6"
+      },
+      "rank-0.pt": {
+        "bytes": 17232,
+        "device": 46,
+        "inode": 11121890042,
+        "mtime_ns": 1792604021358942000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_13/boundary/rank-0.pt",
+        "sha256": "d79c976ccea7b587705f3818f0846f3c94c18e452b3edaf51faecba545ba316e"
+      },
+      "rank-1.pt": {
+        "bytes": 17232,
+        "device": 46,
+        "inode": 11121707271,
+        "mtime_ns": 1792604021358728000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_13/boundary/rank-1.pt",
+        "sha256": "4a230e2f12bbd2c780eb2f9889da393c016d217accf751a2ae9190f55ec04aea"
+      },
+      "rank-2.pt": {
+        "bytes": 17232,
+        "device": 46,
+        "inode": 11121873374,
+        "mtime_ns": 1792604021358992000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_13/boundary/rank-2.pt",
+        "sha256": "8d5ec2b1f600105e7156d060fb664c009f4c2f8d5da2135ffaca7fff742f9336"
+      },
+      "rank-3.pt": {
+        "bytes": 17232,
+        "device": 46,
+        "inode": 11121963027,
+        "mtime_ns": 1792604021359414000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_13/boundary/rank-3.pt",
+        "sha256": "421c90e26a3ce92ee4db6f0364b593cab4fdf7bcabc71f992a84cdf6f736101c"
+      },
+      "reward-probe-manifest.json": {
+        "bytes": 468319,
+        "device": 46,
+        "inode": 11121707273,
+        "mtime_ns": 1792604021671737000,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_13/boundary/reward-probe-manifest.json",
+        "sha256": "79c7866510d0eac734ce4bace0ca832a6d88f610b45e431d108e3d76b24751fc"
+      }
+    }
+  },
+  "readback_scope": "Independent fresh small manifest SHA and all payload file identity/metadata checks only; full payload hashes/fsync were produced by training rolling checkpoint publisher, not independently recalculated by this read.",
+  "five_outer_followup_accepted": false,
+  "five_outer_followup_remaining": [
+    14,
+    15,
+    16,
+    17
+  ],
+  "required_next_outer_saved": 18,
+  "total_goal_outer": 200,
+  "total_goal_complete": false
+}
