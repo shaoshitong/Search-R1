@@ -9,3 +9,7 @@ Two normal/acd_u jobs743669/743670 each allocate2H100,16CPU,128G,2h, no dependen
 Remote root: `/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited122-L26-replay-v1`.
 
 CPU preparation is complete, GPU completion remains unaccepted until actual packed files, source IDs, reader and final Slurm exit pass. No model/rollout/tensor artifacts are local.
+
+## Actual terminal acceptance
+
+Both jobs COMPLETED0:0 (74366913m02s,74367012m26s). All156160 trajectories/488 lossless layer26 chunks complete; packed storage25,153,542,538B. CPU metadata/own-G10 EM join accepted bank at `bank/complete.json` SHA96aa8f2cabc1beb92422d59695292d4fe572546e4cbc0906b9ac36345f6c096a. Every producer performed full packed-payload SHA and real reader checks; independent first four chunks were fresh-rehashed/reconstructed. The final independent metadata join freshly verified all manifest/index SHAs, tensor sizes, masks/positions and exact own IDs/EM, without another full tensor bulk read. No training was submitted and743619/frozen30016 stayed unchanged.
