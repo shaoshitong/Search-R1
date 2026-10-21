@@ -5,9 +5,11 @@ This CPU-only auditor independently recomputes the already frozen screen on the
 and the 1.4 MB frozen float32 legacy-logit cache. It does not open head/model/Adam
 payloads, hidden-feature tensors, external outcomes, or final4096 outcomes.
 
-The exact source config is `0be60cc806a177790dce39fa28269303087a1b43ede90a439cce8a63f9e3a0fc`.
-The pre-score NQ halves receipt is
-`3c1c89c44bb90884a7c7ba5f5b9b5c2292f1a4547bd7e25cfa082c24eed0c9e9`.
+The failed v1 allocation stopped before model/cache/Adam initialization. It is
+preserved as a metadata guard failure, never treated as current training or a
+checkpoint restore. The auditor requires an explicit SHA/bytes-bound v2 packet
+with the actual prepared config and pre-score frozen NQ halves. No future SHA
+is guessed. The 2560 NQ identities and statistical definitions are unchanged.
 For each actual completed epoch 0/1/2/4/8/20 and raw/EMA, independently join
 strict own EM and IDs to source indices 5..9, verify finite q, exact row order,
 domain, K, source SHA and completed-checkpoint metadata, then recompute BA,

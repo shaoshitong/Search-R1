@@ -17,8 +17,6 @@ import sys
 
 EPOCHS = (0, 1, 2, 4, 8, 20)
 MODES = ('raw', 'EMA')
-CONFIG_SHA = '0be60cc806a177790dce39fa28269303087a1b43ede90a439cce8a63f9e3a0fc'
-HALVES_SHA = '3c1c89c44bb90884a7c7ba5f5b9b5c2292f1a4547bd7e25cfa082c24eed0c9e9'
 
 
 def canonical(v):
@@ -138,7 +136,7 @@ def validate_sources(c, cohort, selection, fixed_rows, all_groups):
     fixed = {g['qid']: g for g in fixed_rows}
     selected = {g['qid']: g for g in selection['groups']}
     groups = {g['qid']: g for g in all_groups}
-    if len(fixed) != len(fixed_rows) or len(selected) != 5120 or set(fixed) != set(qids) or set(selected) != set(qids):
+    if len(fixed) != len(fixed_rows) or len(selection['groups']) != 5120 or len(selected) != 5120 or len(groups) != len(all_groups) or set(fixed) != set(qids) or set(selected) != set(qids):
         raise ValueError('Frozen own-G5 selection coverage differs')
     if any('labels' in r or 'strict_em' in r for r in selection['groups']):
         raise ValueError('Precommitted selection must be label-blind identity metadata')
@@ -149,6 +147,8 @@ def validate_sources(c, cohort, selection, fixed_rows, all_groups):
         if len(g['trajectory_ids']) != 10 or len(set(g['trajectory_ids'])) != 10 or len(g['labels']) != 10 or any(type(v) is not int or v not in (0, 1) for v in g['labels']):
             raise ValueError('Ten real own trajectory IDs/strict EM required')
         tids.extend(g['trajectory_ids'])
+    if len({groups[q]['question_hash'] for q in fit+qids}) != len(fit)+len(qids):
+        raise ValueError('Fit/holdout question-hash identity collision')
     for q in qids:
         g, f, s = groups[q], fixed[q], selected[q]
         if s['source_indices'] != [5, 6, 7, 8, 9] or s['trajectory_ids'] != g['trajectory_ids'][5:] or f['trajectory_ids'] != s['trajectory_ids'] or f['labels'] != g['labels'][5:] or f['question_hash'] != g['question_hash'] or s['question_hash'] != g['question_hash']:
@@ -208,23 +208,26 @@ def compare_producer(rows, actual, declared):
         raise ValueError('Producer count accuracy differs')
 
 
-def audit(base, output):
-    base, output = Path(base), Path(output)
-    config_ref = proof(base / 'config.json')
-    if config_ref['sha256'] != CONFIG_SHA:
-        raise ValueError('Only the predeclared immutable large-screen config is accepted')
+def audit(packet_path, output):
+    packet_ref=proof(packet_path);packet=read(packet_path)
+    if packet['role']!='INDEPENDENT_FROZEN_LARGE_COUNT_NODE_AUDIT' or packet['external_pool_access'] or packet['final_pool_access']:
+        raise ValueError('Explicit frozen scope packet required')
+    base, output = Path(packet['target']), Path(output)
+    config_ref = packet['config'];checked(config_ref)
+    if config_ref['path'] != str(base/'config.json'):
+        raise ValueError('Exact packet target/config binding required')
     c = read(config_ref['path'])
-    if c['evaluation_epochs'] != list(EPOCHS) or c['external_pool_access'] or c['final_pool_access']:
+    if c['evaluation_epochs'] != list(EPOCHS) or c['external_pool_access'] or c['final_pool_access'] or c['prefix_tokens']!=20 or c['question_max_tokens']!=273 or c['fit_questions']!=30016 or c['internal_holdout_questions']!=5120 or c['epochs']!=20 or c['updates_per_epoch']!=938 or c['update_budget']!=18760:
         raise ValueError('Frozen screen scope differs')
-    half_ref = proof(base / 'screen-protocol/frozen-NQ-halves.json')
-    if half_ref['sha256'] != HALVES_SHA:
-        raise ValueError('Pre-score label-blind NQ halves changed')
+    half_ref = packet['frozen_NQ_halves'];checked(half_ref)
+    if half_ref['path'] != str(base/'screen-protocol/frozen-NQ-halves.json'):
+        raise ValueError('Exact packet pre-score halves binding required')
     frozen = read(half_ref['path'])
     cohort = read(checked(c['cohort']))
     source_refs = {k: c['inputs'][k] for k in ('internal_holdout_selection', 'internal_holdout_groups', 'merged_groups', 'identity_exclusion_acceptance')}
     values = {k: read(checked(ref)) for k, ref in source_refs.items()}
     exclusion = values['identity_exclusion_acceptance']
-    if exclusion.get('labels_consulted_for_selection') is not False or exclusion.get('scores_consulted_for_selection') is not False or any(v != 0 for v in exclusion['holdout_fixed_evaluation_qid_and_hash_overlap'].values()) or any(v != 0 for v in exclusion['merged_fixed_evaluation_qid_and_hash_overlap'].values()):
+    if exclusion.get('labels_consulted_for_selection') is not False or exclusion.get('scores_consulted_for_selection') is not False or any(exclusion.get(k)!=0 for k in ('holdout_original30016_qid_overlap','holdout_original30016_hash_overlap','holdout_controlled6528_qid_overlap','holdout_controlled6528_hash_overlap')) or any(v != 0 for v in exclusion['holdout_fixed_evaluation_qid_and_hash_overlap'].values()) or any(v != 0 for v in exclusion['merged_fixed_evaluation_qid_and_hash_overlap'].values()):
         raise ValueError('Identity-only holdout exclusion proof differs')
     fixed, tids = validate_sources(c, cohort, values['internal_holdout_selection'], values['internal_holdout_groups']['internal_holdout'], values['merged_groups']['train'])
     qids = cohort['holdout_qids']
@@ -235,7 +238,7 @@ def audit(base, output):
     if not cache_path.exists():
         return dict(status='WAITING_FOR_ACTUAL_FROZEN_CACHE_COMPLETE',config=config_ref,actual_scored_nodes=0,external_scoring_permitted=False)
     cache_ref, cache = proof(cache_path), read(cache_path)
-    if cache['config_sha256'] != CONFIG_SHA or cache['trajectory_ids_sha256'] != digest(tids) or cache['frozen_legacy_before'] != cache['frozen_legacy_after'] or cache['actor_updates'] != 0 or cache['legacy_updates'] != 0:
+    if cache['config_sha256'] != config_ref['sha256'] or cache['trajectory_ids_sha256'] != digest(tids) or cache['frozen_legacy_before'] != cache['frozen_legacy_after'] or cache['actor_updates'] != 0 or cache['legacy_updates'] != 0:
         raise ValueError('Frozen small-logit cache lineage differs')
     if sys.byteorder != 'little':
         raise ValueError('Declared native f32 cache requires little endian')
@@ -255,7 +258,7 @@ def audit(base, output):
             product_wrong *= 1 - p
         baseline_rows.append(dict(qid=q,q=min(1.,max(0.,1-product_correct-product_wrong)),K=sum(fixed[q]['labels'])))
     baseline = partitions(baseline_rows, halves)
-    common = dict(config=config_ref,source_refs=source_refs,cohort=c['cohort'],frozen_halves=half_ref,cache_complete=cache_ref,
+    common = dict(input_packet=packet_ref,audit_implementation=proof(__file__),config=config_ref,source_refs=source_refs,cohort=c['cohort'],frozen_halves=half_ref,cache_complete=cache_ref,
         frozen_small_logits=cache['files']['logits'],own_new5_IDs_sha256=digest([fixed[q]['trajectory_ids'] for q in qids]),
         own_new5_strict_EM_sha256=digest([fixed[q]['labels'] for q in qids]),ordered_holdout_qids_sha256=digest(qids),
         baseline_arithmetic='float64 stable sigmoid of stored native float32 Z; float64 product; fixed0.5',
@@ -312,8 +315,8 @@ def audit(base, output):
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--output',required=True);a=p.parse_args()
-    print(json.dumps(audit(a.base,a.output),sort_keys=True),flush=True)
+    p=argparse.ArgumentParser();p.add_argument('--input-packet',required=True);p.add_argument('--output',required=True);a=p.parse_args()
+    print(json.dumps(audit(a.input_packet,a.output),sort_keys=True),flush=True)
 
 
 if __name__=='__main__':

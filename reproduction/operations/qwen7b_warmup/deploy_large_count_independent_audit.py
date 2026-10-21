@@ -11,8 +11,7 @@ import subprocess
 
 P='reproduction/operations/qwen7b_warmup/'
 FILES=[P+n for n in ('direct_count_large_independent_audit.py','test_direct_count_large_independent_audit.py','deploy_large_count_independent_audit.py')]
-BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v1'
-TARGET='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v1'
+BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v2'
 BRANCH='codex/large-count-independent-audit-20261021'
 COMMON=r'''
 import pathlib,json,hashlib,os,fcntl,time,subprocess,base64,gzip,resource
@@ -38,7 +37,10 @@ for name,text in payload.items():
  raw=base64.b64decode(text);item=v['files'][name];assert len(raw)==item['bytes']and hashlib.sha256(raw).hexdigest()==item['sha256'];p=code/name
  if p.exists():assert p.read_bytes()==raw
  else:p.write_bytes(raw);p.chmod(0o444)
-pub=dict(commit=v['commit'],files={name:proof(code/name)for name in payload},code_root=str(code),GPU_operations=False)
+packet=read(code/'input-packet.json');assert packet['role']=='INDEPENDENT_FROZEN_LARGE_COUNT_NODE_AUDIT'and not packet['external_pool_access']and not packet['final_pool_access']
+for item in (packet['config'],packet['frozen_NQ_halves']):assert proof(item['path'])==item
+assert packet['target'].endswith('/direct-count-frozenE1-fit30016-hold5120-v2'),'Do not use failed v1 as current'
+pub=dict(commit=v['commit'],files={name:proof(code/name)for name in payload},code_root=str(code),GPU_operations=False,frozen_packet=proof(code/'input-packet.json'))
 immutable(b/'source-publication.json',pub)
 fixture="import importlib.util,sys,unittest; from pathlib import Path; root=Path("+repr(str(code))+"); name='reproduction.operations.qwen7b_warmup.direct_count_large_independent_audit';spec=importlib.util.spec_from_file_location(name,root/'direct_count_large_independent_audit.py');m=importlib.util.module_from_spec(spec);sys.modules[name]=m;spec.loader.exec_module(m);spec=importlib.util.spec_from_file_location('reproduction.operations.qwen7b_warmup.test_direct_count_large_independent_audit',root/'test_direct_count_large_independent_audit.py');t=importlib.util.module_from_spec(spec);spec.loader.exec_module(t);r=unittest.TextTestRunner().run(unittest.defaultTestLoader.loadTestsFromModule(t));assert r.wasSuccessful()"
 # The pure-stdlib test's relative import needs only empty namespace packages.
@@ -51,14 +53,14 @@ pub=read(b/'source-publication.json');assert pub['commit']==v['commit']
 for item in pub['files'].values():assert proof(item['path'])==item
 def limits():
  os.sched_setaffinity(0,sorted(os.sched_getaffinity(0))[:2]);resource.setrlimit(resource.RLIMIT_AS,(3*1024**3,3*1024**3))
-started=time.time();r=subprocess.run(['python3',str(code/'direct_count_large_independent_audit.py'),'--base',v['target'],'--output',str(b/'audits')],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=42,preexec_fn=limits)
+started=time.time();r=subprocess.run(['python3',str(code/'direct_count_large_independent_audit.py'),'--input-packet',str(code/'input-packet.json'),'--output',str(b/'audits')],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=42,preexec_fn=limits)
 if r.returncode:raise RuntimeError(r.stderr[-2200:])
 value=json.loads(r.stdout);answer=dict(status='FINITE_AVAILABLE_NODE_AUDIT_RETURNED',result=value,seconds=time.time()-started,returncode=r.returncode,publication=proof(b/'source-publication.json'),GPU=0)
 name='run-'+hashlib.sha256(r.stdout.encode()).hexdigest()[:16]+'.json';immutable(b/name,answer)
 print(json.dumps(dict(answer,execution_receipt=proof(b/name))))
 '''
 STATUS=r'''
-target=pathlib.Path(v['target']);out=dict(epoch=time.time(),source=proof(b/'source-publication.json')if(b/'source-publication.json').exists()else None,cache_complete=(target/'cache/complete.json').exists(),nodes=[])
+packet=read(code/'input-packet.json');target=pathlib.Path(packet['target']);out=dict(epoch=time.time(),source=proof(b/'source-publication.json')if(b/'source-publication.json').exists()else None,cache_complete=(target/'cache/complete.json').exists(),nodes=[])
 for epoch in (0,1,2,4,8,20):
  p=target/'evaluations'/('epoch-%02d'%epoch)/'complete.json'
  if p.exists():out['nodes'].append(dict(epoch=epoch,receipt=proof(p),independent_raw=(b/'audits'/('epoch-%02d-raw.json'%epoch)).exists(),independent_EMA=(b/'audits'/('epoch-%02d-EMA.json'%epoch)).exists()))
@@ -67,10 +69,10 @@ print(json.dumps(out))
 
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--control-root',type=Path,required=True);p.add_argument('--commit',required=True);p.add_argument('--action',choices=('stage','run','status'),required=True);a=p.parse_args();repo=Path(__file__).resolve().parents[3];files={};payload={}
- for name in FILES:
-  raw=subprocess.check_output(['git','show',a.commit+':'+name],cwd=repo);assert raw==(repo/name).read_bytes();short=Path(name).name;payload[short]=base64.b64encode(raw).decode();files[short]=dict(bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
- values=dict(base=BASE,target=TARGET,commit=a.commit,files=files);blocks=dict(chunk=CHUNK,stage=STAGE,run=RUN,status=STATUS)
+ p=argparse.ArgumentParser();p.add_argument('--control-root',type=Path,required=True);p.add_argument('--commit',required=True);p.add_argument('--input-packet',type=Path,required=True);p.add_argument('--action',choices=('stage','run','status'),required=True);a=p.parse_args();repo=Path(__file__).resolve().parents[3];files={};payload={};packet_name=str(a.input_packet.resolve().relative_to(repo))
+ for name in FILES+[packet_name]:
+  raw=subprocess.check_output(['git','show',a.commit+':'+name],cwd=repo);assert raw==(repo/name).read_bytes();short='input-packet.json'if name==packet_name else Path(name).name;payload[short]=base64.b64encode(raw).decode();files[short]=dict(bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
+ values=dict(base=BASE,commit=a.commit,files=files);blocks=dict(chunk=CHUNK,stage=STAGE,run=RUN,status=STATUS)
  spec=importlib.util.spec_from_file_location('large_count_audit_private_control',a.control_root/'work/prefix-schedule-cp50-20261018/reproduction/hpc3_prefix5/direct_control.py');ctl=importlib.util.module_from_spec(spec);spec.loader.exec_module(ctl);ip=subprocess.check_output(['/usr/sbin/ipconfig','getifaddr','en0'],text=True).strip()
  def call(action,extra=None):
   script='v='+repr(dict(values,**(extra or {})))+'\n'+COMMON+'\n'+blocks[action];compile(script,action,'exec');command='python3 -c '+shlex.quote(script);assert len(command.encode())<16000;r=ctl.run(command,account='mou176',source_address=ip,timeout=55);lines=[json.loads(x)for x in r.stdout.decode(errors='replace').splitlines()if x.startswith('{')]
