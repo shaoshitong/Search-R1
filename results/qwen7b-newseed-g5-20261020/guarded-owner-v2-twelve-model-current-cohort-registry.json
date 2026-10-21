@@ -1,0 +1,252 @@
+{
+  "status": "TWELVE_DECLARED_ELEVEN_PREVIOUSLY_ACCEPTED_NEW_GPU2_TP1_PENDING",
+  "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+  "registry": [
+    {
+      "key": "source:owner",
+      "kind": "source",
+      "node": "h100-5",
+      "role": "owner",
+      "slot": null,
+      "unit": "sst-q7b-g5-guard-rollover-owner-v2-70188b8e50fd.service",
+      "directory": "retrieval-generation-guard-rollover-owner-v2",
+      "source_bundle_sha256": "0f57f9817f86e5a6934d5eaa375cea9b36a616a93425a9259a77dcfb12db18fe"
+    },
+    {
+      "key": "source:base-tp4",
+      "kind": "source",
+      "node": "h100-5",
+      "role": "model",
+      "slot": "base-tp4",
+      "unit": "sst-q7b-g5-guard-rollover-owner-v2-base-tp4-r1-70188b8e50fd.service",
+      "directory": "retrieval-generation-guard-rollover-owner-v2-base-tp4-r1",
+      "source_bundle_sha256": "a9d1a6593d527617a029a54eadff382486561b3f5dca299b2821f84d97e3c83b"
+    },
+    {
+      "key": "source:retrieval-tp4",
+      "kind": "source",
+      "node": "h100-5",
+      "role": "model",
+      "slot": "retrieval-tp4",
+      "unit": "sst-q7b-g5-guard-rollover-owner-v2-retrieval-tp4-r1-70188b8e50fd.service",
+      "directory": "retrieval-generation-guard-rollover-owner-v2-retrieval-tp4-r1",
+      "source_bundle_sha256": "c34ee1970dc292deff4446a9d7e992c891cf2ad404152ecbb938e89416871a93"
+    },
+    {
+      "key": "source:gpu2-tp1",
+      "kind": "source",
+      "node": "h100-5",
+      "role": "model",
+      "slot": "gpu2-tp1",
+      "unit": "sst-q7b-g5-guard-rollover-owner-v2-gpu2-tp1-r1-70188b8e50fd.service",
+      "directory": "retrieval-generation-guard-rollover-owner-v2-gpu2-tp1-r1",
+      "source_bundle_sha256": "9858dda08b365c4024e0f6cfdf785aaadb257bd11c3821a284be91cd55ca3deb"
+    },
+    {
+      "key": "relay:upstream",
+      "kind": "relay",
+      "node": "h100-5",
+      "role": "upstream",
+      "slot": null,
+      "unit": "sst-q7b-g5-relaygen-queued-owner-v2-upstream-r1-70188b8e50fd.service",
+      "directory": "relay-generation-queued-owner-v2-upstream-r1",
+      "source_bundle_sha256": "237abe1f2776a028b757c1de91e606ce6aab9afc343e116f071be0155ef28469"
+    },
+    {
+      "key": "relay:downstream",
+      "kind": "relay",
+      "node": "h100-10",
+      "role": "downstream",
+      "slot": null,
+      "unit": "sst-q7b-g5-relaygen-queued-owner-v2-downstream-r1-70188b8e50fd.service",
+      "directory": "relay-generation-queued-owner-v2-downstream-r1",
+      "source_bundle_sha256": "072cbe91ab5ad1a3d222821f30bd79219aba837ad6479a08ef97cde5e587a834"
+    },
+    {
+      "key": "node10:tp4-0-4-6-7",
+      "kind": "node10",
+      "node": "h100-10",
+      "role": "model",
+      "slot": "tp4-0-4-6-7",
+      "unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-tp4-0-4-6-7-r1-70188b8e50fd.service",
+      "directory": "relay-generation-queued-owner-v2-slot-tp4-0-4-6-7-r1",
+      "source_bundle_sha256": "0d842a908410a745783e2bb033c917bfdda20c5c80be20dd1b581a06e0ec1211"
+    },
+    {
+      "key": "node10:gpu3-tp1",
+      "kind": "node10",
+      "node": "h100-10",
+      "role": "model",
+      "slot": "gpu3-tp1",
+      "unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-gpu3-tp1-r1-70188b8e50fd.service",
+      "directory": "relay-generation-queued-owner-v2-slot-gpu3-tp1-r1",
+      "source_bundle_sha256": "2efde726f4d9f981e688e344775c0767a9754e7a2c914c6d69fba1a2d5f5dbe5"
+    },
+    {
+      "key": "node10:gpu5-tp1",
+      "kind": "node10",
+      "node": "h100-10",
+      "role": "model",
+      "slot": "gpu5-tp1",
+      "unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-gpu5-tp1-r1-70188b8e50fd.service",
+      "directory": "relay-generation-queued-owner-v2-slot-gpu5-tp1-r1",
+      "source_bundle_sha256": "641ad5f5aa5a711bdb70dfd54a9e046a979c548430c499875550023812373b1a"
+    },
+    {
+      "key": "node10:gpu7-tp1",
+      "kind": "node10",
+      "node": "h100-10",
+      "role": "model",
+      "slot": "gpu7-tp1",
+      "unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-gpu7-tp1-r1-70188b8e50fd.service",
+      "directory": "relay-generation-queued-owner-v2-slot-gpu7-tp1-r1",
+      "source_bundle_sha256": "c00b33ec40e2133511ba7068c023eaadf46a8951321045cee3143975286848d6"
+    },
+    {
+      "key": "source-supplement:gpu1-tp1",
+      "kind": "source-supplement",
+      "role": "model",
+      "node": "h100-5",
+      "slot": "gpu1-tp1",
+      "unit": "sst-q7b-g5-guard-rollover-supp-v1-gpu1-tp1-r1-70188b8e50fd.service",
+      "directory": "retrieval-generation-guard-rollover-supp-v1-gpu1-tp1-r1",
+      "source_bundle_sha256": "ba580ab5216378ff53afff9442bd038adb97f57542d13c3abda5be2620bcf0da",
+      "model_specification": {
+        "indices": [
+          0,
+          1,
+          2,
+          5
+        ],
+        "tp": 4,
+        "seqs": 32,
+        "tokens": 8192,
+        "blocks": 4096,
+        "reserve": 0.5
+      },
+      "generation": "guard-rollover-supp-v1",
+      "instance": "r1",
+      "startup_state": "STAGING_NOT_SUBMITTED",
+      "submitted": false,
+      "actual_running_claimed": false,
+      "publication": "b4b29306633dc8c11d6b381cf8bf4fca52b8b5ad"
+    },
+    {
+      "key": "source-supplement:gpu3-tp1",
+      "kind": "source-supplement",
+      "role": "model",
+      "node": "h100-5",
+      "slot": "gpu3-tp1",
+      "unit": "sst-q7b-g5-guard-rollover-supp-v1-gpu3-tp1-r1-70188b8e50fd.service",
+      "directory": "retrieval-generation-guard-rollover-supp-v1-gpu3-tp1-r1",
+      "source_bundle_sha256": "c208336fa433844fe4f0b8df878dd130d024780418a4127112092d61f7574f3d",
+      "model_specification": {
+        "indices": [
+          3,
+          4,
+          6,
+          7
+        ],
+        "tp": 4,
+        "seqs": 32,
+        "tokens": 8192,
+        "blocks": 4096,
+        "reserve": 0.5
+      },
+      "generation": "guard-rollover-supp-v1",
+      "instance": "r1",
+      "startup_state": "STAGING_NOT_SUBMITTED",
+      "submitted": false,
+      "actual_running_claimed": false,
+      "publication": "b4b29306633dc8c11d6b381cf8bf4fca52b8b5ad"
+    },
+    {
+      "key": "node10:supp-gpu4-tp1",
+      "kind": "node10-supplement",
+      "node": "h100-10",
+      "role": "model",
+      "slot": "gpu4-tp1",
+      "unit": "sst-q7b-g5-relaygen-queued-supp-v1-slot-gpu4-tp1-r1-70188b8e50fd.service",
+      "directory": "relay-generation-queued-supp-v1-slot-gpu4-tp1-r1",
+      "source_bundle_sha256": "4f2b3b3581d755ff6d851ba8ea36eb443ba48174fe6d25f7b89fc1e7bd7fd032",
+      "model_specification": {
+        "indices": [
+          4
+        ],
+        "tp": 1,
+        "seqs": 64,
+        "tokens": 8192,
+        "blocks": 4096,
+        "reserve": 1.0
+      },
+      "generation": "queued-supp-v1",
+      "instance": "r1",
+      "startup_state": "STAGED_ROOT_SUBMIT_IN_PROGRESS_RESULT_NOT_OBSERVED_BY_THIS_CONFIG",
+      "submitted": null,
+      "actual_running_claimed": false,
+      "publication": "97be1935e9da009540f5146d79502a9de54229a4",
+      "lifecycle_anchor_slot": "gpu1-tp1",
+      "lifecycle_anchor_unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-gpu1-tp1-r1-70188b8e50fd.service"
+    },
+    {
+      "key": "source-residual:gpu4-tp1",
+      "kind": "source-supplement",
+      "node": "h100-5",
+      "role": "model",
+      "slot": "gpu4-tp1",
+      "unit": "sst-q7b-g5-guard-rollover-supp-residual-v1-gpu4-tp1-r1-70188b8e50fd.service",
+      "directory": "retrieval-generation-guard-rollover-supp-residual-v1-gpu4-tp1-r1",
+      "source_bundle_sha256": "eeccc4a41473d9dc8f234770c0cc8bef916356afa4c07e536bdbb113af22bc50",
+      "model_specification": {
+        "indices": [
+          1,
+          3,
+          4,
+          6
+        ],
+        "tp": 4,
+        "seqs": 32,
+        "tokens": 8192,
+        "blocks": 4096,
+        "reserve": 0.5
+      },
+      "generation": "guard-rollover-supp-residual-v1",
+      "instance": "r1",
+      "submitted": true,
+      "actual_running_claimed": false,
+      "publication": "42151324c034d80cb6672ca58d13193beddeebe2",
+      "lifecycle_anchor_unit": "sst-q7b-g5-guard-rollover-owner-v2-gpu4-tp1-r1-70188b8e50fd.service"
+    },
+    {
+      "key": "source-spare-tp1:gpu6-tp1",
+      "kind": "source-supplement",
+      "node": "h100-5",
+      "role": "model",
+      "slot": "gpu6-tp1",
+      "unit": "sst-q7b-g5-guard-rollover-supp-tp1-v1-gpu6-tp1-r1-70188b8e50fd.service",
+      "directory": "retrieval-generation-guard-rollover-supp-tp1-v1-gpu6-tp1-r1",
+      "source_bundle_sha256": "acfe8a9d547f694c0377d3d8b2a81732d1786847f81a9919242aa4f61b2a0e70",
+      "model_specification": {
+        "indices": [
+          2
+        ],
+        "tp": 1,
+        "seqs": 64,
+        "tokens": 8192,
+        "blocks": 2048,
+        "reserve": 1.5
+      },
+      "generation": "supp-tp1-v1",
+      "instance": "r1",
+      "startup_state": "ONCE_SUBMITTED_MODEL_INITIALIZATION_AND_OWN_WHOLE_PENDING",
+      "submitted": true,
+      "actual_running_claimed": false,
+      "publication": "c33ef86d3d177f0fa50f1a9119f79725e90191e2",
+      "lifecycle_anchor_slot": "gpu6-tp1",
+      "lifecycle_anchor_actual_model_gpu": false
+    }
+  ],
+  "prior_eleven_registry_sha256": "923fc27162d119dd1c413308487cee195ec3388cad827a2a8a98963f9900bf3e",
+  "new_model_key": "source-spare-tp1:gpu6-tp1",
+  "actual_new_model_initialized_claimed": false
+}

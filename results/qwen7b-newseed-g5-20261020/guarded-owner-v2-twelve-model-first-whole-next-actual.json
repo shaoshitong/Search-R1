@@ -1,0 +1,185 @@
+{
+  "status": "ALL_TWELVE_CURRENT_MODELS_OWN_WHOLE_G5_AND_REAL_NEXT_PROGRESS_ACCEPTED",
+  "actual_epoch": 1792566448.827599,
+  "recorded_utc": "2026-10-21T07:10:15.196692+00:00",
+  "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+  "current_registry": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-owner-v2-twelve-model-current-cohort-registry.json",
+    "sha256": "9ee43f398582a689344c329d6674256384fd98d989a4f16d4af93b97f29a8fa9"
+  },
+  "prior_eleven": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-owner-v2-eleven-model-first-whole-next-actual-proof.json",
+    "sha256": "e726186f979d27ddb1d0a8a36c9b363a73385ec8c0e19935fe0453fbc4ff55ad",
+    "acceptance_repeated": false,
+    "exact_units_and_allocation_unchanged": [
+      {
+        "key": "source:base-tp4",
+        "unit": "sst-q7b-g5-guard-rollover-owner-v2-base-tp4-r1-70188b8e50fd.service",
+        "allocation_sha256": "1789a960e6b9b045fdd909c657887a8cc7671672da65f7d278c62c8abff6ea78"
+      },
+      {
+        "key": "source:retrieval-tp4",
+        "unit": "sst-q7b-g5-guard-rollover-owner-v2-retrieval-tp4-r1-70188b8e50fd.service",
+        "allocation_sha256": "221ea838aee6d265a05854575954f413c992cd5bba8c4ae9e2580e74313c9a94"
+      },
+      {
+        "key": "source:gpu2-tp1",
+        "unit": "sst-q7b-g5-guard-rollover-owner-v2-gpu2-tp1-r1-70188b8e50fd.service",
+        "allocation_sha256": "d4dd14b793ad37d7197b084b4b90154ba745cb8c65a88c5b210671cab02989c7"
+      },
+      {
+        "key": "node10:tp4-0-4-6-7",
+        "unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-tp4-0-4-6-7-r1-70188b8e50fd.service",
+        "allocation_sha256": "2216b93c2295c181b9d2e6b27982728a0ebff4d0e86714f708d56c98905a3cdf"
+      },
+      {
+        "key": "node10:gpu3-tp1",
+        "unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-gpu3-tp1-r1-70188b8e50fd.service",
+        "allocation_sha256": "86f5ee2bb402bfeda06e5d03ddf5c6e46b4997a3b8f182537a5c0bef75f69277"
+      },
+      {
+        "key": "node10:gpu5-tp1",
+        "unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-gpu5-tp1-r1-70188b8e50fd.service",
+        "allocation_sha256": "a9904abc35504c0f852f871ff3f7f0abfbaf8ae6f1a3e38b1728b39a50e48ee4"
+      },
+      {
+        "key": "node10:gpu7-tp1",
+        "unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-gpu7-tp1-r1-70188b8e50fd.service",
+        "allocation_sha256": "dcd0e172a9e0f172f89be5f82b81816c0726bb1627fb434a6b6959093d575bd3"
+      },
+      {
+        "key": "source-supplement:gpu1-tp1",
+        "unit": "sst-q7b-g5-guard-rollover-supp-v1-gpu1-tp1-r1-70188b8e50fd.service",
+        "allocation_sha256": "1d565fb863cc42ed0f5af791e3b878b3e011e90b1f3a9856bcf64c3f520a6a1e"
+      },
+      {
+        "key": "source-supplement:gpu3-tp1",
+        "unit": "sst-q7b-g5-guard-rollover-supp-v1-gpu3-tp1-r1-70188b8e50fd.service",
+        "allocation_sha256": "3c2eaff568840c26ffb41f5e7c42c839f89a1702139f010864870ce04321502e"
+      },
+      {
+        "key": "node10:supp-gpu4-tp1",
+        "unit": "sst-q7b-g5-relaygen-queued-supp-v1-slot-gpu4-tp1-r1-70188b8e50fd.service",
+        "allocation_sha256": "0cc4967677620fb5d27818f012ef78d0633b741edcea7ff7380e2799bd061254"
+      },
+      {
+        "key": "source-residual:gpu4-tp1",
+        "unit": "sst-q7b-g5-guard-rollover-supp-residual-v1-gpu4-tp1-r1-70188b8e50fd.service",
+        "allocation_sha256": "2cbf9fdc6c13d8210fd488a3a94026355638b62ee84bda2038d31cf07b87d328"
+      }
+    ]
+  },
+  "new_source_spare_tp1": {
+    "unit": "sst-q7b-g5-guard-rollover-supp-tp1-v1-gpu6-tp1-r1-70188b8e50fd.service",
+    "role": "model",
+    "state": "active",
+    "native": {
+      "MainPID": "3532221",
+      "Result": "success",
+      "ExecMainStatus": "0",
+      "ControlGroup": "/system.slice/sst-q7b-g5-guard-rollover-supp-tp1-v1-gpu6-tp1-r1-70188b8e50fd.service",
+      "Id": "sst-q7b-g5-guard-rollover-supp-tp1-v1-gpu6-tp1-r1-70188b8e50fd.service",
+      "LoadState": "loaded",
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "allocation_sha256": "d8fd5aa86f361c9eb6ee46d4c96f65c39414a73375b35cb4e1ab5f082c042ed5",
+    "own_complete_batches": 1,
+    "questions": 128,
+    "trajectories": 640,
+    "initialized": true,
+    "model_initialized": [
+      {
+        "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-source-slot-gpu6-tp1-3532221/attempt-1792565993786828592-3532221/sampler-launches/launch-00/model-initialized.json",
+        "sha256": "bee406cf4809a32cad7d8beb4549a71c3baabc5676fecc041769de67e4811966",
+        "actual_model_initialized": true,
+        "actual_compute_dtype": "torch.bfloat16",
+        "max_model_len": 4096,
+        "actual_num_gpu_blocks": 2048
+      }
+    ],
+    "latest_input": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/inputs/shard-01/batch-000059.json",
+    "whole_and_next_observed": true,
+    "native_complete": false,
+    "failures": [],
+    "launch_failures": [],
+    "typed_initialization_ooms": []
+  },
+  "first_observed_new_own_seal": {
+    "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/sampling/shard-01/batches/batch-000059/complete.json",
+    "bytes": 9198,
+    "sha256": "252cc129172853b39c773e24dd5021df4926c4f483a1c7677d6ce4901366f06c",
+    "device": 48,
+    "inode": 141311444,
+    "mtime_ns": 1792566242225789851
+  },
+  "first_observed_new_own_seal_summary": {
+    "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+    "input_sha256": "e28777d9ce510071df3c1748a498496a2038e772f994ae67d205e70588e7d9eb",
+    "batch": "batch-000059",
+    "questions": 128,
+    "trajectories": 640,
+    "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "actor_optimizer_updates": 0,
+    "hidden_cached": false,
+    "epoch": 1792566242.231659
+  },
+  "next_actual_batch_proofs": [
+    {
+      "batch": "batch-000061",
+      "shard": "shard-01",
+      "phase": "prefix",
+      "completed": 640,
+      "utc": "2026-10-21T07:04:26.287553+00:00",
+      "actual_sampled_tokens": 12800,
+      "progress_path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/sampling/shard-01/batches/batch-000061/outers/outer-000001/prefix/rank-0-progress.json",
+      "lock_target": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/batch-locks/shard-01/batch-000061.lock",
+      "lock_owner": {
+        "pid": 3532391,
+        "birth": "11164013",
+        "state": "R",
+        "cgroup": "1:freezer:/\n0::/system.slice/sst-q7b-g5-guard-rollover-supp-tp1-v1-gpu6-tp1-r1-70188b8e50fd.service\n"
+      },
+      "current_allocation": true
+    },
+    {
+      "batch": "batch-000061",
+      "shard": "shard-01",
+      "phase": "full",
+      "completed": 500,
+      "utc": "2026-10-21T07:07:01.491427+00:00",
+      "actual_sampled_tokens": 41751,
+      "progress_path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/sampling/shard-01/batches/batch-000061/outers/outer-000001/full/rank-0-progress.json",
+      "lock_target": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/batch-locks/shard-01/batch-000061.lock",
+      "lock_owner": {
+        "pid": 3532391,
+        "birth": "11164013",
+        "state": "R",
+        "cgroup": "1:freezer:/\n0::/system.slice/sst-q7b-g5-guard-rollover-supp-tp1-v1-gpu6-tp1-r1-70188b8e50fd.service\n"
+      },
+      "current_allocation": true
+    }
+  ],
+  "actual_originals": {
+    "h100-5": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-guarded-follow-3f3e1e67a11d125b/actual-h100-5-1792566441229389000.json",
+      "sha256": "57ccdbbd8cb9c136e031dfc61dcce55f5828e699ee079eee9177f58fefccd92e"
+    },
+    "h100-10": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-guarded-follow-3f3e1e67a11d125b/actual-h100-10-1792566448823850000.json",
+      "sha256": "54ed8d21fd9e9c11b9d5a6eee2707da605095cfe69d2aad4c563eb7ea3fdc780"
+    }
+  },
+  "models_initialized": 12,
+  "distinct_physical_gpu_count": 14,
+  "global_sealed": {
+    "sealed_batches": 717,
+    "questions": 91682,
+    "trajectories": 458410
+  },
+  "new_batch_raw_independent_audit": "Pending next normal new-only25 CPU audit at734; flow acceptance does not substitute for independent payload SHA.",
+  "model_tensor_independent_reload_performed": false,
+  "all_outputs_own_nas10": true,
+  "global_goal_complete": false,
+  "scope": "Exact twelve R1 native units in registry9ee43 only; never futureR2 acceptance."
+}
