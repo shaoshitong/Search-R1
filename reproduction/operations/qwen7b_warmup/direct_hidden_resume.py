@@ -9,7 +9,7 @@ from pathlib import Path
 from . import peer_append_train as a,direct_hidden_count_train as r
 
 BASE=a.A/'direct-hidden-count30016-train-v2'
-ATTEMPT=BASE/'continuations/attempt-0001'
+ATTEMPT=BASE/'continuations/attempt-0001-v2'
 SOURCE_JOB='743619'
 RUNTIME='501cf80478b77f68c3e13a96d4659e3da0971b2e'
 CONFIG_SHA='3e910b12c0ff52eac70e61566c6135e2ec188bb47ec64ad79524abbd7a657526'

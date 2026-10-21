@@ -6,7 +6,7 @@ BRANCH='codex/direct-count-exact-resume-20261021'
 OWN=('direct_hidden_resume.py','test_direct_hidden_resume.py','deploy_direct_hidden_resume.py')
 COMMON=r'''
 import pathlib,json,hashlib,base64,zlib,subprocess,os,time,fcntl
-b=pathlib.Path(inputs['base']);attempt=b/'continuations/attempt-0001';attempt.mkdir(parents=True,exist_ok=True)
+b=pathlib.Path(inputs['base']);attempt=b/'continuations/attempt-0001-v2';attempt.mkdir(parents=True,exist_ok=True)
 def read(p):return json.loads(pathlib.Path(p).read_text())
 def sha(p):return hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()
 def ref(p):
@@ -55,7 +55,7 @@ pub,source,code_root=publication();action=inputs['action'];controller=attempt/(a
 if controller.exists():print(json.dumps(dict(status='EXISTING_CPU_ACTION_INTENT_INSPECT_STATUS_NO_DUPLICATE',controller=read(controller))));sys.exit(0)
 base="import importlib.util,sys,pathlib,json,unittest; p=pathlib.Path(%r); spec=importlib.util.spec_from_file_location('reproduction.operations.qwen7b_warmup.direct_hidden_resume',str(p)); module=importlib.util.module_from_spec(spec); sys.modules[spec.name]=module; spec.loader.exec_module(module); "%(str(source))
 if action=='qualify':
- script=base+"s=importlib.util.spec_from_file_location('reproduction.operations.qwen7b_warmup.test_direct_hidden_resume',%r); t=importlib.util.module_from_spec(s); s.loader.exec_module(t); suite=unittest.defaultTestLoader.loadTestsFromModule(t); result=unittest.TextTestRunner(verbosity=2).run(suite); assert result.wasSuccessful(); module.a.immutable(module.ATTEMPT/'CPU-qualification.json',dict(status='EXACT_JOINT_RESUME_CPU_FOCUSED_TESTS_PASSED',tests=result.testsRun,GPU_used=False,real_future_checkpoint_claimed=False)); print(json.dumps(dict(status='EXACT_RESUME_CPU_QUALIFIED',tests=result.testsRun)))"%str(source.parent/'test_direct_hidden_resume.py')
+ script=base+"ds=importlib.util.spec_from_file_location('reproduction.operations.qwen7b_warmup.deploy_direct_hidden_resume',%r); d=importlib.util.module_from_spec(ds); sys.modules[ds.name]=d; ds.loader.exec_module(d); s=importlib.util.spec_from_file_location('reproduction.operations.qwen7b_warmup.test_direct_hidden_resume',%r); t=importlib.util.module_from_spec(s); s.loader.exec_module(t); suite=unittest.defaultTestLoader.loadTestsFromModule(t); result=unittest.TextTestRunner(verbosity=2).run(suite); assert result.wasSuccessful(); module.a.immutable(module.ATTEMPT/'CPU-qualification.json',dict(status='EXACT_JOINT_RESUME_CPU_FOCUSED_TESTS_PASSED',tests=result.testsRun,GPU_used=False,real_future_checkpoint_claimed=False)); print(json.dumps(dict(status='EXACT_RESUME_CPU_QUALIFIED',tests=result.testsRun)))"%(str(source.parent/'deploy_direct_hidden_resume.py'),str(source.parent/'test_direct_hidden_resume.py'))
 else:
  assert action=='prepare';assert read(attempt/'CPU-qualification.json')['tests']==4
  q=command(['squeue','-j','743619','-h','-o','%i|%T']);assert not q.strip(),'Original writer still active; preparation waits for actual terminal and saved interrupted state'
