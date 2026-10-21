@@ -142,7 +142,7 @@ assert re.search(r'(?:^|[ ,])gres/gpu=1(?:[ ,]|$)',identity)or re.search(r'TresP
 REPAIR_CHECK='''assert v['failed_job']=='746263';rows=command(['sacct','-X','-n','-P','-j',v['failed_job'],'--format=JobIDRaw,State,ExitCode,Elapsed']).splitlines();rows=[r for r in rows if r.split('|')[0]==v['failed_job']];assert len(rows)==1 and rows[0].split('|')[:3]==[v['failed_job'],'FAILED','1:0'];assert not active(v['job'])and not active('q7b-mixed-direct169028-fast');lock=(b/'training.lock').open('a+');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
 for name in('latest.json','progress.json','update-intent.json','complete.json'):assert not(b/name).exists(),'Only the zero-update failed attempt may be repaired'
 assert read(b/'source-handoff.json')['cursor']==1675 and read(b/'pinned-source-checkpoint.json')['cursor']==1675
-lock.close()
+lock.close();print(json.dumps(dict(status='FAILED_ZERO_UPDATE_REPAIR_IDENTITY_ACCEPTED',job_id=v['failed_job'])))
 '''
 REPAIR=REPAIR_CHECK+'''control=(b/'repair-control.lock').open('a+');fcntl.flock(control,fcntl.LOCK_EX|fcntl.LOCK_NB);attempt=b/'attempts'/v['failed_job'];attempt.mkdir(parents=True,exist_ok=True)
 oldpub_path=b/'source-publication.json'
