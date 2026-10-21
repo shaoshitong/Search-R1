@@ -6,7 +6,7 @@ manifest union; projection binds each tid to its selected physical prefix.
 """
 import argparse,fcntl,gzip,hashlib,json,os,shutil,sys,time
 from pathlib import Path
-B=Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019');A=B/'algorithm-improvement-20261021';TARGET=A/'hpc3-tail9344-independent-L26-prepared-v1';RAW=A/'hpc3-tail9344-old5-qualified-g10-v1/complete.json'
+B=Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019');A=B/'algorithm-improvement-20261021';TARGET=A/'hpc3-tail9344-independent-L26-prepared-v2';RAW=A/'hpc3-tail9344-old5-qualified-g10-v1/complete.json'
 QUALIFIED=A/'peer-joint124194-audited243-L26-v1/code-db5b5ac04173'
 PUB={'path':str(QUALIFIED.parent/'source-publication.json'),'bytes':7106,'sha256':'c8547a3dae899547fd4620afde9350c8a034c0dfee5bebd1dd9b5323a4dbdff3'}
 GOLDEN={'path':str(A/'replay-batched-golden-v3/output/complete.json'),'bytes':12350,'sha256':'3eeeb79b750d2e0bfee81c9a283c7428d0629b0d56815f91909c93e2bd9f5715'}
@@ -17,7 +17,7 @@ def fp(p):
   for b in iter(lambda:f.read(8*1024**2),b''):h.update(b)
  return dict(path=str(p),bytes=p.stat().st_size,sha256=h.hexdigest())
 def checked(ref):
- actual=fp(ref['path']);assert actual==ref,'Bound accepted metadata/file differs';return Path(actual['path'])
+ actual=fp(ref['path']);assert all(actual[k]==ref[k]for k in('path','bytes','sha256')),'Bound accepted metadata/file differs';return Path(actual['path'])
 def read(p):return json.loads(Path(p).read_bytes())
 def once(p,v):
  p=Path(p);p.parent.mkdir(parents=True,exist_ok=True);raw=canonical(v)+b'\n'

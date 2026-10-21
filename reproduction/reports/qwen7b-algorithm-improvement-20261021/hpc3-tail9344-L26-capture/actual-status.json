@@ -1,0 +1,28 @@
+{
+  "epoch": 1792591205.017103,
+  "same_name_jobs": "",
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v1",
+  "cpu-prepare-launch.json": {
+    "ref": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v1/cpu-prepare-launch.json",
+      "bytes": 449,
+      "sha256": "25eb92846c35f86f2472e9f4af52afc8db430d27d64397216904663eff7aa33b"
+    },
+    "status": "ACTUAL_FIXED9344_CPU_PREFIX_PROJECTION_STARTED_NOT_YET_READY",
+    "pid": 2480837,
+    "birth_ticks": "130175672"
+  },
+  "0": {
+    "chunks": 0
+  },
+  "1": {
+    "chunks": 0
+  },
+  "2": {
+    "chunks": 0
+  },
+  "3": {
+    "chunks": 0
+  },
+  "cpu-prepare.log": "Traceback (most recent call last):\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v1/code-0d8728865744/prepare_hpc3_tail9344_l26.py\", line 81, in <module>\n    p=argparse.ArgumentParser();p.add_argument('--prepare-only',action='store_true',required=True);p.add_argument('--raw-sha256',required=True);args=p.parse_args();print(json.dumps(prepare(args.raw_sha256),sort_keys=True))\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v1/code-0d8728865744/prepare_hpc3_tail9344_l26.py\", line 65, in prepare\n    seal=read(checked(source['seal']));path=checked(source['prefix'])\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v1/code-0d8728865744/prepare_hpc3_tail9344_l26.py\", line 20, in checked\n    actual=fp(ref['path']);assert actual==ref,'Bound accepted metadata/file differs';return Path(actual['path'])\nAssertionError: Bound accepted metadata/file differs\n"
+}
