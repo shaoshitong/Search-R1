@@ -1,0 +1,251 @@
+{
+  "status": "ACTUAL_READ_ONLY_DONOR14080_CPU_PREPARATION_STATUS",
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1",
+  "epoch": 1792592990.4285784,
+  "launch.json": {
+    "ref": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/launch.json",
+      "bytes": 616,
+      "sha256": "997ba3fde150b4635d14f22dcf4699b31a77d2dd2001ac393487b73ba4b27e3d"
+    },
+    "value": {
+      "status": "DONOR14080_CPU_PROJECTION_STARTED_NOT_YET_READY",
+      "pid": 3017310,
+      "birth_ticks": "130346166",
+      "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/code-aa1b8d9d1ae1",
+      "source_publication": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/code-aa1b8d9d1ae1/source-publication.json",
+        "bytes": 1312,
+        "sha256": "39c2f59520a08e2fdb6867e75fc801ed0d71e7b9472c9de6e83d21b99e0501b9"
+      },
+      "epoch": 1792592871.2430747
+    }
+  },
+  "progress.json": {
+    "ref": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/progress.json",
+      "bytes": 176,
+      "sha256": "f20069c6c07444a64d16a7267111f3deae8fa6cb4c63766816c35430b7dc4ca4"
+    },
+    "value": {
+      "counts": [
+        35200,
+        35200,
+        35200,
+        34688
+      ],
+      "epoch": 1792592927.9444118,
+      "expected": 140800,
+      "stage": "DONOR14080_SOURCE_RESOLVED_CAUSAL_PREFIX_PROJECTION_ADVANCING",
+      "trajectories": 140288
+    }
+  },
+  "preparation.json": {
+    "ref": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/preparation.json",
+      "bytes": 6256,
+      "sha256": "b8b9a809a8bb0a8a798ff96ebb43f74c05f7cd34128adeb7c7da440de0ceb37e"
+    },
+    "value": {
+      "CPU_affinity": [
+        0,
+        1
+      ],
+      "GPU_submitted": false,
+      "RSS_peak_KiB": 281508,
+      "actor_updates": 0,
+      "batching": {
+        "acceptance": "Explicit operator selected actual scalar/batched golden evidence; no native bitexact claim",
+        "batch_size": 32,
+        "core_sha256": "500911347444a07693fb4405a6f6fbbcad7b70375522a52833953b426970f506",
+        "golden": {
+          "bytes": 12350,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/replay-batched-golden-v3/output/complete.json",
+          "sha256": "3eeeb79b750d2e0bfee81c9a283c7428d0629b0d56815f91909c93e2bd9f5715"
+        },
+        "padded_token_budget": 16384,
+        "window_trajectories": 32
+      },
+      "canonical_qid_exclusion": {
+        "bytes": 1954,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/canonical-qid-exclusion.json",
+        "sha256": "e1f362ed7e33f0b48a8057b173d07530e5682f0f167498e5cb307ecf686cf557"
+      },
+      "compute_layers": [
+        20,
+        23,
+        26
+      ],
+      "current124194_fit_expanded": false,
+      "domains": {
+        "hotpotqa": 14080
+      },
+      "elapsed_seconds": 70.61654090881348,
+      "epoch": 1792592941.8941374,
+      "excluded_HPC3_groups": {
+        "bytes": 13005705,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-old5-qualified-g10-v1/raw-g10/groups.json",
+        "sha256": "670593b4a58207b55170089d96be2a243fd076da43c5b748877ddf04377c3a7c"
+      },
+      "excluded_HPC3_raw_complete": {
+        "bytes": 24395,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-old5-qualified-g10-v1/complete.json",
+        "sha256": "0898b54516068d5b2c0fd1e2d95befb47d58ed2e96ca1065fc9b556387abbbfd"
+      },
+      "feature_bank_created": false,
+      "free_bytes": 12000295890485248,
+      "geometry": {
+        "newseed20261021": {
+          "max_context": 1112,
+          "max_prompt": 271,
+          "short_policy": 37,
+          "trajectories": 70400
+        },
+        "original": {
+          "max_context": 713,
+          "max_prompt": 271,
+          "short_policy": 39,
+          "trajectories": 70400
+        }
+      },
+      "identity_plan": {
+        "bytes": 10217018,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/identity-plan.json",
+        "sha256": "699fbeab9339e516958d6482b064a930799eebcf5c2970a7935e74b0dc821029"
+      },
+      "new_rollouts_generated": 0,
+      "parent_source_resolution_contract": {
+        "bytes": 485,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-old5-qualified-g10-v1/raw-g10/source-resolution-contract.json",
+        "sha256": "229710cbfccc53c92be96081535eeeee308cc52b969b07713258212c2b0d86c2"
+      },
+      "persist_layers": [
+        26
+      ],
+      "physical_source_final_readback": {
+        "bytes": 2015,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/physical-source-final-readback.json",
+        "sha256": "4900f0c47ce385c8ea024d1b7c1a5e4a2ab46632dcac6e1331161c9d7ecb861c"
+      },
+      "probe_updates": 0,
+      "qualified_runtime_publication": {
+        "bytes": 7106,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-joint124194-audited243-L26-v1/source-publication.json",
+        "sha256": "c8547a3dae899547fd4620afde9350c8a034c0dfee5bebd1dd9b5323a4dbdff3"
+      },
+      "qualified_runtime_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-joint124194-audited243-L26-v1/code-db5b5ac04173",
+      "qualified_runtime_source_commit": "db5b5ac04173cbec4659dbcb8b55f8b0627f7602",
+      "questions": 14080,
+      "selections": [
+        {
+          "bytes": 4365753,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/shard-00/inputs/selection.json",
+          "sha256": "c3b63c2eb213e23da7275396c730f11cee021befe78af507c0dd66e1eeb5c6ae"
+        },
+        {
+          "bytes": 4365673,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/shard-01/inputs/selection.json",
+          "sha256": "34dc596971b5fa131f86dd95f26ad78074ea835c8a097b24c9143141ca053932"
+        },
+        {
+          "bytes": 4368253,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/shard-02/inputs/selection.json",
+          "sha256": "180f28e35be3e799b444a70e32c28f98b526892295e1585a99f4b6583000a067"
+        },
+        {
+          "bytes": 4400713,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/shard-03/inputs/selection.json",
+          "sha256": "912b42acc8c5e9b403c6d14d21fdf1b49ff90cb3de942e6334d509ced344cc59"
+        }
+      ],
+      "shard_order": "four contiguous retained raw-G10 qid-order segments; 3520 questions each",
+      "source": {
+        "bytes": 16865,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/code-aa1b8d9d1ae1/prepare_donor14080_l26.py",
+        "sha256": "8d40c99f5f70ae373731ff316501d6066e7223e2ad63f339dfce899ac106db6e"
+      },
+      "source_events": {
+        "bytes": 442478,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited138-after971-20261021-51057f37/raw-g10/source-events.json",
+        "sha256": "84959e97a3e446914864ee3526b6714ede313031372c8389181645e5f7f3c8d0"
+      },
+      "source_raw_complete": {
+        "bytes": 9066,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited138-after971-20261021-51057f37/complete.json",
+        "sha256": "e7056d4eb952151b95241dc87ac732fb641daa5aea633f09de4373f536d69ed3"
+      },
+      "source_raw_groups": {
+        "bytes": 26559805,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited138-after971-20261021-51057f37/raw-g10/groups.json",
+        "sha256": "182cbf6b14a328d20c3e08326479d45a78e177f7677747b97875c0da5d5ab4fc"
+      },
+      "source_resolution_contract": {
+        "bytes": 1156,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/source-resolution-contract.json",
+        "sha256": "20127cd6666cce53a43434a65b11f66be824a3604a8c531532f0de4f355b98bc"
+      },
+      "status": "DONOR14080_FULL_QUALIFIED_G10_SOURCE_RESOLVED_L26_INPUTS_PREPARED_NO_GPU",
+      "trajectories": 140800,
+      "writer_layout": "lossless_question_base_xor_policy_v1"
+    }
+  },
+  "physical-source-final-readback.json": {
+    "ref": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/physical-source-final-readback.json",
+      "bytes": 2015,
+      "sha256": "4900f0c47ce385c8ea024d1b7c1a5e4a2ab46632dcac6e1331161c9d7ecb861c"
+    },
+    "value": {
+      "GPU_submitted": false,
+      "both_actual_causal_input_examples": {
+        "newseed20261021": {
+          "canonical_prefix_row_sha256": "7f88aa2c1e024fcec1534c0cb8b0e16e308ecc8c6be96e7ce7312aa29e2ee4aa",
+          "causal_prefix_sha256": "d9457367604b996df3f45c46ca1ed6f685440d0cb229dc35629341326cd680e3",
+          "policy_tokens": 20,
+          "question_tokens": 139
+        },
+        "original": {
+          "canonical_prefix_row_sha256": "95eb38348adb2a2f68aa3f06d0b47bfe6857ea3a5b2a6bc6c1685d2c82188b65",
+          "causal_prefix_sha256": "9409a06ab2d888eec04cf18aafa12abe808828f5a2f09c050ad5452c57021306",
+          "policy_tokens": 20,
+          "question_tokens": 139
+        }
+      },
+      "canonical_qid_exclusion": {
+        "bytes": 1954,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/canonical-qid-exclusion.json",
+        "sha256": "e1f362ed7e33f0b48a8057b173d07530e5682f0f167498e5cb307ecf686cf557"
+      },
+      "epoch": 1792592941.8913696,
+      "model_or_tensor_loaded": false,
+      "qualified_runtime_publication": {
+        "bytes": 7106,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-joint124194-audited243-L26-v1/source-publication.json",
+        "sha256": "c8547a3dae899547fd4620afde9350c8a034c0dfee5bebd1dd9b5323a4dbdff3"
+      },
+      "questions": 14080,
+      "shard_counts": [
+        35200,
+        35200,
+        35200,
+        35200
+      ],
+      "source_prefix_files": 278,
+      "source_prefix_seal_manifest": {
+        "bytes": 168519,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/physical-source-files.json",
+        "sha256": "80b3d1067c3cb1335d8bd16b1373045485d824288fc41e55da48ae179196e296"
+      },
+      "source_resolution_contract": {
+        "bytes": 1156,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/source-resolution-contract.json",
+        "sha256": "20127cd6666cce53a43434a65b11f66be824a3604a8c531532f0de4f355b98bc"
+      },
+      "source_seal_files": 278,
+      "status": "DONOR14080_ALL_PROJECTED_ROWS_AND_FINAL_PHYSICAL_PREFIX_SEAL_SHA_BINDINGS_PASSED",
+      "trajectories": 140800
+    }
+  },
+  "same_process_birth": false,
+  "log_tail": "1057f37/raw-g10/source-events.json\", \"sha256\": \"84959e97a3e446914864ee3526b6714ede313031372c8389181645e5f7f3c8d0\"}, \"source_raw_complete\": {\"bytes\": 9066, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited138-after971-20261021-51057f37/complete.json\", \"sha256\": \"e7056d4eb952151b95241dc87ac732fb641daa5aea633f09de4373f536d69ed3\"}, \"source_raw_groups\": {\"bytes\": 26559805, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited138-after971-20261021-51057f37/raw-g10/groups.json\", \"sha256\": \"182cbf6b14a328d20c3e08326479d45a78e177f7677747b97875c0da5d5ab4fc\"}, \"source_resolution_contract\": {\"bytes\": 1156, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/source-resolution-contract.json\", \"sha256\": \"20127cd6666cce53a43434a65b11f66be824a3604a8c531532f0de4f355b98bc\"}, \"status\": \"DONOR14080_FULL_QUALIFIED_G10_SOURCE_RESOLVED_L26_INPUTS_PREPARED_NO_GPU\", \"trajectories\": 140800, \"writer_layout\": \"lossless_question_base_xor_policy_v1\"}\n"
+}

@@ -1,0 +1,55 @@
+{
+  "status": "CPU_SOURCE_RESOLVED_INPUTS_ACCEPTED_GPU_CAPTURE_NOT_YET_SUBMITTED",
+  "preparation": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/preparation.json",
+    "bytes": 6256,
+    "sha256": "b8b9a809a8bb0a8a798ff96ebb43f74c05f7cd34128adeb7c7da440de0ceb37e"
+  },
+  "physical_source_final_readback": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/donor14080-independent-L26-prepared-v1/physical-source-final-readback.json",
+    "bytes": 2015,
+    "sha256": "4900f0c47ce385c8ea024d1b7c1a5e4a2ab46632dcac6e1331161c9d7ecb861c"
+  },
+  "questions": 14080,
+  "trajectories": 140800,
+  "excluded_whole_G10_questions": 3584,
+  "observed_progress": [
+    113664,
+    140288,
+    140800
+  ],
+  "elapsed_seconds": 70.61654090881348,
+  "peak_RSS_KiB": 281508,
+  "geometry": {
+    "newseed20261021": {
+      "max_context": 1112,
+      "max_prompt": 271,
+      "short_policy": 37,
+      "trajectories": 70400
+    },
+    "original": {
+      "max_context": 713,
+      "max_prompt": 271,
+      "short_policy": 39,
+      "trajectories": 70400
+    }
+  },
+  "domains": {
+    "hotpotqa": 14080
+  },
+  "current124194_fit_expanded": false,
+  "tail9344_source_unchanged": true,
+  "next_resources": {
+    "partition": "acd_u",
+    "qos": "normal",
+    "gpus": 1,
+    "cpus": 8,
+    "memory": "128G",
+    "time": "02:00:00",
+    "shards": 4,
+    "sequential": true,
+    "new_rollouts": 0,
+    "actor_updates": 0
+  },
+  "publication_before_submit": true
+}
