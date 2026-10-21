@@ -14,6 +14,8 @@ root=pathlib.Path(sys.argv[1]);old='/data/user/jxu957/experiments/dynrpo-qwen25-
 import reproduction.operations.qwen7b_warmup as pkg
 for name in ['native_joint_rolling_checkpoint','test_native_joint_rolling_checkpoint']:
  s=importlib.util.spec_from_file_location('reproduction.operations.qwen7b_warmup.'+name,root/(name+'.py'));m=importlib.util.module_from_spec(s);sys.modules[s.name]=m;setattr(pkg,name,m);s.loader.exec_module(m)
+# Adam's lazy compiler import is part of cold runtime startup, not the transaction test.
+import torch._dynamo
 (root/'synthetic-tests-started.json').write_text(json.dumps(dict(monotonic=time.monotonic())))
 started=time.time();r=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromModule(m));rss=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024
 assert rss<8*1024**3 and not m.torch.cuda.is_initialized()
@@ -24,7 +26,9 @@ worker='''import os,pathlib,json,hashlib,sys,subprocess,time
 p=json.loads(PACKET);base=pathlib.Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/native-joint-rolling-smallstate-cpu-v1');roots=[]
 for r in base.glob('code-*'):
  if all((r/n).is_file()and hashlib.sha256((r/n).read_bytes()).hexdigest()==h for n,h in p['proofs'].items()):roots.append(r)
-assert roots,'Exact already-staged small test/helper code required';r=max(roots,key=lambda f:f.stat().st_mtime);f=r/'run-login-synthetic.py';f.write_text(p['runner']);os.sched_setaffinity(0,sorted(os.sched_getaffinity(0))[:2]);allowed=list(os.sched_getaffinity(0));old=pathlib.Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-qualification-v3/code-919a277f94f1');env=dict(os.environ,CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',QWEN7B_CODE_ROOT=str(old));log=r/'login-synthetic.log'
+assert roots,'Exact already-staged small test/helper code required';r=max(roots,key=lambda f:f.stat().st_mtime);f=r/'run-login-synthetic.py';f.write_text(p['runner']);os.sched_setaffinity(0,sorted(os.sched_getaffinity(0))[:2]);allowed=list(os.sched_getaffinity(0));old=pathlib.Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-qualification-v3/code-919a277f94f1');env=dict(os.environ,CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',QWEN7B_CODE_ROOT=str(old));log=r/'login-synthetic.log';marker=r/'synthetic-tests-started.json'
+for oldfile in(log,marker):
+ if oldfile.exists():oldfile.rename(oldfile.with_name(oldfile.name+'.prior-'+str(int(time.time()*1000000))))
 with log.open('wb')as stream:
  started=time.monotonic();child=subprocess.Popen(['bash',str(old/'reproduction/operations/qwen7b_warmup/runtime.sh'),str(f),str(r)],env=env,stdout=stream,stderr=subprocess.STDOUT);peak=0
  while child.poll()is None:
