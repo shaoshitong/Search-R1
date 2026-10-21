@@ -34,7 +34,7 @@ def prior_membership(priors):
         if len(now['inputs'])!=len(rows) or len(now['qids'])!=len(groups) or len(now['tids'])!=5*len(groups):
             raise ValueError('Prior identities repeat')
         for k in old:
-            if old[k] & now[k]: raise ValueError('Prior snapshots overlap: '+k)
+            if k!='hashes' and old[k] & now[k]: raise ValueError('Prior snapshots overlap: '+k)
             old[k].update(now[k])
         refs.append(dict(complete=cr,plan=pr,membership=mr))
     return old,refs
@@ -86,7 +86,8 @@ def freeze(reference,priors,output,*,which='existing243',audit_root=None):
         manifest,mref=checked(reference['input_manifest'])
         if manifest['questions']!=169028 or len(manifest['batches'])!=1322:raise ValueError('Canonical source budget differs')
         old,oldrefs=prior_membership(priors)
-        if len(old['inputs'])!=466 or len(old['qids'])!=59648 or len(old['tids'])!=298240:raise ValueError('Exact accepted466 identities required')
+        baseline_batches=sum(p['expected_batches'] for p in priors);baseline_questions=sum(p['expected_questions'] for p in priors)
+        if baseline_batches not in (466,709) or (which=='existing243' and baseline_batches!=466) or len(old['inputs'])!=baseline_batches or len(old['qids'])!=baseline_questions or len(old['tids'])!=5*baseline_questions:raise ValueError('Exact accepted finite prior identities required')
         selected=[];seen={k:set() for k in ('qids','hashes','tids')};domains={};prior_hash_overlap=0;within_hash_duplicates=0
         for r in rows:
             if r['input'] in old['inputs']:raise ValueError('Prior accepted input reselected')
@@ -110,7 +111,7 @@ def freeze(reference,priors,output,*,which='existing243',audit_root=None):
                 questions=r['questions'],trajectories=r['trajectories'],input_ref=iref,config=configref,audit=audit,
                 ordered_qids_sha256=d.digest(qids),ordered_question_hashes_sha256=d.digest(hashes),expected_own_G5_IDs_sha256=d.digest(tids),domain_counts=own_domains))
         selected.sort(key=lambda r:r['input']);n=len(selected);q=len(seen['qids'])
-        v=dict(status='FROZEN_SOURCE_AUDITED%d_AFTER_ACCEPTED466_METADATA_ONLY'%n,schema='FINITE_PARENT505_AUDITED_SUBSET_V1',subset='existing-audited',
+        v=dict(status='FROZEN_SOURCE_AUDITED%d_AFTER_ACCEPTED%d_METADATA_ONLY'%(n,baseline_batches),schema='FINITE_PARENT505_AUDITED_SUBSET_V1',subset='existing-audited',
             source_base=str(d.BASE),source_run_id=d.RUN,seed=d.SEED,source_seed=1729,model_revision=d.REVISION,sampling_attempt_id=d.ATTEMPT,
             source_config=cref,input_manifest=mref,batches=n,questions=q,trajectories=5*q,domain_counts=domains,selected_batches=selected,
             batch_records_sha256=d.digest(selected),prior_snapshots=priors,accepted466_identity_membership_refs=oldrefs,
