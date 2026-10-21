@@ -1,0 +1,73 @@
+{
+  "status": "JOINT_HIDDEN_COUNT938_ACTUAL_STATE",
+  "time": 1792541695.0024862,
+  "source-publication": {
+    "commit": "501cf80478b77f68c3e13a96d4659e3da0971b2e",
+    "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/code-501cf80478b7"
+  },
+  "cpu-controller": {
+    "CPU_only": true,
+    "args": [
+      "bash",
+      "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/code-501cf80478b7/reproduction/operations/qwen7b_warmup/runtime.sh",
+      "-u",
+      "-c",
+      "import unittest,sys,runpy; s=unittest.TestSuite(unittest.defaultTestLoader.loadTestsFromName('reproduction.operations.qwen7b_warmup.'+n) for n in ['test_direct_hidden_count','test_direct_hidden_checkpoint','test_direct_hidden_count_train']); result=unittest.TextTestRunner(verbosity=2).run(s); assert result.wasSuccessful(); sys.argv=['direct_hidden_count_train','--action','prepare']; runpy.run_module('reproduction.operations.qwen7b_warmup.direct_hidden_count_train',run_name='__main__')"
+    ],
+    "commit": "501cf80478b77f68c3e13a96d4659e3da0971b2e",
+    "pid": 269957,
+    "time": 1792540910.4201806
+  },
+  "preparation": {
+    "actual_E1_tensor_loaded": false,
+    "actual_G10": 300160,
+    "actual_GPU_next_update_still_required": true,
+    "actual_questions": 30016,
+    "batches": 938,
+    "config": {
+      "bytes": 16144,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/config.json",
+      "sha256": "3e910b12c0ff52eac70e61566c6135e2ec188bb47ec64ad79524abbd7a657526"
+    },
+    "evaluation_cursors": [
+      256,
+      512,
+      768,
+      938
+    ],
+    "feature_manifests": 1004,
+    "final_legacy_Adam": 11402,
+    "final_new_head_Adam": 938,
+    "final_pool_read": false,
+    "legacy_Adam": 10464,
+    "new_head_Adam": 0,
+    "sbatch": {
+      "bytes": 1225,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/training.sbatch",
+      "sha256": "62c6181bd2a2159ef46465b41b014df1700bdb2d645d3a681570cda947fa4858"
+    },
+    "status": "JOINT_HIDDEN_COUNT938_ENTRY_PREPARED_NOT_GPU_QUALIFIED_OR_SUBMITTED"
+  },
+  "submission": {
+    "config": {
+      "bytes": 16144,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/config.json",
+      "sha256": "3e910b12c0ff52eac70e61566c6135e2ec188bb47ec64ad79524abbd7a657526"
+    },
+    "dependency": null,
+    "identity": "JobId=743619 JobName=q7b-direct-count938 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=0 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=JobHeldUser Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=02:00:00 TimeMin=N/A SubmitTime=2026-10-21T08:14:51 EligibleTime=Unknown AccrueTime=Unknown StartTime=Unknown EndTime=Unknown Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T08:14:51 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:523947 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=8,mem=64G,node=1,billing=8,gres/gpu=1 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=8 MinMemoryNode=64G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/training.sbatch WorkDir=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/logs/train-743619.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/logs/train-743619.log Power= TresPerNode=gres/gpu:1 TresPerTask=cpu:8",
+    "job_id": "743619",
+    "partition": "acd_u",
+    "qos": "normal",
+    "sbatch": {
+      "bytes": 1225,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/training.sbatch",
+      "sha256": "62c6181bd2a2159ef46465b41b014df1700bdb2d645d3a681570cda947fa4858"
+    },
+    "source_commit": "501cf80478b77f68c3e13a96d4659e3da0971b2e",
+    "time": 1792541691.0614026
+  },
+  "job_id": "743619",
+  "squeue": "743619|q7b-direct-count938|PENDING|0:00|(Priority)|",
+  "sacct": "743619|q7b-direct-count938|PENDING|0:0|00:00:00|None assigned"
+}
