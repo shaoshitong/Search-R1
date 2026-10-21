@@ -1,0 +1,351 @@
+{
+  "provenance": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/joint124194-root-latest/actual-epoch-quality-audit.json",
+  "current_phase": "native joint124194 from already trained balanced prefix20 E4",
+  "posttraining_epoch_available": false,
+  "current_completed_epochs": [
+    0
+  ],
+  "E0_source_steps": 14418,
+  "current_epoch1_to4": "PENDING; old probe epochs1..4 are historical source training",
+  "states": {
+    "raw": {
+      "diagnostic512": {
+        "losses_from_recorded_probabilities_clip1e12": {
+          "trajectory_BCE": 0.732985206666805,
+          "Mixed_BCE": 0.9512915105051245
+        },
+        "Mixed_BA_percent": 54.018431715261784,
+        "Mixed_recall_percent": 65.3658536585366,
+        "nonMixed_recall_percent": 42.671009771986974,
+        "confusion": {
+          "tp": 134,
+          "fn": 71,
+          "tn": 131,
+          "fp": 176
+        },
+        "error_count": 247,
+        "three_true_classes_by_primary_binary_prediction": {
+          "allwrong": {
+            "n": 228,
+            "predicted_nonMixed": 109,
+            "predicted_Mixed": 119,
+            "error_count": 119,
+            "error_rate_percent": 52.19298245614035,
+            "share_all_errors_percent": 48.178137651821864,
+            "trajectory_BCE": 0.3711588693717472,
+            "Mixed_BCE": 1.0435135158087117,
+            "contribution_to_mean_Mixed_BCE": 0.4646896125085669,
+            "share_Mixed_BCE_percent": 48.84828755192215
+          },
+          "Mixed": {
+            "n": 205,
+            "predicted_nonMixed": 71,
+            "predicted_Mixed": 134,
+            "error_count": 71,
+            "error_rate_percent": 34.63414634146341,
+            "share_all_errors_percent": 28.74493927125506,
+            "trajectory_BCE": 0.9767095993514954,
+            "Mixed_BCE": 0.6593844928168879,
+            "contribution_to_mean_Mixed_BCE": 0.26401136919426177,
+            "share_Mixed_BCE_percent": 27.752940742010285
+          },
+          "allcorrect": {
+            "n": 79,
+            "predicted_nonMixed": 22,
+            "predicted_Mixed": 57,
+            "error_count": 57,
+            "error_rate_percent": 72.15189873417721,
+            "share_all_errors_percent": 23.076923076923077,
+            "trajectory_BCE": 1.144794123159358,
+            "Mixed_BCE": 1.4426120347693094,
+            "contribution_to_mean_Mixed_BCE": 0.2225905288022958,
+            "share_Mixed_BCE_percent": 23.39877170606756
+          }
+        },
+        "Top512": {
+          "strict_EM_K_histogram": [
+            228,
+            63,
+            50,
+            44,
+            48,
+            79
+          ],
+          "true_classes": {
+            "allwrong": 228,
+            "Mixed": 205,
+            "allcorrect": 79
+          },
+          "Mixed_fraction": 0.400390625,
+          "pool_Mixed_fraction": 0.400390625,
+          "Mixed_enrichment_pp": 0.0,
+          "score_cutoff": 0.002767723286524415,
+          "pool_questions_tied_at_cutoff": 1,
+          "selected_questions_tied_at_cutoff": 1,
+          "deterministic_tie_break": "string_qid_ascending",
+          "selected_qids_sha256": "eb778cf45b14795247bf9dd854fd06530ec7b7a275e83d21e25146ec41122ab2",
+          "labels_used_to_select": false
+        }
+      },
+      "fixed_selection2048": {
+        "losses_from_recorded_probabilities_clip1e12": {
+          "trajectory_BCE": 0.6897905040265468,
+          "Mixed_BCE": 0.9857976732750453
+        },
+        "Mixed_BA_percent": 55.21380226625501,
+        "Mixed_recall_percent": 66.81749622926093,
+        "nonMixed_recall_percent": 43.61010830324909,
+        "confusion": {
+          "tp": 443,
+          "fn": 220,
+          "tn": 604,
+          "fp": 781
+        },
+        "error_count": 1001,
+        "three_true_classes_by_primary_binary_prediction": {
+          "allwrong": {
+            "n": 1055,
+            "predicted_nonMixed": 522,
+            "predicted_Mixed": 533,
+            "error_count": 533,
+            "error_rate_percent": 50.52132701421801,
+            "share_all_errors_percent": 53.246753246753244,
+            "trajectory_BCE": 0.37615360489877797,
+            "Mixed_BCE": 1.0414318126029605,
+            "contribution_to_mean_Mixed_BCE": 0.5364797667461539,
+            "share_Mixed_BCE_percent": 54.42087979005321
+          },
+          "Mixed": {
+            "n": 663,
+            "predicted_nonMixed": 220,
+            "predicted_Mixed": 443,
+            "error_count": 220,
+            "error_rate_percent": 33.18250377073907,
+            "share_all_errors_percent": 21.978021978021978,
+            "trajectory_BCE": 0.9893416864050424,
+            "Mixed_BCE": 0.6545950480905763,
+            "contribution_to_mean_Mixed_BCE": 0.21191236175979106,
+            "share_Mixed_BCE_percent": 21.496537018166187
+          },
+          "allcorrect": {
+            "n": 330,
+            "predicted_nonMixed": 82,
+            "predicted_Mixed": 248,
+            "error_count": 248,
+            "error_rate_percent": 75.15151515151516,
+            "share_all_errors_percent": 24.775224775224775,
+            "trajectory_BCE": 1.0906526090654969,
+            "Mixed_BCE": 1.4733531990518711,
+            "contribution_to_mean_Mixed_BCE": 0.23740554476910034,
+            "share_Mixed_BCE_percent": 24.0825831917806
+          }
+        },
+        "Top512": {
+          "strict_EM_K_histogram": [
+            218,
+            43,
+            30,
+            48,
+            69,
+            104
+          ],
+          "true_classes": {
+            "allwrong": 218,
+            "Mixed": 190,
+            "allcorrect": 104
+          },
+          "Mixed_fraction": 0.37109375,
+          "pool_Mixed_fraction": 0.32373046875,
+          "Mixed_enrichment_pp": 4.736328125,
+          "score_cutoff": 0.8645093441009521,
+          "pool_questions_tied_at_cutoff": 1,
+          "selected_questions_tied_at_cutoff": 1,
+          "deterministic_tie_break": "string_qid_ascending",
+          "selected_qids_sha256": "0996d572c39478de76daeee87df954ee400c572eef99958c7f1ce953b75590d0",
+          "labels_used_to_select": false
+        }
+      }
+    },
+    "EMA": {
+      "diagnostic512": {
+        "losses_from_recorded_probabilities_clip1e12": {
+          "trajectory_BCE": 0.7190398324782923,
+          "Mixed_BCE": 0.9653224536448508
+        },
+        "Mixed_BA_percent": 52.30714228966394,
+        "Mixed_recall_percent": 66.82926829268293,
+        "nonMixed_recall_percent": 37.785016286644954,
+        "confusion": {
+          "tp": 137,
+          "fn": 68,
+          "tn": 116,
+          "fp": 191
+        },
+        "error_count": 259,
+        "three_true_classes_by_primary_binary_prediction": {
+          "allwrong": {
+            "n": 228,
+            "predicted_nonMixed": 99,
+            "predicted_Mixed": 129,
+            "error_count": 129,
+            "error_rate_percent": 56.578947368421055,
+            "share_all_errors_percent": 49.80694980694981,
+            "trajectory_BCE": 0.40962864711491975,
+            "Mixed_BCE": 1.1145016410031092,
+            "contribution_to_mean_Mixed_BCE": 0.4963015120091971,
+            "share_Mixed_BCE_percent": 51.413028893637446
+          },
+          "Mixed": {
+            "n": 205,
+            "predicted_nonMixed": 68,
+            "predicted_Mixed": 137,
+            "error_count": 68,
+            "error_rate_percent": 33.170731707317074,
+            "share_all_errors_percent": 26.254826254826256,
+            "trajectory_BCE": 0.9441006947979215,
+            "Mixed_BCE": 0.6181977627371197,
+            "contribution_to_mean_Mixed_BCE": 0.24752058859591705,
+            "share_Mixed_BCE_percent": 25.6412339380828
+          },
+          "allcorrect": {
+            "n": 79,
+            "predicted_nonMixed": 17,
+            "predicted_Mixed": 62,
+            "error_count": 62,
+            "error_rate_percent": 78.48101265822785,
+            "share_all_errors_percent": 23.93822393822394,
+            "trajectory_BCE": 1.0280053196596208,
+            "Mixed_BCE": 1.4355465918524708,
+            "contribution_to_mean_Mixed_BCE": 0.2215003530397367,
+            "share_Mixed_BCE_percent": 22.945737168279763
+          }
+        },
+        "Top512": {
+          "strict_EM_K_histogram": [
+            228,
+            63,
+            50,
+            44,
+            48,
+            79
+          ],
+          "true_classes": {
+            "allwrong": 228,
+            "Mixed": 205,
+            "allcorrect": 79
+          },
+          "Mixed_fraction": 0.400390625,
+          "pool_Mixed_fraction": 0.400390625,
+          "Mixed_enrichment_pp": 0.0,
+          "score_cutoff": 0.003930580336600542,
+          "pool_questions_tied_at_cutoff": 1,
+          "selected_questions_tied_at_cutoff": 1,
+          "deterministic_tie_break": "string_qid_ascending",
+          "selected_qids_sha256": "431e3fa87001063609028d4c20bab2e2f39459e77fa9e3d7e3a154efcbdefdc6",
+          "labels_used_to_select": false
+        }
+      },
+      "fixed_selection2048": {
+        "losses_from_recorded_probabilities_clip1e12": {
+          "trajectory_BCE": 0.6714718008763249,
+          "Mixed_BCE": 0.9855506514184619
+        },
+        "Mixed_BA_percent": 55.77138158790314,
+        "Mixed_recall_percent": 67.57164404223228,
+        "nonMixed_recall_percent": 43.97111913357401,
+        "confusion": {
+          "tp": 448,
+          "fn": 215,
+          "tn": 609,
+          "fp": 776
+        },
+        "error_count": 991,
+        "three_true_classes_by_primary_binary_prediction": {
+          "allwrong": {
+            "n": 1055,
+            "predicted_nonMixed": 515,
+            "predicted_Mixed": 540,
+            "error_count": 540,
+            "error_rate_percent": 51.18483412322275,
+            "share_all_errors_percent": 54.4904137235116,
+            "trajectory_BCE": 0.41715714435679,
+            "Mixed_BCE": 1.0616046250291185,
+            "contribution_to_mean_Mixed_BCE": 0.5468715231473242,
+            "share_Mixed_BCE_percent": 55.48893122441093
+          },
+          "Mixed": {
+            "n": 663,
+            "predicted_nonMixed": 215,
+            "predicted_Mixed": 448,
+            "error_count": 215,
+            "error_rate_percent": 32.42835595776772,
+            "share_all_errors_percent": 21.695257315842582,
+            "trajectory_BCE": 0.9500608464909085,
+            "Mixed_BCE": 0.6175180218840369,
+            "contribution_to_mean_Mixed_BCE": 0.19990939868609203,
+            "share_Mixed_BCE_percent": 20.28403090174724
+          },
+          "allcorrect": {
+            "n": 330,
+            "predicted_nonMixed": 94,
+            "predicted_Mixed": 236,
+            "error_count": 236,
+            "error_rate_percent": 71.51515151515152,
+            "share_all_errors_percent": 23.814328960645813,
+            "trajectory_BCE": 0.9247973323479617,
+            "Mixed_BCE": 1.481819412697495,
+            "contribution_to_mean_Mixed_BCE": 0.23876972958504558,
+            "share_Mixed_BCE_percent": 24.227037873841827
+          }
+        },
+        "Top512": {
+          "strict_EM_K_histogram": [
+            209,
+            44,
+            38,
+            46,
+            68,
+            107
+          ],
+          "true_classes": {
+            "allwrong": 209,
+            "Mixed": 196,
+            "allcorrect": 107
+          },
+          "Mixed_fraction": 0.3828125,
+          "pool_Mixed_fraction": 0.32373046875,
+          "Mixed_enrichment_pp": 5.908203125,
+          "score_cutoff": 0.8720808029174805,
+          "pool_questions_tied_at_cutoff": 1,
+          "selected_questions_tied_at_cutoff": 1,
+          "deterministic_tie_break": "string_qid_ascending",
+          "selected_qids_sha256": "574be968e210ab4fb6660068b21bad7d18123de4f0506e4b13f32cd2c79e33c7",
+          "labels_used_to_select": false
+        }
+      }
+    }
+  },
+  "source_independent_audit": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/joint124194-root-latest/actual-epoch-quality-audit.json",
+    "bytes": 10133,
+    "sha256": "c0c667106e8eeec424bc49bcfa407fb1444394ca18194f377a5c9a162bd1fc09"
+  },
+  "source_remote_E0_evaluation": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-124194-v1/evaluations/epoch-00/complete.json",
+    "bytes": 23930,
+    "sha256": "be5ff3311fa5bbfe23bf2052fd2645c695232acee2ddcd1936497f46d52ba5d7"
+  },
+  "source_training_config": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-124194-v1/config.json",
+    "bytes": 9212,
+    "sha256": "5aaa63c9348f410357be92ce491ba6d18286d618ab86dae6e63f193f2b4367b6"
+  },
+  "current_training_objective": {
+    "trajectory_weight": 1,
+    "binary_mixed_weight": 1,
+    "optimized_event_and_rank_weights": 0,
+    "total": "trajectory_BCE + binary_Mixed_BCE",
+    "correction": "An earlier message incorrectly carried over optimized event/rank terms from historical branches; they are diagnostics only in current745501."
+  },
+  "evaluation_vs_training_distribution": "Natural fixed-G5 evaluation; current training samples trueMixed/nonMixed50/50. No current new-epoch delta is yet available."
+}
