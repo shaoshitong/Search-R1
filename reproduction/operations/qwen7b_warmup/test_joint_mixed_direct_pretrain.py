@@ -12,7 +12,7 @@ from .balanced_hard_g10_sampler import BalancedHardG10Sampler
 
 class Tiny(nn.Module):
  def __init__(self):
-  super().__init__();self.block=nn.Linear(3,3);self.group_head=nn.Linear(3,1);self.register_buffer('scratch',torch.tensor(0.),persistent=False)
+  super().__init__();self.block=nn.Linear(3,3);self.group_head=nn.Linear(3,1);self.register_buffer('scratch',torch.tensor([0.]),persistent=False)
  def encode_trajectories(self,b):
   # Stochastic toy exercises all restored RNG families; real production has no
   # dropout. Detach demonstrates that only the native probe receives gradients.
