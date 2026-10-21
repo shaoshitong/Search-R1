@@ -1,0 +1,98 @@
+{
+  "Slurm_final": "743833|q7b-delta100-L26-00|COMPLETED|0:0|00:11:52\n743834|q7b-delta100-L26-01|COMPLETED|0:0|00:12:10",
+  "checks": {
+    "all_400_manifest_and_index_SHA_and_own_ID_EM_join": true,
+    "all_producer_payload_SHA_and_reader": true,
+    "independent_first4_payload_SHA_and_reconstruction": true,
+    "second_full_tensor_bulk_rehash_in_merge": false
+  },
+  "complete": {
+    "bytes": 2772,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/bank/complete.json",
+    "sha256": "b6b21e37defa3c2157daa93b333db33f9d2dbc39e830e66a0187b8a1d9ea609b"
+  },
+  "domains": {
+    "hotpotqa": 12672,
+    "nq": 128
+  },
+  "first_chunks": {
+    "bytes": 3695,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/first-four-chunks-independent-audit.json",
+    "sha256": "305abadd8154f6a870d7273b1d809d1605783d511440d63162e9d2621b3a9a5c"
+  },
+  "future_CP_reserved_bytes": 429496729600,
+  "geometry": {
+    "hotpotqa": {
+      "max_context": 737,
+      "max_prompt": 256,
+      "min_context": 143,
+      "min_prompt": 124,
+      "overlength_trajectories": 0,
+      "short_policy": 49,
+      "trajectories": 126720
+    },
+    "nq": {
+      "max_context": 614,
+      "max_prompt": 147,
+      "min_context": 148,
+      "min_prompt": 128,
+      "overlength_trajectories": 0,
+      "short_policy": 0,
+      "trajectories": 1280
+    }
+  },
+  "manifests": 400,
+  "minimum_shared_free_guard_bytes": 912680550400,
+  "new_training_submitted": false,
+  "old30016_or_training_changed": false,
+  "outputs": {
+    "features-layer26.json": {
+      "bytes": 116402,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/bank/features-layer26.json",
+      "sha256": "1c672e6c061a17ef0aafd61b6191d2f3cd73701ab3586e5f1a4adc0736889329"
+    },
+    "groups.json": {
+      "bytes": 9703554,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/bank/groups.json",
+      "sha256": "e806ea0baef3b20481cfa970440a58e49d3f8861079e476080bb5481cb1225ac"
+    },
+    "sources.json": {
+      "bytes": 3478,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/bank/sources.json",
+      "sha256": "af62b5d413373576431334a441e66acfb3385d03db8b4caa71e3569ba0b90900"
+    }
+  },
+  "packed_bytes": 21405806729,
+  "projection_selection_consults_EM": false,
+  "questions": 12800,
+  "quota_observation": "DPC /LK02 /data; lfs/mmlsquota absent; quota -s -u21930 exit1 no output; shared df is not user quota",
+  "shard_completes": [
+    {
+      "bytes": 62363,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-00/capture/complete.json",
+      "sha256": "3849d6d5f237deeddb6c5eb8ca51e92a33585d6f32f9eff52a821a1ac48953d8"
+    },
+    {
+      "bytes": 62362,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-01/capture/complete.json",
+      "sha256": "0893db65f8387779bd92c20d9a1b31839e82e4c7f19020b0f32d4599134857f0"
+    },
+    {
+      "bytes": 62363,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-02/capture/complete.json",
+      "sha256": "7dbeb16d49fb2571dfe7fbc2e668cce4323ac40aa0545baf5a62e8ef08514bd4"
+    },
+    {
+      "bytes": 62363,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-03/capture/complete.json",
+      "sha256": "f435f374a77cfdb1fb0317be22a16a171f2bd8927e81fa4a0efc945323511475"
+    }
+  ],
+  "source_and_staging_preserved": true,
+  "source_commit": "111342b816ca8674a6468a889c4f9cc50ad8c91b",
+  "source_groups_container_has_EM_metadata_but_only_identity_fields_used_in_projection": true,
+  "status": "FIXED100_AFTER366_G10_LAYER26_CAPTURE_AND_INDEPENDENT_METADATA_BANK_COMPLETE",
+  "tensors_and_rawdata_remote_only": true,
+  "trajectories": 128000,
+  "user_or_directory_quota_available_bytes": null
+}

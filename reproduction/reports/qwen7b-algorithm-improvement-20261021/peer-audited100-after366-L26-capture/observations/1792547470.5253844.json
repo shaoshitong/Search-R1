@@ -1,0 +1,265 @@
+{
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1",
+  "epoch": 1792547470.5253844,
+  "pairs": {
+    "0": {
+      "job_id": "743833",
+      "logs": {
+        "replay-743833.log": "",
+        "worker-743833-0.log": "You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n\nLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\nLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:00<00:02,  1.17it/s]\nLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:02<00:02,  1.09s/it]\nLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:02<00:00,  1.04it/s]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:03<00:00,  1.37it/s]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:03<00:00,  1.21it/s]\n",
+        "worker-743833-1.log": "You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n\nLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\nLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:00<00:02,  1.22it/s]\nLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:02<00:02,  1.10s/it]\nLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:02<00:00,  1.02it/s]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:03<00:00,  1.33it/s]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:03<00:00,  1.19it/s]\n"
+      }
+    },
+    "1": {
+      "job_id": "743834",
+      "logs": {
+        "replay-743834.log": "",
+        "worker-743834-0.log": "You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n\nLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\nLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:00<00:02,  1.11it/s]\nLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:02<00:02,  1.39s/it]\nLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:03<00:01,  1.21s/it]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:04<00:00,  1.11it/s]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:04<00:00,  1.01s/it]\n",
+        "worker-743834-1.log": "You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n\nLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\nLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:00<00:02,  1.11it/s]\nLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:02<00:02,  1.39s/it]\nLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:03<00:01,  1.21s/it]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:04<00:00,  1.11it/s]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:04<00:00,  1.01s/it]\n"
+      }
+    }
+  },
+  "preparation": {
+    "blocked_shards": [],
+    "compute_layers": [
+      20,
+      23,
+      26
+    ],
+    "domains": {
+      "hotpotqa": 12672,
+      "nq": 128
+    },
+    "free_space_bytes": 12039286165336064,
+    "geometry": {
+      "hotpotqa": {
+        "max_context": 737,
+        "max_prompt": 256,
+        "min_context": 143,
+        "min_prompt": 124,
+        "overlength_trajectories": 0,
+        "short_policy": 49,
+        "trajectories": 126720
+      },
+      "nq": {
+        "max_context": 614,
+        "max_prompt": 147,
+        "min_context": 148,
+        "min_prompt": 128,
+        "overlength_trajectories": 0,
+        "short_policy": 0,
+        "trajectories": 1280
+      }
+    },
+    "persist_layers": [
+      26
+    ],
+    "questions": 12800,
+    "ref": {
+      "bytes": 73589,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/preparation.json",
+      "sha256": "48342adad3f6dc3e449c8e5ada8abd2260f630329f5ecb4869a0d3c9a568670b"
+    },
+    "status": "AUDITED100_AFTER366_G10_PREFIX20_GEOMETRY_FOUR_SHARDS_PREPARED",
+    "trajectories": 128000,
+    "writer_layout": "lossless_question_base_xor_policy_v1"
+  },
+  "prepare-progress.json": {
+    "actor_updates": 0,
+    "expected_trajectories": 128000,
+    "geometry": {
+      "hotpotqa": {
+        "max_context": 737,
+        "max_prompt": 256,
+        "min_context": 143,
+        "min_prompt": 124,
+        "overlength_trajectories": 0,
+        "short_policy": 49,
+        "trajectories": 126720
+      },
+      "nq": {
+        "max_context": 614,
+        "max_prompt": 147,
+        "min_context": 148,
+        "min_prompt": 128,
+        "overlength_trajectories": 0,
+        "short_policy": 0,
+        "trajectories": 1280
+      }
+    },
+    "overlength_counts": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "qualified_counts": [
+      32000,
+      32000,
+      32000,
+      32000
+    ],
+    "status": "ACTUAL_AUDITED100_AFTER366_PREFIX20_GEOMETRY_AND_PROJECTION_ADVANCING",
+    "time": 1792547228.2980072,
+    "trajectories": 128000
+  },
+  "prepare_launch": {
+    "pid": 2046909,
+    "start_ticks": "125779765",
+    "status": "PREFIX_PROJECTION_STARTED_NOT_PROGRESS_VERIFIED",
+    "time": 1792547207.2313573
+  },
+  "prepare_log_tail": "er366-20261021-636015f5-a02/group-00006/source/sampling/shard-00/batches/batch-000435/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz\", \"sha256\": \"ae563a12b07c8e9ba11cbfe3d9efbd60debcc009cef1dbe177e2f9ffe4936ad2\"}, {\"bytes\": 82005, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/peer-newseed-h100-20261021/audited100-after366-20261021-636015f5-a02/raw/audited100-after366-20261021-636015f5-a02/group-00006/source/sampling/shard-00/batches/batch-000436/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz\", \"sha256\": \"fdafa45e90874fa2ec2508f4e6dc55d58f43e6b9988e9822982140abb9d7b036\"}, {\"bytes\": 80878, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/peer-newseed-h100-20261021/audited100-after366-20261021-636015f5-a02/raw/audited100-after366-20261021-636015f5-a02/group-00006/source/sampling/shard-00/batches/batch-000437/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz\", \"sha256\": \"325e9628c1663430d3090d94acb391b184c0bfeb2fb414478e8bc48261f61dec\"}, {\"bytes\": 82119, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/peer-newseed-h100-20261021/audited100-after366-20261021-636015f5-a02/raw/audited100-after366-20261021-636015f5-a02/group-00006/source/sampling/shard-00/batches/batch-000439/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz\", \"sha256\": \"142678e155d296a5727e9461a4ca2ec2595842e614f59db297912ca77b256041\"}], \"status\": \"AUDITED100_AFTER366_G10_PREFIX20_GEOMETRY_FOUR_SHARDS_PREPARED\", \"time\": 1792547228.7217638, \"trajectories\": 128000, \"writer_layout\": \"lossless_question_base_xor_policy_v1\"}\n",
+  "sacct": "743833|q7b-delta100-L26-00|RUNNING|0:0|00:03:16\n743834|q7b-delta100-L26-01|RUNNING|0:0|00:03:16",
+  "same_prepare_process_birth": false,
+  "shards": {
+    "0": {
+      "complete_chunks": 23,
+      "device.json": {
+        "actor_updates": 0,
+        "device_name": "NVIDIA H100 80GB HBM3",
+        "job_id": "743833",
+        "local_rank": "0",
+        "time": 1792547312.064832,
+        "visible_device_count": 1
+      },
+      "first_complete_chunk": {
+        "bytes": 19467,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-00/capture/chunk-00000/complete.json",
+        "sha256": "c17b75cf13f11ad2784aa144f5397bc5f740a032a15dd0d3213990709b6e7bc0"
+      },
+      "progress.json": {
+        "actor_updates": 0,
+        "batching": {
+          "actor_optimizer_updates": 0,
+          "contexts": 7460,
+          "elapsed_seconds": 49.597884165123105,
+          "model_calls": 237,
+          "native_bitexact_claim": false,
+          "padded_tokens": 1327501,
+          "scalar_batch_bitexact_claim": false,
+          "valid_tokens": 1226041
+        },
+        "completed_chunks": 23,
+        "compute_layers": [
+          20,
+          23,
+          26
+        ],
+        "elapsed_seconds": 127.20752676483244,
+        "expected_trajectories": 32000,
+        "persist_layers": [
+          26
+        ],
+        "status": "ACTUAL_ADDITIONAL_G10_LAYER26_FEATURES_ADVANCING",
+        "time": 1792547470.4865816,
+        "trajectories": 7456
+      }
+    },
+    "1": {
+      "complete_chunks": 20,
+      "device.json": {
+        "actor_updates": 0,
+        "device_name": "NVIDIA H100 80GB HBM3",
+        "job_id": "743833",
+        "local_rank": "1",
+        "time": 1792547312.023599,
+        "visible_device_count": 1
+      },
+      "first_complete_chunk": {
+        "bytes": 19467,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-01/capture/chunk-00000/complete.json",
+        "sha256": "cb91be081942b010c90abbd07216216724b61e412d63d56127d1febf1e7a306d"
+      },
+      "progress.json": {
+        "actor_updates": 0,
+        "batching": {
+          "actor_optimizer_updates": 0,
+          "contexts": 6436,
+          "elapsed_seconds": 44.05629422701895,
+          "model_calls": 205,
+          "native_bitexact_claim": false,
+          "padded_tokens": 1139805,
+          "scalar_batch_bitexact_claim": false,
+          "valid_tokens": 1053426
+        },
+        "completed_chunks": 20,
+        "compute_layers": [
+          20,
+          23,
+          26
+        ],
+        "elapsed_seconds": 127.28904007840902,
+        "expected_trajectories": 32000,
+        "persist_layers": [
+          26
+        ],
+        "status": "ACTUAL_ADDITIONAL_G10_LAYER26_FEATURES_ADVANCING",
+        "time": 1792547470.4772286,
+        "trajectories": 6432
+      }
+    },
+    "2": {
+      "complete_chunks": 18,
+      "device.json": {
+        "actor_updates": 0,
+        "device_name": "NVIDIA H100 80GB HBM3",
+        "job_id": "743834",
+        "local_rank": "0",
+        "time": 1792547316.9902844,
+        "visible_device_count": 1
+      },
+      "first_complete_chunk": {
+        "bytes": 19467,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-02/capture/chunk-00000/complete.json",
+        "sha256": "87bc1d2a31c84775acf9c88add54b480548bc95e22a8b62b67ebd0646f0be5cd"
+      },
+      "progress.json": {
+        "actor_updates": 0,
+        "batching": {
+          "actor_optimizer_updates": 0,
+          "contexts": 5926,
+          "elapsed_seconds": 39.445037439931184,
+          "model_calls": 191,
+          "native_bitexact_claim": false,
+          "padded_tokens": 1056416,
+          "scalar_batch_bitexact_claim": false,
+          "valid_tokens": 974748
+        },
+        "completed_chunks": 18,
+        "compute_layers": [
+          20,
+          23,
+          26
+        ],
+        "elapsed_seconds": 120.2829536178615,
+        "expected_trajectories": 32000,
+        "persist_layers": [
+          26
+        ],
+        "status": "ACTUAL_ADDITIONAL_G10_LAYER26_FEATURES_ADVANCING",
+        "time": 1792547470.4104905,
+        "trajectories": 5920
+      }
+    },
+    "3": {
+      "complete_chunks": 22,
+      "device.json": {
+        "actor_updates": 0,
+        "device_name": "NVIDIA H100 80GB HBM3",
+        "job_id": "743834",
+        "local_rank": "1",
+        "time": 1792547316.9266176,
+        "visible_device_count": 1
+      },
+      "first_complete_chunk": {
+        "bytes": 19467,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-03/capture/chunk-00000/complete.json",
+        "sha256": "6bec3888f0b9f87f32649a6f50847a3f4951cee67abce38592e6c042e8192d96"
+      }
+    }
+  },
+  "squeue": "743833|q7b-delta100-L26-00|RUNNING|ACD1-4|ACD1-4|gres/gpu:2\n743834|q7b-delta100-L26-01|RUNNING|ACD1-28|ACD1-28|gres/gpu:2",
+  "start_estimates": "",
+  "status": "ACTUAL_READ_ONLY_AUDITED100_AFTER366_L26_FEATURE_OBSERVATION"
+}

@@ -1,21 +1,21 @@
 {
   "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1",
-  "epoch": 1792547365.009869,
+  "epoch": 1792548009.102528,
   "pairs": {
     "0": {
       "job_id": "743833",
       "logs": {
         "replay-743833.log": "",
-        "worker-743833-0.log": "You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n\nLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\nLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:00<00:02,  1.17it/s]\nLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:02<00:02,  1.09s/it]\nLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:02<00:00,  1.04it/s]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:03<00:00,  1.37it/s]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:03<00:00,  1.21it/s]\n",
-        "worker-743833-1.log": "You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n\nLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\nLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:00<00:02,  1.22it/s]\nLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:02<00:02,  1.10s/it]\nLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:02<00:00,  1.02it/s]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:03<00:00,  1.33it/s]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:03<00:00,  1.19it/s]\n"
+        "worker-743833-0.log": "ory.json\": {\"bytes\": 10931, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/official-snapshot-view/official-inventory.json\", \"sha256\": \"1c074aba09f1e0a65e07bb36aebeab07e9cedfe62d0c9fd0594d4d2360e82b36\"}}, \"model_revision\": \"a09a35458c702b33eeacc393d103063234e8bc28\", \"native_bitexact_equivalence_claim\": false, \"new_responses_generated\": 0, \"persist_layers\": [26], \"probe_updates\": 0, \"questions\": 3200, \"runtime_code\": {\"bytes\": 18776, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/code-111342b816ca/reproduction/operations/qwen7b_warmup/peer_audited122_l26_replay.py\", \"sha256\": \"5fe4be7edf9ecfde9f29a70a9933e372497c19104b2c338828edfde2393f152a\"}, \"source_ingest\": {\"bytes\": 8540, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited100-after366-20261021-636015f5-a02/complete.json\", \"sha256\": \"25a17d9a70b4d4b49a9034c45ffb95b927aa8f391f8545cbf44466a5cd3c09dd\"}, \"source_runtime\": \"huggingface_frozen_causal_prefill\", \"source_selection\": {\"bytes\": 3978518, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-00/inputs/selection.json\", \"sha256\": \"ad2b18413f8d281f2e4787fc3335e6096b692f8c4918c7a4d047dd00f9dd2570\"}, \"status\": \"AUDITED100_AFTER366_REAL_G10_QUALIFIED_HF_LAYER26_SHARD_COMPLETE\", \"time\": 1792547900.2843707, \"trajectories\": 32000}\n",
+        "worker-743833-1.log": "ory.json\": {\"bytes\": 10931, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/official-snapshot-view/official-inventory.json\", \"sha256\": \"1c074aba09f1e0a65e07bb36aebeab07e9cedfe62d0c9fd0594d4d2360e82b36\"}}, \"model_revision\": \"a09a35458c702b33eeacc393d103063234e8bc28\", \"native_bitexact_equivalence_claim\": false, \"new_responses_generated\": 0, \"persist_layers\": [26], \"probe_updates\": 0, \"questions\": 3200, \"runtime_code\": {\"bytes\": 18776, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/code-111342b816ca/reproduction/operations/qwen7b_warmup/peer_audited122_l26_replay.py\", \"sha256\": \"5fe4be7edf9ecfde9f29a70a9933e372497c19104b2c338828edfde2393f152a\"}, \"source_ingest\": {\"bytes\": 8540, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited100-after366-20261021-636015f5-a02/complete.json\", \"sha256\": \"25a17d9a70b4d4b49a9034c45ffb95b927aa8f391f8545cbf44466a5cd3c09dd\"}, \"source_runtime\": \"huggingface_frozen_causal_prefill\", \"source_selection\": {\"bytes\": 3978528, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-01/inputs/selection.json\", \"sha256\": \"59ecc09c956952301e68ba90e30593415b08c6954ba7662f1a60f7064b94814d\"}, \"status\": \"AUDITED100_AFTER366_REAL_G10_QUALIFIED_HF_LAYER26_SHARD_COMPLETE\", \"time\": 1792547985.0726388, \"trajectories\": 32000}\n"
       }
     },
     "1": {
       "job_id": "743834",
       "logs": {
         "replay-743834.log": "",
-        "worker-743834-0.log": "You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n\nLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\nLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:00<00:02,  1.11it/s]\nLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:02<00:02,  1.39s/it]\nLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:03<00:01,  1.21s/it]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:04<00:00,  1.11it/s]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:04<00:00,  1.01s/it]\n",
-        "worker-743834-1.log": "You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n\nLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\nLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:00<00:02,  1.11it/s]\nLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:02<00:02,  1.39s/it]\nLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:03<00:01,  1.21s/it]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:04<00:00,  1.11it/s]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:04<00:00,  1.01s/it]\n"
+        "worker-743834-0.log": "ory.json\": {\"bytes\": 10931, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/official-snapshot-view/official-inventory.json\", \"sha256\": \"1c074aba09f1e0a65e07bb36aebeab07e9cedfe62d0c9fd0594d4d2360e82b36\"}}, \"model_revision\": \"a09a35458c702b33eeacc393d103063234e8bc28\", \"native_bitexact_equivalence_claim\": false, \"new_responses_generated\": 0, \"persist_layers\": [26], \"probe_updates\": 0, \"questions\": 3200, \"runtime_code\": {\"bytes\": 18776, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/code-111342b816ca/reproduction/operations/qwen7b_warmup/peer_audited122_l26_replay.py\", \"sha256\": \"5fe4be7edf9ecfde9f29a70a9933e372497c19104b2c338828edfde2393f152a\"}, \"source_ingest\": {\"bytes\": 8540, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited100-after366-20261021-636015f5-a02/complete.json\", \"sha256\": \"25a17d9a70b4d4b49a9034c45ffb95b927aa8f391f8545cbf44466a5cd3c09dd\"}, \"source_runtime\": \"huggingface_frozen_causal_prefill\", \"source_selection\": {\"bytes\": 3978398, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-02/inputs/selection.json\", \"sha256\": \"8501abffae4aad635a252845d83f450fe34d0832f4260836a0ee1ed1723c0b9a\"}, \"status\": \"AUDITED100_AFTER366_REAL_G10_QUALIFIED_HF_LAYER26_SHARD_COMPLETE\", \"time\": 1792548003.5674067, \"trajectories\": 32000}\n",
+        "worker-743834-1.log": "ory.json\": {\"bytes\": 10931, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/official-snapshot-view/official-inventory.json\", \"sha256\": \"1c074aba09f1e0a65e07bb36aebeab07e9cedfe62d0c9fd0594d4d2360e82b36\"}}, \"model_revision\": \"a09a35458c702b33eeacc393d103063234e8bc28\", \"native_bitexact_equivalence_claim\": false, \"new_responses_generated\": 0, \"persist_layers\": [26], \"probe_updates\": 0, \"questions\": 3200, \"runtime_code\": {\"bytes\": 18776, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/code-111342b816ca/reproduction/operations/qwen7b_warmup/peer_audited122_l26_replay.py\", \"sha256\": \"5fe4be7edf9ecfde9f29a70a9933e372497c19104b2c338828edfde2393f152a\"}, \"source_ingest\": {\"bytes\": 8540, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited100-after366-20261021-636015f5-a02/complete.json\", \"sha256\": \"25a17d9a70b4d4b49a9034c45ffb95b927aa8f391f8545cbf44466a5cd3c09dd\"}, \"source_runtime\": \"huggingface_frozen_causal_prefill\", \"source_selection\": {\"bytes\": 3978528, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-03/inputs/selection.json\", \"sha256\": \"326d0e5438bd91714b3ddf2832a79b801d53035a3e94e91a7e568538d3bb9e4d\"}, \"status\": \"AUDITED100_AFTER366_REAL_G10_QUALIFIED_HF_LAYER26_SHARD_COMPLETE\", \"time\": 1792547886.0358899, \"trajectories\": 32000}\n"
       }
     }
   },
@@ -110,11 +110,28 @@
     "time": 1792547207.2313573
   },
   "prepare_log_tail": "er366-20261021-636015f5-a02/group-00006/source/sampling/shard-00/batches/batch-000435/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz\", \"sha256\": \"ae563a12b07c8e9ba11cbfe3d9efbd60debcc009cef1dbe177e2f9ffe4936ad2\"}, {\"bytes\": 82005, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/peer-newseed-h100-20261021/audited100-after366-20261021-636015f5-a02/raw/audited100-after366-20261021-636015f5-a02/group-00006/source/sampling/shard-00/batches/batch-000436/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz\", \"sha256\": \"fdafa45e90874fa2ec2508f4e6dc55d58f43e6b9988e9822982140abb9d7b036\"}, {\"bytes\": 80878, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/peer-newseed-h100-20261021/audited100-after366-20261021-636015f5-a02/raw/audited100-after366-20261021-636015f5-a02/group-00006/source/sampling/shard-00/batches/batch-000437/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz\", \"sha256\": \"325e9628c1663430d3090d94acb391b184c0bfeb2fb414478e8bc48261f61dec\"}, {\"bytes\": 82119, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/peer-newseed-h100-20261021/audited100-after366-20261021-636015f5-a02/raw/audited100-after366-20261021-636015f5-a02/group-00006/source/sampling/shard-00/batches/batch-000439/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz\", \"sha256\": \"142678e155d296a5727e9461a4ca2ec2595842e614f59db297912ca77b256041\"}], \"status\": \"AUDITED100_AFTER366_G10_PREFIX20_GEOMETRY_FOUR_SHARDS_PREPARED\", \"time\": 1792547228.7217638, \"trajectories\": 128000, \"writer_layout\": \"lossless_question_base_xor_policy_v1\"}\n",
-  "sacct": "743833|q7b-delta100-L26-00|RUNNING|0:0|00:01:31\n743834|q7b-delta100-L26-01|RUNNING|0:0|00:01:31",
+  "sacct": "743833|q7b-delta100-L26-00|COMPLETED|0:0|00:11:52\n743834|q7b-delta100-L26-01|COMPLETED|0:0|00:12:10",
   "same_prepare_process_birth": false,
   "shards": {
     "0": {
-      "complete_chunks": 3,
+      "complete": {
+        "elapsed_seconds": 557.0053156726062,
+        "features": {
+          "bytes": 29102,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-00/capture/features-layer26.json",
+          "sha256": "a7d15b380f39c01be973ee049c7125a1a8a045b912139501171f5c50d9c249b7"
+        },
+        "job_id": "743833",
+        "questions": 3200,
+        "ref": {
+          "bytes": 62363,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-00/capture/complete.json",
+          "sha256": "3849d6d5f237deeddb6c5eb8ca51e92a33585d6f32f9eff52a821a1ac48953d8"
+        },
+        "status": "AUDITED100_AFTER366_REAL_G10_QUALIFIED_HF_LAYER26_SHARD_COMPLETE",
+        "trajectories": 32000
+      },
+      "complete_chunks": 100,
       "device.json": {
         "actor_updates": 0,
         "device_name": "NVIDIA H100 80GB HBM3",
@@ -132,32 +149,49 @@
         "actor_updates": 0,
         "batching": {
           "actor_optimizer_updates": 0,
-          "contexts": 1187,
-          "elapsed_seconds": 9.557905833236873,
-          "model_calls": 40,
+          "contexts": 32026,
+          "elapsed_seconds": 205.54446049779654,
+          "model_calls": 1023,
           "native_bitexact_claim": false,
-          "padded_tokens": 208692,
+          "padded_tokens": 5699933,
           "scalar_batch_bitexact_claim": false,
-          "valid_tokens": 195451
+          "valid_tokens": 5259914
         },
-        "completed_chunks": 3,
+        "completed_chunks": 99,
         "compute_layers": [
           20,
           23,
           26
         ],
-        "elapsed_seconds": 21.55961195193231,
+        "elapsed_seconds": 536.637831906788,
         "expected_trajectories": 32000,
         "persist_layers": [
           26
         ],
         "status": "ACTUAL_ADDITIONAL_G10_LAYER26_FEATURES_ADVANCING",
-        "time": 1792547364.8386664,
-        "trajectories": 1184
+        "time": 1792547879.9168866,
+        "trajectories": 32000
       }
     },
     "1": {
-      "complete_chunks": 3,
+      "complete": {
+        "elapsed_seconds": 641.8844499913976,
+        "features": {
+          "bytes": 29102,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-01/capture/features-layer26.json",
+          "sha256": "9d91265235fa97edee25a7b2ae5a40167664a0b571324f1962e729f3ce402a6b"
+        },
+        "job_id": "743833",
+        "questions": 3200,
+        "ref": {
+          "bytes": 62362,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-01/capture/complete.json",
+          "sha256": "0893db65f8387779bd92c20d9a1b31839e82e4c7f19020b0f32d4599134857f0"
+        },
+        "status": "AUDITED100_AFTER366_REAL_G10_QUALIFIED_HF_LAYER26_SHARD_COMPLETE",
+        "trajectories": 32000
+      },
+      "complete_chunks": 100,
       "device.json": {
         "actor_updates": 0,
         "device_name": "NVIDIA H100 80GB HBM3",
@@ -175,32 +209,49 @@
         "actor_updates": 0,
         "batching": {
           "actor_optimizer_updates": 0,
-          "contexts": 1121,
-          "elapsed_seconds": 8.962603858672082,
-          "model_calls": 36,
+          "contexts": 32027,
+          "elapsed_seconds": 214.5595788611099,
+          "model_calls": 1026,
           "native_bitexact_claim": false,
-          "padded_tokens": 187406,
+          "padded_tokens": 5766345,
           "scalar_batch_bitexact_claim": false,
-          "valid_tokens": 178280
+          "valid_tokens": 5282244
         },
-        "completed_chunks": 3,
+        "completed_chunks": 99,
         "compute_layers": [
           20,
           23,
           26
         ],
-        "elapsed_seconds": 21.78173211682588,
+        "elapsed_seconds": 619.5283130733296,
         "expected_trajectories": 32000,
         "persist_layers": [
           26
         ],
         "status": "ACTUAL_ADDITIONAL_G10_LAYER26_FEATURES_ADVANCING",
-        "time": 1792547364.9699204,
-        "trajectories": 1120
+        "time": 1792547962.7165012,
+        "trajectories": 32000
       }
     },
     "2": {
-      "complete_chunks": 2,
+      "complete": {
+        "elapsed_seconds": 653.4398692159448,
+        "features": {
+          "bytes": 29102,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-02/capture/features-layer26.json",
+          "sha256": "ac9f919ecfd9ffe0ffab871fe8edc8bdfdb8f36c2d55216425e559c46ec17a32"
+        },
+        "job_id": "743834",
+        "questions": 3200,
+        "ref": {
+          "bytes": 62363,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-02/capture/complete.json",
+          "sha256": "7dbeb16d49fb2571dfe7fbc2e668cce4323ac40aa0545baf5a62e8ef08514bd4"
+        },
+        "status": "AUDITED100_AFTER366_REAL_G10_QUALIFIED_HF_LAYER26_SHARD_COMPLETE",
+        "trajectories": 32000
+      },
+      "complete_chunks": 100,
       "device.json": {
         "actor_updates": 0,
         "device_name": "NVIDIA H100 80GB HBM3",
@@ -218,32 +269,49 @@
         "actor_updates": 0,
         "batching": {
           "actor_optimizer_updates": 0,
-          "contexts": 704,
-          "elapsed_seconds": 5.879421966383234,
-          "model_calls": 22,
+          "contexts": 32028,
+          "elapsed_seconds": 204.33649849379435,
+          "model_calls": 1028,
           "native_bitexact_claim": false,
-          "padded_tokens": 117856,
+          "padded_tokens": 5695755,
           "scalar_batch_bitexact_claim": false,
-          "valid_tokens": 111056
+          "valid_tokens": 5259584
         },
-        "completed_chunks": 2,
+        "completed_chunks": 99,
         "compute_layers": [
           20,
           23,
           26
         ],
-        "elapsed_seconds": 14.848397189984098,
+        "elapsed_seconds": 634.2982964669354,
         "expected_trajectories": 32000,
         "persist_layers": [
           26
         ],
         "status": "ACTUAL_ADDITIONAL_G10_LAYER26_FEATURES_ADVANCING",
-        "time": 1792547364.9759343,
-        "trajectories": 704
+        "time": 1792547984.4258335,
+        "trajectories": 32000
       }
     },
     "3": {
-      "complete_chunks": 2,
+      "complete": {
+        "elapsed_seconds": 535.7923192048911,
+        "features": {
+          "bytes": 29102,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-03/capture/features-layer26.json",
+          "sha256": "8fd09bd3cffec8ed135a326ef45eb596337a63f85f4714dbb20f4cb95772cddb"
+        },
+        "job_id": "743834",
+        "questions": 3200,
+        "ref": {
+          "bytes": 62363,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/shard-03/capture/complete.json",
+          "sha256": "f435f374a77cfdb1fb0317be22a16a171f2bd8927e81fa4a0efc945323511475"
+        },
+        "status": "AUDITED100_AFTER366_REAL_G10_QUALIFIED_HF_LAYER26_SHARD_COMPLETE",
+        "trajectories": 32000
+      },
+      "complete_chunks": 100,
       "device.json": {
         "actor_updates": 0,
         "device_name": "NVIDIA H100 80GB HBM3",
@@ -261,32 +329,32 @@
         "actor_updates": 0,
         "batching": {
           "actor_optimizer_updates": 0,
-          "contexts": 832,
-          "elapsed_seconds": 6.472018763655797,
-          "model_calls": 26,
+          "contexts": 32029,
+          "elapsed_seconds": 203.02942328550853,
+          "model_calls": 1028,
           "native_bitexact_claim": false,
-          "padded_tokens": 142400,
+          "padded_tokens": 5710624,
           "scalar_batch_bitexact_claim": false,
-          "valid_tokens": 133094
+          "valid_tokens": 5268466
         },
-        "completed_chunks": 2,
+        "completed_chunks": 99,
         "compute_layers": [
           20,
           23,
           26
         ],
-        "elapsed_seconds": 14.574354860000312,
+        "elapsed_seconds": 516.7747637378052,
         "expected_trajectories": 32000,
         "persist_layers": [
           26
         ],
         "status": "ACTUAL_ADDITIONAL_G10_LAYER26_FEATURES_ADVANCING",
-        "time": 1792547364.8179252,
-        "trajectories": 832
+        "time": 1792547867.018334,
+        "trajectories": 32000
       }
     }
   },
-  "squeue": "743833|q7b-delta100-L26-00|RUNNING|ACD1-4|ACD1-4|gres/gpu:2\n743834|q7b-delta100-L26-01|RUNNING|ACD1-28|ACD1-28|gres/gpu:2",
+  "squeue": "",
   "start_estimates": "",
   "status": "ACTUAL_READ_ONLY_AUDITED100_AFTER366_L26_FEATURE_OBSERVATION"
 }
