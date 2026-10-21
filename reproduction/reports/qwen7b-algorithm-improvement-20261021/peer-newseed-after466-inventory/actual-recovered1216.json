@@ -1,0 +1,68 @@
+{
+  "status": "OLD_RAW31232_MINUS_FEATURE30016_RECOVERED_METADATA_ONLY",
+  "epoch": 1792577635.6701207,
+  "raw_questions": 31232,
+  "old_feature_questions": 30016,
+  "omitted_questions": 1216,
+  "eligible_recovered_questions": 1216,
+  "eligible_recovered_trajectories": 12160,
+  "old_plan_summary": {
+    "actor_updates": 0,
+    "all_original_warmup_question_unseen_claim": false,
+    "controlled_and_all_evaluation_qid_and_hash_exclusions_applied": true,
+    "duplicated_question_text_excluded": 0,
+    "eligible_questions_before_hash_dedup": 30029,
+    "existing8192_preserved_exactly": true,
+    "existing_questions": 8192,
+    "feature_capture_started": false,
+    "global_questions": 32,
+    "labels_consulted": false,
+    "new_questions": 21824,
+    "new_trajectories_needing_capture": 218240,
+    "onepass_training_updates": 938,
+    "ordered_all_trajectory_ids_sha256": "e80ca5bd68788ad24b6c3ed4950850a67c0196b75148ad7e8350e1de6477e988",
+    "ordered_new_qid_sha256": "164bb5537403c599ec051336b822db60d19722a3450335a63ec3f6b2d9bdb29a",
+    "ordered_qid_sha256": "5422af4e9a3d538c0a8858080e556b0a51023b773d9ef875328328e6a1d9bf46",
+    "probe_training_started": false,
+    "questions": 30016,
+    "scores_consulted": false,
+    "selection": "same SHA256(seed1729,qid) order; preserve prior prefix; unique text; full B32 tail rule",
+    "source_questions": 31232,
+    "status": "IDENTITY_ONLY_EXPANDED_REAL_G10_COHORT_FROZEN_NOT_CAPTURED_OR_FIT",
+    "tail_questions_omitted_for_complete_batch": 13,
+    "trajectories": 300160,
+    "unique_eligible_questions": 30029
+  },
+  "omission_breakdown": {
+    "controlled_qid": 1203,
+    "controlled_hash": 1203,
+    "full_batch_tail": 13,
+    "train_text_dedup": 0
+  },
+  "fixed_evaluation_identity_overlap": {
+    "diagnostic512": {
+      "qids": 0,
+      "hashes": 0
+    },
+    "frozen_final4096": {
+      "qids": 0,
+      "hashes": 0
+    },
+    "selection2048": {
+      "qids": 0,
+      "hashes": 0
+    }
+  },
+  "recovered_identity_plan": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-recovered1216-identity-v1/identity-plan.json",
+    "bytes": 862041,
+    "sha256": "9b8f93abc93d7907c6bb5dfb9c7b86b00d347d9d4714d53d236296d0d5fa6c48"
+  },
+  "groups_source": {
+    "bytes": 46117850,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-newseed-20261021-185747-445fc691/raw-g10/groups.json",
+    "sha256": "e38154c5c049ff2250ed0b8108624861752835813fe45ee73e2e47168e80d979"
+  },
+  "data_source": "canonical training metadata; no payload/model/tensor/feature read",
+  "GPU_submitted": false
+}
