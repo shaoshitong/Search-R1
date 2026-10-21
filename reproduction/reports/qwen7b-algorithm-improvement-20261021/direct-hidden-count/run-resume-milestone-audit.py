@@ -11,7 +11,8 @@ if not args.job_id.isdigit() or args.job_id=='743619' or state['job_id']!=args.j
 if state['original_job_id']!='743619' or state['continuation_operator-publication']['commit']!='31e930ce8327078612c3ee9dd98aec2188a78826':raise ValueError('Qualified exact continuation lineage differs')
 if state.get('continuation_handoff-complete',{}).get('status')!='CONTINUATION_FIRST_NEW_UPDATE_REPLAY_AND_INDEPENDENT_FULLCP_ACCEPTED':raise ValueError('Actual accepted continuation handoff required')
 if 'evaluation_'+str(args.cursor) not in state:raise RuntimeError('Wait for actual checkpoint-first fixed evaluation complete')
-if args.cursor==938 and '|COMPLETED|0:0|' not in state.get('sacct',''):raise RuntimeError('Final audit waits for normal terminal Slurm state')
+main_jobs=[line.split('|') for line in state.get('sacct','').splitlines() if line.split('|',1)[0]==args.job_id]
+if args.cursor==938 and (len(main_jobs)!=1 or main_jobs[0][2:4]!=['COMPLETED','0:0']):raise RuntimeError('Final audit waits for this continuation job normal terminal Slurm state')
 payload=subprocess.check_output(['git','show',SOURCE_COMMIT+':'+NAME],cwd=ROOT)
 if payload!=(ROOT/NAME).read_bytes():raise ValueError('External auditor differs from published source')
 values=dict(base=BASE,cursor=args.cursor,source_commit=SOURCE_COMMIT,runtime_commit=RUNTIME_COMMIT,
