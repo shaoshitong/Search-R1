@@ -234,3 +234,10 @@ The future17-unit read-only follower is now published with4 focused CPU tests. I
 ### 08:26 CST auxiliary startup fix, sampling preserved
 
 The real node10 terminal-only collector exited1 because its inline multiline shell argument became transient unit lines. Its original transient unit bytes/inode, terminal properties and journal snapshot are retained; source5 collector is active. Existing13 samplers were not stopped and no drain had been issued. A distinct repair1 collector now uses a staged filename and explicit namespace environment; it requires true terminal state for every prior collector, preserving all old intents. The same issue was corrected in three not-yet-started future owner launch paths using a single-line decoder. Six focused CPU tests passed; actual repaired collector and owner/model acceptance remain pending. All17 corrected future code identities need fresh immutable stages. See cohort-launch-argv-repair-20261021-small.json and the updated handoff. No current sampler runtime or scientific recipe changed.
+
+
+### 2026-10-21 guarded source-owner continuation
+
+The same seed20261021 data bank continues under a 24h retrieval owner and finite 8h model slots. Both old cohorts actually released their own resources before replacement. Nine model instances have now initialized: five on h100-5 and four on h100-10, covering 14 physical cards; node10 cards1/2 remain foreign-occupied and untouched. Two supplementary TP4s share the unchanged source owner through released anchor leases. The seven failed spare TP1 admissions retain their exact errors, original-file SHA records and two real release observations; no failure was relabeled as successful inference.
+
+The pinned small result is [guarded-owner-v2-nine-model-actual-continuation.json](guarded-owner-v2-nine-model-actual-continuation.json). Its counts are observed seals, separately distinguished from the normal independent CPU audit. The 845140-trajectory objective remains incomplete. All model/data artifacts stay in our own retained NAS10 shared directory.
