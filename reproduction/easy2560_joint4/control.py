@@ -130,7 +130,8 @@ def bind_repo(base, commit):
     return bound
 
 
-def launch_command(base, commit, actor_micro=8, restore_receipt=None, infra_profile='baseline'):
+def launch_command(base, commit, actor_micro=8, restore_receipt=None, infra_profile='baseline',
+                   external_retriever_receipt=None):
     from search_g1.easy7b_infra import profile_flags
     profile_flags(infra_profile)
     base = own_base(base)
@@ -144,8 +145,10 @@ def launch_command(base, commit, actor_micro=8, restore_receipt=None, infra_prof
             '--error=' + str(base / 'logs/training-%j.log'),
             str(base / 'source' / commit / 'reproduction/easy2560_joint4/train.sh'),
             str(base), commit, str(actor_micro), str(restore_receipt) if restore_receipt else '']
-    if infra_profile != 'baseline':
+    if infra_profile != 'baseline' or external_retriever_receipt is not None:
         command.append(infra_profile)
+    if external_retriever_receipt is not None:
+        command.append(str(external_retriever_receipt))
     return command
 
 
@@ -165,17 +168,22 @@ def bootstrap(base, commit, predecessor=PREDECESSOR):
     return dict(environment=environment, source=source, training_submitted=False)
 
 
-def submit(base, commit, actor_micro=8, predecessor=PREDECESSOR, restore_receipt=None, infra_profile='baseline'):
+def submit(base, commit, actor_micro=8, predecessor=PREDECESSOR, restore_receipt=None, infra_profile='baseline',
+           external_retriever_receipt=None):
     base = own_base(base); bootstrap(base, commit, predecessor)
     claim = base / 'preparation/training-submit-claim.json'
     receipt = base / 'preparation/training-submission.json'
     if any(p.exists() for p in (claim, receipt, base / 'job.id', base / 'logs/run-manifest.json')):
         raise ValueError('EASY2560_SUBMISSION_ALREADY_ATTEMPTED_INSPECT_ACTUAL_JOB')
     restoration = restore_binding(restore_receipt)
-    command = launch_command(base, commit, actor_micro, restoration['restore_receipt'], infra_profile)
+    from .retrieval_proxy import external_binding
+    external = external_binding(external_retriever_receipt)
+    command = launch_command(base, commit, actor_micro, restoration['restore_receipt'], infra_profile,
+                             external_retriever_receipt)
     publish(claim, dict(source_commit=commit, command=command,
                         actor_micro_batch_per_rank=actor_micro, logical_micro_batch_per_rank=4,
                         infra_profile=infra_profile,
+                        external_retriever=external,
                         **restoration,
                         personal_storage_budget_bytes=2 * 10**12, created_unix=time.time()))
     result = subprocess.run(command, capture_output=True, text=True, timeout=30)
@@ -183,6 +191,7 @@ def submit(base, commit, actor_micro=8, predecessor=PREDECESSOR, restore_receipt
                  stdout=result.stdout, stderr=result.stderr, checked_unix=time.time(),
                  actor_micro_batch_per_rank=actor_micro, training_world_size=4, **restoration)
     value['infra_profile'] = infra_profile
+    value['external_retriever'] = external
     if result.returncode == 0:
         job = result.stdout.strip().split(';')[0]
         if not job.isdecimal(): raise ValueError('EASY2560_UNKNOWN_SUBMISSION_RESULT_INSPECT_CLAIM')
@@ -198,11 +207,13 @@ def main():
     p.add_argument('--base', default=BASE); p.add_argument('--commit', required=True)
     p.add_argument('--predecessor', default=PREDECESSOR)
     p.add_argument('--restore-receipt')
+    p.add_argument('--external-retriever-receipt')
     from search_g1.easy7b_infra import PROFILES
     p.add_argument('--infra-profile', choices=PROFILES, default='baseline')
     p.add_argument('--actor-micro', type=int, choices=MICROS, default=8); a = p.parse_args()
     value = (bootstrap(a.base, a.commit, a.predecessor) if a.mode == 'bootstrap' else
-             submit(a.base, a.commit, a.actor_micro, a.predecessor, a.restore_receipt, a.infra_profile))
+             submit(a.base, a.commit, a.actor_micro, a.predecessor, a.restore_receipt, a.infra_profile,
+                    a.external_retriever_receipt))
     print(json.dumps(value), flush=True)
 
 

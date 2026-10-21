@@ -393,15 +393,27 @@ class Pipeline:
                     repeated_synthetic_gpu_tests=False))
             else:
                 self.fresh_mechanics_admission()
-            self.stage('STAGING_SAME_CLUSTER_ORIGINAL_RETRIEVAL')
-            p=self.start('retrieval-stage',[self.python,'-m','reproduction.common8.stage_retrieval','--base',str(self.base),'--port',str(export_port)],[])
-            self.wait('retrieval-stage',p)
-            self.stage('STARTING_ORIGINAL_FLAT_FAISS')
-            libs=list((self.base/'env/lib/python3.10/site-packages/nvidia').glob('*/lib'))+[self.base/'env/lib/python3.10/site-packages/torch/lib']
-            p=self.start('retriever',[self.python,'-m','reproduction.common8.retriever'],self.retriever_gpus,{'PYTHONPATH':str(self.base/'retriever-gpu-lib')+':'+str(self.repo),'LD_LIBRARY_PATH':':'.join(map(str,libs))})
+            if self.run.get('external_retriever') is not None:
+                self.stage('STARTING_CPU_PROXY_TO_BOUND_EXTERNAL_RETRIEVER',
+                           service_job_id=self.run['external_retriever']['service_job_id'],
+                           external_physical_gpus=2, external_logical_shards=4,
+                           local_index_or_corpus_staging=False)
+                p=self.start('retriever',[self.python,'-m','reproduction.easy2560_joint4.retrieval_proxy',
+                    '--base',str(self.base)],[])
+            else:
+                self.stage('STAGING_SAME_CLUSTER_ORIGINAL_RETRIEVAL')
+                p=self.start('retrieval-stage',[self.python,'-m','reproduction.common8.stage_retrieval','--base',str(self.base),'--port',str(export_port)],[])
+                self.wait('retrieval-stage',p)
+                self.stage('STARTING_ORIGINAL_FLAT_FAISS')
+                libs=list((self.base/'env/lib/python3.10/site-packages/nvidia').glob('*/lib'))+[self.base/'env/lib/python3.10/site-packages/torch/lib']
+                p=self.start('retriever',[self.python,'-m','reproduction.common8.retriever'],self.retriever_gpus,{'PYTHONPATH':str(self.base/'retriever-gpu-lib')+':'+str(self.repo),'LD_LIBRARY_PATH':':'.join(map(str,libs))})
             health=self.endpoint('retriever',p,'18010/health')
             assert health['ok'] is True and health['run_id']==self.run['run_id'] and health['shard_count']==len(self.retriever_gpus)
             assert health['slurm_job_id']==os.environ['SLURM_JOB_ID']
+            if self.run.get('external_retriever') is not None:
+                assert health['service_job_id']==self.run['external_retriever']['service_job_id']
+                assert health['service_job_id']!=health['slurm_job_id']
+                assert health['physical_gpu_count']==2 and health['logical_shards']==4 and health['local_proxy_gpu_count']==0
             admission=self.base/'logs/retrieval-admission.json';assert health['admission_sha256']==digest(admission)
             # HTTP path itself must return the same actual stage64 documents/scores.
             from reproduction.common8.http_retrieval import admit_http

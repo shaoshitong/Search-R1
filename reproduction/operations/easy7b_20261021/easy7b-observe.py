@@ -52,4 +52,16 @@ p=b/'logs/search-g1-common8-training.log'
 if p.is_file():
  with p.open('rb') as f:f.seek(max(0,p.stat().st_size-2000000));s=f.read().decode(errors='replace')
  d['actor_cache_log_lines']=[z for z in s.splitlines()if any(k in z for k in ('# GPU blocks','before init cache','after init cache','Maximum concurrency','gpu_memory_utilization','cache block'))][-20:]
+d['optimizer_progress']=[]
+for rank in range(4):
+ p=b/('logs/optimizer-rank-'+str(rank)+'.jsonl')
+ if not p.is_file():continue
+ with p.open('rb')as f:f.seek(max(0,p.stat().st_size-35000));lines=f.read().decode(errors='replace').splitlines()
+ rows=[]
+ for line in lines:
+  try:z=json.loads(line)
+  except ValueError:continue
+  context=z.get('context',{})
+  rows.append(dict(kind=z.get('kind'),stage=z.get('stage'),optimizer_writes=z.get('optimizer_writes'),cumulative_writes=z.get('cumulative_writes'),logical_update=context.get('logical_update'),minibatch=context.get('minibatch_index')))
+ d['optimizer_progress'].append(dict(rank=rank,bytes=p.stat().st_size,mtime=p.stat().st_mtime,last=rows[-2:]))
 print(json.dumps(d))

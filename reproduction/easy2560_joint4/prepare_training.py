@@ -31,13 +31,18 @@ def selection_settings(predecessor, physical, restoring=False, infra_profile='ba
     return settings
 
 
-def prepare(base, commit, actor_micro=8, restore_receipt=None, infra_profile='baseline'):
+def prepare(base, commit, actor_micro=8, restore_receipt=None, infra_profile='baseline',
+            external_retriever_receipt=None):
     base = own_base(base)
     if os.environ.get('SEARCH_G1_TRAINING_WORLD_SIZE') != '4' or not os.environ.get('SLURM_JOB_ID', '').isdecimal():
         raise ValueError('EASY2560_ACTUAL_NATIVE4_SLURM_REQUIRED')
     submitted = json.loads((base / 'preparation/training-submit-claim.json').read_text())
     if submitted.get('infra_profile', 'baseline') != infra_profile:
         raise ValueError('EASY2560_SUBMITTED_INFRA_PROFILE_DIFFERS')
+    from .retrieval_proxy import external_binding
+    external = external_binding(external_retriever_receipt)
+    if submitted.get('external_retriever') != external:
+        raise ValueError('EASY2560_SUBMITTED_EXTERNAL_RETRIEVER_DIFFERS')
     if submitted['source_commit'] != commit or submitted['actor_micro_batch_per_rank'] != actor_micro:
         raise ValueError('EASY2560_SUBMITTED_SOURCE_OR_MICRO_DIFFERS')
     restoration = restore_binding(restore_receipt)
@@ -50,6 +55,8 @@ def prepare(base, commit, actor_micro=8, restore_receipt=None, infra_profile='ba
         from .model7b import create
         create(Path(MODEL), manifest)
     settings = selection_settings(predecessor, actor_micro, restoring=bool(restore_receipt), infra_profile=infra_profile)
+    if external is not None:
+        settings['external_retriever'] = external
     from reproduction.common8.formal_contract import SKIP_INITIAL_EVALUATION_POLICY
     from search_g1.rollout_phase_contract import DEFAULT_ROLLOUT_PHASE, validate
     settings['pretraining_baseline_policy'] = ('reuse_historical' if restore_receipt else
@@ -74,6 +81,7 @@ def prepare(base, commit, actor_micro=8, restore_receipt=None, infra_profile='ba
                  source_commit=commit, slurm_job_id=os.environ['SLURM_JOB_ID'],
                  target_outers=200, training_world_size=4,
                  infra_profile=infra_profile,
+                 external_retriever_receipt_sha256=external['receipt_sha256'] if external else None,
                  actor_micro_batch_per_rank=actor_micro, actor_logical_micro_batch_per_rank=4,
                  gradient_accumulation_steps=32 // actor_micro,
                  question_selection_probe_enabled=False, teacher_warmup_updates=0,
@@ -93,10 +101,12 @@ def main():
     p = argparse.ArgumentParser(); p.add_argument('--base', default=BASE)
     p.add_argument('--commit', required=True)
     p.add_argument('--restore-receipt')
+    p.add_argument('--external-retriever-receipt')
     from search_g1.easy7b_infra import PROFILES
     p.add_argument('--infra-profile', choices=PROFILES, default='baseline')
     p.add_argument('--actor-micro', type=int, choices=MICROS, default=8); a = p.parse_args()
-    print(json.dumps(prepare(a.base, a.commit, a.actor_micro, a.restore_receipt, a.infra_profile)), flush=True)
+    print(json.dumps(prepare(a.base, a.commit, a.actor_micro, a.restore_receipt, a.infra_profile,
+                             a.external_retriever_receipt)), flush=True)
 
 
 if __name__ == '__main__': main()

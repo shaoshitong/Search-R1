@@ -6,6 +6,7 @@ COMMIT="${2:?immutable source commit required}"
 ACTOR_MICRO="${3:-8}"
 RESTORE_RECEIPT="${4:-}"
 INFRA_PROFILE="${5:-baseline}"
+EXTERNAL_RETRIEVER_RECEIPT="${6:-}"
 export SEARCH_G1_BASE="$BASE" SEARCH_G1_SOURCE_COMMIT="$COMMIT" SEARCH_G1_PROFILE=common8
 export QPROBE_SOURCE="$BASE/repo" SEARCH_G1_TRAINING_WORLD_SIZE=4
 export SEARCH_G1_EXECUTION_PROFILE=native4_bf16_varlen_fp32_master
@@ -22,5 +23,6 @@ cd "$BASE/repo"
 PREPARE_ARGS=(--base "$BASE" --commit "$COMMIT" --actor-micro "$ACTOR_MICRO")
 PREPARE_ARGS+=(--infra-profile "$INFRA_PROFILE")
 if [[ -n "$RESTORE_RECEIPT" ]]; then PREPARE_ARGS+=(--restore-receipt "$RESTORE_RECEIPT"); fi
+if [[ -n "$EXTERNAL_RETRIEVER_RECEIPT" ]]; then PREPARE_ARGS+=(--external-retriever-receipt "$EXTERNAL_RETRIEVER_RECEIPT"); fi
 python -B -m reproduction.easy2560_joint4.prepare_training "${PREPARE_ARGS[@]}"
 exec python -B -m reproduction.easy2560_joint4.native_ray_resources --base "$BASE"
