@@ -113,3 +113,19 @@ WAITING_CORE_ACTUAL_ACK for50. Encoder payload bodies were not rehashed.
 Core controller3603385 and both GPU jobs remain unchanged. The first readback
 is in `evidence/actual-cp5-dependency-closure-and-future-wait50-20261021.json`;
 the50/100/150/200 transfers and final CUDA recovery are still pending.
+
+The next actual completed boundary is CP8: all four ranks wrote20 updates
+(cumulative160), advanced the scheduler once to8, saved the23 checkpoint and7
+boundary files, and published manifest52f85a226a3e2e9acddd61738dfa237e2f056466944f32e5bcb7b11053d9f816.
+Outer9 subsequently saved512 candidate questions. Outer8 candidate EM was
+37.3125%, selected-trajectory EM50.1171875%, reward0.61327267; all512 selected
+groups were mixed, with no fallback or candidate-pool retry. These changing
+pre-update training pools are not fixed512 validation measurements. No clear
+collapse or training restart was observed; the200-outer goal remains active.
+
+`watch_training_progress_local.py` is a bounded read-only local observer. A
+candidate directory can exist before its progress.json: unknown step values
+are retained as unknown until producer progress arrives. An earlier ad-hoc
+observer stop predicate exited on that transient None value; its evidence is
+preserved, and no training process exited or restarted for that reader error.
+The published observer actually observed CP8 plus saved outer9 and exited0.

@@ -1,0 +1,12 @@
+{
+  "checked_unix": 1792595056.3089302,
+  "role": "local_read_only_observation_loop_failure",
+  "error_type": "TypeError",
+  "error": "'>=' not supported between instances of 'NoneType' and 'int'",
+  "receipt": "training-progress-em-1792594976.json",
+  "cause": "New outer9 directory existed before progress.json, yielding an unknown step; ad-hoc stop predicate compared it numerically",
+  "training_failure_inferred": false,
+  "training_modified": false,
+  "observer_only_exited": true,
+  "fix": "Require an integer pool step before numeric comparison; leave transient state unknown"
+}
