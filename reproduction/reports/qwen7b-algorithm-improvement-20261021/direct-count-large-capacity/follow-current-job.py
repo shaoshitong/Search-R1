@@ -1,4 +1,4 @@
-"""Finite current743933 observation; no schedule, submission or training edits."""
+"""Finite current v2 capacity job observation; no schedule, submission or training edits."""
 import fcntl,json,pathlib,subprocess,time
 ROOT=pathlib.Path(__file__).resolve().parents[4];HERE=pathlib.Path(__file__).parent
 lock=(HERE/'finite-current-job.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
@@ -6,7 +6,7 @@ started=time.time();previous=None
 while time.time()-started<11400:
  p=subprocess.run(['python3',str(HERE/'prepare-screen-and-entry.py'),'--action','status'],cwd=ROOT,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
  if p.returncode:raise RuntimeError('Readonly observation needs attention, training unchanged: '+p.stderr[-2000:])
- s=json.loads(p.stdout.splitlines()[-1]);assert s['job_id']=='743933'
+ s=json.loads(p.stdout.splitlines()[-1]);assert s['job_id']!='743933' and s['submission']['config']['sha256']=='fb637c02812dd070cf392a58df75e0d219bbb10d1a2d24cd6e201f3638147767'
  cache=s.get('cache-progress',{});progress=s.get('progress',{});latest=s.get('latest',{})
  row=dict(epoch=s['epoch'],job_id=s['job_id'],stage=progress.get('stage'),cache_trajectories=cache.get('completed_trajectories',0),
   cache_complete=bool(s.get('cache-complete')),native_golden=s.get('cache-same-api-golden',{}).get('status'),
@@ -21,7 +21,7 @@ while time.time()-started<11400:
   raise RuntimeError('Actual exit/failure requires diagnosis; no blind restart: '+json.dumps(row))
  if s.get('complete'):
   print(json.dumps(dict(status='REAL_CAPACITY_COMPLETION_EXISTS_AWAITING_INDEPENDENT_METRICS',complete=s['complete'])),flush=True);break
- if '743933|COMPLETED|0:0|'in row['sacct']:
+ if (s['job_id']+'|COMPLETED|0:0|')in row['sacct']:
   print(json.dumps(dict(status='CURRENT_ALLOCATION_EXITED_WITHOUT_FULL20EPOCH_COMPLETE_PRESERVE_CACHE_HEAD_STATE',actual=row)),flush=True);break
  time.sleep(45)
 else:print(json.dumps(dict(status='FINITE_CURRENT_OBSERVATION_BOUND_REACHED_NO_MUTATION',seconds=time.time()-started)),flush=True)

@@ -2,8 +2,8 @@
 import argparse,base64,hashlib,importlib.util,json,pathlib,shlex,subprocess
 R=pathlib.Path(__file__).resolve().parents[4];C=R.parents[1];HERE=pathlib.Path(__file__).parent
 NAME='reproduction/operations/qwen7b_warmup/direct_count_large_screen.py'
-BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v1'
-CSHA='0be60cc806a177790dce39fa28269303087a1b43ede90a439cce8a63f9e3a0fc'
+BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2'
+CSHA='fb637c02812dd070cf392a58df75e0d219bbb10d1a2d24cd6e201f3638147767'
 COMMON='''import pathlib,json,hashlib,fcntl,os,base64,subprocess,time
 b=pathlib.Path(v['base']);root=b/'screen-auditor';root.mkdir(exist_ok=True);guard=(root/'operator.lock').open('a');fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB)
 def read(p):return json.loads(pathlib.Path(p).read_bytes())
@@ -31,7 +31,7 @@ def main():
  elif a.action=='prepare':
   result=call("""assert proof(b/'config.json')['sha256']==v['csha'];pub=read(b/'source-publication.json');code=pub['code_root'];screen=read(root/'source-publication.json');assert proof(screen['source']['path'])==screen['source']
 env=dict(os.environ,QWEN7B_CODE_ROOT=code,CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONDONTWRITEBYTECODE='1')
-r=subprocess.run(['bash',code+'/reproduction/operations/qwen7b_warmup/runtime.sh',screen['source']['path'],'--action','freeze','--base',str(b),'--config-sha256',v['csha']],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,env=env,timeout=35);assert r.returncode==0,r.stderr;frozen=json.loads(r.stdout.splitlines()[-1]);assert frozen['candidate_nodes']==12
+r=subprocess.run(['bash',code+'/reproduction/operations/qwen7b_warmup/runtime.sh',screen['source']['path'],'--action','freeze','--base',str(b),'--config-sha256',v['csha']],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,env=env,timeout=35);assert r.returncode==0,r.stderr;frozen=json.loads(r.stdout.splitlines()[-1]);assert frozen['candidate_nodes']==12;assert frozen['half_SHA256']==['2d33e20c402379d1206ea095c7b001f3e0d41452bc42de01f829d0e5bd2fd3b1','c2acaef62d280d07a9e528dee014504f4113d7b36eeecfb68b5c21e3f75348aa']
 script='''#!/usr/bin/env bash
 #SBATCH --job-name=q7b-frozenE1-head30016
 #SBATCH --partition=acd_u
@@ -63,8 +63,11 @@ if p.exists():assert read(p)==result
 else:p.write_text(json.dumps(result,sort_keys=True)+chr(10))
 print(json.dumps(result))""")
  elif a.action=='submit':
-  result=call("""prep=read(root/'entry-preparation.json');assert proof(b/'config.json')==prep['config'] and prep['config']['sha256']==v['csha'];assert proof(b/'capacity.sbatch')==prep['sbatch'];assert prep['source_commit']=='20ac6243d9847ad1deab1e5d264f6dbb289a2b1d';assert proof(b/'source-publication.json')==prep['source_publication'];assert proof(prep['frozen_halves']['file']['path'])==prep['frozen_halves']['file']
+  result=call("""prep=read(root/'entry-preparation.json');assert proof(b/'config.json')==prep['config'] and prep['config']['sha256']==v['csha'];assert proof(b/'capacity.sbatch')==prep['sbatch'];assert prep['source_commit']=='805123aebf8af83a7c1c44947f39c294f7aeb624';assert proof(b/'source-publication.json')==prep['source_publication'];assert proof(prep['frozen_halves']['file']['path'])==prep['frozen_halves']['file']
 assert prep['resources']==dict(GPU=1,CPU=8,memory='128G',walltime='03:00:00',partition='acd_u',QoS='normal',dependency=None)
+previous=pathlib.Path(str(b).replace('-v2','-v1'));old=read(previous/'failure.json');assert old['type']=='KeyError' and old['message']=="'bytes'";assert not(previous/'latest.json').exists() and not(previous/'cache/complete.json').exists()
+q=subprocess.run(['sacct','-X','-j','743933','-n','-P','--format=JobIDRaw,State,ExitCode'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True);assert q.returncode==0 and '743933|FAILED|1:0'in q.stdout,q.stdout
+prior_lock=(previous/'head-only-training.lock').open('a');fcntl.flock(prior_lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
 guard=(b/'head-only-training.lock').open('a');fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB)
 if(b/'job.id').exists():print(json.dumps(dict(status='EXISTING_LARGE_CAPACITY_JOB_PRESERVED',job_id=(b/'job.id').read_text().strip())))
 else:
@@ -84,5 +87,5 @@ if(b/'job.id').exists():
  for name,args in [('squeue',['squeue','-h','-j',jid,'-o','%i|%j|%T|%M|%R|%N']),('sacct',['sacct','-j',jid,'-n','-P','--format=JobIDRaw,State,ExitCode,Elapsed,NodeList'])]:
   r=subprocess.run(args,stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True);out[name]=dict(returncode=r.returncode,stdout=r.stdout,stderr=r.stderr)
 print(json.dumps(out))""")
- (HERE/('actual-screen-'+a.action+'.json')).write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result),flush=True)
+ (HERE/('actual-v2-screen-'+a.action+'.json')).write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result),flush=True)
 if __name__=='__main__':main()

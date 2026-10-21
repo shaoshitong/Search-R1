@@ -1,0 +1,15 @@
+{
+  "epoch": 1792550178.0126944,
+  "job_id": "743933",
+  "sacct": {
+    "returncode": 0,
+    "stdout": "743933|FAILED|1:0|00:00:12|ACD1-4\n743933.batch|FAILED|1:0|00:00:12|ACD1-4\n743933.extern|COMPLETED|0:0|00:00:12|ACD1-4\n743933.0|FAILED|1:0|00:00:12|ACD1-4\n",
+    "stderr": ""
+  },
+  "failure": {
+    "epoch": 1792550052.6123807,
+    "message": "'bytes'",
+    "traceback": "Traceback (most recent call last):\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v1/code-20ac6243d984/reproduction/operations/qwen7b_warmup/direct_count_large_capacity.py\", line 422, in main\n    value=prepare(args.input_packet)if args.action=='prepare'else train(args.config_sha256)\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v1/code-20ac6243d984/reproduction/operations/qwen7b_warmup/direct_count_large_capacity.py\", line 202, in train\n    checked(c['model_config'])\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v1/code-20ac6243d984/reproduction/operations/qwen7b_warmup/direct_count_capacity.py\", line 28, in checked\n    if any(actual[k]!=ref[k]for k in ('bytes','sha256')):raise ValueError('Owned immutable reference mismatch')\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v1/code-20ac6243d984/reproduction/operations/qwen7b_warmup/direct_count_capacity.py\", line 28, in <genexpr>\n    if any(actual[k]!=ref[k]for k in ('bytes','sha256')):raise ValueError('Owned immutable reference mismatch')\nKeyError: 'bytes'\n",
+    "type": "KeyError"
+  }
+}
