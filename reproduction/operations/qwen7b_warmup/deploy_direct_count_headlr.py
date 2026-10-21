@@ -77,6 +77,10 @@ if (b/'curve.jsonl').exists():
    row=json.loads(line);first.append({k:row[k]for k in ['cursor','steps','head_steps','time','loss','count_NLL','trajectory_BCE','joint_micro_replay_exact']})
    if len(first)==7:break
  out['first_seven_actual_updates']=first
+for cursor in (256,512,768,938):
+ folder=b/'evaluations'/('cursor-%06d'%cursor)
+ for name in ('complete.json','independent-audit.json'):
+  if (folder/name).exists():out['milestone_%d_%s'%(cursor,name.split('.')[0])]=read(folder/name)
 if (b/'job.id').exists():
  jid=(b/'job.id').read_text().strip();assert jid.isdigit();out['job_id']=jid
  for name,args in [('squeue',['squeue','-h','-j',jid,'-o','%i|%j|%T|%M|%R|%N']),('sacct',['sacct','-j',jid,'-n','-P','--format=JobIDRaw,State,ExitCode,Elapsed,NodeList'])]:
