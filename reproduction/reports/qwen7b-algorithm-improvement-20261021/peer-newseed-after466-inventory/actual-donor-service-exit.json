@@ -1,0 +1,1055 @@
+{
+  "GPU_operation": false,
+  "epoch": 1792583196.0564928,
+  "frozen_cohort_expanded": false,
+  "frozen_cohort_questions": 124194,
+  "hostname": "h100-10",
+  "latest_seal": {
+    "bytes": 9199,
+    "mtime": 1792583124.023884,
+    "path": "sampling/shard-01/batches/batch-000412/complete.json",
+    "sha256": "3b29bcaf74f20085ea207d0341a7e0f4ac82110d1443ce33a0d718173691a059"
+  },
+  "payload_read": false,
+  "producer_modified": false,
+  "related_services": [
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-g5-consumer10-parallel-v1-70188b8e50fd.service"
+    },
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-g5-consumer10-tp1-gpu1-v1-70188b8e50fd.service"
+    },
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-g5-consumer10-tp1-gpu2-v1-70188b8e50fd.service"
+    },
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-g5-consumer10-v1-70188b8e50fd.service"
+    },
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-g5-consumer10-v2-70188b8e50fd.service"
+    },
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-g5-consumer10-v3-70188b8e50fd.service"
+    },
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-g5-consumer10-v4-70188b8e50fd.service"
+    },
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-g5-consumer10-v5-70188b8e50fd.service"
+    },
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-g5-primary10-gpu1-tp1-v1-70188b8e50fd.service"
+    },
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-g5-primary10-gpu2-tp1-v1-70188b8e50fd.service"
+    },
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-g5-primary10-gpu2-tp1-v2-70188b8e50fd.service"
+    },
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-g5-primary10-gpu3-tp1-v1-70188b8e50fd.service"
+    },
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-g5-primary10-gpu5-tp1-v1-70188b8e50fd.service"
+    },
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-g5-primary10-gpu5-tp1-v2-70188b8e50fd.service"
+    },
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-g5-primary10-tp4-0-4-6-7-v1-70188b8e50fd.service"
+    },
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-g5-primary10-tp4-0-4-6-7-v2-70188b8e50fd.service"
+    },
+    {
+      "active": "active",
+      "load": "loaded",
+      "sub": "running",
+      "unit": "sst-q7b-g5-relaygen-queued-owner-v2-downstream-r1-70188b8e50fd.service"
+    },
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-gpu1-tp1-r1-70188b8e50fd.service"
+    },
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-gpu2-tp1-r1-70188b8e50fd.service"
+    },
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-terminal-rollover-v1-h100-10-70188b8e50fd.service"
+    },
+    {
+      "active": "failed",
+      "load": "loaded",
+      "sub": "failed",
+      "unit": "sst-q7b-terminal-rollover-v1-h100-10-repair1-70188b8e50fd.service"
+    }
+  ],
+  "sealed_batches": 1074,
+  "sealed_new5_trajectories": 686890,
+  "sealed_questions": 137378,
+  "services": [
+    {
+      "ActiveEnterTimestamp": "Wed 2026-10-21 08:58:13 CST",
+      "ActiveState": "active",
+      "ControlGroup": "/system.slice/sst-q7b-g5-relaygen-queued-owner-v2-downstream-r1-70188b8e50fd.service",
+      "ExecMainCode": "0",
+      "ExecMainExitTimestamp": "n/a",
+      "ExecMainStartTimestamp": "Wed 2026-10-21 08:58:13 CST",
+      "ExecMainStatus": "0",
+      "FragmentPath": "/run/systemd/transient/sst-q7b-g5-relaygen-queued-owner-v2-downstream-r1-70188b8e50fd.service",
+      "Id": "sst-q7b-g5-relaygen-queued-owner-v2-downstream-r1-70188b8e50fd.service",
+      "InactiveEnterTimestamp": "n/a",
+      "LoadState": "loaded",
+      "MainPID": "3221084",
+      "NRestarts": "0",
+      "Result": "success",
+      "StandardError": "inherit",
+      "StandardOutput": "journal",
+      "StateChangeTimestamp": "Wed 2026-10-21 08:58:13 CST",
+      "SubState": "running",
+      "actual_pid_birth_ticks": 1960484824,
+      "actual_pid_state": "S",
+      "pid_exists": true,
+      "query_exit_code": 0,
+      "safe_journal_diagnostic_events": [],
+      "source_code_or_receipt_arguments": [
+        "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/cohort-rollover-v1-h100-10/complete.json",
+        "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020",
+        "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-retrieval-owner-2714543/attempt-1792544093218863922/owner-ready.json",
+        "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-downstream-r1/072cbe91ab5ad1a3d222821f30bd79219aba837ad6479a08ef97cde5e587a834/pool_worker.py",
+        "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-downstream-r1/072cbe91ab5ad1a3d222821f30bd79219aba837ad6479a08ef97cde5e587a834/queued_relay_owner.py",
+        "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-downstream-r1/072cbe91ab5ad1a3d222821f30bd79219aba837ad6479a08ef97cde5e587a834/retrieval_relay_backpressure.py",
+        "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-downstream-r1/072cbe91ab5ad1a3d222821f30bd79219aba837ad6479a08ef97cde5e587a834/slots.json",
+        "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-downstream-r1/owner-ready.json",
+        "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-upstream-r1/owner-ready.json",
+        "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/retrieval-relay-generation/launch/native-3221084/allocation-evidence.json"
+      ]
+    },
+    {
+      "ActiveEnterTimestamp": "n/a",
+      "ActiveState": "inactive",
+      "ControlGroup": "",
+      "ExecMainCode": "0",
+      "ExecMainExitTimestamp": "n/a",
+      "ExecMainStartTimestamp": "n/a",
+      "ExecMainStatus": "0",
+      "FragmentPath": "",
+      "Id": "sst-q7b-g5-relaygen-queued-supp-v1-slot-gpu4-tp1-r1-70188b8e50fd.service",
+      "InactiveEnterTimestamp": "n/a",
+      "LoadState": "not-found",
+      "MainPID": "0",
+      "NRestarts": "0",
+      "Result": "success",
+      "StandardError": "inherit",
+      "StandardOutput": "inherit",
+      "StateChangeTimestamp": "n/a",
+      "SubState": "dead",
+      "pid_exists": false,
+      "query_exit_code": 0,
+      "safe_journal_diagnostic_events": [
+        {
+          "diagnostic_terms": [
+            "success"
+          ],
+          "pid": "1",
+          "priority": "6",
+          "realtime_microseconds": "1792582427142211"
+        }
+      ]
+    }
+  ],
+  "small_root_receipts": [
+    {
+      "bytes": 379,
+      "mtime": 1792508542.931599,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/entry-failure.json",
+      "root_keys": [
+        "detail",
+        "epoch",
+        "error_type"
+      ],
+      "safe_fields": {
+        "epoch": 1792508542.9337142,
+        "error_type": "CalledProcessError"
+      },
+      "sha256": "4515925601a0675bfac78550ea81266841a3f5d94044cfdd7797f8d07b2401ba"
+    },
+    {
+      "bytes": 214,
+      "mtime": 1792507372.4164898,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/launch-intent.json",
+      "root_keys": [
+        "cards",
+        "epoch",
+        "questions",
+        "seed",
+        "source_commit",
+        "trajectories",
+        "unit"
+      ],
+      "safe_fields": {
+        "epoch": 1792507372.420344,
+        "questions": 169028,
+        "seed": 20261021,
+        "trajectories": 845140
+      },
+      "sha256": "a5aa0010a6cd4cbc5b1deee3b7658fe3a7d7b80db5bb28d1a664ad5094d88e08"
+    },
+    {
+      "bytes": 330,
+      "mtime": 1792512860.2604725,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/progress.json",
+      "root_keys": [
+        "actual_generator_gpus",
+        "completed_batches",
+        "epoch",
+        "expected_questions",
+        "expected_trajectories",
+        "questions",
+        "retrieval_gpu",
+        "stage",
+        "trajectories"
+      ],
+      "safe_fields": {
+        "completed_batches": 161,
+        "epoch": 1792512860.2628157,
+        "questions": 20608,
+        "stage": "SAMPLING_NEW_G5_8_GENERATORS",
+        "trajectories": 103040
+      },
+      "sha256": "24a572604f7dcc4dfb4d561f927ad4354999dc8b2ecfefcecf6817a6dad2aa44"
+    },
+    {
+      "bytes": 608,
+      "mtime": 1792507372.4284894,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/retrieval-config.json",
+      "root_keys": [
+        "environment_root",
+        "new_source_commit",
+        "retrieval_corpus",
+        "retrieval_data_cache",
+        "retrieval_encoder",
+        "retrieval_index",
+        "retriever_gpu_lib"
+      ],
+      "safe_fields": {},
+      "sha256": "49f4f59e4e421fd0513906ed55dba005ce91c2d9129922c6a134f7a0543fb08a"
+    },
+    {
+      "bytes": 207,
+      "mtime": 1792511611.551988,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/children.json",
+      "root_keys": [
+        "attempt",
+        "epoch",
+        "retriever_pid",
+        "worker_pids"
+      ],
+      "safe_fields": {
+        "attempt": "r6",
+        "epoch": 1792511611.5549808
+      },
+      "sha256": "2bf70cccb7f8f0f95da18ca3ca8bf0449cd8d932417ffb6d45f6ccde246838ff"
+    },
+    {
+      "bytes": 150,
+      "mtime": 1792512875.2799485,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/failure.json",
+      "root_keys": [
+        "epoch",
+        "error",
+        "error_type"
+      ],
+      "safe_fields": {
+        "epoch": 1792512875.2817047,
+        "error_type": "RuntimeError"
+      },
+      "sha256": "314647bc03dc3f48c1a70e7177ba37f178e166f8a28150800bd3c8faffb90a5f"
+    },
+    {
+      "bytes": 120,
+      "mtime": 1792512875.2759488,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/worker-exits.json",
+      "root_keys": [
+        "epoch",
+        "returncodes"
+      ],
+      "safe_fields": {
+        "epoch": 1792512875.2799168
+      },
+      "sha256": "abdb2917f94c5a3a9323d3e82e4f1be216d69b9c3604f60ce5e67b6936001718"
+    },
+    {
+      "bytes": 2860,
+      "mtime": 1792507006.165285,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/config.json",
+      "root_keys": [
+        "actor_hidden_native",
+        "actor_optimizer_updates",
+        "actor_updates_authorized",
+        "all_rollout_data_generated_once_before_fit",
+        "base",
+        "canonical_train",
+        "capture_prefix_tokens",
+        "common_manifest_sha256",
+        "diagnostic_questions",
+        "diagnostic_trajectories",
+        "epoch_RNG_reset",
+        "feature_depth_rule",
+        "feature_dimension",
+        "feature_layer",
+        "fit_ema",
+        "fit_epochs",
+        "fit_global_groups",
+        "fit_group_weight",
+        "fit_lr",
+        "fit_micro_groups",
+        "fit_sampling",
+        "fit_world",
+        "generation_engines_per_job",
+        "gpus_per_sampling_job",
+        "hidden_cached",
+        "input_sha256",
+        "model",
+        "model_dir",
+        "model_revision",
+        "native_head_layer",
+        "prefix_tokens",
+        "question_max_tokens",
+        "retrieval_corpus",
+        "retrieval_data_cache",
+        "retrieval_encoder",
+        "retrieval_index",
+        "retriever_gpus_per_job",
+        "run_id",
+        "sampling_attempt_id",
+        "sampling_partition",
+        "sampling_shards",
+        "search_url",
+        "seed",
+        "source_commit",
+        "source_input_root",
+        "source_run_id",
+        "source_seed",
+        "train_questions",
+        "train_trajectories",
+        "validation_questions",
+        "warmup_only",
+        "warmup_source"
+      ],
+      "safe_fields": {
+        "actor_optimizer_updates": 0,
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+        "seed": 20261021
+      },
+      "sha256": "856a5580c9faf6968aee9535bbc600d9c07f0b018dc13e85611fa76105bba789"
+    },
+    {
+      "bytes": 173,
+      "mtime": 1792507372.4444888,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/launch-receipt.json",
+      "root_keys": [
+        "epoch",
+        "returncode",
+        "stderr",
+        "stdout",
+        "unit"
+      ],
+      "safe_fields": {
+        "epoch": 1792507372.4465504
+      },
+      "sha256": "59774b2fb189cdd2050633d8ecd5c1918638380460ca6ea257e93c564e66ce23"
+    },
+    {
+      "bytes": 633,
+      "mtime": 1792511543.394374,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/controller.json",
+      "root_keys": [
+        "actor_updates",
+        "cards",
+        "epoch",
+        "pid",
+        "probe_updates",
+        "run_id",
+        "seed",
+        "start_ticks"
+      ],
+      "safe_fields": {
+        "epoch": 1792511543.400608,
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+        "seed": 20261021
+      },
+      "sha256": "c57347f4615c224f2c28cdd5e14c12ad9de9b0eb7ef9fd809b928e644562d1b2"
+    },
+    {
+      "bytes": 976,
+      "mtime": 1792509603.5103562,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/r3-original-terminal-log-sha.json",
+      "root_keys": [
+        "epoch",
+        "files",
+        "sealed_questions",
+        "sealed_trajectories",
+        "status"
+      ],
+      "safe_fields": {
+        "epoch": 1792509603.515974,
+        "status": "ORIGINAL_TERMINAL_LOGS_HASHED"
+      },
+      "sha256": "e87cd9b42afc263f0f4a02a3febc1e945830c012f795b033104cf350d40fb439"
+    },
+    {
+      "bytes": 329,
+      "mtime": 1792509980.8611617,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/r4-terminal-small-proof.json",
+      "root_keys": [
+        "epoch",
+        "log",
+        "startup_failure"
+      ],
+      "safe_fields": {
+        "epoch": 1792509980.8646677
+      },
+      "sha256": "15bfbe0081c5cb85e227e5dbbdd2c2e4dfc0d093a8ebdececdd8ff81ed58f71b"
+    },
+    {
+      "bytes": 1188,
+      "mtime": 1792507611.4121244,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/first-two-real-g5-batches.json",
+      "root_keys": [
+        "batches",
+        "between_shard_qid_overlap",
+        "complete_own_G5_per_question",
+        "epoch",
+        "gpu_snapshot",
+        "no_hidden_cache",
+        "questions",
+        "run_id",
+        "seed",
+        "status",
+        "trajectories"
+      ],
+      "safe_fields": {
+        "epoch": 1792507611.4130213,
+        "questions": 256,
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+        "seed": 20261021,
+        "status": "TWO_REAL_NEW_SEED_G5_BATCHES_FULL_IDS_MASKS_EM_PAIRING_PASS",
+        "trajectories": 1280
+      },
+      "sha256": "e0b6e3afe4a4e772baab9ef56364b3b2a11907555d66c3ace80db6e21ff4dd87"
+    },
+    {
+      "bytes": 383,
+      "mtime": 1792513871.0251708,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/pool-handoff.json",
+      "root_keys": [
+        "r6_terminal_receipt",
+        "r6_terminal_receipt_sha256",
+        "run_id",
+        "seed",
+        "status"
+      ],
+      "safe_fields": {
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+        "seed": 20261021,
+        "status": "R6_NATIVE_PIPELINE_FAILED_NODE_DOWN"
+      },
+      "sha256": "26261bcf2b2c68fa3a3d4c025a62af275d67dc1895c17b8d53af3852bea59770"
+    },
+    {
+      "bytes": 179,
+      "mtime": 1792507373.7444434,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/code/complete.json",
+      "root_keys": [
+        "changed_files",
+        "commit",
+        "epoch",
+        "files",
+        "status"
+      ],
+      "safe_fields": {
+        "epoch": 1792507373.7478316,
+        "status": "ALL_CODE_FILES_FRESH_SHA_VERIFIED_SHARED_REUSE"
+      },
+      "sha256": "1d00766ed740d3381ea92f7ca0650e11f2ac8768339891b46bac73c665973b2b"
+    },
+    {
+      "bytes": 88005,
+      "mtime": 1792507372.4204898,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/code/delta.json",
+      "root_keys": [
+        "reproduction/operations/qwen7b_h100_assets/auth_control_lite.py",
+        "reproduction/operations/qwen7b_h100_assets/hf_bridge_lite.py",
+        "reproduction/operations/qwen7b_h100_assets/receiver_lite.py",
+        "reproduction/operations/qwen7b_h100_assets/source_export_lite.py",
+        "reproduction/operations/qwen7b_resample/entry.py",
+        "reproduction/operations/qwen7b_resample/launch.py",
+        "reproduction/operations/qwen7b_resample/observe.py",
+        "reproduction/operations/qwen7b_resample/pipeline.py",
+        "reproduction/operations/qwen7b_resample/prepare.py",
+        "reproduction/operations/qwen7b_resample/worker.py",
+        "results/qwen7b-h100-assets-20261020/README.md",
+        "results/qwen7b-h100-assets-20261020/final-raw-migration-receipt.json",
+        "results/qwen7b-h100-assets-20261020/target-first-model-code-complete.json"
+      ],
+      "safe_fields": {},
+      "sha256": "8272a86f2d98d5e634eefa9893c61f21996576fe381959d2d08d3aecb34e00c4"
+    },
+    {
+      "bytes": 23490,
+      "mtime": 1792566061.1241174,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/audit/latest.json",
+      "root_keys": [
+        "auditor_sha256",
+        "base",
+        "cache_reused_batches",
+        "canonical_unique_input_qids",
+        "discovered_input_batches",
+        "epoch",
+        "errors",
+        "expected",
+        "failed_batches",
+        "independently_read_batches",
+        "labels",
+        "model_revision",
+        "policy_tokens",
+        "questions",
+        "response_tokens",
+        "run_id",
+        "sealed_pending_batches",
+        "sealed_pending_inputs",
+        "seed",
+        "short_terminal_prefixes",
+        "states_shards_independently_audited",
+        "status",
+        "strict_em_ones",
+        "strict_em_recomputed",
+        "strict_em_source",
+        "strict_em_verification",
+        "trajectories",
+        "uniqueness_basis",
+        "unsealed_batches",
+        "unsealed_inputs",
+        "utc",
+        "verified_batches",
+        "verified_unique_qids",
+        "verified_unique_trajectories"
+      ],
+      "safe_fields": {
+        "epoch": 1792566061.1178179,
+        "questions": 90658,
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+        "seed": 20261021,
+        "status": "INCOMPLETE",
+        "trajectories": 453290
+      },
+      "sha256": "0843c751c032ea571d2cf34783a11d043872f2505062c2a262dd8b7127ebf698"
+    },
+    {
+      "bytes": 379,
+      "mtime": 1792507141.8525484,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/retired-pre-first-batch-python-headers-r2/entry-failure.json",
+      "root_keys": [
+        "detail",
+        "epoch",
+        "error_type"
+      ],
+      "safe_fields": {
+        "epoch": 1792507141.8531318,
+        "error_type": "CalledProcessError"
+      },
+      "sha256": "3c8093e838c465a564cdc868d56abcd4d6503a5be9011be60da925efddd882f4"
+    },
+    {
+      "bytes": 215,
+      "mtime": 1792506981.994125,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/retired-pre-first-batch-python-headers-r2/launch-intent.json",
+      "root_keys": [
+        "cards",
+        "epoch",
+        "questions",
+        "seed",
+        "source_commit",
+        "trajectories",
+        "unit"
+      ],
+      "safe_fields": {
+        "epoch": 1792506982.0006897,
+        "questions": 169028,
+        "seed": 20261021,
+        "trajectories": 845140
+      },
+      "sha256": "9fe47895e410b09409fa2d6dbaf270b06b1ef0e5d3e48329344e3b8b9bdcf410"
+    },
+    {
+      "bytes": 185,
+      "mtime": 1792507126.2410934,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/retired-pre-first-batch-python-headers-r2/progress.json",
+      "root_keys": [
+        "epoch",
+        "expected_questions",
+        "expected_trajectories",
+        "questions",
+        "shards",
+        "stage",
+        "trajectories"
+      ],
+      "safe_fields": {
+        "epoch": 1792507126.2444122,
+        "questions": 0,
+        "stage": "SAMPLING_NEW_G5",
+        "trajectories": 0
+      },
+      "sha256": "5edf8d9cc8fee87a67189e988afc4846abc0452a523ae636cd6b01ab95634447"
+    },
+    {
+      "bytes": 179,
+      "mtime": 1792506983.6460676,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/retired-pre-first-batch-python-headers-r2/code--complete.json",
+      "root_keys": [
+        "changed_files",
+        "commit",
+        "epoch",
+        "files",
+        "status"
+      ],
+      "safe_fields": {
+        "epoch": 1792506983.6509385,
+        "status": "ALL_CODE_FILES_FRESH_SHA_VERIFIED_SHARED_REUSE"
+      },
+      "sha256": "bb223863f38f55848dea55661468e25b92eaa6dc9cd8838b50bb53b1fdef6153"
+    },
+    {
+      "bytes": 252,
+      "mtime": 1792507141.2605689,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/retired-pre-first-batch-python-headers-r2/failure.json",
+      "root_keys": [
+        "epoch",
+        "error",
+        "error_type"
+      ],
+      "safe_fields": {
+        "epoch": 1792507141.2619338,
+        "error_type": "FileNotFoundError"
+      },
+      "sha256": "a36ae33d6afec4a53fb0d027af93d0365d7fa9513ae30f5af66191c44af5d886"
+    },
+    {
+      "bytes": 173,
+      "mtime": 1792506982.022124,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/retired-pre-first-batch-python-headers-r2/launch-receipt.json",
+      "root_keys": [
+        "epoch",
+        "returncode",
+        "stderr",
+        "stdout",
+        "unit"
+      ],
+      "safe_fields": {
+        "epoch": 1792506982.0266604
+      },
+      "sha256": "32ae0f4c904d7eb678b3a758d9eb72f85fa706c459050257df88ecaac0f008b5"
+    },
+    {
+      "bytes": 3861,
+      "mtime": 1792507346.9293818,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/retired-pre-first-batch-python-headers-r2/terminal-original-inode-full-sha.json",
+      "root_keys": [
+        "accepted_batches",
+        "assigned_card_memory",
+        "epoch",
+        "inputs_configs_and_unsealed_outputs_retained",
+        "native_terminal",
+        "original_files"
+      ],
+      "safe_fields": {
+        "epoch": 1792507346.9297314
+      },
+      "sha256": "21bb690ac9e3bc762b26644e21c5b7a776182bfca0f3a6a14b43a148c6f4a2d1"
+    },
+    {
+      "bytes": 369,
+      "mtime": 1792507007.0372548,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/retired-pre-first-batch-python-headers-r2/controller.json",
+      "root_keys": [
+        "actor_updates",
+        "cards",
+        "epoch",
+        "pid",
+        "probe_updates",
+        "run_id",
+        "seed",
+        "start_ticks"
+      ],
+      "safe_fields": {
+        "epoch": 1792507007.0393744,
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+        "seed": 20261021
+      },
+      "sha256": "2fec2811ed53bfd6dc1e6f53ce56378f79895ac4f97c7677cd431d7718884a01"
+    },
+    {
+      "bytes": 261,
+      "mtime": 1792506877.8217335,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/retired-pre-gpu-code-download-attempt1/entry-failure.json",
+      "root_keys": [
+        "detail",
+        "epoch",
+        "error_type"
+      ],
+      "safe_fields": {
+        "epoch": 1792506877.8265848,
+        "error_type": "CalledProcessError"
+      },
+      "sha256": "dca1089c9fe7df86b12bc5e46f85600318971e7c2f953231ef81aba5305e538e"
+    },
+    {
+      "bytes": 212,
+      "mtime": 1792506736.314639,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/retired-pre-gpu-code-download-attempt1/launch-intent.json",
+      "root_keys": [
+        "cards",
+        "epoch",
+        "questions",
+        "seed",
+        "source_commit",
+        "trajectories",
+        "unit"
+      ],
+      "safe_fields": {
+        "epoch": 1792506736.3173773,
+        "questions": 169028,
+        "seed": 20261021,
+        "trajectories": 845140
+      },
+      "sha256": "ee553dc36a74721b3ac1c3ee67af2b5ccf9cbfddf6b3b7a0b9c66a6607b93937"
+    },
+    {
+      "bytes": 383,
+      "mtime": 1792506877.7417364,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/retired-pre-gpu-code-download-attempt1/code--direct-failure.json",
+      "root_keys": [
+        "detail",
+        "epoch",
+        "error_type"
+      ],
+      "safe_fields": {
+        "epoch": 1792506877.7479208,
+        "error_type": "ConnectTimeout"
+      },
+      "sha256": "66d8817f70a946a4d43cbba89d8dd1e409a4969e16bad315cd319a2cdb3b4bfb"
+    },
+    {
+      "bytes": 153,
+      "mtime": 1792506951.4511828,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/retired-pre-gpu-code-download-attempt1/terminal-state.json",
+      "root_keys": [
+        "actual_unit",
+        "epoch",
+        "new_trajectories",
+        "no_gpu_sampling_started"
+      ],
+      "safe_fields": {
+        "epoch": 1792506951.4555583
+      },
+      "sha256": "df027cad851ed1fc66a95d886afe248acc1f9a2050ab422a74b5a5f1079a1156"
+    },
+    {
+      "bytes": 167,
+      "mtime": 1792506736.3426383,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/retired-pre-gpu-code-download-attempt1/launch-receipt.json",
+      "root_keys": [
+        "epoch",
+        "returncode",
+        "stderr",
+        "stdout",
+        "unit"
+      ],
+      "safe_fields": {
+        "epoch": 1792506736.3462338
+      },
+      "sha256": "b433a1425676ac08e87c3a7b4df07e26c27d8b5bbc2e6d95c55783ab5eda69db"
+    },
+    {
+      "bytes": 1147,
+      "mtime": 1792511611.028006,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/retrieval/ready.json",
+      "root_keys": [
+        "batch_queries",
+        "corpus",
+        "corpus_archive",
+        "cpu_full_index_retained",
+        "dimension",
+        "documents",
+        "encoder",
+        "encoder_dtype",
+        "endpoint",
+        "gpu_shards",
+        "index",
+        "index_dtype",
+        "initialization_seconds",
+        "logical_flat_shards",
+        "pid",
+        "pooling",
+        "query_prefix",
+        "ready",
+        "run_id",
+        "synthetic_queries",
+        "topk"
+      ],
+      "safe_fields": {
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e"
+      },
+      "sha256": "1d0dc7fee343a37ed556d0c6a37c4c27db97bc7c41ae1ba4c1b923240ecb3b98"
+    },
+    {
+      "bytes": 861,
+      "mtime": 1792511603.7282617,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/retrieval/gpu-index-load-verified.json",
+      "root_keys": [
+        "added",
+        "chunk_vectors",
+        "dimension",
+        "elapsed_seconds",
+        "gpu_name",
+        "gpu_total_bytes",
+        "logical_flat_shards",
+        "metric",
+        "physical_gpus",
+        "sampled_offsets",
+        "sampled_storage_exact_FP16",
+        "status",
+        "temporary_memory_bytes",
+        "total"
+      ],
+      "safe_fields": {
+        "status": "ORIGINAL_FLAT_FP16_STREAMED_AND_SAMPLED_STORAGE_VERIFIED"
+      },
+      "sha256": "fc5279aaad01b76521da82c23a3610cd2cdda18f5409ea895649234fc886c683"
+    },
+    {
+      "bytes": 316,
+      "mtime": 1792511603.724262,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/retrieval/gpu-index-load-progress.json",
+      "root_keys": [
+        "added",
+        "chunk_vectors",
+        "dimension",
+        "elapsed_seconds",
+        "gpu_name",
+        "gpu_total_bytes",
+        "logical_flat_shards",
+        "physical_gpus",
+        "status",
+        "temporary_memory_bytes",
+        "total"
+      ],
+      "safe_fields": {
+        "status": "STREAMING_ORIGINAL_FLAT_TO_FP16"
+      },
+      "sha256": "c8d3a958726a0115babe75d5da8018d050bd3292a08c6d5823625f73940a277c"
+    }
+  ],
+  "source_all169028_complete": false,
+  "source_base": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020",
+  "status": "READONLY_EXACT_DONOR_SERVICES_AND_SEALED_PROGRESS",
+  "top_level_metadata_inventory": [
+    {
+      "directory": true,
+      "name": "attempts"
+    },
+    {
+      "directory": true,
+      "name": "audit"
+    },
+    {
+      "directory": true,
+      "name": "cache"
+    },
+    {
+      "directory": false,
+      "name": "children.json"
+    },
+    {
+      "directory": true,
+      "name": "code"
+    },
+    {
+      "directory": false,
+      "name": "config.json"
+    },
+    {
+      "directory": false,
+      "name": "controller.json"
+    },
+    {
+      "directory": false,
+      "name": "entry-failure.json"
+    },
+    {
+      "directory": false,
+      "name": "entry.py"
+    },
+    {
+      "directory": false,
+      "name": "failure.json"
+    },
+    {
+      "directory": true,
+      "name": "inputs"
+    },
+    {
+      "directory": false,
+      "name": "launch-intent.json"
+    },
+    {
+      "directory": false,
+      "name": "launch-receipt.json"
+    },
+    {
+      "directory": true,
+      "name": "legacy-cpu-relay"
+    },
+    {
+      "directory": true,
+      "name": "logs"
+    },
+    {
+      "directory": true,
+      "name": "pool"
+    },
+    {
+      "directory": true,
+      "name": "preparation"
+    },
+    {
+      "directory": false,
+      "name": "progress.json"
+    },
+    {
+      "directory": true,
+      "name": "relay-consumer10"
+    },
+    {
+      "directory": true,
+      "name": "relay-consumer10-parallel"
+    },
+    {
+      "directory": true,
+      "name": "relay-consumer10-tp1"
+    },
+    {
+      "directory": true,
+      "name": "relay-primary10"
+    },
+    {
+      "directory": true,
+      "name": "retired-pre-first-batch-python-headers-r2"
+    },
+    {
+      "directory": true,
+      "name": "retired-pre-gpu-code-download-attempt1"
+    },
+    {
+      "directory": true,
+      "name": "retrieval"
+    },
+    {
+      "directory": false,
+      "name": "retrieval-config.json"
+    },
+    {
+      "directory": true,
+      "name": "retrieval-owner-generation"
+    },
+    {
+      "directory": true,
+      "name": "retrieval-relay-generation"
+    },
+    {
+      "directory": false,
+      "name": "runtime.sh"
+    },
+    {
+      "directory": true,
+      "name": "sampling"
+    },
+    {
+      "directory": true,
+      "name": "shared-vram"
+    },
+    {
+      "directory": true,
+      "name": "source-sublease"
+    },
+    {
+      "directory": true,
+      "name": "tmp"
+    },
+    {
+      "directory": false,
+      "name": "worker-exits.json"
+    },
+    {
+      "directory": true,
+      "name": "workers"
+    }
+  ]
+}
