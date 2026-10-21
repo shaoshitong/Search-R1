@@ -126,16 +126,28 @@ def run(interface, output):
                           zip(('output', 'dq', 'dk', 'dv'), ref, data)}
                 for backend, data in [('fa2', old), ('fa3', new)]}
             del ref
-        # A change to sequence0 must leave every other packed sequence intact.
+        # Perturb K/V as well as Q: changing Q alone cannot expose a kernel
+        # that incorrectly reads another sequence's keys and values.
         changed = [value.clone() for value in values]
-        changed[0][:lengths[0]].add_(1)
+        for value in changed:
+            value[:lengths[0]].add_(3)
         with torch.no_grad():
             isolated = candidate(*changed, cu, max(lengths))
         row['other_sequences_bitwise_unchanged'] = bool(torch.equal(
             isolated[lengths[0]:], new[0][lengths[0]:]))
-        row['accepted'] = accepted and row['other_sequences_bitwise_unchanged']
+        # Future K/V in the final sequence must not affect its causal prefix.
+        boundary = size - lengths[-1] + lengths[-1] // 2
+        for value in changed[1:]:
+            value[boundary:].add_(3)
+        with torch.no_grad():
+            causal_changed = candidate(*changed, cu, max(lengths))
+        start_last = size - lengths[-1]
+        row['causal_prefix_bitwise_unchanged'] = bool(torch.equal(
+            causal_changed[start_last:boundary], new[0][start_last:boundary]))
+        row['accepted'] = (accepted and row['other_sequences_bitwise_unchanged'] and
+                           row['causal_prefix_bitwise_unchanged'])
         report['cases'].append(row)
-        del old, repeated, new, values, changed, isolated, upstream
+        del old, repeated, new, values, changed, isolated, causal_changed, upstream
         torch.cuda.empty_cache()
     report['accepted'] = all(row['accepted'] for row in report['cases'])
     report['status'] = ('FA3_KERNEL_FORWARD_BACKWARD_LOW_ERROR_PASS' if report['accepted']
