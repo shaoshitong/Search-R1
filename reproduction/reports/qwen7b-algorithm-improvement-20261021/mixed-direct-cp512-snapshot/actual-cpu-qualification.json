@@ -1,0 +1,39 @@
+{
+  "status": "FROZEN_CP512_EVALUATOR_CPU_QUALIFIED_READY_FOR_SINGLE_DEPLOYMENT",
+  "source_commit": "3573e88b8d320baa3f5fb1f442787777f42591a5",
+  "remote_SHA_verified": true,
+  "worker": {
+    "path": "reproduction/operations/qwen7b_warmup/evaluate_mixed_direct_checkpoint512.py",
+    "bytes": 10198,
+    "sha256": "095a762dbea04b1e5507aa36b0567a304903c4d53135e10ffd71076f96b30e86"
+  },
+  "source_config": {
+    "bytes": 14625,
+    "sha256": "22098d5a4678db2f9c56d56cb5709829c3a4619c626e0b52d16ce726844402ac"
+  },
+  "source_checkpoint": {
+    "cursor": 512,
+    "bytes": 3778170650,
+    "sha256": "f9bb7a001edbc4f300ad563c8dc74487413aae7a98fb9a2a3192d69b2b5d7c95"
+  },
+  "actual_CPU_qualification": {
+    "tests": 2,
+    "seconds": 19.649512675125152,
+    "test_seconds": 6.774,
+    "CPU": 2,
+    "GPU": 0,
+    "source_in_RAM_only": true,
+    "real_model_or_tensor_read": false,
+    "peak_RSS_bytes": 506433536
+  },
+  "production_GPU_evaluation_run_here": false,
+  "new_job_submitted_here": false,
+  "source_job_mutated": false,
+  "training_feature_reader_constructed": false,
+  "training_feature_payload_read": false,
+  "final4096_read": false,
+  "threshold_tuned": false,
+  "all_nine_component_restore_required": true,
+  "raw_EMA_only_fixed512_2048": true,
+  "trajectory_accuracy_produced": false
+}
