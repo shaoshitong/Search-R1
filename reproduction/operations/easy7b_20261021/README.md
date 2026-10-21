@@ -250,3 +250,20 @@ Ten CPU fixtures passed, including actual200-row/per-rank ledgers,3999 rejection
 missing rank-write rejection and zero-write failed-attempt handling. Validation
 is recorded in `evidence/strict-final-write-reader-validation-20261022.json`.
 The reader has not been run against the still-incomplete production chain.
+
+The independent final restore entry now supports the authorized FA3 execution
+without modifying active training746125/ebb6844. Its new target privately copies
+the pinned FA3 interface, extension and CUDArt, checks the three hashes against
+the saved source binding, and rebinds only the target paths. The shell preloads
+that target CUDArt before Python starts; Ray explicitly passes the same preload
+to its driver and four workers. FA2 keeps its previous path. This fixes a real
+future loader failure in the restore-only tool; it adds no training startup
+gate or optimizer/scheduler update. Fourteen CPU tests and an independent review
+passed; actual CUDA restoration at200 is still required. See
+`evidence/final-restore-fa3-runtime-validation-20261022.json`.
+
+Final no-extra-update acceptance must additionally read all four final actual
+`optimizer_calls == 4000` and `optimizer_rollbacks == 0` counters. The strict
+retained-write reader alone does not establish those two conditions. Use a
+published final-restore operator containing the private-runtime fix and retain
+the actual producer source ebb6844 in the authenticated training receipts.

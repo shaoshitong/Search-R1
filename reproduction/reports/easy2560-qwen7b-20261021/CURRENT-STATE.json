@@ -1705,16 +1705,21 @@
     "actual_final_writes_not_yet_measured": true,
     "final_native_world_size": 4,
     "weights_tensor_count_dynamic_expected339": true,
-    "review": "Local read-only entrypoint review: final200 paths unchanged from traininge082; scheduler count201 is initialization counting, not update201; actual final acceptance remains pending.",
+    "review": "Native4 final restore source now separately fixes FA3 private runtime/preload propagation. CPU14 tests and independent review passed; active EBB training source is unchanged. Actual final200 CUDA restore remains pending.",
     "coverage_audit": "evidence/native4-final-acceptance-coverage-audit-20261022.json",
     "additional_final_checks": [
-      "Separately inspect all post-callback boundary/dependency children for50/100/150/200",
-      "Prove20actual writes each outer incl restoredCP1 prefix and4000cumulative/rank; legacy consumer PASS alone does not prove this"
+      "Separately inspect all post-callback boundary/dependency children for5/50/100/150/200",
+      "Prove20 retained writes each outer incl original restored prefixes and4000 cumulative per rank",
+      "Read final actual optimizer_calls==4000 and optimizer_rollbacks==0 on all four ranks; retained-write audit alone does not prove no extra Adam calls",
+      "Execute independent native4 final restore from a published operator containing the FA3 private runtime fix; never update201"
     ],
     "strict_write_audit_module": "reproduction.easy2560_joint4.strict_final_write_audit",
     "strict_write_audit_validation": "evidence/strict-final-write-reader-validation-20261022.json",
     "strict_write_audit_actual200_pending": true,
-    "strict_write_audit_not_startup_wired": true
+    "strict_write_audit_not_startup_wired": true,
+    "fa3_private_runtime_fix_evidence": "evidence/final-restore-fa3-runtime-validation-20261022.json",
+    "fa3_private_runtime_fix_deployed_to_active_training": false,
+    "final_restore_requires_operator_with_private_runtime_fix": true
   },
   "fa3_candidate": {
     "requested_after_complete9": true,

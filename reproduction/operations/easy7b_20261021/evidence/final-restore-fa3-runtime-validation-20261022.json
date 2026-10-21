@@ -1,0 +1,55 @@
+{
+  "changed_source_files": {
+    "reproduction/easy2560_joint4/final_restore_only.py": {
+      "bytes": 32252,
+      "sha256": "9d6f36fa2dc753d082667047b32ca8cb260773d04eafe8ae7de2f15918d42c6a"
+    },
+    "reproduction/easy2560_joint4/final_restore_only.sh": {
+      "bytes": 1294,
+      "sha256": "0d519433759f14bd367c05218aa2c442e285966d9b005bdd02b8187c123ea6e4"
+    },
+    "reproduction/easy2560_joint4/test_final_restore_flash3.py": {
+      "bytes": 9930,
+      "sha256": "442549afbb65fed83ca0f11c5a273e532a8e00ef03802e4f2b57dbc862a0578c"
+    }
+  },
+  "checked_unix": 1792612288.869869,
+  "final_extra_write_check": "At200 inspect actual optimizer_calls==4000 and optimizer_rollbacks==0 on all four ranks in addition to the strict retained-write reader.",
+  "fix": [
+    "On an FA3 source only, prepare the existing pinned private interface/extension/CUDArt in the new independent target before publishing its run manifest.",
+    "Require the saved source binding hashes to match all three new private runtime hashes; retain the source unchanged and rebind only target paths.",
+    "Preload the target private CUDArt before Python exec, and propagate the same LD_PRELOAD to the Ray driver and native four workers.",
+    "FA2 retains its previous path without preparing FA3 or requiring LD_PRELOAD."
+  ],
+  "goal_200_complete": false,
+  "native4_final_restore_200_still_required": true,
+  "parent_source_commit": "2b30d2ea376a98d06090ddc08d03601be502bdb7",
+  "problem": "The independent final restore inherited the FA3 actor flag and source runtime paths, but did not prepare its own private runtime or preload CUDArt before Python/Ray. The loader requires the pinned library at process start.",
+  "production_changed": false,
+  "production_job": "746125",
+  "production_runtime_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+  "remote_jobs_submitted_or_cancelled": false,
+  "session_id": "01a157e6-7a0b-71e3-a852-b74235cfe836",
+  "status": "FINAL_RESTORE_FA3_PRIVATE_RUNTIME_WIRING_FIXED_CPU_TESTED",
+  "training_optimizer_or_scheduler_logic_changed": false,
+  "training_startup_gate_added": false,
+  "validation": {
+    "actual_cuda_restore_performed": false,
+    "bash_syntax_pass": true,
+    "cases": [
+      "fresh private copy and source/target byte/hash equality",
+      "saved binding mismatch rejection before target manifest publication",
+      "corrupt target payload rejection",
+      "FA2 compatibility",
+      "shell exec environment before Python",
+      "explicit Ray environment and foreign/missing preload rejection",
+      "Adam restore-only may load state but cannot step"
+    ],
+    "command": "python3 -B -m unittest reproduction.easy2560_joint4.test_final_restore_flash3 reproduction.easy2560_joint4.test_final_restore_only",
+    "git_diff_check_pass": true,
+    "independent_read_only_review": "infra_grounding_rollout_review: no blocking findings",
+    "meaningful_tests": 14,
+    "python38_ast_pass": true,
+    "root_reproduced_pass": true
+  }
+}

@@ -13,5 +13,8 @@ export HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1
 export OMP_NUM_THREADS=8 PYTHONUNBUFFERED=1 NCCL_NVLS_ENABLE=0 ECO_NO_SELF=1
 unset PYTHONHOME RAY_ADDRESS SEARCH_G1_SLURM_SHARED_AUTHORIZATION
 unset HTTP_PROXY HTTPS_PROXY ALL_PROXY http_proxy https_proxy all_proxy
+if [[ -f "$BASE/preparation/flash3-runtime/ready.json" ]]; then
+  export LD_PRELOAD="$BASE/preparation/flash3-runtime/libcudart.so.12"
+fi
 cd "$BASE/repo"
 exec python -B -m reproduction.easy2560_joint4.final_restore_only execute --base "$BASE"

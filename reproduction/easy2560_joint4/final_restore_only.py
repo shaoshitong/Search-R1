@@ -83,8 +83,37 @@ def target_run(parent, base, commit, source_map, path, receipt, checkpoint, orig
     return run
 
 
+def prepare_flash3_runtime(base, run):
+    """Keep the source FA3 bytes, with paths owned by this new restore target."""
+    from search_g1.easy7b_infra import flags
+    if not flags(run).get('flash_attention_3_actor', False):
+        return None
+    from .flash3_runtime import prepare
+    original = run.get('infra_flash_attention_3')
+    private = prepare(base)
+    need(isinstance(original, dict) and set(original) == set(private) and
+         all(original[role + '_sha256'] == private[role + '_sha256']
+             for role in ('interface', 'extension', 'cudart')),
+         'SAVED_FLASH3_RUNTIME_SHA_DIFFERS')
+    run['infra_flash_attention_3'] = private
+    return private
+
+
+def ray_env_vars(run):
+    """Pass the preloaded runtime explicitly to the driver and all four actors."""
+    from search_g1.easy7b_infra import flags
+    values = {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}
+    if flags(run).get('flash_attention_3_actor', False):
+        preload = os.environ.get('LD_PRELOAD', '')
+        loaded = {str(Path(path).resolve()) for path in preload.split(':') if path}
+        need(str(Path(run['infra_flash_attention_3']['cudart_path']).resolve()) in loaded,
+             'PRIVATE_FLASH3_CUDART_NOT_PRELOADED')
+        values['LD_PRELOAD'] = preload
+    return values
+
+
 def prepare(base, receipt_path, commit):
-    """Reuse environment/data and original remote CP200; copy only small heads."""
+    """Reuse source CP200; copy saved heads and the optional private FA3 runtime."""
     from .control import bootstrap, own_base
     from reproduction.common8.source_files import runtime_files
     base = own_base(base); path, receipt, checkpoint, origin, parent = source(receipt_path)
@@ -98,6 +127,7 @@ def prepare(base, receipt_path, commit):
     run = target_run(parent, base, commit,
         {str(p.relative_to(base/'repo')):sha(p) for p in runtime_files(base/'repo')},
         path, receipt, checkpoint, origin)
+    prepare_flash3_runtime(base, run)
     live = read(receipt['reward_probe_manifest']['path'])
     need(live['run_id'] == run['run_id'] and live['round'] == receipt['reward_probe_round'] == 150 and
          live['version'] == receipt['reward_probe_version'], 'SAVED_ROUND150_GROUNDING_REQUIRED')
@@ -416,7 +446,7 @@ def execute(base):
     raise_self_soft()
     try:
         ray.init(address='local', num_gpus=4, num_cpus=16, object_store_memory=8 * 1024**3,
-                 _temp_dir=str(ray_root), runtime_env={'env_vars':{'TOKENIZERS_PARALLELISM':'true', 'NCCL_DEBUG':'WARN'}})
+                 _temp_dir=str(ray_root), runtime_env={'env_vars':ray_env_vars(run)})
         result = ray.get(ray.remote(num_cpus=1)(driver_task).remote(config))
         completion = dict(role=ROLE, run_id=run['run_id'], source_receipt_sha256=sha(path),
             host_identity=host_identity(),
