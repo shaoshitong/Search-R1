@@ -1,0 +1,106 @@
+{
+  "status": "TEN_MODELS_ACTUALLY_INITIALIZED_NEW_GPU4_WHOLE_BATCH_PENDING",
+  "actual_epoch": 1792555980.27823,
+  "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+  "models_expected": 10,
+  "models_initialized": 10,
+  "physical_gpu_count": 14,
+  "source_nodes": [
+    "h100-5",
+    "h100-10"
+  ],
+  "extra_gpu4": {
+    "unit": "sst-q7b-g5-relaygen-queued-supp-v1-slot-gpu4-tp1-r1-70188b8e50fd.service",
+    "native": {
+      "MainPID": "3731224",
+      "Result": "success",
+      "ExecMainStatus": "0",
+      "ControlGroup": "/system.slice/sst-q7b-g5-relaygen-queued-supp-v1-slot-gpu4-tp1-r1-70188b8e50fd.service",
+      "Id": "sst-q7b-g5-relaygen-queued-supp-v1-slot-gpu4-tp1-r1-70188b8e50fd.service",
+      "LoadState": "loaded",
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "allocation_sha256": "0cc4967677620fb5d27818f012ef78d0633b741edcea7ff7380e2799bd061254",
+    "own_complete_batches": 0,
+    "initialized": true,
+    "model_initialized": [
+      {
+        "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-relay-slot-gpu4-tp1-3731224/attempt-1792555662309369517-3731224/sampler-launches/launch-00/model-initialized.json",
+        "sha256": "278b3798597bcc0a1f5feab4e3a416279ff0a9c4ce8256e626a5a677b2ee51df",
+        "actual_model_initialized": true,
+        "actual_compute_dtype": "torch.bfloat16",
+        "max_model_len": 4096,
+        "actual_num_gpu_blocks": 4096
+      }
+    ],
+    "lock_held_phases": [
+      {
+        "batch": "batch-000582",
+        "shard": "shard-00",
+        "phase": "prefix",
+        "completed": 640,
+        "utc": "2026-10-21T04:08:29.173811+00:00",
+        "actual_sampled_tokens": 12800,
+        "progress_path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/sampling/shard-00/batches/batch-000582/outers/outer-000001/prefix/rank-0-progress.json",
+        "lock_target": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/batch-locks/shard-00/batch-000582.lock",
+        "lock_owner": {
+          "pid": 3731391,
+          "birth": "1961623090",
+          "state": "R",
+          "cgroup": "1:freezer:/\n0::/system.slice/sst-q7b-g5-relaygen-queued-supp-v1-slot-gpu4-tp1-r1-70188b8e50fd.service\n"
+        },
+        "current_allocation": true
+      },
+      {
+        "batch": "batch-000582",
+        "shard": "shard-00",
+        "phase": "full",
+        "completed": 100,
+        "utc": "2026-10-21T04:11:57.684899+00:00",
+        "actual_sampled_tokens": 13937,
+        "progress_path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/sampling/shard-00/batches/batch-000582/outers/outer-000001/full/rank-0-progress.json",
+        "lock_target": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/batch-locks/shard-00/batch-000582.lock",
+        "lock_owner": {
+          "pid": 3731391,
+          "birth": "1961623090",
+          "state": "R",
+          "cgroup": "1:freezer:/\n0::/system.slice/sst-q7b-g5-relaygen-queued-supp-v1-slot-gpu4-tp1-r1-70188b8e50fd.service\n"
+        },
+        "current_allocation": true
+      }
+    ],
+    "whole_and_next_observed": false,
+    "failures": [],
+    "launch_failures": [],
+    "typed_initialization_ooms": []
+  },
+  "global_sealed": {
+    "sealed_batches": 608,
+    "questions": 77824,
+    "trajectories": 389120
+  },
+  "originals": {
+    "h100-5": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-guarded-follow-3f99a4cedc632aa8/actual-h100-5-1792555973677927000.json",
+      "sha256": "6a722c303824bba305e5f485cf30abcee6d1dd6d396a8da5e417820441b7e638"
+    },
+    "h100-10": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-guarded-follow-3f99a4cedc632aa8/actual-h100-10-1792555980275069000.json",
+      "sha256": "03c710d38d260fd435344f943e7a7cbdd11d491834aec9ce3a29269d00694187"
+    }
+  },
+  "prior_nine_whole_and_next_acceptance": "guarded-owner-v2-nine-model-first-whole-next-actual.json",
+  "new_extra_whole_and_next_pending": true,
+  "observer_replacement_only": {
+    "old_local_pid": 66638,
+    "old_handle": 13797,
+    "old_observer_actual_exit": 143,
+    "new_handle": 6755,
+    "native_samplers_stopped": false
+  },
+  "r2_plan_executed": false,
+  "model_tensor_independent_reload_performed": false,
+  "global_goal_complete": false,
+  "models_and_full_outputs_stay_on_own_nas10": true
+}
