@@ -1,4 +1,4 @@
-"""Explicit root-authorized <=2CPU/<8GiB/<10s synthetic unit tests on remote login.
+"""Explicit root-authorized <=2CPU/<8GiB synthetic tests (cold import<=60s; tests<=10s; total<=90s) on remote login.
 
 No real checkpoint/model is read; the Slurm guard is mocked with an explicit
 NONALLOCATION sentinel only for tiny unittest state files. This is not a real
@@ -14,6 +14,7 @@ root=pathlib.Path(sys.argv[1]);old='/data/user/jxu957/experiments/dynrpo-qwen25-
 import reproduction.operations.qwen7b_warmup as pkg
 for name in ['native_joint_rolling_checkpoint','test_native_joint_rolling_checkpoint']:
  s=importlib.util.spec_from_file_location('reproduction.operations.qwen7b_warmup.'+name,root/(name+'.py'));m=importlib.util.module_from_spec(s);sys.modules[s.name]=m;setattr(pkg,name,m);s.loader.exec_module(m)
+(root/'synthetic-tests-started.json').write_text(json.dumps(dict(monotonic=time.monotonic())))
 started=time.time();r=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromModule(m));rss=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024
 assert rss<8*1024**3 and not m.torch.cuda.is_initialized()
 v=dict(status='SYNTHETIC_ROLLING_FOUR_TESTS_PASSED'if r.wasSuccessful()else'FAILED',tests=r.testsRun,failures=len(r.failures),errors=len(r.errors),max_RSS_bytes=rss,test_seconds=time.time()-started,CUDA_initialized=m.torch.cuda.is_initialized(),actual_checkpoint_or_model_loaded=False,scope='remote_login_synthetic_CPU_unittest_only',Slurm_allocation_used=False,Slurm_guard_mock_explicit_nonallocation_sentinel=True)
@@ -30,7 +31,8 @@ with log.open('wb')as stream:
   status=pathlib.Path('/proc/%d/status'%child.pid)
   if status.exists():
    text=status.read_text();values=[int(line.split()[1])*1024 for line in text.splitlines()if line.startswith('VmRSS:')];peak=max([peak]+values)
-  if peak>8*1024**3 or time.monotonic()-started>9.5:child.kill();child.wait();raise RuntimeError('Synthetic-only hard RSS/time bound reached; no real CP was opened')
+  now=time.monotonic();marker=r/'synthetic-tests-started.json';test_elapsed=now-json.loads(marker.read_bytes())['monotonic']if marker.exists()else None
+  if peak>8*1024**3 or now-started>90 or(test_elapsed is None and now-started>60)or(test_elapsed is not None and test_elapsed>10):child.kill();child.wait();raise RuntimeError('Synthetic-only cold-import/test/RSS bound reached; no real CP was opened')
   time.sleep(.025)
  elapsed=time.monotonic()-started
 assert child.returncode==0,log.read_text()[-2400:]
