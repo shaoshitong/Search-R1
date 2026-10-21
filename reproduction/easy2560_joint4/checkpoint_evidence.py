@@ -550,8 +550,10 @@ def authenticated_restore_chain(base, run, *, bundle=None, sealed_directory=None
         birth = row.get('process_identity', {})
         need(type(birth.get('pid')) is int and birth['pid'] > 0 and
              type(birth.get('start_ticks')) is int and birth['start_ticks'] > 0, 'RESTORED_RANK_BIRTH_REQUIRED')
-    need(len({(r['process_identity']['pid'], r['process_identity']['start_ticks']) for r in ranks}) == 4 and
-         next(r for r in ranks if r['rank'] == 0).get('model_hf_exact_tensors_checked_on_rank0') == 435,
+    expected_tensors = receipt.get('hf_saved_tensor_count')
+    need(type(expected_tensors) is int and expected_tensors > 0 and
+         len({(r['process_identity']['pid'], r['process_identity']['start_ticks']) for r in ranks}) == 4 and
+         next(r for r in ranks if r['rank'] == 0).get('model_hf_exact_tensors_checked_on_rank0') == expected_tensors,
          'RESTORED_RANK0_FULL_MODEL_OR_DISTINCT_BIRTHS_REQUIRED')
     post = receipt.get('post_callback_rng_captured') is True
     need(driver.get('run_id') == run['run_id'] and driver.get('source_receipt_sha256') == binding['source_receipt_sha256'] and

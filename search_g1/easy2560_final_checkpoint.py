@@ -130,8 +130,10 @@ def _checkpoint_metadata(receipt, run, checkpoint):
     need(all(name in files and files[name]['full_read_sha256'] == sha
              for name, sha in complete['files_sha256'].items()), 'COMPLETE_SHA_MAP_DIFFERS')
     index = saved._json(checkpoint/'model.safetensors.index.json')
-    need(len(index['weight_map']) == complete['validated_tensor_count'] == receipt['hf_saved_tensor_count'] == 435 and
-         set(index['weight_map'].values()) <= set(files), 'FULL_HF435_REQUIRED')
+    tensor_count = receipt['hf_saved_tensor_count']
+    need(type(tensor_count) is int and tensor_count > 0 and
+         len(index['weight_map']) == complete['validated_tensor_count'] == tensor_count and
+         set(index['weight_map'].values()) <= set(files), 'FULL_HF_TENSOR_SET_REQUIRED')
     for rank, row in enumerate(receipt['ranks']):
         native = next(value for value in state['worker_files'] if value['rank'] == rank)
         key = 'training_state/rank-' + str(rank) + '.pt'

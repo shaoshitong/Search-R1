@@ -28,7 +28,7 @@ def bounded(path, terminal):
     return record(path, str(path.relative_to(path.parents[1])), b''.join(chunks))
 
 
-def three_segments(root, source_outer=50):
+def three_segments(root, source_outer=50, tensor_count=435):
     old, middle, _ = bind_fixture(root, final_mode=True)
     current = FinalAcceptanceTests('runTest'); current.fixture(root/'third', training_commit=THIRD, physical=8)
     ledger_rows(current, False, '730400')
@@ -55,6 +55,7 @@ def three_segments(root, source_outer=50):
     progress = dict(completed_outer=source_outer, cumulative_writes=95+source_outer, attempt_index=source_outer, aborted_attempts=0, full_budget_outer=5)
     files = [record(cp/('training_state/rank-%d.pt' % rank)) for rank in range(4)]
     receipt = dict(schema_version=2, status=evidence.RESTORE_STATUS, kind='easy2560_native4',
+        hf_saved_tensor_count=tensor_count,
         source_base=str(middle.base), checkpoint=str(cp), step=source_outer, world_size=4, run_id=middle.run_id,
         source_job=middle.job, source_commit=NEW, actual_optimizer_writes_per_rank=95+source_outer,
         attempt_progress=progress, source_run_manifest=record(middle.base/'logs/run-manifest.json'),
@@ -78,7 +79,7 @@ def three_segments(root, source_outer=50):
             slurm_job_id=current.job, actual_cuda_uuid=uuids[rank], world_size=4,
             actual_optimizer_writes=95+source_outer, scheduler_last_epoch=source_outer, last_attempt_index=source_outer,
             actual_model_collective_readback_equal=True, actual_adam_scheduler_readback_equal=True,
-            actual_rng_readback_equal=True, model_hf_exact_tensors_checked_on_rank0=435 if rank==0 else 0,
+            actual_rng_readback_equal=True, model_hf_exact_tensors_checked_on_rank0=tensor_count if rank==0 else 0,
             process_identity=dict(pid=2000+rank,start_ticks=19000+rank)))
     put(current.base/'logs/full-state-restored-workers.json', dict(run_id=current.run_id, source_commit=THIRD,
         slurm_job_id=current.job, source_receipt_sha256=sha, actual_world_size=4, ranks=ranks))
@@ -104,6 +105,17 @@ def three_segments(root, source_outer=50):
 
 
 class MultisegmentHistoryTests(unittest.TestCase):
+    def test_generic_restore_chain_accepts339_and_rejects_incomplete_model_readback(self):
+        with tempfile.TemporaryDirectory() as td:
+            _, _, current = three_segments(Path(td), tensor_count=339)
+            self.assertEqual(evidence.authenticated_restore_chain(current.base,current.run)['boundary'], 50)
+            path = current.base/'logs/full-state-restored-workers.json'
+            workers = json.loads(path.read_bytes())
+            workers['ranks'][0]['model_hf_exact_tensors_checked_on_rank0'] = 338
+            put(path, workers)
+            with self.assertRaisesRegex(ValueError, 'RESTORED_RANK0_FULL_MODEL'):
+                evidence.authenticated_restore_chain(current.base,current.run)
+
     def test_three_sources_keep_exact_identities_and_ignore_unaccepted_middle_suffix(self):
         with tempfile.TemporaryDirectory() as td:
             old, middle, current = three_segments(Path(td))

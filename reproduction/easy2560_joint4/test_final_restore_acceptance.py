@@ -17,7 +17,7 @@ class FinalRestoreAcceptanceTests(unittest.TestCase):
         path.write_bytes(raw)
         return dict(path=str(path), bytes=len(raw), sha256=core.digest(raw))
 
-    def fixture(self, directory, *, with_accessories=False):
+    def fixture(self, directory, *, with_accessories=False, tensor_count=435):
         root = Path(directory).resolve(); self.base = root/'source'; self.target = root/'restore'
         self.base.mkdir(); self.target.mkdir(); self.run_id = 'a'*32
         self.run = dict(run_id=self.run_id, source_commit='b'*40, actor_micro_batch_per_rank=16,
@@ -48,7 +48,7 @@ class FinalRestoreAcceptanceTests(unittest.TestCase):
         state_ref = self.put(self.base/'small-archive/training-state-manifest.json', self.state)
         members['training_state/manifest.json'].update(bytes=state_ref['bytes'],full_read_sha256=state_ref['sha256'])
         self.complete = dict(run_id=self.run_id,step=200,checkpoint=str(self.cp),finite_all_saved_tensors=True,
-            validated_tensor_count=435,actual_optimizer_writes_per_rank=3137,
+            validated_tensor_count=tensor_count,actual_optimizer_writes_per_rank=3137,
             files_sha256={name: row['full_read_sha256'] for name,row in members.items() if name not in accessories})
         complete_ref = self.put(self.base/'small-archive/checkpoint-complete.json', self.complete)
         members['complete.json'] = dict(path=str(self.cp/'complete.json'),relative_path='complete.json',
@@ -70,7 +70,7 @@ class FinalRestoreAcceptanceTests(unittest.TestCase):
             question_probe=None,single_original_job_prefix=False,inherited_history_assembled=True,
             post_callback_rng_captured=False,reward_refresh_pending=False,no_update201=True,
             sampling_rng_stage='saved_checkpoint_before_final51713',checkpoint_archive=copy.deepcopy(self.checkpoint_summary),
-            hf_saved_tensor_count=435,files=list(members.values()),file_count=len(members),
+            hf_saved_tensor_count=tensor_count,files=list(members.values()),file_count=len(members),
             attempt_progress=copy.deepcopy(self.saved_progress),actual_optimizer_writes_per_rank=3137,
             authenticated_history=copy.deepcopy(self.progress['authenticated_history']),
             ranks=[dict(rank=rank,completed_outer=200,scheduler_last_epoch=200,scheduler_step_count=201,
@@ -113,7 +113,7 @@ class FinalRestoreAcceptanceTests(unittest.TestCase):
                     source_state_full_sha256=members[f'training_state/rank-{rank}.pt']['full_read_sha256'],
                     actual_cuda_uuid=self.allocation['actual_cuda_runtime_uuids'][rank],process_identity=self.births[rank],
                     actual_optimizer_writes=3137,scheduler_last_epoch=200,scheduler_step_count=201,
-                    model_hf_exact_tensors_checked_on_rank0=435 if rank==0 else 0,
+                    model_hf_exact_tensors_checked_on_rank0=tensor_count if rank==0 else 0,
                     model_equal=True,optimizer_equal=True,scheduler_equal=True,saved_rng_equal=True,
                     actual_counters={key: saved[key] for key in core.COUNTERS},forbidden_call_counts={},checked_unix=stamp-1))
             self.phases[phase] = dict(schema_version=1,role=core.ROLE,phase=phase,run_id=self.run_id,
@@ -160,6 +160,24 @@ class FinalRestoreAcceptanceTests(unittest.TestCase):
 
     def phase_update(self,phase):
         self.proof['readbacks'][phase]=self.put(self.target/'logs'/f'final-restore-only-readback-{phase}.json',self.phases[phase])
+
+    def test339_tensor_archive_and_both_actual_readbacks_accept_and_wrong_count_rejects(self):
+        with tempfile.TemporaryDirectory() as directory:
+            self.fixture(directory, tensor_count=339)
+            self.assertTrue(self.verify()['actual_cuda_restore_accepted'])
+            self.phases['B']['actual_actor_readbacks'][0]['model_hf_exact_tensors_checked_on_rank0'] = 338
+            self.phase_update('B')
+            with self.assertRaisesRegex(ValueError, 'ACTUAL_RANK_READBACK_DIFFERS'):
+                self.verify()
+
+    def test339_tensor_receipt_count_must_match_SHA_bound_producer_complete(self):
+        with tempfile.TemporaryDirectory() as directory:
+            self.fixture(directory, tensor_count=339)
+            for count in (338, 435, 0, True):
+                self.receipt['hf_saved_tensor_count'] = count
+                self.proof['source_receipt'] = self.put(self.source_path, self.receipt)
+                with self.subTest(count=count), self.assertRaisesRegex(ValueError, 'SAVED_NATIVE4_CP200_DIFFERS'):
+                    self.verify()
 
     def test_all_linked_evidence_without_any_large_tensor_retention_or_torch(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -22,7 +22,8 @@ from reproduction.easy2560_joint4.test_final_cpu_acceptance import OPAQUE_SELECT
 
 
 class Fixture:
-    def __init__(self, root):
+    def __init__(self, root, tensor_count=435):
+        self.tensor_count = tensor_count
         self.old, self.new, _ = bind_fixture(Path(root), final_mode=True)
         f = self.new; self.base = f.base; self.cp = self.base/'checkpoints/search-g1-common8/actor/global_step_200'
         self.output = Path(root)/'final200-receipt.json'
@@ -56,7 +57,7 @@ class Fixture:
         put(state_dir/'manifest.json',dict(completed_outer=200, question_probe=None, worker_files=proofs,
             driver_file=dict(path=str(driver),sha256=module.saved.digest(driver))))
         shards=sorted(p.name for p in self.cp.glob('*.safetensors'))
-        put(self.cp/'model.safetensors.index.json', {'weight_map':{f'weight{i}':shards[i%len(shards)] for i in range(435)}})
+        put(self.cp/'model.safetensors.index.json', {'weight_map':{f'weight{i}':shards[i%len(shards)] for i in range(tensor_count)}})
         put(self.cp/'config.json', {})
         for i in range(7):put(self.cp/f'tokenizer-accessory-{i}.json',dict(accessory=i))
         heads=self.base/'artifacts/round_150-attempt-real/heads'
@@ -78,7 +79,7 @@ class Fixture:
         state['driver_file']['sha256']=module.saved.digest(state['driver_file']['path'])
         put(cp/'training_state/manifest.json',state)
         complete=dict(step=200,run_id=f.run_id,checkpoint=str(cp),finite_all_saved_tensors=True,
-            validated_tensor_count=435,actual_optimizer_writes_per_rank=295,
+            validated_tensor_count=self.tensor_count,actual_optimizer_writes_per_rank=295,
             files_sha256={str(p.relative_to(cp)):module.saved.digest(p) for p in cp.rglob('*') if p.is_file() and p.name!='complete.json'})
         put(cp/'complete.json',complete)
         for step in final.STEPS[1:]:
@@ -106,6 +107,16 @@ class Fixture:
 
 
 class FinalCheckpointTests(unittest.TestCase):
+    def test_complete339_tensor_receipt_and_source_use_actual_checkpoint_index(self):
+        with tempfile.TemporaryDirectory() as root:
+            f = Fixture(root, tensor_count=339)
+            f.create()
+            _, receipt, cp, _, parent = module.source(f.output, rehash_checkpoint=True)
+            self.assertEqual(receipt['hf_saved_tensor_count'], 339)
+            for count in (338, 435, 0, True):
+                with self.subTest(count=count), self.assertRaisesRegex(ValueError, 'FULL_HF_TENSOR_SET'):
+                    module._checkpoint_metadata(dict(receipt, hf_saved_tensor_count=count), parent, cp)
+
     def test_physical8_final_create_and_source_retain_original_physical16_prefix(self):
         with tempfile.TemporaryDirectory() as root:
             f = Fixture(root)

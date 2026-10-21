@@ -74,14 +74,14 @@ class FinalRestoreOnlyTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'MUTATION_FORBIDDEN'): operation()
         self.assertEqual(sum(worker._easy_final_forbidden_calls.values()), 3)
 
-    def actor_fixture(self):
+    def actor_fixture(self, tensor_count=435):
         rows = [dict(rank=i, actual_cuda_uuid='GPU-'+str(i), actual_optimizer_writes=2345,
             actual_counters={'completed_outer':200}, scheduler_last_epoch=200, scheduler_step_count=201,
             process_identity={'pid':100+i,'start_ticks':1000+i}, forbidden_call_counts={},
             model_equal=True, optimizer_equal=True, scheduler_equal=True, saved_rng_equal=True,
-            model_hf_exact_tensors_checked_on_rank0=435 if i==0 else 0) for i in range(4)]
+            model_hf_exact_tensors_checked_on_rank0=tensor_count if i==0 else 0) for i in range(4)]
         return rows, dict(actual_cuda_runtime_uuids=['GPU-'+str(i) for i in range(4)]), dict(
-            attempt_progress={'cumulative_writes':2345}, hf_saved_tensor_count=435)
+            attempt_progress={'cumulative_writes':2345}, hf_saved_tensor_count=tensor_count)
 
     def test_all4_source_counters_and_actual435_model_readbacks_required(self):
         rows, allocation, receipt = self.actor_fixture(); module.validate_actors(rows, allocation, receipt)
@@ -89,7 +89,14 @@ class FinalRestoreOnlyTests(unittest.TestCase):
             altered = copy.deepcopy(rows); altered[2][field] = value
             with self.assertRaises(ValueError): module.validate_actors(altered, allocation, receipt)
         rows[0]['model_hf_exact_tensors_checked_on_rank0'] = 434
-        with self.assertRaisesRegex(ValueError, 'ALL435'): module.validate_actors(rows, allocation, receipt)
+        with self.assertRaisesRegex(ValueError, 'ALL_SAVED'): module.validate_actors(rows, allocation, receipt)
+
+    def test_all339_actual_model_readbacks_and_positive_bound_count_required(self):
+        rows, allocation, receipt = self.actor_fixture(tensor_count=339)
+        module.validate_actors(rows, allocation, receipt)
+        for count in (338, 435, 0, True):
+            with self.subTest(bound_count=count), self.assertRaisesRegex(ValueError, 'ALL_SAVED'):
+                module.validate_actors(rows, allocation, dict(receipt, hf_saved_tensor_count=count))
 
     def test_source_no201_covers_all_ten_ledgers_and_rejects201(self):
         with tempfile.TemporaryDirectory() as td:

@@ -139,9 +139,10 @@ def _source(source_record, *, base, run, checkpoint_summary, progress):
     need(accepted.get('status') == ARCHIVE_STATUS and all(accepted.get(key) is True for key in
          ('fresh_destination_sha_verified', 'destination_fsynced', 'fresh_source_after_archive_sha_verified')) and
          accepted.get('snapshot_sha256') == _sha(checkpoint_summary['source_snapshot']), 'SOURCE_ARCHIVE_SHA_NOT_ACCEPTED')
+    tensor_count = receipt.get('hf_saved_tensor_count')
     need(complete.get('run_id') == run['run_id'] and complete.get('step') == 200 and
          complete.get('checkpoint') == str(checkpoint) and complete.get('finite_all_saved_tensors') is True and
-         complete.get('validated_tensor_count') == receipt.get('hf_saved_tensor_count') == 435 and
+         type(tensor_count) is int and tensor_count > 0 and complete.get('validated_tensor_count') == tensor_count and
          state.get('completed_outer') == 200 and state.get('question_probe') is None, 'SAVED_NATIVE4_CP200_DIFFERS')
     files = receipt.get('files', [])
     need(isinstance(files, list) and len(files) == len({row['relative_path'] for row in files}) and
@@ -267,7 +268,7 @@ def _phase(document, phase, *, run, receipt, source_sha, files, allocation, host
              row.get('actual_cuda_uuid') in allocation['actual_cuda_runtime_uuids'] and
              row.get('actual_optimizer_writes') == receipt['attempt_progress']['cumulative_writes'] and
              row.get('scheduler_last_epoch') == 200 and row.get('scheduler_step_count') == 201 and
-             row.get('model_hf_exact_tensors_checked_on_rank0') == (435 if rank == 0 else 0) and
+             row.get('model_hf_exact_tensors_checked_on_rank0') == (receipt['hf_saved_tensor_count'] if rank == 0 else 0) and
              all(row.get(key) is True for key in ('model_equal', 'optimizer_equal', 'scheduler_equal', 'saved_rng_equal')) and
              row.get('forbidden_call_counts') == {} and _time(row) <= phase_time, 'ACTUAL_RANK_READBACK_DIFFERS')
         counters = row.get('actual_counters', {})

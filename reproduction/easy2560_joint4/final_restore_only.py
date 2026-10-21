@@ -57,7 +57,8 @@ def source(path, *, rehash_checkpoint=False):
     _, receipt, _, _, parent = result
     from reproduction.common8.precision_contract import easy2560_native4
     need(receipt['step'] == 200 and receipt['world_size'] == 4 and
-         receipt['hf_saved_tensor_count'] == 435 and easy2560_native4(parent) and
+         type(receipt['hf_saved_tensor_count']) is int and receipt['hf_saved_tensor_count'] > 0 and
+         easy2560_native4(parent) and
          parent.get('question_probe') is None, 'FINAL200_EASY_NATIVE4_SOURCE_REQUIRED')
     return result
 
@@ -181,7 +182,7 @@ def readback_actor(worker, receipt_path, phase):
                 for name in sorted(set(weights.values())):
                     with safe_open(str(checkpoint/name), framework='pt', device='cpu') as shard:
                         for key in shard.keys(): equal_tree(model[key], shard.get_tensor(key)); checked += 1
-                need(checked == receipt['hf_saved_tensor_count'] == 435, 'ACTUAL_MODEL_TENSOR_COUNT_DIFFERS')
+                need(checked == len(weights) == receipt['hf_saved_tensor_count'], 'ACTUAL_MODEL_TENSOR_COUNT_DIFFERS')
             return checked
         checked = collective(compare_model, 'MODEL'); del model
     finally:
@@ -262,8 +263,10 @@ def validate_actors(rows, allocation, receipt):
              row['scheduler_last_epoch'] == 200 and row['scheduler_step_count'] == 201 and
              not row['forbidden_call_counts'] and all(row[key] is True for key in
                  ('model_equal', 'optimizer_equal', 'scheduler_equal', 'saved_rng_equal')), 'ACTUAL_STATE_DIFFERS')
-    need(rows[0]['model_hf_exact_tensors_checked_on_rank0'] == receipt['hf_saved_tensor_count'] == 435,
-         'ALL435_ACTUAL_MODEL_TENSORS_REQUIRED')
+    expected_tensors = receipt['hf_saved_tensor_count']
+    need(type(expected_tensors) is int and expected_tensors > 0 and
+         rows[0]['model_hf_exact_tensors_checked_on_rank0'] == expected_tensors,
+         'ALL_SAVED_ACTUAL_MODEL_TENSORS_REQUIRED')
 
 
 def invariant(row):
