@@ -1,6 +1,6 @@
 {
-  "epoch": 1792613064.5126867,
-  "status": "ACTUAL_NATIVE4_FA3_OUTER18_SEALED_AND19_SAVED_GOAL200_ACTIVE",
+  "epoch": 1792614744.3713646,
+  "status": "ACTUAL_NATIVE4_FA3_OUTER19_SEALED_AND20_SAVED_GOAL200_ACTIVE",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "746125",
@@ -11,7 +11,7 @@
   "global_mini": 128,
   "logical_micro": 4,
   "accumulation": 4,
-  "actual_completed_outer": 18,
+  "actual_completed_outer": 19,
   "initialization_is_not_training_acceptance": true,
   "old3b": {
     "job": "734689",
@@ -53,9 +53,9 @@
     "physical_micro16": "Not raised blindly; needs actual measured memory/throughput",
     "enabled_scope": "Exact retrieval cache + original dense head + separate2H100 retrieval service + authorized actor-local FA3; vLLM rollout XFormers and grounding SDPA unchanged"
   },
-  "previous_goal_turn_classification": "progress",
-  "latest_turn_classification": "PROGRESS_ACTUAL_OUTER18_COMPLETE_AND_FUTURE_FA3_FINAL_RESTORE_FIX_PUBLISHED",
-  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792611313074978000/observation-028.json",
+  "previous_goal_turn_classification": "PROGRESS_PUBLISHED_FINAL_FA3_RESTORE_FIX_AND_ACTUAL_OUTER18_SEALED",
+  "latest_turn_classification": "PROGRESS_ACTUAL_OUTER19_COMPLETE_AND20_GENERATION",
+  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792611313074978000/observation-056.json",
   "pipeline": {
     "execution_role": "production",
     "run_id": "232f20e112ac4a978c5aba52a0367195",
@@ -141,7 +141,8 @@
     15,
     16,
     17,
-    18
+    18,
+    19
   ],
   "archive_controller_for_current7b_not_yet_started": false,
   "remaining_goal_requirements": [
@@ -412,15 +413,6 @@
   "current_candidate_pools": [
     {
       "completed_questions": 2560,
-      "name": "2f9fdb4f4c06421a8a50c2f78097ba7e-pool-0",
-      "progress_error": null,
-      "reserved_questions": 2560,
-      "saved_chunk_files": 15,
-      "source_consumed": 43520,
-      "step": 17
-    },
-    {
-      "completed_questions": 2560,
       "name": "58632912d0d642739655037e9d0ad421-pool-0",
       "progress_error": null,
       "reserved_questions": 2560,
@@ -429,25 +421,34 @@
       "step": 18
     },
     {
-      "completed_questions": 512,
+      "completed_questions": 2560,
       "name": "5b75b8776bcd4d90a609b2521f431f23-pool-0",
+      "progress_error": null,
+      "reserved_questions": 2560,
+      "saved_chunk_files": 15,
+      "source_consumed": 48640,
+      "step": 19
+    },
+    {
+      "completed_questions": 512,
+      "name": "8465de04dced4742a32e1a5fc0079174-pool-0",
       "progress_error": null,
       "reserved_questions": 512,
       "saved_chunk_files": 4,
-      "source_consumed": 48640,
-      "step": 19
+      "source_consumed": 51200,
+      "step": 20
     }
   ],
   "outer2_started_not_complete": false,
   "outer2_completed_candidate_questions": 2560,
   "outer2_first_chunk_mixed_questions": 181,
-  "current_base_durable_checkpoint_outer": 18,
+  "current_base_durable_checkpoint_outer": 19,
   "most_recent_recoverable_checkpoint": {
-    "completed_outer": 18,
+    "completed_outer": 19,
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_18",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_18/full-manifest.json",
-    "sealed_manifest_sha256": "4e4c7f408f745df6495a88405885690cfc291db44ca6986a5c2098a3b0a764af",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_19",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_19/full-manifest.json",
+    "sealed_manifest_sha256": "bee8c0f4ca37e7466a3ecd07a0d426f85873506b7c01a019194c84d67e07269c",
     "producer_full_sha_fsync_complete": true,
     "independent_small_manifest_sha_and_payload_metadata_pass": true,
     "independent_full_payload_rehash_this_observation": false,
@@ -521,15 +522,15 @@
   },
   "rolling_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_18",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_19",
     "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_18/full-manifest.json",
-    "manifest_sha256": "4e4c7f408f745df6495a88405885690cfc291db44ca6986a5c2098a3b0a764af",
-    "published_unix": 1792612791.483291,
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_19/full-manifest.json",
+    "manifest_sha256": "bee8c0f4ca37e7466a3ecd07a0d426f85873506b7c01a019194c84d67e07269c",
+    "published_unix": 1792614522.9304273,
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
     "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 18
+    "step": 19
   },
   "outer2_timings_seconds": {
     "timing_s/candidate_fill": 864.349,
@@ -627,7 +628,7 @@
       "replacement_has_completed_milestone5_archive": true
     }
   ],
-  "current_outer": 19,
+  "current_outer": 20,
   "outer3_selection": {
     "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/eefd4da7a7b445a4862963b159cbdfdc.json",
     "bytes": 2750777,
@@ -915,6 +916,17 @@
       "ppo_kl": 0.0011254913626771667,
       "reward": 0.6486653089523315,
       "step": 18
+    },
+    {
+      "attempt_index": 19,
+      "grad_norm": 2.5223540001169167,
+      "optimizer_writes": 380,
+      "optimizer_writes_before": 360,
+      "optimizer_writes_this_outer": 20,
+      "pg_loss": 0.017825097018675823,
+      "ppo_kl": 0.001253067243942496,
+      "reward": 0.6637318730354309,
+      "step": 19
     }
   ],
   "fixed_validation_results_pending": [
@@ -1220,27 +1232,27 @@
     "formal_training_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
     "fresh_remote_fetch_and_blob_sha_pass": true
   },
-  "all4_actual_optimizer_writes": 360,
+  "all4_actual_optimizer_writes": 380,
   "current_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_18",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_19",
     "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_18/full-manifest.json",
-    "manifest_sha256": "4e4c7f408f745df6495a88405885690cfc291db44ca6986a5c2098a3b0a764af",
-    "published_unix": 1792612791.483291,
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_19/full-manifest.json",
+    "manifest_sha256": "bee8c0f4ca37e7466a3ecd07a0d426f85873506b7c01a019194c84d67e07269c",
+    "published_unix": 1792614522.9304273,
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
     "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 18
+    "step": 19
   },
   "current_candidate_pool": {
     "completed_questions": 512,
-    "name": "5b75b8776bcd4d90a609b2521f431f23-pool-0",
+    "name": "8465de04dced4742a32e1a5fc0079174-pool-0",
     "progress_error": null,
     "reserved_questions": 512,
     "saved_chunk_files": 4,
-    "source_consumed": 48640,
-    "step": 19
+    "source_consumed": 51200,
+    "step": 20
   },
   "current_completed_selection_em": [
     {
@@ -1482,18 +1494,58 @@
       "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/artifacts/mixed-selection/58632912d0d642739655037e9d0ad421.json",
       "status": "MEASURED_COMPLETED_SELECTION",
       "step": 18
+    },
+    {
+      "attempt_id": "5b75b8776bcd4d90a609b2521f431f23",
+      "candidate_correct_count_histogram": {
+        "0": 1044,
+        "1": 201,
+        "2": 142,
+        "3": 153,
+        "4": 273,
+        "5": 747
+      },
+      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy",
+      "candidate_mixed_fraction": 0.300390625,
+      "candidate_mixed_questions": 769,
+      "candidate_questions": 2560,
+      "candidate_trajectories": 12800,
+      "candidate_trajectory_em": 0.450859375,
+      "discarded_insufficient_pool_count": 0,
+      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:19:policy-5b75b8776bcd4d90a609b2521f431f23",
+      "pool_retry": 0,
+      "raw_generated_trajectories": 12800,
+      "selected_all_correct_fallback": 0,
+      "selected_all_correct_fallback_fraction": 0.0,
+      "selected_correct_count_histogram": {
+        "0": 0,
+        "1": 136,
+        "2": 97,
+        "3": 102,
+        "4": 177,
+        "5": 0
+      },
+      "selected_mixed": 512,
+      "selected_mixed_fraction": 1.0,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "selected_trajectory_em": 0.525,
+      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
+      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/artifacts/mixed-selection/5b75b8776bcd4d90a609b2521f431f23.json",
+      "status": "MEASURED_COMPLETED_SELECTION",
+      "step": 19
     }
   ],
   "latest_completed_metrics": {
-    "attempt_index": 18,
-    "grad_norm": 2.5991397878065787,
-    "optimizer_writes": 360,
-    "optimizer_writes_before": 340,
+    "attempt_index": 19,
+    "grad_norm": 2.5223540001169167,
+    "optimizer_writes": 380,
+    "optimizer_writes_before": 360,
     "optimizer_writes_this_outer": 20,
-    "pg_loss": 0.04168646562515173,
-    "ppo_kl": 0.0011254913626771667,
-    "reward": 0.6486653089523315,
-    "step": 18
+    "pg_loss": 0.017825097018675823,
+    "ppo_kl": 0.001253067243942496,
+    "reward": 0.6637318730354309,
+    "step": 19
   },
   "archive5_grounding_dependency_closure": {
     "status": "EASY2560_POST_CALLBACK_DEPENDENCIES_SHA_FSYNC_PASS",
@@ -1740,7 +1792,7 @@
       "terminal": true
     }
   ],
-  "current_progress_evidence": "evidence/actual-fa3-outer18-sealed-and19-saved-20261022.json",
+  "current_progress_evidence": "evidence/actual-fa3-outer19-sealed-and20-saved-20261022.json",
   "published_progress_observer": {
     "commit": "b3f808a31d957799c82690cb6ddf97e2bdddd002",
     "source": "reproduction/operations/easy7b_20261021/watch_training_progress_local.py",
@@ -1817,7 +1869,7 @@
     "actual_backward_returns_per_rank": 11200,
     "first_actor_update_seconds": 264.853
   },
-  "latest_full_checkpoint_outer": 18,
+  "latest_full_checkpoint_outer": 19,
   "latest_phase_timing_evidence": "evidence/actual-fa3-native4-followup13-to17-and18-saved-20261022.json",
   "frozen_grounding_batch_optimization": {
     "production_micro": 4,
@@ -2042,7 +2094,7 @@
     "restore_evidence": "evidence/actual-fa3-native4-cp12-restore-dataequal-20261022.json",
     "first_target_complete_outer": 13,
     "first_target_full_checkpoint_sealed": 13,
-    "actual_execution_evidence": "evidence/actual-fa3-outer18-sealed-and19-saved-20261022.json",
+    "actual_execution_evidence": "evidence/actual-fa3-outer19-sealed-and20-saved-20261022.json",
     "actual_five_outer_followup_accepted": true,
     "complete_target_outers_observed": [
       13,
@@ -2050,10 +2102,11 @@
       15,
       16,
       17,
-      18
+      18,
+      19
     ],
-    "next_outer_saved": 19,
-    "latest_target_full_checkpoint_sealed": 18
+    "next_outer_saved": 20,
+    "latest_target_full_checkpoint_sealed": 19
   },
   "active_local_watcher": {
     "session_id": 21851,
@@ -2104,5 +2157,61 @@
       "Kernel-only speedup is not an actor or full-outer speedup."
     ]
   },
-  "latest_complete_outer_wall_seconds": 1741.3743815422058
+  "latest_complete_outer_wall_seconds": 1731.4471364021301,
+  "latest_collapse_review": {
+    "clear_collapse_observed": false,
+    "actual_fa3_complete_outer_rewards": [
+      {
+        "step": 13,
+        "reward": 0.6196612119674683,
+        "grad_norm": 2.527223024756102,
+        "ppo_kl": 0.0009061139965524489,
+        "pg_loss": 0.026009360975243374
+      },
+      {
+        "step": 14,
+        "reward": 0.6631746888160706,
+        "grad_norm": 2.5499742209405634,
+        "ppo_kl": 0.0012001553356640216,
+        "pg_loss": 0.04261230448434743
+      },
+      {
+        "step": 15,
+        "reward": 0.6497489213943481,
+        "grad_norm": 2.5254624806568686,
+        "ppo_kl": 0.001002151614829927,
+        "pg_loss": -0.017395585529429828
+      },
+      {
+        "step": 16,
+        "reward": 0.6265769004821777,
+        "grad_norm": 2.4427066418629613,
+        "ppo_kl": 0.0012863805626693648,
+        "pg_loss": 0.061081264760850705
+      },
+      {
+        "step": 17,
+        "reward": 0.6446403861045837,
+        "grad_norm": 2.567749827641844,
+        "ppo_kl": 0.0015417010832607047,
+        "pg_loss": 0.06405051577171214
+      },
+      {
+        "step": 18,
+        "reward": 0.6486653089523315,
+        "grad_norm": 2.5991397878065787,
+        "ppo_kl": 0.0011254913626771667,
+        "pg_loss": 0.04168646562515173
+      },
+      {
+        "step": 19,
+        "reward": 0.6637318730354309,
+        "grad_norm": 2.5223540001169167,
+        "ppo_kl": 0.001253067243942496,
+        "pg_loss": 0.017825097018675823
+      }
+    ],
+    "scope": "Changing pre-update training pools; fixed512 only QA5 is available. This is not evidence of fixed-validation improvement or causal FA3 superiority.",
+    "recovery_triggered": false
+  }
 }
