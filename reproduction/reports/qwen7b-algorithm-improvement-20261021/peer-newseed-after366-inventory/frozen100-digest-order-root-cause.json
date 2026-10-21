@@ -1,0 +1,46 @@
+{
+  "status": "FROZEN100_EXPORT_ID_DIGEST_ORDER_ROOT_CAUSE_CONFIRMED",
+  "actual_source_metadata_evidence": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/outputs/qwen7b-warmup-20261019/peer-frozen-delta-transfer/audited100-after366-20261021-636015f5/first-source-failure-digest-order.json",
+    "bytes": 2587,
+    "sha256": "f1761705f9f23e8064359c541406e9333b56e37feb5f534f516c56e4e9f69d10",
+    "epoch": 1792544432.304133
+  },
+  "frozen_plan": {
+    "bytes": 170253,
+    "sha256": "00e5021284cb8f6614670452b749c7add10c028e50578822432600762074662a"
+  },
+  "selected_index_zero_based": 56,
+  "input": "inputs/shard-00/batch-000390.json",
+  "questions": 128,
+  "trajectories": 640,
+  "candidate_ordinal_min": 99840,
+  "candidate_ordinal_max": 100094,
+  "candidate_ordinal_step": 2,
+  "ordered_expected_own_G5_IDs_sha256": "bfb02f10f574244951c3658ca40b9088f7df6da374805ca1df7b3b944acf0375",
+  "sorted_auditor_actual_trajectory_ids_sha256": "f71ac3156a4df01266011ddc06509ea03e67c07eaf56536d49fda436ace91770",
+  "frozen_audit_equals_current_audit": true,
+  "proof_descriptor": {
+    "bytes": 2625,
+    "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/audit/batches/shard-00/batch-000390.json",
+    "sha256": "6c607c3606cd0dbccce26530387f82c7ee3a22d3c9088ab3c7bdddd577a9527b"
+  },
+  "proof_verified_epoch": 1792541200.9112196,
+  "proof_status": "EXISTING_INDEPENDENT_AUDIT_CURRENT_FSTAT_BOUND",
+  "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "seed": 20261021,
+  "source_seed": 1729,
+  "source_run_id": "70188b8e50fd4b45bc420ce58014f46e",
+  "sampling_attempt_id": "independent-seed20261021-g5-20261020",
+  "exact_local_ID_reconstruction_matches_both_actual_source_digests": true,
+  "cause": "Consumer compared lexicographically sorted independent-audit ID digest to input-order expected-ID digest. c%04d is minimum width, so the two orders diverge across ordinal100000.",
+  "proof_or_payload_change_detected": false,
+  "requires_plan_refreeze": false,
+  "requires_new_peer_audit": false,
+  "proposed_fix": "Compare unchanged frozen proof descriptor and current fstat first; then compare generated IDs in input order to expected_own_G5_IDs_sha256 and generated sorted IDs to independent proof own_trajectory_ids_sha256 separately.",
+  "remote_queries_by_this_diagnosis": 0,
+  "payload_reads_by_this_diagnosis": 0,
+  "GPU_used": false,
+  "source_or_plan_modified": false,
+  "export_owner": "event_continuation_impl"
+}
