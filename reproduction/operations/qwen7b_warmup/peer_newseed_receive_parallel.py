@@ -449,7 +449,9 @@ def download(session,base,record,commit,retries=50,workers=8):
                                     out.write(data);offset+=len(data);out.flush();progress()
                                 out.flush();os.fsync(out.fileno())
                     if not part.exists()or part.stat().st_size!=expected:raise IOError('Incomplete bounded range retained for retry')
-                    proof=dict(start=start,end=end,bytes=expected,sha256=sha(part),whole_archive_SHA_acceptance=False);os.replace(str(part),str(done));atomic(receipt,proof);progress();return
+                    proof=dict(start=start,end=end,bytes=expected,sha256=sha(part),whole_archive_SHA_acceptance=False)
+                    with lock:os.replace(str(part),str(done));atomic(receipt,proof)
+                    progress();return
                 except ValueError:raise
                 except Exception as error:
                     atomic(directory/('retry-%02d.json'%i),dict(range=i,attempt=attempt,error_type=type(error).__name__,epoch=time.time()))
