@@ -1,6 +1,6 @@
 {
-  "epoch": 1792585062.2690115,
-  "status": "ACTUAL_OUTER2_ALL4_COMPLETE_ROLLING_CP2_READY_OUTER3_SAMPLING",
+  "epoch": 1792587018.1711707,
+  "status": "OUTER3_COMPLETE_OUTER4_SAMPLING_ARCHIVE_CPU_TRANSPORT_REPAIR",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "745371",
@@ -11,7 +11,7 @@
   "global_mini": 128,
   "logical_micro": 4,
   "accumulation": 4,
-  "actual_completed_outer": 2,
+  "actual_completed_outer": 3,
   "initialization_is_not_training_acceptance": true,
   "old3b": {
     "job": "734689",
@@ -47,13 +47,13 @@
     "actual_training_optimization_enabled": true,
     "selected_LM_head": "Actual 7B CUDA LPmax3.8147e-6/loss1.6925e-9, but gradient thresholds not met; dense repeat relativeL2 0.00904/0.00964, sparse0.01149; INCONCLUSIVE strictgrad; NOT ENABLED",
     "exact_query_cache": "11 CPU tests passed; preserves exact original fullbatch/context/score mode/version and logical search counts",
-    "pending": "Recoveryfollowup complete2; 3..6complete+7start pending, followed by200/fixedmilestones/native51713/finalactualrestore; no sparse head, no201",
+    "pending": "Keep healthytraining745371 andservice745198; replace onlygenuinelyfailedHKCPUcontroller; followup4..6complete+7start and200finalpending",
     "physical_micro16": "Not raised blindly; needs actual measured memory/throughput",
     "enabled_scope": "Exact retrieval cache + original dense head + external2H100 service; no throughput speedup claimed yet"
   },
   "previous_goal_turn_classification": "PROGRESS: actual CP2 full seal and outer3 start accepted",
-  "latest_turn_classification": "PROGRESS: actual outer3 first512questions2560trajectories complete216mixed; cache4466/22793 exactpayloadhits, zero backenderrors; liveCPUarchiver samebirth confirmed waiting5",
-  "last_observation": "training-progress-1792585062.json",
+  "latest_turn_classification": "PROGRESS: actualouter3 complete40to60 all4, CP3SHAsealed andouter4sampling; observedterminalCPUarchiverSSHfailure, preservedfailureandimplementedboundedread-onlytransportretry withoutreplayingwriters; 25testsPASS",
+  "last_observation": "training-progress-1792587018.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "stage": "GRPO_1_TO_200",
@@ -111,7 +111,7 @@
   "storage_inventory_report": "HPC3-storage-distribution-20261021.txt",
   "last_measured_queue": {
     "rc": 0,
-    "stdout": "745371|RUNNING|ACD1-55|ACD1-55|2026-10-21T19:41:06|6-23:23:24\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-22:22:08\n",
+    "stdout": "745371|RUNNING|ACD1-55|ACD1-55|2026-10-21T19:41:06|6-22:50:48\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-21:49:32\n",
     "stderr": ""
   },
   "new_recovery_base_allocated_bytes": 62230528,
@@ -134,7 +134,8 @@
   ],
   "recovery_followup_required_next_outer_started": 7,
   "actual_new_completed_outers": [
-    2
+    2,
+    3
   ],
   "archive_controller_for_current7b_not_yet_started": false,
   "remaining_goal_requirements": [
@@ -175,7 +176,17 @@
     "model_reloads": 0,
     "gpu_allocations": 0,
     "manual_deletions": 0,
-    "last_same_birth_verified_unix": 1792585255.3271797
+    "last_same_birth_verified_unix": 1792585255.3271797,
+    "status": "TERMINAL_READ_ONLY_SSH_OBSERVATION_FAILURE_PRESERVED",
+    "failure": {
+      "checked_unix": 1792586784.3265035,
+      "completed_steps": [],
+      "error": "EASY2560_ARCHIVE_SOURCE_OBSERVATION_UNKNOWN: Permission denied, please try again.\n",
+      "error_type": "RuntimeError"
+    },
+    "same_birth_now": false,
+    "recovery_pending": true,
+    "replacement_root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371/recovery-transport-r1-20261021"
   },
   "actual_state_restore": {
     "model_tensors": 339,
@@ -201,23 +212,32 @@
     },
     {
       "name": "eefd4da7a7b445a4862963b159cbdfdc-pool-0",
-      "step": null,
-      "completed_questions": 0,
-      "reserved_questions": 0,
-      "source_consumed": null,
-      "saved_chunk_files": 1,
-      "progress_error": "[Errno 2] No such file or directory: '/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-candidate-pools/eefd4da7a7b445a4862963b159cbdfdc-pool-0/progress.json'"
+      "step": 3,
+      "completed_questions": 2560,
+      "reserved_questions": 2560,
+      "source_consumed": 7680,
+      "saved_chunk_files": 15,
+      "progress_error": null
+    },
+    {
+      "name": "af99f949b92f4d4bbce7de3a55fa66ef-pool-0",
+      "step": 4,
+      "completed_questions": 1024,
+      "reserved_questions": 1024,
+      "source_consumed": 10240,
+      "saved_chunk_files": 7,
+      "progress_error": null
     }
   ],
   "outer2_started_not_complete": false,
   "outer2_completed_candidate_questions": 2560,
   "outer2_first_chunk_mixed_questions": 181,
-  "current_base_durable_checkpoint_outer": 2,
+  "current_base_durable_checkpoint_outer": 3,
   "most_recent_recoverable_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
-    "outer": 2,
-    "full_checkpoint_bytes": 91404239065,
-    "rolling_manifest_sha256": "933b8e438d52b001728c985a5214596161cd0d404aba342d3152bc9bcfb136b7"
+    "outer": 3,
+    "full_checkpoint_bytes": 91404239321,
+    "rolling_manifest_sha256": "6f572f62691d38c63e1c8585484feadb045cdddab6705e1dcbdceb7285c12c05"
   },
   "outer2_candidate_mixed_questions": 979,
   "outer2_candidate_mixed_fraction": 0.382421875,
@@ -284,15 +304,15 @@
   },
   "rolling_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_2",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_3",
     "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_2/full-manifest.json",
-    "manifest_sha256": "933b8e438d52b001728c985a5214596161cd0d404aba342d3152bc9bcfb136b7",
-    "published_unix": 1792584981.7272606,
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_3/full-manifest.json",
+    "manifest_sha256": "6f572f62691d38c63e1c8585484feadb045cdddab6705e1dcbdceb7285c12c05",
+    "published_unix": 1792586591.0319388,
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
     "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 2
+    "step": 3
   },
   "outer2_timings_seconds": {
     "timing_s/candidate_fill": 864.349,

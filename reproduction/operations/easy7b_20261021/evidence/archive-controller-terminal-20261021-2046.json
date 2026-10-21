@@ -1,0 +1,55 @@
+{
+  "status": "RECOVERY745371_HK_ARCHIVE_READ_ONLY_OBSERVATION",
+  "root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371",
+  "checked_unix": 1792586811.7182264,
+  "same_birth": false,
+  "birth": {
+    "pid": 3420413,
+    "start_ticks": 1037461543,
+    "state": "R",
+    "uid": 1002,
+    "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae"
+  },
+  "actual": null,
+  "records": {
+    "claim.json": {
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+      "birth": {
+        "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+        "pid": 3420413,
+        "start_ticks": 1037461543,
+        "uid": 1002
+      },
+      "checked_unix": 1792582887.6585093,
+      "credentials_persisted": false,
+      "requested_steps": [
+        5,
+        50,
+        100,
+        150,
+        200
+      ],
+      "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+      "source_job": "745371"
+    },
+    "progress.json": {
+      "phase": "WAITING_CHECKPOINT",
+      "source_job": "745371",
+      "step": 5,
+      "actual_job_state": "RUNNING",
+      "completed_steps": [],
+      "checked_unix": 1792586711.9755802
+    },
+    "failure.json": {
+      "checked_unix": 1792586784.3265035,
+      "completed_steps": [],
+      "error": "EASY2560_ARCHIVE_SOURCE_OBSERVATION_UNKNOWN: Permission denied, please try again.\n",
+      "error_type": "RuntimeError"
+    }
+  },
+  "log_bytes": 13185,
+  "log_tail": "un(a.base, a.commit, a.job, password, a.poll_seconds, a.first_step)\n  File \"/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/e082a23b5a65b302e2016aa0e5ab43b10b543d4f/reproduction/easy2560_joint4/archive_controller.py\", line 85, in run\n    if checked.returncode: raise RuntimeError('EASY2560_ARCHIVE_SOURCE_OBSERVATION_UNKNOWN: ' + checked.stderr[-1000:])\nRuntimeError: EASY2560_ARCHIVE_SOURCE_OBSERVATION_UNKNOWN: Permission denied, please try again.\n\nError in sys.excepthook:\nTraceback (most recent call last):\n  File \"/usr/lib/python3/dist-packages/apport_python_hook.py\", line 66, in apport_excepthook\n    import apport.report\n  File \"/usr/lib/python3/dist-packages/apport/__init__.py\", line 7, in <module>\n    from apport.packaging_impl import impl as packaging\n  File \"/usr/lib/python3/dist-packages/apport/packaging_impl/__init__.py\", line 33, in <module>\n    impl = load_packaging_implementation()\n  File \"/usr/lib/python3/dist-packages/apport/packaging_impl/__init__.py\", line 28, in load_packaging_implementation\n    f\"apport.packaging_impl.{determine_packaging_implementation()}\"\n  File \"/usr/lib/python3/dist-packages/apport/packaging_impl/__init__.py\", line 12, in determine_packaging_implementation\n    info = platform.freedesktop_os_release()\nAttributeError: module 'platform' has no attribute 'freedesktop_os_release'\n\nOriginal exception was:\nTraceback (most recent call last):\n  File \"/usr/lib/python3.8/runpy.py\", line 194, in _run_module_as_main\n    return _run_code(code, main_globals, None,\n  File \"/usr/lib/python3.8/runpy.py\", line 87, in _run_code\n    exec(code, run_globals)\n  File \"/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/e082a23b5a65b302e2016aa0e5ab43b10b543d4f/reproduction/easy2560_joint4/archive_controller.py\", line 143, in <module>\n    if __name__ == '__main__': main()\n  File \"/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/e082a23b5a65b302e2016aa0e5ab43b10b543d4f/reproduction/easy2560_joint4/archive_controller.py\", line 140, in main\n    run(a.base, a.commit, a.job, password, a.poll_seconds, a.first_step)\n  File \"/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/e082a23b5a65b302e2016aa0e5ab43b10b543d4f/reproduction/easy2560_joint4/archive_controller.py\", line 85, in run\n    if checked.returncode: raise RuntimeError('EASY2560_ARCHIVE_SOURCE_OBSERVATION_UNKNOWN: ' + checked.stderr[-1000:])\nRuntimeError: EASY2560_ARCHIVE_SOURCE_OBSERVATION_UNKNOWN: Permission denied, please try again.\n\n",
+  "source_publication_sha256": "989f4685ab352bf4b595aa13e68c49def803fbe29f1e310a6467d5ed077bd75a",
+  "jobs_submitted": 0,
+  "controllers_started": 0
+}
