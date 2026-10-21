@@ -1,0 +1,32 @@
+{
+  "status": "PURE_MODEL_E4_NATIVE_BLOCK_AND_DIRECT_MIXED_TOKEN_HEAD_SIX_TINY_SYNTHETIC_TESTS_PASSED",
+  "tests": 6,
+  "seconds": 2.33,
+  "real_checkpoint_or_actor_tensor_loaded": false,
+  "GPU_submitted": false,
+  "source_checkpoint_sha256": "e29168c36de152a57294f055e7d420cbba25cae31aeace32e793ba1098bf97a8",
+  "source_Adam_steps": 14418,
+  "new_head_Adam_steps": 0,
+  "lr": 5e-06,
+  "geometry": {
+    "question_slots": 273,
+    "policy_slots_per_trajectory": 20,
+    "trajectories_per_group": 5,
+    "all_policy_tokens": 100,
+    "head_sequence_length_including_CLS": 374,
+    "projection": 256,
+    "layers": 2,
+    "heads": 8,
+    "dropout": 0
+  },
+  "source_files": {
+    "reproduction/operations/qwen7b_warmup/native_mixed_group_classifier.py": {
+      "bytes": 11600,
+      "sha256": "6b414c77e41efa89a566cb1b465423c08c88b7f8abc05ca16289163754fe1e64"
+    },
+    "reproduction/operations/qwen7b_warmup/test_native_mixed_group_classifier.py": {
+      "bytes": 6374,
+      "sha256": "804c0a564dee29c7e35ab91c8c092a3c02b6fed32b00f9de5055067232db64af"
+    }
+  }
+}
