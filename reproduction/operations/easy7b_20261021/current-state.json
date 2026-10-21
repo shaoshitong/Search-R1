@@ -1,6 +1,6 @@
 {
-  "epoch": 1792587018.1711707,
-  "status": "OUTER3_COMPLETE_OUTER4_SAMPLING_ARCHIVE_CPU_TRANSPORT_REPAIR",
+  "epoch": 1792587306.5146818,
+  "status": "OUTER3_FULLY_SEALED_OUTER4_SAMPLING_CPU_ARCHIVER_RECOVERED",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "745371",
@@ -47,13 +47,13 @@
     "actual_training_optimization_enabled": true,
     "selected_LM_head": "Actual 7B CUDA LPmax3.8147e-6/loss1.6925e-9, but gradient thresholds not met; dense repeat relativeL2 0.00904/0.00964, sparse0.01149; INCONCLUSIVE strictgrad; NOT ENABLED",
     "exact_query_cache": "11 CPU tests passed; preserves exact original fullbatch/context/score mode/version and logical search counts",
-    "pending": "Keep healthytraining745371 andservice745198; replace onlygenuinelyfailedHKCPUcontroller; followup4..6complete+7start and200finalpending",
+    "pending": "Continue4..6completeand7start recoveryfollowup; fixedQA5/50/100/150/200,200outer,native51713,allmilestonearchivesandactualfinal200restorewithout201 remainpending",
     "physical_micro16": "Not raised blindly; needs actual measured memory/throughput",
     "enabled_scope": "Exact retrieval cache + original dense head + external2H100 service; no throughput speedup claimed yet"
   },
   "previous_goal_turn_classification": "PROGRESS: actual CP2 full seal and outer3 start accepted",
-  "latest_turn_classification": "PROGRESS: actualouter3 complete40to60 all4, CP3SHAsealed andouter4sampling; observedterminalCPUarchiverSSHfailure, preservedfailureandimplementedboundedread-onlytransportretry withoutreplayingwriters; 25testsPASS",
-  "last_observation": "training-progress-1792587018.json",
+  "latest_turn_classification": "PROGRESS: outer3all4 Adam40to60/scheduler2to3, fullCP3SHAsealed, actualouter4candidate2048complete; ownterminalHKarchiverfailurepreservedandCPU-onlyreplacement3603385verifiedtwiceactualSSHpolls; noGPUjobrestart,hothanges,orfeaturedeletion",
+  "last_observation": "training-progress-1792587306.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "stage": "GRPO_1_TO_200",
@@ -97,13 +97,13 @@
     "actor_visible_token_lists_exact_equal": 64,
     "http_and_projection_seconds": 3.5052835568785667,
     "last_actual_statistics": {
-      "logical_requests": 14050,
-      "logical_queries": 14176,
-      "completed_requests": 14050,
-      "completed_queries": 14176,
+      "logical_requests": 35875,
+      "logical_queries": 36001,
+      "completed_requests": 35875,
+      "completed_queries": 36001,
       "failed_requests": 0,
-      "backend_seconds": 570.2851380053908,
-      "last_completed_unix": 1792585063.0007043
+      "backend_seconds": 1474.9502698630095,
+      "last_completed_unix": 1792587307.3790853
     }
   },
   "failed_diagnostic_job": "745258",
@@ -111,7 +111,7 @@
   "storage_inventory_report": "HPC3-storage-distribution-20261021.txt",
   "last_measured_queue": {
     "rc": 0,
-    "stdout": "745371|RUNNING|ACD1-55|ACD1-55|2026-10-21T19:41:06|6-22:50:48\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-21:49:32\n",
+    "stdout": "745371|RUNNING|ACD1-55|ACD1-55|2026-10-21T19:41:06|6-22:46:00\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-21:44:44\n",
     "stderr": ""
   },
   "new_recovery_base_allocated_bytes": 62230528,
@@ -150,12 +150,20 @@
   "allocation_started_cst": "2026-10-21T19:41:06+08:00",
   "archive_controller": {
     "host": "xielab3",
-    "pid": 3420413,
-    "start_ticks": 1037461543,
-    "root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371",
+    "pid": 3603385,
+    "start_ticks": 1037896746,
+    "birth": {
+      "pid": 3603385,
+      "start_ticks": 1037896746,
+      "state": "R",
+      "uid": 1002,
+      "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae"
+    },
+    "root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371/recovery-transport-r1-20261021",
+    "source_root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/0830581f16eee86d5a89100cda91b175de63635c",
     "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+    "controller_commit": "0830581f16eee86d5a89100cda91b175de63635c",
     "source_job": "745371",
-    "same_birth_verified_twice": true,
     "requested_steps": [
       5,
       50,
@@ -163,30 +171,45 @@
       150,
       200
     ],
+    "same_birth_verified_twice": true,
     "latest_progress": {
       "phase": "WAITING_CHECKPOINT",
       "source_job": "745371",
       "step": 5,
       "actual_job_state": "RUNNING",
       "completed_steps": [],
-      "checked_unix": 1792585255.1192741
+      "checked_unix": 1792587301.308314
     },
     "completed_steps": [],
     "cpu_only": true,
-    "model_reloads": 0,
     "gpu_allocations": 0,
+    "models_loaded": 0,
     "manual_deletions": 0,
-    "last_same_birth_verified_unix": 1792585255.3271797,
-    "status": "TERMINAL_READ_ONLY_SSH_OBSERVATION_FAILURE_PRESERVED",
-    "failure": {
-      "checked_unix": 1792586784.3265035,
-      "completed_steps": [],
-      "error": "EASY2560_ARCHIVE_SOURCE_OBSERVATION_UNKNOWN: Permission denied, please try again.\n",
-      "error_type": "RuntimeError"
+    "parent_failure_unchanged": true,
+    "controller_source_sha_deployment": {
+      "source_commit": "0830581f16eee86d5a89100cda91b175de63635c",
+      "source_root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/0830581f16eee86d5a89100cda91b175de63635c",
+      "verified_files": 1576,
+      "verified_bytes": 19872126,
+      "fresh_source_all_files_sha_verified": true,
+      "checked_unix": 1792587217.459024
     },
-    "same_birth_now": false,
-    "recovery_pending": true,
-    "replacement_root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371/recovery-transport-r1-20261021"
+    "observer": "reproduction/operations/easy7b_20261021/observe_hk_archive_transport_recovery.py",
+    "old_controller_terminal_evidence": "archive-controller-terminal-20261021-2046.json",
+    "read_only_transport_retry": {
+      "attempts": 3,
+      "retry_seconds": 15,
+      "retried_returncodes": [
+        5,
+        255
+      ],
+      "timeouts_retried": true,
+      "archive_writers_replayed": false
+    },
+    "measured_observations": [
+      "hk-archive-recovery-observation-1792587265.json",
+      "hk-archive-recovery-observation-1792587305.json"
+    ]
   },
   "actual_state_restore": {
     "model_tensors": 339,
@@ -222,10 +245,10 @@
     {
       "name": "af99f949b92f4d4bbce7de3a55fa66ef-pool-0",
       "step": 4,
-      "completed_questions": 1024,
-      "reserved_questions": 1024,
+      "completed_questions": 2048,
+      "reserved_questions": 2048,
       "source_consumed": 10240,
-      "saved_chunk_files": 7,
+      "saved_chunk_files": 13,
       "progress_error": null
     }
   ],
@@ -366,5 +389,134 @@
     "speedup_claim": "none; exact request reuse count only",
     "live_job_restarted": false,
     "training_source_edited": false
-  }
+  },
+  "archive_controller_history": [
+    {
+      "host": "xielab3",
+      "pid": 3420413,
+      "start_ticks": 1037461543,
+      "root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371",
+      "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+      "source_job": "745371",
+      "same_birth_verified_twice": true,
+      "requested_steps": [
+        5,
+        50,
+        100,
+        150,
+        200
+      ],
+      "latest_progress": {
+        "phase": "WAITING_CHECKPOINT",
+        "source_job": "745371",
+        "step": 5,
+        "actual_job_state": "RUNNING",
+        "completed_steps": [],
+        "checked_unix": 1792585255.1192741
+      },
+      "completed_steps": [],
+      "cpu_only": true,
+      "model_reloads": 0,
+      "gpu_allocations": 0,
+      "manual_deletions": 0,
+      "last_same_birth_verified_unix": 1792585255.3271797,
+      "status": "TERMINAL_READ_ONLY_SSH_OBSERVATION_FAILURE_PRESERVED",
+      "failure": {
+        "checked_unix": 1792586784.3265035,
+        "completed_steps": [],
+        "error": "EASY2560_ARCHIVE_SOURCE_OBSERVATION_UNKNOWN: Permission denied, please try again.\n",
+        "error_type": "RuntimeError"
+      },
+      "same_birth_now": false,
+      "recovery_pending": true,
+      "replacement_root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371/recovery-transport-r1-20261021"
+    }
+  ],
+  "current_outer": 4,
+  "outer3_selection": {
+    "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/eefd4da7a7b445a4862963b159cbdfdc.json",
+    "bytes": 2750777,
+    "mtime": 1792585823.781172,
+    "step": 3,
+    "attempted_candidates": 2560,
+    "responses_per_group": 5,
+    "selected_groups": 512,
+    "selected_mixed": 512,
+    "selected_all_correct_fallback": 0,
+    "raw_generated_trajectories": 12800,
+    "raw_actual_retrieval_calls": 15567,
+    "candidate_fill_seconds": 841.9863557424396,
+    "candidate_generation_timings": {},
+    "source_consumed": 7680,
+    "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:3:policy-eefd4da7a7b445a4862963b159cbdfdc",
+    "candidate_correct_count_histogram": {
+      "0": 1175,
+      "1": 270,
+      "2": 241,
+      "3": 249,
+      "4": 275,
+      "5": 350
+    }
+  },
+  "outer3_parameter_update_evidence": {
+    "scheduler-rank-0.jsonl": {
+      "rank": 0,
+      "logical_update": 3,
+      "writes_before": 40,
+      "writes_after": 60,
+      "actual_optimizer_writes": 20,
+      "opportunities_processed": 20,
+      "scheduler_advances": 1,
+      "scheduler_last_epoch_before": 2,
+      "scheduler_last_epoch_after": 3,
+      "full_budget_complete": true
+    },
+    "scheduler-rank-1.jsonl": {
+      "rank": 1,
+      "logical_update": 3,
+      "writes_before": 40,
+      "writes_after": 60,
+      "actual_optimizer_writes": 20,
+      "opportunities_processed": 20,
+      "scheduler_advances": 1,
+      "scheduler_last_epoch_before": 2,
+      "scheduler_last_epoch_after": 3,
+      "full_budget_complete": true
+    },
+    "scheduler-rank-2.jsonl": {
+      "rank": 2,
+      "logical_update": 3,
+      "writes_before": 40,
+      "writes_after": 60,
+      "actual_optimizer_writes": 20,
+      "opportunities_processed": 20,
+      "scheduler_advances": 1,
+      "scheduler_last_epoch_before": 2,
+      "scheduler_last_epoch_after": 3,
+      "full_budget_complete": true
+    },
+    "scheduler-rank-3.jsonl": {
+      "rank": 3,
+      "logical_update": 3,
+      "writes_before": 40,
+      "writes_after": 60,
+      "actual_optimizer_writes": 20,
+      "opportunities_processed": 20,
+      "scheduler_advances": 1,
+      "scheduler_last_epoch_before": 2,
+      "scheduler_last_epoch_after": 3,
+      "full_budget_complete": true
+    }
+  },
+  "outer3_timings_seconds": {
+    "timing_s/candidate_fill": 841.986,
+    "timing_s/adv": 131.978,
+    "timing_s/update_actor": 246.3,
+    "timing_s/save_checkpoint": 165.147,
+    "timing_s/step": 691.385
+  },
+  "automatic_rolling_retired_nonmilestone_steps": [
+    2
+  ],
+  "manual_cleanup_performed_this_turn": false
 }

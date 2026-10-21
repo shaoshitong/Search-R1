@@ -1,0 +1,208 @@
+{
+  "launch": {
+    "source_job": "745371",
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "training_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+    "controller_commit": "0830581f16eee86d5a89100cda91b175de63635c",
+    "parent_failure_preserved": {
+      "launch-claim.json": {
+        "bytes": 409,
+        "sha256": "54cb5bf60e343176d9b857bcc568f9bcf48f2eaf52beb53a17d79ecd3a631973"
+      },
+      "claim.json": {
+        "bytes": 471,
+        "sha256": "ae542f574f995b56fbd9206f0bddcee8e19ba1c8554d1d92ffb3e3d2bcf4fbe4"
+      },
+      "launch-receipt.json": {
+        "bytes": 1196,
+        "sha256": "8b4e0d6e491f95f7cb3715931b8c7d28edf0c0a4180c888e6e81cd7b58828730"
+      },
+      "progress.json": {
+        "bytes": 171,
+        "sha256": "c54245798c28d95c5e41f73a9ed57a4aaaddb65c4616123ef14ffeb0f098463b"
+      },
+      "failure.json": {
+        "bytes": 196,
+        "sha256": "9fdc0bbeb6f1323dd8516b53180dc6a778191451080164a7416242ca5db6dfa9"
+      },
+      "controller.stdout.log": {
+        "bytes": 13185,
+        "sha256": "26c8c2569920bf4e313e1986443936c1462e391badd34ea4c734029765f31b20"
+      }
+    },
+    "cpu_only": true,
+    "gpu_allocations": 0,
+    "credentials_persisted": false,
+    "requested_steps": [
+      5,
+      50,
+      100,
+      150,
+      200
+    ],
+    "created_unix": 1792587239.6028063,
+    "root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371/recovery-transport-r1-20261021",
+    "source_root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/0830581f16eee86d5a89100cda91b175de63635c",
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "reproduction.easy2560_joint4.archive_controller",
+      "--base",
+      "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+      "--commit",
+      "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+      "--job",
+      "745371",
+      "--first-step",
+      "5",
+      "--controller-suffix",
+      "transport-r1-20261021"
+    ],
+    "birth": {
+      "pid": 3603385,
+      "start_ticks": 1037896746,
+      "state": "R",
+      "uid": 1002,
+      "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae"
+    },
+    "controllers_started": 1,
+    "training_jobs_submitted": 0,
+    "training_runtime_edited": false,
+    "checked_unix": 1792587239.6317
+  },
+  "deployment": {
+    "source_commit": "0830581f16eee86d5a89100cda91b175de63635c",
+    "source_root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/0830581f16eee86d5a89100cda91b175de63635c",
+    "verified_files": 1576,
+    "verified_bytes": 19872126,
+    "fresh_source_all_files_sha_verified": true,
+    "checked_unix": 1792587217.459024
+  },
+  "observations": [
+    {
+      "checked_unix": 1792587265.6868663,
+      "root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371/recovery-transport-r1-20261021",
+      "controller_commit": "0830581f16eee86d5a89100cda91b175de63635c",
+      "training_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+      "birth": {
+        "pid": 3603385,
+        "start_ticks": 1037896746,
+        "state": "R",
+        "uid": 1002,
+        "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae"
+      },
+      "actual": {
+        "pid": 3603385,
+        "start_ticks": 1037896746,
+        "state": "S",
+        "uid": 1002,
+        "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+        "cwd": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/0830581f16eee86d5a89100cda91b175de63635c"
+      },
+      "same_birth": true,
+      "parent_failure_unchanged": true,
+      "records": {
+        "claim.json": {
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+          "birth": {
+            "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+            "pid": 3603385,
+            "start_ticks": 1037896746,
+            "uid": 1002
+          },
+          "checked_unix": 1792587239.6944954,
+          "controller_suffix": "transport-r1-20261021",
+          "credentials_persisted": false,
+          "recovery_parent": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371",
+          "requested_steps": [
+            5,
+            50,
+            100,
+            150,
+            200
+          ],
+          "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+          "source_job": "745371"
+        },
+        "progress.json": {
+          "phase": "WAITING_CHECKPOINT",
+          "source_job": "745371",
+          "step": 5,
+          "actual_job_state": "RUNNING",
+          "completed_steps": [],
+          "checked_unix": 1792587240.5541022
+        }
+      },
+      "log_bytes": 157,
+      "log_tail": "{\"phase\": \"WAITING_CHECKPOINT\", \"source_job\": \"745371\", \"step\": 5, \"actual_job_state\": \"RUNNING\", \"completed_steps\": [], \"checked_unix\": 1792587240.5541022}\n",
+      "controllers_started": 0,
+      "jobs_submitted": 0,
+      "training_modified": false
+    },
+    {
+      "checked_unix": 1792587305.9032912,
+      "root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371/recovery-transport-r1-20261021",
+      "controller_commit": "0830581f16eee86d5a89100cda91b175de63635c",
+      "training_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+      "birth": {
+        "pid": 3603385,
+        "start_ticks": 1037896746,
+        "state": "R",
+        "uid": 1002,
+        "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae"
+      },
+      "actual": {
+        "pid": 3603385,
+        "start_ticks": 1037896746,
+        "state": "S",
+        "uid": 1002,
+        "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+        "cwd": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/source/0830581f16eee86d5a89100cda91b175de63635c"
+      },
+      "same_birth": true,
+      "parent_failure_unchanged": true,
+      "records": {
+        "claim.json": {
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+          "birth": {
+            "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+            "pid": 3603385,
+            "start_ticks": 1037896746,
+            "uid": 1002
+          },
+          "checked_unix": 1792587239.6944954,
+          "controller_suffix": "transport-r1-20261021",
+          "credentials_persisted": false,
+          "recovery_parent": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371",
+          "requested_steps": [
+            5,
+            50,
+            100,
+            150,
+            200
+          ],
+          "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+          "source_job": "745371"
+        },
+        "progress.json": {
+          "phase": "WAITING_CHECKPOINT",
+          "source_job": "745371",
+          "step": 5,
+          "actual_job_state": "RUNNING",
+          "completed_steps": [],
+          "checked_unix": 1792587301.308314
+        }
+      },
+      "log_bytes": 313,
+      "log_tail": "{\"phase\": \"WAITING_CHECKPOINT\", \"source_job\": \"745371\", \"step\": 5, \"actual_job_state\": \"RUNNING\", \"completed_steps\": [], \"checked_unix\": 1792587240.5541022}\n{\"phase\": \"WAITING_CHECKPOINT\", \"source_job\": \"745371\", \"step\": 5, \"actual_job_state\": \"RUNNING\", \"completed_steps\": [], \"checked_unix\": 1792587301.308314}\n",
+      "controllers_started": 0,
+      "jobs_submitted": 0,
+      "training_modified": false
+    }
+  ],
+  "training_runtime_changed": false,
+  "training_jobs_restarted": 0,
+  "credential_values_persisted": false
+}
