@@ -1,0 +1,249 @@
+{
+  "epoch": 1792575422.2003567,
+  "sacct_main": {
+    "743809": "743809|COMPLETED|0:0|02:06:55|ACD1-14",
+    "743978": "743978|COMPLETED|0:0|01:22:35|ACD1-24"
+  },
+  "squeue_empty": true,
+  "checks": "Existing terminal metadata and accepted metric receipts only",
+  "rescoring_performed": false,
+  "tensor_load_performed": false,
+  "new_GPU_submitted": false,
+  "higher_headLR938": {
+    "config": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-headlr1e4-v1/config.json",
+      "bytes": 17000,
+      "sha256": "71c3ee90f0232b889d4ced2d0cb50d69e852eb1ebbdbb55fdff03eaefdbbcc71"
+    },
+    "complete": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-headlr1e4-v1/complete.json",
+      "bytes": 3390,
+      "sha256": "436ef4bd4b21555d8d76340d962d5f37a23df5cf1a565ed96e9f64937da87bf6"
+    },
+    "accepted_audit": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-headlr1e4-v1/evaluations/cursor-000938/independent-audit.json",
+      "bytes": 5284,
+      "sha256": "205e78b8a3e1d4b088c8f358e12f5ebc5f9873614ec1a80d7336e051397b992a"
+    },
+    "fit_questions": 30016,
+    "update_budget": 938,
+    "legacy_Adam": 11402,
+    "head_Adam": 938,
+    "metrics": {
+      "pool": {
+        "allcorrect_FPR": 0.0,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "fn": 663,
+          "fp": 0,
+          "tn": 1385,
+          "tp": 0
+        },
+        "k_histogram": [
+          1055,
+          181,
+          136,
+          132,
+          214,
+          330
+        ],
+        "mixed_balanced_accuracy": 0.5,
+        "mixed_fraction": 0.32373046875,
+        "mixed_questions": 663,
+        "mixed_recall": 0.0,
+        "mixed_roc_auc": 0.5803159253148635,
+        "nonmixed_recall": 1.0,
+        "questions": 2048
+      },
+      "selected512": {
+        "allcorrect_FPR": 0.0,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "fn": 199,
+          "fp": 0,
+          "tn": 313,
+          "tp": 0
+        },
+        "k_histogram": [
+          225,
+          45,
+          43,
+          45,
+          66,
+          88
+        ],
+        "mixed_balanced_accuracy": 0.5,
+        "mixed_fraction": 0.388671875,
+        "mixed_questions": 199,
+        "mixed_recall": 0.0,
+        "mixed_roc_auc": 0.48602437105656077,
+        "nonmixed_recall": 1.0,
+        "questions": 512
+      }
+    },
+    "training_lock": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-headlr1e4-v1/joint-training.lock",
+      "exists": true,
+      "inode": 11096603939,
+      "held": false
+    },
+    "failure_file_exists": false
+  },
+  "frozen_E1_Count20epoch": {
+    "config": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/config.json",
+      "bytes": 7450,
+      "sha256": "fb637c02812dd070cf392a58df75e0d219bbb10d1a2d24cd6e201f3638147767"
+    },
+    "complete": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/complete.json",
+      "bytes": 45420,
+      "sha256": "567794b637b300bc9f726cd0e77a21091c8b9f707defa08740341e9d51ba61e7"
+    },
+    "accepted_all12_audit": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v3/audits/snapshot-ab2e83b08f781db4.json",
+      "bytes": 45317,
+      "sha256": "9552c4666235f182f31980278d3d3e93d135c8030ed80beede3f14efec44b893"
+    },
+    "fit_questions": 30016,
+    "internal_holdout_questions": 5120,
+    "epochs": 20,
+    "update_budget": 18760,
+    "actual_head_Adam": 18760,
+    "actor_updates": 0,
+    "legacy_updates": 0,
+    "max_GPU_allocated_bytes": 50672044032,
+    "selected_Count12_internal_candidate": {
+      "audit": {
+        "bytes": 8340,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v3/audits/epoch-20-EMA.json",
+        "sha256": "320a5a4acc3356ba6688f2543a95765a0b962669e4d9d1da2d94419ed3e905f5"
+      },
+      "epoch": 20,
+      "model": "EMA"
+    },
+    "epoch20_nodes": [
+      {
+        "model": "raw",
+        "NQ": {
+          "K_histogram": [
+            1298,
+            228,
+            151,
+            161,
+            271,
+            451
+          ],
+          "Mixed_AUC": 0.58550843568176,
+          "Mixed_BA": 0.52251136636824,
+          "Mixed_recall": 0.09247842170160296,
+          "Top25percent": {
+            "K_histogram": [
+              299,
+              79,
+              43,
+              58,
+              75,
+              86
+            ],
+            "Mixed_count": 255,
+            "Mixed_fraction": 0.3984375,
+            "ordered_qids_sha256": "6959c4f0c4da4a15d30c836b8116ebc809e1a365b6c06f5f54ef6810e083e46c",
+            "questions": 640
+          },
+          "allcorrect_FPR": 0.04434589800443459,
+          "allwrong_FPR": 0.0485362095531587,
+          "confusion": {
+            "FN": 736,
+            "FP": 83,
+            "TN": 1666,
+            "TP": 75
+          },
+          "nonMixed_recall": 0.952544311034877,
+          "predicted_Mixed_fraction": 0.06171875,
+          "questions": 2560
+        },
+        "gate": {
+          "conditions": {
+            "NQ_strict_BA_and_Top640": true,
+            "half0_BA_and_Top320_noninferior": true,
+            "half1_BA_and_Top320_noninferior": true
+          },
+          "pass_internal_node": true
+        }
+      },
+      {
+        "model": "EMA",
+        "NQ": {
+          "K_histogram": [
+            1298,
+            228,
+            151,
+            161,
+            271,
+            451
+          ],
+          "Mixed_AUC": 0.591304243608643,
+          "Mixed_BA": 0.5156471304018009,
+          "Mixed_recall": 0.0530209617755857,
+          "Top25percent": {
+            "K_histogram": [
+              280,
+              65,
+              40,
+              59,
+              92,
+              104
+            ],
+            "Mixed_count": 256,
+            "Mixed_fraction": 0.4,
+            "ordered_qids_sha256": "a01e48b119bf215ee1e647ca3ef1a94413f8d72f26b5d734aa4f3f3281e3c3cc",
+            "questions": 640
+          },
+          "allcorrect_FPR": 0.024390243902439025,
+          "allwrong_FPR": 0.020801232665639446,
+          "confusion": {
+            "FN": 768,
+            "FP": 38,
+            "TN": 1711,
+            "TP": 43
+          },
+          "nonMixed_recall": 0.978273299028016,
+          "predicted_Mixed_fraction": 0.031640625,
+          "questions": 2560
+        },
+        "gate": {
+          "conditions": {
+            "NQ_strict_BA_and_Top640": true,
+            "half0_BA_and_Top320_noninferior": true,
+            "half1_BA_and_Top320_noninferior": true
+          },
+          "pass_internal_node": true
+        }
+      }
+    ],
+    "external_payload_opened": false,
+    "external_scoring_permitted": false,
+    "final_payload_opened": false,
+    "training_lock": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/head-only-training.lock",
+      "exists": true,
+      "inode": 11097511296,
+      "held": false
+    },
+    "failure_file_exists": false
+  },
+  "feature_ready_prepared_data_plan": {
+    "complete": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-threebank58432-internal5120-plan-v1/complete.json",
+      "bytes": 8321,
+      "sha256": "8a4ed0b24296ad8a5edc1bcecb249565b877d3bababb3f0221a8e7c26da72d06"
+    },
+    "status": "THREE_ACCEPTED_BANKS_58432_INTERNAL5120_FIT53312_APPEND728_METADATA_ACCEPTED",
+    "fit_scope": "This is a data/feature plan, not evidence that all58432 were fitted",
+    "current_actual_fit_questions": 30016,
+    "full_feature_ready_questions": 58432,
+    "prepared_future_fit_questions": 53312,
+    "internal_holdout_questions": 5120
+  }
+}
