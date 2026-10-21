@@ -35,3 +35,8 @@ invalid probabilities, deterministic label-blind NQ halves, the strict internal
 gate, own-EM/ID/row-order joins, and duplicate rejection. Both package and flat
 remote-bundle import checks passed locally. Remote fixture qualification remains
 required before the first actual node acceptance.
+
+Actual v2 bindings are recorded in INPUT-PACKET.json and checked afresh at
+remote staging. The v2 config SHA is `fb637c02812dd070cf392a58df75e0d219bbb10d1a2d24cd6e201f3638147767`;
+the v2 frozen-halves receipt SHA is `406d5212aa4bd86dc58df270f949db3a7defb965a6ce00429f5fa64af8880a3c`.
+No cache or scoring completion is inferred from prepared metadata.
