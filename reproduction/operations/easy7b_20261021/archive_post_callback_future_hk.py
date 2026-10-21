@@ -348,12 +348,21 @@ def run(envelope, poll_seconds=60):
             helper.write_json(helper.CONTROL/'claim.json', dict(step=5, source_job=helper.JOB, run_id=helper.RUN,
                 core_before=qualification_before, birth=birth, new_dependencies_only=True, boundary_writer_replayed=False))
             helper.write_json(helper.CONTROL/'source-tools.json', install_source_tools(helper, ssh_argv, env, raw, data))
-            qualification_receipt = transfer_once(helper, ssh_argv, env, dependencies, 'dependencies', data)
+            accepted_dependencies = helper.CORE/'post-callback-dependencies/dependency-archive-receipt.json'
+            qualification_reused = accepted_dependencies.is_file()
+            if qualification_reused:
+                # A separately authorized staging recovery may already have
+                # accepted this child. Inspect it; never rerun its writers.
+                qualification_receipt = helper.read_json(accepted_dependencies)
+            else:
+                qualification_receipt = transfer_once(helper, ssh_argv, env, dependencies, 'dependencies', data)
             qualification_closure = inspect_closure(helper, dependencies)
             need(helper.ready_core() == qualification_before, 'CORE5_CHANGED_DURING_DEPENDENCY_QUALIFICATION')
             helper.write_json(helper.CONTROL/'result.json', dict(step=5,
                 status='EASY7B_CP5_NEW_DEPENDENCIES_ONLY_QUALIFIED', dependencies_receipt=qualification_receipt,
                 dependency_closure=qualification_closure, boundary_writer_replayed=False,
+                accepted_dependency_archive_reused_read_only=qualification_reused,
+                source_snapshot_emit_receive_replayed=False if qualification_reused else None,
                 future_new_head_transfer_actually_tested=False, actual_cuda_restore_accepted=False))
             for step in STEPS:
                 configure_step(helper, step); before, observed = wait_for_core(helper, completed, poll_seconds)

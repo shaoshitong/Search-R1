@@ -2,10 +2,13 @@
 import copy
 import io
 import json
+import os
 from pathlib import Path
 import shutil
+import socket
 import tarfile
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -261,6 +264,89 @@ class DependencyArchiveTests(unittest.TestCase):
             _, archive, _, _, value = self.prepared(Path(td))
             changed = copy.deepcopy(value); changed['dependencies']['grounding/heads/commit_probe.pkl']['bytes'] = deps.MAX_HEAD+1
             with self.assertRaisesRegex(ValueError, 'DEPENDENCY_PATH_SIZE_SHA_DIFFERS'): deps.receive(archive, self.tar(changed))
+
+    def failed_accept_fixture(self, root):
+        _, archive, _, _, value = self.prepared(root, step=5, covered=True, restored=True)
+        stage = Path(deps.receive(archive, self.tar(value))['stage'])
+        with patch.object(deps, '_accept_stage', side_effect=AttributeError(deps.PYTHON38_ERROR)):
+            with self.assertRaises(AttributeError): deps.accept(archive, stage)
+        control = archive.parent/('.post-callback-dependencies-'+archive.name)
+        claim = json.loads((control/'accept-claim.json').read_text())
+        failure_sha = core.sha(control/'accept-failure.json')
+        proof = dict(schema_version=1, role='explicit_failed_accept_parent_terminal_proof', stage=str(stage),
+            accept_claim_sha256=core.sha(control/'accept-claim.json'), accept_failure_sha256=failure_sha,
+            parent_birth=dict(pid=claim['pid'], start_ticks=123, uid=os.getuid(), boot_id='fixture-boot',
+                              hostname=socket.gethostname()), observed_terminal=True, checked_unix=1)
+        write(control/'recover-python38-terminal-proof.json', proof)
+        return archive, stage, control, failure_sha
+
+    def test_accept_runs_when_is_relative_to_is_unavailable(self):
+        with tempfile.TemporaryDirectory() as td:
+            _, archive, _, _, value = self.prepared(Path(td))
+            stage = deps.receive(archive, self.tar(value))['stage']
+            # Any accidental use of the Python3.9 method would fail here.
+            with patch.object(Path, 'is_relative_to', new=None):
+                deps.accept(archive, stage)
+                self.assertTrue(deps.inspect(archive)['all_manifest_dependencies_covered'])
+
+    def test_explicit_python38_recovery_uses_same_stage_and_preserves_old_failure(self):
+        with tempfile.TemporaryDirectory() as td:
+            archive, stage, control, failure_sha = self.failed_accept_fixture(Path(td))
+            preserved = {name:(control/name).read_bytes() for name in ('accept-claim.json','accept-failure.json')}
+            old_stage = {str(p.relative_to(stage)):p.read_bytes() for p in stage.rglob('*') if p.is_file()}
+            with patch.object(deps, '_parent_observation', return_value=dict(terminal=True, reason='recorded_pid_absent')):
+                result = deps.recover_accept(archive, stage, failure_sha)
+            self.assertEqual(result['status'], deps.STATUS)
+            self.assertFalse(result['explicit_accept_recovery']['receive_repeated'])
+            for name, raw in preserved.items(): self.assertEqual((control/name).read_bytes(), raw)
+            for name, raw in old_stage.items(): self.assertEqual((archive/deps.CHILD/name).read_bytes(), raw)
+            self.assertTrue(deps.inspect(archive)['fresh_transferred_dependency_sha_checked'])
+            self.assertTrue((control/'recover-python38-result.json').is_file())
+            with self.assertRaisesRegex(ValueError, 'RECOVERY_ALREADY_ATTEMPTED'):
+                deps.recover_accept(archive, stage, failure_sha)
+            with self.assertRaisesRegex(ValueError, 'ACCEPT_ALREADY_ATTEMPTED'):
+                deps.accept(archive, stage)
+
+    def test_recovery_rejects_failure_sha_reason_missing_proof_and_live_parent(self):
+        for mutation in ('sha','reason','missing_proof','stage','live'):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as td:
+                archive, stage, control, failure_sha = self.failed_accept_fixture(Path(td))
+                if mutation == 'sha': failure_sha = '0'*64
+                if mutation == 'reason':
+                    failure = json.loads((control/'accept-failure.json').read_text()); failure['error'] = 'unrelated failure'
+                    write(control/'accept-failure.json', failure); failure_sha = core.sha(control/'accept-failure.json')
+                if mutation == 'missing_proof': (control/'recover-python38-terminal-proof.json').unlink()
+                if mutation == 'stage':
+                    claim = json.loads((control/'accept-claim.json').read_text()); claim['stage'] = '/different/stage'
+                    write(control/'accept-claim.json', claim)
+                with patch.object(deps, '_parent_observation', return_value=dict(terminal=mutation != 'live', reason='fixture')):
+                    with self.assertRaises((ValueError,FileNotFoundError)): deps.recover_accept(archive, stage, failure_sha)
+                self.assertFalse((archive/deps.CHILD).exists())
+                self.assertFalse((control/'recover-python38-claim.json').exists())
+
+    def test_recovery_fresh_sha_failure_cannot_publish_or_replay(self):
+        with tempfile.TemporaryDirectory() as td:
+            archive, stage, control, failure_sha = self.failed_accept_fixture(Path(td))
+            old = (control/'accept-failure.json').read_bytes()
+            (stage/'grounding/dumps/nq-hotpot-common_0.npz').write_bytes(b'tampered after receive')
+            with patch.object(deps, '_parent_observation', return_value=dict(terminal=True, reason='recorded_pid_absent')):
+                with self.assertRaises(ValueError): deps.recover_accept(archive, stage, failure_sha)
+            self.assertEqual((control/'accept-failure.json').read_bytes(), old)
+            self.assertTrue((control/'recover-python38-failure.json').is_file())
+            self.assertTrue(stage.exists()); self.assertFalse((archive/deps.CHILD).exists())
+            with self.assertRaisesRegex(ValueError, 'RECOVERY_ALREADY_ATTEMPTED'):
+                deps.recover_accept(archive, stage, failure_sha)
+
+    def test_parent_birth_observation_distinguishes_live_zombie_reused_and_absent(self):
+        birth = dict(pid=99999999, start_ticks=123, uid=1002, boot_id='fixture-boot', hostname='fixture-hk')
+        for state, ticks, expected in (('S',123,False),('Z',123,True),('S',456,True),(None,123,True)):
+            def read(path, *args, **kwargs):
+                if str(path) == '/proc/sys/kernel/random/boot_id': return 'fixture-boot\n'
+                if state is None: raise FileNotFoundError(str(path))
+                return '99999999 (python) '+' '.join([state]+['0']*18+[str(ticks)])
+            with self.subTest(state=state,ticks=ticks), patch.object(deps.socket,'gethostname',return_value='fixture-hk'), patch.object(
+                    Path,'read_text',new=read), patch.object(Path,'stat',return_value=SimpleNamespace(st_uid=1002)):
+                self.assertEqual(deps._parent_observation(birth)['terminal'], expected)
 
 
 if __name__ == '__main__': unittest.main()

@@ -13,6 +13,7 @@ import json
 import os
 from pathlib import Path
 import re
+import socket
 import sys
 import tarfile
 import time
@@ -502,51 +503,144 @@ def receive(core_archive, stream):
             raise
 
 
-def accept(core_archive, stage):
+def _stage_scope(core_archive, stage):
     directory = canonical(core_archive); stage = canonical(stage)
     need(stage.parent == directory and re.fullmatch(r'\.post-callback-dependencies\.partial-[0-9a-f]{32}', stage.name), 'STAGE_SCOPE_DIFFERS')
-    control = directory.parent/('.post-callback-dependencies-'+directory.name)
+    return directory, stage, directory.parent/('.post-callback-dependencies-'+directory.name)
+
+
+def _accept_stage(directory, stage, recovery=None):
+    """The same real verification/publish operation for normal and explicit recovery."""
+    need(not (directory/CHILD).exists() and not (directory/CHILD).is_symlink(), 'ACCEPT_DESTINATION_EXISTS')
+    value, _ = _json(stage/'source-snapshot.json'); binding, probe = _bound(directory, value)
+    transfer, _ = _json(stage/'transfer-receipt.json')
+    need(transfer.get('status') == TRANSFER_STATUS and transfer.get('binding') == binding and
+         transfer.get('source_snapshot_sha256') == core.sha(stage/'source-snapshot.json') and
+         transfer.get('fresh_transferred_destination_sha_verified') is True and
+         transfer.get('covered_core_sha_ack_verified') is True and transfer.get('actual_cuda_restore_accepted') is False,
+         'TRANSFER_RECEIPT_DIFFERS')
+    expected = {'source-snapshot.json', 'transfer-receipt.json'} | {
+        name for name, row in value['dependencies'].items() if row['storage'] == 'transfer'}
+    actual = {str(path.relative_to(stage)) for path in stage.rglob('*') if path.is_file() or path.is_symlink()}
+    need(actual == expected, 'STAGING_MEMBERS_CHANGED')
+    mappings = _verify_files(directory, stage, value, probe)
+    need(mappings == transfer.get('mappings'), 'TRANSFER_FILE_IDENTITIES_CHANGED')
+    destination = directory/CHILD
+    for row in mappings.values():
+        path = Path(row['archive_path'])
+        # pathlib.Path.is_relative_to was introduced in Python3.9; HK uses3.8.
+        try:
+            relative = path.relative_to(stage)
+        except ValueError:
+            continue
+        row['archive_path'] = str(destination/relative)
+    receipt = dict(status=STATUS, binding=binding, source_snapshot_sha256=core.sha(stage/'source-snapshot.json'),
+        destination=str(destination), reward_version=probe['version'], reward_round=probe['round'],
+        file_count=value['file_count'], transfer_file_count=value['transfer_file_count'], transfer_bytes=value['transfer_bytes'],
+        encoder_file_count=len(value['encoder_files']), mappings=mappings, all_manifest_dependencies_covered=True,
+        encoder_weights_copied=False, fresh_transferred_destination_sha_verified=True,
+        fresh_transferred_dependency_sha_checked=True,
+        covered_core_sha_ack_verified=True, core_covered_payload_rehashed=False, destination_fsynced=True,
+        core_payload_unmodified=True, eight_file_boundary_unmodified=True, actual_cuda_restore_accepted=False,
+        actual_model_optimizer_rng_dataequal_accepted=False, checked_unix=time.time())
+    if recovery is not None: receipt['explicit_accept_recovery'] = recovery
+    core.publish(stage/'dependency-archive-receipt.json', receipt); _tree_fsync(stage)
+    os.rename(stage, destination)
+    fd = os.open(directory, os.O_RDONLY)
+    try: os.fsync(fd)
+    finally: os.close(fd)
+    return receipt
+
+
+def accept(core_archive, stage):
+    directory, stage, control = _stage_scope(core_archive, stage)
     with (control/'accept.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         need(not any((control/name).exists() for name in ('accept-claim.json', 'accept-result.json', 'accept-failure.json')) and
              not (directory/CHILD).exists(), 'ACCEPT_ALREADY_ATTEMPTED_NO_REPLAY')
         core.publish(control/'accept-claim.json', dict(stage=str(stage), pid=os.getpid(), checked_unix=time.time()))
         try:
-            value, _ = _json(stage/'source-snapshot.json'); binding, probe = _bound(directory, value)
-            transfer, _ = _json(stage/'transfer-receipt.json')
-            need(transfer.get('status') == TRANSFER_STATUS and transfer.get('binding') == binding and
-                 transfer.get('source_snapshot_sha256') == core.sha(stage/'source-snapshot.json') and
-                 transfer.get('fresh_transferred_destination_sha_verified') is True and
-                 transfer.get('covered_core_sha_ack_verified') is True and transfer.get('actual_cuda_restore_accepted') is False,
-                 'TRANSFER_RECEIPT_DIFFERS')
-            expected = {'source-snapshot.json', 'transfer-receipt.json'} | {
-                name for name, row in value['dependencies'].items() if row['storage'] == 'transfer'}
-            actual = {str(path.relative_to(stage)) for path in stage.rglob('*') if path.is_file() or path.is_symlink()}
-            need(actual == expected, 'STAGING_MEMBERS_CHANGED')
-            mappings = _verify_files(directory, stage, value, probe)
-            need(mappings == transfer.get('mappings'), 'TRANSFER_FILE_IDENTITIES_CHANGED')
-            destination = directory/CHILD
-            for row in mappings.values():
-                path = Path(row['archive_path'])
-                if path.is_relative_to(stage): row['archive_path'] = str(destination/path.relative_to(stage))
-            receipt = dict(status=STATUS, binding=binding, source_snapshot_sha256=core.sha(stage/'source-snapshot.json'),
-                destination=str(destination), reward_version=probe['version'], reward_round=probe['round'],
-                file_count=value['file_count'], transfer_file_count=value['transfer_file_count'], transfer_bytes=value['transfer_bytes'],
-                encoder_file_count=len(value['encoder_files']), mappings=mappings, all_manifest_dependencies_covered=True,
-                encoder_weights_copied=False, fresh_transferred_destination_sha_verified=True,
-                fresh_transferred_dependency_sha_checked=True,
-                covered_core_sha_ack_verified=True, core_covered_payload_rehashed=False, destination_fsynced=True,
-                core_payload_unmodified=True, eight_file_boundary_unmodified=True, actual_cuda_restore_accepted=False,
-                actual_model_optimizer_rng_dataequal_accepted=False, checked_unix=time.time())
-            core.publish(stage/'dependency-archive-receipt.json', receipt); _tree_fsync(stage)
-            os.rename(stage, destination)
-            fd = os.open(directory, os.O_RDONLY)
-            try: os.fsync(fd)
-            finally: os.close(fd)
-            core.publish(control/'accept-result.json', dict(status=STATUS, destination=str(destination), checked_unix=time.time()))
+            receipt = _accept_stage(directory, stage)
+            core.publish(control/'accept-result.json', dict(status=STATUS, destination=receipt['destination'], checked_unix=time.time()))
             return receipt
         except BaseException as error:
             core.publish(control/'accept-failure.json', dict(error_type=type(error).__name__, error=str(error), checked_unix=time.time()))
+            raise
+
+
+PYTHON38_ERROR = "'PosixPath' object has no attribute 'is_relative_to'"
+
+
+def _parent_observation(birth):
+    """Fresh local observation of an externally authenticated original birth."""
+    need(birth.get('hostname') == socket.gethostname(), 'RECOVERY_PARENT_HOST_DIFFERS')
+    boot = Path('/proc/sys/kernel/random/boot_id').read_text().strip()
+    if boot != birth['boot_id']:
+        return dict(terminal=True, reason='original_boot_ended', boot_id=boot)
+    try:
+        process = Path('/proc')/str(birth['pid'])
+        fields = (process/'stat').read_text().rsplit(')', 1)[1].split()
+        actual = dict(pid=birth['pid'], start_ticks=int(fields[19]), uid=process.stat().st_uid,
+                      boot_id=boot, hostname=socket.gethostname(), state=fields[0])
+    except (FileNotFoundError, ProcessLookupError):
+        return dict(terminal=True, reason='recorded_pid_absent', boot_id=boot)
+    same = all(actual[key] == birth[key] for key in ('pid','start_ticks','uid','boot_id','hostname'))
+    return dict(terminal=not same or actual['state'] == 'Z',
+                reason='recorded_birth_zombie' if same and actual['state'] == 'Z' else
+                       'different_process_reused_pid' if not same else 'original_birth_still_live', actual=actual)
+
+
+def recover_accept(core_archive, stage, expected_failure_sha256):
+    """Explicit one-shot recovery of the preserved Python3.8 accept error only.
+
+    The operator must first save recover-python38-terminal-proof.json in the
+    sibling control directory, authenticating the original PID's full birth.
+    This module freshly observes that birth; a PID-only failure is insufficient.
+    No snapshot, emission or receiving operation is repeated.
+    """
+    directory, stage, control = _stage_scope(core_archive, stage)
+    need(_digest(expected_failure_sha256), 'RECOVERY_EXPECTED_FAILURE_SHA_REQUIRED')
+    with (control/'accept.lock').open('a') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        need(not any((control/name).exists() for name in
+                     ('recover-python38-claim.json','recover-python38-result.json','recover-python38-failure.json')),
+             'RECOVERY_ALREADY_ATTEMPTED_NO_REPLAY')
+        need(not (directory/CHILD).exists() and not (directory/CHILD).is_symlink() and
+             not (control/'accept-result.json').exists(), 'RECOVERY_DESTINATION_OR_ACCEPT_RESULT_EXISTS')
+        failure, failure_proof = _json(control/'accept-failure.json')
+        claim, claim_proof = _json(control/'accept-claim.json')
+        need(failure_proof['sha256'] == expected_failure_sha256 and
+             failure.get('error_type') == 'AttributeError' and failure.get('error') == PYTHON38_ERROR,
+             'RECOVERY_FAILURE_SHA_OR_REASON_DIFFERS')
+        need(claim.get('stage') == str(stage), 'RECOVERY_ORIGINAL_STAGE_DIFFERS')
+        terminal, terminal_proof = _json(control/'recover-python38-terminal-proof.json')
+        birth = terminal.get('parent_birth', {})
+        need(terminal.get('schema_version') == 1 and terminal.get('role') == 'explicit_failed_accept_parent_terminal_proof' and
+             terminal.get('stage') == str(stage) and terminal.get('accept_claim_sha256') == claim_proof['sha256'] and
+             terminal.get('accept_failure_sha256') == expected_failure_sha256 and terminal.get('observed_terminal') is True and
+             type(birth.get('pid')) is int and birth['pid'] > 0 and birth['pid'] == claim.get('pid') and
+             type(birth.get('start_ticks')) is int and type(birth.get('uid')) is int and
+             isinstance(birth.get('boot_id'), str) and bool(birth['boot_id']) and
+             isinstance(birth.get('hostname'), str) and bool(birth['hostname']),
+             'RECOVERY_EXTERNAL_PARENT_PROOF_REQUIRED')
+        observed = _parent_observation(birth)
+        need(observed['terminal'] is True, 'RECOVERY_PARENT_STILL_LIVE')
+        recovery = dict(kind='explicit_python38_accept_compatibility_recovery',
+            original_accept_claim_sha256=claim_proof['sha256'], original_accept_failure_sha256=expected_failure_sha256,
+            terminal_proof_sha256=terminal_proof['sha256'], parent_birth=birth, parent_observation=observed,
+            snapshot_repeated=False, emit_repeated=False, receive_repeated=False)
+        core.publish(control/'recover-python38-claim.json', dict(stage=str(stage), pid=os.getpid(),
+            recovery=recovery, checked_unix=time.time()))
+        try:
+            receipt = _accept_stage(directory, stage, recovery=recovery)
+            need(core.sha(control/'accept-failure.json') == expected_failure_sha256 and
+                 core.sha(control/'accept-claim.json') == claim_proof['sha256'], 'RECOVERY_OLD_EVIDENCE_CHANGED')
+            core.publish(control/'recover-python38-result.json', dict(status=STATUS, destination=receipt['destination'],
+                recovery=recovery, checked_unix=time.time()))
+            return receipt
+        except BaseException as error:
+            core.publish(control/'recover-python38-failure.json', dict(error_type=type(error).__name__, error=str(error),
+                original_accept_failure_sha256=expected_failure_sha256, checked_unix=time.time()))
             raise
 
 
@@ -576,6 +670,8 @@ def main():
     item = sub.add_parser('emit'); item.add_argument('--snapshot', required=True)
     item = sub.add_parser('receive'); item.add_argument('--core-archive', required=True)
     item = sub.add_parser('accept'); item.add_argument('--core-archive', required=True); item.add_argument('--stage', required=True)
+    item = sub.add_parser('recover-accept'); item.add_argument('--core-archive', required=True); item.add_argument('--stage', required=True)
+    item.add_argument('--expected-failure-sha256', required=True)
     item = sub.add_parser('inspect'); item.add_argument('--core-archive', required=True); item.add_argument('--no-verify-files', action='store_true')
     item.add_argument('--deep', action='store_true', help='Explicitly reread covered core encoder tensor bodies too')
     args = parser.parse_args()
@@ -583,6 +679,7 @@ def main():
     if args.mode == 'snapshot': result = snapshot(args.base, args.step, args.core_archive, args.output)
     elif args.mode == 'receive': result = receive(args.core_archive, sys.stdin.buffer)
     elif args.mode == 'accept': result = accept(args.core_archive, args.stage)
+    elif args.mode == 'recover-accept': result = recover_accept(args.core_archive, args.stage, args.expected_failure_sha256)
     else: result = inspect(args.core_archive, verify_files=not args.no_verify_files, deep=args.deep)
     print(json.dumps(result, sort_keys=True), flush=True)
 

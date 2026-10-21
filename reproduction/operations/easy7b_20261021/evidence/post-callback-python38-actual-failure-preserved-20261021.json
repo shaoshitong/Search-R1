@@ -1,0 +1,75 @@
+{
+  "status": "ACTUAL_CPU_ONLY_PYTHON38_ACCEPT_FAILURE_PRESERVED",
+  "checked_unix": 1792593460.0524848,
+  "receipt_sha256": "142e5142b4b226e5e705fdd90ddd7b5caf3d6349b8f75a1ddfee462f67d31dbe",
+  "processes": {
+    "3844281": {
+      "state": "MISSING"
+    },
+    "3603385": {
+      "state": "S",
+      "start_ticks": 1037896746,
+      "uid": 1002,
+      "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae"
+    }
+  },
+  "stage": {
+    "path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/.post-callback-dependencies.partial-bbbd605edd41455a864b3c0a3a86e6a1",
+    "file_count": 8,
+    "total_bytes": 50608254,
+    "accepted_final_exists": false
+  },
+  "records": {
+    "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/post-callback-boundary-control/job-745371/future-50-200/failure.json": {
+      "bytes": 405,
+      "sha256": "03df604d14fa957ff9238e6fa955fa07342323bd6d5a2c5d349eaf3a0a4deee2",
+      "value": {
+        "automatic_writer_replay": false,
+        "checked_unix": 1792593172.6780527,
+        "completed_steps": [],
+        "credentials_persisted": false,
+        "error": "'PosixPath' object has no attribute 'is_relative_to'",
+        "error_type": "AttributeError",
+        "jobs_submitted": 0,
+        "source_job": "745371",
+        "staging_preserved": true,
+        "status": "FAILED",
+        "training_failure_inferred": false,
+        "training_modified": false
+      }
+    },
+    "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/.post-callback-dependencies-global_step_5/accept-claim.json": {
+      "bytes": 259,
+      "sha256": "f38b3f100544026588c795ca95bf7236fbb9e27642853de38908c16f61b65ac2",
+      "value": {
+        "checked_unix": 1792593172.5113862,
+        "pid": 3844281,
+        "stage": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/.post-callback-dependencies.partial-bbbd605edd41455a864b3c0a3a86e6a1"
+      }
+    },
+    "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/.post-callback-dependencies-global_step_5/accept-failure.json": {
+      "bytes": 142,
+      "sha256": "bdbebd720a16ab80c095fbf42ee1b5bad385b113ff10032c4c19a7a06f353f31",
+      "value": {
+        "checked_unix": 1792593172.6437902,
+        "error": "'PosixPath' object has no attribute 'is_relative_to'",
+        "error_type": "AttributeError"
+      }
+    },
+    "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/.post-callback-dependencies-global_step_5/receive-result.json": {
+      "bytes": 350,
+      "sha256": "853842c3eb48664846150157db1f2622dc410066eb877bc3688e76fd7bf03dfb",
+      "value": {
+        "file_count": 10,
+        "stage": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/.post-callback-dependencies.partial-bbbd605edd41455a864b3c0a3a86e6a1",
+        "status": "EASY2560_POST_CALLBACK_DEPENDENCIES_TRANSFER_SHA_PASS",
+        "transfer_bytes": 50580970,
+        "transfer_file_count": 6
+      }
+    }
+  },
+  "training_failure": false,
+  "training_modified": false,
+  "retransfer_performed": false,
+  "recovery_pending": true
+}

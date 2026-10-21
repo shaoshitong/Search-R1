@@ -76,3 +76,19 @@ controller and training remain unchanged. A specific dead core-controller birth
 is a dependency failure; an observation timeout remains unknown. At200 the
 reward round is150 and the RNG boundary precedes final51713. None of these byte
 archives is an actual CUDA restore or a completion claim for the200-outer goal.
+
+The first future companion, PID3844281, actually exited after transferring
+50,580,970 dependency bytes: HK Python3.8 lacks `Path.is_relative_to`. Its
+source snapshot, received stage, claims, failure and logs remain preserved.
+`recover_post_callback_future_local.py --mode recover` is the explicit one-shot
+compatibility recovery: authenticate that original terminal birth and exact
+failure SHA, freshly verify and accept the existing stage, then run a clean CPU
+companion under `future-50-200/recovery-python38-r1`. It does not replay the
+source snapshot/emit/receive or the already accepted eight-file boundary.
+The new companion inspects and reuses the accepted CP5 dependency child before
+waiting for50. The dedicated recovery observer follows its own actual birth.
+Never replay either launcher after an uncertain response; inspect its claims.
+At the time of publishing this repair, actual recovery execution is still
+pending. Training is healthy: outer7 is complete with20 writes per rank, CP7 is
+sealed and outer8 has a real saved512-question chunk. No training, retrieval or
+healthy core-controller restart is part of this CPU repair.

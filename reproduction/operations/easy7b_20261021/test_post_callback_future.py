@@ -232,7 +232,7 @@ class CompanionTests(unittest.TestCase):
                 self.assertEqual(start.call_count,1)
                 self.assertEqual(json.loads((helper.CONTROL/'boundary-transfer.json').read_text())['emit_returncode'],rc)
 
-    def test_companion_qualifies_only_new_cp5_dependencies_then_future_both_in_order(self):
+    def _companion_fixture(self, reuse=False):
         with tempfile.TemporaryDirectory() as name:
             root = Path(name); helper = fixture_helper(root)
             helper.bootstrap = Mock(return_value=lambda code:[])
@@ -240,6 +240,9 @@ class CompanionTests(unittest.TestCase):
             boundary = SimpleNamespace(STATUS='BOUNDARY', phase=phase)
             helper.load_module = Mock(return_value=boundary)
             data = dict(raw=b'dependencies',commit='c'*40,sha256='d'*64)
+            if reuse:
+                accepted = helper.CORE/'post-callback-dependencies/dependency-archive-receipt.json'
+                accepted.parent.mkdir(parents=True); accepted.write_text('{"status":"fixture accepted"}')
             calls = []
             def transferred(instance, ssh, env, module, what, dependencies=None):
                 calls.append((instance.STEP,what)); return dict(status='PASS',actual_cuda_restore_accepted=False)
@@ -258,10 +261,18 @@ class CompanionTests(unittest.TestCase):
                     patch.object(future,'inspect_closure',return_value={'closed':True}), patch.object(future,'progress'):
                 result = future.run({'password':'fixture-secret'})
                 self.assertEqual(result['completed_steps'],[50,100,150,200])
-                self.assertEqual(calls,[(5,'dependencies')]+[(step,what) for step in future.STEPS for what in ('boundary','dependencies')])
-                self.assertTrue((root/'future/qualification-global_step_5/result.json').is_file())
+                expected = ([] if reuse else [(5,'dependencies')])+[(step,what) for step in future.STEPS for what in ('boundary','dependencies')]
+                self.assertEqual(calls,expected)
+                result5 = json.loads((root/'future/qualification-global_step_5/result.json').read_text())
+                self.assertEqual(result5['accepted_dependency_archive_reused_read_only'],reuse)
                 with self.assertRaisesRegex(ValueError,'ONCE_CLAIM_EXISTS_NO_REPLAY'): future.run({})
-                self.assertEqual(len(calls),9)
+                self.assertEqual(len(calls),8 if reuse else 9)
+
+    def test_companion_qualifies_only_new_cp5_dependencies_then_future_both_in_order(self):
+        self._companion_fixture()
+
+    def test_accepted_cp5_dependency_child_is_inspected_reused_and_never_retransferred(self):
+        self._companion_fixture(reuse=True)
 
     def test_observer_loads_published_runner_without_file_global_for_python_c(self):
         with tempfile.TemporaryDirectory() as name:
