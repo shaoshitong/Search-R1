@@ -34,16 +34,21 @@ if v['action']=='prepare':
   files[name]=actual
  for name,ref in q['files'].items():files['reproduction/operations/qwen7b_warmup/'+name]=proof(ref['path']);assert files['reproduction/operations/qwen7b_warmup/'+name]==ref
  pub=dict(commit=v['qualified'],remote_sha=v['qualified'],code_root=str(code),files=files,baseline_runtime_commit=original['commit'],controller_commit=v['controller'],controller_source=v['controller_source'],cpu_recovery_qualification=qref,input_packet=v['packet'],shared_immutable_code_reused=True)
- immutable(b/'source-publication.json',pub)
+ if(b/'source-publication.json').exists():
+  old=read(b/'source-publication.json');assert all(old[k]==pub[k]for k in pub if k not in ('controller_commit','controller_source'))
+  assert old['controller_commit']in(v['controller'],'49f874402aef2444710f69c2a7e001ff70b20957');pub=old
+ else:immutable(b/'source-publication.json',pub)
+ controller_path=b/('deployment-controller-'+v['controller'][:12]+'.json');immutable(controller_path,dict(commit=v['controller'],source=v['controller_source'],runtime_publication=proof(b/'source-publication.json'),original_failed_controller_preserved=pub['controller_commit']!=v['controller']))
+ for f in handles:f.close()
  env=dict(os.environ,QWEN7B_CODE_ROOT=str(code),CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONDONTWRITEBYTECODE='1')
  with(b/'cpu-prepare.log').open('ab')as log:r=subprocess.run(['bash',str(code/'reproduction/operations/qwen7b_warmup/runtime.sh'),'-u','-m','reproduction.operations.qwen7b_warmup.coarse_event_cached_train','--action','prepare','--mode',v['mode'],'--packet',v['packet']['path']],stdout=log,stderr=subprocess.STDOUT,env=env,timeout=48)
  assert r.returncode==0,(b/'cpu-prepare.log').read_text()[-3500:]
- result=dict(status='ACTUAL_COARSE_FORK_SINGLE_SUBMIT_READY',mode=v['mode'],publication=proof(b/'source-publication.json'),preparation=proof(b/'preparation.json'),config=proof(b/'config.json'),entry=proof(b/'training.sbatch'),shared_packet=v['packet'],cpu_prepare_tensors_loaded=False,source_CP0_actual_restore_pending_on_allocation=True,GPU_submitted=False,owner_lock_free=True,active_same_name_jobs=active())
+ result=dict(status='ACTUAL_COARSE_FORK_SINGLE_SUBMIT_READY',mode=v['mode'],publication=proof(b/'source-publication.json'),preparation=proof(b/'preparation.json'),config=proof(b/'config.json'),entry=proof(b/'training.sbatch'),deployment_controller=proof(controller_path),shared_packet=v['packet'],cpu_prepare_tensors_loaded=False,source_CP0_actual_restore_pending_on_allocation=True,GPU_submitted=False,owner_lock_free=True,active_same_name_jobs=active())
  subprocess.check_call(['bash','-n',str(b/'training.sbatch')]);assert not result['active_same_name_jobs'];immutable(b/'submit-ready.json',result)
 elif v['action']=='submit':
  handles=unlocked();ready=read(b/'submit-ready.json')
- for key in ('publication','preparation','config','entry'):assert proof(ready[key]['path'])==ready[key]
- assert read(b/'source-publication.json')['controller_commit']==v['controller'];assert not active(),'Same-name job already exists'
+ for key in ('publication','preparation','config','entry','deployment_controller'):assert proof(ready[key]['path'])==ready[key]
+ assert check(ready['deployment_controller'])['commit']==v['controller'];assert not active(),'Same-name job already exists'
  if(b/'submission-intent.json').exists():raise RuntimeError('Existing submission intent; inspect/reconcile before any retry')
  immutable(b/'submission-intent.json',dict(mode=v['mode'],epoch=time.time(),controller=v['controller'],entry=ready['entry'],config=ready['config'],qualified=v['qualified'],held_before_release=True))
  r=subprocess.run(['sbatch','--hold','--parsable','--account=mou176',str(b/'training.sbatch')],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=25)

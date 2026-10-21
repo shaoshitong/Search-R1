@@ -1,0 +1,14 @@
+{
+  "status": "METADATA_PREPARE_CONTROLLER_LOCK_CONTENTION_NO_GPU_SUBMISSION",
+  "mode": "binary",
+  "controller_commit": "49f874402aef2444710f69c2a7e001ff70b20957",
+  "runtime_commit": "c888a2281859e1a930218d490aae5bbeb5adcc22",
+  "error": "outer held prepare.lock while inner typed preparation tried same lock",
+  "source_publication_written": true,
+  "config_or_entry_written": false,
+  "submission_intent_written": false,
+  "GPU_submitted": false,
+  "later_root_GO_withdrawn": true,
+  "fix": "release own preflight-only locks before child typed prepare; preserve original publication and bind new controller separately",
+  "new_actual_prepare_not_run": true
+}
