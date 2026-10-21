@@ -1,11 +1,11 @@
 {
-  "observed_UTC": "2026-10-21T13:04:54.814450+00:00",
+  "observed_UTC": "2026-10-21T13:22:57.382484+00:00",
   "status": "BOTH_ACTUAL_NATIVE_JOINT_TRAINING_AND_TAIL_GENERATION_ADVANCING_STARTUP_VERIFIED_NOT_SCIENTIFIC_COMPLETION",
   "main_job": 745501,
-  "main_observed_epoch": 1792587768.9396834,
-  "accepted_updates": 93,
+  "main_observed_epoch": 1792588803.4103818,
+  "accepted_updates": 250,
   "total_updates": 15528,
-  "Adam_steps": 14511,
+  "Adam_steps": 14668,
   "epochs_completed": 0,
   "epoch_budget": 4,
   "steps_per_epoch": 3882,
@@ -28,27 +28,27 @@
   "durable_next_actual_update_replay_passed": true,
   "continuous_1_to_7_plus_next_passed": true,
   "last_durable_checkpoint": {
-    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-124194-v1/checkpoints/.rolling-accepted-cursor-000007-1d0ac746ca3a42dd8eb5d9fce1fbeeb0.pt",
-    "sha256": "1b97d3cb18754b6ce0970c805ec4308ae1bce696d40f911eb493f444b2bd5def",
-    "bytes": 3750884762,
-    "cursor": 7,
-    "steps": 14425,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-124194-v1/checkpoints/.rolling-accepted-cursor-000128-b62802132f4346bdb42f23621f2c3a81.pt",
+    "sha256": "66b17e0458f7d68d025f5895c8544aebca5030476565970f636903c9a88556ce",
+    "bytes": 3750958234,
+    "cursor": 128,
+    "steps": 14546,
     "config_sha256": "5aaa63c9348f410357be92ce491ba6d18286d618ab86dae6e63f193f2b4367b6",
     "matched_binding_sha256": "01071ad024af352d576a2d02f7e8d4a867f71bd7f6609ca9110db13e9b2f307f",
-    "epoch_time": 1792587153.2863755,
+    "epoch_time": 1792588016.513793,
     "accepted_hashes": {
-      "raw": "3131e688c8cf62c557d617dbfb0befea483855614573bdf79681b3235767902d",
-      "ema": "336ee67b28249569df2f01eb6bc70f4ce78b7d4bfc050038a4a8891e9d46cb7b",
-      "adam": "8f7fb6c067254a32f10d03266d65e9d845b4a43445f927ed6381224216f03f1c",
+      "raw": "01cf3cdbac059102ac32159cde73ec18df229e84a6f89bd81ccc1232db947cf5",
+      "ema": "ba8b12c06dc179cf6c541bc259e1aa88ed4564f4a9053f9a2278d06383811255",
+      "adam": "41fa5599e56da72a4a63c2d32b1fcc0546dc3b5ad33292022119f943b3aa2f62",
       "raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
       "ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
       "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
     },
-    "sampler_state_sha256": "6c3a8089885d1ba53be4699c0b8f3c051235a1dc6fe834cc94f25fcaf93bcd84",
+    "sampler_state_sha256": "ef43cfdb72e2df7301ca51ff80af15ec2c8b7abd736b19ddbb1f919dcf1d4ee0",
     "data_cursor": {
-      "cursor": 7,
+      "cursor": 128,
       "sampler_binding": "c9281ec1c271c5d6db71a8d77789a436619e4d707f1a8426393638119e9cc45d",
-      "sampler_state_sha256": "6c3a8089885d1ba53be4699c0b8f3c051235a1dc6fe834cc94f25fcaf93bcd84"
+      "sampler_state_sha256": "ef43cfdb72e2df7301ca51ff80af15ec2c8b7abd736b19ddbb1f919dcf1d4ee0"
     },
     "pinned": false,
     "full_CPU_six_state_reload_passed": true,
@@ -117,8 +117,8 @@
   "evidence": {
     "main": {
       "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/joint124194-root-latest/actual-main-status.json",
-      "bytes": 20159,
-      "sha256": "d5a02b1f7c682bc535633c8bc618513eb23695edc9d9d8e8fa7fe56727f44c89"
+      "bytes": 20160,
+      "sha256": "4fb6473ba0b31029579ad129cbf59b2df918c877417e3501659c45bc78592c8c"
     },
     "tail": {
       "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/joint124194-root-latest/actual-tail-status.json",
@@ -135,5 +135,99 @@
       "bytes": 4946,
       "sha256": "3dcac723cb0ecee4682d2ed1f76b3563fa51bac4bc43bf22e71e1febfbd7fab1"
     }
+  },
+  "independent_epoch_quality_audit": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/joint124194-root-latest/actual-epoch-quality-audit.json",
+    "bytes": 10752,
+    "sha256": "9573b34d8ba27a54319f3e12b12f544164a44bcea22896f7cc45996e337123d3"
+  },
+  "heldout_epoch_quality_actual": {
+    "completed_epochs": [
+      0
+    ],
+    "pending_epochs": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "qualifying_candidates": [],
+    "no_new_predictions": true,
+    "final4096_read": false
+  },
+  "walltime_and_exact_recovery": {
+    "current_hours": 24,
+    "requested_extension_hours": 48,
+    "extension_denied_by_account_permissions": true,
+    "no_priority_or_GPU_change": true,
+    "recovery_source_publication": "c2768a8fe4ee9450e173972531e0d503e30d3f82",
+    "actual_prepare_status": "WAITING_FOR_ORIGINAL_WRITER_TERMINAL_AND_EXACT_HIGHEST_CHECKPOINT",
+    "recovery_GPU_submitted": false,
+    "active_writer_blocks_submit": true,
+    "highest_complete_equal_highest_accepted_required": true,
+    "signal": "USR1@900 all jobsteps, actual Python catches USR1/TERM",
+    "signal_actual_stop_delivery_not_tested": true
+  },
+  "existing_baseline_true_class_diagnostics": {
+    "allwrong": {
+      "n": 1055,
+      "predicted_Mixed": 540,
+      "almost_equal_p_questions": 1,
+      "trajectory_BCE": 0.41715714435679,
+      "Mixed_BCE": 1.0616046250291185,
+      "mean_p_range": 0.13936102664970154
+    },
+    "Mixed": {
+      "n": 663,
+      "predicted_Mixed": 448,
+      "almost_equal_p_questions": 0,
+      "trajectory_BCE": 0.9500608464909085,
+      "Mixed_BCE": 0.6175180218840369,
+      "mean_p_range": 0.17609612163869864
+    },
+    "allcorrect": {
+      "n": 330,
+      "predicted_Mixed": 236,
+      "almost_equal_p_questions": 0,
+      "trajectory_BCE": 0.9247973323479617,
+      "Mixed_BCE": 1.481819412697495,
+      "mean_p_range": 0.18502441133993366
+    }
+  },
+  "only_current_project_HPC3_jobs": {
+    "epoch": 1792588763.4564505,
+    "own_project_jobs": [
+      {
+        "job": "745519",
+        "name": "q7b-tail-newseed-w1",
+        "state": "RUNNING",
+        "elapsed": "37:34",
+        "node": "ACD1-64",
+        "WorkDir": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1",
+        "Command": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/worker-1.sbatch",
+        "TRES": "cpu=16,mem=128G,node=1,billing=16,gres/gpu=2"
+      },
+      {
+        "job": "745518",
+        "name": "q7b-tail-newseed-w0",
+        "state": "RUNNING",
+        "elapsed": "37:35",
+        "node": "ACD1-21",
+        "WorkDir": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1",
+        "Command": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/worker-0.sbatch",
+        "TRES": "cpu=16,mem=128G,node=1,billing=16,gres/gpu=2"
+      },
+      {
+        "job": "745501",
+        "name": "q7b-native-joint124194",
+        "state": "RUNNING",
+        "elapsed": "51:36",
+        "node": "ACD1-28",
+        "WorkDir": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-124194-v1",
+        "Command": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-124194-v1/training.sbatch",
+        "TRES": "cpu=8,mem=128G,node=1,billing=8,gres/gpu=1"
+      }
+    ],
+    "other_jobs_not_modified": true
   }
 }
