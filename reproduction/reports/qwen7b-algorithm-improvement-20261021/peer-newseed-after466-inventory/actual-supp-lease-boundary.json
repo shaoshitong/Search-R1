@@ -1,0 +1,436 @@
+{
+  "empty_GPU_is_not_resource_authorization": true,
+  "epoch": 1792583816.5634353,
+  "existing_allocation_receipts": [
+    {
+      "bytes": 786,
+      "fields": {
+        "captured_epoch": 1792555661.6200638,
+        "main_pid": 3731224,
+        "mode": "NATIVE_RELAY_SLOT",
+        "node": "h100-10",
+        "original_cuda_visible_devices": null,
+        "resource_limits": {},
+        "unit": "sst-q7b-g5-relaygen-queued-supp-v1-slot-gpu4-tp1-r1-70188b8e50fd.service",
+        "unit_hard_end_epoch": 1792584461.5816078,
+        "unit_show": "MainPID=3731224\nControlGroup=/system.slice/sst-q7b-g5-relaygen-queued-supp-v1-slot-gpu4-tp1-r1-70188b8e50fd.service\nMemoryMax=103079215104\nId=sst-q7b-g5-relaygen-queued-supp-v1-slot-gpu4-tp1-r1-70188b8e50fd.service\nActiveState=active\nActiveEnterTimestampMonotonic=19616215879851\n"
+      },
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/retrieval-relay-generation/launch/native-3731224/allocation-evidence.json",
+      "sha256": "9c58f8e5fd4272f5c3a7905f5513b53446c0cc99c7b18c16dc5ea6c85196da14"
+    },
+    {
+      "bytes": 7407,
+      "fields": {
+        "captured_epoch": 1792555662.3092265,
+        "controller_birth": 1961621587,
+        "controller_pid": 3731224,
+        "finite_slot": "gpu4-tp1",
+        "foreign_processes_signalled": false,
+        "local_relay_process": {
+          "birth": "1960484939",
+          "pid": 3221131
+        },
+        "model_cuda_uuids": [
+          "GPU-525a9efc-446e-333d-11ff-e1f2213d15c8"
+        ],
+        "model_cuda_visible_devices": "4",
+        "model_engine_count": 1,
+        "model_indices": [
+          4
+        ],
+        "native_unit": "sst-q7b-g5-relaygen-queued-supp-v1-slot-gpu4-tp1-r1-70188b8e50fd.service",
+        "node": "h100-10",
+        "original_cuda_visible_devices": null,
+        "primary_gpu_locks_modified": false,
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+        "shared_retriever_owned_by_consumer": false,
+        "slot_lease_paths": {},
+        "source_model_deadline_epoch": 1792584416.5816078,
+        "source_owner": {
+          "birth": "1960484824",
+          "pid": 3221084,
+          "unit": "sst-q7b-g5-relaygen-queued-owner-v2-downstream-r1-70188b8e50fd.service"
+        },
+        "source_owner_allocation_sha256": "24ec3e6e965a2c4376f6f53007c3d8dede8e447e62a3286bb3390a5c624d8933",
+        "source_owner_ready": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-downstream-r1/owner-ready.json",
+        "source_parent_owned": false,
+        "source_retrieval_owner": {
+          "birth": "8973866",
+          "pid": 2714543,
+          "unit": "sst-q7b-g5-guard-rollover-owner-v2-70188b8e50fd.service"
+        },
+        "supplementary_model_lease": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/gpu-slot-leases/70188b8e50fd4b45bc420ce58014f46e/3221084-1960484824/node10-supplement-gpu4-tp1/GPU-525a9efc-446e-333d-11ff-e1f2213d15c8.lock",
+        "supplementary_specification": {
+          "indices": [
+            4
+          ]
+        },
+        "tensor_parallel_size": 1
+      },
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-relay-slot-gpu4-tp1-3731224/attempt-1792555662309369517-3731224/allocation.json",
+      "sha256": "0cc4967677620fb5d27818f012ef78d0633b741edcea7ff7380e2799bd061254"
+    },
+    {
+      "bytes": 9674,
+      "fields": {
+        "anchor_slot": "gpu1-tp1",
+        "anchor_terminal_required": true,
+        "anchor_unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-gpu1-tp1-r1-70188b8e50fd.service",
+        "finite_node10_slots": {
+          "gpu1-tp1": {
+            "indices": [
+              1
+            ]
+          },
+          "gpu2-tp1": {
+            "indices": [
+              2
+            ]
+          },
+          "gpu3-tp1": {
+            "indices": [
+              3
+            ]
+          },
+          "gpu5-tp1": {
+            "indices": [
+              5
+            ]
+          },
+          "gpu7-tp1": {
+            "indices": [
+              7
+            ]
+          }
+        },
+        "generation": "queued-supp-v1",
+        "instance": "r1",
+        "no_slurm_changes": true,
+        "original_protocol_unchanged": true,
+        "owner_hard_seconds": 90000,
+        "owner_registry_unchanged": true,
+        "role": "slot",
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+        "slot": "gpu4-tp1",
+        "slot_hard_seconds": 28800,
+        "supplementary_slots": {
+          "gpu4-tp1": {
+            "indices": [
+              4
+            ]
+          }
+        },
+        "unit": "sst-q7b-g5-relaygen-queued-supp-v1-slot-gpu4-tp1-r1-70188b8e50fd.service"
+      },
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-supp-v1-slot-gpu4-tp1-r1/4f2b3b3581d755ff6d851ba8ea36eb443ba48174fe6d25f7b89fc1e7bd7fd032/manifest.json",
+      "sha256": "811d1e024664a87b0e7091903e6faeae22f3aa24bf5eff317d54b9f01e730f5b"
+    }
+  ],
+  "gpu4_compute_processes": {
+    "exit_code": 0,
+    "rows": [
+      "GPU-525a9efc-446e-333d-11ff-e1f2213d15c8, 519515, /mnt/shared/workspace/training_data_node_10/zhuzeyu_cvpr/envs/worldplay/bin/python, 80786"
+    ],
+    "stderr_present": false
+  },
+  "gpu4_process_ownership": [
+    {
+      "birth_ticks": 1963771467,
+      "cgroup": [
+        "1:freezer:/slurm_h100-10/uid_0/job_4010/step_batch",
+        "0::/system.slice/slurmd.service"
+      ],
+      "parent_pid": 519391,
+      "pid": 519515,
+      "process_name": "/mnt/shared/workspace/training_data_node_10/zhuzeyu_cvpr/envs/worldplay/bin/python",
+      "state": "R",
+      "uid": 0
+    }
+  ],
+  "gpu4_query": {
+    "exit_code": 0,
+    "rows": [
+      "4, GPU-525a9efc-446e-333d-11ff-e1f2213d15c8, NVIDIA H100 80GB HBM3, 81559, 80833"
+    ],
+    "stderr_present": false
+  },
+  "guard_source": [
+    {
+      "bytes": 5351,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-supp-v1-slot-gpu4-tp1-r1/4f2b3b3581d755ff6d851ba8ea36eb443ba48174fe6d25f7b89fc1e7bd7fd032/node10_supplementary_control.py",
+      "selected_guard_lines": [
+        {
+          "code": "The live downstream owner/registry and all existing model slots stay intact.",
+          "line": 3
+        },
+        {
+          "code": "ANCHOR_UNIT = 'sst-q7b-g5-relaygen-queued-owner-v2-slot-gpu1-tp1-r1-70188b8e50fd.service'",
+          "line": 15
+        },
+        {
+          "code": "    for name in ('node10_supplementary_worker.py', 'node10_supplementary_control.py'):",
+          "line": 25
+        },
+        {
+          "code": "        b\"slot=ready['slots'][SLOT]\": b\"slot=manifest['supplementary_slots'][SLOT]\",",
+          "line": 32
+        },
+        {
+          "code": "        b\"str(stage/'queued_slot_consumer.py'),'--slot-mode','node10'\": b\"str(stage/'node10_supplementary_worker.py')\",",
+          "line": 33
+        },
+        {
+          "code": "    manifest.update(supplementary_slots={SLOT: SPECIFICATION}, anchor_slot=ANCHOR, anchor_unit=ANCHOR_UNIT,",
+          "line": 44
+        },
+        {
+          "code": "        anchor_terminal_required=True, owner_registry_unchanged=True, slot_hard_seconds=28800)",
+          "line": 45
+        },
+        {
+          "code": "        supplementary_slots=manifest['supplementary_slots'], anchor_unit=ANCHOR_UNIT)))",
+          "line": 48
+        },
+        {
+          "code": "    before = \"    context=dict(downstream_owner_ready=DOWN_READY,downstream_owner_ready_sha256=DOWN_SHA)\"",
+          "line": 58
+        },
+        {
+          "code": "    after = \"\"\"    import node10_supplementary_worker as supplement",
+          "line": 60
+        },
+        {
+          "code": "    anchor_terminal=supplement.anchor_binding(pool,BASE,ready,DOWN_SHA,ANCHOR_INTENT,ANCHOR_INTENT_SHA,ANCHOR_PROOF,ANCHOR_PROOF_SHA)",
+          "line": 61
+        },
+        {
+          "code": "    context=dict(downstream_owner_ready=str(readable(DOWN_READY,BASE,PHYSICAL)),downstream_owner_ready_sha256=DOWN_SHA,anchor_terminal=anchor_terminal)\"\"\"",
+          "line": 62
+        },
+        {
+          "code": "        parser.add_argument('--' + name)",
+          "line": 70
+        },
+        {
+          "code": "        # This parser-only declaration never enters the unchanged owner's slots.",
+          "line": 80
+        }
+      ],
+      "sha256": "134e778590c8f0a06d210f93b1a3676ce9f54265004ee8f884f096ce20f1ecc0"
+    },
+    {
+      "bytes": 7273,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-supp-v1-slot-gpu4-tp1-r1/4f2b3b3581d755ff6d851ba8ea36eb443ba48174fe6d25f7b89fc1e7bd7fd032/relay_slot_consumer_worker.py",
+      "selected_guard_lines": [
+        {
+          "code": "import retrieval_relay_owner as relay_owner",
+          "line": 10
+        },
+        {
+          "code": "    value = relay_owner.bound_read(pool, path, args.reuse_local_relay_sha256)",
+          "line": 18
+        },
+        {
+          "code": "    shared.require(value['status'] == 'RETRIEVAL_RELAY_OWNER_READY' and value['role'] == 'downstream'",
+          "line": 19
+        },
+        {
+          "code": "        and value['run_id'] == pool.RUN_ID and value['owner']['unit'] == args.reuse_local_relay_unit,",
+          "line": 20
+        },
+        {
+          "code": "        'Independent node10 relay owner generation differs')",
+          "line": 21
+        },
+        {
+          "code": "    allocation = relay_owner.bound_read(pool, value['allocation_path'], value['allocation_sha256'])",
+          "line": 22
+        },
+        {
+          "code": "    shared.require(allocation['allocation_role'] == 'RETRIEVAL_RELAY_CPU_OWNER' and allocation['role'] == 'downstream'",
+          "line": 23
+        },
+        {
+          "code": "        and allocation['owner'] == value['owner'] and allocation['slots'] == value['slots']",
+          "line": 24
+        },
+        {
+          "code": "    relay_owner.check_terminal(pool, value['job_ready_path'])",
+          "line": 26
+        },
+        {
+          "code": "    shared.require(not (Path(value['job_ready_path']).parent / 'drain-request.json').exists(), 'CPU relay owner is draining')",
+          "line": 27
+        },
+        {
+          "code": "    transport = relay_owner.bound_read(pool, value['transport_ready_path'], value['transport_ready_sha256'])",
+          "line": 28
+        },
+        {
+          "code": "    upstream = relay_owner.bound_read(pool, value['upstream_owner_ready'], value['upstream_owner_ready_sha256'])",
+          "line": 29
+        },
+        {
+          "code": "    relay_owner.check_terminal(pool, upstream['job_ready_path'])",
+          "line": 30
+        },
+        {
+          "code": "    shared.require(transport['role'] == 'downstream' and transport['status'] == 'RELAY_LISTENING'",
+          "line": 31
+        },
+        {
+          "code": "        and upstream['source_owner'] == value['source_owner'], 'Original downstream relay/upstream identity differs')",
+          "line": 36
+        },
+        {
+          "code": "        self.proof = dict(value['relay'], cpu_owner=value['owner'], process_owned=False)",
+          "line": 44
+        },
+        {
+          "code": "            relay_owner.same_process(self.value['owner'])",
+          "line": 48
+        },
+        {
+          "code": "            relay_owner.same_process(self.value['relay'])",
+          "line": 49
+        },
+        {
+          "code": "    shared.require(borrowed.poll() is None, 'Original independent CPU relay owner is no longer live')",
+          "line": 60
+        },
+        {
+          "code": "    shared.require(socket.gethostname().split('.')[0] == 'h100-10', 'Remote model slots support only h100-10')",
+          "line": 65
+        },
+        {
+          "code": "    evidence, actual = relay_owner.own_evidence(pool, args, 'h100-10')",
+          "line": 68
+        },
+        {
+          "code": "    owner = value['owner']",
+          "line": 69
+        },
+        {
+          "code": "    shared.require(actual['mntns_inode'] == owner['mntns_inode'] and actual['netns_inode'] == owner['netns_inode']",
+          "line": 70
+        },
+        {
+          "code": "        and actual['unit'] != owner['unit'], 'Model slot must share CPU owner namespaces with an independent cgroup')",
+          "line": 71
+        },
+        {
+          "code": "    shared.require(name in relay_owner.SLOTS and name in value['slots'], 'Undeclared node10 model slot')",
+          "line": 73
+        },
+        {
+          "code": "    shared.require(all(slot[key] == expected for key, expected in relay_owner.SLOTS[name].items()), 'Node10 finite slot specification differs')",
+          "line": 75
+        },
+        {
+          "code": "    shared.require(model == slot['indices'] and args.tp == slot['tp']",
+          "line": 77
+        },
+        {
+          "code": "    deadline = min(value['consumer_deadline_epoch'], evidence['unit_hard_end_epoch'] - 45)",
+          "line": 80
+        },
+        {
+          "code": "    shared.require(deadline > time.time() + args.batch_reserve_seconds, 'Model slot absolute deadline is exhausted')",
+          "line": 81
+        },
+        {
+          "code": "    shared.require(uuids == slot['cuda_uuids'], 'Node10 slot physical UUID mapping differs')",
+          "line": 84
+        },
+        {
+          "code": "    proofs = {uuid: source_slot.held_lock(base / 'pool/gpu-locks' / (uuid + '.lock'), owner,",
+          "line": 86
+        },
+        {
+          "code": "            lease = relay_owner.source.slot_directory(base, pool.RUN_ID, owner, name) / (uuid + '.lock')",
+          "line": 91
+        },
+        {
+          "code": "            fd = pool.try_lock(lease)",
+          "line": 92
+        },
+        {
+          "code": "            shared.require(fd is not None, 'This finite node10 model slot is already occupied')",
+          "line": 93
+        },
+        {
+          "code": "            locks.append(fd);paths[uuid] = str(lease)",
+          "line": 94
+        },
+        {
+          "code": "        shared.require(json.loads(output)['actual_cuda_runtime_uuids'] == uuids and borrowed.poll() is None,",
+          "line": 98
+        },
+        {
+          "code": "                       'Actual node10 model CUDA UUID/CPU owner differs')",
+          "line": 99
+        },
+        {
+          "code": "            source_owner=owner, source_owner_allocation_sha256=value['allocation_sha256'],",
+          "line": 105
+        },
+        {
+          "code": "            source_owner_ready=str(path), source_owner_ready_sha256=pool.sha(path),",
+          "line": 106
+        },
+        {
+          "code": "            source_model_deadline_epoch=deadline, finite_slot=name, slot_lease_paths=paths,",
+          "line": 107
+        },
+        {
+          "code": "            original_primary_lock_proofs=proofs, primary_gpu_locks_modified=False,",
+          "line": 108
+        },
+        {
+          "code": "            source_retrieval_owner=value['source_owner'], local_relay_process=borrowed.proof,",
+          "line": 109
+        },
+        {
+          "code": "            shared_retriever_owned_by_consumer=False, source_parent_owned=False,",
+          "line": 110
+        }
+      ],
+      "sha256": "5dcc7b922463c8a7411b5241c9a04ba97a9f69dd1a20653c576d06f8562fbac6"
+    },
+    {
+      "bytes": 1117,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-supp-v1-slot-gpu4-tp1-r1/4f2b3b3581d755ff6d851ba8ea36eb443ba48174fe6d25f7b89fc1e7bd7fd032/queued_relay_slots.py",
+      "selected_guard_lines": [
+        {
+          "code": "The downstream owns all eight primary leases. Each overlapping model slot",
+          "line": 3
+        },
+        {
+          "code": "borrows only its declared per-slot leases and must pass its real GPU profile.",
+          "line": 4
+        },
+        {
+          "code": "Existing owner registries and immutable stages are not edited.",
+          "line": 5
+        },
+        {
+          "code": "def install(owner):",
+          "line": 24
+        },
+        {
+          "code": "    owner.SLOTS = specifications(owner.SLOTS)",
+          "line": 25
+        },
+        {
+          "code": "    owner.DEFAULT_SLOTS = DEFAULT_SLOTS",
+          "line": 26
+        }
+      ],
+      "sha256": "bdb3e49a47c37cc2c133ff27ad781d46f2e5ea0a70018bba1f7b95494030f57b"
+    }
+  ],
+  "launch_invoked": false,
+  "other_thread_contacted": false,
+  "producer_or_lease_modified": false,
+  "status": "READONLY_EXISTING_SUPPLEMENTARY_SLOT_BOUNDARY_AND_GPU4_OWNERSHIP"
+}
