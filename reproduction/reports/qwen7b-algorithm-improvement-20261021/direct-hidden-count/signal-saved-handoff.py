@@ -1,7 +1,9 @@
 """One guarded own-process USR1 for an exact saved resource handoff.
 
-Preparation is safe at any cursor. --execute additionally requires actual768
-fixed evaluation and5..20min of the original2h allocation remaining. This does
+Preparation is safe at any cursor. Preferred --execute follows actual768
+fixed evaluation with5..20min remaining. At5..10min, any accepted cursor>=256
+may safely hand off once its due evaluations are complete;768 is not required.
+This does
 not cancel a job, change its source, reset state or submit a continuation.
 """
 import argparse,importlib.util,json,pathlib,shlex,subprocess
@@ -28,9 +30,16 @@ remaining=seconds(queue[0]);progress=read(base/'progress.json');latest=read(base
 assert progress['steps']==10464+cursor and progress['head_steps']==cursor and latest['cursor']<=cursor
 result=dict(status='OWN_JOB_HANDOFF_WINDOW_OBSERVED_NO_SIGNAL',job_id=job,cursor=cursor,latest_cursor=latest['cursor'],seconds_remaining=remaining,time=time.time(),signal_sent=False)
 if not EXECUTE:print(json.dumps(result));raise SystemExit(0)
-assert 768<=cursor<938 and 300<=remaining<=1200,'Actual768 plus5..20min handoff window required'
+preferred=768<=cursor<938 and 300<=remaining<=1200
+fallback=256<=cursor<938 and 300<=remaining<=600
+assert preferred or fallback,'Require preferred768/5..20min or any accepted cursor/5..10min safety fallback'
+result['handoff_mode']='preferred_after_768' if preferred else 'near_deadline_any_accepted_cursor'
 assert not any((base/n).exists() for n in ('failure.json','first-cp-audit-failure.json','interrupted.json','complete.json'))
-evaluation=read(base/'evaluations/cursor-000768/complete.json');assert evaluation['cursor']==768 and evaluation['config_sha256']==config and evaluation['training_nine_components_unchanged'] is True
+for milestone in (256,512,768):
+ if milestone>cursor:continue
+ evaluation=read(base/'evaluations'/('cursor-%06d'%milestone)/'complete.json');assert evaluation['cursor']==milestone and evaluation['config_sha256']==config and evaluation['training_nine_components_unchanged'] is True
+assert latest['full_CPU_reload_passed'] is True and latest['full_file_SHA256_verified'] is True
+checkpoint=pathlib.Path(latest['path']);assert checkpoint.is_file() and checkpoint.stat().st_size==latest['bytes']
 intent=read(base/'update-intent.json');assert intent['next_cursor']<=cursor+1
 assert controller['job_id']==job and controller['status']=='JOINT_E1_INPUTS_ACCEPTED'
 pid=controller['pid'];process=pathlib.Path('/proc')/str(pid);assert process.stat().st_uid==os.getuid()
