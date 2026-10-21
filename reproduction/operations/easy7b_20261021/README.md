@@ -165,3 +165,26 @@ per rank (cumulative200), advanced the scheduler to10 and sealed CP10 manifest
 Reward was0.63938820; outer11 began afterwards. Production remains on its
 immutable e082 runtime using FA2. The200-outer goal and final acceptance remain
 pending. See `evidence/actual10-complete-cp10-outer11-started-20261021.json`.
+
+The isolated layer-shadow diagnostic746054 completed0:0 in5m02 on ACD1-12,
+using immutable source2ec9272fad4a29faf9ec06989c58d054b3030aca and actual CP10.
+All112 rank/layer comparisons retained the original FA2 output. Repeated FA2
+outputs were exact; FA3 same-input output relativeL2 median was0.000504737 and
+maximum0.000737310. All expanded28 KV heads were exact repetitions of the
+original4 heads. Both kernels had comparable sampled FP32 reference errors.
+No large local expanded-KV error was observed on these FA2 trajectories. Small
+local differences are compatible with multilayer BF16 propagation; this does
+not establish the cause of the CP9 full-model mismatch on its different batch.
+All parameter bytes/RNG remained unchanged and no backward/update occurred.
+Postprocess weakref deallocation warnings were preserved; they did not change
+the completed0 exit or the parameter/RNG readback. The evidence is
+`evidence/actual-fa3-layer-shadow-cp10-20261022.json`.
+
+The4096 synthetic attention-only first-call forward/backward timings were
+FA2-first13.1184ms/FA2-repeat13.1057ms/FA3-first7.6400ms: approximately1.715x
+for that kernel case. They are not warmed repeated model benchmarks, do not
+cover the actual expanded28KV performance path, and do not measure a complete
+training outer including rollout and retrieval. No whole-iteration FA3 speedup
+or final-accuracy equivalence is claimed. Production continues with FA2; the
+full-model numerical rejection remains in force and no checkpoint transition
+was performed.

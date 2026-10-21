@@ -1,6 +1,6 @@
 {
-  "epoch": 1792598316.9255702,
-  "status": "ACTUAL_OUTER10_COMPLETE_CP10_SEALED_OUTER11_STARTED_FA3_MODEL_REJECTED_PRODUCTION_FA2_CONTINUES",
+  "epoch": 1792598991.0765467,
+  "status": "FA2_TRAINING_OUTER11_SAMPLING_CP10_SEALED_FA3_LAYER_DIAG_COMPLETE_FULL_NUMERICS_UNACCEPTED",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "745371",
@@ -54,8 +54,8 @@
     "enabled_scope": "Exact retrieval cache + original dense head + external2H100 service; no throughput speedup claimed yet"
   },
   "previous_goal_turn_classification": "verified_wait",
-  "latest_turn_classification": "FA3_FOUND_AND_ACTUAL_KERNEL_PASS_BUT_NATIVE4_FULL_MODEL_NUMERICAL_REJECTED; CP10_SEALED; PRODUCTION_UNCHANGED",
-  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/training-progress-em-1792598317.json",
+  "latest_turn_classification": "FA3_SHADOW_DIAGNOSTIC_COMPLETED; NO_PRODUCTION_SWITCH; FA2_GOAL_CONTINUES",
+  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/training-progress-em-1792598991.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "stage": "GRPO_1_TO_200",
@@ -1086,12 +1086,12 @@
     "step": 10
   },
   "current_candidate_pool": {
-    "name": "439e064ef4af4c4e9d368ce395413249-pool-0",
-    "step": 10,
-    "completed_questions": 512,
-    "reserved_questions": 512,
-    "source_consumed": 25600,
-    "saved_chunk_files": 4,
+    "name": "89f23c532fb8484aaf7b6cd634d1eba3-pool-0",
+    "step": 11,
+    "completed_questions": 2048,
+    "reserved_questions": 2048,
+    "source_consumed": 28160,
+    "saved_chunk_files": 13,
     "progress_error": null
   },
   "current_completed_selection_em": [
@@ -1658,7 +1658,14 @@
       0.0111437007612922,
       0.010802008543173968
     ],
-    "next_action": "Independent single-FA2-forward per-layer FA3 shadow diagnostic; no optimizer update or automatic switch"
+    "next_action": "Continue authorized FA2 training toward200; retain full-model numerical rejection. Kernel timings do not establish whole-iteration speedup.",
+    "layer_shadow_job": "746054",
+    "layer_shadow_source_step": 10,
+    "layer_shadow_state": "COMPLETED0_NOT_QUALIFICATION",
+    "layer_shadow_comparisons": 112,
+    "layer_shadow_max_relative_l2": 0.0007373100603352897,
+    "layer_shadow_evidence": "evidence/actual-fa3-layer-shadow-cp10-20261022.json",
+    "full_iteration_speedup_measured": false
   },
   "latest_full_checkpoint_outer": 10
 }
