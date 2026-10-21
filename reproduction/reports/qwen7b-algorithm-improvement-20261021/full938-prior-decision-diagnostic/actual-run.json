@@ -1,0 +1,541 @@
+{
+  "exit": {
+    "epoch": 1792549649.506035,
+    "returncode": 0
+  },
+  "receipt": {
+    "bytes": 11458,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full938-train-prior-decision-diagnostic-v1/summary.json",
+    "sha256": "fa045c3419c37af63c1b8bf06639a026ebd6e0a447835499e8909d8df3480f42"
+  },
+  "status": "ACTUAL_FULL938_TWO_DECISION_CPU_DIAGNOSTIC_COMPLETE",
+  "summary": {
+    "actual_training_view_progress": [
+      {
+        "cursor": 128,
+        "epoch": 1792549644.901031,
+        "questions": 4096,
+        "stage": "ACTUAL_FULL938_TRAIN_VIEW_LABELS_ADVANCING",
+        "views": 16384
+      },
+      {
+        "cursor": 256,
+        "epoch": 1792549645.5740833,
+        "questions": 8192,
+        "stage": "ACTUAL_FULL938_TRAIN_VIEW_LABELS_ADVANCING",
+        "views": 32768
+      },
+      {
+        "cursor": 384,
+        "epoch": 1792549646.2056837,
+        "questions": 12288,
+        "stage": "ACTUAL_FULL938_TRAIN_VIEW_LABELS_ADVANCING",
+        "views": 49152
+      },
+      {
+        "cursor": 512,
+        "epoch": 1792549646.832544,
+        "questions": 16384,
+        "stage": "ACTUAL_FULL938_TRAIN_VIEW_LABELS_ADVANCING",
+        "views": 65536
+      },
+      {
+        "cursor": 640,
+        "epoch": 1792549647.455219,
+        "questions": 20480,
+        "stage": "ACTUAL_FULL938_TRAIN_VIEW_LABELS_ADVANCING",
+        "views": 81920
+      },
+      {
+        "cursor": 768,
+        "epoch": 1792549648.0810134,
+        "questions": 24576,
+        "stage": "ACTUAL_FULL938_TRAIN_VIEW_LABELS_ADVANCING",
+        "views": 98304
+      },
+      {
+        "cursor": 896,
+        "epoch": 1792549648.7104552,
+        "questions": 28672,
+        "stage": "ACTUAL_FULL938_TRAIN_VIEW_LABELS_ADVANCING",
+        "views": 114688
+      },
+      {
+        "cursor": 938,
+        "epoch": 1792549648.9178739,
+        "questions": 30016,
+        "stage": "ACTUAL_FULL938_TRAIN_VIEW_LABELS_ADVANCING",
+        "views": 120064
+      }
+    ],
+    "config": {
+      "bytes": 2914,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full938-train-prior-decision-diagnostic-v1/code-95f28e6f9630/config.json",
+      "sha256": "750070acfa47baff140e36c01bd21cc54c66da31d1a114ec15744e17195bfc2e"
+    },
+    "diagnostic_is_not_a_new_model_improvement": true,
+    "elapsed_seconds": 5.5003509521484375,
+    "epoch": 1792549649.450362,
+    "final4096_outcomes_read": false,
+    "fixed_own_G5_sha256": "c55de2b4f66f45dcd94a8e246bfca97e53bdedc4ca85180c75e60c574dfc04b7",
+    "model_tensor_or_feature_payload_read": false,
+    "new_GPU_or_model_scoring": false,
+    "numeric_prior_value_exported": false,
+    "ordered_actual_own_G10_IDs_sha256": "346b12b1055c231e195f84286d143af0756d15f0f5d9dd07cf1285af6eb9e113",
+    "original_questions": 30016,
+    "original_views": 120064,
+    "peak_RSS_KiB": 133068,
+    "primary_decision_and_goal_gate_unchanged": true,
+    "prior_private_receipt": {
+      "bytes": 2155,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full938-train-prior-decision-diagnostic-v1/train-only-prior-private.json",
+      "sha256": "2f76659c49fa6e280b6ef3a3ef528128d9ab29dd41c4e671951e8df5563eae5e"
+    },
+    "results": [
+      {
+        "DIAGNOSTIC_TRAIN_ONLY_MIXED_PRIOR": {
+          "AUC": 0.5690532586264164,
+          "Mixed_TPR": 0.8733031674208145,
+          "balanced_accuracy": 0.550008984432429,
+          "classwise": {
+            "allcorrect": {
+              "false_positive_rate": 0.9212121212121213,
+              "predicted_Mixed": 304,
+              "questions": 330
+            },
+            "allwrong": {
+              "false_positive_rate": 0.7270142180094786,
+              "predicted_Mixed": 767,
+              "questions": 1055
+            },
+            "mixed": {
+              "false_positive_rate": null,
+              "predicted_Mixed": 579,
+              "questions": 663
+            }
+          },
+          "confusion": {
+            "fn": 84,
+            "fp": 1071,
+            "tn": 314,
+            "tp": 579
+          },
+          "nonMixed_TNR": 0.22671480144404332,
+          "questions": 2048
+        },
+        "PRIMARY_FIXED_0_5": {
+          "AUC": 0.5690532586264164,
+          "Mixed_TPR": 0.7481146304675717,
+          "balanced_accuracy": 0.5625049686633887,
+          "classwise": {
+            "allcorrect": {
+              "false_positive_rate": 0.8121212121212121,
+              "predicted_Mixed": 268,
+              "questions": 330
+            },
+            "allwrong": {
+              "false_positive_rate": 0.5639810426540285,
+              "predicted_Mixed": 595,
+              "questions": 1055
+            },
+            "mixed": {
+              "false_positive_rate": null,
+              "predicted_Mixed": 496,
+              "questions": 663
+            }
+          },
+          "confusion": {
+            "fn": 167,
+            "fp": 863,
+            "tn": 522,
+            "tp": 496
+          },
+          "nonMixed_TNR": 0.3768953068592058,
+          "questions": 2048
+        },
+        "name": "E2",
+        "new_model_scoring_performed": false,
+        "original_q_rankings": {
+          "AUC": 0.5690532586264164,
+          "Top512_K": [
+            227,
+            35,
+            29,
+            46,
+            71,
+            104
+          ],
+          "Top512_Mixed": 181,
+          "Top512_ordered_qids_sha256": "5202c7a12000ae0ef627dc8754e90610f374bce2baf371d45b808cc8a36e09ed"
+        },
+        "predictions": {
+          "bytes": 155453,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/E2-same-HF-baseline-20261021/predictions.jsonl.gz",
+          "sha256": "e0dc53be8c0847e8a736401452d309771bcdca98d5c129e6cef49afa3b12c2ac"
+        },
+        "questions": 2048,
+        "score_type": "product_Bernoulli"
+      },
+      {
+        "DIAGNOSTIC_TRAIN_ONLY_MIXED_PRIOR": {
+          "AUC": 0.5764760333458571,
+          "Mixed_TPR": 0.8265460030165912,
+          "balanced_accuracy": 0.5526231820137107,
+          "classwise": {
+            "allcorrect": {
+              "false_positive_rate": 0.8454545454545455,
+              "predicted_Mixed": 279,
+              "questions": 330
+            },
+            "allwrong": {
+              "false_positive_rate": 0.6824644549763034,
+              "predicted_Mixed": 720,
+              "questions": 1055
+            },
+            "mixed": {
+              "false_positive_rate": null,
+              "predicted_Mixed": 548,
+              "questions": 663
+            }
+          },
+          "confusion": {
+            "fn": 115,
+            "fp": 999,
+            "tn": 386,
+            "tp": 548
+          },
+          "nonMixed_TNR": 0.27870036101083034,
+          "questions": 2048
+        },
+        "PRIMARY_FIXED_0_5": {
+          "AUC": 0.5764760333458571,
+          "Mixed_TPR": 0.6757164404223228,
+          "balanced_accuracy": 0.5577138158790315,
+          "classwise": {
+            "allcorrect": {
+              "false_positive_rate": 0.7151515151515152,
+              "predicted_Mixed": 236,
+              "questions": 330
+            },
+            "allwrong": {
+              "false_positive_rate": 0.5118483412322274,
+              "predicted_Mixed": 540,
+              "questions": 1055
+            },
+            "mixed": {
+              "false_positive_rate": null,
+              "predicted_Mixed": 448,
+              "questions": 663
+            }
+          },
+          "confusion": {
+            "fn": 215,
+            "fp": 776,
+            "tn": 609,
+            "tp": 448
+          },
+          "nonMixed_TNR": 0.43971119133574005,
+          "questions": 2048
+        },
+        "name": "E4",
+        "new_model_scoring_performed": false,
+        "original_q_rankings": {
+          "AUC": 0.5764760333458571,
+          "Top512_K": [
+            209,
+            44,
+            38,
+            46,
+            68,
+            107
+          ],
+          "Top512_Mixed": 196,
+          "Top512_ordered_qids_sha256": "365973d9336281de51c149f9574110eb2cb816e0fe7e2b395610cf44d331e7ee"
+        },
+        "predictions": {
+          "bytes": 155299,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/E4-same-HF-validation/E4/predictions.jsonl.gz",
+          "sha256": "66cdf3e7c748bda7f508c4f381ad0456a413d5d73c73e5d9f1eb774b71bdb707"
+        },
+        "questions": 2048,
+        "score_type": "product_Bernoulli"
+      },
+      {
+        "DIAGNOSTIC_TRAIN_ONLY_MIXED_PRIOR": {
+          "AUC": 0.5261555885892263,
+          "Mixed_TPR": 0.9894419306184012,
+          "balanced_accuracy": 0.5041072468976483,
+          "classwise": {
+            "allcorrect": {
+              "false_positive_rate": 0.9848484848484849,
+              "predicted_Mixed": 325,
+              "questions": 330
+            },
+            "allwrong": {
+              "false_positive_rate": 0.9800947867298578,
+              "predicted_Mixed": 1034,
+              "questions": 1055
+            },
+            "mixed": {
+              "false_positive_rate": null,
+              "predicted_Mixed": 656,
+              "questions": 663
+            }
+          },
+          "confusion": {
+            "fn": 7,
+            "fp": 1359,
+            "tn": 26,
+            "tp": 656
+          },
+          "nonMixed_TNR": 0.018772563176895306,
+          "questions": 2048
+        },
+        "PRIMARY_FIXED_0_5": {
+          "AUC": 0.5261555885892263,
+          "Mixed_TPR": 0.0,
+          "balanced_accuracy": 0.49891696750902526,
+          "classwise": {
+            "allcorrect": {
+              "false_positive_rate": 0.006060606060606061,
+              "predicted_Mixed": 2,
+              "questions": 330
+            },
+            "allwrong": {
+              "false_positive_rate": 0.0009478672985781991,
+              "predicted_Mixed": 1,
+              "questions": 1055
+            },
+            "mixed": {
+              "false_positive_rate": null,
+              "predicted_Mixed": 0,
+              "questions": 663
+            }
+          },
+          "confusion": {
+            "fn": 663,
+            "fp": 3,
+            "tn": 1382,
+            "tp": 0
+          },
+          "nonMixed_TNR": 0.9978339350180505,
+          "questions": 2048
+        },
+        "name": "control256",
+        "new_model_scoring_performed": false,
+        "original_q_rankings": {
+          "AUC": 0.5261555885892263,
+          "Top512_K": [
+            249,
+            42,
+            37,
+            36,
+            56,
+            92
+          ],
+          "Top512_Mixed": 171,
+          "Top512_ordered_qids_sha256": "c51bbe8cc2abf62d92445263bc84c3677334e8304fe287c967a66fefd5da6ff6"
+        },
+        "predictions": {
+          "bytes": 278736,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/evaluations/cursor-000256/selection2048FreshG5HF.jsonl.gz",
+          "sha256": "c828b4ea8d92a2af035f38770c760ac235f0ed07c9c869a6ea8c7cd6dd745b45"
+        },
+        "questions": 2048,
+        "score_type": "hidden_direct_count6"
+      },
+      {
+        "DIAGNOSTIC_TRAIN_ONLY_MIXED_PRIOR": {
+          "AUC": 0.5438641771621173,
+          "Mixed_TPR": 0.6832579185520362,
+          "balanced_accuracy": 0.5369358184817943,
+          "classwise": {
+            "allcorrect": {
+              "false_positive_rate": 0.8212121212121212,
+              "predicted_Mixed": 271,
+              "questions": 330
+            },
+            "allwrong": {
+              "false_positive_rate": 0.543127962085308,
+              "predicted_Mixed": 573,
+              "questions": 1055
+            },
+            "mixed": {
+              "false_positive_rate": null,
+              "predicted_Mixed": 453,
+              "questions": 663
+            }
+          },
+          "confusion": {
+            "fn": 210,
+            "fp": 844,
+            "tn": 541,
+            "tp": 453
+          },
+          "nonMixed_TNR": 0.39061371841155235,
+          "questions": 2048
+        },
+        "PRIMARY_FIXED_0_5": {
+          "AUC": 0.5438641771621173,
+          "Mixed_TPR": 0.0,
+          "balanced_accuracy": 0.4996389891696751,
+          "classwise": {
+            "allcorrect": {
+              "false_positive_rate": 0.0030303030303030303,
+              "predicted_Mixed": 1,
+              "questions": 330
+            },
+            "allwrong": {
+              "false_positive_rate": 0.0,
+              "predicted_Mixed": 0,
+              "questions": 1055
+            },
+            "mixed": {
+              "false_positive_rate": null,
+              "predicted_Mixed": 0,
+              "questions": 663
+            }
+          },
+          "confusion": {
+            "fn": 663,
+            "fp": 1,
+            "tn": 1384,
+            "tp": 0
+          },
+          "nonMixed_TNR": 0.9992779783393502,
+          "questions": 2048
+        },
+        "name": "control512",
+        "new_model_scoring_performed": false,
+        "original_q_rankings": {
+          "AUC": 0.5438641771621173,
+          "Top512_K": [
+            220,
+            37,
+            39,
+            37,
+            64,
+            115
+          ],
+          "Top512_Mixed": 177,
+          "Top512_ordered_qids_sha256": "b87b644a26b883326e03ddfdcc3e9b28a0e39533ca22c51288199bf5fc9ce4b2"
+        },
+        "predictions": {
+          "bytes": 279847,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/evaluations/cursor-000512/selection2048FreshG5HF.jsonl.gz",
+          "sha256": "4346544162f6942f9a27828237c47db038b3e1347a089bd5fc73700d666e3ce3"
+        },
+        "questions": 2048,
+        "score_type": "hidden_direct_count6"
+      },
+      {
+        "DIAGNOSTIC_TRAIN_ONLY_MIXED_PRIOR": {
+          "AUC": 0.5500922946240423,
+          "Mixed_TPR": 0.5897435897435898,
+          "balanced_accuracy": 0.5389151161714338,
+          "classwise": {
+            "allcorrect": {
+              "false_positive_rate": 0.7333333333333333,
+              "predicted_Mixed": 242,
+              "questions": 330
+            },
+            "allwrong": {
+              "false_positive_rate": 0.442654028436019,
+              "predicted_Mixed": 467,
+              "questions": 1055
+            },
+            "mixed": {
+              "false_positive_rate": null,
+              "predicted_Mixed": 391,
+              "questions": 663
+            }
+          },
+          "confusion": {
+            "fn": 272,
+            "fp": 709,
+            "tn": 676,
+            "tp": 391
+          },
+          "nonMixed_TNR": 0.488086642599278,
+          "questions": 2048
+        },
+        "PRIMARY_FIXED_0_5": {
+          "AUC": 0.5500922946240423,
+          "Mixed_TPR": 0.0,
+          "balanced_accuracy": 0.5,
+          "classwise": {
+            "allcorrect": {
+              "false_positive_rate": 0.0,
+              "predicted_Mixed": 0,
+              "questions": 330
+            },
+            "allwrong": {
+              "false_positive_rate": 0.0,
+              "predicted_Mixed": 0,
+              "questions": 1055
+            },
+            "mixed": {
+              "false_positive_rate": null,
+              "predicted_Mixed": 0,
+              "questions": 663
+            }
+          },
+          "confusion": {
+            "fn": 663,
+            "fp": 0,
+            "tn": 1385,
+            "tp": 0
+          },
+          "nonMixed_TNR": 1.0,
+          "questions": 2048
+        },
+        "name": "control768",
+        "new_model_scoring_performed": false,
+        "original_q_rankings": {
+          "AUC": 0.5500922946240423,
+          "Top512_K": [
+            217,
+            43,
+            35,
+            39,
+            65,
+            113
+          ],
+          "Top512_Mixed": 182,
+          "Top512_ordered_qids_sha256": "94ac6342e5730752148eeaab23ea49002f9de106ba300c822f69fb9d31365850"
+        },
+        "predictions": {
+          "bytes": 280826,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/evaluations/cursor-000768/selection2048FreshG5HF.jsonl.gz",
+          "sha256": "ffd715fbad90ae0b7adae30e7ef41f1d164cfd66aefaa9769f348d68c005f327"
+        },
+        "questions": 2048,
+        "score_type": "hidden_direct_count6"
+      }
+    ],
+    "source_factory": {
+      "bytes": 14093,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/code-501cf80478b7/reproduction/operations/qwen7b_warmup/g10_grouping.py",
+      "sha256": "3a40d313e351f086ac5d3d6ba62165792c69c2847b64ba7a967aa9cf4f2cb9af"
+    },
+    "source_plan": {
+      "bytes": 1918071,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-append-only-plan-v1/plan.json",
+      "sha256": "8d6f5b046c8ee459c529f0750c80bac63455b2663f19cdcdce48d0fddd648cbf"
+    },
+    "source_training_config": {
+      "bytes": 16144,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/config.json",
+      "sha256": "3e910b12c0ff52eac70e61566c6135e2ec188bb47ec64ad79524abbd7a657526"
+    },
+    "status": "FULL938_TRAIN_ONLY_PRIOR_TWO_DECISION_DIAGNOSTIC_COMPLETE",
+    "thresholds_scanned_or_external_fitted": false,
+    "validation_complete": {
+      "bytes": 23003,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/complete.json",
+      "sha256": "54453790ae4f2ed2c1cdd0b87a17b383fe6737d5ada3dba640b3ee78b7605056"
+    },
+    "view_bindings_sha256": "481eaa3ee3237a82ea62cdaab980bf8e9814e554a4757d79b57954dddb88bfe5",
+    "view_weight": 0.25
+  }
+}
