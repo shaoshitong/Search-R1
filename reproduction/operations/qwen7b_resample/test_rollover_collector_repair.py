@@ -1,5 +1,6 @@
 """CPU argv/once-intent regression; no real systemd, mounts or transport."""
 import contextlib
+import errno
 import hashlib
 import io
 import json
@@ -69,8 +70,11 @@ class CollectorRepairTests(unittest.TestCase):
             self.assertIn('--setenv=Q7B_NATIVE_UNIT_INSTANCE=' + f.manifest['unit'], command)
             self.assertEqual(command[command.index('--plan') + 1], str(f.base / 'preparation' / f.manifest['directory'] / 'plan.json'))
             self.assertEqual(command[command.index('--plan-sha256') + 1], f.plan_sha)
+            self.assertEqual(command[command.index('/usr/bin/python3') + 1], str(f.base / 'preparation' / f.manifest['directory'] / f.stage.name / 'collector_entry.py'))
             intent = json.loads((f.root / 'collector-repair1-intent.json').read_text())
             self.assertEqual(intent['collector_instance'], 'repair1')
+            self.assertEqual(intent['collector_entry_sha256'], sha(f.stage / 'collector_entry.py'))
+            self.assertEqual(intent['terminal_helper_sha256'], sha(f.stage / 'rollover_terminal.py'))
             self.assertEqual(intent['prior_collectors_terminal'][0]['observed']['ActiveState'], 'failed')
             self.assertEqual(intent['prior_collectors_terminal'][0]['unit'], f.original['unit'])
             self.assertNotEqual(f.manifest['unit'], f.original['unit'])
@@ -86,6 +90,34 @@ class CollectorRepairTests(unittest.TestCase):
                 self.assertFalse(f.commands)
                 self.assertFalse((f.root / 'collector-repair1-intent.json').exists())
                 self.assertFalse((f.root / 'collector-repair1-receipt.json').exists())
+
+    def test_entry_retries_only_eaddrinuse_and_preserves_exact_helper_bytes(self):
+        _, files, manifest = control.bundle('h100-10', collector_instance='repair2')
+        helper = Path(control.__file__).with_name('rollover_terminal.py').read_bytes()
+        self.assertEqual(files['rollover_terminal.py'], helper)
+        self.assertEqual(manifest['files']['collector_entry.py']['sha256'], hashlib.sha256(files['collector_entry.py']).hexdigest())
+        plan, success = object(), dict(actual_port_absent=True)
+        calls = []
+        def original(value):
+            self.assertIs(value, plan);calls.append(value)
+            if len(calls) == 1:raise OSError(errno.EADDRINUSE, 'busy')
+            return success
+        runtime = SimpleNamespace(release=original)
+        def main():
+            # The retained collect watch loop catches AssertionError and
+            # retries; a successful result is returned without alteration.
+            with self.assertRaises(AssertionError):runtime.release(plan)
+            self.assertIs(runtime.release(plan), success)
+        runtime.main = main
+        with patch.dict(sys.modules, {'rollover_terminal': runtime}):exec(files['collector_entry.py'], dict(__name__='__main__'))
+        self.assertEqual(len(calls), 2)
+        denied = OSError(errno.EACCES, 'denied')
+        def inaccessible(value):raise denied
+        runtime = SimpleNamespace(release=inaccessible, main=lambda:None)
+        with patch.dict(sys.modules, {'rollover_terminal': runtime}):exec(files['collector_entry.py'], dict(__name__='__main__'))
+        with self.assertRaises(OSError) as error:runtime.release(plan)
+        self.assertIs(error.exception, denied)
+        self.assertEqual(Path(control.__file__).with_name('rollover_terminal.py').read_bytes(), helper)
 
 
 if __name__ == '__main__':unittest.main()

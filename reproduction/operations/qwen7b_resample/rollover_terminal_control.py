@@ -14,6 +14,28 @@ ROOT, BASE, PHYSICAL, RUN_ID = old.ROOT, old.BASE, old.PHYSICAL, old.RUN_ID
 SOURCES = ('rollover_terminal_control.py', 'rollover_terminal.py', 'rollover_paths.py', 'predecessor_generation_terminal.py', 'pool_paths.sh')
 
 
+def collector_entry_source():
+    return b'''"""Retry a busy node10 loopback port without weakening release proof."""
+import errno
+import rollover_terminal as terminal
+
+_release = terminal.release
+
+def release(plan):
+    try:
+        return _release(plan)
+    except OSError as error:
+        if error.errno == errno.EADDRINUSE:
+            raise AssertionError('Loopback port is still busy; wait for the same terminal release proof') from error
+        raise
+
+terminal.release = release
+
+if __name__ == '__main__':
+    terminal.main()
+'''
+
+
 def bundle(node='h100-10', generation='rollover-v1', collector_instance=None):
     assert node in ('h100-5', 'h100-10') and re.fullmatch(r'[a-z0-9-]{1,25}', generation)
     assert collector_instance is None or (node == 'h100-10' and re.fullmatch(r'[a-z][a-z0-9-]{0,23}', collector_instance) and collector_instance != 'original')
@@ -24,9 +46,13 @@ def bundle(node='h100-10', generation='rollover-v1', collector_instance=None):
     rows = {name: dict(bytes=len(raw), sha256=old.digest(raw)) for name, raw in files.items()}
     identity = old.digest(old.encoded(dict(node=node, generation=generation, collector_instance=instance, source_files=rows)))
     files['native_paths.sh'] = old.native_paths_source(files['pool_paths.sh'])
+    entry = 'collector_entry.py' if node == 'h100-10' else 'rollover_terminal.py'
+    if node == 'h100-10':
+        files[entry] = collector_entry_source();compile(files[entry], entry, 'exec')
     manifest = dict(node=node, generation=generation, source_bundle_sha256=identity,
         directory='cohort-' + generation + '-' + node, unit='sst-q7b-terminal-' + generation + '-' + node + suffix + '-' + RUN_ID[:12] + '.service',
         collector_instance=instance, collector_intent=stem + '-intent.json', collector_receipt=stem + '-receipt.json', collector_log=stem + '.log',
+        collector_entry=entry,
         run_id=RUN_ID, source_files=rows, files={name: dict(bytes=len(raw), sha256=old.digest(raw)) for name, raw in files.items()},
         no_stop_or_signal_action=True, no_slurm_changes=True)
     return identity, files, manifest
@@ -131,14 +157,16 @@ elif ACTION=='collect':
      assert observed.get('Id')==unit and observed.get('LoadState')=='loaded'and observed.get('MainPID')=='0'and observed.get('ActiveState')in('inactive','failed'),'Prior collector is active or its terminal/start state is unknown'
      prior.append(dict(unit=unit,intent=str(previous),intent_sha256=sha(previous),receipt=str(previous_receipt),receipt_sha256=sha(previous_receipt),observed=observed,unit_show=detail,epoch=time.time()))
    query=subprocess.check_output(['systemctl','show',MANIFEST['unit'],'-p','LoadState'],text=True,timeout=15);assert'LoadState=not-found'in query
-   command=['/usr/bin/python3',str(stage/'rollover_terminal.py'),'--plan',str(planpath),'--plan-sha256',PLAN_SHA,'--collect-terminal','--watch-seconds',str(WATCH),'--log-file',str(root/MANIFEST['collector_log'])]
+   command=['/usr/bin/python3',str(stage/MANIFEST['collector_entry']),'--plan',str(planpath),'--plan-sha256',PLAN_SHA,'--collect-terminal','--watch-seconds',str(WATCH),'--log-file',str(root/MANIFEST['collector_log'])]
    if MANIFEST['node']=='h100-5':command=['nsenter','--target','1490214','--mount','--net','--',*command]
    else:command=['unshare','--mount','--propagation','private','/bin/bash',terminal.core.physical(stage/'native_paths.sh'),'h100-10',*command]
    command=['systemd-run','--unit='+MANIFEST['unit'],'--property=CPUQuota=100%','--property=MemoryMax=1G',
     '--property=RuntimeMaxSec='+str(WATCH+300),'--property=KillMode=control-group','--property=Restart=no',
     *(['--setenv=Q7B_NATIVE_UNIT_INSTANCE='+MANIFEST['unit']]if MANIFEST['node']=='h100-10'else[]),*command]
    assert not any('\n'in item or'\r'in item for item in command),'Collector systemd argv must contain no multiline arguments'
-   immutable(intent,dict(unit=MANIFEST['unit'],collector_instance=MANIFEST['collector_instance'],argv=command,plan_sha256=PLAN_SHA,publication=PUBLICATION,prior_collectors_terminal=prior,signals_predecessors=False,epoch=time.time()))
+   immutable(intent,dict(unit=MANIFEST['unit'],collector_instance=MANIFEST['collector_instance'],argv=command,plan_sha256=PLAN_SHA,
+    source_bundle_sha256=IDENTITY,collector_entry=MANIFEST['collector_entry'],collector_entry_sha256=MANIFEST['files'][MANIFEST['collector_entry']]['sha256'],
+    terminal_helper_sha256=MANIFEST['files']['rollover_terminal.py']['sha256'],publication=PUBLICATION,prior_collectors_terminal=prior,signals_predecessors=False,epoch=time.time()))
    try:
     r=subprocess.run(command,text=True,capture_output=True,timeout=45)
     result=dict(status='TERMINAL_ONLY_COLLECTOR_STARTED_ONCE'if r.returncode==0 else'COLLECTOR_START_FAILED_NO_REPLAY',returncode=r.returncode,stdout=r.stdout,stderr=r.stderr)
