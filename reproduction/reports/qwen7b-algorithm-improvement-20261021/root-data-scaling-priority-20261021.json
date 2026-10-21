@@ -1,0 +1,181 @@
+{
+  "observed_UTC": "2026-10-21T09:50:20.288972+00:00",
+  "status": "DATA_SCALING_PRIORITY_ACTIVE_GOAL_NOT_ACHIEVED",
+  "latest_manual_priority": {
+    "observed_UTC": "2026-10-21T09:41:41.635836+00:00",
+    "original_timestamp_not_provided": true,
+    "original_text": "\u6211\u89c9\u5f97\u6570\u636e scaling \u662f\u6700\u91cd\u8981\u4e5f\u6700\u5148\u8981\u505a\u7684\u4e00\u4e2a\u5b9e\u9a8c\u3002\u7136\u540e\u4e94\u4e07\u516b\u5343\u9898\u662f\u4e0d\u662f\u8fd8\u4e0d\u591f\u554a\uff1f\u6211\u8bb0\u5f97\u539f\u6765\u6570\u636e\u96c6\u4e0d\u662f\u6709\u5341\u516d\u4e07\u4e2a\u9898\u76ee\u5417\uff0c\u4e3a\u4ec0\u4e48\u53ea\u6709\u4e94\u4e07\u516b\u5343\u4e2a\u9898\u76ee\u3002",
+    "scope": "Prioritize real data scaling. Two unpublished-to-Slurm coarse forks had no jobs; root withdrew their SUBMIT GO before any submission. Preserve their published code; no running job cancelled. Existing completed Count/full938 preserved.",
+    "verification_question": "User asks whether40percent internal result was on actual heldout or previously trained questions."
+  },
+  "validation_scope": {
+    "40percent_source": "Internal NQ2560 half of held5120, own authentic newseed5 strictEM",
+    "new_Count_head_fit_questions": 30016,
+    "NQ_held_questions": 2560,
+    "NQ_true_mixed_questions": 811,
+    "selected_top640_true_mixed": 256,
+    "TP": 43,
+    "FN": 768,
+    "TN": 1711,
+    "FP": 38,
+    "fixed_decision_threshold": 0.5,
+    "original_E1_warmup_question_identity_overlap": true,
+    "new_count_head_did_not_fit_held5120": true,
+    "whole_system_unseen_question_generalization_proven": false,
+    "external_2048_result_separate": "higher-headLR938 BA50percent; Mixed199/51238.867percent, does not pass joint goal",
+    "exact_E1_lineage": {
+      "ancestor_full_warmup_questions": 169028,
+      "ancestor_full_warmup_trajectories": 845140,
+      "current_E1_finetune_questions_only_Mixed": 67199,
+      "current_E1_finetune_trajectories": 335995,
+      "current_E1_finetune_oldAdam_before_after": [
+        9146,
+        10464
+      ],
+      "note": "Current E1 single finetune epoch is not a full169028 epoch. Inherited ancestor saw all canonical training questions; internal held5120 newseed5 not Count fit."
+    }
+  },
+  "data_scaling": {
+    "status": "ACTUAL_53312_SCALE_IMPLEMENTATION_AND_FRESH_DONOR_DELTA_IMPORT_AUTHORIZED",
+    "feature_ready_questions": 58432,
+    "feature_ready_real_G10_trajectories": 584320,
+    "raw_import_accepted_questions": 59648,
+    "current_accepted_fit_questions": 30016,
+    "planned_scale_fit_questions": 53312,
+    "planned_scale_fit_NQ": 39884,
+    "planned_scale_fit_HotpotQA": 13428,
+    "fixed_internal_held_questions": 5120,
+    "planned_epochs": 20,
+    "planned_updates": 33320,
+    "matched_update_node": 18760,
+    "same_source_actual_CP0_and_optimizer_initial_state": true,
+    "full169028_newseed_G10_ready_not_proven": true,
+    "not_unseen_original_warmup_question_texts": true,
+    "new_G5_draws_are_new_trajectories_not_new_question_texts": true,
+    "external_final_new_outcomes_opened": false,
+    "GPU_scale_submitted": false,
+    "owners": {
+      "scale_runner": "/root/group_score_ablation",
+      "protocol": "/root/event_continuation_impl",
+      "fresh_donor_and_import": "/root/mixed_objective_check"
+    },
+    "root_GO": "After fresh complete-batch metadata source check, import only new sealed delta on existing remote migration route. New scale GPU GO remains pending actual published runner/config, no extra review loops.",
+    "donor_last_actual_sealed_metadata": {
+      "observed_epoch": 1792575730,
+      "sealed_batches": 971,
+      "questions": 124194,
+      "newseed5_trajectories": 620970,
+      "target_questions": 169028,
+      "remaining_questions": 44834,
+      "complete": false,
+      "delta_vs_accepted_raw466_batches": {
+        "batches": 505,
+        "questions": 64546,
+        "newseed5_trajectories": 322730,
+        "preexisting_independent_proofs": 243,
+        "additional_proofs_to_check": 262
+      },
+      "producer_not_modified": true,
+      "old_failure_receipt_not_current_failure": true,
+      "old_sealed_input_and_seal_SHA_unchanged": true
+    },
+    "coarse_fork_jobs_submitted": false,
+    "coarse_source_prepared_retained": "b45ea40683701027a65cca8d2a8530b8ae681172"
+  },
+  "current_qualified_20epoch_count_result": {
+    "source_report": "direct-count-large-capacity/FINAL.md",
+    "NQ": {
+      "K_histogram": [
+        1298,
+        228,
+        151,
+        161,
+        271,
+        451
+      ],
+      "Mixed_AUC": 0.591304243608643,
+      "Mixed_BA": 0.5156471304018009,
+      "Mixed_recall": 0.0530209617755857,
+      "Top25percent": {
+        "K_histogram": [
+          280,
+          65,
+          40,
+          59,
+          92,
+          104
+        ],
+        "Mixed_count": 256,
+        "Mixed_fraction": 0.4,
+        "ordered_qids_sha256": "a01e48b119bf215ee1e647ca3ef1a94413f8d72f26b5d734aa4f3f3281e3c3cc",
+        "questions": 640
+      },
+      "allcorrect_FPR": 0.024390243902439025,
+      "allwrong_FPR": 0.020801232665639446,
+      "confusion": {
+        "FN": 768,
+        "FP": 38,
+        "TN": 1711,
+        "TP": 43
+      },
+      "nonMixed_recall": 0.978273299028016,
+      "predicted_Mixed_fraction": 0.031640625,
+      "questions": 2560
+    },
+    "HotpotQA": {
+      "K_histogram": [
+        1052,
+        300,
+        292,
+        271,
+        307,
+        338
+      ],
+      "Mixed_AUC": 0.5268031728463383,
+      "Mixed_BA": 0.505177396544303,
+      "Mixed_recall": 0.02905982905982906,
+      "Top25percent": {
+        "K_histogram": [
+          246,
+          83,
+          68,
+          75,
+          89,
+          79
+        ],
+        "Mixed_count": 315,
+        "Mixed_fraction": 0.4921875,
+        "ordered_qids_sha256": "8e2f46afc48366f91bfae50e7618157cb64af71d020f007fea32586d81d3ddab",
+        "questions": 640
+      },
+      "allcorrect_FPR": 0.020710059171597635,
+      "allwrong_FPR": 0.01806083650190114,
+      "confusion": {
+        "FN": 1136,
+        "FP": 26,
+        "TN": 1364,
+        "TP": 34
+      },
+      "nonMixed_recall": 0.981294964028777,
+      "predicted_Mixed_fraction": 0.0234375,
+      "questions": 2560
+    },
+    "interpretation": "Internal Count-head holdout with ancestor-warmup question overlap. NQ ranking improves relative to same-cache E1 product baseline; low recall, Hotpot regression, and no external test of this model mean no joint scientific win."
+  },
+  "external_frontier": {
+    "pool": "selection2048FreshG5HF",
+    "questions": 2048,
+    "Mixed_questions": 663,
+    "own_G5_IDs_sha256": "c55de2b4f66f45dcd94a8e246bfca97e53bdedc4ca85180c75e60c574dfc04b7",
+    "backend": "sameHF_causal_batch32_pad16384_not_native_bitexact",
+    "E2_Mixed_BA": 0.5625049686633887,
+    "E2_Top512": 181,
+    "E4_Mixed_BA": 0.5577138158790315,
+    "E4_Top512": 196,
+    "E4_Top512_fraction": 0.3828125,
+    "goal_gate": "Jointly exceed best BA56.2504968663percent and best Top196/512 with fixed subset stability, then frozen untouched4096 confirmation. No train-prior threshold diagnostic changes primary rule."
+  },
+  "coarse_unsubmitted_GO_withdrawn": true,
+  "running_jobs_cancelled": false,
+  "final4096_outcomes_read": false
+}
