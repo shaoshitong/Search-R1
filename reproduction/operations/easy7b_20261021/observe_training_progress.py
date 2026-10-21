@@ -84,6 +84,97 @@ def completed_outer_metrics(base):
     return result, errors
 
 
+def selection_em_summary(update, audit, path):
+    """Measure the original complete strict-EM groups, independently of reward."""
+    if not isinstance(audit, dict):
+        raise ValueError('selection audit is not an object')
+    step, aid = update['step'], update['attempt_id']
+    expected_snapshot = update['run_id'] + ':' + str(step) + ':policy-' + aid
+    if audit.get('step') != step or audit.get('policy_snapshot_id') != expected_snapshot or \
+            audit.get('fixed_candidate_budget') is not True or \
+            audit.get('attempted_candidates') != 2560 or audit.get('responses_per_group') != 5 or \
+            audit.get('selected_groups') != 512:
+        raise ValueError('completed selection identity or fixed2560/G5/selected512 budget differs')
+    groups = audit.get('groups')
+    if not isinstance(groups, list) or len(groups) != 2560 or not all(isinstance(group, dict) for group in groups) or \
+            [group.get('ordinal') for group in groups] != list(range(2560)):
+        raise ValueError('selection audit does not contain all2560 ordered completed groups')
+    histogram = {str(k): 0 for k in range(6)}
+    selected_histogram = {str(k): 0 for k in range(6)}
+    mixed, all_correct, chosen = [], [], []
+    for group in groups:
+        labels = group.get('strict_correctness')
+        if not isinstance(labels, list) or len(labels) != 5 or \
+                any(type(value) is not int or value not in (0, 1) for value in labels):
+            raise ValueError('selection group has incomplete/nonbinary strict-EM labels')
+        k = sum(labels)
+        category = 'mixed' if 0 < k < 5 else 'all_correct' if k == 5 else 'all_wrong'
+        if group.get('category') != category or type(group.get('selected')) is not bool:
+            raise ValueError('selection category/selected flag differs from actual strict EM')
+        histogram[str(k)] += 1
+        if category == 'mixed':
+            mixed.append(group['ordinal'])
+        elif category == 'all_correct':
+            all_correct.append(group['ordinal'])
+        if group['selected']:
+            chosen.append(group['ordinal'])
+            selected_histogram[str(k)] += 1
+    expected_chosen = sorted(mixed[:512] if len(mixed) >= 512 else
+                             mixed + all_correct[:512-len(mixed)])
+    mixed_count = sum(histogram[str(k)] for k in range(1, 5))
+    selected_mixed = sum(selected_histogram[str(k)] for k in range(1, 5))
+    fallback = selected_histogram['5']
+    if sum(histogram.values()) != 2560 or mixed_count != len(mixed) or \
+            len(chosen) != 512 or chosen != expected_chosen or \
+            audit.get('selected_mixed') != selected_mixed or \
+            audit.get('selected_all_correct_fallback') != fallback or selected_mixed + fallback != 512:
+        raise ValueError('candidate K histogram, mixed counts or actual ordinal mixed-first selection differs')
+    # raw_generated_trajectories can include discarded insufficient pools. The
+    # measured histogram describes only this completed successful fixed pool.
+    retries, discarded = audit.get('pool_retry'), audit.get('discarded_insufficient_pools')
+    raw_count = audit.get('raw_generated_trajectories')
+    if type(retries) is not int or retries < 0 or not isinstance(discarded, list) or \
+            len(discarded) != retries or type(raw_count) is not int or raw_count != 12800*(retries+1):
+        raise ValueError('successful pool versus discarded/raw generation denominator differs')
+    return dict(step=step, attempt_id=aid, policy_snapshot_id=expected_snapshot,
+        status='MEASURED_COMPLETED_SELECTION', source_path=str(path),
+        candidate_correct_count_histogram=histogram, candidate_questions=2560,
+        candidate_trajectories=12800, raw_generated_trajectories=raw_count,
+        candidate_trajectory_em=sum(k*histogram[str(k)] for k in range(6))/12800,
+        candidate_mixed_questions=mixed_count, candidate_mixed_fraction=mixed_count/2560,
+        selected_correct_count_histogram=selected_histogram, selected_questions=512,
+        selected_trajectories=2560,
+        selected_trajectory_em=sum(k*selected_histogram[str(k)] for k in range(6))/2560,
+        selected_mixed=selected_mixed, selected_mixed_fraction=selected_mixed/512,
+        selected_all_correct_fallback=fallback, selected_all_correct_fallback_fraction=fallback/512,
+        pool_retry=retries, discarded_insufficient_pool_count=len(discarded),
+        selection_basis='actual five strict terminal EM labels; first mixed ordinals, then K5 fallback',
+        candidate_em_scope='successful fixed2560 pool only; discarded pools excluded; pre-update selection policy')
+
+
+def completed_selection_summaries(base):
+    """Bound large audit reads to the last ten actual completed execution rows."""
+    rows, errors = complete_jsonl(base/'logs/actual-updates.jsonl')
+    completed = [row for row in rows if row.get('update_status') == 'complete' and type(row.get('step')) is int]
+    result = []
+    for update in completed[-10:]:
+        value = dict(step=update['step'], attempt_id=update.get('attempt_id'), status='UNKNOWN')
+        try:
+            aid = update.get('attempt_id')
+            if not isinstance(aid, str) or re.fullmatch('[0-9a-f]{32}', aid) is None:
+                raise ValueError('completed update has no valid selection attempt identity')
+            path = base/'artifacts/mixed-selection'/(aid+'.json')
+            value['source_path'] = str(path)
+            audit = read_json(path)
+            if 'observation_error' in audit:
+                raise ValueError(audit['observation_error'])
+            value = selection_em_summary(update, audit, path)
+        except (KeyError, TypeError, ValueError) as error:
+            value['observation_error'] = str(error)
+        result.append(value)
+    return result, errors
+
+
 def validation_summary(record, path):
     """Derive small EM aggregates from actual persisted per-question results."""
     final = record.get('final', False)
@@ -165,11 +256,14 @@ def main():
     metrics, errors = completed_outer_metrics(BASE)
     result['completed_outer_metrics'] = metrics
     result['completed_outer_metrics_scope'] = 'Current execution actual-updates.jsonl only; inherited checkpoint prefix is not synthesized'
+    selections, selection_errors = completed_selection_summaries(BASE)
+    result['completed_selection_em'] = selections
+    result['completed_selection_em_scope'] = 'Last at most10 completed current-execution updates; actual strict-EM audit groups, not in-progress pools or actor reward'
     validations, validation_errors = fixed_validation_summaries(BASE)
     if validations:
         result['fixed_validation_identities'] = validations
-    if errors or validation_errors:
-        result['compact_summary_observation_errors'] = errors + validation_errors
+    if errors or selection_errors or validation_errors:
+        result['compact_summary_observation_errors'] = errors + selection_errors + validation_errors
     result['candidate_pools'] = []
     pools = BASE/'artifacts/mixed-candidate-pools'
     if pools.is_dir():
