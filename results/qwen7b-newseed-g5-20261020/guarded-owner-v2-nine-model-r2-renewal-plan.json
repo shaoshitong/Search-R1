@@ -1,0 +1,1785 @@
+{
+  "schema_version": 1,
+  "status": "LOCAL_ONLY_FINITE_NINE_MODEL_R2_RENEWAL_PLAN_NOT_EXECUTED",
+  "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+  "seed": 20261021,
+  "question_count": 169028,
+  "generations_per_question": 5,
+  "target_trajectories": 845140,
+  "created_epoch": 1792545594.088683,
+  "repository": "/Users/shaoshitong/Documents/Search-G1/qwen7b-h100-assets-20261020",
+  "current_health_authority": "Latest parent instruction explicitly identifies these nine productive models; this plan makes no fresh remote health claim.",
+  "registry_input": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-owner-v2-current-cohort-registry.json",
+    "sha256": "0ba1bc8c49233b6f7017e9325eef21ad69c14c1d4255c021c59bb3cb6985da48",
+    "warning": "Registry contains older supplementary STAGING flags; only exact unit/directory/frozen identity are copied, not stale lifecycle flags."
+  },
+  "publication": {
+    "published_commit": "NEW_HEAD",
+    "published_ref": "refs/heads/codex/qwen7b-h100-assets-20261020",
+    "verification": "NOT_PERFORMED_LOCAL_PLAN_ONLY"
+  },
+  "placeholder_resolution": {
+    "SOURCE_OWNER_READY": "Exact existing source owner-v2 owner-ready path, not a new owner.",
+    "SOURCE_OWNER_READY_SHA256": "Exact SHA of that unchanged source owner-ready (original anchor evidence currently binds 5e315e371aa8bebd20f1fa858bb1512300f72c7a61c84835a840993d9972b70f).",
+    "DOWNSTREAM_OWNER_READY": "Exact existing queued owner-v2 downstream-r1 owner-ready path; CPU relay remains independently owned.",
+    "DOWNSTREAM_OWNER_READY_SHA256": "Exact SHA of that unchanged downstream ready.",
+    "NEW_HEAD": "Future reviewed/pushed full source commit containing these exact bundle source_files; never substitute an unverified existing head."
+  },
+  "unchanged_owners": [
+    {
+      "key": "source:owner",
+      "node": "h100-5",
+      "unit": "sst-q7b-g5-guard-rollover-owner-v2-70188b8e50fd.service",
+      "directory": "retrieval-generation-guard-rollover-owner-v2",
+      "source_bundle_sha256": "0f57f9817f86e5a6934d5eaa375cea9b36a616a93425a9259a77dcfb12db18fe"
+    },
+    {
+      "key": "relay:upstream",
+      "node": "h100-5",
+      "unit": "sst-q7b-g5-relaygen-queued-owner-v2-upstream-r1-70188b8e50fd.service",
+      "directory": "relay-generation-queued-owner-v2-upstream-r1",
+      "source_bundle_sha256": "237abe1f2776a028b757c1de91e606ce6aab9afc343e116f071be0155ef28469"
+    },
+    {
+      "key": "relay:downstream",
+      "node": "h100-10",
+      "unit": "sst-q7b-g5-relaygen-queued-owner-v2-downstream-r1-70188b8e50fd.service",
+      "directory": "relay-generation-queued-owner-v2-downstream-r1",
+      "source_bundle_sha256": "072cbe91ab5ad1a3d222821f30bd79219aba837ad6479a08ef97cde5e587a834"
+    }
+  ],
+  "scope": {
+    "model_renewals": 9,
+    "new_owner_submissions": 0,
+    "new_retrieval_index_loads": 0,
+    "stop_current_r1": false,
+    "hot_edit_existing_runtime": false,
+    "release_primary_owner_leases": false,
+    "enable_other_models": false,
+    "note": "Only the listed nine role=slot commands are planned. Node10 --enabled-slots repeats its finite existing six-slot registry as required by its control API, and does not start the two unselected failed slots. No automatic start of all sixteen previously declared slots."
+  },
+  "scientific_contract": {
+    "unchanged": true,
+    "context_tokens": 4096,
+    "same_model": true,
+    "same_seed": true,
+    "same_G5": true,
+    "same_inputs": true,
+    "same_full_FP16_retrieval": true,
+    "same_strict_EM": true,
+    "original_prefix_and_full_generation_budgets_preserved": true,
+    "shared_NFS_batch_locks_and_sealed_batch_skip": true,
+    "model_capacity_specs": "Copied from current source/queued/supplementary declarations; no new fit claim or budget reduction.",
+    "worker_max_run_seconds": 28500,
+    "systemd_slot_hard_seconds": 28800,
+    "batch_reserve_seconds": 1200,
+    "absolute_deadline": "Existing runtime caps to same owner consumer_deadline_epoch and own unit hard-end margin; no owner extension or rebuild."
+  },
+  "execution_policy": [
+    "This JSON is plan data, not a launcher or authorization to stop productive work.",
+    "Stage new r2 code only after NEW_HEAD publication verification. Submit each r2 independently only when all of its listed execution_preconditions have been freshly met.",
+    "Never stop, remove, drain early, or replace a healthy r1 to make room for r2. If r1 is still active, wait.",
+    "If fullbank is complete, submit no r2. If the existing 24h owner is draining/near expiry, this same-owner plan is blocked and needs a separate reviewed owner rollover.",
+    "Keep original failed/terminal proofs and partial outputs; finite natural exit is not goal completion. This plan does not label an unobserved terminal/release as verified."
+  ],
+  "rows": [
+    {
+      "key": "source:base-tp4",
+      "node": "h100-5",
+      "role": "slot",
+      "control_module": "reproduction.operations.qwen7b_resample.guarded_rollover_slot_control",
+      "generation_cli": "owner-v2",
+      "current_r1": {
+        "unit": "sst-q7b-g5-guard-rollover-owner-v2-base-tp4-r1-70188b8e50fd.service",
+        "directory": "retrieval-generation-guard-rollover-owner-v2-base-tp4-r1",
+        "frozen_source_bundle_sha256": "a9d1a6593d527617a029a54eadff382486561b3f5dca299b2821f84d97e3c83b",
+        "submit_intent": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-base-tp4-r1/submit-intent.json",
+        "terminal_observation": "REQUIRED_AT_EXECUTION_NOT_OBSERVED_BY_THIS_PLAN",
+        "slot_lease_release_observation": "REQUIRED_AT_EXECUTION_NOT_OBSERVED_BY_THIS_PLAN"
+      },
+      "r2": {
+        "instance": "r2",
+        "unit": "sst-q7b-g5-guard-rollover-owner-v2-base-tp4-r2-70188b8e50fd.service",
+        "directory": "retrieval-generation-guard-rollover-owner-v2-base-tp4-r2",
+        "source_bundle_sha256": "175cfbacd13fc77f7e00865dd8d71210ff9c1a79b456d71045d79452486eb424",
+        "physical_stage": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-base-tp4-r2/175cfbacd13fc77f7e00865dd8d71210ff9c1a79b456d71045d79452486eb424",
+        "shared_stage": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-base-tp4-r2/175cfbacd13fc77f7e00865dd8d71210ff9c1a79b456d71045d79452486eb424",
+        "submit_intent": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-base-tp4-r2/submit-intent.json",
+        "submit_receipt": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-base-tp4-r2/submit-receipt.json",
+        "source_files": {
+          "retrieval_only_owner.py": {
+            "bytes": 10665,
+            "sha256": "ab6037fde22cd0f408549ce1884a4c6e8d58f15aaa1f80676857c99e33da5233"
+          },
+          "retrieval_only_control.py": {
+            "bytes": 18808,
+            "sha256": "9580a39ec60c181aaef6d9467659a2dd3c59e79fbac0dc06e73c55cefb1e7e41"
+          },
+          "source_slot_consumer_worker.py": {
+            "bytes": 8210,
+            "sha256": "6e6f5eae1507e772b0d636037ebe6341e1b2c335ca8d0049d79040ab3a0d524f"
+          },
+          "source_slot_control.py": {
+            "bytes": 166,
+            "sha256": "1e0771e685c77ca81f44fb752faa2be1bad45f9a442b07d59be9557d1525f86a"
+          },
+          "draining_pool_worker.py": {
+            "bytes": 2879,
+            "sha256": "965a938d8b44bb8360285734a56010e07ae14b2c62b7b4ac55dd0a43c6dc1a51"
+          },
+          "shared_vram_worker.py": {
+            "bytes": 28570,
+            "sha256": "3a601748de704c4baee82bcb53927fe8e1f511f3f7af0d05953afabc4c6ef172"
+          },
+          "shared_vram_retriever.py": {
+            "bytes": 18155,
+            "sha256": "686b8c498cba50e556909051cce511b81b2d61afa9aadf11c4f25992689da316"
+          },
+          "shared_vram_vllm_adapter.py": {
+            "bytes": 5039,
+            "sha256": "780921f1aee405a941842fd52cd5f1121a7756b357fa6686c247a9c2b93d75f5"
+          },
+          "pool_worker.py": {
+            "bytes": 29724,
+            "sha256": "a7d30f57ab4995fece1a236317060f2fc0d5f39f7c0031899e1bd65a663f3750"
+          },
+          "relay_consumer_worker.py": {
+            "bytes": 16254,
+            "sha256": "ebbe43d7ce4ace9c39ea04501003faf756f2535d56465666ad3709869068a5e2"
+          },
+          "retrieval_relay.py": {
+            "bytes": 15053,
+            "sha256": "52d046b20d8bbda06d146238b6fab2eca209952fedd55b2324ea440e5c610d60"
+          },
+          "pool_paths.sh": {
+            "bytes": 1933,
+            "sha256": "3d087d5eab3657a75f555a0bf1c0b571ae20d64583d23c10c35c6eee1440c52d"
+          },
+          "guarded_rollover_control.py": {
+            "bytes": 4139,
+            "sha256": "c80217d2c8fae2eb6f70462034ea7963071dac420ba8618f6d6a76d7728e05be"
+          },
+          "guarded_rollover_slot_control.py": {
+            "bytes": 157,
+            "sha256": "a4108cc86de0f46eeb24150d990d6c24e7ef839fe6c9fa1affc722a8e56ba9cd"
+          },
+          "rollover_terminal.py": {
+            "bytes": 15200,
+            "sha256": "a0e815784651f3ccdddb189353260324ce3a6fcb657e2241aa90e13fafb65f2c"
+          },
+          "predecessor_generation_terminal.py": {
+            "bytes": 14578,
+            "sha256": "dffeb10936eb592af68cb97e07186cf34e971772412d7c236c8f872c33d775ea"
+          },
+          "queued_slot_consumer.py": {
+            "bytes": 856,
+            "sha256": "fb694c5a732bbc6b8e7e5d394dc75a6a25ce9ec2f2fe69f16df70ef72eadbe5e"
+          },
+          "queued_health.py": {
+            "bytes": 804,
+            "sha256": "bb55b378fdb66306fbae71c174a1bfcf5475fd715cd409015d65d698b677e21a"
+          },
+          "rollover_source_slots.py": {
+            "bytes": 800,
+            "sha256": "17499d6cbe226279d0f74b2dc0477b8554dab8ea01cef3c47d3aceb5eb2f5619"
+          },
+          "rollover_retrieval_owner.py": {
+            "bytes": 408,
+            "sha256": "e0f89397d0d709dbadfeb9a9c37d79cb0e44958c54918c12b35f8d5c0532920d"
+          },
+          "rollover_paths.py": {
+            "bytes": 2214,
+            "sha256": "9e0d3bf78c5d4b11ae19f75e20a524fd8080cd7a3809ad31303af41109e74597"
+          }
+        },
+        "stage_args": [
+          "stage",
+          "--generation",
+          "owner-v2",
+          "--enabled-slots",
+          "base-tp4",
+          "--slot",
+          "base-tp4",
+          "--instance",
+          "r2",
+          "--intent-id",
+          "source-base-tp4-r2-stage",
+          "--published-commit",
+          "NEW_HEAD",
+          "--published-ref",
+          "refs/heads/codex/qwen7b-h100-assets-20261020"
+        ],
+        "submit_args": [
+          "submit",
+          "--generation",
+          "owner-v2",
+          "--enabled-slots",
+          "base-tp4",
+          "--slot",
+          "base-tp4",
+          "--instance",
+          "r2",
+          "--owner-ready",
+          "SOURCE_OWNER_READY",
+          "--owner-ready-sha256",
+          "SOURCE_OWNER_READY_SHA256",
+          "--intent-id",
+          "source-base-tp4-r2-submit",
+          "--published-commit",
+          "NEW_HEAD",
+          "--published-ref",
+          "refs/heads/codex/qwen7b-h100-assets-20261020"
+        ],
+        "stage_command": "python3 -m reproduction.operations.qwen7b_resample.guarded_rollover_slot_control stage --generation owner-v2 --enabled-slots base-tp4 --slot base-tp4 --instance r2 --intent-id source-base-tp4-r2-stage --published-commit NEW_HEAD --published-ref refs/heads/codex/qwen7b-h100-assets-20261020",
+        "submit_command": "python3 -m reproduction.operations.qwen7b_resample.guarded_rollover_slot_control submit --generation owner-v2 --enabled-slots base-tp4 --slot base-tp4 --instance r2 --owner-ready SOURCE_OWNER_READY --owner-ready-sha256 SOURCE_OWNER_READY_SHA256 --intent-id source-base-tp4-r2-submit --published-commit NEW_HEAD --published-ref refs/heads/codex/qwen7b-h100-assets-20261020"
+      },
+      "model_specification": {
+        "indices": [
+          3,
+          4,
+          6,
+          7
+        ],
+        "tp": 4,
+        "seqs": 128,
+        "tokens": 16384,
+        "blocks": 16384,
+        "reserve": 1.5
+      },
+      "owner_registry_key": "source:owner",
+      "finite_slot": "base-tp4",
+      "required_slot_lease_directory": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/gpu-slot-leases/70188b8e50fd4b45bc420ce58014f46e/SOURCE_OWNER_PID-SOURCE_OWNER_BIRTH/base-tp4",
+      "required_released_uuid_indices": [
+        3,
+        4,
+        6,
+        7
+      ],
+      "primary_owner_lease_ownership_unchanged": true,
+      "execution_preconditions": [
+        "Fresh native observation of this exact current_r1.unit: MainPID=0 and ActiveState inactive or failed; its exact own cgroup is empty and recorded original births are gone.",
+        "All current r1 slot_lease_paths for this slot are really released. Probe the same owner-PID/birth slot directory and exact current-allocation UUID paths without retaining any probe lease.",
+        "Unique sealed global trajectory bank remains below 845140, checked at execution; preserve completed batches and genuine partial checkpoints.",
+        "Same immutable owner-ready path/SHA resolves to the still-live original owner/retriever/relay identities and namespaces; owner is not draining and enough consumer deadline remains.",
+        "Publish and independently verify NEW_HEAD exact source_files before staging; r2 unit/intent must be unconsumed. Unknown submit outcome means query that r2 unit/intent, never blind replay."
+      ],
+      "gates_automatically_added_by_plan": false,
+      "remote_execution_performed": false
+    },
+    {
+      "key": "source:retrieval-tp4",
+      "node": "h100-5",
+      "role": "slot",
+      "control_module": "reproduction.operations.qwen7b_resample.guarded_rollover_slot_control",
+      "generation_cli": "owner-v2",
+      "current_r1": {
+        "unit": "sst-q7b-g5-guard-rollover-owner-v2-retrieval-tp4-r1-70188b8e50fd.service",
+        "directory": "retrieval-generation-guard-rollover-owner-v2-retrieval-tp4-r1",
+        "frozen_source_bundle_sha256": "c34ee1970dc292deff4446a9d7e992c891cf2ad404152ecbb938e89416871a93",
+        "submit_intent": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-retrieval-tp4-r1/submit-intent.json",
+        "terminal_observation": "REQUIRED_AT_EXECUTION_NOT_OBSERVED_BY_THIS_PLAN",
+        "slot_lease_release_observation": "REQUIRED_AT_EXECUTION_NOT_OBSERVED_BY_THIS_PLAN"
+      },
+      "r2": {
+        "instance": "r2",
+        "unit": "sst-q7b-g5-guard-rollover-owner-v2-retrieval-tp4-r2-70188b8e50fd.service",
+        "directory": "retrieval-generation-guard-rollover-owner-v2-retrieval-tp4-r2",
+        "source_bundle_sha256": "347115d20dd53c1fc2c1653c5b470f53ebdde738c5ec0d9d49e78d1985128956",
+        "physical_stage": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-retrieval-tp4-r2/347115d20dd53c1fc2c1653c5b470f53ebdde738c5ec0d9d49e78d1985128956",
+        "shared_stage": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-retrieval-tp4-r2/347115d20dd53c1fc2c1653c5b470f53ebdde738c5ec0d9d49e78d1985128956",
+        "submit_intent": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-retrieval-tp4-r2/submit-intent.json",
+        "submit_receipt": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-retrieval-tp4-r2/submit-receipt.json",
+        "source_files": {
+          "retrieval_only_owner.py": {
+            "bytes": 10665,
+            "sha256": "ab6037fde22cd0f408549ce1884a4c6e8d58f15aaa1f80676857c99e33da5233"
+          },
+          "retrieval_only_control.py": {
+            "bytes": 18808,
+            "sha256": "9580a39ec60c181aaef6d9467659a2dd3c59e79fbac0dc06e73c55cefb1e7e41"
+          },
+          "source_slot_consumer_worker.py": {
+            "bytes": 8210,
+            "sha256": "6e6f5eae1507e772b0d636037ebe6341e1b2c335ca8d0049d79040ab3a0d524f"
+          },
+          "source_slot_control.py": {
+            "bytes": 166,
+            "sha256": "1e0771e685c77ca81f44fb752faa2be1bad45f9a442b07d59be9557d1525f86a"
+          },
+          "draining_pool_worker.py": {
+            "bytes": 2879,
+            "sha256": "965a938d8b44bb8360285734a56010e07ae14b2c62b7b4ac55dd0a43c6dc1a51"
+          },
+          "shared_vram_worker.py": {
+            "bytes": 28570,
+            "sha256": "3a601748de704c4baee82bcb53927fe8e1f511f3f7af0d05953afabc4c6ef172"
+          },
+          "shared_vram_retriever.py": {
+            "bytes": 18155,
+            "sha256": "686b8c498cba50e556909051cce511b81b2d61afa9aadf11c4f25992689da316"
+          },
+          "shared_vram_vllm_adapter.py": {
+            "bytes": 5039,
+            "sha256": "780921f1aee405a941842fd52cd5f1121a7756b357fa6686c247a9c2b93d75f5"
+          },
+          "pool_worker.py": {
+            "bytes": 29724,
+            "sha256": "a7d30f57ab4995fece1a236317060f2fc0d5f39f7c0031899e1bd65a663f3750"
+          },
+          "relay_consumer_worker.py": {
+            "bytes": 16254,
+            "sha256": "ebbe43d7ce4ace9c39ea04501003faf756f2535d56465666ad3709869068a5e2"
+          },
+          "retrieval_relay.py": {
+            "bytes": 15053,
+            "sha256": "52d046b20d8bbda06d146238b6fab2eca209952fedd55b2324ea440e5c610d60"
+          },
+          "pool_paths.sh": {
+            "bytes": 1933,
+            "sha256": "3d087d5eab3657a75f555a0bf1c0b571ae20d64583d23c10c35c6eee1440c52d"
+          },
+          "guarded_rollover_control.py": {
+            "bytes": 4139,
+            "sha256": "c80217d2c8fae2eb6f70462034ea7963071dac420ba8618f6d6a76d7728e05be"
+          },
+          "guarded_rollover_slot_control.py": {
+            "bytes": 157,
+            "sha256": "a4108cc86de0f46eeb24150d990d6c24e7ef839fe6c9fa1affc722a8e56ba9cd"
+          },
+          "rollover_terminal.py": {
+            "bytes": 15200,
+            "sha256": "a0e815784651f3ccdddb189353260324ce3a6fcb657e2241aa90e13fafb65f2c"
+          },
+          "predecessor_generation_terminal.py": {
+            "bytes": 14578,
+            "sha256": "dffeb10936eb592af68cb97e07186cf34e971772412d7c236c8f872c33d775ea"
+          },
+          "queued_slot_consumer.py": {
+            "bytes": 856,
+            "sha256": "fb694c5a732bbc6b8e7e5d394dc75a6a25ce9ec2f2fe69f16df70ef72eadbe5e"
+          },
+          "queued_health.py": {
+            "bytes": 804,
+            "sha256": "bb55b378fdb66306fbae71c174a1bfcf5475fd715cd409015d65d698b677e21a"
+          },
+          "rollover_source_slots.py": {
+            "bytes": 800,
+            "sha256": "17499d6cbe226279d0f74b2dc0477b8554dab8ea01cef3c47d3aceb5eb2f5619"
+          },
+          "rollover_retrieval_owner.py": {
+            "bytes": 408,
+            "sha256": "e0f89397d0d709dbadfeb9a9c37d79cb0e44958c54918c12b35f8d5c0532920d"
+          },
+          "rollover_paths.py": {
+            "bytes": 2214,
+            "sha256": "9e0d3bf78c5d4b11ae19f75e20a524fd8080cd7a3809ad31303af41109e74597"
+          }
+        },
+        "stage_args": [
+          "stage",
+          "--generation",
+          "owner-v2",
+          "--enabled-slots",
+          "retrieval-tp4",
+          "--slot",
+          "retrieval-tp4",
+          "--instance",
+          "r2",
+          "--intent-id",
+          "source-retrieval-tp4-r2-stage",
+          "--published-commit",
+          "NEW_HEAD",
+          "--published-ref",
+          "refs/heads/codex/qwen7b-h100-assets-20261020"
+        ],
+        "submit_args": [
+          "submit",
+          "--generation",
+          "owner-v2",
+          "--enabled-slots",
+          "retrieval-tp4",
+          "--slot",
+          "retrieval-tp4",
+          "--instance",
+          "r2",
+          "--owner-ready",
+          "SOURCE_OWNER_READY",
+          "--owner-ready-sha256",
+          "SOURCE_OWNER_READY_SHA256",
+          "--intent-id",
+          "source-retrieval-tp4-r2-submit",
+          "--published-commit",
+          "NEW_HEAD",
+          "--published-ref",
+          "refs/heads/codex/qwen7b-h100-assets-20261020"
+        ],
+        "stage_command": "python3 -m reproduction.operations.qwen7b_resample.guarded_rollover_slot_control stage --generation owner-v2 --enabled-slots retrieval-tp4 --slot retrieval-tp4 --instance r2 --intent-id source-retrieval-tp4-r2-stage --published-commit NEW_HEAD --published-ref refs/heads/codex/qwen7b-h100-assets-20261020",
+        "submit_command": "python3 -m reproduction.operations.qwen7b_resample.guarded_rollover_slot_control submit --generation owner-v2 --enabled-slots retrieval-tp4 --slot retrieval-tp4 --instance r2 --owner-ready SOURCE_OWNER_READY --owner-ready-sha256 SOURCE_OWNER_READY_SHA256 --intent-id source-retrieval-tp4-r2-submit --published-commit NEW_HEAD --published-ref refs/heads/codex/qwen7b-h100-assets-20261020"
+      },
+      "model_specification": {
+        "indices": [
+          0,
+          1,
+          2,
+          5
+        ],
+        "tp": 4,
+        "seqs": 32,
+        "tokens": 8192,
+        "blocks": 8192,
+        "reserve": 0.5
+      },
+      "owner_registry_key": "source:owner",
+      "finite_slot": "retrieval-tp4",
+      "required_slot_lease_directory": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/gpu-slot-leases/70188b8e50fd4b45bc420ce58014f46e/SOURCE_OWNER_PID-SOURCE_OWNER_BIRTH/retrieval-tp4",
+      "required_released_uuid_indices": [
+        0,
+        1,
+        2,
+        5
+      ],
+      "primary_owner_lease_ownership_unchanged": true,
+      "execution_preconditions": [
+        "Fresh native observation of this exact current_r1.unit: MainPID=0 and ActiveState inactive or failed; its exact own cgroup is empty and recorded original births are gone.",
+        "All current r1 slot_lease_paths for this slot are really released. Probe the same owner-PID/birth slot directory and exact current-allocation UUID paths without retaining any probe lease.",
+        "Unique sealed global trajectory bank remains below 845140, checked at execution; preserve completed batches and genuine partial checkpoints.",
+        "Same immutable owner-ready path/SHA resolves to the still-live original owner/retriever/relay identities and namespaces; owner is not draining and enough consumer deadline remains.",
+        "Publish and independently verify NEW_HEAD exact source_files before staging; r2 unit/intent must be unconsumed. Unknown submit outcome means query that r2 unit/intent, never blind replay."
+      ],
+      "gates_automatically_added_by_plan": false,
+      "remote_execution_performed": false
+    },
+    {
+      "key": "source:gpu2-tp1",
+      "node": "h100-5",
+      "role": "slot",
+      "control_module": "reproduction.operations.qwen7b_resample.guarded_rollover_slot_control",
+      "generation_cli": "owner-v2",
+      "current_r1": {
+        "unit": "sst-q7b-g5-guard-rollover-owner-v2-gpu2-tp1-r1-70188b8e50fd.service",
+        "directory": "retrieval-generation-guard-rollover-owner-v2-gpu2-tp1-r1",
+        "frozen_source_bundle_sha256": "9858dda08b365c4024e0f6cfdf785aaadb257bd11c3821a284be91cd55ca3deb",
+        "submit_intent": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-gpu2-tp1-r1/submit-intent.json",
+        "terminal_observation": "REQUIRED_AT_EXECUTION_NOT_OBSERVED_BY_THIS_PLAN",
+        "slot_lease_release_observation": "REQUIRED_AT_EXECUTION_NOT_OBSERVED_BY_THIS_PLAN"
+      },
+      "r2": {
+        "instance": "r2",
+        "unit": "sst-q7b-g5-guard-rollover-owner-v2-gpu2-tp1-r2-70188b8e50fd.service",
+        "directory": "retrieval-generation-guard-rollover-owner-v2-gpu2-tp1-r2",
+        "source_bundle_sha256": "f93df2b3cbc87834605d044cdc8b8ac2c68806c52587c1ef6c9550628f963afb",
+        "physical_stage": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-gpu2-tp1-r2/f93df2b3cbc87834605d044cdc8b8ac2c68806c52587c1ef6c9550628f963afb",
+        "shared_stage": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-gpu2-tp1-r2/f93df2b3cbc87834605d044cdc8b8ac2c68806c52587c1ef6c9550628f963afb",
+        "submit_intent": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-gpu2-tp1-r2/submit-intent.json",
+        "submit_receipt": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-gpu2-tp1-r2/submit-receipt.json",
+        "source_files": {
+          "retrieval_only_owner.py": {
+            "bytes": 10665,
+            "sha256": "ab6037fde22cd0f408549ce1884a4c6e8d58f15aaa1f80676857c99e33da5233"
+          },
+          "retrieval_only_control.py": {
+            "bytes": 18808,
+            "sha256": "9580a39ec60c181aaef6d9467659a2dd3c59e79fbac0dc06e73c55cefb1e7e41"
+          },
+          "source_slot_consumer_worker.py": {
+            "bytes": 8210,
+            "sha256": "6e6f5eae1507e772b0d636037ebe6341e1b2c335ca8d0049d79040ab3a0d524f"
+          },
+          "source_slot_control.py": {
+            "bytes": 166,
+            "sha256": "1e0771e685c77ca81f44fb752faa2be1bad45f9a442b07d59be9557d1525f86a"
+          },
+          "draining_pool_worker.py": {
+            "bytes": 2879,
+            "sha256": "965a938d8b44bb8360285734a56010e07ae14b2c62b7b4ac55dd0a43c6dc1a51"
+          },
+          "shared_vram_worker.py": {
+            "bytes": 28570,
+            "sha256": "3a601748de704c4baee82bcb53927fe8e1f511f3f7af0d05953afabc4c6ef172"
+          },
+          "shared_vram_retriever.py": {
+            "bytes": 18155,
+            "sha256": "686b8c498cba50e556909051cce511b81b2d61afa9aadf11c4f25992689da316"
+          },
+          "shared_vram_vllm_adapter.py": {
+            "bytes": 5039,
+            "sha256": "780921f1aee405a941842fd52cd5f1121a7756b357fa6686c247a9c2b93d75f5"
+          },
+          "pool_worker.py": {
+            "bytes": 29724,
+            "sha256": "a7d30f57ab4995fece1a236317060f2fc0d5f39f7c0031899e1bd65a663f3750"
+          },
+          "relay_consumer_worker.py": {
+            "bytes": 16254,
+            "sha256": "ebbe43d7ce4ace9c39ea04501003faf756f2535d56465666ad3709869068a5e2"
+          },
+          "retrieval_relay.py": {
+            "bytes": 15053,
+            "sha256": "52d046b20d8bbda06d146238b6fab2eca209952fedd55b2324ea440e5c610d60"
+          },
+          "pool_paths.sh": {
+            "bytes": 1933,
+            "sha256": "3d087d5eab3657a75f555a0bf1c0b571ae20d64583d23c10c35c6eee1440c52d"
+          },
+          "guarded_rollover_control.py": {
+            "bytes": 4139,
+            "sha256": "c80217d2c8fae2eb6f70462034ea7963071dac420ba8618f6d6a76d7728e05be"
+          },
+          "guarded_rollover_slot_control.py": {
+            "bytes": 157,
+            "sha256": "a4108cc86de0f46eeb24150d990d6c24e7ef839fe6c9fa1affc722a8e56ba9cd"
+          },
+          "rollover_terminal.py": {
+            "bytes": 15200,
+            "sha256": "a0e815784651f3ccdddb189353260324ce3a6fcb657e2241aa90e13fafb65f2c"
+          },
+          "predecessor_generation_terminal.py": {
+            "bytes": 14578,
+            "sha256": "dffeb10936eb592af68cb97e07186cf34e971772412d7c236c8f872c33d775ea"
+          },
+          "queued_slot_consumer.py": {
+            "bytes": 856,
+            "sha256": "fb694c5a732bbc6b8e7e5d394dc75a6a25ce9ec2f2fe69f16df70ef72eadbe5e"
+          },
+          "queued_health.py": {
+            "bytes": 804,
+            "sha256": "bb55b378fdb66306fbae71c174a1bfcf5475fd715cd409015d65d698b677e21a"
+          },
+          "rollover_source_slots.py": {
+            "bytes": 800,
+            "sha256": "17499d6cbe226279d0f74b2dc0477b8554dab8ea01cef3c47d3aceb5eb2f5619"
+          },
+          "rollover_retrieval_owner.py": {
+            "bytes": 408,
+            "sha256": "e0f89397d0d709dbadfeb9a9c37d79cb0e44958c54918c12b35f8d5c0532920d"
+          },
+          "rollover_paths.py": {
+            "bytes": 2214,
+            "sha256": "9e0d3bf78c5d4b11ae19f75e20a524fd8080cd7a3809ad31303af41109e74597"
+          }
+        },
+        "stage_args": [
+          "stage",
+          "--generation",
+          "owner-v2",
+          "--enabled-slots",
+          "gpu2-tp1",
+          "--slot",
+          "gpu2-tp1",
+          "--instance",
+          "r2",
+          "--intent-id",
+          "source-gpu2-tp1-r2-stage",
+          "--published-commit",
+          "NEW_HEAD",
+          "--published-ref",
+          "refs/heads/codex/qwen7b-h100-assets-20261020"
+        ],
+        "submit_args": [
+          "submit",
+          "--generation",
+          "owner-v2",
+          "--enabled-slots",
+          "gpu2-tp1",
+          "--slot",
+          "gpu2-tp1",
+          "--instance",
+          "r2",
+          "--owner-ready",
+          "SOURCE_OWNER_READY",
+          "--owner-ready-sha256",
+          "SOURCE_OWNER_READY_SHA256",
+          "--intent-id",
+          "source-gpu2-tp1-r2-submit",
+          "--published-commit",
+          "NEW_HEAD",
+          "--published-ref",
+          "refs/heads/codex/qwen7b-h100-assets-20261020"
+        ],
+        "stage_command": "python3 -m reproduction.operations.qwen7b_resample.guarded_rollover_slot_control stage --generation owner-v2 --enabled-slots gpu2-tp1 --slot gpu2-tp1 --instance r2 --intent-id source-gpu2-tp1-r2-stage --published-commit NEW_HEAD --published-ref refs/heads/codex/qwen7b-h100-assets-20261020",
+        "submit_command": "python3 -m reproduction.operations.qwen7b_resample.guarded_rollover_slot_control submit --generation owner-v2 --enabled-slots gpu2-tp1 --slot gpu2-tp1 --instance r2 --owner-ready SOURCE_OWNER_READY --owner-ready-sha256 SOURCE_OWNER_READY_SHA256 --intent-id source-gpu2-tp1-r2-submit --published-commit NEW_HEAD --published-ref refs/heads/codex/qwen7b-h100-assets-20261020"
+      },
+      "model_specification": {
+        "indices": [
+          2
+        ],
+        "tp": 1,
+        "seqs": 128,
+        "tokens": 16384,
+        "blocks": 16384,
+        "reserve": 1.5
+      },
+      "owner_registry_key": "source:owner",
+      "finite_slot": "gpu2-tp1",
+      "required_slot_lease_directory": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/gpu-slot-leases/70188b8e50fd4b45bc420ce58014f46e/SOURCE_OWNER_PID-SOURCE_OWNER_BIRTH/gpu2-tp1",
+      "required_released_uuid_indices": [
+        2
+      ],
+      "primary_owner_lease_ownership_unchanged": true,
+      "execution_preconditions": [
+        "Fresh native observation of this exact current_r1.unit: MainPID=0 and ActiveState inactive or failed; its exact own cgroup is empty and recorded original births are gone.",
+        "All current r1 slot_lease_paths for this slot are really released. Probe the same owner-PID/birth slot directory and exact current-allocation UUID paths without retaining any probe lease.",
+        "Unique sealed global trajectory bank remains below 845140, checked at execution; preserve completed batches and genuine partial checkpoints.",
+        "Same immutable owner-ready path/SHA resolves to the still-live original owner/retriever/relay identities and namespaces; owner is not draining and enough consumer deadline remains.",
+        "Publish and independently verify NEW_HEAD exact source_files before staging; r2 unit/intent must be unconsumed. Unknown submit outcome means query that r2 unit/intent, never blind replay."
+      ],
+      "gates_automatically_added_by_plan": false,
+      "remote_execution_performed": false
+    },
+    {
+      "key": "node10:tp4-0-4-6-7",
+      "node": "h100-10",
+      "role": "slot",
+      "control_module": "reproduction.operations.qwen7b_resample.queued_generation_control",
+      "generation_cli": "owner-v2",
+      "current_r1": {
+        "unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-tp4-0-4-6-7-r1-70188b8e50fd.service",
+        "directory": "relay-generation-queued-owner-v2-slot-tp4-0-4-6-7-r1",
+        "frozen_source_bundle_sha256": "0d842a908410a745783e2bb033c917bfdda20c5c80be20dd1b581a06e0ec1211",
+        "submit_intent": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-tp4-0-4-6-7-r1/submit-intent.json",
+        "terminal_observation": "REQUIRED_AT_EXECUTION_NOT_OBSERVED_BY_THIS_PLAN",
+        "slot_lease_release_observation": "REQUIRED_AT_EXECUTION_NOT_OBSERVED_BY_THIS_PLAN"
+      },
+      "r2": {
+        "instance": "r2",
+        "unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-tp4-0-4-6-7-r2-70188b8e50fd.service",
+        "directory": "relay-generation-queued-owner-v2-slot-tp4-0-4-6-7-r2",
+        "source_bundle_sha256": "05a9778d846ec352d48cf36e6bae33656284adc67032c9364ade5f9a1df1f92b",
+        "physical_stage": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-tp4-0-4-6-7-r2/05a9778d846ec352d48cf36e6bae33656284adc67032c9364ade5f9a1df1f92b",
+        "shared_stage": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-tp4-0-4-6-7-r2/05a9778d846ec352d48cf36e6bae33656284adc67032c9364ade5f9a1df1f92b",
+        "submit_intent": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-tp4-0-4-6-7-r2/submit-intent.json",
+        "submit_receipt": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-tp4-0-4-6-7-r2/submit-receipt.json",
+        "source_files": {
+          "retrieval_relay_generation_control.py": {
+            "bytes": 19858,
+            "sha256": "8627d4fda1230798b314c310d75e1c2a9dac21752073b49b2f5e703e2c5d8782"
+          },
+          "retrieval_relay_owner.py": {
+            "bytes": 20607,
+            "sha256": "6271dca1041041f4eeee8f77740654bcb1ad0010991a930d006ae152039e1685"
+          },
+          "relay_slot_consumer_worker.py": {
+            "bytes": 7273,
+            "sha256": "5dcc7b922463c8a7411b5241c9a04ba97a9f69dd1a20653c576d06f8562fbac6"
+          },
+          "retrieval_remote_guard_owner.py": {
+            "bytes": 1569,
+            "sha256": "e42708b048cb8b028a74d09b3863cbb0dfdd56ee7a52fff297b8b8db5d3aea15"
+          },
+          "retrieval_only_owner.py": {
+            "bytes": 10665,
+            "sha256": "ab6037fde22cd0f408549ce1884a4c6e8d58f15aaa1f80676857c99e33da5233"
+          },
+          "source_slot_consumer_worker.py": {
+            "bytes": 8210,
+            "sha256": "6e6f5eae1507e772b0d636037ebe6341e1b2c335ca8d0049d79040ab3a0d524f"
+          },
+          "draining_pool_worker.py": {
+            "bytes": 2879,
+            "sha256": "965a938d8b44bb8360285734a56010e07ae14b2c62b7b4ac55dd0a43c6dc1a51"
+          },
+          "pool_worker.py": {
+            "bytes": 29724,
+            "sha256": "a7d30f57ab4995fece1a236317060f2fc0d5f39f7c0031899e1bd65a663f3750"
+          },
+          "relay_consumer_worker.py": {
+            "bytes": 16254,
+            "sha256": "ebbe43d7ce4ace9c39ea04501003faf756f2535d56465666ad3709869068a5e2"
+          },
+          "retrieval_relay.py": {
+            "bytes": 15053,
+            "sha256": "52d046b20d8bbda06d146238b6fab2eca209952fedd55b2324ea440e5c610d60"
+          },
+          "shared_vram_worker.py": {
+            "bytes": 28570,
+            "sha256": "3a601748de704c4baee82bcb53927fe8e1f511f3f7af0d05953afabc4c6ef172"
+          },
+          "shared_vram_vllm_adapter.py": {
+            "bytes": 5039,
+            "sha256": "780921f1aee405a941842fd52cd5f1121a7756b357fa6686c247a9c2b93d75f5"
+          },
+          "pool_paths.sh": {
+            "bytes": 1933,
+            "sha256": "3d087d5eab3657a75f555a0bf1c0b571ae20d64583d23c10c35c6eee1440c52d"
+          },
+          "queued_generation_control.py": {
+            "bytes": 3857,
+            "sha256": "76876a0b01116a52f68553bc086c886928e4b51df0ad2864516711152afc6e71"
+          },
+          "queued_health.py": {
+            "bytes": 804,
+            "sha256": "bb55b378fdb66306fbae71c174a1bfcf5475fd715cd409015d65d698b677e21a"
+          },
+          "queued_slot_consumer.py": {
+            "bytes": 856,
+            "sha256": "fb694c5a732bbc6b8e7e5d394dc75a6a25ce9ec2f2fe69f16df70ef72eadbe5e"
+          },
+          "queued_relay_owner.py": {
+            "bytes": 1258,
+            "sha256": "ae49681abb10bc14a73fb45f115a70498d580e3bb7a6adf4952ec874db0fc362"
+          },
+          "queued_relay_slots.py": {
+            "bytes": 1117,
+            "sha256": "bdb3e49a47c37cc2c133ff27ad781d46f2e5ea0a70018bba1f7b95494030f57b"
+          },
+          "retrieval_relay_backpressure.py": {
+            "bytes": 11811,
+            "sha256": "3d1d9a9f786f9a75888edbe47dcb9efa4fc5ea3f8d3f563aaa12214f9a624cd2"
+          },
+          "rollover_terminal.py": {
+            "bytes": 15200,
+            "sha256": "a0e815784651f3ccdddb189353260324ce3a6fcb657e2241aa90e13fafb65f2c"
+          },
+          "rollover_paths.py": {
+            "bytes": 2214,
+            "sha256": "9e0d3bf78c5d4b11ae19f75e20a524fd8080cd7a3809ad31303af41109e74597"
+          },
+          "predecessor_generation_terminal.py": {
+            "bytes": 14578,
+            "sha256": "dffeb10936eb592af68cb97e07186cf34e971772412d7c236c8f872c33d775ea"
+          }
+        },
+        "stage_args": [
+          "slot",
+          "stage",
+          "--generation",
+          "owner-v2",
+          "--enabled-slots",
+          "tp4-0-4-6-7,gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1,gpu7-tp1",
+          "--slot",
+          "tp4-0-4-6-7",
+          "--instance",
+          "r2",
+          "--intent-id",
+          "node10-tp4-0-4-6-7-r2-stage",
+          "--published-commit",
+          "NEW_HEAD",
+          "--published-ref",
+          "refs/heads/codex/qwen7b-h100-assets-20261020"
+        ],
+        "submit_args": [
+          "slot",
+          "submit",
+          "--generation",
+          "owner-v2",
+          "--enabled-slots",
+          "tp4-0-4-6-7,gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1,gpu7-tp1",
+          "--slot",
+          "tp4-0-4-6-7",
+          "--instance",
+          "r2",
+          "--downstream-owner-ready",
+          "DOWNSTREAM_OWNER_READY",
+          "--downstream-owner-ready-sha256",
+          "DOWNSTREAM_OWNER_READY_SHA256",
+          "--intent-id",
+          "node10-tp4-0-4-6-7-r2-submit",
+          "--published-commit",
+          "NEW_HEAD",
+          "--published-ref",
+          "refs/heads/codex/qwen7b-h100-assets-20261020"
+        ],
+        "stage_command": "python3 -m reproduction.operations.qwen7b_resample.queued_generation_control slot stage --generation owner-v2 --enabled-slots tp4-0-4-6-7,gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1,gpu7-tp1 --slot tp4-0-4-6-7 --instance r2 --intent-id node10-tp4-0-4-6-7-r2-stage --published-commit NEW_HEAD --published-ref refs/heads/codex/qwen7b-h100-assets-20261020",
+        "submit_command": "python3 -m reproduction.operations.qwen7b_resample.queued_generation_control slot submit --generation owner-v2 --enabled-slots tp4-0-4-6-7,gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1,gpu7-tp1 --slot tp4-0-4-6-7 --instance r2 --downstream-owner-ready DOWNSTREAM_OWNER_READY --downstream-owner-ready-sha256 DOWNSTREAM_OWNER_READY_SHA256 --intent-id node10-tp4-0-4-6-7-r2-submit --published-commit NEW_HEAD --published-ref refs/heads/codex/qwen7b-h100-assets-20261020"
+      },
+      "model_specification": {
+        "indices": [
+          0,
+          4,
+          6,
+          7
+        ],
+        "tp": 4,
+        "seqs": 8,
+        "tokens": 4096,
+        "blocks": 512,
+        "reserve": 0.125
+      },
+      "owner_registry_key": "relay:downstream",
+      "finite_slot": "tp4-0-4-6-7",
+      "required_slot_lease_directory": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/gpu-slot-leases/70188b8e50fd4b45bc420ce58014f46e/DOWNSTREAM_OWNER_PID-DOWNSTREAM_OWNER_BIRTH/tp4-0-4-6-7",
+      "required_released_uuid_indices": [
+        0,
+        4,
+        6,
+        7
+      ],
+      "primary_owner_lease_ownership_unchanged": true,
+      "execution_preconditions": [
+        "Fresh native observation of this exact current_r1.unit: MainPID=0 and ActiveState inactive or failed; its exact own cgroup is empty and recorded original births are gone.",
+        "All current r1 slot_lease_paths for this slot are really released. Probe the same owner-PID/birth slot directory and exact current-allocation UUID paths without retaining any probe lease.",
+        "Unique sealed global trajectory bank remains below 845140, checked at execution; preserve completed batches and genuine partial checkpoints.",
+        "Same immutable owner-ready path/SHA resolves to the still-live original owner/retriever/relay identities and namespaces; owner is not draining and enough consumer deadline remains.",
+        "Publish and independently verify NEW_HEAD exact source_files before staging; r2 unit/intent must be unconsumed. Unknown submit outcome means query that r2 unit/intent, never blind replay."
+      ],
+      "gates_automatically_added_by_plan": false,
+      "remote_execution_performed": false
+    },
+    {
+      "key": "node10:gpu3-tp1",
+      "node": "h100-10",
+      "role": "slot",
+      "control_module": "reproduction.operations.qwen7b_resample.queued_generation_control",
+      "generation_cli": "owner-v2",
+      "current_r1": {
+        "unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-gpu3-tp1-r1-70188b8e50fd.service",
+        "directory": "relay-generation-queued-owner-v2-slot-gpu3-tp1-r1",
+        "frozen_source_bundle_sha256": "2efde726f4d9f981e688e344775c0767a9754e7a2c914c6d69fba1a2d5f5dbe5",
+        "submit_intent": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-gpu3-tp1-r1/submit-intent.json",
+        "terminal_observation": "REQUIRED_AT_EXECUTION_NOT_OBSERVED_BY_THIS_PLAN",
+        "slot_lease_release_observation": "REQUIRED_AT_EXECUTION_NOT_OBSERVED_BY_THIS_PLAN"
+      },
+      "r2": {
+        "instance": "r2",
+        "unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-gpu3-tp1-r2-70188b8e50fd.service",
+        "directory": "relay-generation-queued-owner-v2-slot-gpu3-tp1-r2",
+        "source_bundle_sha256": "4966d05a9a1a754cd7eaef108c5cdf970afbd8d428bd228402477a258fbc32f0",
+        "physical_stage": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-gpu3-tp1-r2/4966d05a9a1a754cd7eaef108c5cdf970afbd8d428bd228402477a258fbc32f0",
+        "shared_stage": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-gpu3-tp1-r2/4966d05a9a1a754cd7eaef108c5cdf970afbd8d428bd228402477a258fbc32f0",
+        "submit_intent": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-gpu3-tp1-r2/submit-intent.json",
+        "submit_receipt": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-gpu3-tp1-r2/submit-receipt.json",
+        "source_files": {
+          "retrieval_relay_generation_control.py": {
+            "bytes": 19858,
+            "sha256": "8627d4fda1230798b314c310d75e1c2a9dac21752073b49b2f5e703e2c5d8782"
+          },
+          "retrieval_relay_owner.py": {
+            "bytes": 20607,
+            "sha256": "6271dca1041041f4eeee8f77740654bcb1ad0010991a930d006ae152039e1685"
+          },
+          "relay_slot_consumer_worker.py": {
+            "bytes": 7273,
+            "sha256": "5dcc7b922463c8a7411b5241c9a04ba97a9f69dd1a20653c576d06f8562fbac6"
+          },
+          "retrieval_remote_guard_owner.py": {
+            "bytes": 1569,
+            "sha256": "e42708b048cb8b028a74d09b3863cbb0dfdd56ee7a52fff297b8b8db5d3aea15"
+          },
+          "retrieval_only_owner.py": {
+            "bytes": 10665,
+            "sha256": "ab6037fde22cd0f408549ce1884a4c6e8d58f15aaa1f80676857c99e33da5233"
+          },
+          "source_slot_consumer_worker.py": {
+            "bytes": 8210,
+            "sha256": "6e6f5eae1507e772b0d636037ebe6341e1b2c335ca8d0049d79040ab3a0d524f"
+          },
+          "draining_pool_worker.py": {
+            "bytes": 2879,
+            "sha256": "965a938d8b44bb8360285734a56010e07ae14b2c62b7b4ac55dd0a43c6dc1a51"
+          },
+          "pool_worker.py": {
+            "bytes": 29724,
+            "sha256": "a7d30f57ab4995fece1a236317060f2fc0d5f39f7c0031899e1bd65a663f3750"
+          },
+          "relay_consumer_worker.py": {
+            "bytes": 16254,
+            "sha256": "ebbe43d7ce4ace9c39ea04501003faf756f2535d56465666ad3709869068a5e2"
+          },
+          "retrieval_relay.py": {
+            "bytes": 15053,
+            "sha256": "52d046b20d8bbda06d146238b6fab2eca209952fedd55b2324ea440e5c610d60"
+          },
+          "shared_vram_worker.py": {
+            "bytes": 28570,
+            "sha256": "3a601748de704c4baee82bcb53927fe8e1f511f3f7af0d05953afabc4c6ef172"
+          },
+          "shared_vram_vllm_adapter.py": {
+            "bytes": 5039,
+            "sha256": "780921f1aee405a941842fd52cd5f1121a7756b357fa6686c247a9c2b93d75f5"
+          },
+          "pool_paths.sh": {
+            "bytes": 1933,
+            "sha256": "3d087d5eab3657a75f555a0bf1c0b571ae20d64583d23c10c35c6eee1440c52d"
+          },
+          "queued_generation_control.py": {
+            "bytes": 3857,
+            "sha256": "76876a0b01116a52f68553bc086c886928e4b51df0ad2864516711152afc6e71"
+          },
+          "queued_health.py": {
+            "bytes": 804,
+            "sha256": "bb55b378fdb66306fbae71c174a1bfcf5475fd715cd409015d65d698b677e21a"
+          },
+          "queued_slot_consumer.py": {
+            "bytes": 856,
+            "sha256": "fb694c5a732bbc6b8e7e5d394dc75a6a25ce9ec2f2fe69f16df70ef72eadbe5e"
+          },
+          "queued_relay_owner.py": {
+            "bytes": 1258,
+            "sha256": "ae49681abb10bc14a73fb45f115a70498d580e3bb7a6adf4952ec874db0fc362"
+          },
+          "queued_relay_slots.py": {
+            "bytes": 1117,
+            "sha256": "bdb3e49a47c37cc2c133ff27ad781d46f2e5ea0a70018bba1f7b95494030f57b"
+          },
+          "retrieval_relay_backpressure.py": {
+            "bytes": 11811,
+            "sha256": "3d1d9a9f786f9a75888edbe47dcb9efa4fc5ea3f8d3f563aaa12214f9a624cd2"
+          },
+          "rollover_terminal.py": {
+            "bytes": 15200,
+            "sha256": "a0e815784651f3ccdddb189353260324ce3a6fcb657e2241aa90e13fafb65f2c"
+          },
+          "rollover_paths.py": {
+            "bytes": 2214,
+            "sha256": "9e0d3bf78c5d4b11ae19f75e20a524fd8080cd7a3809ad31303af41109e74597"
+          },
+          "predecessor_generation_terminal.py": {
+            "bytes": 14578,
+            "sha256": "dffeb10936eb592af68cb97e07186cf34e971772412d7c236c8f872c33d775ea"
+          }
+        },
+        "stage_args": [
+          "slot",
+          "stage",
+          "--generation",
+          "owner-v2",
+          "--enabled-slots",
+          "tp4-0-4-6-7,gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1,gpu7-tp1",
+          "--slot",
+          "gpu3-tp1",
+          "--instance",
+          "r2",
+          "--intent-id",
+          "node10-gpu3-tp1-r2-stage",
+          "--published-commit",
+          "NEW_HEAD",
+          "--published-ref",
+          "refs/heads/codex/qwen7b-h100-assets-20261020"
+        ],
+        "submit_args": [
+          "slot",
+          "submit",
+          "--generation",
+          "owner-v2",
+          "--enabled-slots",
+          "tp4-0-4-6-7,gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1,gpu7-tp1",
+          "--slot",
+          "gpu3-tp1",
+          "--instance",
+          "r2",
+          "--downstream-owner-ready",
+          "DOWNSTREAM_OWNER_READY",
+          "--downstream-owner-ready-sha256",
+          "DOWNSTREAM_OWNER_READY_SHA256",
+          "--intent-id",
+          "node10-gpu3-tp1-r2-submit",
+          "--published-commit",
+          "NEW_HEAD",
+          "--published-ref",
+          "refs/heads/codex/qwen7b-h100-assets-20261020"
+        ],
+        "stage_command": "python3 -m reproduction.operations.qwen7b_resample.queued_generation_control slot stage --generation owner-v2 --enabled-slots tp4-0-4-6-7,gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1,gpu7-tp1 --slot gpu3-tp1 --instance r2 --intent-id node10-gpu3-tp1-r2-stage --published-commit NEW_HEAD --published-ref refs/heads/codex/qwen7b-h100-assets-20261020",
+        "submit_command": "python3 -m reproduction.operations.qwen7b_resample.queued_generation_control slot submit --generation owner-v2 --enabled-slots tp4-0-4-6-7,gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1,gpu7-tp1 --slot gpu3-tp1 --instance r2 --downstream-owner-ready DOWNSTREAM_OWNER_READY --downstream-owner-ready-sha256 DOWNSTREAM_OWNER_READY_SHA256 --intent-id node10-gpu3-tp1-r2-submit --published-commit NEW_HEAD --published-ref refs/heads/codex/qwen7b-h100-assets-20261020"
+      },
+      "model_specification": {
+        "indices": [
+          3
+        ],
+        "tp": 1,
+        "seqs": 64,
+        "tokens": 8192,
+        "blocks": 4096,
+        "reserve": 1.0
+      },
+      "owner_registry_key": "relay:downstream",
+      "finite_slot": "gpu3-tp1",
+      "required_slot_lease_directory": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/gpu-slot-leases/70188b8e50fd4b45bc420ce58014f46e/DOWNSTREAM_OWNER_PID-DOWNSTREAM_OWNER_BIRTH/gpu3-tp1",
+      "required_released_uuid_indices": [
+        3
+      ],
+      "primary_owner_lease_ownership_unchanged": true,
+      "execution_preconditions": [
+        "Fresh native observation of this exact current_r1.unit: MainPID=0 and ActiveState inactive or failed; its exact own cgroup is empty and recorded original births are gone.",
+        "All current r1 slot_lease_paths for this slot are really released. Probe the same owner-PID/birth slot directory and exact current-allocation UUID paths without retaining any probe lease.",
+        "Unique sealed global trajectory bank remains below 845140, checked at execution; preserve completed batches and genuine partial checkpoints.",
+        "Same immutable owner-ready path/SHA resolves to the still-live original owner/retriever/relay identities and namespaces; owner is not draining and enough consumer deadline remains.",
+        "Publish and independently verify NEW_HEAD exact source_files before staging; r2 unit/intent must be unconsumed. Unknown submit outcome means query that r2 unit/intent, never blind replay."
+      ],
+      "gates_automatically_added_by_plan": false,
+      "remote_execution_performed": false
+    },
+    {
+      "key": "node10:gpu5-tp1",
+      "node": "h100-10",
+      "role": "slot",
+      "control_module": "reproduction.operations.qwen7b_resample.queued_generation_control",
+      "generation_cli": "owner-v2",
+      "current_r1": {
+        "unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-gpu5-tp1-r1-70188b8e50fd.service",
+        "directory": "relay-generation-queued-owner-v2-slot-gpu5-tp1-r1",
+        "frozen_source_bundle_sha256": "641ad5f5aa5a711bdb70dfd54a9e046a979c548430c499875550023812373b1a",
+        "submit_intent": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-gpu5-tp1-r1/submit-intent.json",
+        "terminal_observation": "REQUIRED_AT_EXECUTION_NOT_OBSERVED_BY_THIS_PLAN",
+        "slot_lease_release_observation": "REQUIRED_AT_EXECUTION_NOT_OBSERVED_BY_THIS_PLAN"
+      },
+      "r2": {
+        "instance": "r2",
+        "unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-gpu5-tp1-r2-70188b8e50fd.service",
+        "directory": "relay-generation-queued-owner-v2-slot-gpu5-tp1-r2",
+        "source_bundle_sha256": "88239d8959ec79a49d0aa94306470bec56146bde5a87f436baa1f761c26d66b0",
+        "physical_stage": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-gpu5-tp1-r2/88239d8959ec79a49d0aa94306470bec56146bde5a87f436baa1f761c26d66b0",
+        "shared_stage": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-gpu5-tp1-r2/88239d8959ec79a49d0aa94306470bec56146bde5a87f436baa1f761c26d66b0",
+        "submit_intent": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-gpu5-tp1-r2/submit-intent.json",
+        "submit_receipt": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-gpu5-tp1-r2/submit-receipt.json",
+        "source_files": {
+          "retrieval_relay_generation_control.py": {
+            "bytes": 19858,
+            "sha256": "8627d4fda1230798b314c310d75e1c2a9dac21752073b49b2f5e703e2c5d8782"
+          },
+          "retrieval_relay_owner.py": {
+            "bytes": 20607,
+            "sha256": "6271dca1041041f4eeee8f77740654bcb1ad0010991a930d006ae152039e1685"
+          },
+          "relay_slot_consumer_worker.py": {
+            "bytes": 7273,
+            "sha256": "5dcc7b922463c8a7411b5241c9a04ba97a9f69dd1a20653c576d06f8562fbac6"
+          },
+          "retrieval_remote_guard_owner.py": {
+            "bytes": 1569,
+            "sha256": "e42708b048cb8b028a74d09b3863cbb0dfdd56ee7a52fff297b8b8db5d3aea15"
+          },
+          "retrieval_only_owner.py": {
+            "bytes": 10665,
+            "sha256": "ab6037fde22cd0f408549ce1884a4c6e8d58f15aaa1f80676857c99e33da5233"
+          },
+          "source_slot_consumer_worker.py": {
+            "bytes": 8210,
+            "sha256": "6e6f5eae1507e772b0d636037ebe6341e1b2c335ca8d0049d79040ab3a0d524f"
+          },
+          "draining_pool_worker.py": {
+            "bytes": 2879,
+            "sha256": "965a938d8b44bb8360285734a56010e07ae14b2c62b7b4ac55dd0a43c6dc1a51"
+          },
+          "pool_worker.py": {
+            "bytes": 29724,
+            "sha256": "a7d30f57ab4995fece1a236317060f2fc0d5f39f7c0031899e1bd65a663f3750"
+          },
+          "relay_consumer_worker.py": {
+            "bytes": 16254,
+            "sha256": "ebbe43d7ce4ace9c39ea04501003faf756f2535d56465666ad3709869068a5e2"
+          },
+          "retrieval_relay.py": {
+            "bytes": 15053,
+            "sha256": "52d046b20d8bbda06d146238b6fab2eca209952fedd55b2324ea440e5c610d60"
+          },
+          "shared_vram_worker.py": {
+            "bytes": 28570,
+            "sha256": "3a601748de704c4baee82bcb53927fe8e1f511f3f7af0d05953afabc4c6ef172"
+          },
+          "shared_vram_vllm_adapter.py": {
+            "bytes": 5039,
+            "sha256": "780921f1aee405a941842fd52cd5f1121a7756b357fa6686c247a9c2b93d75f5"
+          },
+          "pool_paths.sh": {
+            "bytes": 1933,
+            "sha256": "3d087d5eab3657a75f555a0bf1c0b571ae20d64583d23c10c35c6eee1440c52d"
+          },
+          "queued_generation_control.py": {
+            "bytes": 3857,
+            "sha256": "76876a0b01116a52f68553bc086c886928e4b51df0ad2864516711152afc6e71"
+          },
+          "queued_health.py": {
+            "bytes": 804,
+            "sha256": "bb55b378fdb66306fbae71c174a1bfcf5475fd715cd409015d65d698b677e21a"
+          },
+          "queued_slot_consumer.py": {
+            "bytes": 856,
+            "sha256": "fb694c5a732bbc6b8e7e5d394dc75a6a25ce9ec2f2fe69f16df70ef72eadbe5e"
+          },
+          "queued_relay_owner.py": {
+            "bytes": 1258,
+            "sha256": "ae49681abb10bc14a73fb45f115a70498d580e3bb7a6adf4952ec874db0fc362"
+          },
+          "queued_relay_slots.py": {
+            "bytes": 1117,
+            "sha256": "bdb3e49a47c37cc2c133ff27ad781d46f2e5ea0a70018bba1f7b95494030f57b"
+          },
+          "retrieval_relay_backpressure.py": {
+            "bytes": 11811,
+            "sha256": "3d1d9a9f786f9a75888edbe47dcb9efa4fc5ea3f8d3f563aaa12214f9a624cd2"
+          },
+          "rollover_terminal.py": {
+            "bytes": 15200,
+            "sha256": "a0e815784651f3ccdddb189353260324ce3a6fcb657e2241aa90e13fafb65f2c"
+          },
+          "rollover_paths.py": {
+            "bytes": 2214,
+            "sha256": "9e0d3bf78c5d4b11ae19f75e20a524fd8080cd7a3809ad31303af41109e74597"
+          },
+          "predecessor_generation_terminal.py": {
+            "bytes": 14578,
+            "sha256": "dffeb10936eb592af68cb97e07186cf34e971772412d7c236c8f872c33d775ea"
+          }
+        },
+        "stage_args": [
+          "slot",
+          "stage",
+          "--generation",
+          "owner-v2",
+          "--enabled-slots",
+          "tp4-0-4-6-7,gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1,gpu7-tp1",
+          "--slot",
+          "gpu5-tp1",
+          "--instance",
+          "r2",
+          "--intent-id",
+          "node10-gpu5-tp1-r2-stage",
+          "--published-commit",
+          "NEW_HEAD",
+          "--published-ref",
+          "refs/heads/codex/qwen7b-h100-assets-20261020"
+        ],
+        "submit_args": [
+          "slot",
+          "submit",
+          "--generation",
+          "owner-v2",
+          "--enabled-slots",
+          "tp4-0-4-6-7,gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1,gpu7-tp1",
+          "--slot",
+          "gpu5-tp1",
+          "--instance",
+          "r2",
+          "--downstream-owner-ready",
+          "DOWNSTREAM_OWNER_READY",
+          "--downstream-owner-ready-sha256",
+          "DOWNSTREAM_OWNER_READY_SHA256",
+          "--intent-id",
+          "node10-gpu5-tp1-r2-submit",
+          "--published-commit",
+          "NEW_HEAD",
+          "--published-ref",
+          "refs/heads/codex/qwen7b-h100-assets-20261020"
+        ],
+        "stage_command": "python3 -m reproduction.operations.qwen7b_resample.queued_generation_control slot stage --generation owner-v2 --enabled-slots tp4-0-4-6-7,gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1,gpu7-tp1 --slot gpu5-tp1 --instance r2 --intent-id node10-gpu5-tp1-r2-stage --published-commit NEW_HEAD --published-ref refs/heads/codex/qwen7b-h100-assets-20261020",
+        "submit_command": "python3 -m reproduction.operations.qwen7b_resample.queued_generation_control slot submit --generation owner-v2 --enabled-slots tp4-0-4-6-7,gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1,gpu7-tp1 --slot gpu5-tp1 --instance r2 --downstream-owner-ready DOWNSTREAM_OWNER_READY --downstream-owner-ready-sha256 DOWNSTREAM_OWNER_READY_SHA256 --intent-id node10-gpu5-tp1-r2-submit --published-commit NEW_HEAD --published-ref refs/heads/codex/qwen7b-h100-assets-20261020"
+      },
+      "model_specification": {
+        "indices": [
+          5
+        ],
+        "tp": 1,
+        "seqs": 64,
+        "tokens": 8192,
+        "blocks": 4096,
+        "reserve": 1.0
+      },
+      "owner_registry_key": "relay:downstream",
+      "finite_slot": "gpu5-tp1",
+      "required_slot_lease_directory": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/gpu-slot-leases/70188b8e50fd4b45bc420ce58014f46e/DOWNSTREAM_OWNER_PID-DOWNSTREAM_OWNER_BIRTH/gpu5-tp1",
+      "required_released_uuid_indices": [
+        5
+      ],
+      "primary_owner_lease_ownership_unchanged": true,
+      "execution_preconditions": [
+        "Fresh native observation of this exact current_r1.unit: MainPID=0 and ActiveState inactive or failed; its exact own cgroup is empty and recorded original births are gone.",
+        "All current r1 slot_lease_paths for this slot are really released. Probe the same owner-PID/birth slot directory and exact current-allocation UUID paths without retaining any probe lease.",
+        "Unique sealed global trajectory bank remains below 845140, checked at execution; preserve completed batches and genuine partial checkpoints.",
+        "Same immutable owner-ready path/SHA resolves to the still-live original owner/retriever/relay identities and namespaces; owner is not draining and enough consumer deadline remains.",
+        "Publish and independently verify NEW_HEAD exact source_files before staging; r2 unit/intent must be unconsumed. Unknown submit outcome means query that r2 unit/intent, never blind replay."
+      ],
+      "gates_automatically_added_by_plan": false,
+      "remote_execution_performed": false
+    },
+    {
+      "key": "node10:gpu7-tp1",
+      "node": "h100-10",
+      "role": "slot",
+      "control_module": "reproduction.operations.qwen7b_resample.queued_generation_control",
+      "generation_cli": "owner-v2",
+      "current_r1": {
+        "unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-gpu7-tp1-r1-70188b8e50fd.service",
+        "directory": "relay-generation-queued-owner-v2-slot-gpu7-tp1-r1",
+        "frozen_source_bundle_sha256": "c00b33ec40e2133511ba7068c023eaadf46a8951321045cee3143975286848d6",
+        "submit_intent": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-gpu7-tp1-r1/submit-intent.json",
+        "terminal_observation": "REQUIRED_AT_EXECUTION_NOT_OBSERVED_BY_THIS_PLAN",
+        "slot_lease_release_observation": "REQUIRED_AT_EXECUTION_NOT_OBSERVED_BY_THIS_PLAN"
+      },
+      "r2": {
+        "instance": "r2",
+        "unit": "sst-q7b-g5-relaygen-queued-owner-v2-slot-gpu7-tp1-r2-70188b8e50fd.service",
+        "directory": "relay-generation-queued-owner-v2-slot-gpu7-tp1-r2",
+        "source_bundle_sha256": "fd7a0eadfeed2823c828505232323b2f3ce96c410881579986184877cb02a366",
+        "physical_stage": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-gpu7-tp1-r2/fd7a0eadfeed2823c828505232323b2f3ce96c410881579986184877cb02a366",
+        "shared_stage": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-gpu7-tp1-r2/fd7a0eadfeed2823c828505232323b2f3ce96c410881579986184877cb02a366",
+        "submit_intent": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-gpu7-tp1-r2/submit-intent.json",
+        "submit_receipt": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-slot-gpu7-tp1-r2/submit-receipt.json",
+        "source_files": {
+          "retrieval_relay_generation_control.py": {
+            "bytes": 19858,
+            "sha256": "8627d4fda1230798b314c310d75e1c2a9dac21752073b49b2f5e703e2c5d8782"
+          },
+          "retrieval_relay_owner.py": {
+            "bytes": 20607,
+            "sha256": "6271dca1041041f4eeee8f77740654bcb1ad0010991a930d006ae152039e1685"
+          },
+          "relay_slot_consumer_worker.py": {
+            "bytes": 7273,
+            "sha256": "5dcc7b922463c8a7411b5241c9a04ba97a9f69dd1a20653c576d06f8562fbac6"
+          },
+          "retrieval_remote_guard_owner.py": {
+            "bytes": 1569,
+            "sha256": "e42708b048cb8b028a74d09b3863cbb0dfdd56ee7a52fff297b8b8db5d3aea15"
+          },
+          "retrieval_only_owner.py": {
+            "bytes": 10665,
+            "sha256": "ab6037fde22cd0f408549ce1884a4c6e8d58f15aaa1f80676857c99e33da5233"
+          },
+          "source_slot_consumer_worker.py": {
+            "bytes": 8210,
+            "sha256": "6e6f5eae1507e772b0d636037ebe6341e1b2c335ca8d0049d79040ab3a0d524f"
+          },
+          "draining_pool_worker.py": {
+            "bytes": 2879,
+            "sha256": "965a938d8b44bb8360285734a56010e07ae14b2c62b7b4ac55dd0a43c6dc1a51"
+          },
+          "pool_worker.py": {
+            "bytes": 29724,
+            "sha256": "a7d30f57ab4995fece1a236317060f2fc0d5f39f7c0031899e1bd65a663f3750"
+          },
+          "relay_consumer_worker.py": {
+            "bytes": 16254,
+            "sha256": "ebbe43d7ce4ace9c39ea04501003faf756f2535d56465666ad3709869068a5e2"
+          },
+          "retrieval_relay.py": {
+            "bytes": 15053,
+            "sha256": "52d046b20d8bbda06d146238b6fab2eca209952fedd55b2324ea440e5c610d60"
+          },
+          "shared_vram_worker.py": {
+            "bytes": 28570,
+            "sha256": "3a601748de704c4baee82bcb53927fe8e1f511f3f7af0d05953afabc4c6ef172"
+          },
+          "shared_vram_vllm_adapter.py": {
+            "bytes": 5039,
+            "sha256": "780921f1aee405a941842fd52cd5f1121a7756b357fa6686c247a9c2b93d75f5"
+          },
+          "pool_paths.sh": {
+            "bytes": 1933,
+            "sha256": "3d087d5eab3657a75f555a0bf1c0b571ae20d64583d23c10c35c6eee1440c52d"
+          },
+          "queued_generation_control.py": {
+            "bytes": 3857,
+            "sha256": "76876a0b01116a52f68553bc086c886928e4b51df0ad2864516711152afc6e71"
+          },
+          "queued_health.py": {
+            "bytes": 804,
+            "sha256": "bb55b378fdb66306fbae71c174a1bfcf5475fd715cd409015d65d698b677e21a"
+          },
+          "queued_slot_consumer.py": {
+            "bytes": 856,
+            "sha256": "fb694c5a732bbc6b8e7e5d394dc75a6a25ce9ec2f2fe69f16df70ef72eadbe5e"
+          },
+          "queued_relay_owner.py": {
+            "bytes": 1258,
+            "sha256": "ae49681abb10bc14a73fb45f115a70498d580e3bb7a6adf4952ec874db0fc362"
+          },
+          "queued_relay_slots.py": {
+            "bytes": 1117,
+            "sha256": "bdb3e49a47c37cc2c133ff27ad781d46f2e5ea0a70018bba1f7b95494030f57b"
+          },
+          "retrieval_relay_backpressure.py": {
+            "bytes": 11811,
+            "sha256": "3d1d9a9f786f9a75888edbe47dcb9efa4fc5ea3f8d3f563aaa12214f9a624cd2"
+          },
+          "rollover_terminal.py": {
+            "bytes": 15200,
+            "sha256": "a0e815784651f3ccdddb189353260324ce3a6fcb657e2241aa90e13fafb65f2c"
+          },
+          "rollover_paths.py": {
+            "bytes": 2214,
+            "sha256": "9e0d3bf78c5d4b11ae19f75e20a524fd8080cd7a3809ad31303af41109e74597"
+          },
+          "predecessor_generation_terminal.py": {
+            "bytes": 14578,
+            "sha256": "dffeb10936eb592af68cb97e07186cf34e971772412d7c236c8f872c33d775ea"
+          }
+        },
+        "stage_args": [
+          "slot",
+          "stage",
+          "--generation",
+          "owner-v2",
+          "--enabled-slots",
+          "tp4-0-4-6-7,gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1,gpu7-tp1",
+          "--slot",
+          "gpu7-tp1",
+          "--instance",
+          "r2",
+          "--intent-id",
+          "node10-gpu7-tp1-r2-stage",
+          "--published-commit",
+          "NEW_HEAD",
+          "--published-ref",
+          "refs/heads/codex/qwen7b-h100-assets-20261020"
+        ],
+        "submit_args": [
+          "slot",
+          "submit",
+          "--generation",
+          "owner-v2",
+          "--enabled-slots",
+          "tp4-0-4-6-7,gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1,gpu7-tp1",
+          "--slot",
+          "gpu7-tp1",
+          "--instance",
+          "r2",
+          "--downstream-owner-ready",
+          "DOWNSTREAM_OWNER_READY",
+          "--downstream-owner-ready-sha256",
+          "DOWNSTREAM_OWNER_READY_SHA256",
+          "--intent-id",
+          "node10-gpu7-tp1-r2-submit",
+          "--published-commit",
+          "NEW_HEAD",
+          "--published-ref",
+          "refs/heads/codex/qwen7b-h100-assets-20261020"
+        ],
+        "stage_command": "python3 -m reproduction.operations.qwen7b_resample.queued_generation_control slot stage --generation owner-v2 --enabled-slots tp4-0-4-6-7,gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1,gpu7-tp1 --slot gpu7-tp1 --instance r2 --intent-id node10-gpu7-tp1-r2-stage --published-commit NEW_HEAD --published-ref refs/heads/codex/qwen7b-h100-assets-20261020",
+        "submit_command": "python3 -m reproduction.operations.qwen7b_resample.queued_generation_control slot submit --generation owner-v2 --enabled-slots tp4-0-4-6-7,gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1,gpu7-tp1 --slot gpu7-tp1 --instance r2 --downstream-owner-ready DOWNSTREAM_OWNER_READY --downstream-owner-ready-sha256 DOWNSTREAM_OWNER_READY_SHA256 --intent-id node10-gpu7-tp1-r2-submit --published-commit NEW_HEAD --published-ref refs/heads/codex/qwen7b-h100-assets-20261020"
+      },
+      "model_specification": {
+        "indices": [
+          7
+        ],
+        "tp": 1,
+        "seqs": 64,
+        "tokens": 8192,
+        "blocks": 4096,
+        "reserve": 1.0
+      },
+      "owner_registry_key": "relay:downstream",
+      "finite_slot": "gpu7-tp1",
+      "required_slot_lease_directory": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/gpu-slot-leases/70188b8e50fd4b45bc420ce58014f46e/DOWNSTREAM_OWNER_PID-DOWNSTREAM_OWNER_BIRTH/gpu7-tp1",
+      "required_released_uuid_indices": [
+        7
+      ],
+      "primary_owner_lease_ownership_unchanged": true,
+      "execution_preconditions": [
+        "Fresh native observation of this exact current_r1.unit: MainPID=0 and ActiveState inactive or failed; its exact own cgroup is empty and recorded original births are gone.",
+        "All current r1 slot_lease_paths for this slot are really released. Probe the same owner-PID/birth slot directory and exact current-allocation UUID paths without retaining any probe lease.",
+        "Unique sealed global trajectory bank remains below 845140, checked at execution; preserve completed batches and genuine partial checkpoints.",
+        "Same immutable owner-ready path/SHA resolves to the still-live original owner/retriever/relay identities and namespaces; owner is not draining and enough consumer deadline remains.",
+        "Publish and independently verify NEW_HEAD exact source_files before staging; r2 unit/intent must be unconsumed. Unknown submit outcome means query that r2 unit/intent, never blind replay."
+      ],
+      "gates_automatically_added_by_plan": false,
+      "remote_execution_performed": false
+    },
+    {
+      "key": "source-supplement:gpu1-tp1",
+      "node": "h100-5",
+      "role": "slot",
+      "control_module": "reproduction.operations.qwen7b_resample.source_supplementary_control",
+      "generation_cli": "supp-v1",
+      "current_r1": {
+        "unit": "sst-q7b-g5-guard-rollover-supp-v1-gpu1-tp1-r1-70188b8e50fd.service",
+        "directory": "retrieval-generation-guard-rollover-supp-v1-gpu1-tp1-r1",
+        "frozen_source_bundle_sha256": "ba580ab5216378ff53afff9442bd038adb97f57542d13c3abda5be2620bcf0da",
+        "submit_intent": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-supp-v1-gpu1-tp1-r1/submit-intent.json",
+        "terminal_observation": "REQUIRED_AT_EXECUTION_NOT_OBSERVED_BY_THIS_PLAN",
+        "slot_lease_release_observation": "REQUIRED_AT_EXECUTION_NOT_OBSERVED_BY_THIS_PLAN"
+      },
+      "r2": {
+        "instance": "r2",
+        "unit": "sst-q7b-g5-guard-rollover-supp-v1-gpu1-tp1-r2-70188b8e50fd.service",
+        "directory": "retrieval-generation-guard-rollover-supp-v1-gpu1-tp1-r2",
+        "source_bundle_sha256": "b61377b47c2bc4405830a7dd6c302b2deff72d313572e14aefd57269cdd0faea",
+        "physical_stage": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-supp-v1-gpu1-tp1-r2/b61377b47c2bc4405830a7dd6c302b2deff72d313572e14aefd57269cdd0faea",
+        "shared_stage": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-supp-v1-gpu1-tp1-r2/b61377b47c2bc4405830a7dd6c302b2deff72d313572e14aefd57269cdd0faea",
+        "submit_intent": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-supp-v1-gpu1-tp1-r2/submit-intent.json",
+        "submit_receipt": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-supp-v1-gpu1-tp1-r2/submit-receipt.json",
+        "source_files": {
+          "retrieval_only_owner.py": {
+            "bytes": 10665,
+            "sha256": "ab6037fde22cd0f408549ce1884a4c6e8d58f15aaa1f80676857c99e33da5233"
+          },
+          "retrieval_only_control.py": {
+            "bytes": 18808,
+            "sha256": "9580a39ec60c181aaef6d9467659a2dd3c59e79fbac0dc06e73c55cefb1e7e41"
+          },
+          "source_slot_consumer_worker.py": {
+            "bytes": 8210,
+            "sha256": "6e6f5eae1507e772b0d636037ebe6341e1b2c335ca8d0049d79040ab3a0d524f"
+          },
+          "source_slot_control.py": {
+            "bytes": 166,
+            "sha256": "1e0771e685c77ca81f44fb752faa2be1bad45f9a442b07d59be9557d1525f86a"
+          },
+          "draining_pool_worker.py": {
+            "bytes": 2879,
+            "sha256": "965a938d8b44bb8360285734a56010e07ae14b2c62b7b4ac55dd0a43c6dc1a51"
+          },
+          "shared_vram_worker.py": {
+            "bytes": 28570,
+            "sha256": "3a601748de704c4baee82bcb53927fe8e1f511f3f7af0d05953afabc4c6ef172"
+          },
+          "shared_vram_retriever.py": {
+            "bytes": 18155,
+            "sha256": "686b8c498cba50e556909051cce511b81b2d61afa9aadf11c4f25992689da316"
+          },
+          "shared_vram_vllm_adapter.py": {
+            "bytes": 5039,
+            "sha256": "780921f1aee405a941842fd52cd5f1121a7756b357fa6686c247a9c2b93d75f5"
+          },
+          "pool_worker.py": {
+            "bytes": 29724,
+            "sha256": "a7d30f57ab4995fece1a236317060f2fc0d5f39f7c0031899e1bd65a663f3750"
+          },
+          "relay_consumer_worker.py": {
+            "bytes": 16254,
+            "sha256": "ebbe43d7ce4ace9c39ea04501003faf756f2535d56465666ad3709869068a5e2"
+          },
+          "retrieval_relay.py": {
+            "bytes": 15053,
+            "sha256": "52d046b20d8bbda06d146238b6fab2eca209952fedd55b2324ea440e5c610d60"
+          },
+          "pool_paths.sh": {
+            "bytes": 1933,
+            "sha256": "3d087d5eab3657a75f555a0bf1c0b571ae20d64583d23c10c35c6eee1440c52d"
+          },
+          "guarded_rollover_control.py": {
+            "bytes": 4139,
+            "sha256": "c80217d2c8fae2eb6f70462034ea7963071dac420ba8618f6d6a76d7728e05be"
+          },
+          "guarded_rollover_slot_control.py": {
+            "bytes": 157,
+            "sha256": "a4108cc86de0f46eeb24150d990d6c24e7ef839fe6c9fa1affc722a8e56ba9cd"
+          },
+          "rollover_terminal.py": {
+            "bytes": 15200,
+            "sha256": "a0e815784651f3ccdddb189353260324ce3a6fcb657e2241aa90e13fafb65f2c"
+          },
+          "predecessor_generation_terminal.py": {
+            "bytes": 14578,
+            "sha256": "dffeb10936eb592af68cb97e07186cf34e971772412d7c236c8f872c33d775ea"
+          },
+          "queued_slot_consumer.py": {
+            "bytes": 856,
+            "sha256": "fb694c5a732bbc6b8e7e5d394dc75a6a25ce9ec2f2fe69f16df70ef72eadbe5e"
+          },
+          "queued_health.py": {
+            "bytes": 804,
+            "sha256": "bb55b378fdb66306fbae71c174a1bfcf5475fd715cd409015d65d698b677e21a"
+          },
+          "rollover_source_slots.py": {
+            "bytes": 800,
+            "sha256": "17499d6cbe226279d0f74b2dc0477b8554dab8ea01cef3c47d3aceb5eb2f5619"
+          },
+          "rollover_retrieval_owner.py": {
+            "bytes": 408,
+            "sha256": "e0f89397d0d709dbadfeb9a9c37d79cb0e44958c54918c12b35f8d5c0532920d"
+          },
+          "rollover_paths.py": {
+            "bytes": 2214,
+            "sha256": "9e0d3bf78c5d4b11ae19f75e20a524fd8080cd7a3809ad31303af41109e74597"
+          },
+          "source_supplementary_worker.py": {
+            "bytes": 8752,
+            "sha256": "c676cb675a720346d209da04bec906f889efbf5f806b00a08f48b0161805d3e7"
+          },
+          "source_supplementary_control.py": {
+            "bytes": 5255,
+            "sha256": "a4f07fbd1259f5a11d63041ac2022e6f53d8242f4dec043e063ddb29b4e2b0f2"
+          }
+        },
+        "stage_args": [
+          "stage",
+          "--generation",
+          "supp-v1",
+          "--enabled-slots",
+          "gpu1-tp1",
+          "--slot",
+          "gpu1-tp1",
+          "--instance",
+          "r2",
+          "--intent-id",
+          "source_supplement-gpu1-tp1-r2-stage",
+          "--published-commit",
+          "NEW_HEAD",
+          "--published-ref",
+          "refs/heads/codex/qwen7b-h100-assets-20261020"
+        ],
+        "submit_args": [
+          "submit",
+          "--generation",
+          "supp-v1",
+          "--enabled-slots",
+          "gpu1-tp1",
+          "--slot",
+          "gpu1-tp1",
+          "--instance",
+          "r2",
+          "--owner-ready",
+          "SOURCE_OWNER_READY",
+          "--owner-ready-sha256",
+          "SOURCE_OWNER_READY_SHA256",
+          "--anchor-intent",
+          "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-gpu1-tp1-r1/submit-intent.json",
+          "--anchor-intent-sha256",
+          "bd8873be52bfd54a1d96ce40b36e59892d5493a5861e690e61f5f9ed1f9dd3a9",
+          "--intent-id",
+          "source_supplement-gpu1-tp1-r2-submit",
+          "--published-commit",
+          "NEW_HEAD",
+          "--published-ref",
+          "refs/heads/codex/qwen7b-h100-assets-20261020"
+        ],
+        "stage_command": "python3 -m reproduction.operations.qwen7b_resample.source_supplementary_control stage --generation supp-v1 --enabled-slots gpu1-tp1 --slot gpu1-tp1 --instance r2 --intent-id source_supplement-gpu1-tp1-r2-stage --published-commit NEW_HEAD --published-ref refs/heads/codex/qwen7b-h100-assets-20261020",
+        "submit_command": "python3 -m reproduction.operations.qwen7b_resample.source_supplementary_control submit --generation supp-v1 --enabled-slots gpu1-tp1 --slot gpu1-tp1 --instance r2 --owner-ready SOURCE_OWNER_READY --owner-ready-sha256 SOURCE_OWNER_READY_SHA256 --anchor-intent /mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-gpu1-tp1-r1/submit-intent.json --anchor-intent-sha256 bd8873be52bfd54a1d96ce40b36e59892d5493a5861e690e61f5f9ed1f9dd3a9 --intent-id source_supplement-gpu1-tp1-r2-submit --published-commit NEW_HEAD --published-ref refs/heads/codex/qwen7b-h100-assets-20261020"
+      },
+      "model_specification": {
+        "indices": [
+          0,
+          1,
+          2,
+          5
+        ],
+        "tp": 4,
+        "seqs": 32,
+        "tokens": 8192,
+        "blocks": 4096,
+        "reserve": 0.5
+      },
+      "owner_registry_key": "source:owner",
+      "finite_slot": "gpu1-tp1",
+      "required_slot_lease_directory": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/gpu-slot-leases/70188b8e50fd4b45bc420ce58014f46e/SOURCE_OWNER_PID-SOURCE_OWNER_BIRTH/gpu1-tp1",
+      "required_released_uuid_indices": [
+        0,
+        1,
+        2,
+        5
+      ],
+      "primary_owner_lease_ownership_unchanged": true,
+      "execution_preconditions": [
+        "Fresh native observation of this exact current_r1.unit: MainPID=0 and ActiveState inactive or failed; its exact own cgroup is empty and recorded original births are gone.",
+        "Supplementary current_r1 must itself be terminal/released; the historical failed TP1 anchor does not prove the supplementary r1 is terminal. All four supplementary UUID leases in that original anchor directory must be released.",
+        "All current r1 slot_lease_paths for this slot are really released. Probe the same owner-PID/birth slot directory and exact current-allocation UUID paths without retaining any probe lease.",
+        "Unique sealed global trajectory bank remains below 845140, checked at execution; preserve completed batches and genuine partial checkpoints.",
+        "Same immutable owner-ready path/SHA resolves to the still-live original owner/retriever/relay identities and namespaces; owner is not draining and enough consumer deadline remains.",
+        "Publish and independently verify NEW_HEAD exact source_files before staging; r2 unit/intent must be unconsumed. Unknown submit outcome means query that r2 unit/intent, never blind replay."
+      ],
+      "gates_automatically_added_by_plan": false,
+      "remote_execution_performed": false,
+      "original_failed_anchor_r1": {
+        "unit": "sst-q7b-g5-guard-rollover-owner-v2-gpu1-tp1-r1-70188b8e50fd.service",
+        "intent_path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-gpu1-tp1-r1/submit-intent.json",
+        "intent_sha256": "bd8873be52bfd54a1d96ce40b36e59892d5493a5861e690e61f5f9ed1f9dd3a9",
+        "source_owner_ready_path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-retrieval-owner-2714543/attempt-1792544093218863922/owner-ready.json",
+        "source_owner_ready_sha256": "5e315e371aa8bebd20f1fa858bb1512300f72c7a61c84835a840993d9972b70f",
+        "local_evidence_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-owner-v2-source-anchor-intent-full-small-1792544782292337000.json",
+        "local_evidence_sha256": "b19f1148486d418559ef914e439b36f61af5e4f7aa2013be6bb4ac4d21eef249",
+        "binding_purpose": "Original failed standard TP1 anchor; deliberately NOT the supplementary current_r1 intent."
+      }
+    },
+    {
+      "key": "source-supplement:gpu3-tp1",
+      "node": "h100-5",
+      "role": "slot",
+      "control_module": "reproduction.operations.qwen7b_resample.source_supplementary_control",
+      "generation_cli": "supp-v1",
+      "current_r1": {
+        "unit": "sst-q7b-g5-guard-rollover-supp-v1-gpu3-tp1-r1-70188b8e50fd.service",
+        "directory": "retrieval-generation-guard-rollover-supp-v1-gpu3-tp1-r1",
+        "frozen_source_bundle_sha256": "c208336fa433844fe4f0b8df878dd130d024780418a4127112092d61f7574f3d",
+        "submit_intent": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-supp-v1-gpu3-tp1-r1/submit-intent.json",
+        "terminal_observation": "REQUIRED_AT_EXECUTION_NOT_OBSERVED_BY_THIS_PLAN",
+        "slot_lease_release_observation": "REQUIRED_AT_EXECUTION_NOT_OBSERVED_BY_THIS_PLAN"
+      },
+      "r2": {
+        "instance": "r2",
+        "unit": "sst-q7b-g5-guard-rollover-supp-v1-gpu3-tp1-r2-70188b8e50fd.service",
+        "directory": "retrieval-generation-guard-rollover-supp-v1-gpu3-tp1-r2",
+        "source_bundle_sha256": "22ddfe3b39153baa81b962c4c22662f66cced01a844259dc9f170908688cd1f5",
+        "physical_stage": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-supp-v1-gpu3-tp1-r2/22ddfe3b39153baa81b962c4c22662f66cced01a844259dc9f170908688cd1f5",
+        "shared_stage": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-supp-v1-gpu3-tp1-r2/22ddfe3b39153baa81b962c4c22662f66cced01a844259dc9f170908688cd1f5",
+        "submit_intent": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-supp-v1-gpu3-tp1-r2/submit-intent.json",
+        "submit_receipt": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-supp-v1-gpu3-tp1-r2/submit-receipt.json",
+        "source_files": {
+          "retrieval_only_owner.py": {
+            "bytes": 10665,
+            "sha256": "ab6037fde22cd0f408549ce1884a4c6e8d58f15aaa1f80676857c99e33da5233"
+          },
+          "retrieval_only_control.py": {
+            "bytes": 18808,
+            "sha256": "9580a39ec60c181aaef6d9467659a2dd3c59e79fbac0dc06e73c55cefb1e7e41"
+          },
+          "source_slot_consumer_worker.py": {
+            "bytes": 8210,
+            "sha256": "6e6f5eae1507e772b0d636037ebe6341e1b2c335ca8d0049d79040ab3a0d524f"
+          },
+          "source_slot_control.py": {
+            "bytes": 166,
+            "sha256": "1e0771e685c77ca81f44fb752faa2be1bad45f9a442b07d59be9557d1525f86a"
+          },
+          "draining_pool_worker.py": {
+            "bytes": 2879,
+            "sha256": "965a938d8b44bb8360285734a56010e07ae14b2c62b7b4ac55dd0a43c6dc1a51"
+          },
+          "shared_vram_worker.py": {
+            "bytes": 28570,
+            "sha256": "3a601748de704c4baee82bcb53927fe8e1f511f3f7af0d05953afabc4c6ef172"
+          },
+          "shared_vram_retriever.py": {
+            "bytes": 18155,
+            "sha256": "686b8c498cba50e556909051cce511b81b2d61afa9aadf11c4f25992689da316"
+          },
+          "shared_vram_vllm_adapter.py": {
+            "bytes": 5039,
+            "sha256": "780921f1aee405a941842fd52cd5f1121a7756b357fa6686c247a9c2b93d75f5"
+          },
+          "pool_worker.py": {
+            "bytes": 29724,
+            "sha256": "a7d30f57ab4995fece1a236317060f2fc0d5f39f7c0031899e1bd65a663f3750"
+          },
+          "relay_consumer_worker.py": {
+            "bytes": 16254,
+            "sha256": "ebbe43d7ce4ace9c39ea04501003faf756f2535d56465666ad3709869068a5e2"
+          },
+          "retrieval_relay.py": {
+            "bytes": 15053,
+            "sha256": "52d046b20d8bbda06d146238b6fab2eca209952fedd55b2324ea440e5c610d60"
+          },
+          "pool_paths.sh": {
+            "bytes": 1933,
+            "sha256": "3d087d5eab3657a75f555a0bf1c0b571ae20d64583d23c10c35c6eee1440c52d"
+          },
+          "guarded_rollover_control.py": {
+            "bytes": 4139,
+            "sha256": "c80217d2c8fae2eb6f70462034ea7963071dac420ba8618f6d6a76d7728e05be"
+          },
+          "guarded_rollover_slot_control.py": {
+            "bytes": 157,
+            "sha256": "a4108cc86de0f46eeb24150d990d6c24e7ef839fe6c9fa1affc722a8e56ba9cd"
+          },
+          "rollover_terminal.py": {
+            "bytes": 15200,
+            "sha256": "a0e815784651f3ccdddb189353260324ce3a6fcb657e2241aa90e13fafb65f2c"
+          },
+          "predecessor_generation_terminal.py": {
+            "bytes": 14578,
+            "sha256": "dffeb10936eb592af68cb97e07186cf34e971772412d7c236c8f872c33d775ea"
+          },
+          "queued_slot_consumer.py": {
+            "bytes": 856,
+            "sha256": "fb694c5a732bbc6b8e7e5d394dc75a6a25ce9ec2f2fe69f16df70ef72eadbe5e"
+          },
+          "queued_health.py": {
+            "bytes": 804,
+            "sha256": "bb55b378fdb66306fbae71c174a1bfcf5475fd715cd409015d65d698b677e21a"
+          },
+          "rollover_source_slots.py": {
+            "bytes": 800,
+            "sha256": "17499d6cbe226279d0f74b2dc0477b8554dab8ea01cef3c47d3aceb5eb2f5619"
+          },
+          "rollover_retrieval_owner.py": {
+            "bytes": 408,
+            "sha256": "e0f89397d0d709dbadfeb9a9c37d79cb0e44958c54918c12b35f8d5c0532920d"
+          },
+          "rollover_paths.py": {
+            "bytes": 2214,
+            "sha256": "9e0d3bf78c5d4b11ae19f75e20a524fd8080cd7a3809ad31303af41109e74597"
+          },
+          "source_supplementary_worker.py": {
+            "bytes": 8752,
+            "sha256": "c676cb675a720346d209da04bec906f889efbf5f806b00a08f48b0161805d3e7"
+          },
+          "source_supplementary_control.py": {
+            "bytes": 5255,
+            "sha256": "a4f07fbd1259f5a11d63041ac2022e6f53d8242f4dec043e063ddb29b4e2b0f2"
+          }
+        },
+        "stage_args": [
+          "stage",
+          "--generation",
+          "supp-v1",
+          "--enabled-slots",
+          "gpu3-tp1",
+          "--slot",
+          "gpu3-tp1",
+          "--instance",
+          "r2",
+          "--intent-id",
+          "source_supplement-gpu3-tp1-r2-stage",
+          "--published-commit",
+          "NEW_HEAD",
+          "--published-ref",
+          "refs/heads/codex/qwen7b-h100-assets-20261020"
+        ],
+        "submit_args": [
+          "submit",
+          "--generation",
+          "supp-v1",
+          "--enabled-slots",
+          "gpu3-tp1",
+          "--slot",
+          "gpu3-tp1",
+          "--instance",
+          "r2",
+          "--owner-ready",
+          "SOURCE_OWNER_READY",
+          "--owner-ready-sha256",
+          "SOURCE_OWNER_READY_SHA256",
+          "--anchor-intent",
+          "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-gpu3-tp1-r1/submit-intent.json",
+          "--anchor-intent-sha256",
+          "263e6a5dade7577df61c34975b75a96be67fa7c07a62ef0499bb946a94f37420",
+          "--intent-id",
+          "source_supplement-gpu3-tp1-r2-submit",
+          "--published-commit",
+          "NEW_HEAD",
+          "--published-ref",
+          "refs/heads/codex/qwen7b-h100-assets-20261020"
+        ],
+        "stage_command": "python3 -m reproduction.operations.qwen7b_resample.source_supplementary_control stage --generation supp-v1 --enabled-slots gpu3-tp1 --slot gpu3-tp1 --instance r2 --intent-id source_supplement-gpu3-tp1-r2-stage --published-commit NEW_HEAD --published-ref refs/heads/codex/qwen7b-h100-assets-20261020",
+        "submit_command": "python3 -m reproduction.operations.qwen7b_resample.source_supplementary_control submit --generation supp-v1 --enabled-slots gpu3-tp1 --slot gpu3-tp1 --instance r2 --owner-ready SOURCE_OWNER_READY --owner-ready-sha256 SOURCE_OWNER_READY_SHA256 --anchor-intent /mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-gpu3-tp1-r1/submit-intent.json --anchor-intent-sha256 263e6a5dade7577df61c34975b75a96be67fa7c07a62ef0499bb946a94f37420 --intent-id source_supplement-gpu3-tp1-r2-submit --published-commit NEW_HEAD --published-ref refs/heads/codex/qwen7b-h100-assets-20261020"
+      },
+      "model_specification": {
+        "indices": [
+          3,
+          4,
+          6,
+          7
+        ],
+        "tp": 4,
+        "seqs": 32,
+        "tokens": 8192,
+        "blocks": 4096,
+        "reserve": 0.5
+      },
+      "owner_registry_key": "source:owner",
+      "finite_slot": "gpu3-tp1",
+      "required_slot_lease_directory": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/gpu-slot-leases/70188b8e50fd4b45bc420ce58014f46e/SOURCE_OWNER_PID-SOURCE_OWNER_BIRTH/gpu3-tp1",
+      "required_released_uuid_indices": [
+        3,
+        4,
+        6,
+        7
+      ],
+      "primary_owner_lease_ownership_unchanged": true,
+      "execution_preconditions": [
+        "Fresh native observation of this exact current_r1.unit: MainPID=0 and ActiveState inactive or failed; its exact own cgroup is empty and recorded original births are gone.",
+        "Supplementary current_r1 must itself be terminal/released; the historical failed TP1 anchor does not prove the supplementary r1 is terminal. All four supplementary UUID leases in that original anchor directory must be released.",
+        "All current r1 slot_lease_paths for this slot are really released. Probe the same owner-PID/birth slot directory and exact current-allocation UUID paths without retaining any probe lease.",
+        "Unique sealed global trajectory bank remains below 845140, checked at execution; preserve completed batches and genuine partial checkpoints.",
+        "Same immutable owner-ready path/SHA resolves to the still-live original owner/retriever/relay identities and namespaces; owner is not draining and enough consumer deadline remains.",
+        "Publish and independently verify NEW_HEAD exact source_files before staging; r2 unit/intent must be unconsumed. Unknown submit outcome means query that r2 unit/intent, never blind replay."
+      ],
+      "gates_automatically_added_by_plan": false,
+      "remote_execution_performed": false,
+      "original_failed_anchor_r1": {
+        "unit": "sst-q7b-g5-guard-rollover-owner-v2-gpu3-tp1-r1-70188b8e50fd.service",
+        "intent_path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/retrieval-generation-guard-rollover-owner-v2-gpu3-tp1-r1/submit-intent.json",
+        "intent_sha256": "263e6a5dade7577df61c34975b75a96be67fa7c07a62ef0499bb946a94f37420",
+        "source_owner_ready_path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-retrieval-owner-2714543/attempt-1792544093218863922/owner-ready.json",
+        "source_owner_ready_sha256": "5e315e371aa8bebd20f1fa858bb1512300f72c7a61c84835a840993d9972b70f",
+        "local_evidence_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-owner-v2-source-anchor-intent-full-small-1792544782292337000.json",
+        "local_evidence_sha256": "b19f1148486d418559ef914e439b36f61af5e4f7aa2013be6bb4ac4d21eef249",
+        "binding_purpose": "Original failed standard TP1 anchor; deliberately NOT the supplementary current_r1 intent."
+      }
+    }
+  ],
+  "remote_executed": false,
+  "git_actions_performed": false,
+  "existing_source_files_modified": false,
+  "new_tests_added_or_run": false
+}
