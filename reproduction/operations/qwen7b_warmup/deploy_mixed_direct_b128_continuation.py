@@ -8,7 +8,7 @@ import argparse,base64,gzip,hashlib,importlib.util,io,json,shlex,subprocess,tarf
 from pathlib import Path
 R=Path(__file__).resolve().parents[3];CONTROL=R.parents[1];P='reproduction/operations/qwen7b_warmup/';BRANCH='codex/mixed-direct-b128-continuation-20261022';A='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021';MAIN=A+'/joint-mixed-direct-official-169028-fast-v1';BASE=A+'/joint-mixed-direct-official-169028-b128-v1';SOURCE_JOB='746220';JOB='q7b-mixed-direct169028-b128'
 WORKER=P+'joint_mixed_direct_b128.py';HELPER=P+'mixed_direct_b128_handoff.py';FAST_READER=P+'replay_feature_reader_fast.py';FAST_UPDATE=P+'direct_update_b128.py'
-WORKER_ORIGIN='d68779a4a9032e513066c56ce160ab2fd1f41c12';UPDATE_ORIGIN='23000f23be50da5968eac2df145a1c8aac0ca11e'
+WORKER_ORIGIN='40acb40530199f54fc1c0ab29694611919389d2c';UPDATE_ORIGIN='23000f23be50da5968eac2df145a1c8aac0ca11e'
 SOURCE_CONFIG=dict(path=MAIN+'/config.json',bytes=14625,sha256='22098d5a4678db2f9c56d56cb5709829c3a4619c626e0b52d16ce726844402ac');SOURCE_PUBLICATION=dict(path=MAIN+'/source-publication.json',bytes=7750,sha256='dc34dcc787b3a52a5dbfe19d6d1fa39c9599ff158654bc4acdda56e71a8ace4a');OUT=R/'reproduction/reports/qwen7b-algorithm-improvement-20261021/mixed-direct-b128-continuation'
 COMMON='''import pathlib,json,hashlib,os,fcntl,subprocess,time,re,base64,io,gzip,tarfile,stat,sys
 b=pathlib.Path(v['base']);old=pathlib.Path(v['main']);b.mkdir(parents=True,exist_ok=True);code=b/('code-'+v['archive_sha256'][:12]);code.mkdir(exist_ok=True)
@@ -139,6 +139,28 @@ job=r.stdout.strip().split(';')[0];identity=command(['scontrol','show','job','-o
 for item in('JobName='+v['job'],'Account=mou176','QOS=normal','Partition=acd_u','TimeLimit=2-00:00:00','NumCPUs=8','MinMemoryNode=128G','Dependency=(null)','Command='+str(b/'training.sbatch'),'WorkDir='+str(b)):assert item in identity,item
 assert re.search(r'(?:^|[ ,])gres/gpu=1(?:[ ,]|$)',identity)or re.search(r'TresPerNode=gres/gpu:1(?:[ ,]|$)',identity);immutable(b/'submission-identity.json',dict(job_id=job,job=identity,ready=ready,epoch=time.time()));command(['scontrol','release',job]);result=dict(status='B128_FULL_STATE_CONTINUATION_JOB_RELEASED_NOT_PROGRESS_VERIFIED',job_id=job,identity=proof(b/'submission-identity.json'),config=ready['config'],source_cursor=ready['source_cursor']);immutable(b/'submission-result.json',result);print(json.dumps(result))
 '''
+REPAIR_CHECK='''assert v['failed_job']=='746263';rows=command(['sacct','-X','-n','-P','-j',v['failed_job'],'--format=JobIDRaw,State,ExitCode,Elapsed']).splitlines();rows=[r for r in rows if r.split('|')[0]==v['failed_job']];assert len(rows)==1 and rows[0].split('|')[:3]==[v['failed_job'],'FAILED','1:0'];assert not active(v['job'])and not active('q7b-mixed-direct169028-fast');lock=(b/'training.lock').open('a+');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+for name in('latest.json','progress.json','update-intent.json','complete.json'):assert not(b/name).exists(),'Only the zero-update failed attempt may be repaired'
+assert read(b/'source-handoff.json')['cursor']==1675 and read(b/'pinned-source-checkpoint.json')['cursor']==1675
+lock.close()
+'''
+REPAIR=REPAIR_CHECK+'''control=(b/'repair-control.lock').open('a+');fcntl.flock(control,fcntl.LOCK_EX|fcntl.LOCK_NB);attempt=b/'attempts'/v['failed_job'];attempt.mkdir(parents=True,exist_ok=True)
+oldpub_path=b/'source-publication.json'
+if oldpub_path.exists()and read(oldpub_path)['archive_sha256']==v['archive_sha256']:
+ publication();print(json.dumps(dict(status='EXISTING_ZERO_UPDATE_REPAIR_SOURCE_READY',publication=proof(oldpub_path),attempt=str(attempt))));raise SystemExit(0)
+prior=read(oldpub_path if oldpub_path.exists()else attempt/'source-publication.json');assert len(prior['files'])==27 and prior['file_origins'][v['worker']]=='d68779a4a9032e513066c56ce160ab2fd1f41c12';source_code=pathlib.Path(prior['code_root']);raw=b''.join((code/('upload-%04d.part'%i)).read_bytes()for i in range(v['worker_parts']));assert len(raw)==v['worker_bytes']and hashlib.sha256(raw).hexdigest()==v['worker_sha256']
+for name,item in v['manifest']['files'].items():
+ if name==v['worker']:data=raw
+ else:
+  assert prior['files'][name]==item and prior['file_origins'][name]==v['manifest']['origins'][name];source=source_code/name;assert proof(source)==dict(path=str(source),**item);data=source.read_bytes()
+ assert len(data)==item['bytes']and hashlib.sha256(data).hexdigest()==item['sha256'];target=code/name;target.parent.mkdir(parents=True,exist_ok=True)
+ if target.exists():assert target.read_bytes()==data
+ else:target.write_bytes(data);target.chmod(0o444)
+for name in('config.json','source-publication.json','preparation.json','submission-intent.json','submission-result.json','submission-identity.json','controller.json','failure.json','startup-binding-migration.json','training.sbatch','reader-integrity.json'):
+ source=b/name;target=attempt/name
+ if source.exists():assert not target.exists(),'Never overwrite failed-attempt evidence';os.rename(str(source),str(target))
+result=dict(archive_sha256=v['archive_sha256'],code_root=str(code),files=v['manifest']['files'],file_origins=v['manifest']['origins'],controller=v['controller'],original_source_publication=v['source_publication'],original25_sources_unchanged=True,new_runtime_files=[v['worker'],v['fast_update']],control_handoff_source_sha256=v['handoff_source_sha256']);immutable(b/'source-publication.json',result);publication();record=dict(status='ZERO_UPDATE_B128_WORKER_SEAL_BINDING_REPAIR_STAGED_NO_GPU_SUBMIT',failed_job=v['failed_job'],terminal=rows[0],attempt=str(attempt),retained_source_cursor=1675,source_handoff=proof(b/'source-handoff.json'),pinned_source_checkpoint=proof(b/'pinned-source-checkpoint.json'),publication=proof(b/'source-publication.json'),old_runtime_unchanged=True,original_source_retired_again=False,GPU_submitted=False);immutable(attempt/'repair-complete.json',record);print(json.dumps(record))
+'''
 STATUS='''out=dict(epoch=time.time(),old_active=active('q7b-mixed-direct169028-fast'),new_active=active(v['job']))
 for name in('preparation.json','retirement-intent.json','retirement-signal.json','retirement-status.json','retirement-failure.json','source-handoff.json','submission-result.json','controller.json','progress.json','latest.json','failure.json','complete.json'):
  try:out[name[:-5]]=read(b/name)
@@ -162,17 +184,24 @@ def bundle():
  return buf.getvalue(),manifest
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--action',choices=('check','stage','prepare','retire','submit','status'),required=True);p.add_argument('--handoff-authorized',action='store_true');p.add_argument('--submit-authorized',action='store_true');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--action',choices=('check','stage','prepare','retire','submit','status','repair'),required=True);p.add_argument('--handoff-authorized',action='store_true');p.add_argument('--submit-authorized',action='store_true');p.add_argument('--failed-job');a=p.parse_args()
+ if a.action=='repair'and a.failed_job!='746263':p.error('Only actual zero-update failed job746263 is eligible')
  if a.action=='retire'and not a.handoff_authorized:p.error('Root explicit retirement authorization required')
  if a.action=='submit'and not a.submit_authorized:p.error('Root explicit single-submit authorization required')
  raw,manifest=bundle();own=Path(__file__);rel=str(own.relative_to(R));commit=subprocess.check_output(['git','log','-1','--format=%H','refs/heads/'+BRANCH,'--',rel],cwd=R).decode().strip();assert own.read_bytes()==git(commit,rel);remote=subprocess.check_output(['git','ls-remote','origin','refs/heads/'+BRANCH],cwd=R).decode().split()[0];subprocess.check_call(['git','merge-base','--is-ancestor',commit,remote],cwd=R);handoff_source=git(commit,HELPER).decode();assert handoff_source==(R/HELPER).read_text();value=dict(base=BASE,main=MAIN,job=JOB,source_job=SOURCE_JOB,source_config=SOURCE_CONFIG,source_publication=SOURCE_PUBLICATION,manifest=manifest,archive_sha256=hashlib.sha256(raw).hexdigest(),worker=WORKER,fast_reader=FAST_READER,fast_update=FAST_UPDATE,helper=HELPER,handoff_source=handoff_source,handoff_source_sha256=hashlib.sha256(handoff_source.encode()).hexdigest(),controller=dict(commit=commit,path=rel,sha256=hashlib.sha256(own.read_bytes()).hexdigest()))
  if a.action=='check':print(json.dumps(dict(status='EXACT25_PLUS_TWO_B128_RUNTIME_SOURCE_CHECK_PASSED',files=len(manifest['files']),archive_bytes=len(raw),archive_sha256=value['archive_sha256'],manifest=manifest)));return
  spec=importlib.util.spec_from_file_location('private_fast_continuation_control',CONTROL/'work/prefix-schedule-cp50-20261018/reproduction/hpc3_prefix5/direct_control.py');ctl=importlib.util.module_from_spec(spec);spec.loader.exec_module(ctl);ip=subprocess.check_output(['/usr/sbin/ipconfig','getifaddr','en0']).decode().strip()
  def call(body,**kwargs):
-  v=dict(value,**kwargs);source='v='+repr(v)+'\n'+COMMON+body;compile(source,'fast_continuation_controller','exec');packed=base64.b64encode(zlib.compress(source.encode())).decode();command='python3 -c '+shlex.quote('import base64,zlib;exec(zlib.decompress(base64.b64decode('+repr(packed)+')))');assert len(command.encode())<16000;result=ctl.run(command,account='mou176',source_address=ip,timeout=55)
+  v=dict(value,**kwargs)
+  if a.action=='repair':v.pop('handoff_source',None)
+  source='v='+repr(v)+'\n'+COMMON+body;compile(source,'fast_continuation_controller','exec');packed=base64.b64encode(zlib.compress(source.encode())).decode();command='python3 -c '+shlex.quote('import base64,zlib;exec(zlib.decompress(base64.b64decode('+repr(packed)+')))');assert len(command.encode())<16000;result=ctl.run(command,account='mou176',source_address=ip,timeout=55)
   if result.returncode:raise RuntimeError(result.stdout[-3000:]+result.stderr[-2000:])
   return json.loads(result.stdout.splitlines()[-1])
- if a.action=='stage':
+ if a.action=='repair':
+  call(REPAIR_CHECK,failed_job=a.failed_job);worker=git(WORKER_ORIGIN,WORKER);chunks=[worker[i:i+1024]for i in range(0,len(worker),1024)]
+  for i,data in enumerate(chunks):call(STAGE,part=i,data=base64.b64encode(data).decode(),sha=hashlib.sha256(data).hexdigest())
+  result=call(REPAIR,failed_job=a.failed_job,worker_parts=len(chunks),worker_bytes=len(worker),worker_sha256=hashlib.sha256(worker).hexdigest())
+ elif a.action=='stage':
   exists=call("print(json.dumps(dict(exists=(b/'source-publication.json').exists())))")
   if exists['exists']:result=call("publication();print(json.dumps(dict(status='EXISTING_IMMUTABLE_FAST_SOURCE_REVERIFIED',publication=proof(b/'source-publication.json'))))")
   else:
@@ -183,5 +212,5 @@ def main():
   result=call(RETIRE,handoff_authorized=True,signal_body=SIGNAL,common_body=COMMON,watch_body=WATCH,entry=ENTRY)
  else:result=call(dict(prepare=PREPARE,submit=SUBMIT,status=STATUS)[a.action],entry=ENTRY,submit_authorized=a.submit_authorized)
  OUT.mkdir(parents=True,exist_ok=True);(OUT/('actual-'+a.action+'.json')).write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
-for script in(COMMON,STAGE,EXTRACT,PREPARE,SIGNAL,RETIRE,WATCH,SUBMIT,STATUS):compile(script,'fast_continuation_static','exec')
+for script in(COMMON,STAGE,EXTRACT,PREPARE,SIGNAL,RETIRE,WATCH,SUBMIT,STATUS,REPAIR_CHECK,REPAIR):compile(script,'fast_continuation_static','exec')
 if __name__=='__main__':main()
