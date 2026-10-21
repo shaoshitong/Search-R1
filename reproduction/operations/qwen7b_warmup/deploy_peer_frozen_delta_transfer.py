@@ -38,7 +38,7 @@ def configure(config,config_name):
     TARGET=B/'peer-newseed-h100-20261021'/SNAPSHOT
     INGEST=B/'algorithm-improvement-20261021'/('peer-newseed-ingest-'+SNAPSHOT)
     HPCDEP=B/'algorithm-improvement-20261021'/('peer-delta-import-runtime-'+SNAPSHOT)
-    SOURCE_FILES=tuple(P+n for n in ('peer_newseed_frozen_subset_export.py','peer_newseed_export.py','peer_newseed_delta.py','peer_newseed_audit_reference.py','test_peer_newseed_frozen_subset_export.py'))+(config_name,)
+    SOURCE_FILES=tuple(P+n for n in ('peer_newseed_frozen_subset_export.py','peer_newseed_export.py','peer_newseed_delta.py','peer_newseed_audit_reference.py','peer_newseed_source_audit_dispatch.py','peer_newseed_audit_resealed_metadata.py','test_peer_newseed_source_audit_dispatch.py','test_peer_newseed_frozen_subset_export.py'))+(config_name,)
 
 ACTIONS=('source-stage','source-start','source-status','hf-stage','hf-start','hf-status','hf-first-archive','hf-resume-failed','receive-stage','receive-preflight','receive-start','receive-status','ingest-stage','ingest-tests','ingest-prepare','ingest-start','ingest-status')
 
@@ -236,7 +236,7 @@ def hpc_call(control,script,action):
 
 
 def ingest_action(repo,commit,args):
-    raw,files=bundle(repo,commit,ing.FILES)
+    raw,files=bundle(repo,commit,ing.FILES+((P+'peer_newseed_target_attestation.py',)if CONFIG.get('metadata_resealed_attestation_batches')else()))
     v=dict(base=str(HPCDEP),target=str(HPCDEP),receiver=str(TARGET),ingest=str(INGEST),commit=commit,bundle_sha256=sha(raw),bundle_bytes=len(raw),chunks=(len(raw)+4095)//4096,files=files,cpu_mode='ingest')
     def call(mode,extra=None):return hpc_call(args.control_root,ing.render(dict(v,**(extra or {})),mode),'ingest-'+mode)
     if args.action=='ingest-stage':

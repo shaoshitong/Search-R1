@@ -78,7 +78,10 @@ def freeze(base,selection_path,selection_sha,root):
         inp=checked(item['input_ref']);seal=e.regular(base,base/item['seal'])
         if inp!=base/item['input'] or e.sha(seal)!=item['seal_sha256'] or e.sha(inp)!=item['input_sha256']:raise ValueError('Frozen input/seal differs')
         cfg=checked(item['config']);d.contract(e.read(cfg));auditfile=checked(item['audit']['proof'])
-        fresh=d.cached_audit(base,item['input'],selection['source_config']['sha256'],item['input_sha256'],item['questions'])
+        if item['audit'].get('independent_sidecar_audit_root'):
+            from .peer_newseed_source_audit_dispatch import proof
+            fresh=proof(base,item,selection['source_config']['sha256'])
+        else:fresh=d.cached_audit(base,item['input'],selection['source_config']['sha256'],item['input_sha256'],item['questions'])
         if fresh['status']!='EXISTING_INDEPENDENT_AUDIT_CURRENT_FSTAT_BOUND' or fresh['proof']['sha256']!=item['audit']['proof']['sha256']:raise ValueError('Frozen independent audit no longer matches source fstats/own IDs')
         rows=e.read(inp)['rows'];own=[];qids=[];hashes=[];counts={}
         for row in rows:
@@ -86,7 +89,7 @@ def freeze(base,selection_path,selection_sha,root):
             ts=[e.RUN_ID+'-outer000001-c%04d-g%d'%(row['candidate_ordinal'],j) for j in range(5)];own.append(dict(qid=row['qid'],question_hash=row['question_hash'],trajectory_ids=ts));qids.append(row['qid']);hashes.append(row['question_hash']);domain=json.loads(row['qid'])[0];counts[domain]=counts.get(domain,0)+1;domains[domain]=domains.get(domain,0)+1
         if len(rows)!=item['questions'] or digest(qids)!=item['ordered_qids_sha256'] or digest(hashes)!=item['ordered_question_hashes_sha256'] or counts!=item['domain_counts'] or digest([t for g in own for t in g['trajectory_ids']])!=item['expected_own_G5_IDs_sha256']:raise ValueError('Actual frozen identity differs')
         verify_id_digests([t for g in own for t in g['trajectory_ids']],item['expected_own_G5_IDs_sha256'],fresh['own_trajectory_ids_sha256'])
-        identity_guard(old,own,seen,allow_hashes);selected.append(dict(input=item['input'],input_sha256=item['input_sha256'],input_stat=e.fs(inp),seal=item['seal'],seal_sha256=item['seal_sha256'],seal_stat=e.fs(seal),questions=item['questions'],trajectories=item['trajectories']))
+        identity_guard(old,own,seen,allow_hashes);selected.append(dict(input=item['input'],input_sha256=item['input_sha256'],input_stat=e.fs(inp),seal=item['seal'],seal_sha256=item['seal_sha256'],seal_stat=e.fs(seal),questions=item['questions'],trajectories=item['trajectories'],**({'audit_dispatch':item['audit']}if item['audit'].get('independent_sidecar_audit_root')else{})))
         e.atomic(root/'subset-preflight-progress.json',dict(stage='FROZEN_SUBSET_INPUT_AND_CURRENT_PROOF_ADVANCING',batches=index+1,questions=len(seen['qids']),trajectories=len(seen['tids']),epoch=time.time()))
     if len(seen['qids'])!=selection['questions'] or len(seen['tids'])!=selection['trajectories'] or domains!=selection['domain_counts']:raise ValueError('Actual frozen totals/domains differ')
     hash_counts=dict(prior_hash_overlap_questions=seen.get('prior_hash_overlap_questions',0),internal_duplicate_hash_questions=seen.get('internal_duplicate_hash_questions',0))
