@@ -1,0 +1,379 @@
+{
+  "Mac_payload_transit": false,
+  "canonical_train_repeated_text_retained": true,
+  "external_final_outcomes_read": false,
+  "features_for_new505_not_yet_complete": true,
+  "old_internal5120_is_training_not_unseen": true,
+  "original_warmup_saw_all_169028": true,
+  "records": [
+    {
+      "feature_publication": {
+        "branch": "codex/peer-joint-subset-L26-20261021",
+        "commit": "db5b5ac04173cbec4659dbcb8b55f8b0627f7602",
+        "config": "reproduction/reports/qwen7b-algorithm-improvement-20261021/joint124194-feature-subsets/audited243-config.json",
+        "config_sha256": "8b1bd0c4ba8140ab5f53eb164e073267cc781484fcb507805a346629228307a8",
+        "files": [
+          "reproduction/operations/qwen7b_warmup/peer_newseed_replay.py",
+          "reproduction/operations/qwen7b_warmup/peer_newseed_ingest.py",
+          "reproduction/operations/qwen7b_warmup/peer_newseed_receive.py",
+          "reproduction/operations/qwen7b_warmup/peer_newseed_export.py",
+          "reproduction/operations/qwen7b_warmup/peer_newseed_audit_reference.py",
+          "reproduction/operations/qwen7b_warmup/replay_probe_layers.py",
+          "reproduction/operations/qwen7b_warmup/replay_bank_prepare.py",
+          "reproduction/operations/qwen7b_warmup/replay_bank_capture.py",
+          "reproduction/operations/qwen7b_warmup/replay_feature_reader.py",
+          "reproduction/operations/qwen7b_warmup/runtime.sh",
+          "reproduction/operations/qwen7b_warmup/test_peer_newseed_ingest.py",
+          "reproduction/operations/qwen7b_warmup/test_peer_newseed_replay.py",
+          "reproduction/operations/qwen7b_warmup/test_peer_newseed_receive.py",
+          "reproduction/operations/qwen7b_warmup/deploy_peer_newseed_replay.py",
+          "reproduction/prefix20_online/rollout.py",
+          "reproduction/prefix20_online/pool.py",
+          "search_g1/__init__.py",
+          "search_g1/signals.py",
+          "search_r1/__init__.py",
+          "search_r1/qa_protocol.py",
+          "verl/__init__.py",
+          "verl/protocol.py",
+          "verl/version/version",
+          "verl/utils/__init__.py",
+          "verl/utils/logging_utils.py",
+          "verl/utils/tokenizer.py",
+          "verl/utils/py_functional.py",
+          "verl/utils/reward_score/__init__.py",
+          "verl/utils/reward_score/qa_em.py",
+          "reproduction/operations/qwen7b_warmup/replay_batched_context.py",
+          "reproduction/operations/qwen7b_warmup/peer_newseed_batched_replay.py",
+          "reproduction/operations/qwen7b_warmup/deploy_peer_batched_replay.py",
+          "reproduction/operations/qwen7b_warmup/test_replay_batched_context.py",
+          "reproduction/operations/qwen7b_warmup/validation_fixedg5_replay.py",
+          "reproduction/operations/qwen7b_warmup/peer_audited100_l26_replay.py",
+          "reproduction/operations/qwen7b_warmup/test_peer_audited100_l26.py",
+          "reproduction/operations/qwen7b_warmup/deploy_peer_audited100_l26.py",
+          "reproduction/operations/qwen7b_warmup/peer_audited122_l26_replay.py",
+          "reproduction/operations/qwen7b_warmup/deploy_peer_audited122_l26.py",
+          "reproduction/operations/qwen7b_warmup/test_peer_audited122_l26.py",
+          "reproduction/operations/qwen7b_warmup/peer_audited122_l26_merge.py",
+          "reproduction/operations/qwen7b_warmup/test_peer_audited122_l26_merge.py",
+          "reproduction/operations/qwen7b_warmup/peer_joint_subset_l26.py",
+          "reproduction/operations/qwen7b_warmup/deploy_peer_joint_subset_l26.py",
+          "reproduction/operations/qwen7b_warmup/peer_newseed_source_audit_dispatch.py",
+          "reproduction/operations/qwen7b_warmup/peer_newseed_audit_resealed_metadata.py",
+          "reproduction/operations/qwen7b_warmup/peer_newseed_target_attestation.py",
+          "reproduction/reports/qwen7b-algorithm-improvement-20261021/joint124194-feature-subsets/audited243-config.json"
+        ],
+        "questions": 31010,
+        "remote_sha": "db5b5ac04173cbec4659dbcb8b55f8b0627f7602"
+      },
+      "independent_audit": {
+        "bytes": 2901,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited243-after466-20261021-45227948/independent-final-audit.json",
+        "sha256": "6aef768023c38763d8fdb3e1f89ece676e648cce19ef53081d60d374e0dcc5c0"
+      },
+      "outputs": {
+        "groups": {
+          "bytes": 46912353,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited243-after466-20261021-45227948/raw-g10/groups.json",
+          "sha256": "817b39dd5ac8a20fd0c7c1f723d419287dfa238b9ff13e6800ee41b4b40a8267"
+        },
+        "overlap": {
+          "bytes": 624,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited243-after466-20261021-45227948/raw-g10/overlap.json",
+          "sha256": "2744c0f6ec184224901115fda71ff31f6b01337b424f120caa1fada689840c80"
+        },
+        "source-events": {
+          "bytes": 811464,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited243-after466-20261021-45227948/raw-g10/source-events.json",
+          "sha256": "dda684e760685d867acd77ccca30b178f5331659743f83cf756095e4a9b6ae6e"
+        }
+      },
+      "questions": 31010,
+      "raw_complete": {
+        "bytes": 11194,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited243-after466-20261021-45227948/complete.json",
+        "sha256": "7542a86d031d6423027a6a41aa04e29192cfd844c08aa1f99fff4ed8ab4b5e7d"
+      },
+      "snapshot": "audited243-after466-20261021-45227948",
+      "strict_EM_mismatches": 0,
+      "summary": {
+        "Mac_payload_transit": false,
+        "active_training_data_modified": false,
+        "actor_updates": 0,
+        "additional_excluded_by_question_hash": 0,
+        "archive_groups": 16,
+        "eligible_authentic_G10_trajectories": 310100,
+        "eligible_domains": {
+          "hotpotqa": 28706,
+          "nq": 2304
+        },
+        "eligible_training_questions": 31010,
+        "epoch": 1792582868.9595053,
+        "excluded_by_qid": {
+          "diagnostic512": 0,
+          "frozen_final4096": 0,
+          "selection2048": 0
+        },
+        "final_identity_source_refs_followed": false,
+        "final_rollout_or_prediction_opened": false,
+        "groups": {
+          "bytes": 46912353,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited243-after466-20261021-45227948/raw-g10/groups.json",
+          "sha256": "817b39dd5ac8a20fd0c7c1f723d419287dfa238b9ff13e6800ee41b4b40a8267"
+        },
+        "histogram_K0_to10": [
+          11150,
+          2568,
+          1896,
+          1683,
+          1642,
+          1753,
+          1808,
+          1923,
+          2118,
+          2318,
+          2151
+        ],
+        "ingest_complete": {
+          "bytes": 11194,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited243-after466-20261021-45227948/complete.json",
+          "sha256": "7542a86d031d6423027a6a41aa04e29192cfd844c08aa1f99fff4ed8ab4b5e7d"
+        },
+        "metadata_resealed_attestation_batches": 0,
+        "model_tensor_loaded": false,
+        "new5_histogram_K0_to5": [
+          13029,
+          3658,
+          3167,
+          3314,
+          3798,
+          4044
+        ],
+        "old5_histogram_K0_to5": [
+          13034,
+          3646,
+          3258,
+          3337,
+          3827,
+          3908
+        ],
+        "original_metadata_receipt_chain_not_silently_rewritten": true,
+        "own_trajectory_IDs_and_ordered_old5_new5_strict_EM_join_verified": true,
+        "probe_updates": 0,
+        "received_batches": 243,
+        "received_domains": {
+          "hotpotqa": 28706,
+          "nq": 2304
+        },
+        "received_newseed5_trajectories": 155050,
+        "received_questions": 31010,
+        "receiver_complete": {
+          "bytes": 729,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/peer-newseed-h100-20261021/audited243-after466-20261021-45227948/complete.json",
+          "sha256": "37e8d3f4ffdb363bc56b12df3be2bffc2de0888d5385ed005d277316d4e5d1ba"
+        },
+        "retained_canonical_training_hash_overlap": 2,
+        "selection": {
+          "bytes": 405030,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-delta-import-runtime-audited243-after466-20261021-45227948/independent-audit-184b3e08ddfb/selection.json",
+          "sha256": "d251a80dbbedc336b6dbc48246c06ec824461e38ff24df61717c5e3a6079ccdd"
+        },
+        "source_events": {
+          "bytes": 811464,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited243-after466-20261021-45227948/raw-g10/source-events.json",
+          "sha256": "dda684e760685d867acd77ccca30b178f5331659743f83cf756095e4a9b6ae6e"
+        },
+        "status": "FROZEN_DELTA_RECEIVER_AND_ELIGIBLE_RAW_G10_INDEPENDENTLY_ACCEPTED",
+        "subset_record_sha256": "45227948af8bc3de0cf512401a51dacd864a8882303d57efca0897c18be23d05",
+        "tokenizer_strict_EM_and_seed_audit_inherited_from_actual_ingester": true
+      },
+      "trajectories": 310100
+    },
+    {
+      "feature_publication": {
+        "branch": "codex/peer-joint-subset-L26-20261021",
+        "commit": "729f37d6e1f80f6a6798d780043180dd78ba4c60",
+        "config": "reproduction/reports/qwen7b-algorithm-improvement-20261021/joint124194-feature-subsets/audited262-config.json",
+        "config_sha256": "8487fb110c2cdf6158dd73fa5b1f8ef12d7c4620e9fe6cfa9df54263c355d6e9",
+        "files": [
+          "reproduction/operations/qwen7b_warmup/peer_newseed_replay.py",
+          "reproduction/operations/qwen7b_warmup/peer_newseed_ingest.py",
+          "reproduction/operations/qwen7b_warmup/peer_newseed_receive.py",
+          "reproduction/operations/qwen7b_warmup/peer_newseed_export.py",
+          "reproduction/operations/qwen7b_warmup/peer_newseed_audit_reference.py",
+          "reproduction/operations/qwen7b_warmup/replay_probe_layers.py",
+          "reproduction/operations/qwen7b_warmup/replay_bank_prepare.py",
+          "reproduction/operations/qwen7b_warmup/replay_bank_capture.py",
+          "reproduction/operations/qwen7b_warmup/replay_feature_reader.py",
+          "reproduction/operations/qwen7b_warmup/runtime.sh",
+          "reproduction/operations/qwen7b_warmup/test_peer_newseed_ingest.py",
+          "reproduction/operations/qwen7b_warmup/test_peer_newseed_replay.py",
+          "reproduction/operations/qwen7b_warmup/test_peer_newseed_receive.py",
+          "reproduction/operations/qwen7b_warmup/deploy_peer_newseed_replay.py",
+          "reproduction/prefix20_online/rollout.py",
+          "reproduction/prefix20_online/pool.py",
+          "search_g1/__init__.py",
+          "search_g1/signals.py",
+          "search_r1/__init__.py",
+          "search_r1/qa_protocol.py",
+          "verl/__init__.py",
+          "verl/protocol.py",
+          "verl/version/version",
+          "verl/utils/__init__.py",
+          "verl/utils/logging_utils.py",
+          "verl/utils/tokenizer.py",
+          "verl/utils/py_functional.py",
+          "verl/utils/reward_score/__init__.py",
+          "verl/utils/reward_score/qa_em.py",
+          "reproduction/operations/qwen7b_warmup/replay_batched_context.py",
+          "reproduction/operations/qwen7b_warmup/peer_newseed_batched_replay.py",
+          "reproduction/operations/qwen7b_warmup/deploy_peer_batched_replay.py",
+          "reproduction/operations/qwen7b_warmup/test_replay_batched_context.py",
+          "reproduction/operations/qwen7b_warmup/validation_fixedg5_replay.py",
+          "reproduction/operations/qwen7b_warmup/peer_audited100_l26_replay.py",
+          "reproduction/operations/qwen7b_warmup/test_peer_audited100_l26.py",
+          "reproduction/operations/qwen7b_warmup/deploy_peer_audited100_l26.py",
+          "reproduction/operations/qwen7b_warmup/peer_audited122_l26_replay.py",
+          "reproduction/operations/qwen7b_warmup/deploy_peer_audited122_l26.py",
+          "reproduction/operations/qwen7b_warmup/test_peer_audited122_l26.py",
+          "reproduction/operations/qwen7b_warmup/peer_audited122_l26_merge.py",
+          "reproduction/operations/qwen7b_warmup/test_peer_audited122_l26_merge.py",
+          "reproduction/operations/qwen7b_warmup/peer_joint_subset_l26.py",
+          "reproduction/operations/qwen7b_warmup/deploy_peer_joint_subset_l26.py",
+          "reproduction/operations/qwen7b_warmup/peer_newseed_source_audit_dispatch.py",
+          "reproduction/operations/qwen7b_warmup/peer_newseed_audit_resealed_metadata.py",
+          "reproduction/operations/qwen7b_warmup/peer_newseed_target_attestation.py",
+          "reproduction/reports/qwen7b-algorithm-improvement-20261021/joint124194-feature-subsets/audited262-config.json"
+        ],
+        "questions": 33536,
+        "remote_sha": "729f37d6e1f80f6a6798d780043180dd78ba4c60"
+      },
+      "independent_audit": {
+        "bytes": 2898,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited262-after709-20261021-d3c45767/independent-final-audit.json",
+        "sha256": "20da1035ada59c1317a2d68b4ce9d732975ef62747b8cbb49603f3c6dee82c6b"
+      },
+      "outputs": {
+        "groups": {
+          "bytes": 49744816,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited262-after709-20261021-d3c45767/raw-g10/groups.json",
+          "sha256": "0dadf3dc9164ee2a357204188ad3a777229d39e5a5cdc05ababc868631af3172"
+        },
+        "overlap": {
+          "bytes": 624,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited262-after709-20261021-d3c45767/raw-g10/overlap.json",
+          "sha256": "47636e425bd54947b40051354396f54fde05447cbd742d46e48d1a7d77b5ed43"
+        },
+        "source-events": {
+          "bytes": 858817,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited262-after709-20261021-d3c45767/raw-g10/source-events.json",
+          "sha256": "3418fba436581e1bb312a7924a3a19d53035b594508ebbaff1f1ee626bb1bcf9"
+        }
+      },
+      "questions": 33536,
+      "raw_complete": {
+        "bytes": 11498,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited262-after709-20261021-d3c45767/complete.json",
+        "sha256": "1fccfe1f7d5e33360adb7dffcf860e5efacb5fcc73a24cbb6e057f7dbb6b1b49"
+      },
+      "snapshot": "audited262-after709-20261021-d3c45767",
+      "strict_EM_mismatches": 0,
+      "summary": {
+        "Mac_payload_transit": false,
+        "active_training_data_modified": false,
+        "actor_updates": 0,
+        "additional_excluded_by_question_hash": 0,
+        "archive_groups": 17,
+        "eligible_authentic_G10_trajectories": 335360,
+        "eligible_domains": {
+          "hotpotqa": 629,
+          "nq": 32907
+        },
+        "eligible_training_questions": 33536,
+        "epoch": 1792583145.488291,
+        "excluded_by_qid": {
+          "diagnostic512": 0,
+          "frozen_final4096": 0,
+          "selection2048": 0
+        },
+        "final_identity_source_refs_followed": false,
+        "final_rollout_or_prediction_opened": false,
+        "groups": {
+          "bytes": 49744816,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited262-after709-20261021-d3c45767/raw-g10/groups.json",
+          "sha256": "0dadf3dc9164ee2a357204188ad3a777229d39e5a5cdc05ababc868631af3172"
+        },
+        "histogram_K0_to10": [
+          15512,
+          2292,
+          1457,
+          1260,
+          1117,
+          1153,
+          1216,
+          1437,
+          1928,
+          2656,
+          3508
+        ],
+        "ingest_complete": {
+          "bytes": 11498,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited262-after709-20261021-d3c45767/complete.json",
+          "sha256": "1fccfe1f7d5e33360adb7dffcf860e5efacb5fcc73a24cbb6e057f7dbb6b1b49"
+        },
+        "metadata_resealed_attestation_batches": 1,
+        "model_tensor_loaded": false,
+        "new5_histogram_K0_to5": [
+          17117,
+          2872,
+          2217,
+          2451,
+          3485,
+          5394
+        ],
+        "old5_histogram_K0_to5": [
+          17146,
+          2877,
+          2244,
+          2430,
+          3437,
+          5402
+        ],
+        "original_metadata_receipt_chain_not_silently_rewritten": true,
+        "own_trajectory_IDs_and_ordered_old5_new5_strict_EM_join_verified": true,
+        "probe_updates": 0,
+        "received_batches": 262,
+        "received_domains": {
+          "hotpotqa": 629,
+          "nq": 32907
+        },
+        "received_newseed5_trajectories": 167680,
+        "received_questions": 33536,
+        "receiver_complete": {
+          "bytes": 729,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/peer-newseed-h100-20261021/audited262-after709-20261021-d3c45767/complete.json",
+          "sha256": "e4f42cbbc44d5b15d99c173479641541f4d97a53895c6c2f679a297fc7aa0023"
+        },
+        "retained_canonical_training_hash_overlap": 1,
+        "selection": {
+          "bytes": 517646,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-delta-import-runtime-audited262-after709-20261021-d3c45767/independent-audit-184b3e08ddfb/selection.json",
+          "sha256": "ae02d51cedfff3ae20447bb826da25a744257e7a0c218778a4ee3718bb6608ca"
+        },
+        "source_events": {
+          "bytes": 858817,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited262-after709-20261021-d3c45767/raw-g10/source-events.json",
+          "sha256": "3418fba436581e1bb312a7924a3a19d53035b594508ebbaff1f1ee626bb1bcf9"
+        },
+        "status": "FROZEN_DELTA_RECEIVER_AND_ELIGIBLE_RAW_G10_INDEPENDENTLY_ACCEPTED",
+        "subset_record_sha256": "d3c45767e3dd24b6470100466c6e25b8e9b4eab44a565d1b8c60b6e0590aa406",
+        "tokenizer_strict_EM_and_seed_audit_inherited_from_actual_ingester": true
+      },
+      "trajectories": 335360
+    }
+  ],
+  "status": "BOTH_FIXED505_RAW_G10_TARGET_AND_STRICT_EM_OWN_ID_ACCEPTED",
+  "total971_raw_G10_trajectories": 1241940,
+  "total971_raw_questions": 124194,
+  "total_new_G10_trajectories": 645460,
+  "total_new_questions": 64546
+}
