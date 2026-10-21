@@ -1,0 +1,153 @@
+{
+  "status": "JOINT_HIDDEN_COUNT_FIXED_IDS_OWN_EM_DIRECT_Q_METRICS_FULL_CP_INDEPENDENTLY_ACCEPTED",
+  "cursor": 256,
+  "metrics": {
+    "diagnostic512": {
+      "pool": {
+        "questions": 512,
+        "mixed_questions": 205,
+        "mixed_fraction": 0.400390625,
+        "mixed_balanced_accuracy": 0.5,
+        "mixed_recall": 0.0,
+        "nonmixed_recall": 1.0,
+        "mixed_roc_auc": 0.5133550488599349,
+        "allwrong_FPR": 0.0,
+        "allcorrect_FPR": 0.0,
+        "confusion": {
+          "tp": 0,
+          "fn": 205,
+          "tn": 307,
+          "fp": 0
+        },
+        "k_histogram": [
+          228,
+          63,
+          50,
+          44,
+          48,
+          79
+        ]
+      },
+      "selected512": {
+        "questions": 512,
+        "mixed_questions": 205,
+        "mixed_fraction": 0.400390625,
+        "mixed_balanced_accuracy": 0.5,
+        "mixed_recall": 0.0,
+        "nonmixed_recall": 1.0,
+        "mixed_roc_auc": 0.5133550488599349,
+        "allwrong_FPR": 0.0,
+        "allcorrect_FPR": 0.0,
+        "confusion": {
+          "tp": 0,
+          "fn": 205,
+          "tn": 307,
+          "fp": 0
+        },
+        "k_histogram": [
+          228,
+          63,
+          50,
+          44,
+          48,
+          79
+        ]
+      }
+    },
+    "selection2048FreshG5HF": {
+      "pool": {
+        "questions": 2048,
+        "mixed_questions": 663,
+        "mixed_fraction": 0.32373046875,
+        "mixed_balanced_accuracy": 0.49891696750902526,
+        "mixed_recall": 0.0,
+        "nonmixed_recall": 0.9978339350180505,
+        "mixed_roc_auc": 0.5261555885892263,
+        "allwrong_FPR": 0.0009478672985781991,
+        "allcorrect_FPR": 0.006060606060606061,
+        "confusion": {
+          "tp": 0,
+          "fn": 663,
+          "tn": 1382,
+          "fp": 3
+        },
+        "k_histogram": [
+          1055,
+          181,
+          136,
+          132,
+          214,
+          330
+        ]
+      },
+      "selected512": {
+        "questions": 512,
+        "mixed_questions": 171,
+        "mixed_fraction": 0.333984375,
+        "mixed_balanced_accuracy": 0.49560117302052786,
+        "mixed_recall": 0.0,
+        "nonmixed_recall": 0.9912023460410557,
+        "mixed_roc_auc": 0.5226629623913155,
+        "allwrong_FPR": 0.004016064257028112,
+        "allcorrect_FPR": 0.021739130434782608,
+        "confusion": {
+          "tp": 0,
+          "fn": 171,
+          "tn": 338,
+          "fp": 3
+        },
+        "k_histogram": [
+          249,
+          42,
+          37,
+          36,
+          56,
+          92
+        ]
+      }
+    }
+  },
+  "checkpoint": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/checkpoints/cursor-000256.pt",
+    "bytes": 3754035012,
+    "sha256": "1d5cbb7cfbc42e5fc91fc7f1430c65d0f8c19476b4e4069be424f96464276850",
+    "cursor": 256,
+    "steps": 10720,
+    "legacy_Adam_steps": 10720,
+    "new_head_Adam_steps": 256,
+    "config_sha256": "fb0bcbcff25c5e436506d8085721a5e1403ad4cb6d8568642cbe29121b3e5b49",
+    "matched_binding_sha256": "fb0bcbcff25c5e436506d8085721a5e1403ad4cb6d8568642cbe29121b3e5b49",
+    "data_cursor": {
+      "cursor": 256,
+      "plan_sha256": "8d6f5b046c8ee459c529f0750c80bac63455b2663f19cdcdce48d0fddd648cbf"
+    },
+    "phase": "accepted_update_complete",
+    "accepted_hashes": {
+      "legacy_raw": "537e64f30686b234d4b67c31aaa990e61e6b737c0814b49cd0aff8e9b1ac971b",
+      "legacy_ema": "bf72ae55e928a65e16b0d2e7f1b7f83e0559f5bf9c87968c265ca4c7d24dd8f1",
+      "legacy_adam": "43b74298382b0f38d96dbb202c0ba13019fe5f75d2b62651d6709c7b866c74e5",
+      "legacy_raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "legacy_ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8",
+      "head_raw": "6ff95c4c89fd51cd22728cc7b8a5d1956c5f37a046fff57bdd15cc9a0fd5b877",
+      "head_ema": "66bf3d72f769b52bba193e3511386ab746e5c191f276edf6016dad2d846df92d",
+      "head_adam": "208932ad6f19a446a0b8ab92180ddc4c8fc72f2455257bb016dc5a8b34e85487"
+    },
+    "head_buffer_hashes": {
+      "raw": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ema": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source_archive_sha256": "d74c3923202a4cb902d08f71e115415168199459a6f7e6b282e330d6e0cdbfeb",
+    "source_all_four_RNG_preserved": true,
+    "full_CPU_reload_passed": true,
+    "full_file_SHA256_verified": true,
+    "actor_updates": 0,
+    "epoch_time": 1792544239.5824027
+  },
+  "audit": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/evaluations/cursor-000256/independent-audit.json",
+    "bytes": 5001,
+    "sha256": "ccf56fac722568392a77e2c1342daf03bc6397b4236fbb1cec088139e61dfd31"
+  },
+  "published_external_auditor_commit": "0be87366db66cbd6705e0806e435a680323e9b97"
+}
