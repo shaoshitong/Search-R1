@@ -1,12 +1,12 @@
 {
-  "epoch": 1792582486.628163,
-  "status": "FAILED745320_STRUCTURE_REPAIRED_R2_PUBLICATION_IN_PROGRESS",
+  "epoch": 1792582644.1789901,
+  "status": "REPAIRED_CP1_NATIVE4_JOB745371_PENDING_PRIORITY_VERIFIED",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
-  "job": null,
+  "job": "745371",
   "run_id": "232f20e112ac4a978c5aba52a0367195",
   "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
-  "runtime_commit": "0eed1015b0696101227fc8deccc9b132d9e3a207",
+  "runtime_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
   "actor_physical_micro": 8,
   "global_mini": 128,
   "logical_micro": 4,
@@ -47,18 +47,13 @@
     "actual_training_optimization_enabled": false,
     "selected_LM_head": "Actual 7B CUDA LPmax3.8147e-6/loss1.6925e-9, but gradient thresholds not met; dense repeat relativeL2 0.00904/0.00964, sparse0.01149; INCONCLUSIVE strictgrad; NOT ENABLED",
     "exact_query_cache": "11 CPU tests passed; preserves exact original fullbatch/context/score mode/version and logical search counts",
-    "pending": "R2 deployment/submission from originalCP1; dense original forward plus exact cache; existing separate2 H100745198 unchanged",
+    "pending": "745371 pending actual allocation; original dense forward + exact retrieval cache, separate2H100745198; actual model/Adam/scheduler/RNG/driver all4 readback, completedouter2 then2..6followup still required",
     "physical_micro16": "Not raised blindly; needs actual measured memory/throughput"
   },
   "previous_goal_turn_classification": "PROGRESS",
-  "latest_turn_classification": "PROGRESS: verified own745320 FAILED1:0 before Adam/RNG; preserved remote evidence; fixed loaded7B28layer check and CP1 QA5 history; 40 CPU tests pass; preparing unique R2 from same completeCP1",
-  "last_observation": "cp1-new-observation-1792582021.json",
-  "pipeline": {
-    "run_id": "232f20e112ac4a978c5aba52a0367195",
-    "stage": "GRPO_1_TO_200",
-    "unix": 1792581960.3626158,
-    "execution_role": "production"
-  },
+  "latest_turn_classification": "PROGRESS: actual FAILED745320 preserved, fixed model config and CP1 QA5 chain bugs; 40testsPASS; latest source pushed+1551files SHA deployed; one new4H100 job745371; two actual Priority pending polls, healthy existing2H100 retrieval745198",
+  "last_observation": "training-progress-1792582644.json",
+  "pipeline": null,
   "calibration": {
     "actual_rollouts": 1500,
     "valid_rollouts": 1180,
@@ -80,7 +75,8 @@
     "candidate_mixed_questions": 984,
     "full_checkpoint_bytes": 91404238199,
     "rolling_pointer_complete": true,
-    "model_tensors": 339
+    "model_tensors": 339,
+    "belongs_to_job": "745022"
   },
   "external_retrieval": {
     "job": "745198",
@@ -100,12 +96,10 @@
   "storage_inventory_report": "HPC3-storage-distribution-20261021.txt",
   "last_measured_queue": {
     "rc": 0,
-    "stdout": "745320|jxu957|RUNNING|ACD1-36|ACD1-36|2026-10-21T19:22:32\n745198|jxu957|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50\n",
+    "stdout": "745371|PENDING||(Priority)|2026-10-21T21:57:09|7-00:00:00\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-23:02:26\n",
     "stderr": ""
   },
   "new_recovery_base_allocated_bytes": 62230528,
-  "node": "ACD1-36",
-  "allocation_started_cst": "2026-10-21T19:22:32+08:00",
   "training_startup_is_not_completed_outer": true,
   "previous_failed_job": "745320",
   "failed_actual_restore": {
@@ -115,5 +109,23 @@
     "cause": "legacy len(layers)==36 check rejected official7B28",
     "failure_receipt": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/preserved-failure745320-1792582401.json",
     "source_cp1_intact": true
-  }
+  },
+  "recovery_followup_required_complete_outers": [
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "recovery_followup_required_next_outer_started": 7,
+  "actual_new_completed_outers": [],
+  "archive_controller_for_current7b_not_yet_started": true,
+  "remaining_goal_requirements": [
+    "actualCP1 fullstate native4 restore",
+    "complete2..6 and7startfollowup",
+    "continue200outer",
+    "fixed512 QA5/50/100/150/200",
+    "native51713finalevaluation",
+    "full milestone archives and actual final200native4restore without201"
+  ]
 }
