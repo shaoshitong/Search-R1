@@ -1,0 +1,54 @@
+{
+  "active_training_future_CP_reserve_bytes": 429496729600,
+  "current_uid": 21930,
+  "directory_owner_uid": 21930,
+  "epoch": 1792547169.2997377,
+  "existing_capture_locks": [],
+  "existing_job_ids": [],
+  "free_bytes": 12039353882828800,
+  "minimum_free_bytes": 912680550400,
+  "new_namespace_python_processes": [],
+  "other_current_account_jobs": [
+    "743809|q7b-direct-count-headlr1e4|RUNNING|ACD1-14|gres/gpu:1",
+    "743619|q7b-direct-count938|RUNNING|ACD1-18|gres/gpu:1"
+  ],
+  "quota_observations": {
+    "current_user_quota": {
+      "args": [
+        "/bin/quota",
+        "-s",
+        "-u",
+        "21930"
+      ],
+      "exit_code": 1,
+      "output": ""
+    },
+    "mount": {
+      "args": [
+        "/bin/findmnt",
+        "-T",
+        "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021",
+        "-n",
+        "-o",
+        "SOURCE,FSTYPE,TARGET"
+      ],
+      "exit_code": 0,
+      "output": "/LK02  dpc    /data\n"
+    }
+  },
+  "quota_tools": {
+    "findmnt": "/bin/findmnt",
+    "lfs": null,
+    "mmlsattr": null,
+    "mmlsquota": null,
+    "quota": "/bin/quota"
+  },
+  "root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1",
+  "root_exists": false,
+  "shared_df_is_not_user_quota": true,
+  "slurm_version": "slurm 23.11.11",
+  "srun_gpu_bind_supported": true,
+  "srun_gpus_per_task_supported": true,
+  "status": "READ_ONLY_NEW_DELTA_FEATURE_STORAGE_QUEUE_AND_LOCK_PREFLIGHT",
+  "user_or_directory_available_quota_confirmed": false
+}
