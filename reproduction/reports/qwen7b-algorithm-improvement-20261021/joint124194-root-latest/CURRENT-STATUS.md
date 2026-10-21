@@ -1,11 +1,9 @@
-当前执行实测（2026-10-21；目标保持active）
+截至本次实际查询：主训练745501仍由原PID300719/birth116543024推进，新增更新1217/15528；首epoch 1217/3882，完整CP1152。无failure/interrupted。训练固定124194题，native block27+readout共同更新、LR5e-6、真实G10随机G5视图Mixed/nonMixed50/50，actor未更新。首个新增epoch尚未完成，未有本轮独立效果提升。
 
-主训练745501：1025/15528真实更新，Adam15443，完整可恢复CP1024；原PID300719/birth116543024在ACD1-28推进，无failure/interrupted。124194题G10冻结，原生block27+readout联合训练，LR5e-6，每batch64Mixed/64nonMixed真实G5视图。当前首个新增epoch尚未结束，没有本轮独立效果提升可报告。
+全量169028 canonical题真实raw G10已实际验收，共1690280条；缺失0/多余0，own trajectory IDs唯一，old5身份/EM与canonical精确一致，独立6656题qid/text hash无交集。域NQ78871+Hotpot90157；6组原始重复文本各2题按真实qid保留。两个原tail生产器745518/745519已COMPLETED0:0并释放4GPU。
 
-全量canonical169028题计划逐qid与sortedSHA闭合：aa14bce45fc6a793789369d6f33c84edf3c1d79e601fec45882ec193b1e4c58d，缺失/多余0。最后生产实测205/241批=26240own题；与main/donor去重联合164514题生成、4514待生成。真正full rawG10验收现162210题（95.9663%），剩6818待验；不能用生成数代替通过数。新14592题old5/new5各72960条strictEM/causal/seeds/fullSHA均0错，346份batch metadata回执freshSHA通过、audit/launch锁释放。
+同协议L26/P20特征已完整验收133538题（124194+9344）。其余35490题（donor14080、next14592、final6818）继续独立采集/验收；donor与14592已有两次真实增长，final6818实际raw通过后已交接prepare，不称全量feature-ready。当前fit不扩容、不热改。
 
-特征745731（normal1H100）已生成93440/93440行、292/292完整chunks，仍等待完整逐行retained/sourceSHA最终bank接受。donor745832（独立normal1H100）最新可见38732/140800行、121chunks；启动后480->2656行/1->8chunk已实测，无GPU热改。可变progress存在NFS可见性窗口，仅只读control做窄修05f28e2b；缺失时标unknown，不报0或停训。下一14592独立L26入口准备中，只有完整raw与CPU投影/physical末次绑定通过后执行。所有模型/特征留远端，当前fit未扩容。
+效果的已知对照仍是本轮训练前E0 EMA：独立2048原池Mixed32.373%，选512中196题真实Mixed=38.28125%，MixedBA55.7714%；其中209全错/107全对，错误偏好全对仍需改善。训练batch loss不代替独立MixedBA/真实Top512收益。每epoch后运行固定512/2048 raw与EMA对比；最终4096结果继续保留未读。
 
-旧E0 EMA独立2048：MixedBA55.7714%，Top512196Mixed/209全错/107全对，实际Mixed38.28125%，原池32.37305%；全对题进入Top51232.42%仍高于Mixed29.56%。这些是旧模型短板，不是新训练收益。新epoch必须对比固定阈值MixedBA/真实Mixed@512及三类误选，不能以训练loss代替泛化。
-
-完整目标还要求把全169028 ownG10+同合同L26数据实际用于独立数据scaling联合训练；不能仅备齐数据就宣告完成。当前124194实验保持不变、不丢Adam/RNG。新增全量实验需独立source/config/output/locks及实际启动恢复验收，比较matched-update和epoch节点。最终选择完成前不读取untouched4096结果。当前head-only高LR分支仍延后。既有terminal-only精确续跑控制保留，不在原writer活动时重复提交，不静默回滚。最后还需实际收益确认、fullcheckpoint和资源收尾。
+剩余：完成当前4epoch；补完35490题特征并实际启动全169028独立联合预训练数据scaling；比较独立Mixed均衡准确率/真实Mixed@512，最终独立4096确认；完整恢复状态验收与资源/源码收尾。全169028 worker与公平matched-update评估入口已准备，bank join7项必要CPU测试通过，尚未提交全量训练GPU。

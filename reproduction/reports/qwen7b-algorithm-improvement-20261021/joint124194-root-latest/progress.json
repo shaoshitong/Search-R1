@@ -1,11 +1,11 @@
 {
-  "observed_UTC": "2026-10-21T14:47:22.508732+00:00",
-  "status": "BOTH_ACTUAL_NATIVE_JOINT_TRAINING_AND_TAIL_GENERATION_ADVANCING_STARTUP_VERIFIED_NOT_SCIENTIFIC_COMPLETION",
+  "observed_UTC": "2026-10-21T15:12:07.278314+00:00",
+  "status": "FULL169028_REAL_RAW_G10_QUALIFIED_CURRENT124194_JOINT_TRAINING_ADVANCING_NO_NEW_EPOCH_RESULT",
   "main_job": 745501,
-  "main_observed_epoch": 1792593855.4900918,
-  "accepted_updates": 1025,
+  "main_observed_epoch": 1792595476.1564288,
+  "accepted_updates": 1217,
   "total_updates": 15528,
-  "Adam_steps": 15443,
+  "Adam_steps": 15635,
   "epochs_completed": 0,
   "epoch_budget": 4,
   "steps_per_epoch": 3882,
@@ -28,27 +28,27 @@
   "durable_next_actual_update_replay_passed": true,
   "continuous_1_to_7_plus_next_passed": true,
   "last_durable_checkpoint": {
-    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-124194-v1/checkpoints/.rolling-accepted-cursor-001024-c34c9c1d10a342b796247a6b373d1b3a.pt",
-    "sha256": "5912d54b04852977deb866bb883e67c0607da2f05aae2cd3f092c4948e437b6f",
-    "bytes": 3751492250,
-    "cursor": 1024,
-    "steps": 15442,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-124194-v1/checkpoints/.rolling-accepted-cursor-001152-4bf92e4f16fc46a2bf0f73e7a3804918.pt",
+    "sha256": "53e88e961a17d4dfe52022dde5a2198b871671a48e5cbf188539f2950e717538",
+    "bytes": 3751567066,
+    "cursor": 1152,
+    "steps": 15570,
     "config_sha256": "5aaa63c9348f410357be92ce491ba6d18286d618ab86dae6e63f193f2b4367b6",
     "matched_binding_sha256": "01071ad024af352d576a2d02f7e8d4a867f71bd7f6609ca9110db13e9b2f307f",
-    "epoch_time": 1792593844.5237207,
+    "epoch_time": 1792594679.5598485,
     "accepted_hashes": {
-      "raw": "2c51ad726c1d85278a13324d373ff4fad0a71df01e20aabd177db5a354ea3324",
-      "ema": "c7bc77c3042d007bea99e1f894c2d11447375fb29da603b43b5f5ea8bc1a49c4",
-      "adam": "e23b15e478ae65153dc6c46dbf76afd8f67cfc86ae6d64fd2e6619347062e8cd",
+      "raw": "51c7f99baa9d67c8472a257b4ad786c3a55def73f54af0aad441045d20020e0a",
+      "ema": "abe1e9f103fe80fce286500ac29e96886f1a6b143cad76c435ce55be50fd6d4e",
+      "adam": "1e98e2c64c7457b3af30de1496350ec36b13cea2f5ba9f323c1e6f102783d9c6",
       "raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
       "ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
       "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
     },
-    "sampler_state_sha256": "e8efed57a0baba80539133f1c1f3ad51b23389a3db7a957dc2e6a3c609b7d311",
+    "sampler_state_sha256": "953fe33ce33ca3d1d028dfdac4bb84b8dd952edf63a44178a0de325123b48486",
     "data_cursor": {
-      "cursor": 1024,
+      "cursor": 1152,
       "sampler_binding": "c9281ec1c271c5d6db71a8d77789a436619e4d707f1a8426393638119e9cc45d",
-      "sampler_state_sha256": "e8efed57a0baba80539133f1c1f3ad51b23389a3db7a957dc2e6a3c609b7d311"
+      "sampler_state_sha256": "953fe33ce33ca3d1d028dfdac4bb84b8dd952edf63a44178a0de325123b48486"
     },
     "pinned": false,
     "full_CPU_six_state_reload_passed": true,
@@ -64,23 +64,18 @@
     745518,
     745519
   ],
-  "tail_observed_UTC": "2026-10-21T13:52:12+00:00",
-  "tail_actual_sealed_questions": 15872,
-  "tail_actual_sealed_new5_trajectories": 79360,
+  "tail_actual_sealed_questions": 30754,
+  "tail_actual_sealed_new5_trajectories": 153770,
   "tail_planned_questions": 30754,
-  "tail_remaining_own_questions": 14882,
+  "tail_remaining_own_questions": 0,
   "tail_first_batch_independent_strict_EM_mismatches": [
     0,
     0
   ],
   "tail_potential_overlap_with_donor": true,
-  "tail_count_is_not_global_distinct_coverage": true,
   "errors_latest": {
     "main_failure_receipt": null,
-    "tail_failures": [
-      null,
-      null
-    ]
+    "main_interrupted": null
   },
   "source_rollout_goal_questions": 169028,
   "current_training_cohort_frozen": true,
@@ -101,13 +96,11 @@
     "post_training_epochs_scored": 0
   },
   "remaining": [
-    "Finish current4 additional native block27+readout epochs on frozen124194; independently compare fixed2048 MixedBA and trueMixed@512 after each actual epoch",
-    "Complete the remaining6818 canonical questions of fullrawG10 acceptance; source generation last measured4514 missing, which is a separate metric",
-    "Finish sameofficialHF causal L26/P20 source-bound features for new9344+14080+14592+6818 questions, then exact full169028 bank join",
-    "Use full169028 ownG10 in an independently bound joint-pretraining data-scaling experiment; data preparation alone does not meet the full request. Preserve active124194 and all Adam/RNG states",
-    "Choose on designated selection data, then confirm on untouched4096 only after all necessary trialselection; no current new-model gain measured",
-    "Continue from exact highest complete validated raw/EMA/Adam/RNG/sampler transaction if24h insufficient, never duplicate activewriter or silently rollback",
-    "Complete final checkpoint/reload, evidence publication and owned-resource closure"
+    "Complete current4 additional frozen124194 native block27+readout epochs and fixed512/2048 independent epoch evaluation",
+    "Finish L26/P20 feature banks for donor14080,next14592,final6818 then independently join exact169028 bank;9344 now accepted",
+    "Actually train the independent full169028 joint-pretraining data-scaling run; prepared code alone is not execution",
+    "Compare MixedBA and trueMixed@512 against E0 and designated best baselines, then confirm selected final model on untouched4096",
+    "Complete exact state/checkpoint reload acceptance, necessary publication and owned-resource closure"
   ],
   "runtime_estimate": {
     "recent_update_seconds": 6.3775918108876795,
@@ -542,5 +535,72 @@
       "readonly_control_NFS_repair_publication": "05f28e2b753f5707029afe505adea3bc372d6737",
       "current_fit_changed": false
     }
-  ]
+  ],
+  "tail_jobs_terminal": "COMPLETED_0_0",
+  "raw_G10_qualified_questions": 169028,
+  "raw_G10_qualified_trajectories": 1690280,
+  "canonical_missing_qids": 0,
+  "canonical_extra_qids": 0,
+  "full_raw_G10_acceptance": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-full169028-qualified-raw-union-v1/complete.json",
+    "bytes": 7943,
+    "sha256": "3dabf439073b1c49b4b0be7e9885100a214f101443e3b7a983ddca1fbbf40b1b"
+  },
+  "full_feature_accepted_questions": 133538,
+  "full_feature_pending_questions": 35490,
+  "full169028_training_started": false,
+  "full169028_entry_prepared": true,
+  "feature_bank9344_accepted": {
+    "complete": {
+      "bytes": 4347,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v2/bank/complete.json",
+      "sha256": "7bad8bd1864193f1e44665899e648ae17f4e9d7a0cee715ce9a282bbb93aa8e2"
+    },
+    "groups": {
+      "bytes": 13005705,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v2/bank/groups.json",
+      "sha256": "670593b4a58207b55170089d96be2a243fd076da43c5b748877ddf04377c3a7c"
+    },
+    "features_layer26": {
+      "bytes": 85850,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v2/bank/features-layer26.json",
+      "sha256": "df3fc5b1e076878b0af939e1686074494a057111dce9402f76ceeee58d7adbc4"
+    },
+    "source_bound_retained_rows": {
+      "bytes": 1182,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v2/bank/source-bound-retained-rows.json",
+      "sha256": "432025ede29b7286c90f2f8231a75f675be001938f560b262a8a78298d13e515"
+    },
+    "raw_complete": {
+      "bytes": 24395,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-old5-qualified-g10-v1/complete.json",
+      "sha256": "0898b54516068d5b2c0fd1e2d95befb47d58ed2e96ca1065fc9b556387abbbfd"
+    },
+    "source_resolution_contract": {
+      "bytes": 485,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-old5-qualified-g10-v1/raw-g10/source-resolution-contract.json",
+      "sha256": "229710cbfccc53c92be96081535eeeee308cc52b969b07713258212c2b0d86c2"
+    },
+    "preparation": {
+      "bytes": 3805,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v2/preparation.json",
+      "sha256": "c63010438f4571efd247441168a43c4966e8c2017d099fd0f452f42947b6e77c"
+    },
+    "questions": 9344,
+    "trajectories": 93440,
+    "manifests": 292,
+    "packed_bytes": 15633462183,
+    "independent_source_bound_reader_audit": {
+      "bytes": 3170,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v2/bank/independent-source-bound-reader-audit.json",
+      "sha256": "ac7a2894127ee529c1c4c51f4384fa1b7ebce22291d85b929eb4fe59ee203f94"
+    },
+    "capture_job": "745731",
+    "capture_main_sacct": "745731|COMPLETED|0:0",
+    "producer_source_commit": "772381da4073c659f6a2d5c9370512b96f0f073f",
+    "independent_auditor_commit": "5301c2d070f04e771bedb1678a17c40d68d23b01",
+    "ready_for_future_independent_bank_join": true,
+    "current124194_training_changed": false,
+    "donor_feature_union_performed": false
+  }
 }
