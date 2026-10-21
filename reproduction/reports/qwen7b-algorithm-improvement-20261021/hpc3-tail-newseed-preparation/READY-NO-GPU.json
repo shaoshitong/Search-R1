@@ -1,0 +1,45 @@
+{
+  "status": "TAIL_PREPARED_AND_SINGLE_SUBMIT_PREFLIGHT_READY_NO_GPU_SUBMITTED",
+  "generation_commit": "2590d0b272013264b6d727a6a38493a790ee1305",
+  "submission_control_implementation_commit": "0f01354c902bb4c08dd4c41df9207974b56d337d",
+  "submission_control_SHA256": "392f3bb747996957bf084af3cedd186c71aa0b29ccb5bb35ac3537cd5516c014",
+  "preflight": {
+    "path": "reproduction/reports/qwen7b-algorithm-improvement-20261021/hpc3-tail-newseed-preparation/actual-control-preflight.json",
+    "bytes": 1922,
+    "sha256": "ad43c3ea4c130021054c717a84e8d95dfb34c3d10119467808f412b9f61999af",
+    "epoch": 1792585087.8214266
+  },
+  "config_SHA256": "368ad5d8df9e0238bdee8033964b56f0f4a6426e606f9514114fac0dcb05d835",
+  "target": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1",
+  "questions": 30754,
+  "trajectories": 153770,
+  "potentialOverlap": true,
+  "current_main124194_changed": false,
+  "root_GO_required_before_submission": true,
+  "commands_after_GO": [
+    "python3 reproduction/operations/qwen7b_warmup/submit_hpc3_tail_g5.py --action submit --worker 0 --submit-authorized",
+    "python3 reproduction/operations/qwen7b_warmup/submit_hpc3_tail_g5.py --action submit --worker 1 --submit-authorized"
+  ],
+  "unknown_outcome_reconcile_command": "python3 reproduction/operations/qwen7b_warmup/submit_hpc3_tail_g5.py --action reconcile --worker W --submit-authorized",
+  "intent_paths": [
+    "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/worker-0.submission-intent.json",
+    "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/worker-1.submission-intent.json"
+  ],
+  "job_id_paths": [
+    "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/worker-0.job.id",
+    "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/worker-1.job.id"
+  ],
+  "held_receipt_paths": [
+    "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/worker-0.submission.json",
+    "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/worker-1.submission.json"
+  ],
+  "actual_intent_and_jobid_files_absent": true,
+  "actual_same_name_jobs_empty": true,
+  "actual_worker_locks_free": true,
+  "GPU_submitted": false,
+  "post_GO_required_real_acceptance": [
+    "Retriever and generator real initialization, actualGPU assignment/error checks",
+    "First full own batch strictEM/IDs/seed/source revision/P20/full continuation audit",
+    "Second real completed batch/progress increase, not Slurm RUNNING alone"
+  ]
+}
