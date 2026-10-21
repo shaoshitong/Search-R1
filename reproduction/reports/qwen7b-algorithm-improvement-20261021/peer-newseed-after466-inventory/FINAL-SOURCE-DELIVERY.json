@@ -1,0 +1,175 @@
+{
+  "status": "FIXED971_DONOR_SOURCE505_PROOFS_FROZEN_AND_1216_RECOVERY_METADATA_DELIVERED_NOT_RAW_OR_FEATURE_ACCEPTANCE",
+  "frozen_training_cohort": {
+    "batches": 971,
+    "questions": 124194,
+    "authentic_G10_trajectories": 1241940,
+    "domains": {
+      "nq": 78871,
+      "hotpotqa": 45323
+    },
+    "source_newseed5_trajectories": 620970
+  },
+  "prior_accepted_raw": {
+    "batches": 466,
+    "questions": 59648
+  },
+  "new_fixed_scope": {
+    "batches": 505,
+    "questions": 64546,
+    "newseed5_trajectories": 322730
+  },
+  "leg243": {
+    "plan": {
+      "path": "/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/metadata-plans/after466-8e23374458fb-c011c094/audited243-plan.json",
+      "bytes": 405030,
+      "sha256": "d251a80dbbedc336b6dbc48246c06ec824461e38ff24df61717c5e3a6079ccdd"
+    },
+    "source_publication": "c011c094cfda9db642eefe92dda08979745373f2"
+  },
+  "leg262": {
+    "plan": {
+      "path": "/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/metadata-plans/after466-8e23374458fb-4e622379/audited262-plan.json",
+      "bytes": 517646,
+      "sha256": "ae02d51cedfff3ae20447bb826da25a744257e7a0c218778a4ee3718bb6608ca"
+    },
+    "source_publication": "4e62237921db3a279e2a42e2999c22fe8bd69520",
+    "independent262_proof_complete": {
+      "path": "/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/metadata-plans/after466-8e23374458fb-4e622379/qualified262-complete.json",
+      "bytes": 1418,
+      "sha256": "eb7a3b79f2447ad59902b38f6f32f10f551a4593942e9b21a604d6a62bc6334e"
+    },
+    "prior243_source_complete": {
+      "path": "/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/audited243-after466-20261021-45227948/complete.json",
+      "bytes": 812328,
+      "sha256": "a30b663dc9a4596718a6e1a3ff59ecb8e39f29efc16f94b1c45a9ee825044921"
+    }
+  },
+  "independent_source_proof": {
+    "owner_pid": 539235,
+    "owner_start_ticks": 1963810796,
+    "real_checked_progress": [
+      50,
+      177,
+      252
+    ],
+    "pinned_original_chain_passed": 261,
+    "explicit_metadata_resealed_batch_passed": 1,
+    "original_failure_preserved": true,
+    "metadata_resealed_attestation": {
+      "status": "ONE_METADATA_RESEALED_BATCH_FRESH_SHA_AND_ORIGINAL_CHAIN_CAUSAL_RECONCILIATION_PASSED",
+      "input": "inputs/shard-01/batch-000300.json",
+      "questions": 128,
+      "trajectories": 640,
+      "proof": {
+        "path": "/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/source-proof262-after466-8e23374458fb-fd165476/metadata-reseal-attestation-e01c2b14c7e7/audit/batches/shard-01/batch-000300.json",
+        "bytes": 3319,
+        "sha256": "24a47be75fb8d60142c3262fbe243b17a67a48ae2b62e9b7ded182f441c8ee2c"
+      },
+      "source_publication": "f0f1f9ee29daf251063b1f30cd039441655df180",
+      "auditor_sha256": "e01c2b14c7e78f10141f03fd22385d08c65017379f7b515f75b705f82fd9ceae",
+      "pinned_original_auditor_sha256": "3def055adebfdb38e9326b9db385338c44800160c1b0a64e1ee78d8c3b68b906",
+      "metadata_reseal_attestation": {
+        "original_receipt_chain_equal_current": false,
+        "original_continuation_scan_sha256": "8d2ea030bbc9d256c01af9eaaecdf22820880fe608c881eede46025a916c122b",
+        "original_continuation_selection_sha256": "5bb19d7c24b926332bad3fd5c8b39aaff8d3d148c4614fbff4f03d19d505decd",
+        "fresh_current_scan_sha256": "0106b044d65992152419fcfbb2951c44035e0dc54524e044d3c21bb216bcbd55",
+        "fresh_current_selection_sha256": "16bc370fb1b61e0a1c459bb1f86502f1a49ae459e6efb84cc832387babe48c95",
+        "same_prefix_rank_receipt_and_payload": true,
+        "same_all_G5_IDs": true,
+        "full_rows_original_chain_and_current_prefix_causal_tokens_exact": true,
+        "strict_EM_tokenizer_recomputed": false,
+        "producer_metadata_modified": false
+      },
+      "independent_sha256": {
+        "prefix": "720966757c98e88b57bf3efab21efb1e65a73aad5276b4bd85f6d228a5a2248a",
+        "full": "b48a8f15604a8f128b731a5e8c11c0f5fb8658844667ddcc787803f680582295",
+        "own_em": "b0728a6983a21b5f730f1822343284caaece46cd5e9ff8c438aa6e957f3efa3f"
+      },
+      "original_failure_preserved": true,
+      "producer_modified": false,
+      "strict_EM_tokenizer_recomputed": false,
+      "elapsed_seconds": 0.8428843021392822,
+      "epoch": 1792578226.352359
+    },
+    "actual_target_tokenizer_strict_EM_acceptance_claim": false
+  },
+  "feature_coverage": {
+    "old_feature_ready": 58432,
+    "eligible_omitted_recovery": 1216,
+    "old_raw_after_recovery": 59648,
+    "new505_features_to_capture": 64546,
+    "final_expected_feature_ready": 124194,
+    "omission_breakdown": {
+      "controlled_qid": 1203,
+      "controlled_hash": 1203,
+      "full_batch_tail": 13,
+      "train_text_dedup": 0
+    },
+    "recovered_identity_plan": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-recovered1216-identity-v1/identity-plan.json",
+      "bytes": 862041,
+      "sha256": "9b8f93abc93d7907c6bb5dfb9c7b86b00d347d9d4714d53d236296d0d5fa6c48"
+    },
+    "fixed_evaluation_identity_overlap": {
+      "diagnostic512": {
+        "qids": 0,
+        "hashes": 0
+      },
+      "frozen_final4096": {
+        "qids": 0,
+        "hashes": 0
+      },
+      "selection2048": {
+        "qids": 0,
+        "hashes": 0
+      }
+    },
+    "old_internal5120_in_new_training": true,
+    "old_internal5120_unseen_evaluation_claim": false
+  },
+  "later_production": {
+    "actual_epoch": 1792578344.9141383,
+    "sealed_batches": 1012,
+    "sealed_questions": 129442,
+    "outside_fixed971_batches": 41,
+    "outside_fixed971_questions": 5248,
+    "latest_seal": {
+      "path": "sampling/shard-01/batches/batch-000351/complete.json",
+      "sha256": "5c9160aa08bf8b85e5b6a4a214ae6159f943deefcc453838e7eb23d422ec84a2",
+      "mtime": 1792578339.0110993
+    },
+    "source_all169028_complete": false,
+    "current_running_systemd_units": [
+      {
+        "MainPID": "3221084",
+        "Id": "sst-q7b-g5-relaygen-queued-owner-v2-downstream-r1-70188b8e50fd.service",
+        "ActiveState": "active",
+        "SubState": "running",
+        "pid_exists": true,
+        "pid_start_ticks": 1960484824,
+        "pid_state": "S"
+      },
+      {
+        "MainPID": "3731224",
+        "Id": "sst-q7b-g5-relaygen-queued-supp-v1-slot-gpu4-tp1-r1-70188b8e50fd.service",
+        "ActiveState": "active",
+        "SubState": "running",
+        "pid_exists": true,
+        "pid_start_ticks": 1961621587,
+        "pid_state": "S"
+      }
+    ],
+    "cohort_expanded": false
+  },
+  "ownership": {
+    "raw_export_HF_receive_strictEM_and_features": "event_continuation_impl unique writer; code/source plan delivered",
+    "native_joint_training": "group_score_ablation/root",
+    "this_task": "source finite proof/freeze, identity metadata recovery only"
+  },
+  "Mac_payload_transit": false,
+  "producer_modified": false,
+  "new_GPU_submitted_by_this_task": false,
+  "new_automation_created": false,
+  "external_or_final_outcomes_read": false
+}
