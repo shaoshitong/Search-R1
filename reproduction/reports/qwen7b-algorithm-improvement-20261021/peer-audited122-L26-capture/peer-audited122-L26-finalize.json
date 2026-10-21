@@ -1,0 +1,68 @@
+{
+  "blocked_shards": [],
+  "no_dependency": true,
+  "preparation": {
+    "bytes": 83546,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited122-L26-replay-v1/preparation.json",
+    "sha256": "2469d0d3806aebf65eb7202ac14514eed8a147fc4ff13bf7c716f21efe272475"
+  },
+  "probe_training_submitted": false,
+  "source_publication": {
+    "bytes": 5733,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited122-L26-replay-v1/source-publication.json",
+    "sha256": "4e9cb1977a79f6edaf067b198d25230733a6c831068159fcc28fcc4509a78f84"
+  },
+  "status": "AUDITED122_TWO2GPU_SCRIPTS_READY_NOT_SUBMITTED",
+  "variants": {
+    "0": {
+      "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited122-L26-replay-v1/pair-00",
+      "job_name": "q7b-delta122-L26-00",
+      "sbatch": {
+        "bytes": 2489,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited122-L26-replay-v1/pair-00/capture.sbatch",
+        "sha256": "fd10bfface6a3340ba45b2de85d9cd242ab19447ebf2adeea53bf87fe89df09f"
+      },
+      "selections": [
+        {
+          "bytes": 4471416,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited122-L26-replay-v1/shard-00/inputs/selection.json",
+          "sha256": "c009b6e56b68f4c120d1b6ae1faf6823a9ca621e5c86aecfb33ff840108d3016"
+        },
+        {
+          "bytes": 4471506,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited122-L26-replay-v1/shard-01/inputs/selection.json",
+          "sha256": "8a745da6b7b260b6ddda1fbbeb59354e9a6afca6951dbf372ca564b8fb27bfe7"
+        }
+      ],
+      "shards": [
+        0,
+        1
+      ]
+    },
+    "1": {
+      "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited122-L26-replay-v1/pair-01",
+      "job_name": "q7b-delta122-L26-01",
+      "sbatch": {
+        "bytes": 2489,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited122-L26-replay-v1/pair-01/capture.sbatch",
+        "sha256": "be882d8fd81ed904db057427463e8467e25f94263c96142d3d5854e1f4c68fef"
+      },
+      "selections": [
+        {
+          "bytes": 4471396,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited122-L26-replay-v1/shard-02/inputs/selection.json",
+          "sha256": "2c49a0b24421e188732e44fd884dc151bab2e5dba3f144f07948aa3354538844"
+        },
+        {
+          "bytes": 4470956,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited122-L26-replay-v1/shard-03/inputs/selection.json",
+          "sha256": "57c640d80650d755c4152ddf7e75043742863ffae4c939bdb810c3e6314a7685"
+        }
+      ],
+      "shards": [
+        2,
+        3
+      ]
+    }
+  }
+}
