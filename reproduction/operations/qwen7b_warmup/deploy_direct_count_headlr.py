@@ -69,6 +69,14 @@ for n in ['source-publication.json','preparation.json','submission.json','progre
   value=read(b/n)
   if n=='source-publication.json':value={k:value[k]for k in ['commit','code_root']}
   out[n[:-5]]=value
+if (b/'curve.jsonl').exists():
+ first=[]
+ with (b/'curve.jsonl').open()as f:
+  for line in f:
+   if not line.strip():continue
+   row=json.loads(line);first.append({k:row[k]for k in ['cursor','steps','head_steps','time','loss','count_NLL','trajectory_BCE','joint_micro_replay_exact']})
+   if len(first)==7:break
+ out['first_seven_actual_updates']=first
 if (b/'job.id').exists():
  jid=(b/'job.id').read_text().strip();assert jid.isdigit();out['job_id']=jid
  for name,args in [('squeue',['squeue','-h','-j',jid,'-o','%i|%j|%T|%M|%R|%N']),('sacct',['sacct','-j',jid,'-n','-P','--format=JobIDRaw,State,ExitCode,Elapsed,NodeList'])]:
