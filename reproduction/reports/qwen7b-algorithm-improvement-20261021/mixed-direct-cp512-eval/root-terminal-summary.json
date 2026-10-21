@@ -1,0 +1,113 @@
+{
+  "status": "OWNED_GPU_COMPLETE_PENDING_INDEPENDENT_CPU_METRIC_RECOMPUTATION",
+  "job_id": "746247",
+  "epoch": 1792606100.431155,
+  "full_nine_state_restored_and_unchanged": true,
+  "final4096_read": false,
+  "metrics": {
+    "raw": {
+      "diagnostic512": {
+        "BCE": 0.6851863479241729,
+        "BA": 0.5476205608961627,
+        "Mixed_recall": 0.5219512195121951,
+        "nonMixed_recall": 0.5732899022801303,
+        "AUC": 0.5628505601016922,
+        "selected512_Mixed": 205,
+        "selected512_Mixed_fraction": 0.400390625,
+        "AW_false_Mixed": 0.40350877192982454,
+        "AC_false_Mixed": 0.4936708860759494,
+        "classwise_BCE": {
+          "allwrong": {
+            "questions": 228,
+            "binaryMixedBCE": 0.674885486040199
+          },
+          "Mixed": {
+            "questions": 205,
+            "binaryMixedBCE": 0.6936074576726774
+          },
+          "allcorrect": {
+            "questions": 79,
+            "binaryMixedBCE": 0.6930631708495224
+          }
+        }
+      },
+      "fixed_selection2048": {
+        "BCE": 0.6688427574117668,
+        "BA": 0.5181991930346146,
+        "Mixed_recall": 0.17647058823529413,
+        "nonMixed_recall": 0.859927797833935,
+        "AUC": 0.5751109441277205,
+        "selected512_Mixed": 206,
+        "selected512_Mixed_fraction": 0.40234375,
+        "AW_false_Mixed": 0.12322274881516587,
+        "AC_false_Mixed": 0.19393939393939394,
+        "classwise_BCE": {
+          "allwrong": {
+            "questions": 1055,
+            "binaryMixedBCE": 0.6278991434811416
+          },
+          "Mixed": {
+            "questions": 663,
+            "binaryMixedBCE": 0.7454374885666963
+          },
+          "allcorrect": {
+            "questions": 330,
+            "binaryMixedBCE": 0.6458524723847707
+          }
+        }
+      }
+    },
+    "EMA": {
+      "diagnostic512": {
+        "BCE": 0.6812949606683105,
+        "BA": 0.5338444426789545,
+        "Mixed_recall": 0.43902439024390244,
+        "nonMixed_recall": 0.6286644951140065,
+        "AUC": 0.5700405179947565,
+        "selected512_Mixed": 205,
+        "selected512_Mixed_fraction": 0.400390625,
+        "AW_false_Mixed": 0.36403508771929827,
+        "AC_false_Mixed": 0.3924050632911392,
+        "classwise_BCE": {
+          "allwrong": {
+            "questions": 228,
+            "binaryMixedBCE": 0.660627425762645
+          },
+          "Mixed": {
+            "questions": 205,
+            "binaryMixedBCE": 0.7086580128204532
+          },
+          "allcorrect": {
+            "questions": 79,
+            "binaryMixedBCE": 0.6699376475961902
+          }
+        }
+      },
+      "fixed_selection2048": {
+        "BCE": 0.6623004386201501,
+        "BA": 0.5103593228460505,
+        "Mixed_recall": 0.09653092006033183,
+        "nonMixed_recall": 0.924187725631769,
+        "AUC": 0.5705920468715118,
+        "selected512_Mixed": 190,
+        "selected512_Mixed_fraction": 0.37109375,
+        "AW_false_Mixed": 0.07298578199052133,
+        "AC_false_Mixed": 0.08484848484848485,
+        "classwise_BCE": {
+          "allwrong": {
+            "questions": 1055,
+            "binaryMixedBCE": 0.6075490023852524
+          },
+          "Mixed": {
+            "questions": 663,
+            "binaryMixedBCE": 0.7712462456337826
+          },
+          "allcorrect": {
+            "questions": 330,
+            "binaryMixedBCE": 0.6184570906740247
+          }
+        }
+      }
+    }
+  }
+}
