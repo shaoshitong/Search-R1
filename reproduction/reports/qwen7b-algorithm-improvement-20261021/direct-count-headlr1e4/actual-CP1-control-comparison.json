@@ -1,0 +1,29 @@
+{
+  "status": "REAL_CP1_MATCHED_CONTROL_FIRST_STEP_COMPARISON",
+  "control_checkpoint": {
+    "bytes": 3754035012,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/checkpoints/cursor-000001.pt",
+    "sha256": "dece95efed5f7282b49ff2086fe7ff9e65e21e8b2df89a7d7fff371bbac34e44"
+  },
+  "candidate_checkpoint": {
+    "bytes": 3754035012,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-headlr1e4-v1/checkpoints/cursor-000001.pt",
+    "sha256": "eb49229e1a0ee52c56817d9aa70a65e4e49e19afb1c115233fcfaf73749fb99e"
+  },
+  "same_components": {
+    "head_adam": true,
+    "head_ema": false,
+    "head_raw": false,
+    "legacy_adam": true,
+    "legacy_ema": true,
+    "legacy_ema_buffers": true,
+    "legacy_raw": true,
+    "legacy_raw_buffers": true,
+    "rng": true
+  },
+  "expected_only_head_raw_and_EMA_differ_after_LR_change": true,
+  "candidate_config_sha256": "71c3ee90f0232b889d4ced2d0cb50d69e852eb1ebbdbb55fdff03eaefdbbcc71",
+  "latest_actual_cursor": 16,
+  "latest_legacy_Adam": 10480,
+  "latest_head_Adam": 16
+}

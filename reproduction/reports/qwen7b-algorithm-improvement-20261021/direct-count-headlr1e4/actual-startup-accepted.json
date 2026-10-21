@@ -1,0 +1,156 @@
+{
+  "status": "MATCHED_HEADLR1E4_ACTUAL_REPLAY_CP1_AND_FIVE_PLUS_NEXT_ACCEPTED",
+  "first_six": [
+    {
+      "cursor": 1,
+      "steps": 10465,
+      "head_steps": 1,
+      "time": 1792547207.9067314,
+      "loss": 2.4544334411621094,
+      "count_NLL": 1.816861629486084,
+      "trajectory_BCE": 0.6375719308853149,
+      "joint_micro_replay_exact": true
+    },
+    {
+      "cursor": 2,
+      "steps": 10466,
+      "head_steps": 2,
+      "time": 1792547228.6973045,
+      "loss": 2.505974769592285,
+      "count_NLL": 1.7078531980514526,
+      "trajectory_BCE": 0.798121452331543,
+      "joint_micro_replay_exact": true
+    },
+    {
+      "cursor": 3,
+      "steps": 10467,
+      "head_steps": 3,
+      "time": 1792547236.3886013,
+      "loss": 2.430485248565674,
+      "count_NLL": 1.8193717002868652,
+      "trajectory_BCE": 0.611113429069519,
+      "joint_micro_replay_exact": true
+    },
+    {
+      "cursor": 4,
+      "steps": 10468,
+      "head_steps": 4,
+      "time": 1792547243.696919,
+      "loss": 2.3822057247161865,
+      "count_NLL": 1.7019895315170288,
+      "trajectory_BCE": 0.6802162528038025,
+      "joint_micro_replay_exact": true
+    },
+    {
+      "cursor": 5,
+      "steps": 10469,
+      "head_steps": 5,
+      "time": 1792547250.2192357,
+      "loss": 2.0231266021728516,
+      "count_NLL": 1.4715683460235596,
+      "trajectory_BCE": 0.5515581369400024,
+      "joint_micro_replay_exact": true
+    },
+    {
+      "cursor": 6,
+      "steps": 10470,
+      "head_steps": 6,
+      "time": 1792547257.8727021,
+      "loss": 1.8326239585876465,
+      "count_NLL": 1.345000147819519,
+      "trajectory_BCE": 0.48762381076812744,
+      "joint_micro_replay_exact": true
+    }
+  ],
+  "first_replay": {
+    "actual": {
+      "head_adam": "83509961f223baad79aa85239add77be0f975b9b1864184d350d338fb525ac7b",
+      "head_ema": "2fbc88e69008e38f0fee01e9d32f912c30824c8f468ff1e7c5d6eb28e34b8002",
+      "head_raw": "52e97c20a836dc12e15c9a3c43a88932d73a37b942114325b19157332d080ad0",
+      "legacy_adam": "45da4bae6450d075cc409195550da9a9b90ece4c5e22ed66db973cd7a18aaaa8",
+      "legacy_ema": "2883332865e59e04c2dff7d9e360e6287cade816199531c934bcfd511134c439",
+      "legacy_ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "legacy_raw": "e6ab01791f44bbaac3915cbd29f0fff2df1dc07e290cff27780dfedda4486d3c",
+      "legacy_raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+    },
+    "candidate_legacy_Adam": 10465,
+    "candidate_new_head_Adam": 1,
+    "expected": {
+      "head_adam": "83509961f223baad79aa85239add77be0f975b9b1864184d350d338fb525ac7b",
+      "head_ema": "2fbc88e69008e38f0fee01e9d32f912c30824c8f468ff1e7c5d6eb28e34b8002",
+      "head_raw": "52e97c20a836dc12e15c9a3c43a88932d73a37b942114325b19157332d080ad0",
+      "legacy_adam": "45da4bae6450d075cc409195550da9a9b90ece4c5e22ed66db973cd7a18aaaa8",
+      "legacy_ema": "2883332865e59e04c2dff7d9e360e6287cade816199531c934bcfd511134c439",
+      "legacy_ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "legacy_raw": "e6ab01791f44bbaac3915cbd29f0fff2df1dc07e290cff27780dfedda4486d3c",
+      "legacy_raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+    },
+    "source_legacy_Adam": 10464,
+    "source_new_head_Adam": 0,
+    "status": "PASSED"
+  },
+  "independent_CP1": {
+    "CUDA_used": false,
+    "checkpoint": {
+      "bytes": 3754035012,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-headlr1e4-v1/checkpoints/cursor-000001.pt",
+      "sha256": "eb49229e1a0ee52c56817d9aa70a65e4e49e19afb1c115233fcfaf73749fb99e"
+    },
+    "component_hashes": {
+      "head_adam": "83509961f223baad79aa85239add77be0f975b9b1864184d350d338fb525ac7b",
+      "head_ema": "2fbc88e69008e38f0fee01e9d32f912c30824c8f468ff1e7c5d6eb28e34b8002",
+      "head_raw": "52e97c20a836dc12e15c9a3c43a88932d73a37b942114325b19157332d080ad0",
+      "legacy_adam": "45da4bae6450d075cc409195550da9a9b90ece4c5e22ed66db973cd7a18aaaa8",
+      "legacy_ema": "2883332865e59e04c2dff7d9e360e6287cade816199531c934bcfd511134c439",
+      "legacy_ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "legacy_raw": "e6ab01791f44bbaac3915cbd29f0fff2df1dc07e290cff27780dfedda4486d3c",
+      "legacy_raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+    },
+    "cursor": 1,
+    "legacy_Adam": 10465,
+    "new_head_Adam": 1,
+    "status": "JOINT_CP1_INDEPENDENT_FULL_SHA_NINE_COMPONENT_CPU_RELOAD_PASSED"
+  },
+  "submission": {
+    "status": "ONE_STRICT_MATCHED_HEADLR1E4_NORMAL_JOB_SUBMITTED",
+    "job_id": "743809",
+    "config": {
+      "bytes": 17000,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-headlr1e4-v1/config.json",
+      "sha256": "71c3ee90f0232b889d4ced2d0cb50d69e852eb1ebbdbb55fdff03eaefdbbcc71"
+    },
+    "sbatch": {
+      "bytes": 1244,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-headlr1e4-v1/training.sbatch",
+      "sha256": "8f966ce8dacec3473774837faced274a02f71be5cf301ed75f0ebef0c5899d5c"
+    },
+    "resources": {
+      "GPU": 1,
+      "CPU": 8,
+      "memory": "64G",
+      "walltime": "03:00:00",
+      "partition": "acd_u",
+      "QoS": "normal",
+      "dependency": null
+    },
+    "epoch": 1792546783.4447987
+  },
+  "last_actual_observation": {
+    "epoch": 1792547260.557148,
+    "job_id": "743809",
+    "squeue": "743809|q7b-direct-count-headlr1e4|RUNNING|7:47|ACD1-14|ACD1-14",
+    "sacct": "743809|RUNNING|0:0|00:07:47|ACD1-14\n743809.batch|RUNNING|0:0|00:07:47|ACD1-14\n743809.extern|RUNNING|0:0|00:07:47|ACD1-14\n743809.0|RUNNING|0:0|00:07:47|ACD1-14\n743809.1|COMPLETED|0:0|00:00:00|ACD1-14\n743809.2|COMPLETED|0:0|00:00:00|ACD1-14",
+    "cursor": 6,
+    "legacy_Adam": 10470,
+    "new_head_Adam": 6,
+    "first_actual_update_count": 6,
+    "first_GPU_replay": "PASSED",
+    "first_CP1_CPU_audit": "JOINT_CP1_INDEPENDENT_FULL_SHA_NINE_COMPONENT_CPU_RELOAD_PASSED",
+    "latest_cursor": 1,
+    "failure": null
+  },
+  "elapsed_seconds": 397.0719449520111
+}
