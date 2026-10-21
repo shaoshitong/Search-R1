@@ -8,14 +8,16 @@ import time
 
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('user',choices=['jxu957','mou176']);p.add_argument('mode',choices=['inventory-start','inventory-status','apply-start','apply-status']);p.add_argument('--envelope',type=Path);args=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('user',choices=['jxu957','mou176']);p.add_argument('mode',choices=['inventory-start','inventory-status','apply-start','apply-status','verify']);p.add_argument('--envelope',type=Path);args=p.parse_args()
  cwd=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6')
  here=Path(__file__).resolve().parent
  spec=importlib.util.spec_from_file_location('bridge',cwd/'work/qprobe-sigma3-loss-20261015/reproduction/hpc3_qprobe/local_account_bridge.py');bridge=importlib.util.module_from_spec(spec);spec.loader.exec_module(bridge)
  uid={'jxu957':14090,'mou176':21930}[args.user]
  control='/tmp/authorized-old-checkpoints-20261021-'+str(uid)
  payload=''
- if args.mode=='apply-start':
+ if args.mode=='verify':
+  code=(here/'verify_authorized_old_checkpoint_cleanup.py').read_text()
+ elif args.mode=='apply-start':
   assert args.envelope and args.envelope.is_file()
   payload=args.envelope.read_text();envelope=json.loads(payload)
   source=(here/'apply_authorized_old_checkpoint_cleanup.py').read_text()
