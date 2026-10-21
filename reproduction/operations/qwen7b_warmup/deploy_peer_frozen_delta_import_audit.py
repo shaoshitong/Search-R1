@@ -17,7 +17,7 @@ def main():
     names={'audit.py':t.P+'audit_peer_frozen_delta_import.py','selection.json':str(a.selection.resolve().relative_to(repo))};files={name:t.blob(repo,a.commit,source) for name,source in names.items()}
     refs={name:dict(bytes=len(data),sha256=t.sha(data)) for name,data in files.items()};root=str(t.HPCDEP/('independent-audit-'+a.commit[:12]))
     def call(script,label):return t.hpc_call(a.control_root,script,label)
-    common='v='+repr(dict(root=root,refs=refs,commit=a.commit,ingest=str(t.INGEST),selection_sha256=t.CONFIG['source_selection']['sha256'],record_sha256=t.CONFIG['selected_batch_records_sha256'])))+'\n'+r'''
+    common='v='+repr(dict(root=root,refs=refs,commit=a.commit,ingest=str(t.INGEST),selection_sha256=t.CONFIG['source_selection']['sha256'],record_sha256=t.CONFIG['selected_batch_records_sha256']))+'\n'+r'''
 import base64,gzip,hashlib,json,pathlib,os,subprocess,sys,time
 b=pathlib.Path(v['root']);b.mkdir(parents=True,exist_ok=True)
 def fp(p):return dict(path=str(p),bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest())
