@@ -54,7 +54,14 @@ def remote_source():
     sys.path.insert(0,str(stage));import rollover_terminal as terminal
     proof=terminal.verify_source_proof(PREDECESSOR,PREDECESSOR_SHA,BASE,RUN_ID)
 """
-    return rollover_paths.remote_reads(source[:start] + replacement + source[end:])
+    source = source[:start] + replacement + source[end:]
+    old = "'/bin/bash','-c',base64.b64decode(FILES['native_paths.sh']).decode(),"
+    assert source.count(old) == 1
+    # systemd serializes argv; decode multiline shell only after unit entry.
+    prefix = 'import base64,os,sys;os.execv("/bin/bash",["/bin/bash","-c",base64.b64decode('
+    suffix = ').decode(),*sys.argv[1:]])'
+    new = "'/usr/bin/python3','-c',(" + repr(prefix) + "+repr(FILES['native_paths.sh'])+" + repr(suffix) + "),"
+    return rollover_paths.remote_reads(source.replace(old, new))
 
 
 def main(role='owner'):

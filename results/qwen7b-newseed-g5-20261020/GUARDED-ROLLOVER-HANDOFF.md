@@ -370,3 +370,40 @@ that has not yet loaded remains NOT_STARTED rather than an inferred exit.
 All full data, inputs and original logs remain in our own shaoshitong NAS10
 directory. Shared aliases refer to this same retained bank. No foreign user's
 disk and no Mac tensor/trajectory storage are part of this procedure.
+
+Actual collector launch correction (08:20–08:26 CST)
+----------------------------------------------------
+Both original collector starts were attempted once. Source5 collector is really
+active and pins the old private namespace; do not restage/restart that unit.
+Node10's auxiliary collector exited1 before Python collection: its multiline
+bash -c payload was serialized into transient unit lines. No sampling unit was
+stopped and no drain was issued at this failure. Original transient unit inode
+and bytes plus a journal export snapshot are retained on NAS10 at
+preparation/cohort-rollover-v1-h100-10/collector-original-start-failure-v1/RECORD.json
+SHA5345af224ba557081c4473b21cc883c6eb96c3e939bf2a2e7cb673ca1a7d1570.
+
+The new node10 repair control executes the immutable staged native_paths.sh
+by physical filename and explicitly passes Q7B_NATIVE_UNIT_INSTANCE. Use
+--collector-instance repair1 on both stage and collect, with the SAME generation
+rollover-v1 and original PLAN10 SHA. It has a distinct unit, intent, receipt
+and log. Under the shared submit lock, every prior collector must have an
+actual loaded/MainPID0/inactive-or-failed state and a known receipt. Original
+consumed intents and failure files are retained; an active or unknown prior
+collector rejects. Do not replay the original consumed collect action.
+
+The same multiline-argv issue was found before starting three future owners.
+NEW guarded/queued remote_source owner branches now carry a single-line Python
+decoder plus base64 payload, preserving shell arg0/node/bootstrap and existing
+Q7B_NATIVE_UNIT_INSTANCE. It decodes only after unit entry; source5 does not
+need a host-visible wrapper path before the NAS10 private mount. All14 model
+slot paths remain nsenter -> Python bootstrap filename. Six focused CPU tests
+passed including real temporary multiline decoding and alias/physical proof
+admission. No new GPU test was added and no live sampler source was changed.
+
+Those NEW control files change all17 future bundle identities: preserve old
+stages and stage all17 new exact manifests after publication, before any owner
+or model submit. This paragraph supersedes earlier 'all17 stages ready' for
+the corrected sources. The early collector window is now already in progress,
+not an unexecuted08:55 schedule. After actual repair collector is live, request
+node10 whole-batch drain, obtain trueDONE10, then retire exact source dependents
+and root LAST; preserve the same bank and sealed prefixes throughout.

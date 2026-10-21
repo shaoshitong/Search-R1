@@ -14,14 +14,19 @@ ROOT, BASE, PHYSICAL, RUN_ID = old.ROOT, old.BASE, old.PHYSICAL, old.RUN_ID
 SOURCES = ('rollover_terminal_control.py', 'rollover_terminal.py', 'rollover_paths.py', 'predecessor_generation_terminal.py', 'pool_paths.sh')
 
 
-def bundle(node='h100-10', generation='rollover-v1'):
+def bundle(node='h100-10', generation='rollover-v1', collector_instance=None):
     assert node in ('h100-5', 'h100-10') and re.fullmatch(r'[a-z0-9-]{1,25}', generation)
+    assert collector_instance is None or (node == 'h100-10' and re.fullmatch(r'[a-z][a-z0-9-]{0,23}', collector_instance) and collector_instance != 'original')
+    instance = collector_instance or 'original'
+    suffix = '-' + collector_instance if collector_instance else ''
+    stem = 'collector' + suffix
     files = {name: Path(__file__).with_name(name).read_bytes() for name in SOURCES}
     rows = {name: dict(bytes=len(raw), sha256=old.digest(raw)) for name, raw in files.items()}
-    identity = old.digest(old.encoded(dict(node=node, generation=generation, source_files=rows)))
+    identity = old.digest(old.encoded(dict(node=node, generation=generation, collector_instance=instance, source_files=rows)))
     files['native_paths.sh'] = old.native_paths_source(files['pool_paths.sh'])
     manifest = dict(node=node, generation=generation, source_bundle_sha256=identity,
-        directory='cohort-' + generation + '-' + node, unit='sst-q7b-terminal-' + generation + '-' + node + '-' + RUN_ID[:12] + '.service',
+        directory='cohort-' + generation + '-' + node, unit='sst-q7b-terminal-' + generation + '-' + node + suffix + '-' + RUN_ID[:12] + '.service',
+        collector_instance=instance, collector_intent=stem + '-intent.json', collector_receipt=stem + '-receipt.json', collector_log=stem + '.log',
         run_id=RUN_ID, source_files=rows, files={name: dict(bytes=len(raw), sha256=old.digest(raw)) for name, raw in files.items()},
         no_stop_or_signal_action=True, no_slurm_changes=True)
     return identity, files, manifest
@@ -40,7 +45,7 @@ def verify():
  assert read(stage/'manifest.json')==MANIFEST
  for name,row in MANIFEST['files'].items():assert sha(stage/name)==row['sha256']and(stage/name).stat().st_size==row['bytes']
  assert read(stage/'stage-receipt.json')['status']=='EXACT_TERMINAL_COLLECTOR_STAGE_SHA_PASS'
-value=dict(action=ACTION,node=MANIFEST['node'],generation=MANIFEST['generation'],epoch=time.time())
+value=dict(action=ACTION,node=MANIFEST['node'],generation=MANIFEST['generation'],collector_instance=MANIFEST['collector_instance'],unit=MANIFEST['unit'],epoch=time.time())
 if ACTION=='stage':
  assert PUBLICATION['status']=='EXACT_SOURCE_COMMIT_REMOTE_SHA_VERIFIED'
  root.mkdir(parents=True,exist_ok=True);stage.mkdir(exist_ok=True)
@@ -104,18 +109,36 @@ elif ACTION=='collect':
  verify();assert PUBLICATION['status']=='EXACT_SOURCE_COMMIT_REMOTE_SHA_VERIFIED'
  sys.path.insert(0,str(stage));import rollover_terminal as terminal
  planpath=root/'plan.json';plan=terminal.validate_plan(read(planpath));assert sha(planpath)==PLAN_SHA
- intent=root/'collector-intent.json';receipt=root/'collector-receipt.json'
+ intent=root/MANIFEST['collector_intent'];receipt=root/MANIFEST['collector_receipt']
  with(root/'collector-submit.lock').open('a')as lock:
   fcntl.flock(lock,fcntl.LOCK_EX)
   if intent.exists():value.update(status='EXISTING_COLLECTOR_INTENT_NO_REPLAY',intent=read(intent),receipt=read(receipt)if receipt.exists()else None)
   else:
+   prior=[]
+   if MANIFEST['collector_instance']!='original':
+    assert(root/'collector-intent.json').exists(),'Repair requires the consumed original collector intent'
+    seen=set()
+    for previous in sorted(root.glob('collector*-intent.json')):
+     saved=read(previous);unit=saved['unit'];previous_receipt=previous.with_name(previous.name.replace('-intent.json','-receipt.json'))
+     assert unit.startswith('sst-q7b-terminal-'+MANIFEST['generation']+'-'+MANIFEST['node']+'-')and unit.endswith(RUN_ID[:12]+'.service')
+     assert unit not in seen and unit!=MANIFEST['unit']and saved['plan_sha256']==PLAN_SHA,'Prior collector unit/plan binding differs'
+     seen.add(unit)
+     assert previous_receipt.exists(),'Prior collector start is unknown: receipt missing'
+     outcome=read(previous_receipt)
+     assert outcome.get('status')in('TERMINAL_ONLY_COLLECTOR_STARTED_ONCE','COLLECTOR_START_FAILED_NO_REPLAY'),'Prior collector start is unknown'
+     detail=subprocess.check_output(['systemctl','show',unit,*[item for prop in('Id','LoadState','MainPID','ActiveState','SubState','Result','ExecMainStatus','ControlGroup')for item in('-p',prop)]],text=True,timeout=15)
+     observed=dict(line.split('=',1)for line in detail.splitlines()if'='in line)
+     assert observed.get('Id')==unit and observed.get('LoadState')=='loaded'and observed.get('MainPID')=='0'and observed.get('ActiveState')in('inactive','failed'),'Prior collector is active or its terminal/start state is unknown'
+     prior.append(dict(unit=unit,intent=str(previous),intent_sha256=sha(previous),receipt=str(previous_receipt),receipt_sha256=sha(previous_receipt),observed=observed,unit_show=detail,epoch=time.time()))
    query=subprocess.check_output(['systemctl','show',MANIFEST['unit'],'-p','LoadState'],text=True,timeout=15);assert'LoadState=not-found'in query
-   command=['/usr/bin/python3',str(stage/'rollover_terminal.py'),'--plan',str(planpath),'--plan-sha256',PLAN_SHA,'--collect-terminal','--watch-seconds',str(WATCH),'--log-file',str(root/'collector.log')]
+   command=['/usr/bin/python3',str(stage/'rollover_terminal.py'),'--plan',str(planpath),'--plan-sha256',PLAN_SHA,'--collect-terminal','--watch-seconds',str(WATCH),'--log-file',str(root/MANIFEST['collector_log'])]
    if MANIFEST['node']=='h100-5':command=['nsenter','--target','1490214','--mount','--net','--',*command]
-   else:command=['unshare','--mount','--propagation','private','/bin/bash','-c',base64.b64decode(FILES['native_paths.sh']).decode(),'terminal-collector-paths','h100-10',*command]
+   else:command=['unshare','--mount','--propagation','private','/bin/bash',terminal.core.physical(stage/'native_paths.sh'),'h100-10',*command]
    command=['systemd-run','--unit='+MANIFEST['unit'],'--property=CPUQuota=100%','--property=MemoryMax=1G',
-    '--property=RuntimeMaxSec='+str(WATCH+300),'--property=KillMode=control-group','--property=Restart=no',*command]
-   immutable(intent,dict(unit=MANIFEST['unit'],argv=command,plan_sha256=PLAN_SHA,publication=PUBLICATION,signals_predecessors=False,epoch=time.time()))
+    '--property=RuntimeMaxSec='+str(WATCH+300),'--property=KillMode=control-group','--property=Restart=no',
+    *(['--setenv=Q7B_NATIVE_UNIT_INSTANCE='+MANIFEST['unit']]if MANIFEST['node']=='h100-10'else[]),*command]
+   assert not any('\n'in item or'\r'in item for item in command),'Collector systemd argv must contain no multiline arguments'
+   immutable(intent,dict(unit=MANIFEST['unit'],collector_instance=MANIFEST['collector_instance'],argv=command,plan_sha256=PLAN_SHA,publication=PUBLICATION,prior_collectors_terminal=prior,signals_predecessors=False,epoch=time.time()))
    try:
     r=subprocess.run(command,text=True,capture_output=True,timeout=45)
     result=dict(status='TERMINAL_ONLY_COLLECTOR_STARTED_ONCE'if r.returncode==0 else'COLLECTOR_START_FAILED_NO_REPLAY',returncode=r.returncode,stdout=r.stdout,stderr=r.stderr)
@@ -135,6 +158,7 @@ def main():
     parser.add_argument('action', choices=('plan', 'stage', 'capture', 'collect', 'status'))
     parser.add_argument('--node', choices=('h100-5', 'h100-10'), required=True)
     parser.add_argument('--generation', default='rollover-v1')
+    parser.add_argument('--collector-instance', help='Distinct node10 repair instance, e.g. repair1; original default unit/intent names stay unchanged')
     parser.add_argument('--watch-seconds', type=int, default=7200)
     parser.add_argument('--primary-instances', default=','.join(name + '=' + instance for name, instance in PRIMARY_INSTANCES.items()),
         help='Exact live slot=instance mapping; capture binds each actual MainPID/birth/allocation')
@@ -145,7 +169,7 @@ def main():
     assert all(len(pair) == 2 for pair in pairs) and len({pair[0] for pair in pairs}) == len(pairs)
     from .rollover_terminal import primary_instances
     instances = primary_instances(dict(pairs), PRIMARY_INSTANCES)
-    identity, files, manifest = bundle(args.node, args.generation)
+    identity, files, manifest = bundle(args.node, args.generation, args.collector_instance)
     if args.action == 'plan':print(json.dumps(manifest, indent=2));return
     publication = None
     if args.action != 'status':publication = old.verify_publication(args.published_commit, args.published_ref, manifest['source_files'])

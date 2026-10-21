@@ -47,7 +47,14 @@ def bundle(role='upstream', generation='owner-v1', slot=None, instance='r1', ena
 def remote_source():
     source = original.REMOTE
     assert source.count('import retrieval_relay_owner as runtime') == 1
-    return rollover_paths.remote_reads(source.replace('import retrieval_relay_owner as runtime', 'import queued_relay_owner as runtime'))
+    source = source.replace('import retrieval_relay_owner as runtime', 'import queued_relay_owner as runtime')
+    old = "'/bin/bash','-c',base64.b64decode(FILES['native_paths.sh']).decode(),"
+    assert source.count(old) == 1
+    # Preserve shell arg0/node/bootstrap; no NAS10 wrapper is needed on host5.
+    prefix = 'import base64,os,sys;os.execv("/bin/bash",["/bin/bash","-c",base64.b64decode('
+    suffix = ').decode(),*sys.argv[1:]])'
+    new = "'/usr/bin/python3','-c',(" + repr(prefix) + "+repr(FILES['native_paths.sh'])+" + repr(suffix) + "),"
+    return rollover_paths.remote_reads(source.replace(old, new))
 
 
 def main():
