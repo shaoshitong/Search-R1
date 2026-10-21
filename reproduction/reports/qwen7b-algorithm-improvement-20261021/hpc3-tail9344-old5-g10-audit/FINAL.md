@@ -1,0 +1,11 @@
+# Fixed9344 raw G10 qualification complete
+
+The frozen73 HPC3 batches contain9344 HotpotQA training questions and46720 authentic newseed trajectories. Two original allocations independently verified every new5 payload SHA, native request seed, causal Prefix20 context and tokenizer strict EM:46720/46720 labels recomputed, zero mismatch.
+
+The prior original bank receipt covered all169028 old-G5 memberships/prefix/own-EM links, but did not establish independent full causal/tokenizer revalidation for this tail. Only the matching9344 questions were therefore supplemented:76 original source batches were streamed,46720 selected old trajectories rechecked, and actual old/new same-question native seed sets showed zero collision. This CPU2/gpu0 step took392.17seconds. No actor, probe, model weights or GPU forward was loaded or updated. Actual progress was27→59→76 source batches; all steps exited0 and locks released.
+
+Accepted raw G10:9344 questions /93440 trajectories. Complete receipt SHA `0898b54516068d5b2c0fd1e2d95befb47d58ed2e96ca1065fc9b556387abbbfd`. New5 source qualifier SHA `c9d97adf60b52ea79a5b17f0d52b06497529764cb0db98694532d4b29ad26523`. These question texts were seen in original warmup. This qualification does not create an L26 feature bank or expand the current124194-question fit.
+
+The donor138 and HPC3-73 snapshots share28 complete canonical input batches /3584 questions. Their distinct-question candidate union is23424, rather than27008; matching input/protocol IDs do not prove matching generated payloads. Preserve both independent raw sources. Choose one whole qualified G5 execution per qid before capture. Never directly union donor and HPC3 packed-feature manifests with colliding tids; each selected tid must bind its chosen execution, physical sealed prefix and retained-row SHA. The485-byte source-resolution contract is persisted in the accepted raw directory and backed up here.
+
+Future same-backend L26 preparation is owned by group_score_ablation. It received the actual complete/groups/events/contract references; no duplicate capture/preparation job was started by this auditor. All raw responses, labels-by-row, model files and features remain remote. Local files contain code, bounded metadata and aggregate evidence only.
