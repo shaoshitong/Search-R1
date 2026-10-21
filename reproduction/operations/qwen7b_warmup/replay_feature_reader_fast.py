@@ -17,6 +17,13 @@ from .replay_probe_layers import WIDTH, QMAX, CAPTURE_KIND, REVISION
 class FastReplayFeatureReader(ReplayFeatureReader):
     question_cache_limit = 64 * 1024**2
 
+    def handles(self, root):
+        old = set(self.cache)
+        result = super().handles(root)
+        for evicted in old.difference(self.cache):
+            self.prototypes.pop(evicted, None)
+        return result
+
     @staticmethod
     def span(stream, offset, size):
         payload = os.pread(stream.fileno(), size, offset)
@@ -96,3 +103,58 @@ class FastReplayFeatureReader(ReplayFeatureReader):
         if hasattr(self, '_question_bases'):
             self._question_bases.clear()
             self._question_base_bytes = 0
+
+
+class ParallelFastReplayFeatureReader(FastReplayFeatureReader):
+    """Parallel CPU-only own-row decode, one ordered transfer per microbatch.
+
+    No sampler or RNG is touched by workers. Each worker owns file handles and
+    bounded caches; all use immutable, already validated metadata. Calls must
+    originate from a single training/evaluation thread.
+    """
+    parallel_workers = 8
+
+    def _local_reader(self):
+        if not hasattr(self._locals, 'reader'):
+            reader = FastReplayFeatureReader.__new__(FastReplayFeatureReader)
+            reader.layer, reader.dimension = self.layer, self.dimension
+            reader.records = self.records
+            reader.cache, reader.prototypes = OrderedDict(), {}
+            reader.synthetic_fixture, reader.closed = self.synthetic_fixture, False
+            self._locals.reader = reader
+            self._worker_readers.append(reader)
+        return self._locals.reader
+
+    def _decode(self, ids):
+        return self._local_reader().get(ids, 'cpu')
+
+    def get(self, ids, device):
+        ids = list(ids)
+        if len(ids) <= 10:
+            return super().get(ids, device)
+        if self.closed:
+            raise ValueError('Replay reader is closed')
+        if not hasattr(self, '_pool'):
+            from concurrent.futures import ThreadPoolExecutor
+            import threading
+            if type(self.parallel_workers) is not int or not 1 <= self.parallel_workers <= 8:
+                raise ValueError('Parallel decoder requires1..8 declared workers')
+            self._locals = threading.local()
+            self._worker_readers = []
+            self._pool = ThreadPoolExecutor(max_workers=self.parallel_workers, thread_name_prefix='own-feature-decode')
+        futures = [self._pool.submit(self._decode, ids[i:i+10]) for i in range(0,len(ids),10)]
+        batches = [future.result() for future in futures]
+        result = {key: torch.cat([b[key] for b in batches],dim=0).to(device)
+                  for key in ('features','attention_mask','position_ids')}
+        result.update(capture_layer=self.layer,capture_kind=CAPTURE_KIND,model_revision=REVISION,
+                      trajectory_ids=ids,qids=[qid for b in batches for qid in b['qids']])
+        return result
+
+    def close(self):
+        if hasattr(self, '_pool'):
+            self._pool.shutdown(wait=True)
+            for reader in self._worker_readers:
+                reader.close()
+            del self._pool
+            self._worker_readers.clear()
+        super().close()

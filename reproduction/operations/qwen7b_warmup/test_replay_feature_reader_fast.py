@@ -5,7 +5,7 @@ import tempfile
 import torch
 from . import test_replay_feature_reader as fixture_module
 from .replay_feature_reader import ReplayFeatureReader
-from .replay_feature_reader_fast import FastReplayFeatureReader
+from .replay_feature_reader_fast import FastReplayFeatureReader, ParallelFastReplayFeatureReader
 
 class FastReaderTests(unittest.TestCase):
     def test_exact_own_delta_padding_duplicate_ids_and_independent_cache(self):
@@ -21,6 +21,19 @@ class FastReaderTests(unittest.TestCase):
                         self.assertEqual(old[key],new[key],key)
             finally:
                 for reader in readers:reader.close()
+
+    def test_parallel_order_repeats_own_delta_and_no_worker_RNG(self):
+        with tempfile.TemporaryDirectory() as folder:
+            ref,_=fixture_module.ReplayReaderTests().fixture(Path(folder))
+            old=ReplayFeatureReader([ref],26,synthetic_fixture=True,fixture_dimension=2)
+            parallel=ParallelFastReplayFeatureReader([ref],26,synthetic_fixture=True,fixture_dimension=2)
+            ids=['t0','t1','t2','t0']*8
+            try:
+                before=torch.get_rng_state().clone();a=old.get(ids,'cpu');b=parallel.get(ids,'cpu')
+                for key in ('features','attention_mask','position_ids'):self.assertTrue(torch.equal(a[key],b[key]))
+                self.assertEqual(a['qids'],b['qids']);self.assertEqual(a['trajectory_ids'],b['trajectory_ids'])
+                self.assertTrue(torch.equal(before,torch.get_rng_state()))
+            finally:old.close();parallel.close()
 
     def test_disk_corruption_after_cached_read_still_rejected(self):
         with tempfile.TemporaryDirectory() as folder:
