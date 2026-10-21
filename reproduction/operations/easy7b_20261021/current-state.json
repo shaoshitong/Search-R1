@@ -1,6 +1,6 @@
 {
-  "epoch": 1792582644.1789901,
-  "status": "REPAIRED_CP1_NATIVE4_JOB745371_PENDING_PRIORITY_VERIFIED",
+  "epoch": 1792583369.5866544,
+  "status": "ACTUAL_CP1_ALL4_STATE_RESTORE_PASS_OUTER2_SAMPLING",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "745371",
@@ -44,16 +44,22 @@
     "latest_human_no_delete_features": true
   },
   "infra": {
-    "actual_training_optimization_enabled": false,
+    "actual_training_optimization_enabled": true,
     "selected_LM_head": "Actual 7B CUDA LPmax3.8147e-6/loss1.6925e-9, but gradient thresholds not met; dense repeat relativeL2 0.00904/0.00964, sparse0.01149; INCONCLUSIVE strictgrad; NOT ENABLED",
     "exact_query_cache": "11 CPU tests passed; preserves exact original fullbatch/context/score mode/version and logical search counts",
-    "pending": "745371 pending actual allocation; original dense forward + exact retrieval cache, separate2H100745198; actual model/Adam/scheduler/RNG/driver all4 readback, completedouter2 then2..6followup still required",
-    "physical_micro16": "Not raised blindly; needs actual measured memory/throughput"
+    "pending": "ActualCP1 state restore accepted; outer2candidate sampling active, 2..6complete+7startfollowup pending; no sparse head, no201",
+    "physical_micro16": "Not raised blindly; needs actual measured memory/throughput",
+    "enabled_scope": "Exact retrieval cache + original dense head + external2H100 service; no throughput speedup claimed yet"
   },
   "previous_goal_turn_classification": "PROGRESS",
-  "latest_turn_classification": "PROGRESS: actual FAILED745320 preserved, fixed model config and CP1 QA5 chain bugs; 40testsPASS; latest source pushed+1551files SHA deployed; one new4H100 job745371; two actual Priority pending polls, healthy existing2H100 retrieval745198",
-  "last_observation": "training-progress-1792582644.json",
-  "pipeline": null,
+  "latest_turn_classification": "PROGRESS: actual339model/all4Adam20/scheduler1/RNG/drivercursor2560 and pre-next stream exact; outer2sampling started; independent HK CPUarchive3420413 live twice, waiting5",
+  "last_observation": "training-progress-1792583369.json",
+  "pipeline": {
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "stage": "GRPO_1_TO_200",
+    "unix": 1792583098.0319579,
+    "execution_role": "production"
+  },
   "calibration": {
     "actual_rollouts": 1500,
     "valid_rollouts": 1180,
@@ -65,7 +71,7 @@
   },
   "old_7b_job": "745022",
   "old_7b_state": "CANCELLED_BY_AUTHORIZED_CP1_TRANSITION",
-  "actual_cuda_restore_accepted": false,
+  "actual_cuda_restore_accepted": true,
   "first_outer": {
     "completed": true,
     "optimizer_writes_per_rank": 20,
@@ -96,7 +102,7 @@
   "storage_inventory_report": "HPC3-storage-distribution-20261021.txt",
   "last_measured_queue": {
     "rc": 0,
-    "stdout": "745371|PENDING||(Priority)|2026-10-21T21:57:09|7-00:00:00\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-23:02:26\n",
+    "stdout": "745371|RUNNING|ACD1-55|ACD1-55|2026-10-21T19:41:06|6-23:51:37\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-22:50:21\n",
     "stderr": ""
   },
   "new_recovery_base_allocated_bytes": 62230528,
@@ -119,13 +125,56 @@
   ],
   "recovery_followup_required_next_outer_started": 7,
   "actual_new_completed_outers": [],
-  "archive_controller_for_current7b_not_yet_started": true,
+  "archive_controller_for_current7b_not_yet_started": false,
   "remaining_goal_requirements": [
-    "actualCP1 fullstate native4 restore",
     "complete2..6 and7startfollowup",
     "continue200outer",
     "fixed512 QA5/50/100/150/200",
     "native51713finalevaluation",
     "full milestone archives and actual final200native4restore without201"
-  ]
+  ],
+  "actual_state_restore_acceptance": "actual-cp1-state-acceptance-1792583368.json",
+  "node": "ACD1-55",
+  "allocation_started_cst": "2026-10-21T19:41:06+08:00",
+  "archive_controller": {
+    "host": "xielab3",
+    "pid": 3420413,
+    "start_ticks": 1037461543,
+    "root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371",
+    "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+    "source_job": "745371",
+    "same_birth_verified_twice": true,
+    "requested_steps": [
+      5,
+      50,
+      100,
+      150,
+      200
+    ],
+    "latest_progress": {
+      "phase": "WAITING_CHECKPOINT",
+      "source_job": "745371",
+      "step": 5,
+      "actual_job_state": "RUNNING",
+      "completed_steps": [],
+      "checked_unix": 1792582949.495787
+    },
+    "completed_steps": [],
+    "cpu_only": true,
+    "model_reloads": 0,
+    "gpu_allocations": 0,
+    "manual_deletions": 0
+  },
+  "actual_state_restore": {
+    "model_tensors": 339,
+    "world_size": 4,
+    "source_job": "745022",
+    "source_outer": 1,
+    "actual_optimizer_writes_per_rank": 20,
+    "scheduler_outer": 1,
+    "candidate_source_cursor": 2560,
+    "all4_model_adam_scheduler_rng_driver_dataequal": true,
+    "pre_outer_stream_second_readback_equal": true,
+    "post_callback_rng_captured": true
+  }
 }
