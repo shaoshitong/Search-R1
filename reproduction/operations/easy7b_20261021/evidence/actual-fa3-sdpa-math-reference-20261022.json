@@ -1,0 +1,336 @@
+{
+  "status": "FA3_SDPA_MATH_FORWARD_BACKWARD_PASS",
+  "diagnostic_job": "746114",
+  "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+  "hostname": "ACD1-7",
+  "started_unix": 1792601554.0065393,
+  "finished_unix": 1792601559.4428828,
+  "reference": "torch SDPABackend.MATH; FP32 leaves, softmax and gradients; autocast/TF32 disabled; complete sequence causal self-attention",
+  "cases": [
+    {
+      "causal_prefix_bitwise_unchanged": true,
+      "comparisons": {
+        "dk": {
+          "elements": 5064192,
+          "finite": true,
+          "max_abs": 0.02606201171875,
+          "reference_max_abs": 9.22393798828125,
+          "relative_l2": 0.0024765560060409624
+        },
+        "dq": {
+          "elements": 35449344,
+          "finite": true,
+          "max_abs": 0.015076160430908203,
+          "reference_max_abs": 4.631160259246826,
+          "relative_l2": 0.002493575653385414
+        },
+        "dv": {
+          "elements": 5064192,
+          "finite": true,
+          "max_abs": 0.03624725341796875,
+          "reference_max_abs": 14.76319694519043,
+          "relative_l2": 0.0023061772479556733
+        },
+        "output": {
+          "elements": 35449344,
+          "finite": true,
+          "max_abs": 0.009072303771972656,
+          "reference_max_abs": 3.78125,
+          "relative_l2": 0.0019902688287910786
+        }
+      },
+      "elapsed_seconds": 4.823230868205428,
+      "head_dim": 128,
+      "input_dtype": "bfloat16",
+      "input_scales": {
+        "k": 1.0,
+        "q": 1.0,
+        "v": 1.0
+      },
+      "input_strides": [
+        [
+          3584,
+          128,
+          1
+        ],
+        [
+          128,
+          1266048,
+          1
+        ],
+        [
+          128,
+          1266048,
+          1
+        ]
+      ],
+      "kv_heads": 4,
+      "label": "compact_gqa",
+      "lengths": [
+        31,
+        127,
+        257,
+        513,
+        1024,
+        1500,
+        2343,
+        4096
+      ],
+      "other_sequences_bitwise_unchanged": true,
+      "passed": true,
+      "peak_allocated_bytes": 8780135936,
+      "performance_scope": "diagnostic FA3 plus streaming quadratic SDPA; not a FA3 throughput measurement",
+      "q_heads": 28,
+      "reference_covers_all_queries": true,
+      "reference_gradient_dtype": "torch.float32",
+      "tolerance_checks": {
+        "dk": true,
+        "dq": true,
+        "dv": true,
+        "output": true
+      }
+    },
+    {
+      "causal_prefix_bitwise_unchanged": true,
+      "comparisons": {
+        "dk": {
+          "elements": 35449344,
+          "finite": true,
+          "max_abs": 0.01517176628112793,
+          "reference_max_abs": 3.8827297687530518,
+          "relative_l2": 0.0024783947528776457
+        },
+        "dq": {
+          "elements": 35449344,
+          "finite": true,
+          "max_abs": 0.022484302520751953,
+          "reference_max_abs": 4.420721054077148,
+          "relative_l2": 0.002498946420538837
+        },
+        "dv": {
+          "elements": 35449344,
+          "finite": true,
+          "max_abs": 0.020362377166748047,
+          "reference_max_abs": 7.255847454071045,
+          "relative_l2": 0.002296392782314056
+        },
+        "output": {
+          "elements": 35449344,
+          "finite": true,
+          "max_abs": 0.010319709777832031,
+          "reference_max_abs": 3.703125,
+          "relative_l2": 0.001983860556050513
+        }
+      },
+      "elapsed_seconds": 0.07365020364522934,
+      "head_dim": 128,
+      "input_dtype": "bfloat16",
+      "input_scales": {
+        "k": 1.0,
+        "q": 1.0,
+        "v": 1.0
+      },
+      "input_strides": [
+        [
+          3584,
+          128,
+          1
+        ],
+        [
+          128,
+          1266048,
+          1
+        ],
+        [
+          128,
+          1266048,
+          1
+        ]
+      ],
+      "kv_heads": 28,
+      "label": "production_expanded28",
+      "lengths": [
+        31,
+        127,
+        257,
+        513,
+        1024,
+        1500,
+        2343,
+        4096
+      ],
+      "other_sequences_bitwise_unchanged": true,
+      "passed": true,
+      "peak_allocated_bytes": 9573696000,
+      "performance_scope": "diagnostic FA3 plus streaming quadratic SDPA; not a FA3 throughput measurement",
+      "q_heads": 28,
+      "reference_covers_all_queries": true,
+      "reference_gradient_dtype": "torch.float32",
+      "tolerance_checks": {
+        "dk": true,
+        "dq": true,
+        "dv": true,
+        "output": true
+      }
+    },
+    {
+      "causal_prefix_bitwise_unchanged": true,
+      "comparisons": {
+        "dk": {
+          "elements": 35449344,
+          "finite": true,
+          "max_abs": 0.021383807063102722,
+          "reference_max_abs": 3.647911787033081,
+          "relative_l2": 0.006879331457063713
+        },
+        "dq": {
+          "elements": 35449344,
+          "finite": true,
+          "max_abs": 0.20456621050834656,
+          "reference_max_abs": 34.528953552246094,
+          "relative_l2": 0.007140470362754333
+        },
+        "dv": {
+          "elements": 35449344,
+          "finite": true,
+          "max_abs": 0.04182243347167969,
+          "reference_max_abs": 15.741145133972168,
+          "relative_l2": 0.0016561654654956022
+        },
+        "output": {
+          "elements": 35449344,
+          "finite": true,
+          "max_abs": 0.0038928985595703125,
+          "reference_max_abs": 1.25,
+          "relative_l2": 0.0007350494575804903
+        }
+      },
+      "elapsed_seconds": 0.07015086058527231,
+      "head_dim": 128,
+      "input_dtype": "bfloat16",
+      "input_scales": {
+        "k": 26.7,
+        "q": 3.5,
+        "v": 0.25
+      },
+      "input_strides": [
+        [
+          3584,
+          128,
+          1
+        ],
+        [
+          128,
+          1266048,
+          1
+        ],
+        [
+          128,
+          1266048,
+          1
+        ]
+      ],
+      "kv_heads": 28,
+      "label": "production_expanded28_high_magnitude",
+      "lengths": [
+        31,
+        127,
+        257,
+        513,
+        1024,
+        1500,
+        2343,
+        4096
+      ],
+      "other_sequences_bitwise_unchanged": true,
+      "passed": true,
+      "peak_allocated_bytes": 9573696000,
+      "performance_scope": "diagnostic FA3 plus streaming quadratic SDPA; not a FA3 throughput measurement",
+      "q_heads": 28,
+      "reference_covers_all_queries": true,
+      "reference_gradient_dtype": "torch.float32",
+      "tolerance_checks": {
+        "dk": true,
+        "dq": true,
+        "dv": true,
+        "output": true
+      }
+    }
+  ],
+  "execution": {
+    "actual_flash3_training_executed": true,
+    "attention_layers": 0,
+    "checked_unix": 1792601559.4428687,
+    "cuda_synchronized": true,
+    "forward_success_returns": {
+      "dense": 0,
+      "varlen": 9
+    },
+    "global_transformers_patch": false,
+    "kernel_backward_success_returns": 3,
+    "observed_shapes": [
+      {
+        "dtype": "torch.bfloat16",
+        "k": [
+          9891,
+          4,
+          128
+        ],
+        "kind": "varlen",
+        "q": [
+          9891,
+          28,
+          128
+        ],
+        "v": [
+          9891,
+          4,
+          128
+        ]
+      },
+      {
+        "dtype": "torch.bfloat16",
+        "k": [
+          9891,
+          28,
+          128
+        ],
+        "kind": "varlen",
+        "q": [
+          9891,
+          28,
+          128
+        ],
+        "v": [
+          9891,
+          28,
+          128
+        ]
+      }
+    ],
+    "provenance": {
+      "compiled_torch_cuda": "12.1",
+      "cudart_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/libcudart.so.12",
+      "cudart_runtime_version": 12060,
+      "cudart_sha256": "095296727cfb5f51e5b3ae69a3cb88cbd7b6592f314ace0fdfc4e1d758c2aa85",
+      "extension_module": "flash_attn_3_cuda",
+      "extension_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+      "extension_sha256": "be3e87f7b0401f71be424916d4ca031f90aa21be70b479eec0c9898763dcb345",
+      "interface_module": "_search_g1_actor_flash3_20b73bde50ad48b78384f9886bf20c77",
+      "interface_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/flash3-runtime/flash_attn_interface.py",
+      "interface_sha256": "a50f564fa1fc4cdd85ffa61f79e913a463c2066e519f9c5e8bc2e5c74457fa38",
+      "interface_version": "3.0.0b1",
+      "source_scope": "private actor interface + explicit extension; no foreign site-packages path",
+      "torch_version": "2.4.0+cu121"
+    },
+    "qkv_gradient_returns": 3,
+    "role": "easy7b_instance_local_flash3_execution",
+    "state_dict_keys_changed": false
+  },
+  "fa2_equivalence_required": false,
+  "model_loaded": false,
+  "production_modified": false,
+  "user_authorization": "human-fa3-sdpa-transition-authorization.json",
+  "qualification_scope": "isolated packed attention implementation correctness; no FA2 bitwise or full-model training claim",
+  "full_iteration_speedup_measured": false
+}
