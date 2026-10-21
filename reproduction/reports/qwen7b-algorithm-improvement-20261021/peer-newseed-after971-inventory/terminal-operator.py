@@ -1,7 +1,8 @@
 """Stage an existing stdlib terminal auditor and exact source-plan metadata."""
-import argparse,base64,hashlib,json,pathlib,subprocess,zlib
-from reproduction.operations.qwen7b_warmup import deploy_peer_frozen_delta_transfer as t
+import argparse,base64,hashlib,json,pathlib,subprocess,sys,zlib
 R=pathlib.Path(__file__).resolve().parents[4];HERE=pathlib.Path(__file__).parent
+sys.path.insert(0,str(R))
+from reproduction.operations.qwen7b_warmup import deploy_peer_frozen_delta_transfer as t
 MOD='reproduction/operations/qwen7b_warmup/audit_peer_frozen_delta_import.py'
 TARGET='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-after971-terminal-audit-v1'
 INGEST='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited138-after971-20261021-51057f37'
