@@ -1,0 +1,27 @@
+"""Finite current743933 observation; no schedule, submission or training edits."""
+import fcntl,json,pathlib,subprocess,time
+ROOT=pathlib.Path(__file__).resolve().parents[4];HERE=pathlib.Path(__file__).parent
+lock=(HERE/'finite-current-job.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+started=time.time();previous=None
+while time.time()-started<11400:
+ p=subprocess.run(['python3',str(HERE/'prepare-screen-and-entry.py'),'--action','status'],cwd=ROOT,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+ if p.returncode:raise RuntimeError('Readonly observation needs attention, training unchanged: '+p.stderr[-2000:])
+ s=json.loads(p.stdout.splitlines()[-1]);assert s['job_id']=='743933'
+ cache=s.get('cache-progress',{});progress=s.get('progress',{});latest=s.get('latest',{})
+ row=dict(epoch=s['epoch'],job_id=s['job_id'],stage=progress.get('stage'),cache_trajectories=cache.get('completed_trajectories',0),
+  cache_complete=bool(s.get('cache-complete')),native_golden=s.get('cache-same-api-golden',{}).get('status'),
+  head_cursor=progress.get('cursor',0),head_Adam=progress.get('head_Adam'),head_full_CP=latest.get('cursor'),
+  first_full_update_replay=s.get('first-update-replay',{}).get('status'),failure=s.get('failure'),
+  squeue=s['squeue']['stdout'].strip(),sacct=s['sacct']['stdout'].strip())
+ with(HERE/'actual-progress-observations.jsonl').open('a')as f:f.write(json.dumps(row)+'\n')
+ (HERE/'actual-current-latest-good.json').write_text(json.dumps(row,indent=2)+'\n')
+ key=(row['cache_trajectories']//2560,row['head_cursor']//128,row['cache_complete'],bool(row['failure']))
+ if key!=previous:print(json.dumps(row),flush=True);previous=key
+ if row['failure']or any(x in row['sacct']for x in ('FAILED','OUT_OF_MEMORY','NODE_FAIL','TIMEOUT','CANCELLED')):
+  raise RuntimeError('Actual exit/failure requires diagnosis; no blind restart: '+json.dumps(row))
+ if s.get('complete'):
+  print(json.dumps(dict(status='REAL_CAPACITY_COMPLETION_EXISTS_AWAITING_INDEPENDENT_METRICS',complete=s['complete'])),flush=True);break
+ if '743933|COMPLETED|0:0|'in row['sacct']:
+  print(json.dumps(dict(status='CURRENT_ALLOCATION_EXITED_WITHOUT_FULL20EPOCH_COMPLETE_PRESERVE_CACHE_HEAD_STATE',actual=row)),flush=True);break
+ time.sleep(45)
+else:print(json.dumps(dict(status='FINITE_CURRENT_OBSERVATION_BOUND_REACHED_NO_MUTATION',seconds=time.time()-started)),flush=True)
