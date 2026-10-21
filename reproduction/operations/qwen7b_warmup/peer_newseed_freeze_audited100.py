@@ -3,7 +3,7 @@
 One standalone small metadata plan is written outside the peer run. No payload
 export, upload/download, raw rollout read, process change or GPU operation.
 """
-import fcntl,hashlib,json,os
+import copy,fcntl,hashlib,json,os
 from pathlib import Path
 import time
 
@@ -38,9 +38,17 @@ def freeze(original_binding,accepted122_binding,reference,*,base_module,remainin
    if ref['sha256']!=row['seal_sha256']:raise ValueError('Reference source seal changed')
    refs.append(dict(input=row['input'],input_sha256=row['input_sha256'],seal=ref,questions=row['questions'],
     trajectories=row['trajectories'],domain_counts=row['domain_counts'],audit=row['audit'],seal_file_mtime=path.stat().st_mtime));observed.append(row)
-  if len(refs)!=128 or d.digest(refs)!=reference['metadata_binding']['remaining_batch_records_sha256']:
-   raise ValueError('Original128 batch/audit metadata digest changed; never substitute new batches')
-  selected=[r for r in observed if r['audit']['status']=='EXISTING_INDEPENDENT_AUDIT_CURRENT_FSTAT_BOUND']
+  expected=reference['metadata_binding']['remaining_batch_records_sha256'];current_digest=d.digest(refs)
+  prior_proof_cutoff=reference['oldest_latest_new_existing_proof_epoch']['latest_epoch']
+  reconstructed=copy.deepcopy(refs);later_proofs=0
+  for row in reconstructed:
+   audit=row['audit']
+   if audit.get('status')=='EXISTING_INDEPENDENT_AUDIT_CURRENT_FSTAT_BOUND'and audit.get('verified_epoch',0)>prior_proof_cutoff:
+    row['audit']={'status':'SEALED_NO_EXISTING_INDEPENDENT_BATCH_PROOF'};later_proofs+=1
+  reconstructed_digest=d.digest(reconstructed)
+  if len(refs)!=128 or (current_digest!=expected and reconstructed_digest!=expected):
+   raise ValueError('Original128 selected metadata not reproduced: '+json.dumps(dict(count=len(refs),current=current_digest,normalized_later_proofs=reconstructed_digest,expected=expected,later_proofs=later_proofs)))
+  selected=[r for r in observed if r['audit']['status']=='EXISTING_INDEPENDENT_AUDIT_CURRENT_FSTAT_BOUND'and r['audit']['verified_epoch']<=prior_proof_cutoff]
   if m._counts(selected)!=reference['new_existing_independent_audit_current_fstat']:raise ValueError('Exact already-audited100 scope differs')
   if p['source_config']!=reference['metadata_binding']['source_config']or p['input_manifest']!=reference['metadata_binding']['input_manifest']:raise ValueError('Fixed source config/manifest changed')
   selected=sorted(selected,key=lambda r:r['input']);selected_sha=d.digest(selected)
@@ -74,6 +82,10 @@ def freeze(original_binding,accepted122_binding,reference,*,base_module,remainin
    domain_counts={'hotpotqa':12672,'nq':128},selected_batches=selected,batch_records_sha256=selected_sha,
    selection_rule='EXACT first finite128 remainder observation; only its100 pre-existing independently audited batches whose proof matches current all-file fstats; no labels/probe scores',
    reference_observation_sha256=d.digest(reference),reference_remaining128_records_sha256=reference['metadata_binding']['remaining_batch_records_sha256'],
+   current_reference128_records_sha256=current_digest,original_reference128_reconstructed_sha256=reconstructed_digest,
+   excluded_pending28_later_proofs=later_proofs,old_selected100_proof_cutoff_epoch=prior_proof_cutoff,
+   original_selected100_payload_input_seal_and_audit_SHA_unchanged=True,
+   metadata_change_explanation='Only later independent proofs on originally unselected pending28 may differ; replacing those new proof objects with their prior missing-proof marker must reproduce the exact old128 digest. Original selected100 proof/input/seal bindings must remain exact.',
    source_baseline_accepted366=reference['accepted_baseline'],accepted_baseline_batch_count=366,
    prior_snapshots=[dict(complete=p['imported_snapshot_complete'],expected_batches=244,expected_questions=31232,expected_trajectories=156160),dict(complete=complete_ref,expected_batches=122,expected_questions=15616,expected_trajectories=78080)],
    strict_difference_against_accepted366=True,selected_batch_paths_overlap_accepted366=0,
