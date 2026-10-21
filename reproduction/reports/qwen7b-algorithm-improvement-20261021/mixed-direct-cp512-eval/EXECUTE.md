@@ -1,3 +1,5 @@
+Actual execution is complete: Root submitted exactly job746247, which exited COMPLETED0:0 in3m52s. The independent ownG5 metric audit passed; see [RESULT.md](RESULT.md) and [TERMINAL-PACKET.json](TERMINAL-PACKET.json). Do not resubmit this evaluation. The command below is retained as historical deployment provenance.
+
 CP512 independent evaluation is actually READY; this subagent has not submitted GPU work. Root pin-complete5173B/SHA375be8ff was accepted without another pin operation. The pinned inode/UID/size/mtime and all receipt fields were checked; checkpoint payload was never read, rehashed or loaded on CPU. The former rolling source path may already be collected and is not required.
 
 Original fast source-config14625B/SHA22098d5a and base are unchanged. Original25 runtime files match exact accepted origins/archive91d005991a95; the only additional runtime module is qualified evaluate_mixed_direct_checkpoint512.py from3573e88b. All26 remote SHA checks and Python3.10 compile passed. Event two-fixture CPU qualification passed before actual preparation.
