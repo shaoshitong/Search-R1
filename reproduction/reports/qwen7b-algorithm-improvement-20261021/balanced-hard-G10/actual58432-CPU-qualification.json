@@ -1,0 +1,45 @@
+{
+  "status": "INDEPENDENT_METADATA_RECEIPT_AND_SOURCE_READBACK_PASSED",
+  "receipt": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/balanced-hard-sampler-qualification-v1/qualification.json",
+    "bytes": 1836,
+    "sha256": "7dadf26d20d8a0b36f7189a20792682781146f7a42d075df6faf8bac6c86e9f3"
+  },
+  "format_repaired": false,
+  "result": {
+    "GPU": 0,
+    "actor_updates": 0,
+    "actual_real_G10_trajectories": 584320,
+    "actual_training_or_update": false,
+    "files": {
+      "balanced_hard_g10_sampler.py": {
+        "bytes": 11103,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/balanced-hard-sampler-qualification-v1/code-eaeb6d8d293e/reproduction/operations/qwen7b_warmup/balanced_hard_g10_sampler.py",
+        "sha256": "5d0fbb1e582ae4972957e0fbea18da6d12b61b7f7aac2f7094ba3de81a03e7d3"
+      },
+      "g10_grouping.py": {
+        "bytes": 14093,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/balanced-hard-sampler-qualification-v1/code-eaeb6d8d293e/reproduction/operations/qwen7b_warmup/g10_grouping.py",
+        "sha256": "3a40d313e351f086ac5d3d6ba62165792c69c2847b64ba7a967aa9cf4f2cb9af"
+      }
+    },
+    "first_batch_Mixed_views": 64,
+    "first_batch_identity_digest": "afaa17c948e376b6725346f0d7cca62a0746d56896b20fd827fd5a9f9c8f4ddb",
+    "first_batch_nonMixed_views": 64,
+    "first_batch_questions": 32,
+    "hardness_from_actual_model_available": false,
+    "peak_RSS_KiB": 247016,
+    "qualification_scope": "Existing accepted58432 metadata only. Not qualification of future124194 data, native gradient or optimizer execution.",
+    "questions": 58432,
+    "restored_next_batch_exact": true,
+    "sampler_binding": "13de95083c2ec64194a307f509a76f0c6ac59deda22f55fcbbbea4e8679c55d5",
+    "seconds": 1.6410820428282022,
+    "source_commit": "eaeb6d8d293eb79f6f51b7400963e200d15a55ae",
+    "source_groups": {
+      "bytes": 43507411,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-threebank58432-internal5120-plan-v1/merged-bank/groups.json",
+      "sha256": "ff78875397f3af73c4908be9bf330dda125427a7921988fe1ee8042f1d563216"
+    },
+    "status": "ACTUAL58432_G10_SAMPLER_IDENTITY_BALANCE_AND_NEXT_BATCH_RESTORE_PASSED"
+  }
+}
