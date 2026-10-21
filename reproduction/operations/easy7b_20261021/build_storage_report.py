@@ -114,11 +114,12 @@ def training_summary(document, filename):
         return dict(source_file=None, observed_unix=None, unavailable=True,
                     note='Saved training observation unavailable; no current training claim')
     health = document.get('service_health') or {}
-    receipt = document.get('preparation/cp1-full-state-source-receipt.json') or {}
+    receipt = document.get('preparation/cp1-full-state-source-receipt.json') or document.get('source_cp1_cpu_receipt') or {}
     stop = document.get('old/preparation/human-stop-after-cp1-for-optimized-external2-20261021.json') or {}
     completed = stop.get('actual_complete_outer') or {}
     return dict(source_file=filename, observed_unix=document.get('epoch'),
         new_job=document.get('newjob'), queue=document.get('queue'), accounting=document.get('accounting'),
+        current_base=document.get('base'), current_base_allocated_bytes=document.get('current_base_allocated_bytes'),
         service_health={key: health[key] for key in ('ok', 'service_job_id', 'training_run_id',
             'hostname', 'endpoint', 'physical_gpu_count', 'logical_shards', 'observed_unix', 'statistics')
             if key in health},
@@ -215,6 +216,11 @@ def render(views, training, generated_unix):
     lines += ['', '训练与独立检索服务（时间为此份保存观测的时间）',
         '状态输入：' + str(training.get('source_file')), '观测时间：' + timestamp(training.get('observed_unix')),
         '新训练作业：' + str(training.get('new_job'))]
+    current_base = training.get('current_base')
+    if current_base and current_base not in views['jxu']['rows'] and training.get('current_base_allocated_bytes') is not None:
+        lines += ['全根扫描完成后新增的恢复目录（独立单目录du，未混入原扫描总计）：',
+                  '  ' + current_base + '：' + _size(training['current_base_allocated_bytes']),
+                  '  此目录未出现在上方63项19:13扫描中；上方总量仍保留原始扫描口径。']
     for key in ('queue', 'accounting'):
         value = training.get(key) or {}
         lines += [key + ' 原始输出（rc=' + str(value.get('rc')) + '）：', value.get('stdout', '未提供').rstrip()]

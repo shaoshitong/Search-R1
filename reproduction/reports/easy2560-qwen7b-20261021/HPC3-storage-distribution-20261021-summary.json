@@ -89,7 +89,7 @@
   "account_views_never_added": true,
   "format": "hpc3_saved_du_depth2_cross_uid_report_v1",
   "full_namespace_without_permission_gaps": false,
-  "generated_unix": 1792581430.3694348,
+  "generated_unix": 1792581720.193065,
   "large_source": {
     "jxu": {
       "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019": 2991781801984,
@@ -235,7 +235,7 @@
     "accounting": {
       "rc": 0,
       "stderr": "",
-      "stdout": "745022|CANCELLED by 14090|0:0|00:57:43|ACD1-22\n745022.batch|CANCELLED|0:9|00:58:21|ACD1-22\n745022.extern|COMPLETED|0:0|00:57:43|ACD1-22\n745022.0|COMPLETED|0:0|00:01:16|ACD1-22\n745198|RUNNING|0:0|00:35:31|ACD1-26\n745198.batch|RUNNING|0:0|00:35:31|ACD1-26\n745198.extern|RUNNING|0:0|00:35:31|ACD1-26\n745198.0|COMPLETED|0:0|00:00:22|ACD1-26\n745198.1|COMPLETED|0:0|00:05:32|ACD1-26\n745198.2|COMPLETED|0:0|00:00:01|ACD1-26\n745198.3|COMPLETED|0:0|00:00:01|ACD1-26\n745198.4|COMPLETED|0:0|00:00:01|ACD1-26\n745258|FAILED|1:0|00:02:57|ACD1-64\n745258.batch|FAILED|1:0|00:02:57|ACD1-64\n745258.extern|COMPLETED|0:0|00:02:57|ACD1-64\n"
+      "stdout": "745022|CANCELLED by 14090|0:0|00:57:43|ACD1-22\n745022.batch|CANCELLED|0:9|00:58:21|ACD1-22\n745022.extern|COMPLETED|0:0|00:57:43|ACD1-22\n745022.0|COMPLETED|0:0|00:01:16|ACD1-22\n745198|RUNNING|0:0|00:41:07|ACD1-26\n745198.batch|RUNNING|0:0|00:41:07|ACD1-26\n745198.extern|RUNNING|0:0|00:41:07|ACD1-26\n745198.0|COMPLETED|0:0|00:00:22|ACD1-26\n745198.1|COMPLETED|0:0|00:05:32|ACD1-26\n745198.2|COMPLETED|0:0|00:00:01|ACD1-26\n745198.3|COMPLETED|0:0|00:00:01|ACD1-26\n745198.4|COMPLETED|0:0|00:00:01|ACD1-26\n745320|PENDING|0:0|00:00:00|None assigned\n"
     },
     "actual_cuda_restore_accepted": false,
     "completed_old_outer": {
@@ -252,62 +252,23 @@
       "step": 1,
       "world_size": 4
     },
-    "diagnostic_failures": {
-      "cp1-sparse-numerical-qualification-rank-0-failure.json": {
-        "accepted": false,
-        "checked_unix": 1792581295.641867,
-        "diagnostic_only": true,
-        "error": "SPARSE_MODEL_DIAGNOSTIC_NUMERICAL_THRESHOLDS_REJECTED; see /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-sparse-cp1-20261021/diagnostics/cp1-sparse-numerical-qualification.json",
-        "error_type": "RuntimeError",
-        "formal_actual_restore_receipt_written": false,
-        "rank": "0",
-        "worker_reuse_permitted": false
-      },
-      "cp1-sparse-numerical-qualification-rank-1-failure.json": {
-        "accepted": false,
-        "checked_unix": 1792581295.5925806,
-        "diagnostic_only": true,
-        "error": "SPARSE_MODEL_DIAGNOSTIC_NUMERICAL_THRESHOLDS_REJECTED; see /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-sparse-cp1-20261021/diagnostics/cp1-sparse-numerical-qualification.json",
-        "error_type": "RuntimeError",
-        "formal_actual_restore_receipt_written": false,
-        "rank": "1",
-        "worker_reuse_permitted": false
-      },
-      "cp1-sparse-numerical-qualification-rank-2-failure.json": {
-        "accepted": false,
-        "checked_unix": 1792581295.6278968,
-        "diagnostic_only": true,
-        "error": "SPARSE_MODEL_DIAGNOSTIC_NUMERICAL_THRESHOLDS_REJECTED; see /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-sparse-cp1-20261021/diagnostics/cp1-sparse-numerical-qualification.json",
-        "error_type": "RuntimeError",
-        "formal_actual_restore_receipt_written": false,
-        "rank": "2",
-        "worker_reuse_permitted": false
-      },
-      "cp1-sparse-numerical-qualification-rank-3-failure.json": {
-        "accepted": false,
-        "checked_unix": 1792581295.738126,
-        "diagnostic_only": true,
-        "error": "SPARSE_MODEL_DIAGNOSTIC_NUMERICAL_THRESHOLDS_REJECTED; see /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-sparse-cp1-20261021/diagnostics/cp1-sparse-numerical-qualification.json",
-        "error_type": "RuntimeError",
-        "formal_actual_restore_receipt_written": false,
-        "rank": "3",
-        "worker_reuse_permitted": false
-      }
-    },
-    "new_job": "745258",
+    "current_base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-20261021",
+    "current_base_allocated_bytes": 47509504,
+    "diagnostic_failures": {},
+    "new_job": "745320",
     "note": "Saved observation only; PENDING/RUNNING and CPU-state receipt do not prove resumed training progress",
-    "observed_unix": 1792581321.4102674,
+    "observed_unix": 1792581657.273508,
     "queue": {
       "rc": 0,
       "stderr": "",
-      "stdout": "745198|jxu957|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50\n"
+      "stdout": "745320|jxu957|PENDING||(Priority)|2026-10-21T21:13:01\n745198|jxu957|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50\n"
     },
     "restore_receipts": {},
     "service_health": {
       "endpoint": "http://ACD1-26:18020/retrieve",
       "hostname": "ACD1-26",
       "logical_shards": 4,
-      "observed_unix": 1792581322.5339134,
+      "observed_unix": 1792581657.848528,
       "ok": true,
       "physical_gpu_count": 2,
       "service_job_id": "745198",
@@ -322,6 +283,6 @@
       },
       "training_run_id": "232f20e112ac4a978c5aba52a0367195"
     },
-    "source_file": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp1-new-observation-1792581322.json"
+    "source_file": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp1-new-observation-1792581657.json"
   }
 }

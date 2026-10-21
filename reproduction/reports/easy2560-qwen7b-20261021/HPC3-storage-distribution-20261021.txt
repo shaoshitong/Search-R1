@@ -1,5 +1,5 @@
 HPC3 实验目录存储分布（本地保存观测生成，2026-10-21）
-生成时间：2026-10-21T19:17:10+08:00
+生成时间：2026-10-21T19:22:00+08:00
 统计根目录：/data/user/jxu957/experiments
 扫描状态：两份du进程均结束，根目录总计均已收到
 删除操作：无。本报告生成器不执行远端命令、文件删除、chmod或训练操作。
@@ -1188,33 +1188,35 @@ mou 权限视图：UID=21930
   第二层路径名含feature的条目数：0；更深层features的归属不能仅由depth2清单进一步细分。
 
 训练与独立检索服务（时间为此份保存观测的时间）
-状态输入：/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp1-new-observation-1792581322.json
-观测时间：2026-10-21T19:15:21+08:00
-新训练作业：745258
+状态输入：/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp1-new-observation-1792581657.json
+观测时间：2026-10-21T19:20:57+08:00
+新训练作业：745320
+全根扫描完成后新增的恢复目录（独立单目录du，未混入原扫描总计）：
+  /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-20261021：0.047510 GB (47,509,504 B)
+  此目录未出现在上方63项19:13扫描中；上方总量仍保留原始扫描口径。
 queue 原始输出（rc=0）：
+745320|jxu957|PENDING||(Priority)|2026-10-21T21:13:01
 745198|jxu957|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50
 accounting 原始输出（rc=0）：
 745022|CANCELLED by 14090|0:0|00:57:43|ACD1-22
 745022.batch|CANCELLED|0:9|00:58:21|ACD1-22
 745022.extern|COMPLETED|0:0|00:57:43|ACD1-22
 745022.0|COMPLETED|0:0|00:01:16|ACD1-22
-745198|RUNNING|0:0|00:35:31|ACD1-26
-745198.batch|RUNNING|0:0|00:35:31|ACD1-26
-745198.extern|RUNNING|0:0|00:35:31|ACD1-26
+745198|RUNNING|0:0|00:41:07|ACD1-26
+745198.batch|RUNNING|0:0|00:41:07|ACD1-26
+745198.extern|RUNNING|0:0|00:41:07|ACD1-26
 745198.0|COMPLETED|0:0|00:00:22|ACD1-26
 745198.1|COMPLETED|0:0|00:05:32|ACD1-26
 745198.2|COMPLETED|0:0|00:00:01|ACD1-26
 745198.3|COMPLETED|0:0|00:00:01|ACD1-26
 745198.4|COMPLETED|0:0|00:00:01|ACD1-26
-745258|FAILED|1:0|00:02:57|ACD1-64
-745258.batch|FAILED|1:0|00:02:57|ACD1-64
-745258.extern|COMPLETED|0:0|00:02:57|ACD1-64
+745320|PENDING|0:0|00:00:00|None assigned
 service_health：
 {
   "endpoint": "http://ACD1-26:18020/retrieve",
   "hostname": "ACD1-26",
   "logical_shards": 4,
-  "observed_unix": 1792581322.5339134,
+  "observed_unix": 1792581657.848528,
   "ok": true,
   "physical_gpu_count": 2,
   "service_job_id": "745198",
@@ -1248,48 +1250,7 @@ completed_old_outer：
 restore_receipts：
 {}
 diagnostic_failures：
-{
-  "cp1-sparse-numerical-qualification-rank-0-failure.json": {
-    "accepted": false,
-    "checked_unix": 1792581295.641867,
-    "diagnostic_only": true,
-    "error": "SPARSE_MODEL_DIAGNOSTIC_NUMERICAL_THRESHOLDS_REJECTED; see /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-sparse-cp1-20261021/diagnostics/cp1-sparse-numerical-qualification.json",
-    "error_type": "RuntimeError",
-    "formal_actual_restore_receipt_written": false,
-    "rank": "0",
-    "worker_reuse_permitted": false
-  },
-  "cp1-sparse-numerical-qualification-rank-1-failure.json": {
-    "accepted": false,
-    "checked_unix": 1792581295.5925806,
-    "diagnostic_only": true,
-    "error": "SPARSE_MODEL_DIAGNOSTIC_NUMERICAL_THRESHOLDS_REJECTED; see /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-sparse-cp1-20261021/diagnostics/cp1-sparse-numerical-qualification.json",
-    "error_type": "RuntimeError",
-    "formal_actual_restore_receipt_written": false,
-    "rank": "1",
-    "worker_reuse_permitted": false
-  },
-  "cp1-sparse-numerical-qualification-rank-2-failure.json": {
-    "accepted": false,
-    "checked_unix": 1792581295.6278968,
-    "diagnostic_only": true,
-    "error": "SPARSE_MODEL_DIAGNOSTIC_NUMERICAL_THRESHOLDS_REJECTED; see /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-sparse-cp1-20261021/diagnostics/cp1-sparse-numerical-qualification.json",
-    "error_type": "RuntimeError",
-    "formal_actual_restore_receipt_written": false,
-    "rank": "2",
-    "worker_reuse_permitted": false
-  },
-  "cp1-sparse-numerical-qualification-rank-3-failure.json": {
-    "accepted": false,
-    "checked_unix": 1792581295.738126,
-    "diagnostic_only": true,
-    "error": "SPARSE_MODEL_DIAGNOSTIC_NUMERICAL_THRESHOLDS_REJECTED; see /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-sparse-cp1-20261021/diagnostics/cp1-sparse-numerical-qualification.json",
-    "error_type": "RuntimeError",
-    "formal_actual_restore_receipt_written": false,
-    "rank": "3",
-    "worker_reuse_permitted": false
-  }
-}
+{}
 训练解释：Saved observation only; PENDING/RUNNING and CPU-state receipt do not prove resumed training progress
 
 权限错误及其影响的顶层目录（保留所有已提供错误行）
