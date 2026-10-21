@@ -181,10 +181,25 @@ def main(base):
         assert threading.get_ident() == initialized_thread, 'FAISS resources moved off their initialization thread'
         return original_batch(*args, **kwargs)
     retriever.batch_search = serial_batch
+    # Reuse only completed, numerically identical original-query batches. No
+    # re-batching, new FAISS thread, changed document order or search-count credit.
+    from search_g1.easy7b_infra import flags as infra_flags
+    if infra_flags(run)['exact_retrieval_cache']:
+        from search_g1.exact_query_retrieval_cache import ExactQueryRetrievalCache, RetrievalAssetVersions
+        cache = ExactQueryRetrievalCache(serial_batch,
+            versions=RetrievalAssetVersions(
+                encoder=digest(REPO/'reproduction/common8/encoder-assets.json'),
+                index=ASSETS['e5_Flat.index']['sha256'],
+                corpus=ASSETS['wiki-18.jsonl']['sha256']),
+            default_topk=retriever.topk, capacity=4096, enabled=True)
+        retriever.batch_search = cache.batch_search
+        retriever._g1_exact_query_cache = cache
     @upstream.app.get('/health')
     async def health():
         result=dict(ok=True, run_id=run['run_id'], slurm_job_id=job_id, shard_count=shard_count,
                     admission_sha256=digest(target), ntotal=proof['ntotal'])
+        if hasattr(retriever, '_g1_exact_query_cache'):
+            result['exact_query_cache'] = retriever._g1_exact_query_cache.statistics()
         if local:result.update(execution_backend='ssh_local',execution_id=run['execution_id'])
         return result
     uvicorn.run(upstream.app, host='127.0.0.1', port=18010, workers=1)

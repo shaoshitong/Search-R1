@@ -13,6 +13,22 @@ DEPENDENCIES = (importlib.util.find_spec('torch') is not None
                 and importlib.util.find_spec('transformers') is not None)
 
 
+@unittest.skipUnless(importlib.util.find_spec('torch'), 'Existing torch runtime required')
+class PackedMaskTest(unittest.TestCase):
+    def test_actual_padded_to_packed_prediction_offset_and_mask(self):
+        import torch
+        from search_g1.selected_qwen_head import packed_prediction_mask
+        indices = torch.tensor([p for p in range(24) if p not in (0,1,12,22,23)])
+        columns = indices.remainder(12)
+        response = (columns >= 6) & (columns < 11)
+        authored = torch.tensor([[1,0,1,0,1],[0,1,0,1,0]])
+        selected = packed_prediction_mask(indices,12,5,response,authored)
+        self.assertEqual(indices[selected].tolist(),[6,8,10,19,21])
+        self.assertEqual((indices[selected]+1).tolist(),[7,9,11,20,22])
+        torch.testing.assert_close(packed_prediction_mask(indices,12,5,response),response)
+        torch.testing.assert_close(packed_prediction_mask(indices,12,5,response,torch.zeros_like(authored)),response)
+
+
 @unittest.skipUnless(DEPENDENCIES, 'Existing torch+transformers environment required; no downloads')
 class SelectedQwenHeadTest(unittest.TestCase):
     def make_models(self):

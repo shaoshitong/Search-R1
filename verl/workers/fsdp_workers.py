@@ -187,6 +187,13 @@ class ActorRolloutRefWorker(Worker):
 
             if enable_gradient_checkpointing:
                 actor_module.gradient_checkpointing_enable(gradient_checkpointing_kwargs={'use_reentrant': False})
+            if self._is_actor:
+                from search_g1.easy7b_infra import flags as infra_flags
+                if infra_flags()['selected_policy_logits']:
+                    if not use_remove_padding or self.ulysses_sequence_parallel_size != 1:
+                        raise ValueError('Selected policy projection requires native packed TP1/SP1 actor')
+                    from search_g1.selected_qwen_head import install_selected_qwen_head
+                    install_selected_qwen_head(actor_module)
         torch.distributed.barrier()
 
         if self.rank == 0:

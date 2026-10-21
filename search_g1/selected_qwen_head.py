@@ -18,6 +18,22 @@ import functools
 import types
 
 
+def packed_prediction_mask(indices, sequence_length, response_length, response_positions,
+                           loss_mask=None):
+    """Map the ORIGINAL padded target loss mask onto packed prediction rows."""
+    import torch
+    selected = response_positions.clone()
+    if loss_mask is None:
+        return selected
+    positions = response_positions.nonzero(as_tuple=False).flatten()
+    rows = torch.div(indices[positions], sequence_length, rounding_mode='floor')
+    columns = indices[positions].remainder(sequence_length) - (sequence_length-response_length-1)
+    selected[positions] = loss_mask[rows, columns].bool()
+    # Empty policy batches retain a real (unused) projection graph. The existing
+    # positive-mass policy guard decides their disposition; no synthetic gradient.
+    return selected if bool(selected.any()) else response_positions.clone()
+
+
 def install_selected_qwen_head(model):
     """Enable a per-call optional arg on one unwrapped Qwen2ForCausalLM.
 

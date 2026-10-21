@@ -66,6 +66,7 @@ class DataParallelPPOActor(BasePPOActor):
         print(f'Actor use_remove_padding={self.use_remove_padding}')
         self.ulysses_sequence_parallel_size = self.config.ulysses_sequence_parallel_size
         self.use_ulysses_sp = self.ulysses_sequence_parallel_size > 1
+        self._selected_policy_logits = bool(getattr(actor_module, '_selected_qwen_head_installed', False))
 
         self.compute_entropy_from_logits = torch.compile(verl_F.entropy_from_logits, dynamic=True)
 
@@ -112,27 +113,42 @@ class DataParallelPPOActor(BasePPOActor):
                 input_ids_rmpad_rolled = input_ids_rmpad_rolled.squeeze(0)  # ((total_nnz / sp) + pad)
                 response_positions = response_positions.squeeze(0)
 
+                projection_positions = response_positions
+                projection_kwargs = {}
+                if self._selected_policy_logits:
+                    assert not self.use_ulysses_sp
+                    from search_g1.selected_qwen_head import packed_prediction_mask
+                    projection_positions = packed_prediction_mask(indices, seqlen, response_length,
+                        response_positions, micro_batch.get('loss_mask') if not compute_entropy else None)
+                    projection_kwargs['prediction_positions'] = projection_positions.nonzero(as_tuple=False).flatten()
                 # only pass input_ids and position_ids to enable flash_attn_varlen
                 output = self.actor_module(input_ids=input_ids_rmpad,
                                            attention_mask=None,
                                            position_ids=position_ids_rmpad,
-                                           use_cache=False)  # prevent model thinks we are generating
+                                           use_cache=False, **projection_kwargs)  # full decoder context unchanged
                 self.last_forward_precision = self.compute_precision.observe_logits(output.logits,
                                                                                     process_group=precision_group)
                 logits_rmpad = output.logits.squeeze(0)  # (total_nnz, vocab_size)
                 # Only response prediction rows need a FP32 vocabulary reduction.
-                response_logits = logits_rmpad[response_positions].float()
+                response_logits = (logits_rmpad if self._selected_policy_logits else logits_rmpad[response_positions]).float()
                 response_logits.div_(temperature)
                 response_log_probs = logprobs_of_labels_v2(response_logits,
-                                                          input_ids_rmpad_rolled[response_positions])
-                log_probs = response_log_probs.new_zeros(logits_rmpad.size(0)).masked_scatter(
-                    response_positions, response_log_probs)
+                                                          input_ids_rmpad_rolled[projection_positions])
+                log_probs = response_log_probs.new_zeros(input_ids_rmpad_rolled.numel()).masked_scatter(
+                    projection_positions, response_log_probs)
                 if compute_entropy:
                     from search_g1.entropy_memory import entropy_metric
                     response_entropy = entropy_metric(response_logits,self.config.entropy_coeff,
                                                       self.compute_entropy_from_logits)
-                    entropy_rmpad = response_entropy.new_zeros(logits_rmpad.size(0)).masked_scatter(
-                        response_positions, response_entropy)
+                    entropy_rmpad = response_entropy.new_zeros(input_ids_rmpad_rolled.numel()).masked_scatter(
+                        projection_positions, response_entropy)
+                if self._selected_policy_logits and not getattr(self, '_selected_projection_logged', False):
+                    print('SEARCH_G1_SELECTED_POLICY_LOGITS=' + json.dumps(dict(
+                        packed_decoder_tokens=input_ids_rmpad_rolled.numel(),
+                        actual_projected_tokens=logits_rmpad.size(0),
+                        authored_only=not compute_entropy and 'loss_mask' in micro_batch,
+                        full_decoder_context_preserved=True,actual_forward=True)),flush=True)
+                    self._selected_projection_logged = True
 
                 # gather log_prob if sp > 1
                 if self.use_ulysses_sp:

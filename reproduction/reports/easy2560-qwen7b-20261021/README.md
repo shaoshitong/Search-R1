@@ -57,3 +57,53 @@ model/reference binding, native4 geometry, real7B round0 routing and pinned shar
 The inherited common-contract fixture test `test_reader_preserves_eight_logical_micro_mass_for_physical32`
 already fails identically in the unchanged3B checkout because it omits tensor
 hashes. This is retained as a pre-existing test issue, not relaxed in runtime.
+
+## Current user-directed stop and infrastructure candidate
+
+At2026-10-21 17:55 CST the user explicitly stopped original3B734689 at completed145
+(durableCP100). Slurm cancellation/extern release were verified. This supersedes
+its previous200-outer objective and does not stop new7B745022. New7B745022 actually
+started onACD1-22 at17:57:39, fourH100, runtimed6690e86152cbd6f9400317646de04d9f36ac2e1.
+Source identity and real9 CPU configuration/calibration-routing tests passed;
+retrieval staging79GB subsequently completed. A completed actor outer remains
+pending. This is initialization, not a finished or accepted training run.
+
+The approved oldQProbe cleanup removed exactly32 old warmup/initial-head tensor
+files and independently verified their absence. Last-link allocated release was
+16,865,304,576 bytes, not the29.98GB sum that double-counted hardlinks. Existing
+raw rollouts, metadata and archives were not targets. Full per-UID root usage
+scans remain pending, so this does not claim the2TB budget is already satisfied.
+
+The user's subsequent infrastructure request has a separate opt-in candidate:
+`infra_optimizations={selected_policy_logits:true,exact_retrieval_cache:true}`.
+Missing flags retain the original path. Current immutable job745022 has no such
+flags and is not hot-edited. `easy7b_infra.flags` restricts activation to the
+pinned7B native4 Easy scope. Scientific recipe, generation and sampling LP remain
+unchanged. No larger physical micro has yet been measured or selected.
+
+- Selected policy projection: install a temporary LM-head pre-hook before FSDP;
+  normal outerFSDP forward and complete decoder context remain intact. Under
+  packedSP1, map original authored-target loss_mask onto their prediction rows,
+  project only those rows, perform original full-vocabulary softmax and scatter
+  back to the original response layout. No new weights/checkpoint keys/kernel.
+  Existing PPO sanitizes masked observations before ratios, so unused0 entries
+  are never claimed as measured probabilities and never enter the objective.
+  If entropy is requested or no loss_mask is available, retain all response
+  projection rows. Three actual tinyQwen CPU tests in a GPU0 substep of745022
+  passed (selected log-prob/PPO/all parameter gradients, gradient-checkpointing,
+  error cleanup),75.9s wall/72.3s test execution. The first login child timed out
+  at40s and was retained; it is not a model/training failure. Packed-offset and
+  empty-mask fallback checks passed locally. Full7B CUDA/FSDP equivalence,
+  memory/throughput and larger-micro qualification remain unproven.
+- Exact retrieval reuse: bounded4096-row LRU on the original FAISS initialization
+  thread. Cache key includes exact query/ordered originalbatch/row/topk/scoremode
+  and encoder/index/corpus hashes. A partial miss dispatches the ENTIRE original
+  batch unchanged. Deep-copy values preserve caller mutability; errors are not
+  cached, and no micro-batching/re-ranking/new FAISS thread is introduced. Logical
+  search counts and outputs stay unchanged; health exposes independent cache
+  counters.11 focusedCPU cases passed. Actual hit-rate/speedup is not measured.
+
+Already-existing optimizations are not new savings: sampled oldLP reuse, zero-KL
+reference forward skip and zero-entropy skip. Same-actor five-phase weight-sync
+reuse, unused reference initialization removal and minimal grounding-head request
+routing are further measured-work candidates; they are not silently enabled.
