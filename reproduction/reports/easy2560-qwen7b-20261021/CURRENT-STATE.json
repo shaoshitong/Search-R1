@@ -1,6 +1,6 @@
 {
-  "epoch": 1792611310.4814465,
-  "status": "ACTUAL_NATIVE4_FA3_FIVE_OUTERS13_TO17_AND18_SAVED_ACCEPTED_GOAL200_ACTIVE",
+  "epoch": 1792613064.5126867,
+  "status": "ACTUAL_NATIVE4_FA3_OUTER18_SEALED_AND19_SAVED_GOAL200_ACTIVE",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "746125",
@@ -11,7 +11,7 @@
   "global_mini": 128,
   "logical_micro": 4,
   "accumulation": 4,
-  "actual_completed_outer": 17,
+  "actual_completed_outer": 18,
   "initialization_is_not_training_acceptance": true,
   "old3b": {
     "job": "734689",
@@ -54,8 +54,8 @@
     "enabled_scope": "Exact retrieval cache + original dense head + separate2H100 retrieval service + authorized actor-local FA3; vLLM rollout XFormers and grounding SDPA unchanged"
   },
   "previous_goal_turn_classification": "progress",
-  "latest_turn_classification": "PROGRESS_ACTUAL_FA3_SWITCH_FIVE_OUTER_FOLLOWUP_ACCEPTED_CONTINUE200",
-  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792602336293720000/observation-144.json",
+  "latest_turn_classification": "PROGRESS_ACTUAL_OUTER18_COMPLETE_AND_FUTURE_FA3_FINAL_RESTORE_FIX_PUBLISHED",
+  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792611313074978000/observation-028.json",
   "pipeline": {
     "execution_role": "production",
     "run_id": "232f20e112ac4a978c5aba52a0367195",
@@ -140,7 +140,8 @@
     14,
     15,
     16,
-    17
+    17,
+    18
   ],
   "archive_controller_for_current7b_not_yet_started": false,
   "remaining_goal_requirements": [
@@ -411,15 +412,6 @@
   "current_candidate_pools": [
     {
       "completed_questions": 2560,
-      "name": "c6dac66fb7f34e119fc838b42b1a6648-pool-0",
-      "progress_error": null,
-      "reserved_questions": 2560,
-      "saved_chunk_files": 15,
-      "source_consumed": 40960,
-      "step": 16
-    },
-    {
-      "completed_questions": 2560,
       "name": "2f9fdb4f4c06421a8a50c2f78097ba7e-pool-0",
       "progress_error": null,
       "reserved_questions": 2560,
@@ -428,28 +420,39 @@
       "step": 17
     },
     {
-      "completed_questions": 512,
+      "completed_questions": 2560,
       "name": "58632912d0d642739655037e9d0ad421-pool-0",
+      "progress_error": null,
+      "reserved_questions": 2560,
+      "saved_chunk_files": 15,
+      "source_consumed": 46080,
+      "step": 18
+    },
+    {
+      "completed_questions": 512,
+      "name": "5b75b8776bcd4d90a609b2521f431f23-pool-0",
       "progress_error": null,
       "reserved_questions": 512,
       "saved_chunk_files": 4,
-      "source_consumed": 46080,
-      "step": 18
+      "source_consumed": 48640,
+      "step": 19
     }
   ],
   "outer2_started_not_complete": false,
   "outer2_completed_candidate_questions": 2560,
   "outer2_first_chunk_mixed_questions": 181,
-  "current_base_durable_checkpoint_outer": 17,
+  "current_base_durable_checkpoint_outer": 18,
   "most_recent_recoverable_checkpoint": {
-    "completed_outer": 17,
+    "completed_outer": 18,
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_17",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_17/full-manifest.json",
-    "sealed_manifest_sha256": "4e719ad31b43708861fe74801bf5c188e931e0df0ce63286722e1e62806a3a21",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_18",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_18/full-manifest.json",
+    "sealed_manifest_sha256": "4e4c7f408f745df6495a88405885690cfc291db44ca6986a5c2098a3b0a764af",
     "producer_full_sha_fsync_complete": true,
     "independent_small_manifest_sha_and_payload_metadata_pass": true,
     "independent_full_payload_rehash_this_observation": false,
+    "small_files_fresh_sha_count": 19,
+    "large_files_identity_only": 11,
     "actual_restore_from_this_checkpoint_not_performed": true,
     "prior_actual_native4_restore_from_source12_pass": true
   },
@@ -518,15 +521,15 @@
   },
   "rolling_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_17",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_18",
     "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_17/full-manifest.json",
-    "manifest_sha256": "4e719ad31b43708861fe74801bf5c188e931e0df0ce63286722e1e62806a3a21",
-    "published_unix": 1792611050.1089094,
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_18/full-manifest.json",
+    "manifest_sha256": "4e4c7f408f745df6495a88405885690cfc291db44ca6986a5c2098a3b0a764af",
+    "published_unix": 1792612791.483291,
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
     "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 17
+    "step": 18
   },
   "outer2_timings_seconds": {
     "timing_s/candidate_fill": 864.349,
@@ -624,7 +627,7 @@
       "replacement_has_completed_milestone5_archive": true
     }
   ],
-  "current_outer": 18,
+  "current_outer": 19,
   "outer3_selection": {
     "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/eefd4da7a7b445a4862963b159cbdfdc.json",
     "bytes": 2750777,
@@ -901,6 +904,17 @@
       "ppo_kl": 0.0015417010832607047,
       "reward": 0.6446403861045837,
       "step": 17
+    },
+    {
+      "attempt_index": 18,
+      "grad_norm": 2.5991397878065787,
+      "optimizer_writes": 360,
+      "optimizer_writes_before": 340,
+      "optimizer_writes_this_outer": 20,
+      "pg_loss": 0.04168646562515173,
+      "ppo_kl": 0.0011254913626771667,
+      "reward": 0.6486653089523315,
+      "step": 18
     }
   ],
   "fixed_validation_results_pending": [
@@ -1206,27 +1220,27 @@
     "formal_training_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
     "fresh_remote_fetch_and_blob_sha_pass": true
   },
-  "all4_actual_optimizer_writes": 340,
+  "all4_actual_optimizer_writes": 360,
   "current_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_17",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_18",
     "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_17/full-manifest.json",
-    "manifest_sha256": "4e719ad31b43708861fe74801bf5c188e931e0df0ce63286722e1e62806a3a21",
-    "published_unix": 1792611050.1089094,
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_18/full-manifest.json",
+    "manifest_sha256": "4e4c7f408f745df6495a88405885690cfc291db44ca6986a5c2098a3b0a764af",
+    "published_unix": 1792612791.483291,
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
     "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 17
+    "step": 18
   },
   "current_candidate_pool": {
     "completed_questions": 512,
-    "name": "58632912d0d642739655037e9d0ad421-pool-0",
+    "name": "5b75b8776bcd4d90a609b2521f431f23-pool-0",
     "progress_error": null,
     "reserved_questions": 512,
     "saved_chunk_files": 4,
-    "source_consumed": 46080,
-    "step": 18
+    "source_consumed": 48640,
+    "step": 19
   },
   "current_completed_selection_em": [
     {
@@ -1428,18 +1442,58 @@
       "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/artifacts/mixed-selection/2f9fdb4f4c06421a8a50c2f78097ba7e.json",
       "status": "MEASURED_COMPLETED_SELECTION",
       "step": 17
+    },
+    {
+      "attempt_id": "58632912d0d642739655037e9d0ad421",
+      "candidate_correct_count_histogram": {
+        "0": 1056,
+        "1": 210,
+        "2": 175,
+        "3": 145,
+        "4": 257,
+        "5": 717
+      },
+      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy",
+      "candidate_mixed_fraction": 0.307421875,
+      "candidate_mixed_questions": 787,
+      "candidate_questions": 2560,
+      "candidate_trajectories": 12800,
+      "candidate_trajectory_em": 0.438125,
+      "discarded_insufficient_pool_count": 0,
+      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:18:policy-58632912d0d642739655037e9d0ad421",
+      "pool_retry": 0,
+      "raw_generated_trajectories": 12800,
+      "selected_all_correct_fallback": 0,
+      "selected_all_correct_fallback_fraction": 0.0,
+      "selected_correct_count_histogram": {
+        "0": 0,
+        "1": 135,
+        "2": 122,
+        "3": 90,
+        "4": 165,
+        "5": 0
+      },
+      "selected_mixed": 512,
+      "selected_mixed_fraction": 1.0,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "selected_trajectory_em": 0.511328125,
+      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
+      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/artifacts/mixed-selection/58632912d0d642739655037e9d0ad421.json",
+      "status": "MEASURED_COMPLETED_SELECTION",
+      "step": 18
     }
   ],
   "latest_completed_metrics": {
-    "attempt_index": 17,
-    "grad_norm": 2.567749827641844,
-    "optimizer_writes": 340,
-    "optimizer_writes_before": 320,
+    "attempt_index": 18,
+    "grad_norm": 2.5991397878065787,
+    "optimizer_writes": 360,
+    "optimizer_writes_before": 340,
     "optimizer_writes_this_outer": 20,
-    "pg_loss": 0.06405051577171214,
-    "ppo_kl": 0.0015417010832607047,
-    "reward": 0.6446403861045837,
-    "step": 17
+    "pg_loss": 0.04168646562515173,
+    "ppo_kl": 0.0011254913626771667,
+    "reward": 0.6486653089523315,
+    "step": 18
   },
   "archive5_grounding_dependency_closure": {
     "status": "EASY2560_POST_CALLBACK_DEPENDENCIES_SHA_FSYNC_PASS",
@@ -1686,7 +1740,7 @@
       "terminal": true
     }
   ],
-  "current_progress_evidence": "evidence/actual-fa3-native4-followup13-to17-and18-saved-20261022.json",
+  "current_progress_evidence": "evidence/actual-fa3-outer18-sealed-and19-saved-20261022.json",
   "published_progress_observer": {
     "commit": "b3f808a31d957799c82690cb6ddf97e2bdddd002",
     "source": "reproduction/operations/easy7b_20261021/watch_training_progress_local.py",
@@ -1719,7 +1773,8 @@
     "strict_write_audit_not_startup_wired": true,
     "fa3_private_runtime_fix_evidence": "evidence/final-restore-fa3-runtime-validation-20261022.json",
     "fa3_private_runtime_fix_deployed_to_active_training": false,
-    "final_restore_requires_operator_with_private_runtime_fix": true
+    "final_restore_requires_operator_with_private_runtime_fix": true,
+    "fa3_private_runtime_fix_published_commit": "f07f9edf509d05749df43f2d73770e251d0d1d66"
   },
   "fa3_candidate": {
     "requested_after_complete9": true,
@@ -1762,7 +1817,7 @@
     "actual_backward_returns_per_rank": 11200,
     "first_actor_update_seconds": 264.853
   },
-  "latest_full_checkpoint_outer": 17,
+  "latest_full_checkpoint_outer": 18,
   "latest_phase_timing_evidence": "evidence/actual-fa3-native4-followup13-to17-and18-saved-20261022.json",
   "frozen_grounding_batch_optimization": {
     "production_micro": 4,
@@ -1987,17 +2042,18 @@
     "restore_evidence": "evidence/actual-fa3-native4-cp12-restore-dataequal-20261022.json",
     "first_target_complete_outer": 13,
     "first_target_full_checkpoint_sealed": 13,
-    "actual_execution_evidence": "evidence/actual-fa3-native4-followup13-to17-and18-saved-20261022.json",
+    "actual_execution_evidence": "evidence/actual-fa3-outer18-sealed-and19-saved-20261022.json",
     "actual_five_outer_followup_accepted": true,
     "complete_target_outers_observed": [
       13,
       14,
       15,
       16,
-      17
+      17,
+      18
     ],
-    "next_outer_saved": 18,
-    "latest_target_full_checkpoint_sealed": 17
+    "next_outer_saved": 19,
+    "latest_target_full_checkpoint_sealed": 18
   },
   "active_local_watcher": {
     "session_id": 21851,
@@ -2047,5 +2103,6 @@
       "timing_s/step excludes candidate generation; complete intervals use same-job published seals.",
       "Kernel-only speedup is not an actor or full-outer speedup."
     ]
-  }
+  },
+  "latest_complete_outer_wall_seconds": 1741.3743815422058
 }
