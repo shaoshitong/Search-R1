@@ -347,7 +347,7 @@ def ingest(config_path):
             if not joined:raise ValueError('No eligible training-only raw G10 question remains')
             wanted={g['qid'] for g in joined};old_keep={q:old[q] for q in wanted};new_keep={q:new[q] for q in wanted};score,tokenizer_proof=_tokenizer(c,old_c);prompts={};old_batches=[];protocol=None;ledger={}
             counters=dict(trajectories=0,seed_chunks=0,policy_tokens=0,response_tokens=0,multi_segment_prefix=0,short_terminal_prefix=0)
-            def process(source_base,inp,batch,conf,event,keep,*,recorded=None):
+            def process(source_base,inp,batch,conf,event,keep,*,recorded=None,metadata_root=None):
                 nonlocal protocol
                 dest=source_base/'sampling'/inp.parent.name/'batches'/inp.stem;outer=dest/'outers/outer-000001'
                 seal=read(dest/'complete.json');prefix_receipt=seal['prefix'];full_receipt=seal['full']
@@ -367,8 +367,12 @@ def ingest(config_path):
                 scan_sha=receiver.sha(scan);selection_sha=receiver.sha(selection)
                 stable_paths=(inp,dest/'complete.json',prefix_path,full_path,em_path,scan,selection)
                 before={str(path):audit.stat(path) for path in stable_paths}
+                old_scan_sha,old_selection_sha=scan_sha,selection_sha;attested=None
                 if full_receipt.get('prefix_scan_sha256')!=scan_sha or full_receipt.get('selection_sha256')!=selection_sha:
-                    raise ValueError('Full prefix-scan/selection seal differs')
+                    if event!='newseed20261021' or metadata_root is None:raise ValueError('Full prefix-scan/selection seal differs')
+                    from .peer_newseed_target_attestation import validate
+                    attested=validate(metadata_root,str(inp.relative_to(source_base)),source_base,conf,batch,prefix_receipt,full_receipt,scan_sha,selection_sha)
+                    old_scan_sha,old_selection_sha=attested['old_scan_sha'],attested['old_selection_sha']
                 by={r['qid']:r for r in batch['rows']};expected={tid:(qid,label) for qid,g in keep.items() if qid in by for tid,label in zip(g['trajectory_ids'],g['labels'])}
                 def own_records(path):
                     result={}
@@ -389,14 +393,14 @@ def ingest(config_path):
                     elif any(prompts[qid].get(k)!=source.get(k) for k in ('qid','question_hash','initial_prompt_token_ids','reward_model','data_source','source_ordinal','candidate_ordinal')):
                         raise ValueError('Old/new actual question/token prompt/gold differs')
                     projected={key:row[key] for key in ('trajectory_id','qid','strict_em','actor_version','prefix_sha256','prefix_scan_sha256','selection_sha256')}
-                    if labels[tid]!=projected or row['prefix_scan_sha256']!=scan_sha or row['selection_sha256']!=selection_sha:
+                    if labels[tid]!=projected or row['prefix_scan_sha256']!=old_scan_sha or row['selection_sha256']!=old_selection_sha:
                         raise ValueError('Actual own EM or scan/selection linkage differs')
                     result=audit_trajectory(prefixes[tid],row,source,conf,label,score,ledger,event)
                     counters['trajectories']+=1
                     for key,value in result.items():counters[key]+=value
                 if seen!=set(expected):raise ValueError('Actual full trajectory membership missing')
                 if before!={str(path):audit.stat(path) for path in stable_paths}:raise ValueError('Sealed raw source changed during acceptance')
-                return dict(event=event,input=ref(inp),seal=ref(dest/'complete.json'),prefix=ref(prefix_path),full=ref(full_path),own_em=ref(em_path),questions=len({q for q,_ in expected.values()}))
+                return dict(event=event,input=ref(inp),seal=ref(dest/'complete.json'),prefix=ref(prefix_path),full=ref(full_path),own_em=ref(em_path),questions=len({q for q,_ in expected.values()}),**({'metadata_resealed_attestation':attested['descriptor'],'original_receipt_chain_equal_current':False}if attested else{}))
             manifest=read(checked(c['original_inputs']))
             for item in manifest['batches']:
                 if item.get('split')!='train':continue
@@ -414,7 +418,7 @@ def ingest(config_path):
                 for inp in sorted((source_base/'inputs').glob('shard-*/batch*.json')):
                     batch=read(inp)
                     if not wanted.intersection(r['qid'] for r in batch['rows']):continue
-                    proof=process(source_base,inp,batch,conf,'newseed20261021',new_keep,recorded=(SOURCE,RECORDED))
+                    proof=process(source_base,inp,batch,conf,'newseed20261021',new_keep,recorded=(SOURCE,RECORDED),metadata_root=prefix)
                     new_batches.append(proof)
                     atomic(output/'progress.json',dict(stage='NEWSEED_RAW_G5_STRICT_EM_CAUSAL_SEED_AUDIT',**counters,epoch=time.time()))
             if counters['trajectories']!=10*len(joined) or set(prompts)!=wanted:raise ValueError('Incomplete accepted raw G10 audit')
