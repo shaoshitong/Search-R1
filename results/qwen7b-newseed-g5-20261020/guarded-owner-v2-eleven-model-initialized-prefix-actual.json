@@ -1,0 +1,98 @@
+{
+  "status": "ACTUAL_ELEVENTH_MODEL_INITIALIZED_FIRST_PREFIX_COMPLETE_FULL_BATCH_PENDING",
+  "recorded_utc": "2026-10-21T04:59:49.350284+00:00",
+  "actual_epoch": 1792558755.348984,
+  "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+  "scientific_runtime_commit": "82062fc12c6c0bdb50b9e8681e1af9e6e763af10",
+  "new_control_commit": "42151324c034d80cb6672ca58d13193beddeebe2",
+  "physical_card_coverage": 14,
+  "model_instances_initialized": 11,
+  "prior_ten_whole_next_accepted": true,
+  "new_model": {
+    "unit": "sst-q7b-g5-guard-rollover-supp-residual-v1-gpu4-tp1-r1-70188b8e50fd.service",
+    "state": "active",
+    "native": {
+      "MainPID": "3240713",
+      "Result": "success",
+      "ExecMainStatus": "0",
+      "ControlGroup": "/system.slice/sst-q7b-g5-guard-rollover-supp-residual-v1-gpu4-tp1-r1-70188b8e50fd.service",
+      "Id": "sst-q7b-g5-guard-rollover-supp-residual-v1-gpu4-tp1-r1-70188b8e50fd.service",
+      "LoadState": "loaded",
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "allocation_sha256": "2cbf9fdc6c13d8210fd488a3a94026355638b62ee84bda2038d31cf07b87d328",
+    "initialized": true,
+    "model_initialized": [
+      {
+        "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-source-slot-gpu4-tp1-3240713/attempt-1792558090495553588-3240713/sampler-launches/launch-00/model-initialized.json",
+        "sha256": "375916ab51821f02d3b40cdf0a3b90313af4528e073968b2151fd0ceb4aa3721",
+        "actual_model_initialized": true,
+        "actual_compute_dtype": "torch.bfloat16",
+        "max_model_len": 4096,
+        "actual_num_gpu_blocks": 4096
+      }
+    ],
+    "own_complete_batches": 0,
+    "lock_held_phases": [
+      {
+        "batch": "batch-000606",
+        "shard": "shard-00",
+        "phase": "prefix",
+        "completed": 640,
+        "utc": "2026-10-21T04:57:53.455644+00:00",
+        "actual_sampled_tokens": 12800,
+        "progress_path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/sampling/shard-00/batches/batch-000606/outers/outer-000001/prefix/rank-0-progress.json",
+        "lock_target": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/batch-locks/shard-00/batch-000606.lock",
+        "lock_owner": {
+          "pid": 3240722,
+          "birth": "10373683",
+          "state": "R",
+          "cgroup": "1:freezer:/\n0::/system.slice/sst-q7b-g5-guard-rollover-supp-residual-v1-gpu4-tp1-r1-70188b8e50fd.service\n"
+        },
+        "current_allocation": true
+      },
+      {
+        "batch": "batch-000606",
+        "shard": "shard-00",
+        "phase": "full",
+        "completed": 0,
+        "utc": "2026-10-21T04:57:53.834865+00:00",
+        "actual_sampled_tokens": 0,
+        "progress_path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/sampling/shard-00/batches/batch-000606/outers/outer-000001/full/rank-0-progress.json",
+        "lock_target": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/batch-locks/shard-00/batch-000606.lock",
+        "lock_owner": {
+          "pid": 3240722,
+          "birth": "10373683",
+          "state": "R",
+          "cgroup": "1:freezer:/\n0::/system.slice/sst-q7b-g5-guard-rollover-supp-residual-v1-gpu4-tp1-r1-70188b8e50fd.service\n"
+        },
+        "current_allocation": true
+      }
+    ],
+    "whole_and_next_observed": false
+  },
+  "global_sealed": {
+    "sealed_batches": 634,
+    "questions": 81152,
+    "trajectories": 405760
+  },
+  "actual_originals": {
+    "h100-5": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-guarded-follow-56ea94a138171ccd/actual-h100-5-1792558747135388000.json",
+      "sha256": "a6c4fb347a8c0be0c193aed172fda040bf0deadea91fc0e5704681515adab9cd"
+    },
+    "h100-10": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-guarded-follow-56ea94a138171ccd/actual-h100-10-1792558755346388000.json",
+      "sha256": "ae1cff6b38aba90c77aa620c228291fb6c60b986cc9be177965d2c2c54926657"
+    }
+  },
+  "registry_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-owner-v2-eleven-model-current-cohort-registry.json",
+  "registry_sha256": "923fc27162d119dd1c413308487cee195ec3388cad827a2a8a98963f9900bf3e",
+  "new_source_anchor_sha256": "a8af3eb73418e6f0ee7da502baa8c0c61e81dbe0bd9022bca8c4d98f99be30b5",
+  "all_outputs_own_retained_NAS10": true,
+  "foreign_or_mac_large_output": false,
+  "independent_model_reload_performed": false,
+  "new_model_whole_next_acceptance_pending": true,
+  "global_goal_complete": false
+}

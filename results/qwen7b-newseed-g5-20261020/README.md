@@ -285,3 +285,8 @@ The global bank has618sealedbatches /79,104questions /395,520fulltrajectories ou
 
 The isolated `source_residual_supplementary_control` and worker prepare TP4 `[1,3,4,6]` using the already failed GPU4 lifecycle anchor, with its own unit, directory, bundle and leases. Three focused CPU tests passed; a separate local read-only review found no blocking identity, lease or storage issue. The existing ten-model bundles and scientific sampler are unchanged. This is preparation only: no residual-model stage, submission or GPU-fit claim has been made. Any admission requires fresh actual free memory and the existing released anchor. All outputs continue to use our own `shaoshitong` NAS10 shared bank; no foreign physical disk or Mac rollout storage is used.
 
+
+
+### Residual TP4 actually initialized and generated its first prefixes
+
+The additional source model now actually runs BF16/max4096/KV4096 on GPUs1/3/4/6 and has completed640 prefix trajectories. Its first full batch and next-batch acceptance remain pending; the prior ten accepted models continue. The actual small result, explicit eleven-model registry and configuration-only eleven-model R2 plan are retained here. The old ten registry and all ten R2 rows are unchanged. Fourteen physical cards are covered; this is an extra co-resident model, not an extra card. No healthy native unit was stopped; only the local observer was replaced after its actual143 exit. Full outputs remain on our own NAS10 shared bank.
