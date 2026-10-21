@@ -1,0 +1,29 @@
+{
+  "epoch": 1792588528.9613366,
+  "slurm_version": "slurm 23.11.11",
+  "actual_job_step": "StepId=745501.0 UserId=21930 StartTime=2026-10-21T20:27:47 TimeLimit=UNLIMITED State=RUNNING Partition=acd_u NodeList=ACD1-28 Nodes=1 CPUs=8 Tasks=1 Name=bash Network=(null) TRES=cpu=8,gres/gpu=1,mem=128G,node=1 ResvPorts=(null) CPUFreqReq=Default Dist=Cyclic SrunHost:Pid=ACD1-28:300707 TresPerNode=gres/gpu:1 TresPerTask=cpu:8",
+  "entry_signal": "USR1@900",
+  "batch_only_B_prefix": false,
+  "runtime_execs_python": true,
+  "python_registers_graceful_USR1": true,
+  "actual_process": {
+    "epoch": 1792588528.9362829,
+    "host": "ACD1-28",
+    "allocation_job": "745501",
+    "target_job": "745501",
+    "target_step": "0",
+    "pid": 300719,
+    "birth_ticks": 116543024,
+    "cmdline": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/retriever-python310-candidate/bin/python3.10 -u -m reproduction.operations.qwen7b_warmup.joint_balanced_native_main --base /data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-124194-v1 ",
+    "SigCgt": "0000000180004202",
+    "USR1_is_caught": true,
+    "TERM_is_caught": true,
+    "signal_sent": false
+  },
+  "actual_delivery_not_tested": true,
+  "no_signal_sent": true,
+  "conclusion": "Step-wide Slurm pre-end signal targets native Python step directly; batch forwarding trap is not the active path",
+  "entry_sha256": "073299d9f26bf858e6d61fbc8c12d6b6d726079385ff010796bb3e89a84e1d51",
+  "runtime_sha256": "678d4e72c1c1fd90777d76ba63198658b735ecfe513439ee5f5b07f8664d8288",
+  "source_sha256": "acbd9555d0fb833827ef7203b94f53ddd621864f20122dfb8d7cb3b7f1b60562"
+}
