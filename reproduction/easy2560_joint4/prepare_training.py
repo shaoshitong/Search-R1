@@ -55,6 +55,9 @@ def prepare(base, commit, actor_micro=8, restore_receipt=None, infra_profile='ba
         from .model7b import create
         create(Path(MODEL), manifest)
     settings = selection_settings(predecessor, actor_micro, restoring=bool(restore_receipt), infra_profile=infra_profile)
+    if infra_profile == 'fa3-exact-cache-v1':
+        from .flash3_runtime import binding as flash3_binding
+        settings['infra_flash_attention_3'] = flash3_binding(base)
     if external is not None:
         settings['external_retriever'] = external
     from reproduction.common8.formal_contract import SKIP_INITIAL_EVALUATION_POLICY

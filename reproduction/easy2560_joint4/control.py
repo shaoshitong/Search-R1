@@ -175,6 +175,9 @@ def submit(base, commit, actor_micro=8, predecessor=PREDECESSOR, restore_receipt
     receipt = base / 'preparation/training-submission.json'
     if any(p.exists() for p in (claim, receipt, base / 'job.id', base / 'logs/run-manifest.json')):
         raise ValueError('EASY2560_SUBMISSION_ALREADY_ATTEMPTED_INSPECT_ACTUAL_JOB')
+    if infra_profile == 'fa3-exact-cache-v1':
+        from .flash3_runtime import prepare as prepare_flash3_runtime
+        prepare_flash3_runtime(base)
     restoration = restore_binding(restore_receipt)
     from .retrieval_proxy import external_binding
     external = external_binding(external_retriever_receipt)

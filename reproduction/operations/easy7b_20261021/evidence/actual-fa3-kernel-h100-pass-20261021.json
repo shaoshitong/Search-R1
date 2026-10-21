@@ -1,0 +1,310 @@
+{
+  "status": "ACTUAL_H100_FA3_KERNEL_FORWARD_BACKWARD_PASS_FULL_MODEL_PENDING",
+  "checked_unix": 1792596965.276092,
+  "job": "745988",
+  "accounting": {
+    "rc": 0,
+    "stdout": "745988|COMPLETED|0:0|00:00:15|ACD1-32\n745988.batch|COMPLETED|0:0|00:00:15|ACD1-32\n745988.extern|COMPLETED|0:0|00:00:15|ACD1-32\n",
+    "stderr": ""
+  },
+  "result": {
+    "accepted": true,
+    "capability": [
+      9,
+      0
+    ],
+    "cases": [
+      {
+        "accepted": true,
+        "causal": true,
+        "causal_prefix_bitwise_unchanged": true,
+        "dropout": 0.0,
+        "dtype": "bfloat16",
+        "fa2_repeat_noise": {
+          "dk": {
+            "finite": true,
+            "max_abs": 0.0,
+            "relative_l2": 0.0
+          },
+          "dq": {
+            "finite": true,
+            "max_abs": 0.00048828125,
+            "relative_l2": 1.6389470829381025e-06
+          },
+          "dv": {
+            "finite": true,
+            "max_abs": 0.0,
+            "relative_l2": 0.0
+          },
+          "output": {
+            "finite": true,
+            "max_abs": 0.0,
+            "relative_l2": 0.0
+          }
+        },
+        "fa3_vs_fa2": {
+          "dk": {
+            "finite": true,
+            "max_abs": 0.03125,
+            "relative_l2": 0.0026683213654905558
+          },
+          "dq": {
+            "finite": true,
+            "max_abs": 0.0078125,
+            "relative_l2": 0.0007993173785507679
+          },
+          "dv": {
+            "finite": true,
+            "max_abs": 0.0625,
+            "relative_l2": 0.002620601560920477
+          },
+          "output": {
+            "finite": true,
+            "max_abs": 0.00390625,
+            "relative_l2": 0.0007438340689986944
+          }
+        },
+        "first_call_forward_backward_ms": {
+          "fa2": 540.11962890625,
+          "fa2_repeat": 1.6334079504013062,
+          "fa3": 156.89353942871094
+        },
+        "fp32_math_reference": {
+          "fa2": {
+            "dk": {
+              "finite": true,
+              "max_abs": 0.03125,
+              "relative_l2": 0.003339985618367791
+            },
+            "dq": {
+              "finite": true,
+              "max_abs": 0.015625,
+              "relative_l2": 0.0028296795208007097
+            },
+            "dv": {
+              "finite": true,
+              "max_abs": 0.0625,
+              "relative_l2": 0.0031658103689551353
+            },
+            "output": {
+              "finite": true,
+              "max_abs": 0.009737491607666016,
+              "relative_l2": 0.0019168711733072996
+            }
+          },
+          "fa3": {
+            "dk": {
+              "finite": true,
+              "max_abs": 0.03125,
+              "relative_l2": 0.0027644257061183453
+            },
+            "dq": {
+              "finite": true,
+              "max_abs": 0.015625,
+              "relative_l2": 0.002830568701028824
+            },
+            "dv": {
+              "finite": true,
+              "max_abs": 0.0625,
+              "relative_l2": 0.0024839574471116066
+            },
+            "output": {
+              "finite": true,
+              "max_abs": 0.009737491607666016,
+              "relative_l2": 0.0019234431674703956
+            }
+          }
+        },
+        "head_dim": 128,
+        "kv_heads": 4,
+        "label": "short_reference",
+        "lengths": [
+          31,
+          64,
+          127,
+          193,
+          256,
+          384,
+          500,
+          512
+        ],
+        "other_sequences_bitwise_unchanged": true,
+        "query_heads": 28,
+        "timing_is_not_warmed_production_benchmark": true
+      },
+      {
+        "accepted": true,
+        "causal": true,
+        "causal_prefix_bitwise_unchanged": true,
+        "dropout": 0.0,
+        "dtype": "bfloat16",
+        "fa2_repeat_noise": {
+          "dk": {
+            "finite": true,
+            "max_abs": 0.0,
+            "relative_l2": 0.0
+          },
+          "dq": {
+            "finite": true,
+            "max_abs": 0.0009765625,
+            "relative_l2": 8.249154234363232e-06
+          },
+          "dv": {
+            "finite": true,
+            "max_abs": 0.0,
+            "relative_l2": 0.0
+          },
+          "output": {
+            "finite": true,
+            "max_abs": 0.0,
+            "relative_l2": 0.0
+          }
+        },
+        "fa3_vs_fa2": {
+          "dk": {
+            "finite": true,
+            "max_abs": 0.03125,
+            "relative_l2": 0.002669267589226365
+          },
+          "dq": {
+            "finite": true,
+            "max_abs": 0.0078125,
+            "relative_l2": 0.0009384255390614271
+          },
+          "dv": {
+            "finite": true,
+            "max_abs": 0.0625,
+            "relative_l2": 0.002592141507193446
+          },
+          "output": {
+            "finite": true,
+            "max_abs": 0.00390625,
+            "relative_l2": 0.0009778292151167989
+          }
+        },
+        "first_call_forward_backward_ms": {
+          "fa2": 5.138432025909424,
+          "fa2_repeat": 5.054783821105957,
+          "fa3": 3.031359910964966
+        },
+        "head_dim": 128,
+        "kv_heads": 4,
+        "label": "micro8_variable",
+        "lengths": [
+          513,
+          719,
+          1024,
+          1500,
+          2048,
+          2777,
+          3072,
+          4096
+        ],
+        "other_sequences_bitwise_unchanged": true,
+        "query_heads": 28,
+        "timing_is_not_warmed_production_benchmark": true
+      },
+      {
+        "accepted": true,
+        "causal": true,
+        "causal_prefix_bitwise_unchanged": true,
+        "dropout": 0.0,
+        "dtype": "bfloat16",
+        "fa2_repeat_noise": {
+          "dk": {
+            "finite": true,
+            "max_abs": 0.0,
+            "relative_l2": 0.0
+          },
+          "dq": {
+            "finite": true,
+            "max_abs": 0.0009765625,
+            "relative_l2": 9.337986739410553e-06
+          },
+          "dv": {
+            "finite": true,
+            "max_abs": 0.0,
+            "relative_l2": 0.0
+          },
+          "output": {
+            "finite": true,
+            "max_abs": 0.0,
+            "relative_l2": 0.0
+          }
+        },
+        "fa3_vs_fa2": {
+          "dk": {
+            "finite": true,
+            "max_abs": 0.03125,
+            "relative_l2": 0.0026732156984508038
+          },
+          "dq": {
+            "finite": true,
+            "max_abs": 0.0078125,
+            "relative_l2": 0.0009541235631331801
+          },
+          "dv": {
+            "finite": true,
+            "max_abs": 0.0625,
+            "relative_l2": 0.0026027655694633722
+          },
+          "output": {
+            "finite": true,
+            "max_abs": 0.00390625,
+            "relative_l2": 0.0010128833819180727
+          }
+        },
+        "first_call_forward_backward_ms": {
+          "fa2": 13.118399620056152,
+          "fa2_repeat": 13.105695724487305,
+          "fa3": 7.639967918395996
+        },
+        "head_dim": 128,
+        "kv_heads": 4,
+        "label": "micro8_context4096",
+        "lengths": [
+          4096,
+          4096,
+          4096,
+          4096,
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "other_sequences_bitwise_unchanged": true,
+        "query_heads": 28,
+        "timing_is_not_warmed_production_benchmark": true
+      }
+    ],
+    "checked_unix": 1792596933.721614,
+    "compiled_cuda": "12.1",
+    "device": "NVIDIA H100 80GB HBM3",
+    "diagnostic_only": true,
+    "finished_unix": 1792596936.257113,
+    "format": "easy7b_fa3_kernel_diagnostic_v1",
+    "full_model_qualified": false,
+    "hostname": "ACD1-32",
+    "interface": "/data/user/jxu957/experiments/topd-20261008/environment/topd-py310/lib/python3.10/site-packages/flash_attn_interface.py",
+    "interface_sha256": "a50f564fa1fc4cdd85ffa61f79e913a463c2066e519f9c5e8bc2e5c74457fa38",
+    "job": "745988",
+    "ld_preload": "/share/anaconda3/envs/flash_attn3/lib/python3.12/site-packages/nvidia/cuda_runtime/lib/libcudart.so.12",
+    "model_loaded": false,
+    "optimizer_steps": 0,
+    "production_modified": false,
+    "scheduler_steps": 0,
+    "status": "FA3_KERNEL_FORWARD_BACKWARD_LOW_ERROR_PASS",
+    "thresholds": {
+      "gradient_max_abs": 0.125,
+      "gradient_relative_l2": 0.01,
+      "output_max_abs": 0.03125,
+      "output_relative_l2": 0.005
+    },
+    "torch": "2.4.0+cu121"
+  },
+  "source_observation": "fa3-kernel-observation-1792596964.json",
+  "source_observation_sha256": "86aa7bbe2d758898ba35715331521a71e8a4945101916405c87a85ddc0508c54",
+  "training_modified": false,
+  "full_model_qualified": false,
+  "production_switched": false
+}

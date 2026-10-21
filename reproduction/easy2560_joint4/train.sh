@@ -7,6 +7,9 @@ ACTOR_MICRO="${3:-8}"
 RESTORE_RECEIPT="${4:-}"
 INFRA_PROFILE="${5:-baseline}"
 EXTERNAL_RETRIEVER_RECEIPT="${6:-}"
+if [[ "$INFRA_PROFILE" == fa3-exact-cache-v1 ]]; then
+  export LD_PRELOAD="$BASE/preparation/flash3-runtime/libcudart.so.12"
+fi
 export SEARCH_G1_BASE="$BASE" SEARCH_G1_SOURCE_COMMIT="$COMMIT" SEARCH_G1_PROFILE=common8
 export QPROBE_SOURCE="$BASE/repo" SEARCH_G1_TRAINING_WORLD_SIZE=4
 export SEARCH_G1_EXECUTION_PROFILE=native4_bf16_varlen_fp32_master

@@ -189,6 +189,11 @@ class ActorRolloutRefWorker(Worker):
                 actor_module.gradient_checkpointing_enable(gradient_checkpointing_kwargs={'use_reentrant': False})
             if self._is_actor:
                 from search_g1.easy7b_infra import flags as infra_flags
+                if infra_flags().get('flash_attention_3_actor',False):
+                    if not use_remove_padding or self.ulysses_sequence_parallel_size != 1:
+                        raise ValueError('FA3 actor requires native remove-padding TP1/SP1 execution')
+                    from search_g1.flash3_attention import install_flash3_actor
+                    install_flash3_actor(actor_module)
                 if infra_flags()['selected_policy_logits']:
                     if not use_remove_padding or self.ulysses_sequence_parallel_size != 1:
                         raise ValueError('Selected policy projection requires native packed TP1/SP1 actor')
@@ -510,6 +515,13 @@ class ActorRolloutRefWorker(Worker):
                 raise
             lr = self.actor_lr_scheduler.get_last_lr()[0]
             metrics['actor/lr'] = lr
+
+            if getattr(self.actor_module,'_search_g1_flash3_installed',False):
+                from search_g1.flash3_attention import write_execution_audit
+                report=write_execution_audit(self.actor_module,rank=self.rank,
+                    logical_update=int(data.meta_info['logical_update']),optimizer_writes=self.actor._optimizer_writes)
+                metrics['infra/flash3_forward_returns']=sum(report['forward_success_returns'].values())
+                metrics['infra/flash3_backward_returns']=report['kernel_backward_success_returns']
 
             log_gpu_memory_usage('After update policy', logger=logger)
 

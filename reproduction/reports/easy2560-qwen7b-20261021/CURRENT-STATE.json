@@ -1,6 +1,6 @@
 {
-  "epoch": 1792595155.9075704,
-  "status": "ACTUAL_OUTER8_CP8_AND_SAVED9_PASS_ALL4_TWENTY_WRITES_NO_COLLAPSE",
+  "epoch": 1792596807.0160394,
+  "status": "ACTUAL_OUTER9_CP9_AND_SAVED10_PASS_ALL4_TWENTY_WRITES_NO_COLLAPSE",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "745371",
@@ -11,7 +11,7 @@
   "global_mini": 128,
   "logical_micro": 4,
   "accumulation": 4,
-  "actual_completed_outer": 8,
+  "actual_completed_outer": 9,
   "initialization_is_not_training_acceptance": true,
   "old3b": {
     "job": "734689",
@@ -53,9 +53,9 @@
     "physical_micro16": "Not raised blindly; needs actual measured memory/throughput",
     "enabled_scope": "Exact retrieval cache + original dense head + external2H100 service; no throughput speedup claimed yet"
   },
-  "previous_goal_turn_classification": "PROGRESS_ACTUAL7_COMPLETE_CP7_SEALED_SAVED8_AND_EXPLICIT_FAILED_CPU_COMPANION_RECOVERY_WITH_NO_RETRANSFER",
-  "latest_turn_classification": "PROGRESS_ACTUAL8_COMPLETE_CP8_SEALED_AND_SAVED9_VERIFIED_READ_ONLY_WATCHER_TRANSIENT_FIXED",
-  "last_observation": "training-progress-em-1792595140.json",
+  "previous_goal_turn_classification": "verified_wait",
+  "latest_turn_classification": "progress",
+  "last_observation": "training-progress-em-1792596807.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "stage": "GRPO_1_TO_200",
@@ -142,7 +142,8 @@
     5,
     6,
     7,
-    8
+    8,
+    9
   ],
   "archive_controller_for_current7b_not_yet_started": false,
   "remaining_goal_requirements": [
@@ -237,29 +238,29 @@
   },
   "current_candidate_pools": [
     {
-      "name": "bd4e2ec20d514d55810b4f07d5007207-pool-0",
-      "step": 5,
+      "name": "5c150fa24b7b46fc9b70d26f662f71cf-pool-0",
+      "step": 8,
       "completed_questions": 2560,
       "reserved_questions": 2560,
-      "source_consumed": 12800,
+      "source_consumed": 20480,
       "saved_chunk_files": 15,
       "progress_error": null
     },
     {
-      "name": "e2db2510d7b845f1ae0e7d9ccc056938-pool-0",
-      "step": 6,
+      "name": "b4595a0ced7e40ba8db6d4a1199d6d10-pool-0",
+      "step": 9,
       "completed_questions": 2560,
       "reserved_questions": 2560,
-      "source_consumed": 15360,
+      "source_consumed": 23040,
       "saved_chunk_files": 15,
       "progress_error": null
     },
     {
-      "name": "ef893814f0a24d058072385e67194516-pool-0",
-      "step": 7,
+      "name": "439e064ef4af4c4e9d368ce395413249-pool-0",
+      "step": 10,
       "completed_questions": 512,
       "reserved_questions": 512,
-      "source_consumed": 17920,
+      "source_consumed": 25600,
       "saved_chunk_files": 4,
       "progress_error": null
     }
@@ -267,7 +268,7 @@
   "outer2_started_not_complete": false,
   "outer2_completed_candidate_questions": 2560,
   "outer2_first_chunk_mixed_questions": 181,
-  "current_base_durable_checkpoint_outer": 6,
+  "current_base_durable_checkpoint_outer": 9,
   "most_recent_recoverable_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
     "outer": 6,
@@ -340,15 +341,15 @@
   },
   "rolling_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_6",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_9",
     "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_6/full-manifest.json",
-    "manifest_sha256": "eaceea0b97b3ce5e73a12ee5449b5808f245da93065886eca5209de944ba223d",
-    "published_unix": 1792591697.1895242,
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_9/full-manifest.json",
+    "manifest_sha256": "d0126fc8f7466091a8c76eb5526debe591db48f5bf0fbb632c2203b5705a611f",
+    "published_unix": 1792596611.3125713,
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
     "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 6
+    "step": 9
   },
   "outer2_timings_seconds": {
     "timing_s/candidate_fill": 864.349,
@@ -446,7 +447,7 @@
       "replacement_has_completed_milestone5_archive": true
     }
   ],
-  "current_outer": 7,
+  "current_outer": 10,
   "outer3_selection": {
     "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/eefd4da7a7b445a4862963b159cbdfdc.json",
     "bytes": 2750777,
@@ -722,6 +723,39 @@
       "grad_norm": 2.690039113151089,
       "optimizer_writes": 120,
       "optimizer_writes_before": 100,
+      "optimizer_writes_this_outer": 20
+    },
+    {
+      "step": 7,
+      "attempt_index": 7,
+      "reward": 0.6239957809448242,
+      "pg_loss": 0.04565451578826571,
+      "ppo_kl": 0.0010343020474465447,
+      "grad_norm": 2.6558660615025613,
+      "optimizer_writes": 140,
+      "optimizer_writes_before": 120,
+      "optimizer_writes_this_outer": 20
+    },
+    {
+      "step": 8,
+      "attempt_index": 8,
+      "reward": 0.6132726669311523,
+      "pg_loss": 0.08307626103863788,
+      "ppo_kl": 0.0008330603134254488,
+      "grad_norm": 2.6595899645029566,
+      "optimizer_writes": 160,
+      "optimizer_writes_before": 140,
+      "optimizer_writes_this_outer": 20
+    },
+    {
+      "step": 9,
+      "attempt_index": 9,
+      "reward": 0.6176403760910034,
+      "pg_loss": 0.007115746500043642,
+      "ppo_kl": 0.0009657300526669133,
+      "grad_norm": 2.5217320670007575,
+      "optimizer_writes": 180,
+      "optimizer_writes_before": 160,
       "optimizer_writes_this_outer": 20
     }
   ],
@@ -1021,25 +1055,25 @@
     "fresh_remote_fetch_and_blob_sha_pass": true,
     "receipt": "source-publication-c3ce9a5f9f148a87308e5ef0c27ed2457003c19b-1792593993.json"
   },
-  "all4_actual_optimizer_writes": 160,
+  "all4_actual_optimizer_writes": 180,
   "current_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_8",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_9",
     "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_8/full-manifest.json",
-    "manifest_sha256": "52f85a226a3e2e9acddd61738dfa237e2f056466944f32e5bcb7b11053d9f816",
-    "published_unix": 1792594965.9095876,
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_9/full-manifest.json",
+    "manifest_sha256": "d0126fc8f7466091a8c76eb5526debe591db48f5bf0fbb632c2203b5705a611f",
+    "published_unix": 1792596611.3125713,
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
     "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 8
+    "step": 9
   },
   "current_candidate_pool": {
-    "name": "b4595a0ced7e40ba8db6d4a1199d6d10-pool-0",
-    "step": 9,
+    "name": "439e064ef4af4c4e9d368ce395413249-pool-0",
+    "step": 10,
     "completed_questions": 512,
     "reserved_questions": 512,
-    "source_consumed": 23040,
+    "source_consumed": 25600,
     "saved_chunk_files": 4,
     "progress_error": null
   },
@@ -1323,17 +1357,57 @@
       "discarded_insufficient_pool_count": 0,
       "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
       "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
+    },
+    {
+      "step": 9,
+      "attempt_id": "b4595a0ced7e40ba8db6d4a1199d6d10",
+      "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:9:policy-b4595a0ced7e40ba8db6d4a1199d6d10",
+      "status": "MEASURED_COMPLETED_SELECTION",
+      "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/b4595a0ced7e40ba8db6d4a1199d6d10.json",
+      "candidate_correct_count_histogram": {
+        "0": 1099,
+        "1": 274,
+        "2": 198,
+        "3": 204,
+        "4": 289,
+        "5": 496
+      },
+      "candidate_questions": 2560,
+      "candidate_trajectories": 12800,
+      "raw_generated_trajectories": 12800,
+      "candidate_trajectory_em": 0.38421875,
+      "candidate_mixed_questions": 965,
+      "candidate_mixed_fraction": 0.376953125,
+      "selected_correct_count_histogram": {
+        "0": 0,
+        "1": 152,
+        "2": 94,
+        "3": 114,
+        "4": 152,
+        "5": 0
+      },
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "selected_trajectory_em": 0.50390625,
+      "selected_mixed": 512,
+      "selected_mixed_fraction": 1.0,
+      "selected_all_correct_fallback": 0,
+      "selected_all_correct_fallback_fraction": 0.0,
+      "pool_retry": 0,
+      "discarded_insufficient_pool_count": 0,
+      "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
+      "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy"
     }
   ],
   "latest_completed_metrics": {
-    "step": 8,
-    "attempt_index": 8,
-    "reward": 0.6132726669311523,
-    "pg_loss": 0.08307626103863788,
-    "ppo_kl": 0.0008330603134254488,
-    "grad_norm": 2.6595899645029566,
-    "optimizer_writes": 160,
-    "optimizer_writes_before": 140,
+    "step": 9,
+    "attempt_index": 9,
+    "reward": 0.6176403760910034,
+    "pg_loss": 0.007115746500043642,
+    "ppo_kl": 0.0009657300526669133,
+    "grad_norm": 2.5217320670007575,
+    "optimizer_writes": 180,
+    "optimizer_writes_before": 160,
     "optimizer_writes_this_outer": 20
   },
   "archive5_grounding_dependency_closure": {
@@ -1485,7 +1559,7 @@
       "terminal": true
     }
   ],
-  "current_progress_evidence": "evidence/actual8-complete-cp8-and-saved9-20261021.json",
+  "current_progress_evidence": "evidence/actual9-complete-cp9-and-saved10-20261021.json",
   "published_progress_observer": {
     "commit": "b3f808a31d957799c82690cb6ddf97e2bdddd002",
     "source": "reproduction/operations/easy7b_20261021/watch_training_progress_local.py",
@@ -1505,5 +1579,16 @@
     "final_native_world_size": 4,
     "weights_tensor_count_dynamic_expected339": true,
     "review": "Local read-only entrypoint review: final200 paths unchanged from traininge082; scheduler count201 is initialization counting, not update201; actual final acceptance remains pending."
+  },
+  "fa3_candidate": {
+    "requested_after_complete9": true,
+    "production_switched": false,
+    "current_actor_backend": "FA2",
+    "current_rollout_backend": "XFORMERS",
+    "existing_binary": "/data/user/jxu957/experiments/topd-20261008/runtime/env/lib/python3.10/site-packages/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+    "cpu_import_with_private_cudart_pass": true,
+    "kernel_probe_job": "745988",
+    "full_model_numerical_qualified": false,
+    "training_modified": false
   }
 }
