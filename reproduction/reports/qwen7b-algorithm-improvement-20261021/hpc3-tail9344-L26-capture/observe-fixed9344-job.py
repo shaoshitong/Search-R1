@@ -15,17 +15,25 @@ for p in pathlib.Path('/proc').iterdir():
 print(json.dumps(dict(epoch=time.time(),allocation_job=os.environ.get('SLURM_JOB_ID'),own_processes=result)))
 '''
 BODY='''import pathlib,json,subprocess,time
+def optional(p):
+ for attempt in range(3):
+  try:return json.loads(p.read_bytes())
+  except FileNotFoundError:
+   if attempt<2:time.sleep(.03)
+ return None
 b=pathlib.Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail9344-independent-L26-prepared-v2');assert json.loads((b/'submission-result.json').read_bytes())['job_id']=='745731';o=dict(epoch=time.time(),job_id='745731');q=subprocess.check_output(['squeue','-h','-j','745731','-o','%i|%T|%M|%l|%R'],universal_newlines=True).strip();o['squeue']=q;o['main_sacct']=subprocess.check_output(['sacct','-X','-n','-P','-j','745731','--format=JobIDRaw,State,ExitCode,Elapsed'],universal_newlines=True).strip();shards={}
 for i in range(4):
  cap=b/('shard-%02d'%i)/'capture';x=dict(complete_chunks=len(list(cap.glob('chunk-*/complete.json'))),actual_packed_bytes=sum(p.stat().st_size for p in cap.glob('chunk-*/layer-26/*')if p.is_file()))
  for n in('progress.json','failure.json','complete.json','device.json'):
   p=cap/n
-  if p.exists():x[n]=json.loads(p.read_bytes())
+  value=optional(p)
+  if value is not None:x[n]=value
  shards[str(i)]=x
 o['shards']=shards
 for n in('bank-acceptance-progress.json','bank/complete.json'):
  p=b/n
- if p.exists():o[n]=json.loads(p.read_bytes())
+ value=optional(p)
+ if value is not None:o[n]=value
 if '|RUNNING|'in q:
  r=subprocess.run(['srun','--overlap','--jobid=745731','--account=mou176','--nodes=1','--ntasks=1','--cpus-per-task=1','--mem=1G','--gres=gpu:0','python3','-c',v['proc']],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=20);o['process_probe_returncode']=r.returncode
  if not r.returncode:o['process_probe']=json.loads(r.stdout.splitlines()[-1])

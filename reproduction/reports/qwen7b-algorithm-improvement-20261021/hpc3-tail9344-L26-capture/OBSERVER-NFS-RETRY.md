@@ -1,0 +1,3 @@
+# Bounded optional metadata read repair
+
+The independent readonly observer saw one NFS FileNotFoundError between an exists check and reading an atomically replaced optional progress JSON. Capture745731 had already advanced to17577 rows/54 completed chunks/2,937,261,260B; no producer failure occurred. Only the local finite observer was stopped, with its PID/command verified. The readonly helper now retries optional JSON reads at most three times with30ms gaps, treating persistent absence as absent. The capture source, job, locks and output files were not modified or restarted. The original failed observation remains in the terminal transcript; no training conclusion is inferred from a control read failure.
