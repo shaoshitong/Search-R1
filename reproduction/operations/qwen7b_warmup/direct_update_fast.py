@@ -12,12 +12,16 @@ import torch
 import torch.nn.functional as F
 from . import mixed_group_checkpoint as ck,probe_ablation_train as u
 from .joint_mixed_direct_pretrain import selected_views
-MICRO_QUESTIONS=(1,4,8,16)
+MICRO_QUESTIONS=(1,4,8,16,32)
 
 
 def direct_update_fast(model,ema,native_opt,head_opt,reader,lookup,sampler,device,ema_decay=.99,*,micro_questions=8):
- if micro_questions not in MICRO_QUESTIONS or sampler.batch_questions!=32:raise ValueError('Preserve B32; micro_questions must be1/4/8/16')
- batch=sampler.next_batch();qids=batch['source_qids'];n=32;by=selected_views(batch,lookup,n);count=4*n;start=time.monotonic()
+ if micro_questions not in MICRO_QUESTIONS or sampler.batch_questions!=32:raise ValueError('Preserve B32; micro_questions must be1/4/8/16/32')
+ batch=sampler.next_batch()
+ # The asynchronous reader checks the real sampler token before ANY model work.
+ # Its disposable lookahead is never part of the accepted sampler/RNG state.
+ if hasattr(reader,'accept_batch'):reader.accept_batch(batch)
+ qids=batch['source_qids'];n=32;by=selected_views(batch,lookup,n);count=4*n;start=time.monotonic()
  model.train();native_opt.zero_grad(set_to_none=False);head_opt.zero_grad(set_to_none=False)
  losses_gpu=torch.empty(count,device=device,dtype=torch.float32);logits_gpu=torch.empty_like(losses_gpu);targets_gpu=torch.tensor([float(v['true_mixed'])for v in batch['grouping']['groups']],device=device)
  for offset in range(0,n,micro_questions):

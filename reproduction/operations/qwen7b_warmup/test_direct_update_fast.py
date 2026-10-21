@@ -28,9 +28,9 @@ def setup():
 
 class Tests(unittest.TestCase):
  def setUp(self):torch.set_num_threads(2)
- def test_micro1_4_8_16_matches_scalar_objective_own_views_both_gradients_and_Adam(self):
+ def test_micro1_4_8_16_32_matches_scalar_objective_own_views_both_gradients_and_Adam(self):
   device=torch.device('cpu');m,e,b,h,s,r,l=setup();ref,batch=direct_update(m,e,b,h,r,l,s,device)
-  for micro in(1,4,8,16):
+  for micro in(1,4,8,16,32):
    with self.subTest(micro=micro):
     mm,ee,bb,hh,ss,rr,ll=setup();value,actual=fast.direct_update_fast(mm,ee,bb,hh,rr,ll,ss,device,micro_questions=micro)
     self.assertEqual(batch,actual);self.assertEqual(len(rr.calls),32//micro);self.assertTrue(all(len(ids)==10*micro for ids in rr.calls));self.assertEqual(value['GPU_to_CPU_metric_vectors'],1);self.assertEqual(value['confusion'],ref['confusion']);self.assertAlmostEqual(value['loss'],ref['loss'],places=6);self.assertEqual(value['native_steps'],1);self.assertEqual(value['head_steps'],1);self.assertEqual(value['mixed_views'],value['nonmixed_views']);self.assertGreater(value['native_gradient_L2'],0);self.assertGreater(value['group_head_gradient_L2'],0)
