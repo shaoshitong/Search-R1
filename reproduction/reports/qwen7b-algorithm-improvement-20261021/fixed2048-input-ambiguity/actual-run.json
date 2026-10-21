@@ -1,0 +1,5504 @@
+{
+  "epoch": 1792606236.4895406,
+  "exit_code": 0,
+  "receipt": {
+    "bytes": 173837,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/fixed2048-input-ambiguity-v1/complete.json",
+    "sha256": "10bf775f6a58e367ec3863bba9ee9ab7eb8b16e19bdd42c66ac19708eb9b0da4"
+  },
+  "result": {
+    "GPU_used": false,
+    "elapsed_seconds": 1.8726148048881441,
+    "epoch": 1792606236.4496722,
+    "final4096_outcomes_read": false,
+    "fitted_parameters_or_thresholds": false,
+    "full_training_bank_scanned": false,
+    "globalTop512_order": "descending direct probability then string qid; labels never in ordering",
+    "group_classifier_irreducible_error_bound_claim": false,
+    "input_source": {
+      "index_rows": 10240,
+      "manifest_indexes": [
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252263,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00000/layer-26/index.jsonl",
+            "sha256": "af3b9d86faf9c0759fc51695ba9382ceefe89fd05d44667d19934033b288fc23"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00000/layer-26/complete.json",
+            "sha256": "2ab459a90071b8dabd3c7f543fd3a9f030e9e1b0c4013b7ef6fd677c7b5bf924"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252328,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00001/layer-26/index.jsonl",
+            "sha256": "03c25ce59745f65fa3e44e209076759be23489718d4df12bdd91c44d1f2cee04"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00001/layer-26/complete.json",
+            "sha256": "d921b4e68af2f91da9441a075ddb9bed41c45163e6a50774186dd701038aa6d0"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252318,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00002/layer-26/index.jsonl",
+            "sha256": "1e0456f5e2571ef21ba81e305243ea59601d197b0754135f65788275f3bb4358"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00002/layer-26/complete.json",
+            "sha256": "f5a60ac2a078593020586ed9b975ddf9be975fe70726c4812ebed2556fd6a8b2"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252273,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00003/layer-26/index.jsonl",
+            "sha256": "b9418d471c2178e20046cd984e6729bee6ceec2b82bae3d3ffd39b8afdfd2633"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00003/layer-26/complete.json",
+            "sha256": "8145a5b64bc5e265c9ec1780b15be1cf02b13eebca617bffe2e830f396848b93"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252313,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00004/layer-26/index.jsonl",
+            "sha256": "b5c261d34342a079de9580161963b97e257f4b900ce9c9772937a70d194dbdc8"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00004/layer-26/complete.json",
+            "sha256": "f5f8485d1ce5498dae17120fdfa84da7427d34e78f0732bd09473336ee1cb532"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252353,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00005/layer-26/index.jsonl",
+            "sha256": "3bf0004be25145035e3de9c73198d609ded7bb542b17fa3a9d219e3f50054320"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00005/layer-26/complete.json",
+            "sha256": "933edb035d2910e3c22bd28407b245b019861cd5dcb600fa309c9a2e8dc27cdb"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252283,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00006/layer-26/index.jsonl",
+            "sha256": "1c9f672911919bd372787ee98162f7408da0b3f88603a24604edf47a240094b4"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00006/layer-26/complete.json",
+            "sha256": "33cb491f0f71a039b865a546bb76387647af07f0d30349ccf23ea448f4b26301"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252298,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00007/layer-26/index.jsonl",
+            "sha256": "7a2eaf6be0a00ceb9933d86ec810e7c5537875477e3914709f3e73e2a3c60794"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00007/layer-26/complete.json",
+            "sha256": "5f37a1c94ffa059c54d3e4b587910f49c32b5d1752da885f6825791d4762fed6"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252318,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00008/layer-26/index.jsonl",
+            "sha256": "317c701a868aefe71ee6c0450e581b8ff06db293d2113db45494ba2cc2602f8a"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00008/layer-26/complete.json",
+            "sha256": "0074d09aed5b0bc646434b1cc93655b755c1e938595cc174e201039d0051a144"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252318,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00009/layer-26/index.jsonl",
+            "sha256": "e8774f777006cdc1304e465647f69fd585eaeabb00282d4a9a0d0fa77605dec3"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00009/layer-26/complete.json",
+            "sha256": "d414736ef1d388ef698b4d6d8752ebd13183b124482c085631334393222d5a8b"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252308,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00010/layer-26/index.jsonl",
+            "sha256": "df68c761575d985dea14adea5de7dcdb29e6623163519f670fa36e5b4afb0931"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00010/layer-26/complete.json",
+            "sha256": "c24977fdec6014dd5d7082076aef185adfc1afbec20e679b16493b8a09c24de0"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252323,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00011/layer-26/index.jsonl",
+            "sha256": "87e3f686872666e35dc1a6237ee89d964d27e7e3fed7e31bd10b02523eb18f01"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00011/layer-26/complete.json",
+            "sha256": "33416f502a5716ecd943c1970c1ce42c9a1bcc32b072bfa61059f92e07bc170c"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252313,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00012/layer-26/index.jsonl",
+            "sha256": "047b8a7217cd7a0a7b2c00003f085811febd35f7a481446501675fd299dafb22"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00012/layer-26/complete.json",
+            "sha256": "1296c78e24b2cfc0264d9d9db5bb2b433d2303abc8cb8108c54bc52935d1da2f"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252343,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00013/layer-26/index.jsonl",
+            "sha256": "59761d666466ae75fdd4836253fc0d37827968457afe96441bd750da82186eba"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00013/layer-26/complete.json",
+            "sha256": "14824636123717e675b53ba0b1e314abc5192af2b8c344c92553d4fb12f0e809"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252293,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00014/layer-26/index.jsonl",
+            "sha256": "6eb7cd4ed5e972eb3ae27f7e91b8a4bf72d87ad1ca4ca302455af2df4ab4a824"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00014/layer-26/complete.json",
+            "sha256": "46925d3656c3ec08b7d443a963082472042a271cad1437cc93124a14477d7e99"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252298,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00015/layer-26/index.jsonl",
+            "sha256": "342deee836a67c8e20981482e0cc05621a374ea5b9eb7d8150ce3667f7fd72fb"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00015/layer-26/complete.json",
+            "sha256": "b8ce51c8f301583a48421b132b8872dcf1da1f8deb04e7cf5b09e76b2357d294"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252268,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00016/layer-26/index.jsonl",
+            "sha256": "52fd8e3154e0bfee3af386b397ec6c946f925e13ab44bfdc41e49ffbd0dc5269"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00016/layer-26/complete.json",
+            "sha256": "f65a89d62002ee79ccd98e97452442936b41ea5b593bdde79bf77976e69d6cb0"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252283,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00017/layer-26/index.jsonl",
+            "sha256": "13c41440a6940abda1f701a140820e2b0d2e386d7639524e48948d0f6f822995"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00017/layer-26/complete.json",
+            "sha256": "c57d8af4c3f1267acc8ac7fe69f4dcfd70cf1e5dd1dc8314e87c93878d4c67fe"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252323,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00018/layer-26/index.jsonl",
+            "sha256": "6d9d531cf15219dde92ebc8bf9f7eb8d9073552a87b856fbf6d481c9f9ea1258"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00018/layer-26/complete.json",
+            "sha256": "21bbfe8515d837662cc3033667abe75ba72d28d4f8bff80fe783e9a4545c11cf"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252338,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00019/layer-26/index.jsonl",
+            "sha256": "f5ab6561d0fae3ee09f8895450a78fd41baaca25ad41eca8fc764f63fdb2a406"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00019/layer-26/complete.json",
+            "sha256": "6edceddaff000045b39583fa726b5fd4a36695c200838a0e1da967f9bc933127"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252358,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00020/layer-26/index.jsonl",
+            "sha256": "f372c9c51950ea49fa620373b749b5f9599a4808f3b5614b713e857dc414b36e"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00020/layer-26/complete.json",
+            "sha256": "9a3a83cdea95d63e3596d81c117e1d1ddabc5437f886f2221b2a0f4649243e49"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252323,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00021/layer-26/index.jsonl",
+            "sha256": "a7ca388f4cfeccc81962d6cb9fd81bf6568fab468f63c0e50a7615971fc092e6"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00021/layer-26/complete.json",
+            "sha256": "43755e47c328862e2fdca9307583fdb84bb8c86ad7a940c4af0b505fbec1b1fc"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252338,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00022/layer-26/index.jsonl",
+            "sha256": "e6b70f7f0eef19587f7ec580cd74df34677f0745ebf7ca1d45b378239b69a830"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00022/layer-26/complete.json",
+            "sha256": "379c043f2f6ee7221626576bfb977e97df53fa4e73e17baa772298f10fb88e1f"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252333,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00023/layer-26/index.jsonl",
+            "sha256": "3d9c619fa27e6c5dd78d7ebfc95bb7403c5479c9f985447ec6c8620f5fc5cc05"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00023/layer-26/complete.json",
+            "sha256": "564da71319c232b5aae6a0c9530c166be2896ab3f165ddf7a086bd09a8bacc19"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252333,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00024/layer-26/index.jsonl",
+            "sha256": "6e0992af9e5b2f2736c13033ab56496735982ddec80d5702b33c37c1f4260f28"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00024/layer-26/complete.json",
+            "sha256": "6bce604ceaac375ffdcc4062e1393e86880cc5229471957125418a51655fdcbf"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252343,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00025/layer-26/index.jsonl",
+            "sha256": "215d2a1c1b42a152864dfe7df5e6d53b357f7145e2e001efa295a8515e145734"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00025/layer-26/complete.json",
+            "sha256": "fdcac0db85e777c8500707ef0babcf26ca3faa283c3d25418f3a6d9f6920e2fa"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252328,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00026/layer-26/index.jsonl",
+            "sha256": "b24a048c3388c8fab942f35014e5c12fcc6b40f123e8e746ff6b8934583ff477"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00026/layer-26/complete.json",
+            "sha256": "57ffb479571791065af848d61cc9b853364a03de6bcee3563518469c4b918e71"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252293,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00027/layer-26/index.jsonl",
+            "sha256": "6f04ddd76e54847dfde5745436783da2eb0a9b389d0097e8da00e64c98d5041b"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00027/layer-26/complete.json",
+            "sha256": "177719f15b10f181ff861c540c3f4bf147a1d0698a36aad6be16fbd0e5172996"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252298,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00028/layer-26/index.jsonl",
+            "sha256": "c34469becb41c3c1731c18f5c0bb187db3682ed55edd76e81fb098b3981c906a"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00028/layer-26/complete.json",
+            "sha256": "bcb75e91cd53f2afb4c55870fcfc226566e357a82db7b107492e0033620fdc62"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252328,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00029/layer-26/index.jsonl",
+            "sha256": "513443b88a3e9bad4adba37145cc155a348391fa84191d1480ebfb0d220a62dd"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00029/layer-26/complete.json",
+            "sha256": "cae84bef77f56e6331d99e397a305edce54eac9d96f21e8b6f80b5ae62bfe5fa"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252338,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00030/layer-26/index.jsonl",
+            "sha256": "a92534c1d39883ed5a6ad4e0c8bc761f2f9c6a21d472a6b381a89109e51882c6"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00030/layer-26/complete.json",
+            "sha256": "abb6ee8904d61df827307f5c740d45b32146e32b4efa0e70d4ea8e30dba4fe74"
+          }
+        },
+        {
+          "count": 320,
+          "index": {
+            "bytes": 252208,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00031/layer-26/index.jsonl",
+            "sha256": "cda804c4798fa48220838797654908da392b38fb05467104040a01274207dce4"
+          },
+          "manifest": {
+            "bytes": 1945,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/chunk-00031/layer-26/complete.json",
+            "sha256": "1fb162ae3a53ac81d5f2f28b957f06b8c2bce2325d37ebb37cca28fd435d48dd"
+          }
+        }
+      ],
+      "prior_feature_payload_SHA_and_reconstructed_row_proof_inherited": true,
+      "prior_full_reader_acceptance": {
+        "bytes": 2595,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/independent-reader-audit.json",
+        "sha256": "7c37920375dc13eff72cf0fef1b99153a03bed3113bd9e5c22646d60c99a8b6f"
+      },
+      "question_groups": 2048,
+      "tensor_or_payload_loaded_now": false,
+      "validation_complete": {
+        "bytes": 23003,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/complete.json",
+        "sha256": "54453790ae4f2ed2c1cdd0b87a17b383fe6737d5ada3dba640b3ee78b7605056"
+      }
+    },
+    "models": {
+      "CP128_EMA": {
+        "cross_strata": {
+          "tokens2_strict2": {
+            "AUC": 0.25,
+            "K_histogram": [
+              4,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "MixedBA": 0.25,
+            "Mixed_TPR": 0.0,
+            "globalTop512": {
+              "K_histogram": [
+                2,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "actualMixed": 0,
+              "actualMixed_fraction": 0.0,
+              "selected_questions": 2,
+              "stratum_coverage": 0.4
+            },
+            "nonMixed_TNR": 0.5,
+            "per_stratum_reselection_performed": false,
+            "questions": 5,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 1,
+                "error_rate": 1.0,
+                "predicted_Mixed": 0,
+                "questions": 1
+              },
+              "allcorrect": {
+                "error_count": 0,
+                "error_rate": null,
+                "predicted_Mixed": 0,
+                "questions": 0
+              },
+              "allwrong": {
+                "error_count": 2,
+                "error_rate": 0.5,
+                "predicted_Mixed": 2,
+                "questions": 4
+              }
+            },
+            "trueMixed": 1,
+            "trueMixed_fraction": 0.2
+          },
+          "tokens3_strict3": {
+            "AUC": 0.5252525252525253,
+            "K_histogram": [
+              7,
+              1,
+              1,
+              3,
+              4,
+              4
+            ],
+            "MixedBA": 0.6313131313131313,
+            "Mixed_TPR": 0.4444444444444444,
+            "globalTop512": {
+              "K_histogram": [
+                2,
+                1,
+                0,
+                1,
+                2,
+                0
+              ],
+              "actualMixed": 4,
+              "actualMixed_fraction": 0.6666666666666666,
+              "selected_questions": 6,
+              "stratum_coverage": 0.3
+            },
+            "nonMixed_TNR": 0.8181818181818181,
+            "per_stratum_reselection_performed": false,
+            "questions": 20,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 5,
+                "error_rate": 0.5555555555555556,
+                "predicted_Mixed": 4,
+                "questions": 9
+              },
+              "allcorrect": {
+                "error_count": 0,
+                "error_rate": 0.0,
+                "predicted_Mixed": 0,
+                "questions": 4
+              },
+              "allwrong": {
+                "error_count": 2,
+                "error_rate": 0.2857142857142857,
+                "predicted_Mixed": 2,
+                "questions": 7
+              }
+            },
+            "trueMixed": 9,
+            "trueMixed_fraction": 0.45
+          },
+          "tokens4_strict4": {
+            "AUC": 0.548834628190899,
+            "K_histogram": [
+              69,
+              6,
+              9,
+              8,
+              11,
+              37
+            ],
+            "MixedBA": 0.5013873473917869,
+            "Mixed_TPR": 0.3235294117647059,
+            "globalTop512": {
+              "K_histogram": [
+                22,
+                3,
+                3,
+                2,
+                3,
+                8
+              ],
+              "actualMixed": 11,
+              "actualMixed_fraction": 0.2682926829268293,
+              "selected_questions": 41,
+              "stratum_coverage": 0.29285714285714287
+            },
+            "nonMixed_TNR": 0.679245283018868,
+            "per_stratum_reselection_performed": false,
+            "questions": 140,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 23,
+                "error_rate": 0.6764705882352942,
+                "predicted_Mixed": 11,
+                "questions": 34
+              },
+              "allcorrect": {
+                "error_count": 10,
+                "error_rate": 0.2702702702702703,
+                "predicted_Mixed": 10,
+                "questions": 37
+              },
+              "allwrong": {
+                "error_count": 24,
+                "error_rate": 0.34782608695652173,
+                "predicted_Mixed": 24,
+                "questions": 69
+              }
+            },
+            "trueMixed": 34,
+            "trueMixed_fraction": 0.24285714285714285
+          },
+          "tokens5_strict5": {
+            "AUC": 0.5129259882210998,
+            "K_histogram": [
+              975,
+              173,
+              126,
+              121,
+              199,
+              289
+            ],
+            "MixedBA": 0.49211097421320626,
+            "Mixed_TPR": 0.27140549273021003,
+            "globalTop512": {
+              "K_histogram": [
+                254,
+                47,
+                35,
+                20,
+                45,
+                62
+              ],
+              "actualMixed": 147,
+              "actualMixed_fraction": 0.3174946004319654,
+              "selected_questions": 463,
+              "stratum_coverage": 0.2458842272968667
+            },
+            "nonMixed_TNR": 0.7128164556962026,
+            "per_stratum_reselection_performed": false,
+            "questions": 1883,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 451,
+                "error_rate": 0.72859450726979,
+                "predicted_Mixed": 168,
+                "questions": 619
+              },
+              "allcorrect": {
+                "error_count": 76,
+                "error_rate": 0.2629757785467128,
+                "predicted_Mixed": 76,
+                "questions": 289
+              },
+              "allwrong": {
+                "error_count": 287,
+                "error_rate": 0.29435897435897435,
+                "predicted_Mixed": 287,
+                "questions": 975
+              }
+            },
+            "trueMixed": 619,
+            "trueMixed_fraction": 0.3287307488050982
+          }
+        },
+        "global_pool": {
+          "AUC": 0.5139628970166239,
+          "K_histogram": [
+            1055,
+            181,
+            136,
+            132,
+            214,
+            330
+          ],
+          "MixedBA": 0.49324370681346685,
+          "Mixed_TPR": 0.27601809954751133,
+          "globalTop512": {
+            "K_histogram": [
+              280,
+              51,
+              38,
+              23,
+              50,
+              70
+            ],
+            "actualMixed": 162,
+            "actualMixed_fraction": 0.31640625,
+            "selected_questions": 512,
+            "stratum_coverage": 0.25
+          },
+          "nonMixed_TNR": 0.7104693140794224,
+          "per_stratum_reselection_performed": false,
+          "questions": 2048,
+          "three_true_class_errors": {
+            "Mixed": {
+              "error_count": 480,
+              "error_rate": 0.7239819004524887,
+              "predicted_Mixed": 183,
+              "questions": 663
+            },
+            "allcorrect": {
+              "error_count": 86,
+              "error_rate": 0.2606060606060606,
+              "predicted_Mixed": 86,
+              "questions": 330
+            },
+            "allwrong": {
+              "error_count": 315,
+              "error_rate": 0.2985781990521327,
+              "predicted_Mixed": 315,
+              "questions": 1055
+            }
+          },
+          "trueMixed": 663,
+          "trueMixed_fraction": 0.32373046875
+        },
+        "strata": {
+          "strict_features_masks_positions": {
+            "unique1": {
+              "AUC": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": null,
+              "Mixed_TPR": null,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 4,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": null,
+                "selected_questions": 0,
+                "stratum_coverage": null
+              },
+              "nonMixed_TNR": null,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 0,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                }
+              },
+              "trueMixed": 0,
+              "trueMixed_fraction": null
+            },
+            "unique2": {
+              "AUC": 0.25,
+              "K_histogram": [
+                4,
+                1,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": 0.25,
+              "Mixed_TPR": 0.0,
+              "duplicate_pairs": 28,
+              "duplicate_trajectories_per_question": 3,
+              "globalTop512": {
+                "K_histogram": [
+                  2,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": 0.0,
+                "selected_questions": 2,
+                "stratum_coverage": 0.4
+              },
+              "nonMixed_TNR": 0.5,
+              "opposite_EM_identical_key_pairs": 2,
+              "per_stratum_reselection_performed": false,
+              "questions": 5,
+              "questions_with_opposite_EM_identical_key_pair": 1,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 1,
+                  "error_rate": 1.0,
+                  "predicted_Mixed": 0,
+                  "questions": 1
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 2,
+                  "error_rate": 0.5,
+                  "predicted_Mixed": 2,
+                  "questions": 4
+                }
+              },
+              "trueMixed": 1,
+              "trueMixed_fraction": 0.2
+            },
+            "unique3": {
+              "AUC": 0.5252525252525253,
+              "K_histogram": [
+                7,
+                1,
+                1,
+                3,
+                4,
+                4
+              ],
+              "MixedBA": 0.6313131313131313,
+              "Mixed_TPR": 0.4444444444444444,
+              "duplicate_pairs": 59,
+              "duplicate_trajectories_per_question": 2,
+              "globalTop512": {
+                "K_histogram": [
+                  2,
+                  1,
+                  0,
+                  1,
+                  2,
+                  0
+                ],
+                "actualMixed": 4,
+                "actualMixed_fraction": 0.6666666666666666,
+                "selected_questions": 6,
+                "stratum_coverage": 0.3
+              },
+              "nonMixed_TNR": 0.8181818181818181,
+              "opposite_EM_identical_key_pairs": 12,
+              "per_stratum_reselection_performed": false,
+              "questions": 20,
+              "questions_with_opposite_EM_identical_key_pair": 6,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 5,
+                  "error_rate": 0.5555555555555556,
+                  "predicted_Mixed": 4,
+                  "questions": 9
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": 0.0,
+                  "predicted_Mixed": 0,
+                  "questions": 4
+                },
+                "allwrong": {
+                  "error_count": 2,
+                  "error_rate": 0.2857142857142857,
+                  "predicted_Mixed": 2,
+                  "questions": 7
+                }
+              },
+              "trueMixed": 9,
+              "trueMixed_fraction": 0.45
+            },
+            "unique4": {
+              "AUC": 0.548834628190899,
+              "K_histogram": [
+                69,
+                6,
+                9,
+                8,
+                11,
+                37
+              ],
+              "MixedBA": 0.5013873473917869,
+              "Mixed_TPR": 0.3235294117647059,
+              "duplicate_pairs": 140,
+              "duplicate_trajectories_per_question": 1,
+              "globalTop512": {
+                "K_histogram": [
+                  22,
+                  3,
+                  3,
+                  2,
+                  3,
+                  8
+                ],
+                "actualMixed": 11,
+                "actualMixed_fraction": 0.2682926829268293,
+                "selected_questions": 41,
+                "stratum_coverage": 0.29285714285714287
+              },
+              "nonMixed_TNR": 0.679245283018868,
+              "opposite_EM_identical_key_pairs": 14,
+              "per_stratum_reselection_performed": false,
+              "questions": 140,
+              "questions_with_opposite_EM_identical_key_pair": 14,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 23,
+                  "error_rate": 0.6764705882352942,
+                  "predicted_Mixed": 11,
+                  "questions": 34
+                },
+                "allcorrect": {
+                  "error_count": 10,
+                  "error_rate": 0.2702702702702703,
+                  "predicted_Mixed": 10,
+                  "questions": 37
+                },
+                "allwrong": {
+                  "error_count": 24,
+                  "error_rate": 0.34782608695652173,
+                  "predicted_Mixed": 24,
+                  "questions": 69
+                }
+              },
+              "trueMixed": 34,
+              "trueMixed_fraction": 0.24285714285714285
+            },
+            "unique5": {
+              "AUC": 0.5129259882210998,
+              "K_histogram": [
+                975,
+                173,
+                126,
+                121,
+                199,
+                289
+              ],
+              "MixedBA": 0.49211097421320626,
+              "Mixed_TPR": 0.27140549273021003,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 0,
+              "globalTop512": {
+                "K_histogram": [
+                  254,
+                  47,
+                  35,
+                  20,
+                  45,
+                  62
+                ],
+                "actualMixed": 147,
+                "actualMixed_fraction": 0.3174946004319654,
+                "selected_questions": 463,
+                "stratum_coverage": 0.2458842272968667
+              },
+              "nonMixed_TNR": 0.7128164556962026,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 1883,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 451,
+                  "error_rate": 0.72859450726979,
+                  "predicted_Mixed": 168,
+                  "questions": 619
+                },
+                "allcorrect": {
+                  "error_count": 76,
+                  "error_rate": 0.2629757785467128,
+                  "predicted_Mixed": 76,
+                  "questions": 289
+                },
+                "allwrong": {
+                  "error_count": 287,
+                  "error_rate": 0.29435897435897435,
+                  "predicted_Mixed": 287,
+                  "questions": 975
+                }
+              },
+              "trueMixed": 619,
+              "trueMixed_fraction": 0.3287307488050982
+            }
+          },
+          "tokens_positions": {
+            "unique1": {
+              "AUC": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": null,
+              "Mixed_TPR": null,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 4,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": null,
+                "selected_questions": 0,
+                "stratum_coverage": null
+              },
+              "nonMixed_TNR": null,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 0,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                }
+              },
+              "trueMixed": 0,
+              "trueMixed_fraction": null
+            },
+            "unique2": {
+              "AUC": 0.25,
+              "K_histogram": [
+                4,
+                1,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": 0.25,
+              "Mixed_TPR": 0.0,
+              "duplicate_pairs": 28,
+              "duplicate_trajectories_per_question": 3,
+              "globalTop512": {
+                "K_histogram": [
+                  2,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": 0.0,
+                "selected_questions": 2,
+                "stratum_coverage": 0.4
+              },
+              "nonMixed_TNR": 0.5,
+              "opposite_EM_identical_key_pairs": 2,
+              "per_stratum_reselection_performed": false,
+              "questions": 5,
+              "questions_with_opposite_EM_identical_key_pair": 1,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 1,
+                  "error_rate": 1.0,
+                  "predicted_Mixed": 0,
+                  "questions": 1
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 2,
+                  "error_rate": 0.5,
+                  "predicted_Mixed": 2,
+                  "questions": 4
+                }
+              },
+              "trueMixed": 1,
+              "trueMixed_fraction": 0.2
+            },
+            "unique3": {
+              "AUC": 0.5252525252525253,
+              "K_histogram": [
+                7,
+                1,
+                1,
+                3,
+                4,
+                4
+              ],
+              "MixedBA": 0.6313131313131313,
+              "Mixed_TPR": 0.4444444444444444,
+              "duplicate_pairs": 59,
+              "duplicate_trajectories_per_question": 2,
+              "globalTop512": {
+                "K_histogram": [
+                  2,
+                  1,
+                  0,
+                  1,
+                  2,
+                  0
+                ],
+                "actualMixed": 4,
+                "actualMixed_fraction": 0.6666666666666666,
+                "selected_questions": 6,
+                "stratum_coverage": 0.3
+              },
+              "nonMixed_TNR": 0.8181818181818181,
+              "opposite_EM_identical_key_pairs": 12,
+              "per_stratum_reselection_performed": false,
+              "questions": 20,
+              "questions_with_opposite_EM_identical_key_pair": 6,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 5,
+                  "error_rate": 0.5555555555555556,
+                  "predicted_Mixed": 4,
+                  "questions": 9
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": 0.0,
+                  "predicted_Mixed": 0,
+                  "questions": 4
+                },
+                "allwrong": {
+                  "error_count": 2,
+                  "error_rate": 0.2857142857142857,
+                  "predicted_Mixed": 2,
+                  "questions": 7
+                }
+              },
+              "trueMixed": 9,
+              "trueMixed_fraction": 0.45
+            },
+            "unique4": {
+              "AUC": 0.548834628190899,
+              "K_histogram": [
+                69,
+                6,
+                9,
+                8,
+                11,
+                37
+              ],
+              "MixedBA": 0.5013873473917869,
+              "Mixed_TPR": 0.3235294117647059,
+              "duplicate_pairs": 140,
+              "duplicate_trajectories_per_question": 1,
+              "globalTop512": {
+                "K_histogram": [
+                  22,
+                  3,
+                  3,
+                  2,
+                  3,
+                  8
+                ],
+                "actualMixed": 11,
+                "actualMixed_fraction": 0.2682926829268293,
+                "selected_questions": 41,
+                "stratum_coverage": 0.29285714285714287
+              },
+              "nonMixed_TNR": 0.679245283018868,
+              "opposite_EM_identical_key_pairs": 14,
+              "per_stratum_reselection_performed": false,
+              "questions": 140,
+              "questions_with_opposite_EM_identical_key_pair": 14,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 23,
+                  "error_rate": 0.6764705882352942,
+                  "predicted_Mixed": 11,
+                  "questions": 34
+                },
+                "allcorrect": {
+                  "error_count": 10,
+                  "error_rate": 0.2702702702702703,
+                  "predicted_Mixed": 10,
+                  "questions": 37
+                },
+                "allwrong": {
+                  "error_count": 24,
+                  "error_rate": 0.34782608695652173,
+                  "predicted_Mixed": 24,
+                  "questions": 69
+                }
+              },
+              "trueMixed": 34,
+              "trueMixed_fraction": 0.24285714285714285
+            },
+            "unique5": {
+              "AUC": 0.5129259882210998,
+              "K_histogram": [
+                975,
+                173,
+                126,
+                121,
+                199,
+                289
+              ],
+              "MixedBA": 0.49211097421320626,
+              "Mixed_TPR": 0.27140549273021003,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 0,
+              "globalTop512": {
+                "K_histogram": [
+                  254,
+                  47,
+                  35,
+                  20,
+                  45,
+                  62
+                ],
+                "actualMixed": 147,
+                "actualMixed_fraction": 0.3174946004319654,
+                "selected_questions": 463,
+                "stratum_coverage": 0.2458842272968667
+              },
+              "nonMixed_TNR": 0.7128164556962026,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 1883,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 451,
+                  "error_rate": 0.72859450726979,
+                  "predicted_Mixed": 168,
+                  "questions": 619
+                },
+                "allcorrect": {
+                  "error_count": 76,
+                  "error_rate": 0.2629757785467128,
+                  "predicted_Mixed": 76,
+                  "questions": 289
+                },
+                "allwrong": {
+                  "error_count": 287,
+                  "error_rate": 0.29435897435897435,
+                  "predicted_Mixed": 287,
+                  "questions": 975
+                }
+              },
+              "trueMixed": 619,
+              "trueMixed_fraction": 0.3287307488050982
+            }
+          }
+        }
+      },
+      "CP128_raw": {
+        "cross_strata": {
+          "tokens2_strict2": {
+            "AUC": 0.0,
+            "K_histogram": [
+              4,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "MixedBA": 0.375,
+            "Mixed_TPR": 0.0,
+            "globalTop512": {
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "actualMixed": 0,
+              "actualMixed_fraction": null,
+              "selected_questions": 0,
+              "stratum_coverage": 0.0
+            },
+            "nonMixed_TNR": 0.75,
+            "per_stratum_reselection_performed": false,
+            "questions": 5,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 1,
+                "error_rate": 1.0,
+                "predicted_Mixed": 0,
+                "questions": 1
+              },
+              "allcorrect": {
+                "error_count": 0,
+                "error_rate": null,
+                "predicted_Mixed": 0,
+                "questions": 0
+              },
+              "allwrong": {
+                "error_count": 1,
+                "error_rate": 0.25,
+                "predicted_Mixed": 1,
+                "questions": 4
+              }
+            },
+            "trueMixed": 1,
+            "trueMixed_fraction": 0.2
+          },
+          "tokens3_strict3": {
+            "AUC": 0.5454545454545454,
+            "K_histogram": [
+              7,
+              1,
+              1,
+              3,
+              4,
+              4
+            ],
+            "MixedBA": 0.4949494949494949,
+            "Mixed_TPR": 0.4444444444444444,
+            "globalTop512": {
+              "K_histogram": [
+                3,
+                1,
+                0,
+                1,
+                2,
+                1
+              ],
+              "actualMixed": 4,
+              "actualMixed_fraction": 0.5,
+              "selected_questions": 8,
+              "stratum_coverage": 0.4
+            },
+            "nonMixed_TNR": 0.5454545454545454,
+            "per_stratum_reselection_performed": false,
+            "questions": 20,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 5,
+                "error_rate": 0.5555555555555556,
+                "predicted_Mixed": 4,
+                "questions": 9
+              },
+              "allcorrect": {
+                "error_count": 1,
+                "error_rate": 0.25,
+                "predicted_Mixed": 1,
+                "questions": 4
+              },
+              "allwrong": {
+                "error_count": 4,
+                "error_rate": 0.5714285714285714,
+                "predicted_Mixed": 4,
+                "questions": 7
+              }
+            },
+            "trueMixed": 9,
+            "trueMixed_fraction": 0.45
+          },
+          "tokens4_strict4": {
+            "AUC": 0.5385682574916759,
+            "K_histogram": [
+              69,
+              6,
+              9,
+              8,
+              11,
+              37
+            ],
+            "MixedBA": 0.5513318534961154,
+            "Mixed_TPR": 0.47058823529411764,
+            "globalTop512": {
+              "K_histogram": [
+                20,
+                4,
+                4,
+                2,
+                2,
+                9
+              ],
+              "actualMixed": 12,
+              "actualMixed_fraction": 0.2926829268292683,
+              "selected_questions": 41,
+              "stratum_coverage": 0.29285714285714287
+            },
+            "nonMixed_TNR": 0.6320754716981132,
+            "per_stratum_reselection_performed": false,
+            "questions": 140,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 18,
+                "error_rate": 0.5294117647058824,
+                "predicted_Mixed": 16,
+                "questions": 34
+              },
+              "allcorrect": {
+                "error_count": 12,
+                "error_rate": 0.32432432432432434,
+                "predicted_Mixed": 12,
+                "questions": 37
+              },
+              "allwrong": {
+                "error_count": 27,
+                "error_rate": 0.391304347826087,
+                "predicted_Mixed": 27,
+                "questions": 69
+              }
+            },
+            "trueMixed": 34,
+            "trueMixed_fraction": 0.24285714285714285
+          },
+          "tokens5_strict5": {
+            "AUC": 0.5305655814809513,
+            "K_histogram": [
+              975,
+              173,
+              126,
+              121,
+              199,
+              289
+            ],
+            "MixedBA": 0.5063476462649026,
+            "Mixed_TPR": 0.42487883683360256,
+            "globalTop512": {
+              "K_histogram": [
+                229,
+                46,
+                32,
+                27,
+                55,
+                74
+              ],
+              "actualMixed": 160,
+              "actualMixed_fraction": 0.34557235421166305,
+              "selected_questions": 463,
+              "stratum_coverage": 0.2458842272968667
+            },
+            "nonMixed_TNR": 0.5878164556962026,
+            "per_stratum_reselection_performed": false,
+            "questions": 1883,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 356,
+                "error_rate": 0.5751211631663974,
+                "predicted_Mixed": 263,
+                "questions": 619
+              },
+              "allcorrect": {
+                "error_count": 139,
+                "error_rate": 0.4809688581314879,
+                "predicted_Mixed": 139,
+                "questions": 289
+              },
+              "allwrong": {
+                "error_count": 382,
+                "error_rate": 0.39179487179487177,
+                "predicted_Mixed": 382,
+                "questions": 975
+              }
+            },
+            "trueMixed": 619,
+            "trueMixed_fraction": 0.3287307488050982
+          }
+        },
+        "global_pool": {
+          "AUC": 0.5298076242438102,
+          "K_histogram": [
+            1055,
+            181,
+            136,
+            132,
+            214,
+            330
+          ],
+          "MixedBA": 0.509091701106991,
+          "Mixed_TPR": 0.42684766214177977,
+          "globalTop512": {
+            "K_histogram": [
+              252,
+              51,
+              36,
+              30,
+              59,
+              84
+            ],
+            "actualMixed": 176,
+            "actualMixed_fraction": 0.34375,
+            "selected_questions": 512,
+            "stratum_coverage": 0.25
+          },
+          "nonMixed_TNR": 0.5913357400722021,
+          "per_stratum_reselection_performed": false,
+          "questions": 2048,
+          "three_true_class_errors": {
+            "Mixed": {
+              "error_count": 380,
+              "error_rate": 0.5731523378582202,
+              "predicted_Mixed": 283,
+              "questions": 663
+            },
+            "allcorrect": {
+              "error_count": 152,
+              "error_rate": 0.46060606060606063,
+              "predicted_Mixed": 152,
+              "questions": 330
+            },
+            "allwrong": {
+              "error_count": 414,
+              "error_rate": 0.3924170616113744,
+              "predicted_Mixed": 414,
+              "questions": 1055
+            }
+          },
+          "trueMixed": 663,
+          "trueMixed_fraction": 0.32373046875
+        },
+        "strata": {
+          "strict_features_masks_positions": {
+            "unique1": {
+              "AUC": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": null,
+              "Mixed_TPR": null,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 4,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": null,
+                "selected_questions": 0,
+                "stratum_coverage": null
+              },
+              "nonMixed_TNR": null,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 0,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                }
+              },
+              "trueMixed": 0,
+              "trueMixed_fraction": null
+            },
+            "unique2": {
+              "AUC": 0.0,
+              "K_histogram": [
+                4,
+                1,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": 0.375,
+              "Mixed_TPR": 0.0,
+              "duplicate_pairs": 28,
+              "duplicate_trajectories_per_question": 3,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": null,
+                "selected_questions": 0,
+                "stratum_coverage": 0.0
+              },
+              "nonMixed_TNR": 0.75,
+              "opposite_EM_identical_key_pairs": 2,
+              "per_stratum_reselection_performed": false,
+              "questions": 5,
+              "questions_with_opposite_EM_identical_key_pair": 1,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 1,
+                  "error_rate": 1.0,
+                  "predicted_Mixed": 0,
+                  "questions": 1
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 1,
+                  "error_rate": 0.25,
+                  "predicted_Mixed": 1,
+                  "questions": 4
+                }
+              },
+              "trueMixed": 1,
+              "trueMixed_fraction": 0.2
+            },
+            "unique3": {
+              "AUC": 0.5454545454545454,
+              "K_histogram": [
+                7,
+                1,
+                1,
+                3,
+                4,
+                4
+              ],
+              "MixedBA": 0.4949494949494949,
+              "Mixed_TPR": 0.4444444444444444,
+              "duplicate_pairs": 59,
+              "duplicate_trajectories_per_question": 2,
+              "globalTop512": {
+                "K_histogram": [
+                  3,
+                  1,
+                  0,
+                  1,
+                  2,
+                  1
+                ],
+                "actualMixed": 4,
+                "actualMixed_fraction": 0.5,
+                "selected_questions": 8,
+                "stratum_coverage": 0.4
+              },
+              "nonMixed_TNR": 0.5454545454545454,
+              "opposite_EM_identical_key_pairs": 12,
+              "per_stratum_reselection_performed": false,
+              "questions": 20,
+              "questions_with_opposite_EM_identical_key_pair": 6,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 5,
+                  "error_rate": 0.5555555555555556,
+                  "predicted_Mixed": 4,
+                  "questions": 9
+                },
+                "allcorrect": {
+                  "error_count": 1,
+                  "error_rate": 0.25,
+                  "predicted_Mixed": 1,
+                  "questions": 4
+                },
+                "allwrong": {
+                  "error_count": 4,
+                  "error_rate": 0.5714285714285714,
+                  "predicted_Mixed": 4,
+                  "questions": 7
+                }
+              },
+              "trueMixed": 9,
+              "trueMixed_fraction": 0.45
+            },
+            "unique4": {
+              "AUC": 0.5385682574916759,
+              "K_histogram": [
+                69,
+                6,
+                9,
+                8,
+                11,
+                37
+              ],
+              "MixedBA": 0.5513318534961154,
+              "Mixed_TPR": 0.47058823529411764,
+              "duplicate_pairs": 140,
+              "duplicate_trajectories_per_question": 1,
+              "globalTop512": {
+                "K_histogram": [
+                  20,
+                  4,
+                  4,
+                  2,
+                  2,
+                  9
+                ],
+                "actualMixed": 12,
+                "actualMixed_fraction": 0.2926829268292683,
+                "selected_questions": 41,
+                "stratum_coverage": 0.29285714285714287
+              },
+              "nonMixed_TNR": 0.6320754716981132,
+              "opposite_EM_identical_key_pairs": 14,
+              "per_stratum_reselection_performed": false,
+              "questions": 140,
+              "questions_with_opposite_EM_identical_key_pair": 14,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 18,
+                  "error_rate": 0.5294117647058824,
+                  "predicted_Mixed": 16,
+                  "questions": 34
+                },
+                "allcorrect": {
+                  "error_count": 12,
+                  "error_rate": 0.32432432432432434,
+                  "predicted_Mixed": 12,
+                  "questions": 37
+                },
+                "allwrong": {
+                  "error_count": 27,
+                  "error_rate": 0.391304347826087,
+                  "predicted_Mixed": 27,
+                  "questions": 69
+                }
+              },
+              "trueMixed": 34,
+              "trueMixed_fraction": 0.24285714285714285
+            },
+            "unique5": {
+              "AUC": 0.5305655814809513,
+              "K_histogram": [
+                975,
+                173,
+                126,
+                121,
+                199,
+                289
+              ],
+              "MixedBA": 0.5063476462649026,
+              "Mixed_TPR": 0.42487883683360256,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 0,
+              "globalTop512": {
+                "K_histogram": [
+                  229,
+                  46,
+                  32,
+                  27,
+                  55,
+                  74
+                ],
+                "actualMixed": 160,
+                "actualMixed_fraction": 0.34557235421166305,
+                "selected_questions": 463,
+                "stratum_coverage": 0.2458842272968667
+              },
+              "nonMixed_TNR": 0.5878164556962026,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 1883,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 356,
+                  "error_rate": 0.5751211631663974,
+                  "predicted_Mixed": 263,
+                  "questions": 619
+                },
+                "allcorrect": {
+                  "error_count": 139,
+                  "error_rate": 0.4809688581314879,
+                  "predicted_Mixed": 139,
+                  "questions": 289
+                },
+                "allwrong": {
+                  "error_count": 382,
+                  "error_rate": 0.39179487179487177,
+                  "predicted_Mixed": 382,
+                  "questions": 975
+                }
+              },
+              "trueMixed": 619,
+              "trueMixed_fraction": 0.3287307488050982
+            }
+          },
+          "tokens_positions": {
+            "unique1": {
+              "AUC": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": null,
+              "Mixed_TPR": null,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 4,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": null,
+                "selected_questions": 0,
+                "stratum_coverage": null
+              },
+              "nonMixed_TNR": null,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 0,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                }
+              },
+              "trueMixed": 0,
+              "trueMixed_fraction": null
+            },
+            "unique2": {
+              "AUC": 0.0,
+              "K_histogram": [
+                4,
+                1,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": 0.375,
+              "Mixed_TPR": 0.0,
+              "duplicate_pairs": 28,
+              "duplicate_trajectories_per_question": 3,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": null,
+                "selected_questions": 0,
+                "stratum_coverage": 0.0
+              },
+              "nonMixed_TNR": 0.75,
+              "opposite_EM_identical_key_pairs": 2,
+              "per_stratum_reselection_performed": false,
+              "questions": 5,
+              "questions_with_opposite_EM_identical_key_pair": 1,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 1,
+                  "error_rate": 1.0,
+                  "predicted_Mixed": 0,
+                  "questions": 1
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 1,
+                  "error_rate": 0.25,
+                  "predicted_Mixed": 1,
+                  "questions": 4
+                }
+              },
+              "trueMixed": 1,
+              "trueMixed_fraction": 0.2
+            },
+            "unique3": {
+              "AUC": 0.5454545454545454,
+              "K_histogram": [
+                7,
+                1,
+                1,
+                3,
+                4,
+                4
+              ],
+              "MixedBA": 0.4949494949494949,
+              "Mixed_TPR": 0.4444444444444444,
+              "duplicate_pairs": 59,
+              "duplicate_trajectories_per_question": 2,
+              "globalTop512": {
+                "K_histogram": [
+                  3,
+                  1,
+                  0,
+                  1,
+                  2,
+                  1
+                ],
+                "actualMixed": 4,
+                "actualMixed_fraction": 0.5,
+                "selected_questions": 8,
+                "stratum_coverage": 0.4
+              },
+              "nonMixed_TNR": 0.5454545454545454,
+              "opposite_EM_identical_key_pairs": 12,
+              "per_stratum_reselection_performed": false,
+              "questions": 20,
+              "questions_with_opposite_EM_identical_key_pair": 6,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 5,
+                  "error_rate": 0.5555555555555556,
+                  "predicted_Mixed": 4,
+                  "questions": 9
+                },
+                "allcorrect": {
+                  "error_count": 1,
+                  "error_rate": 0.25,
+                  "predicted_Mixed": 1,
+                  "questions": 4
+                },
+                "allwrong": {
+                  "error_count": 4,
+                  "error_rate": 0.5714285714285714,
+                  "predicted_Mixed": 4,
+                  "questions": 7
+                }
+              },
+              "trueMixed": 9,
+              "trueMixed_fraction": 0.45
+            },
+            "unique4": {
+              "AUC": 0.5385682574916759,
+              "K_histogram": [
+                69,
+                6,
+                9,
+                8,
+                11,
+                37
+              ],
+              "MixedBA": 0.5513318534961154,
+              "Mixed_TPR": 0.47058823529411764,
+              "duplicate_pairs": 140,
+              "duplicate_trajectories_per_question": 1,
+              "globalTop512": {
+                "K_histogram": [
+                  20,
+                  4,
+                  4,
+                  2,
+                  2,
+                  9
+                ],
+                "actualMixed": 12,
+                "actualMixed_fraction": 0.2926829268292683,
+                "selected_questions": 41,
+                "stratum_coverage": 0.29285714285714287
+              },
+              "nonMixed_TNR": 0.6320754716981132,
+              "opposite_EM_identical_key_pairs": 14,
+              "per_stratum_reselection_performed": false,
+              "questions": 140,
+              "questions_with_opposite_EM_identical_key_pair": 14,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 18,
+                  "error_rate": 0.5294117647058824,
+                  "predicted_Mixed": 16,
+                  "questions": 34
+                },
+                "allcorrect": {
+                  "error_count": 12,
+                  "error_rate": 0.32432432432432434,
+                  "predicted_Mixed": 12,
+                  "questions": 37
+                },
+                "allwrong": {
+                  "error_count": 27,
+                  "error_rate": 0.391304347826087,
+                  "predicted_Mixed": 27,
+                  "questions": 69
+                }
+              },
+              "trueMixed": 34,
+              "trueMixed_fraction": 0.24285714285714285
+            },
+            "unique5": {
+              "AUC": 0.5305655814809513,
+              "K_histogram": [
+                975,
+                173,
+                126,
+                121,
+                199,
+                289
+              ],
+              "MixedBA": 0.5063476462649026,
+              "Mixed_TPR": 0.42487883683360256,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 0,
+              "globalTop512": {
+                "K_histogram": [
+                  229,
+                  46,
+                  32,
+                  27,
+                  55,
+                  74
+                ],
+                "actualMixed": 160,
+                "actualMixed_fraction": 0.34557235421166305,
+                "selected_questions": 463,
+                "stratum_coverage": 0.2458842272968667
+              },
+              "nonMixed_TNR": 0.5878164556962026,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 1883,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 356,
+                  "error_rate": 0.5751211631663974,
+                  "predicted_Mixed": 263,
+                  "questions": 619
+                },
+                "allcorrect": {
+                  "error_count": 139,
+                  "error_rate": 0.4809688581314879,
+                  "predicted_Mixed": 139,
+                  "questions": 289
+                },
+                "allwrong": {
+                  "error_count": 382,
+                  "error_rate": 0.39179487179487177,
+                  "predicted_Mixed": 382,
+                  "questions": 975
+                }
+              },
+              "trueMixed": 619,
+              "trueMixed_fraction": 0.3287307488050982
+            }
+          }
+        }
+      },
+      "CP512_EMA": {
+        "cross_strata": {
+          "tokens2_strict2": {
+            "AUC": 0.25,
+            "K_histogram": [
+              4,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "MixedBA": 0.5,
+            "Mixed_TPR": 0.0,
+            "globalTop512": {
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "actualMixed": 0,
+              "actualMixed_fraction": null,
+              "selected_questions": 0,
+              "stratum_coverage": 0.0
+            },
+            "nonMixed_TNR": 1.0,
+            "per_stratum_reselection_performed": false,
+            "questions": 5,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 1,
+                "error_rate": 1.0,
+                "predicted_Mixed": 0,
+                "questions": 1
+              },
+              "allcorrect": {
+                "error_count": 0,
+                "error_rate": null,
+                "predicted_Mixed": 0,
+                "questions": 0
+              },
+              "allwrong": {
+                "error_count": 0,
+                "error_rate": 0.0,
+                "predicted_Mixed": 0,
+                "questions": 4
+              }
+            },
+            "trueMixed": 1,
+            "trueMixed_fraction": 0.2
+          },
+          "tokens3_strict3": {
+            "AUC": 0.6464646464646465,
+            "K_histogram": [
+              7,
+              1,
+              1,
+              3,
+              4,
+              4
+            ],
+            "MixedBA": 0.5555555555555556,
+            "Mixed_TPR": 0.1111111111111111,
+            "globalTop512": {
+              "K_histogram": [
+                2,
+                1,
+                1,
+                1,
+                0,
+                0
+              ],
+              "actualMixed": 3,
+              "actualMixed_fraction": 0.6,
+              "selected_questions": 5,
+              "stratum_coverage": 0.25
+            },
+            "nonMixed_TNR": 1.0,
+            "per_stratum_reselection_performed": false,
+            "questions": 20,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 8,
+                "error_rate": 0.8888888888888888,
+                "predicted_Mixed": 1,
+                "questions": 9
+              },
+              "allcorrect": {
+                "error_count": 0,
+                "error_rate": 0.0,
+                "predicted_Mixed": 0,
+                "questions": 4
+              },
+              "allwrong": {
+                "error_count": 0,
+                "error_rate": 0.0,
+                "predicted_Mixed": 0,
+                "questions": 7
+              }
+            },
+            "trueMixed": 9,
+            "trueMixed_fraction": 0.45
+          },
+          "tokens4_strict4": {
+            "AUC": 0.6302719200887902,
+            "K_histogram": [
+              69,
+              6,
+              9,
+              8,
+              11,
+              37
+            ],
+            "MixedBA": 0.5504994450610433,
+            "Mixed_TPR": 0.17647058823529413,
+            "globalTop512": {
+              "K_histogram": [
+                14,
+                3,
+                3,
+                2,
+                3,
+                8
+              ],
+              "actualMixed": 11,
+              "actualMixed_fraction": 0.3333333333333333,
+              "selected_questions": 33,
+              "stratum_coverage": 0.2357142857142857
+            },
+            "nonMixed_TNR": 0.9245283018867925,
+            "per_stratum_reselection_performed": false,
+            "questions": 140,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 28,
+                "error_rate": 0.8235294117647058,
+                "predicted_Mixed": 6,
+                "questions": 34
+              },
+              "allcorrect": {
+                "error_count": 4,
+                "error_rate": 0.10810810810810811,
+                "predicted_Mixed": 4,
+                "questions": 37
+              },
+              "allwrong": {
+                "error_count": 4,
+                "error_rate": 0.057971014492753624,
+                "predicted_Mixed": 4,
+                "questions": 69
+              }
+            },
+            "trueMixed": 34,
+            "trueMixed_fraction": 0.24285714285714285
+          },
+          "tokens5_strict5": {
+            "AUC": 0.5659393468436228,
+            "K_histogram": [
+              975,
+              173,
+              126,
+              121,
+              199,
+              289
+            ],
+            "MixedBA": 0.5076717500664608,
+            "Mixed_TPR": 0.09208400646203554,
+            "globalTop512": {
+              "K_histogram": [
+                218,
+                48,
+                39,
+                35,
+                54,
+                80
+              ],
+              "actualMixed": 176,
+              "actualMixed_fraction": 0.37130801687763715,
+              "selected_questions": 474,
+              "stratum_coverage": 0.25172596919808815
+            },
+            "nonMixed_TNR": 0.9232594936708861,
+            "per_stratum_reselection_performed": false,
+            "questions": 1883,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 562,
+                "error_rate": 0.9079159935379645,
+                "predicted_Mixed": 57,
+                "questions": 619
+              },
+              "allcorrect": {
+                "error_count": 24,
+                "error_rate": 0.08304498269896193,
+                "predicted_Mixed": 24,
+                "questions": 289
+              },
+              "allwrong": {
+                "error_count": 73,
+                "error_rate": 0.07487179487179488,
+                "predicted_Mixed": 73,
+                "questions": 975
+              }
+            },
+            "trueMixed": 619,
+            "trueMixed_fraction": 0.3287307488050982
+          }
+        },
+        "global_pool": {
+          "AUC": 0.5705920468715118,
+          "K_histogram": [
+            1055,
+            181,
+            136,
+            132,
+            214,
+            330
+          ],
+          "MixedBA": 0.5103593228460505,
+          "Mixed_TPR": 0.09653092006033183,
+          "globalTop512": {
+            "K_histogram": [
+              234,
+              52,
+              43,
+              38,
+              57,
+              88
+            ],
+            "actualMixed": 190,
+            "actualMixed_fraction": 0.37109375,
+            "selected_questions": 512,
+            "stratum_coverage": 0.25
+          },
+          "nonMixed_TNR": 0.924187725631769,
+          "per_stratum_reselection_performed": false,
+          "questions": 2048,
+          "three_true_class_errors": {
+            "Mixed": {
+              "error_count": 599,
+              "error_rate": 0.9034690799396682,
+              "predicted_Mixed": 64,
+              "questions": 663
+            },
+            "allcorrect": {
+              "error_count": 28,
+              "error_rate": 0.08484848484848485,
+              "predicted_Mixed": 28,
+              "questions": 330
+            },
+            "allwrong": {
+              "error_count": 77,
+              "error_rate": 0.07298578199052133,
+              "predicted_Mixed": 77,
+              "questions": 1055
+            }
+          },
+          "trueMixed": 663,
+          "trueMixed_fraction": 0.32373046875
+        },
+        "strata": {
+          "strict_features_masks_positions": {
+            "unique1": {
+              "AUC": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": null,
+              "Mixed_TPR": null,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 4,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": null,
+                "selected_questions": 0,
+                "stratum_coverage": null
+              },
+              "nonMixed_TNR": null,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 0,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                }
+              },
+              "trueMixed": 0,
+              "trueMixed_fraction": null
+            },
+            "unique2": {
+              "AUC": 0.25,
+              "K_histogram": [
+                4,
+                1,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": 0.5,
+              "Mixed_TPR": 0.0,
+              "duplicate_pairs": 28,
+              "duplicate_trajectories_per_question": 3,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": null,
+                "selected_questions": 0,
+                "stratum_coverage": 0.0
+              },
+              "nonMixed_TNR": 1.0,
+              "opposite_EM_identical_key_pairs": 2,
+              "per_stratum_reselection_performed": false,
+              "questions": 5,
+              "questions_with_opposite_EM_identical_key_pair": 1,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 1,
+                  "error_rate": 1.0,
+                  "predicted_Mixed": 0,
+                  "questions": 1
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": 0.0,
+                  "predicted_Mixed": 0,
+                  "questions": 4
+                }
+              },
+              "trueMixed": 1,
+              "trueMixed_fraction": 0.2
+            },
+            "unique3": {
+              "AUC": 0.6464646464646465,
+              "K_histogram": [
+                7,
+                1,
+                1,
+                3,
+                4,
+                4
+              ],
+              "MixedBA": 0.5555555555555556,
+              "Mixed_TPR": 0.1111111111111111,
+              "duplicate_pairs": 59,
+              "duplicate_trajectories_per_question": 2,
+              "globalTop512": {
+                "K_histogram": [
+                  2,
+                  1,
+                  1,
+                  1,
+                  0,
+                  0
+                ],
+                "actualMixed": 3,
+                "actualMixed_fraction": 0.6,
+                "selected_questions": 5,
+                "stratum_coverage": 0.25
+              },
+              "nonMixed_TNR": 1.0,
+              "opposite_EM_identical_key_pairs": 12,
+              "per_stratum_reselection_performed": false,
+              "questions": 20,
+              "questions_with_opposite_EM_identical_key_pair": 6,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 8,
+                  "error_rate": 0.8888888888888888,
+                  "predicted_Mixed": 1,
+                  "questions": 9
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": 0.0,
+                  "predicted_Mixed": 0,
+                  "questions": 4
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": 0.0,
+                  "predicted_Mixed": 0,
+                  "questions": 7
+                }
+              },
+              "trueMixed": 9,
+              "trueMixed_fraction": 0.45
+            },
+            "unique4": {
+              "AUC": 0.6302719200887902,
+              "K_histogram": [
+                69,
+                6,
+                9,
+                8,
+                11,
+                37
+              ],
+              "MixedBA": 0.5504994450610433,
+              "Mixed_TPR": 0.17647058823529413,
+              "duplicate_pairs": 140,
+              "duplicate_trajectories_per_question": 1,
+              "globalTop512": {
+                "K_histogram": [
+                  14,
+                  3,
+                  3,
+                  2,
+                  3,
+                  8
+                ],
+                "actualMixed": 11,
+                "actualMixed_fraction": 0.3333333333333333,
+                "selected_questions": 33,
+                "stratum_coverage": 0.2357142857142857
+              },
+              "nonMixed_TNR": 0.9245283018867925,
+              "opposite_EM_identical_key_pairs": 14,
+              "per_stratum_reselection_performed": false,
+              "questions": 140,
+              "questions_with_opposite_EM_identical_key_pair": 14,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 28,
+                  "error_rate": 0.8235294117647058,
+                  "predicted_Mixed": 6,
+                  "questions": 34
+                },
+                "allcorrect": {
+                  "error_count": 4,
+                  "error_rate": 0.10810810810810811,
+                  "predicted_Mixed": 4,
+                  "questions": 37
+                },
+                "allwrong": {
+                  "error_count": 4,
+                  "error_rate": 0.057971014492753624,
+                  "predicted_Mixed": 4,
+                  "questions": 69
+                }
+              },
+              "trueMixed": 34,
+              "trueMixed_fraction": 0.24285714285714285
+            },
+            "unique5": {
+              "AUC": 0.5659393468436228,
+              "K_histogram": [
+                975,
+                173,
+                126,
+                121,
+                199,
+                289
+              ],
+              "MixedBA": 0.5076717500664608,
+              "Mixed_TPR": 0.09208400646203554,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 0,
+              "globalTop512": {
+                "K_histogram": [
+                  218,
+                  48,
+                  39,
+                  35,
+                  54,
+                  80
+                ],
+                "actualMixed": 176,
+                "actualMixed_fraction": 0.37130801687763715,
+                "selected_questions": 474,
+                "stratum_coverage": 0.25172596919808815
+              },
+              "nonMixed_TNR": 0.9232594936708861,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 1883,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 562,
+                  "error_rate": 0.9079159935379645,
+                  "predicted_Mixed": 57,
+                  "questions": 619
+                },
+                "allcorrect": {
+                  "error_count": 24,
+                  "error_rate": 0.08304498269896193,
+                  "predicted_Mixed": 24,
+                  "questions": 289
+                },
+                "allwrong": {
+                  "error_count": 73,
+                  "error_rate": 0.07487179487179488,
+                  "predicted_Mixed": 73,
+                  "questions": 975
+                }
+              },
+              "trueMixed": 619,
+              "trueMixed_fraction": 0.3287307488050982
+            }
+          },
+          "tokens_positions": {
+            "unique1": {
+              "AUC": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": null,
+              "Mixed_TPR": null,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 4,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": null,
+                "selected_questions": 0,
+                "stratum_coverage": null
+              },
+              "nonMixed_TNR": null,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 0,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                }
+              },
+              "trueMixed": 0,
+              "trueMixed_fraction": null
+            },
+            "unique2": {
+              "AUC": 0.25,
+              "K_histogram": [
+                4,
+                1,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": 0.5,
+              "Mixed_TPR": 0.0,
+              "duplicate_pairs": 28,
+              "duplicate_trajectories_per_question": 3,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": null,
+                "selected_questions": 0,
+                "stratum_coverage": 0.0
+              },
+              "nonMixed_TNR": 1.0,
+              "opposite_EM_identical_key_pairs": 2,
+              "per_stratum_reselection_performed": false,
+              "questions": 5,
+              "questions_with_opposite_EM_identical_key_pair": 1,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 1,
+                  "error_rate": 1.0,
+                  "predicted_Mixed": 0,
+                  "questions": 1
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": 0.0,
+                  "predicted_Mixed": 0,
+                  "questions": 4
+                }
+              },
+              "trueMixed": 1,
+              "trueMixed_fraction": 0.2
+            },
+            "unique3": {
+              "AUC": 0.6464646464646465,
+              "K_histogram": [
+                7,
+                1,
+                1,
+                3,
+                4,
+                4
+              ],
+              "MixedBA": 0.5555555555555556,
+              "Mixed_TPR": 0.1111111111111111,
+              "duplicate_pairs": 59,
+              "duplicate_trajectories_per_question": 2,
+              "globalTop512": {
+                "K_histogram": [
+                  2,
+                  1,
+                  1,
+                  1,
+                  0,
+                  0
+                ],
+                "actualMixed": 3,
+                "actualMixed_fraction": 0.6,
+                "selected_questions": 5,
+                "stratum_coverage": 0.25
+              },
+              "nonMixed_TNR": 1.0,
+              "opposite_EM_identical_key_pairs": 12,
+              "per_stratum_reselection_performed": false,
+              "questions": 20,
+              "questions_with_opposite_EM_identical_key_pair": 6,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 8,
+                  "error_rate": 0.8888888888888888,
+                  "predicted_Mixed": 1,
+                  "questions": 9
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": 0.0,
+                  "predicted_Mixed": 0,
+                  "questions": 4
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": 0.0,
+                  "predicted_Mixed": 0,
+                  "questions": 7
+                }
+              },
+              "trueMixed": 9,
+              "trueMixed_fraction": 0.45
+            },
+            "unique4": {
+              "AUC": 0.6302719200887902,
+              "K_histogram": [
+                69,
+                6,
+                9,
+                8,
+                11,
+                37
+              ],
+              "MixedBA": 0.5504994450610433,
+              "Mixed_TPR": 0.17647058823529413,
+              "duplicate_pairs": 140,
+              "duplicate_trajectories_per_question": 1,
+              "globalTop512": {
+                "K_histogram": [
+                  14,
+                  3,
+                  3,
+                  2,
+                  3,
+                  8
+                ],
+                "actualMixed": 11,
+                "actualMixed_fraction": 0.3333333333333333,
+                "selected_questions": 33,
+                "stratum_coverage": 0.2357142857142857
+              },
+              "nonMixed_TNR": 0.9245283018867925,
+              "opposite_EM_identical_key_pairs": 14,
+              "per_stratum_reselection_performed": false,
+              "questions": 140,
+              "questions_with_opposite_EM_identical_key_pair": 14,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 28,
+                  "error_rate": 0.8235294117647058,
+                  "predicted_Mixed": 6,
+                  "questions": 34
+                },
+                "allcorrect": {
+                  "error_count": 4,
+                  "error_rate": 0.10810810810810811,
+                  "predicted_Mixed": 4,
+                  "questions": 37
+                },
+                "allwrong": {
+                  "error_count": 4,
+                  "error_rate": 0.057971014492753624,
+                  "predicted_Mixed": 4,
+                  "questions": 69
+                }
+              },
+              "trueMixed": 34,
+              "trueMixed_fraction": 0.24285714285714285
+            },
+            "unique5": {
+              "AUC": 0.5659393468436228,
+              "K_histogram": [
+                975,
+                173,
+                126,
+                121,
+                199,
+                289
+              ],
+              "MixedBA": 0.5076717500664608,
+              "Mixed_TPR": 0.09208400646203554,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 0,
+              "globalTop512": {
+                "K_histogram": [
+                  218,
+                  48,
+                  39,
+                  35,
+                  54,
+                  80
+                ],
+                "actualMixed": 176,
+                "actualMixed_fraction": 0.37130801687763715,
+                "selected_questions": 474,
+                "stratum_coverage": 0.25172596919808815
+              },
+              "nonMixed_TNR": 0.9232594936708861,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 1883,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 562,
+                  "error_rate": 0.9079159935379645,
+                  "predicted_Mixed": 57,
+                  "questions": 619
+                },
+                "allcorrect": {
+                  "error_count": 24,
+                  "error_rate": 0.08304498269896193,
+                  "predicted_Mixed": 24,
+                  "questions": 289
+                },
+                "allwrong": {
+                  "error_count": 73,
+                  "error_rate": 0.07487179487179488,
+                  "predicted_Mixed": 73,
+                  "questions": 975
+                }
+              },
+              "trueMixed": 619,
+              "trueMixed_fraction": 0.3287307488050982
+            }
+          }
+        }
+      },
+      "CP512_raw": {
+        "cross_strata": {
+          "tokens2_strict2": {
+            "AUC": 0.25,
+            "K_histogram": [
+              4,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "MixedBA": 0.5,
+            "Mixed_TPR": 0.0,
+            "globalTop512": {
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "actualMixed": 0,
+              "actualMixed_fraction": null,
+              "selected_questions": 0,
+              "stratum_coverage": 0.0
+            },
+            "nonMixed_TNR": 1.0,
+            "per_stratum_reselection_performed": false,
+            "questions": 5,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 1,
+                "error_rate": 1.0,
+                "predicted_Mixed": 0,
+                "questions": 1
+              },
+              "allcorrect": {
+                "error_count": 0,
+                "error_rate": null,
+                "predicted_Mixed": 0,
+                "questions": 0
+              },
+              "allwrong": {
+                "error_count": 0,
+                "error_rate": 0.0,
+                "predicted_Mixed": 0,
+                "questions": 4
+              }
+            },
+            "trueMixed": 1,
+            "trueMixed_fraction": 0.2
+          },
+          "tokens3_strict3": {
+            "AUC": 0.6313131313131313,
+            "K_histogram": [
+              7,
+              1,
+              1,
+              3,
+              4,
+              4
+            ],
+            "MixedBA": 0.6666666666666666,
+            "Mixed_TPR": 0.3333333333333333,
+            "globalTop512": {
+              "K_histogram": [
+                0,
+                1,
+                1,
+                1,
+                0,
+                0
+              ],
+              "actualMixed": 3,
+              "actualMixed_fraction": 1.0,
+              "selected_questions": 3,
+              "stratum_coverage": 0.15
+            },
+            "nonMixed_TNR": 1.0,
+            "per_stratum_reselection_performed": false,
+            "questions": 20,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 6,
+                "error_rate": 0.6666666666666666,
+                "predicted_Mixed": 3,
+                "questions": 9
+              },
+              "allcorrect": {
+                "error_count": 0,
+                "error_rate": 0.0,
+                "predicted_Mixed": 0,
+                "questions": 4
+              },
+              "allwrong": {
+                "error_count": 0,
+                "error_rate": 0.0,
+                "predicted_Mixed": 0,
+                "questions": 7
+              }
+            },
+            "trueMixed": 9,
+            "trueMixed_fraction": 0.45
+          },
+          "tokens4_strict4": {
+            "AUC": 0.6573251942286349,
+            "K_histogram": [
+              69,
+              6,
+              9,
+              8,
+              11,
+              37
+            ],
+            "MixedBA": 0.5763041065482797,
+            "Mixed_TPR": 0.29411764705882354,
+            "globalTop512": {
+              "K_histogram": [
+                12,
+                3,
+                5,
+                3,
+                3,
+                12
+              ],
+              "actualMixed": 14,
+              "actualMixed_fraction": 0.3684210526315789,
+              "selected_questions": 38,
+              "stratum_coverage": 0.2714285714285714
+            },
+            "nonMixed_TNR": 0.8584905660377359,
+            "per_stratum_reselection_performed": false,
+            "questions": 140,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 24,
+                "error_rate": 0.7058823529411765,
+                "predicted_Mixed": 10,
+                "questions": 34
+              },
+              "allcorrect": {
+                "error_count": 10,
+                "error_rate": 0.2702702702702703,
+                "predicted_Mixed": 10,
+                "questions": 37
+              },
+              "allwrong": {
+                "error_count": 5,
+                "error_rate": 0.07246376811594203,
+                "predicted_Mixed": 5,
+                "questions": 69
+              }
+            },
+            "trueMixed": 34,
+            "trueMixed_fraction": 0.24285714285714285
+          },
+          "tokens5_strict5": {
+            "AUC": 0.5707258031533098,
+            "K_histogram": [
+              975,
+              173,
+              126,
+              121,
+              199,
+              289
+            ],
+            "MixedBA": 0.5131995000102247,
+            "Mixed_TPR": 0.1680129240710824,
+            "globalTop512": {
+              "K_histogram": [
+                205,
+                46,
+                44,
+                35,
+                64,
+                77
+              ],
+              "actualMixed": 189,
+              "actualMixed_fraction": 0.4012738853503185,
+              "selected_questions": 471,
+              "stratum_coverage": 0.2501327668613914
+            },
+            "nonMixed_TNR": 0.8583860759493671,
+            "per_stratum_reselection_performed": false,
+            "questions": 1883,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 515,
+                "error_rate": 0.8319870759289176,
+                "predicted_Mixed": 104,
+                "questions": 619
+              },
+              "allcorrect": {
+                "error_count": 54,
+                "error_rate": 0.18685121107266436,
+                "predicted_Mixed": 54,
+                "questions": 289
+              },
+              "allwrong": {
+                "error_count": 125,
+                "error_rate": 0.1282051282051282,
+                "predicted_Mixed": 125,
+                "questions": 975
+              }
+            },
+            "trueMixed": 619,
+            "trueMixed_fraction": 0.3287307488050982
+          }
+        },
+        "global_pool": {
+          "AUC": 0.5751109441277205,
+          "K_histogram": [
+            1055,
+            181,
+            136,
+            132,
+            214,
+            330
+          ],
+          "MixedBA": 0.5181991930346146,
+          "Mixed_TPR": 0.17647058823529413,
+          "globalTop512": {
+            "K_histogram": [
+              217,
+              50,
+              50,
+              39,
+              67,
+              89
+            ],
+            "actualMixed": 206,
+            "actualMixed_fraction": 0.40234375,
+            "selected_questions": 512,
+            "stratum_coverage": 0.25
+          },
+          "nonMixed_TNR": 0.859927797833935,
+          "per_stratum_reselection_performed": false,
+          "questions": 2048,
+          "three_true_class_errors": {
+            "Mixed": {
+              "error_count": 546,
+              "error_rate": 0.8235294117647058,
+              "predicted_Mixed": 117,
+              "questions": 663
+            },
+            "allcorrect": {
+              "error_count": 64,
+              "error_rate": 0.19393939393939394,
+              "predicted_Mixed": 64,
+              "questions": 330
+            },
+            "allwrong": {
+              "error_count": 130,
+              "error_rate": 0.12322274881516587,
+              "predicted_Mixed": 130,
+              "questions": 1055
+            }
+          },
+          "trueMixed": 663,
+          "trueMixed_fraction": 0.32373046875
+        },
+        "strata": {
+          "strict_features_masks_positions": {
+            "unique1": {
+              "AUC": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": null,
+              "Mixed_TPR": null,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 4,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": null,
+                "selected_questions": 0,
+                "stratum_coverage": null
+              },
+              "nonMixed_TNR": null,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 0,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                }
+              },
+              "trueMixed": 0,
+              "trueMixed_fraction": null
+            },
+            "unique2": {
+              "AUC": 0.25,
+              "K_histogram": [
+                4,
+                1,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": 0.5,
+              "Mixed_TPR": 0.0,
+              "duplicate_pairs": 28,
+              "duplicate_trajectories_per_question": 3,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": null,
+                "selected_questions": 0,
+                "stratum_coverage": 0.0
+              },
+              "nonMixed_TNR": 1.0,
+              "opposite_EM_identical_key_pairs": 2,
+              "per_stratum_reselection_performed": false,
+              "questions": 5,
+              "questions_with_opposite_EM_identical_key_pair": 1,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 1,
+                  "error_rate": 1.0,
+                  "predicted_Mixed": 0,
+                  "questions": 1
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": 0.0,
+                  "predicted_Mixed": 0,
+                  "questions": 4
+                }
+              },
+              "trueMixed": 1,
+              "trueMixed_fraction": 0.2
+            },
+            "unique3": {
+              "AUC": 0.6313131313131313,
+              "K_histogram": [
+                7,
+                1,
+                1,
+                3,
+                4,
+                4
+              ],
+              "MixedBA": 0.6666666666666666,
+              "Mixed_TPR": 0.3333333333333333,
+              "duplicate_pairs": 59,
+              "duplicate_trajectories_per_question": 2,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  1,
+                  1,
+                  1,
+                  0,
+                  0
+                ],
+                "actualMixed": 3,
+                "actualMixed_fraction": 1.0,
+                "selected_questions": 3,
+                "stratum_coverage": 0.15
+              },
+              "nonMixed_TNR": 1.0,
+              "opposite_EM_identical_key_pairs": 12,
+              "per_stratum_reselection_performed": false,
+              "questions": 20,
+              "questions_with_opposite_EM_identical_key_pair": 6,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 6,
+                  "error_rate": 0.6666666666666666,
+                  "predicted_Mixed": 3,
+                  "questions": 9
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": 0.0,
+                  "predicted_Mixed": 0,
+                  "questions": 4
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": 0.0,
+                  "predicted_Mixed": 0,
+                  "questions": 7
+                }
+              },
+              "trueMixed": 9,
+              "trueMixed_fraction": 0.45
+            },
+            "unique4": {
+              "AUC": 0.6573251942286349,
+              "K_histogram": [
+                69,
+                6,
+                9,
+                8,
+                11,
+                37
+              ],
+              "MixedBA": 0.5763041065482797,
+              "Mixed_TPR": 0.29411764705882354,
+              "duplicate_pairs": 140,
+              "duplicate_trajectories_per_question": 1,
+              "globalTop512": {
+                "K_histogram": [
+                  12,
+                  3,
+                  5,
+                  3,
+                  3,
+                  12
+                ],
+                "actualMixed": 14,
+                "actualMixed_fraction": 0.3684210526315789,
+                "selected_questions": 38,
+                "stratum_coverage": 0.2714285714285714
+              },
+              "nonMixed_TNR": 0.8584905660377359,
+              "opposite_EM_identical_key_pairs": 14,
+              "per_stratum_reselection_performed": false,
+              "questions": 140,
+              "questions_with_opposite_EM_identical_key_pair": 14,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 24,
+                  "error_rate": 0.7058823529411765,
+                  "predicted_Mixed": 10,
+                  "questions": 34
+                },
+                "allcorrect": {
+                  "error_count": 10,
+                  "error_rate": 0.2702702702702703,
+                  "predicted_Mixed": 10,
+                  "questions": 37
+                },
+                "allwrong": {
+                  "error_count": 5,
+                  "error_rate": 0.07246376811594203,
+                  "predicted_Mixed": 5,
+                  "questions": 69
+                }
+              },
+              "trueMixed": 34,
+              "trueMixed_fraction": 0.24285714285714285
+            },
+            "unique5": {
+              "AUC": 0.5707258031533098,
+              "K_histogram": [
+                975,
+                173,
+                126,
+                121,
+                199,
+                289
+              ],
+              "MixedBA": 0.5131995000102247,
+              "Mixed_TPR": 0.1680129240710824,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 0,
+              "globalTop512": {
+                "K_histogram": [
+                  205,
+                  46,
+                  44,
+                  35,
+                  64,
+                  77
+                ],
+                "actualMixed": 189,
+                "actualMixed_fraction": 0.4012738853503185,
+                "selected_questions": 471,
+                "stratum_coverage": 0.2501327668613914
+              },
+              "nonMixed_TNR": 0.8583860759493671,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 1883,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 515,
+                  "error_rate": 0.8319870759289176,
+                  "predicted_Mixed": 104,
+                  "questions": 619
+                },
+                "allcorrect": {
+                  "error_count": 54,
+                  "error_rate": 0.18685121107266436,
+                  "predicted_Mixed": 54,
+                  "questions": 289
+                },
+                "allwrong": {
+                  "error_count": 125,
+                  "error_rate": 0.1282051282051282,
+                  "predicted_Mixed": 125,
+                  "questions": 975
+                }
+              },
+              "trueMixed": 619,
+              "trueMixed_fraction": 0.3287307488050982
+            }
+          },
+          "tokens_positions": {
+            "unique1": {
+              "AUC": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": null,
+              "Mixed_TPR": null,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 4,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": null,
+                "selected_questions": 0,
+                "stratum_coverage": null
+              },
+              "nonMixed_TNR": null,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 0,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                }
+              },
+              "trueMixed": 0,
+              "trueMixed_fraction": null
+            },
+            "unique2": {
+              "AUC": 0.25,
+              "K_histogram": [
+                4,
+                1,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": 0.5,
+              "Mixed_TPR": 0.0,
+              "duplicate_pairs": 28,
+              "duplicate_trajectories_per_question": 3,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": null,
+                "selected_questions": 0,
+                "stratum_coverage": 0.0
+              },
+              "nonMixed_TNR": 1.0,
+              "opposite_EM_identical_key_pairs": 2,
+              "per_stratum_reselection_performed": false,
+              "questions": 5,
+              "questions_with_opposite_EM_identical_key_pair": 1,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 1,
+                  "error_rate": 1.0,
+                  "predicted_Mixed": 0,
+                  "questions": 1
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": 0.0,
+                  "predicted_Mixed": 0,
+                  "questions": 4
+                }
+              },
+              "trueMixed": 1,
+              "trueMixed_fraction": 0.2
+            },
+            "unique3": {
+              "AUC": 0.6313131313131313,
+              "K_histogram": [
+                7,
+                1,
+                1,
+                3,
+                4,
+                4
+              ],
+              "MixedBA": 0.6666666666666666,
+              "Mixed_TPR": 0.3333333333333333,
+              "duplicate_pairs": 59,
+              "duplicate_trajectories_per_question": 2,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  1,
+                  1,
+                  1,
+                  0,
+                  0
+                ],
+                "actualMixed": 3,
+                "actualMixed_fraction": 1.0,
+                "selected_questions": 3,
+                "stratum_coverage": 0.15
+              },
+              "nonMixed_TNR": 1.0,
+              "opposite_EM_identical_key_pairs": 12,
+              "per_stratum_reselection_performed": false,
+              "questions": 20,
+              "questions_with_opposite_EM_identical_key_pair": 6,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 6,
+                  "error_rate": 0.6666666666666666,
+                  "predicted_Mixed": 3,
+                  "questions": 9
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": 0.0,
+                  "predicted_Mixed": 0,
+                  "questions": 4
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": 0.0,
+                  "predicted_Mixed": 0,
+                  "questions": 7
+                }
+              },
+              "trueMixed": 9,
+              "trueMixed_fraction": 0.45
+            },
+            "unique4": {
+              "AUC": 0.6573251942286349,
+              "K_histogram": [
+                69,
+                6,
+                9,
+                8,
+                11,
+                37
+              ],
+              "MixedBA": 0.5763041065482797,
+              "Mixed_TPR": 0.29411764705882354,
+              "duplicate_pairs": 140,
+              "duplicate_trajectories_per_question": 1,
+              "globalTop512": {
+                "K_histogram": [
+                  12,
+                  3,
+                  5,
+                  3,
+                  3,
+                  12
+                ],
+                "actualMixed": 14,
+                "actualMixed_fraction": 0.3684210526315789,
+                "selected_questions": 38,
+                "stratum_coverage": 0.2714285714285714
+              },
+              "nonMixed_TNR": 0.8584905660377359,
+              "opposite_EM_identical_key_pairs": 14,
+              "per_stratum_reselection_performed": false,
+              "questions": 140,
+              "questions_with_opposite_EM_identical_key_pair": 14,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 24,
+                  "error_rate": 0.7058823529411765,
+                  "predicted_Mixed": 10,
+                  "questions": 34
+                },
+                "allcorrect": {
+                  "error_count": 10,
+                  "error_rate": 0.2702702702702703,
+                  "predicted_Mixed": 10,
+                  "questions": 37
+                },
+                "allwrong": {
+                  "error_count": 5,
+                  "error_rate": 0.07246376811594203,
+                  "predicted_Mixed": 5,
+                  "questions": 69
+                }
+              },
+              "trueMixed": 34,
+              "trueMixed_fraction": 0.24285714285714285
+            },
+            "unique5": {
+              "AUC": 0.5707258031533098,
+              "K_histogram": [
+                975,
+                173,
+                126,
+                121,
+                199,
+                289
+              ],
+              "MixedBA": 0.5131995000102247,
+              "Mixed_TPR": 0.1680129240710824,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 0,
+              "globalTop512": {
+                "K_histogram": [
+                  205,
+                  46,
+                  44,
+                  35,
+                  64,
+                  77
+                ],
+                "actualMixed": 189,
+                "actualMixed_fraction": 0.4012738853503185,
+                "selected_questions": 471,
+                "stratum_coverage": 0.2501327668613914
+              },
+              "nonMixed_TNR": 0.8583860759493671,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 1883,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 515,
+                  "error_rate": 0.8319870759289176,
+                  "predicted_Mixed": 104,
+                  "questions": 619
+                },
+                "allcorrect": {
+                  "error_count": 54,
+                  "error_rate": 0.18685121107266436,
+                  "predicted_Mixed": 54,
+                  "questions": 289
+                },
+                "allwrong": {
+                  "error_count": 125,
+                  "error_rate": 0.1282051282051282,
+                  "predicted_Mixed": 125,
+                  "questions": 975
+                }
+              },
+              "trueMixed": 619,
+              "trueMixed_fraction": 0.3287307488050982
+            }
+          }
+        }
+      },
+      "E0_EMA": {
+        "cross_strata": {
+          "tokens2_strict2": {
+            "AUC": 0.25,
+            "K_histogram": [
+              4,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "MixedBA": 0.5,
+            "Mixed_TPR": 1.0,
+            "globalTop512": {
+              "K_histogram": [
+                2,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "actualMixed": 0,
+              "actualMixed_fraction": 0.0,
+              "selected_questions": 2,
+              "stratum_coverage": 0.4
+            },
+            "nonMixed_TNR": 0.0,
+            "per_stratum_reselection_performed": false,
+            "questions": 5,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 0,
+                "error_rate": 0.0,
+                "predicted_Mixed": 1,
+                "questions": 1
+              },
+              "allcorrect": {
+                "error_count": 0,
+                "error_rate": null,
+                "predicted_Mixed": 0,
+                "questions": 0
+              },
+              "allwrong": {
+                "error_count": 4,
+                "error_rate": 1.0,
+                "predicted_Mixed": 4,
+                "questions": 4
+              }
+            },
+            "trueMixed": 1,
+            "trueMixed_fraction": 0.2
+          },
+          "tokens3_strict3": {
+            "AUC": 0.5959595959595959,
+            "K_histogram": [
+              7,
+              1,
+              1,
+              3,
+              4,
+              4
+            ],
+            "MixedBA": 0.4898989898989899,
+            "Mixed_TPR": 0.8888888888888888,
+            "globalTop512": {
+              "K_histogram": [
+                0,
+                1,
+                0,
+                1,
+                0,
+                1
+              ],
+              "actualMixed": 2,
+              "actualMixed_fraction": 0.6666666666666666,
+              "selected_questions": 3,
+              "stratum_coverage": 0.15
+            },
+            "nonMixed_TNR": 0.09090909090909094,
+            "per_stratum_reselection_performed": false,
+            "questions": 20,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 1,
+                "error_rate": 0.1111111111111111,
+                "predicted_Mixed": 8,
+                "questions": 9
+              },
+              "allcorrect": {
+                "error_count": 4,
+                "error_rate": 1.0,
+                "predicted_Mixed": 4,
+                "questions": 4
+              },
+              "allwrong": {
+                "error_count": 6,
+                "error_rate": 0.8571428571428571,
+                "predicted_Mixed": 6,
+                "questions": 7
+              }
+            },
+            "trueMixed": 9,
+            "trueMixed_fraction": 0.45
+          },
+          "tokens4_strict4": {
+            "AUC": 0.5747780244173141,
+            "K_histogram": [
+              69,
+              6,
+              9,
+              8,
+              11,
+              37
+            ],
+            "MixedBA": 0.5177580466148723,
+            "Mixed_TPR": 0.9411764705882353,
+            "globalTop512": {
+              "K_histogram": [
+                15,
+                2,
+                4,
+                3,
+                3,
+                6
+              ],
+              "actualMixed": 12,
+              "actualMixed_fraction": 0.36363636363636365,
+              "selected_questions": 33,
+              "stratum_coverage": 0.2357142857142857
+            },
+            "nonMixed_TNR": 0.09433962264150941,
+            "per_stratum_reselection_performed": false,
+            "questions": 140,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 2,
+                "error_rate": 0.058823529411764705,
+                "predicted_Mixed": 32,
+                "questions": 34
+              },
+              "allcorrect": {
+                "error_count": 34,
+                "error_rate": 0.918918918918919,
+                "predicted_Mixed": 34,
+                "questions": 37
+              },
+              "allwrong": {
+                "error_count": 62,
+                "error_rate": 0.8985507246376812,
+                "predicted_Mixed": 62,
+                "questions": 69
+              }
+            },
+            "trueMixed": 34,
+            "trueMixed_fraction": 0.24285714285714285
+          },
+          "tokens5_strict5": {
+            "AUC": 0.4967268051778082,
+            "K_histogram": [
+              975,
+              173,
+              126,
+              121,
+              199,
+              289
+            ],
+            "MixedBA": 0.49293662195047133,
+            "Mixed_TPR": 0.8901453957996769,
+            "globalTop512": {
+              "K_histogram": [
+                272,
+                46,
+                39,
+                20,
+                45,
+                52
+              ],
+              "actualMixed": 150,
+              "actualMixed_fraction": 0.31645569620253167,
+              "selected_questions": 474,
+              "stratum_coverage": 0.25172596919808815
+            },
+            "nonMixed_TNR": 0.09572784810126578,
+            "per_stratum_reselection_performed": false,
+            "questions": 1883,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 68,
+                "error_rate": 0.1098546042003231,
+                "predicted_Mixed": 551,
+                "questions": 619
+              },
+              "allcorrect": {
+                "error_count": 252,
+                "error_rate": 0.8719723183391004,
+                "predicted_Mixed": 252,
+                "questions": 289
+              },
+              "allwrong": {
+                "error_count": 891,
+                "error_rate": 0.9138461538461539,
+                "predicted_Mixed": 891,
+                "questions": 975
+              }
+            },
+            "trueMixed": 619,
+            "trueMixed_fraction": 0.3287307488050982
+          }
+        },
+        "global_pool": {
+          "AUC": 0.501164164638363,
+          "K_histogram": [
+            1055,
+            181,
+            136,
+            132,
+            214,
+            330
+          ],
+          "MixedBA": 0.4941089348819228,
+          "Mixed_TPR": 0.8929110105580694,
+          "globalTop512": {
+            "K_histogram": [
+              289,
+              49,
+              43,
+              24,
+              48,
+              59
+            ],
+            "actualMixed": 164,
+            "actualMixed_fraction": 0.3203125,
+            "selected_questions": 512,
+            "stratum_coverage": 0.25
+          },
+          "nonMixed_TNR": 0.0953068592057762,
+          "per_stratum_reselection_performed": false,
+          "questions": 2048,
+          "three_true_class_errors": {
+            "Mixed": {
+              "error_count": 71,
+              "error_rate": 0.10708898944193061,
+              "predicted_Mixed": 592,
+              "questions": 663
+            },
+            "allcorrect": {
+              "error_count": 290,
+              "error_rate": 0.8787878787878788,
+              "predicted_Mixed": 290,
+              "questions": 330
+            },
+            "allwrong": {
+              "error_count": 963,
+              "error_rate": 0.9127962085308057,
+              "predicted_Mixed": 963,
+              "questions": 1055
+            }
+          },
+          "trueMixed": 663,
+          "trueMixed_fraction": 0.32373046875
+        },
+        "strata": {
+          "strict_features_masks_positions": {
+            "unique1": {
+              "AUC": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": null,
+              "Mixed_TPR": null,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 4,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": null,
+                "selected_questions": 0,
+                "stratum_coverage": null
+              },
+              "nonMixed_TNR": null,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 0,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                }
+              },
+              "trueMixed": 0,
+              "trueMixed_fraction": null
+            },
+            "unique2": {
+              "AUC": 0.25,
+              "K_histogram": [
+                4,
+                1,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": 0.5,
+              "Mixed_TPR": 1.0,
+              "duplicate_pairs": 28,
+              "duplicate_trajectories_per_question": 3,
+              "globalTop512": {
+                "K_histogram": [
+                  2,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": 0.0,
+                "selected_questions": 2,
+                "stratum_coverage": 0.4
+              },
+              "nonMixed_TNR": 0.0,
+              "opposite_EM_identical_key_pairs": 2,
+              "per_stratum_reselection_performed": false,
+              "questions": 5,
+              "questions_with_opposite_EM_identical_key_pair": 1,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 0,
+                  "error_rate": 0.0,
+                  "predicted_Mixed": 1,
+                  "questions": 1
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 4,
+                  "error_rate": 1.0,
+                  "predicted_Mixed": 4,
+                  "questions": 4
+                }
+              },
+              "trueMixed": 1,
+              "trueMixed_fraction": 0.2
+            },
+            "unique3": {
+              "AUC": 0.5959595959595959,
+              "K_histogram": [
+                7,
+                1,
+                1,
+                3,
+                4,
+                4
+              ],
+              "MixedBA": 0.4898989898989899,
+              "Mixed_TPR": 0.8888888888888888,
+              "duplicate_pairs": 59,
+              "duplicate_trajectories_per_question": 2,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  1,
+                  0,
+                  1,
+                  0,
+                  1
+                ],
+                "actualMixed": 2,
+                "actualMixed_fraction": 0.6666666666666666,
+                "selected_questions": 3,
+                "stratum_coverage": 0.15
+              },
+              "nonMixed_TNR": 0.09090909090909094,
+              "opposite_EM_identical_key_pairs": 12,
+              "per_stratum_reselection_performed": false,
+              "questions": 20,
+              "questions_with_opposite_EM_identical_key_pair": 6,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 1,
+                  "error_rate": 0.1111111111111111,
+                  "predicted_Mixed": 8,
+                  "questions": 9
+                },
+                "allcorrect": {
+                  "error_count": 4,
+                  "error_rate": 1.0,
+                  "predicted_Mixed": 4,
+                  "questions": 4
+                },
+                "allwrong": {
+                  "error_count": 6,
+                  "error_rate": 0.8571428571428571,
+                  "predicted_Mixed": 6,
+                  "questions": 7
+                }
+              },
+              "trueMixed": 9,
+              "trueMixed_fraction": 0.45
+            },
+            "unique4": {
+              "AUC": 0.5747780244173141,
+              "K_histogram": [
+                69,
+                6,
+                9,
+                8,
+                11,
+                37
+              ],
+              "MixedBA": 0.5177580466148723,
+              "Mixed_TPR": 0.9411764705882353,
+              "duplicate_pairs": 140,
+              "duplicate_trajectories_per_question": 1,
+              "globalTop512": {
+                "K_histogram": [
+                  15,
+                  2,
+                  4,
+                  3,
+                  3,
+                  6
+                ],
+                "actualMixed": 12,
+                "actualMixed_fraction": 0.36363636363636365,
+                "selected_questions": 33,
+                "stratum_coverage": 0.2357142857142857
+              },
+              "nonMixed_TNR": 0.09433962264150941,
+              "opposite_EM_identical_key_pairs": 14,
+              "per_stratum_reselection_performed": false,
+              "questions": 140,
+              "questions_with_opposite_EM_identical_key_pair": 14,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 2,
+                  "error_rate": 0.058823529411764705,
+                  "predicted_Mixed": 32,
+                  "questions": 34
+                },
+                "allcorrect": {
+                  "error_count": 34,
+                  "error_rate": 0.918918918918919,
+                  "predicted_Mixed": 34,
+                  "questions": 37
+                },
+                "allwrong": {
+                  "error_count": 62,
+                  "error_rate": 0.8985507246376812,
+                  "predicted_Mixed": 62,
+                  "questions": 69
+                }
+              },
+              "trueMixed": 34,
+              "trueMixed_fraction": 0.24285714285714285
+            },
+            "unique5": {
+              "AUC": 0.4967268051778082,
+              "K_histogram": [
+                975,
+                173,
+                126,
+                121,
+                199,
+                289
+              ],
+              "MixedBA": 0.49293662195047133,
+              "Mixed_TPR": 0.8901453957996769,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 0,
+              "globalTop512": {
+                "K_histogram": [
+                  272,
+                  46,
+                  39,
+                  20,
+                  45,
+                  52
+                ],
+                "actualMixed": 150,
+                "actualMixed_fraction": 0.31645569620253167,
+                "selected_questions": 474,
+                "stratum_coverage": 0.25172596919808815
+              },
+              "nonMixed_TNR": 0.09572784810126578,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 1883,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 68,
+                  "error_rate": 0.1098546042003231,
+                  "predicted_Mixed": 551,
+                  "questions": 619
+                },
+                "allcorrect": {
+                  "error_count": 252,
+                  "error_rate": 0.8719723183391004,
+                  "predicted_Mixed": 252,
+                  "questions": 289
+                },
+                "allwrong": {
+                  "error_count": 891,
+                  "error_rate": 0.9138461538461539,
+                  "predicted_Mixed": 891,
+                  "questions": 975
+                }
+              },
+              "trueMixed": 619,
+              "trueMixed_fraction": 0.3287307488050982
+            }
+          },
+          "tokens_positions": {
+            "unique1": {
+              "AUC": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": null,
+              "Mixed_TPR": null,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 4,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": null,
+                "selected_questions": 0,
+                "stratum_coverage": null
+              },
+              "nonMixed_TNR": null,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 0,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                }
+              },
+              "trueMixed": 0,
+              "trueMixed_fraction": null
+            },
+            "unique2": {
+              "AUC": 0.25,
+              "K_histogram": [
+                4,
+                1,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": 0.5,
+              "Mixed_TPR": 1.0,
+              "duplicate_pairs": 28,
+              "duplicate_trajectories_per_question": 3,
+              "globalTop512": {
+                "K_histogram": [
+                  2,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": 0.0,
+                "selected_questions": 2,
+                "stratum_coverage": 0.4
+              },
+              "nonMixed_TNR": 0.0,
+              "opposite_EM_identical_key_pairs": 2,
+              "per_stratum_reselection_performed": false,
+              "questions": 5,
+              "questions_with_opposite_EM_identical_key_pair": 1,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 0,
+                  "error_rate": 0.0,
+                  "predicted_Mixed": 1,
+                  "questions": 1
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 4,
+                  "error_rate": 1.0,
+                  "predicted_Mixed": 4,
+                  "questions": 4
+                }
+              },
+              "trueMixed": 1,
+              "trueMixed_fraction": 0.2
+            },
+            "unique3": {
+              "AUC": 0.5959595959595959,
+              "K_histogram": [
+                7,
+                1,
+                1,
+                3,
+                4,
+                4
+              ],
+              "MixedBA": 0.4898989898989899,
+              "Mixed_TPR": 0.8888888888888888,
+              "duplicate_pairs": 59,
+              "duplicate_trajectories_per_question": 2,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  1,
+                  0,
+                  1,
+                  0,
+                  1
+                ],
+                "actualMixed": 2,
+                "actualMixed_fraction": 0.6666666666666666,
+                "selected_questions": 3,
+                "stratum_coverage": 0.15
+              },
+              "nonMixed_TNR": 0.09090909090909094,
+              "opposite_EM_identical_key_pairs": 12,
+              "per_stratum_reselection_performed": false,
+              "questions": 20,
+              "questions_with_opposite_EM_identical_key_pair": 6,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 1,
+                  "error_rate": 0.1111111111111111,
+                  "predicted_Mixed": 8,
+                  "questions": 9
+                },
+                "allcorrect": {
+                  "error_count": 4,
+                  "error_rate": 1.0,
+                  "predicted_Mixed": 4,
+                  "questions": 4
+                },
+                "allwrong": {
+                  "error_count": 6,
+                  "error_rate": 0.8571428571428571,
+                  "predicted_Mixed": 6,
+                  "questions": 7
+                }
+              },
+              "trueMixed": 9,
+              "trueMixed_fraction": 0.45
+            },
+            "unique4": {
+              "AUC": 0.5747780244173141,
+              "K_histogram": [
+                69,
+                6,
+                9,
+                8,
+                11,
+                37
+              ],
+              "MixedBA": 0.5177580466148723,
+              "Mixed_TPR": 0.9411764705882353,
+              "duplicate_pairs": 140,
+              "duplicate_trajectories_per_question": 1,
+              "globalTop512": {
+                "K_histogram": [
+                  15,
+                  2,
+                  4,
+                  3,
+                  3,
+                  6
+                ],
+                "actualMixed": 12,
+                "actualMixed_fraction": 0.36363636363636365,
+                "selected_questions": 33,
+                "stratum_coverage": 0.2357142857142857
+              },
+              "nonMixed_TNR": 0.09433962264150941,
+              "opposite_EM_identical_key_pairs": 14,
+              "per_stratum_reselection_performed": false,
+              "questions": 140,
+              "questions_with_opposite_EM_identical_key_pair": 14,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 2,
+                  "error_rate": 0.058823529411764705,
+                  "predicted_Mixed": 32,
+                  "questions": 34
+                },
+                "allcorrect": {
+                  "error_count": 34,
+                  "error_rate": 0.918918918918919,
+                  "predicted_Mixed": 34,
+                  "questions": 37
+                },
+                "allwrong": {
+                  "error_count": 62,
+                  "error_rate": 0.8985507246376812,
+                  "predicted_Mixed": 62,
+                  "questions": 69
+                }
+              },
+              "trueMixed": 34,
+              "trueMixed_fraction": 0.24285714285714285
+            },
+            "unique5": {
+              "AUC": 0.4967268051778082,
+              "K_histogram": [
+                975,
+                173,
+                126,
+                121,
+                199,
+                289
+              ],
+              "MixedBA": 0.49293662195047133,
+              "Mixed_TPR": 0.8901453957996769,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 0,
+              "globalTop512": {
+                "K_histogram": [
+                  272,
+                  46,
+                  39,
+                  20,
+                  45,
+                  52
+                ],
+                "actualMixed": 150,
+                "actualMixed_fraction": 0.31645569620253167,
+                "selected_questions": 474,
+                "stratum_coverage": 0.25172596919808815
+              },
+              "nonMixed_TNR": 0.09572784810126578,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 1883,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 68,
+                  "error_rate": 0.1098546042003231,
+                  "predicted_Mixed": 551,
+                  "questions": 619
+                },
+                "allcorrect": {
+                  "error_count": 252,
+                  "error_rate": 0.8719723183391004,
+                  "predicted_Mixed": 252,
+                  "questions": 289
+                },
+                "allwrong": {
+                  "error_count": 891,
+                  "error_rate": 0.9138461538461539,
+                  "predicted_Mixed": 891,
+                  "questions": 975
+                }
+              },
+              "trueMixed": 619,
+              "trueMixed_fraction": 0.3287307488050982
+            }
+          }
+        }
+      },
+      "E0_raw": {
+        "cross_strata": {
+          "tokens2_strict2": {
+            "AUC": 0.25,
+            "K_histogram": [
+              4,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "MixedBA": 0.5,
+            "Mixed_TPR": 1.0,
+            "globalTop512": {
+              "K_histogram": [
+                2,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "actualMixed": 0,
+              "actualMixed_fraction": 0.0,
+              "selected_questions": 2,
+              "stratum_coverage": 0.4
+            },
+            "nonMixed_TNR": 0.0,
+            "per_stratum_reselection_performed": false,
+            "questions": 5,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 0,
+                "error_rate": 0.0,
+                "predicted_Mixed": 1,
+                "questions": 1
+              },
+              "allcorrect": {
+                "error_count": 0,
+                "error_rate": null,
+                "predicted_Mixed": 0,
+                "questions": 0
+              },
+              "allwrong": {
+                "error_count": 4,
+                "error_rate": 1.0,
+                "predicted_Mixed": 4,
+                "questions": 4
+              }
+            },
+            "trueMixed": 1,
+            "trueMixed_fraction": 0.2
+          },
+          "tokens3_strict3": {
+            "AUC": 0.5959595959595959,
+            "K_histogram": [
+              7,
+              1,
+              1,
+              3,
+              4,
+              4
+            ],
+            "MixedBA": 0.4898989898989899,
+            "Mixed_TPR": 0.8888888888888888,
+            "globalTop512": {
+              "K_histogram": [
+                0,
+                1,
+                0,
+                1,
+                0,
+                1
+              ],
+              "actualMixed": 2,
+              "actualMixed_fraction": 0.6666666666666666,
+              "selected_questions": 3,
+              "stratum_coverage": 0.15
+            },
+            "nonMixed_TNR": 0.09090909090909094,
+            "per_stratum_reselection_performed": false,
+            "questions": 20,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 1,
+                "error_rate": 0.1111111111111111,
+                "predicted_Mixed": 8,
+                "questions": 9
+              },
+              "allcorrect": {
+                "error_count": 4,
+                "error_rate": 1.0,
+                "predicted_Mixed": 4,
+                "questions": 4
+              },
+              "allwrong": {
+                "error_count": 6,
+                "error_rate": 0.8571428571428571,
+                "predicted_Mixed": 6,
+                "questions": 7
+              }
+            },
+            "trueMixed": 9,
+            "trueMixed_fraction": 0.45
+          },
+          "tokens4_strict4": {
+            "AUC": 0.5747780244173141,
+            "K_histogram": [
+              69,
+              6,
+              9,
+              8,
+              11,
+              37
+            ],
+            "MixedBA": 0.5177580466148723,
+            "Mixed_TPR": 0.9411764705882353,
+            "globalTop512": {
+              "K_histogram": [
+                15,
+                2,
+                4,
+                3,
+                3,
+                6
+              ],
+              "actualMixed": 12,
+              "actualMixed_fraction": 0.36363636363636365,
+              "selected_questions": 33,
+              "stratum_coverage": 0.2357142857142857
+            },
+            "nonMixed_TNR": 0.09433962264150941,
+            "per_stratum_reselection_performed": false,
+            "questions": 140,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 2,
+                "error_rate": 0.058823529411764705,
+                "predicted_Mixed": 32,
+                "questions": 34
+              },
+              "allcorrect": {
+                "error_count": 34,
+                "error_rate": 0.918918918918919,
+                "predicted_Mixed": 34,
+                "questions": 37
+              },
+              "allwrong": {
+                "error_count": 62,
+                "error_rate": 0.8985507246376812,
+                "predicted_Mixed": 62,
+                "questions": 69
+              }
+            },
+            "trueMixed": 34,
+            "trueMixed_fraction": 0.24285714285714285
+          },
+          "tokens5_strict5": {
+            "AUC": 0.4967268051778082,
+            "K_histogram": [
+              975,
+              173,
+              126,
+              121,
+              199,
+              289
+            ],
+            "MixedBA": 0.49293662195047133,
+            "Mixed_TPR": 0.8901453957996769,
+            "globalTop512": {
+              "K_histogram": [
+                272,
+                46,
+                39,
+                20,
+                45,
+                52
+              ],
+              "actualMixed": 150,
+              "actualMixed_fraction": 0.31645569620253167,
+              "selected_questions": 474,
+              "stratum_coverage": 0.25172596919808815
+            },
+            "nonMixed_TNR": 0.09572784810126578,
+            "per_stratum_reselection_performed": false,
+            "questions": 1883,
+            "three_true_class_errors": {
+              "Mixed": {
+                "error_count": 68,
+                "error_rate": 0.1098546042003231,
+                "predicted_Mixed": 551,
+                "questions": 619
+              },
+              "allcorrect": {
+                "error_count": 252,
+                "error_rate": 0.8719723183391004,
+                "predicted_Mixed": 252,
+                "questions": 289
+              },
+              "allwrong": {
+                "error_count": 891,
+                "error_rate": 0.9138461538461539,
+                "predicted_Mixed": 891,
+                "questions": 975
+              }
+            },
+            "trueMixed": 619,
+            "trueMixed_fraction": 0.3287307488050982
+          }
+        },
+        "global_pool": {
+          "AUC": 0.501164164638363,
+          "K_histogram": [
+            1055,
+            181,
+            136,
+            132,
+            214,
+            330
+          ],
+          "MixedBA": 0.4941089348819228,
+          "Mixed_TPR": 0.8929110105580694,
+          "globalTop512": {
+            "K_histogram": [
+              289,
+              49,
+              43,
+              24,
+              48,
+              59
+            ],
+            "actualMixed": 164,
+            "actualMixed_fraction": 0.3203125,
+            "selected_questions": 512,
+            "stratum_coverage": 0.25
+          },
+          "nonMixed_TNR": 0.0953068592057762,
+          "per_stratum_reselection_performed": false,
+          "questions": 2048,
+          "three_true_class_errors": {
+            "Mixed": {
+              "error_count": 71,
+              "error_rate": 0.10708898944193061,
+              "predicted_Mixed": 592,
+              "questions": 663
+            },
+            "allcorrect": {
+              "error_count": 290,
+              "error_rate": 0.8787878787878788,
+              "predicted_Mixed": 290,
+              "questions": 330
+            },
+            "allwrong": {
+              "error_count": 963,
+              "error_rate": 0.9127962085308057,
+              "predicted_Mixed": 963,
+              "questions": 1055
+            }
+          },
+          "trueMixed": 663,
+          "trueMixed_fraction": 0.32373046875
+        },
+        "strata": {
+          "strict_features_masks_positions": {
+            "unique1": {
+              "AUC": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": null,
+              "Mixed_TPR": null,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 4,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": null,
+                "selected_questions": 0,
+                "stratum_coverage": null
+              },
+              "nonMixed_TNR": null,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 0,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                }
+              },
+              "trueMixed": 0,
+              "trueMixed_fraction": null
+            },
+            "unique2": {
+              "AUC": 0.25,
+              "K_histogram": [
+                4,
+                1,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": 0.5,
+              "Mixed_TPR": 1.0,
+              "duplicate_pairs": 28,
+              "duplicate_trajectories_per_question": 3,
+              "globalTop512": {
+                "K_histogram": [
+                  2,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": 0.0,
+                "selected_questions": 2,
+                "stratum_coverage": 0.4
+              },
+              "nonMixed_TNR": 0.0,
+              "opposite_EM_identical_key_pairs": 2,
+              "per_stratum_reselection_performed": false,
+              "questions": 5,
+              "questions_with_opposite_EM_identical_key_pair": 1,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 0,
+                  "error_rate": 0.0,
+                  "predicted_Mixed": 1,
+                  "questions": 1
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 4,
+                  "error_rate": 1.0,
+                  "predicted_Mixed": 4,
+                  "questions": 4
+                }
+              },
+              "trueMixed": 1,
+              "trueMixed_fraction": 0.2
+            },
+            "unique3": {
+              "AUC": 0.5959595959595959,
+              "K_histogram": [
+                7,
+                1,
+                1,
+                3,
+                4,
+                4
+              ],
+              "MixedBA": 0.4898989898989899,
+              "Mixed_TPR": 0.8888888888888888,
+              "duplicate_pairs": 59,
+              "duplicate_trajectories_per_question": 2,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  1,
+                  0,
+                  1,
+                  0,
+                  1
+                ],
+                "actualMixed": 2,
+                "actualMixed_fraction": 0.6666666666666666,
+                "selected_questions": 3,
+                "stratum_coverage": 0.15
+              },
+              "nonMixed_TNR": 0.09090909090909094,
+              "opposite_EM_identical_key_pairs": 12,
+              "per_stratum_reselection_performed": false,
+              "questions": 20,
+              "questions_with_opposite_EM_identical_key_pair": 6,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 1,
+                  "error_rate": 0.1111111111111111,
+                  "predicted_Mixed": 8,
+                  "questions": 9
+                },
+                "allcorrect": {
+                  "error_count": 4,
+                  "error_rate": 1.0,
+                  "predicted_Mixed": 4,
+                  "questions": 4
+                },
+                "allwrong": {
+                  "error_count": 6,
+                  "error_rate": 0.8571428571428571,
+                  "predicted_Mixed": 6,
+                  "questions": 7
+                }
+              },
+              "trueMixed": 9,
+              "trueMixed_fraction": 0.45
+            },
+            "unique4": {
+              "AUC": 0.5747780244173141,
+              "K_histogram": [
+                69,
+                6,
+                9,
+                8,
+                11,
+                37
+              ],
+              "MixedBA": 0.5177580466148723,
+              "Mixed_TPR": 0.9411764705882353,
+              "duplicate_pairs": 140,
+              "duplicate_trajectories_per_question": 1,
+              "globalTop512": {
+                "K_histogram": [
+                  15,
+                  2,
+                  4,
+                  3,
+                  3,
+                  6
+                ],
+                "actualMixed": 12,
+                "actualMixed_fraction": 0.36363636363636365,
+                "selected_questions": 33,
+                "stratum_coverage": 0.2357142857142857
+              },
+              "nonMixed_TNR": 0.09433962264150941,
+              "opposite_EM_identical_key_pairs": 14,
+              "per_stratum_reselection_performed": false,
+              "questions": 140,
+              "questions_with_opposite_EM_identical_key_pair": 14,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 2,
+                  "error_rate": 0.058823529411764705,
+                  "predicted_Mixed": 32,
+                  "questions": 34
+                },
+                "allcorrect": {
+                  "error_count": 34,
+                  "error_rate": 0.918918918918919,
+                  "predicted_Mixed": 34,
+                  "questions": 37
+                },
+                "allwrong": {
+                  "error_count": 62,
+                  "error_rate": 0.8985507246376812,
+                  "predicted_Mixed": 62,
+                  "questions": 69
+                }
+              },
+              "trueMixed": 34,
+              "trueMixed_fraction": 0.24285714285714285
+            },
+            "unique5": {
+              "AUC": 0.4967268051778082,
+              "K_histogram": [
+                975,
+                173,
+                126,
+                121,
+                199,
+                289
+              ],
+              "MixedBA": 0.49293662195047133,
+              "Mixed_TPR": 0.8901453957996769,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 0,
+              "globalTop512": {
+                "K_histogram": [
+                  272,
+                  46,
+                  39,
+                  20,
+                  45,
+                  52
+                ],
+                "actualMixed": 150,
+                "actualMixed_fraction": 0.31645569620253167,
+                "selected_questions": 474,
+                "stratum_coverage": 0.25172596919808815
+              },
+              "nonMixed_TNR": 0.09572784810126578,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 1883,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 68,
+                  "error_rate": 0.1098546042003231,
+                  "predicted_Mixed": 551,
+                  "questions": 619
+                },
+                "allcorrect": {
+                  "error_count": 252,
+                  "error_rate": 0.8719723183391004,
+                  "predicted_Mixed": 252,
+                  "questions": 289
+                },
+                "allwrong": {
+                  "error_count": 891,
+                  "error_rate": 0.9138461538461539,
+                  "predicted_Mixed": 891,
+                  "questions": 975
+                }
+              },
+              "trueMixed": 619,
+              "trueMixed_fraction": 0.3287307488050982
+            }
+          },
+          "tokens_positions": {
+            "unique1": {
+              "AUC": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": null,
+              "Mixed_TPR": null,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 4,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": null,
+                "selected_questions": 0,
+                "stratum_coverage": null
+              },
+              "nonMixed_TNR": null,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 0,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                }
+              },
+              "trueMixed": 0,
+              "trueMixed_fraction": null
+            },
+            "unique2": {
+              "AUC": 0.25,
+              "K_histogram": [
+                4,
+                1,
+                0,
+                0,
+                0,
+                0
+              ],
+              "MixedBA": 0.5,
+              "Mixed_TPR": 1.0,
+              "duplicate_pairs": 28,
+              "duplicate_trajectories_per_question": 3,
+              "globalTop512": {
+                "K_histogram": [
+                  2,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "actualMixed": 0,
+                "actualMixed_fraction": 0.0,
+                "selected_questions": 2,
+                "stratum_coverage": 0.4
+              },
+              "nonMixed_TNR": 0.0,
+              "opposite_EM_identical_key_pairs": 2,
+              "per_stratum_reselection_performed": false,
+              "questions": 5,
+              "questions_with_opposite_EM_identical_key_pair": 1,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 0,
+                  "error_rate": 0.0,
+                  "predicted_Mixed": 1,
+                  "questions": 1
+                },
+                "allcorrect": {
+                  "error_count": 0,
+                  "error_rate": null,
+                  "predicted_Mixed": 0,
+                  "questions": 0
+                },
+                "allwrong": {
+                  "error_count": 4,
+                  "error_rate": 1.0,
+                  "predicted_Mixed": 4,
+                  "questions": 4
+                }
+              },
+              "trueMixed": 1,
+              "trueMixed_fraction": 0.2
+            },
+            "unique3": {
+              "AUC": 0.5959595959595959,
+              "K_histogram": [
+                7,
+                1,
+                1,
+                3,
+                4,
+                4
+              ],
+              "MixedBA": 0.4898989898989899,
+              "Mixed_TPR": 0.8888888888888888,
+              "duplicate_pairs": 59,
+              "duplicate_trajectories_per_question": 2,
+              "globalTop512": {
+                "K_histogram": [
+                  0,
+                  1,
+                  0,
+                  1,
+                  0,
+                  1
+                ],
+                "actualMixed": 2,
+                "actualMixed_fraction": 0.6666666666666666,
+                "selected_questions": 3,
+                "stratum_coverage": 0.15
+              },
+              "nonMixed_TNR": 0.09090909090909094,
+              "opposite_EM_identical_key_pairs": 12,
+              "per_stratum_reselection_performed": false,
+              "questions": 20,
+              "questions_with_opposite_EM_identical_key_pair": 6,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 1,
+                  "error_rate": 0.1111111111111111,
+                  "predicted_Mixed": 8,
+                  "questions": 9
+                },
+                "allcorrect": {
+                  "error_count": 4,
+                  "error_rate": 1.0,
+                  "predicted_Mixed": 4,
+                  "questions": 4
+                },
+                "allwrong": {
+                  "error_count": 6,
+                  "error_rate": 0.8571428571428571,
+                  "predicted_Mixed": 6,
+                  "questions": 7
+                }
+              },
+              "trueMixed": 9,
+              "trueMixed_fraction": 0.45
+            },
+            "unique4": {
+              "AUC": 0.5747780244173141,
+              "K_histogram": [
+                69,
+                6,
+                9,
+                8,
+                11,
+                37
+              ],
+              "MixedBA": 0.5177580466148723,
+              "Mixed_TPR": 0.9411764705882353,
+              "duplicate_pairs": 140,
+              "duplicate_trajectories_per_question": 1,
+              "globalTop512": {
+                "K_histogram": [
+                  15,
+                  2,
+                  4,
+                  3,
+                  3,
+                  6
+                ],
+                "actualMixed": 12,
+                "actualMixed_fraction": 0.36363636363636365,
+                "selected_questions": 33,
+                "stratum_coverage": 0.2357142857142857
+              },
+              "nonMixed_TNR": 0.09433962264150941,
+              "opposite_EM_identical_key_pairs": 14,
+              "per_stratum_reselection_performed": false,
+              "questions": 140,
+              "questions_with_opposite_EM_identical_key_pair": 14,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 2,
+                  "error_rate": 0.058823529411764705,
+                  "predicted_Mixed": 32,
+                  "questions": 34
+                },
+                "allcorrect": {
+                  "error_count": 34,
+                  "error_rate": 0.918918918918919,
+                  "predicted_Mixed": 34,
+                  "questions": 37
+                },
+                "allwrong": {
+                  "error_count": 62,
+                  "error_rate": 0.8985507246376812,
+                  "predicted_Mixed": 62,
+                  "questions": 69
+                }
+              },
+              "trueMixed": 34,
+              "trueMixed_fraction": 0.24285714285714285
+            },
+            "unique5": {
+              "AUC": 0.4967268051778082,
+              "K_histogram": [
+                975,
+                173,
+                126,
+                121,
+                199,
+                289
+              ],
+              "MixedBA": 0.49293662195047133,
+              "Mixed_TPR": 0.8901453957996769,
+              "duplicate_pairs": 0,
+              "duplicate_trajectories_per_question": 0,
+              "globalTop512": {
+                "K_histogram": [
+                  272,
+                  46,
+                  39,
+                  20,
+                  45,
+                  52
+                ],
+                "actualMixed": 150,
+                "actualMixed_fraction": 0.31645569620253167,
+                "selected_questions": 474,
+                "stratum_coverage": 0.25172596919808815
+              },
+              "nonMixed_TNR": 0.09572784810126578,
+              "opposite_EM_identical_key_pairs": 0,
+              "per_stratum_reselection_performed": false,
+              "questions": 1883,
+              "questions_with_opposite_EM_identical_key_pair": 0,
+              "three_true_class_errors": {
+                "Mixed": {
+                  "error_count": 68,
+                  "error_rate": 0.1098546042003231,
+                  "predicted_Mixed": 551,
+                  "questions": 619
+                },
+                "allcorrect": {
+                  "error_count": 252,
+                  "error_rate": 0.8719723183391004,
+                  "predicted_Mixed": 252,
+                  "questions": 289
+                },
+                "allwrong": {
+                  "error_count": 891,
+                  "error_rate": 0.9138461538461539,
+                  "predicted_Mixed": 891,
+                  "questions": 975
+                }
+              },
+              "trueMixed": 619,
+              "trueMixed_fraction": 0.3287307488050982
+            }
+          }
+        }
+      }
+    },
+    "new_model_forward": false,
+    "no_tensor_checkpoint_or_raw_rollout_loaded": true,
+    "packet": {
+      "bytes": 3623,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/fixed2048-input-ambiguity-v1/code-cb2e3020099d/input-packet.json",
+      "sha256": "c7fb3062b78fcb8e8d76ffeb278dd2cd6104437f782cf1a1696dfc3fff05191d"
+    },
+    "prediction_sources": [
+      {
+        "file": {
+          "bytes": 62653,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-v1/evaluations/epoch-00/raw-fixed_selection2048.jsonl.gz",
+          "sha256": "4ecad1b1be075c52e91e8988b254b45171dc60d58735dfb3e61684e5430e3c5f"
+        },
+        "name": "E0_raw"
+      },
+      {
+        "file": {
+          "bytes": 62653,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-v1/evaluations/epoch-00/EMA-fixed_selection2048.jsonl.gz",
+          "sha256": "30bcc37d1b77dcb0df82f16f608eab29f6ad5b055e5a2dc4516221e7126c72b2"
+        },
+        "name": "E0_EMA"
+      },
+      {
+        "file": {
+          "bytes": 63755,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-official-cp128-eval-v1/predictions/raw-fixed_selection2048.jsonl.gz",
+          "sha256": "d4a874db3d82d0ea23926736c383fb523ae6871deda3ad3c77a85413a4c3c69c"
+        },
+        "name": "CP128_raw"
+      },
+      {
+        "file": {
+          "bytes": 63747,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-official-cp128-eval-v1/predictions/EMA-fixed_selection2048.jsonl.gz",
+          "sha256": "2f45e2f4ea98be5d3a0a4ad1956538af821976d564903ea642096f78e3fcfdb8"
+        },
+        "name": "CP128_EMA"
+      },
+      {
+        "file": {
+          "bytes": 63227,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-official-cp512-eval-v1/predictions/raw-fixed_selection2048.jsonl.gz",
+          "sha256": "c4a67d2dacba3a099ca94a355f06ad3a44f5ddf117eeb219633b4fdb5046e50a"
+        },
+        "name": "CP512_raw"
+      },
+      {
+        "file": {
+          "bytes": 62721,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-official-cp512-eval-v1/predictions/EMA-fixed_selection2048.jsonl.gz",
+          "sha256": "8c35556170899e47896b90033d05058a38b5c645afd78d0efd5f39762db688cf"
+        },
+        "name": "CP512_EMA"
+      }
+    ],
+    "source_config": {
+      "bytes": 9615,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-official-cp128-eval-v1/source-config.json",
+      "sha256": "2a7f039f4172f5284e3b8282e8ca6200e566bd92bb3013e9802306eca84e7393"
+    },
+    "status": "FIXED2048_EXISTING_DIRECT_SCORES_EXACT_INPUT_AMBIGUITY_STRATA_COMPLETE",
+    "strata_label_usage": "Fingerprints frozen from input metadata; own EM only for outcomes/error/conflict counts",
+    "strict_identity_definition": "same accepted retained BF16 feature SHA, lengths/mask, causal positions, geometry/layer/revision/dtype",
+    "strict_nonidentity_does_not_measure_numeric_distance": true,
+    "threshold": 0.5,
+    "token_identity_is_feature_identity": false
+  },
+  "status": "BOUNDED_CPU_AUDIT_EXITED"
+}
