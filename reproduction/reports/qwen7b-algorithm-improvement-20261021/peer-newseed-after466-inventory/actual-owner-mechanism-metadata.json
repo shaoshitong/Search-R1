@@ -1,0 +1,263 @@
+{
+  "GPU_operation": false,
+  "epoch": 1792583505.372867,
+  "launch_invoked": false,
+  "owner_ready": [
+    {
+      "bytes": 6249,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-downstream-r1/owner-ready.json",
+      "root_keys": [
+        "allocation_evidence",
+        "allocation_evidence_sha256",
+        "allocation_path",
+        "allocation_role",
+        "allocation_sha256",
+        "consumer_deadline_epoch",
+        "controller_pid",
+        "deadline_epoch",
+        "dependency_path",
+        "epoch",
+        "gpu_lock_proofs",
+        "hard_end_epoch",
+        "job_ready_path",
+        "leased_cuda_uuids",
+        "leased_indices",
+        "model_processes_owned",
+        "native_cgroup",
+        "native_unit",
+        "owner",
+        "predecessor",
+        "relay",
+        "role",
+        "run_id",
+        "slots",
+        "source_owner",
+        "source_owner_allocation_sha256",
+        "source_owner_ready",
+        "source_owner_ready_sha256",
+        "source_processes_owned",
+        "source_retriever",
+        "status",
+        "transport_ready_path",
+        "transport_ready_sha256",
+        "upstream_owner_ready",
+        "upstream_owner_ready_sha256"
+      ],
+      "safe_fields": {
+        "deadline_epoch": 1792629292.3353126,
+        "owner": {
+          "birth": "1960484824",
+          "pid": 3221084,
+          "unit": "sst-q7b-g5-relaygen-queued-owner-v2-downstream-r1-70188b8e50fd.service"
+        },
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+        "status": "RETRIEVAL_RELAY_OWNER_READY"
+      },
+      "sha256": "3427756fcc8885aeb0f234f324a174d1d7a7bc5a1703cb9a9dc980a441d69b40"
+    }
+  ],
+  "queued_same_run_systemd_jobs": [],
+  "relay_live_slot_metadata": [],
+  "source_code": [
+    {
+      "bytes": 1258,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-downstream-r1/072cbe91ab5ad1a3d222821f30bd79219aba837ad6479a08ef97cde5e587a834/queued_relay_owner.py",
+      "selected_code_lines": [
+        {
+          "code": "    import queued_relay_slots as slots",
+          "line": 6
+        },
+        {
+          "code": "    from . import queued_relay_slots as slots",
+          "line": 9
+        },
+        {
+          "code": "SLOTS = slots.specifications(owner.SLOTS)",
+          "line": 13
+        },
+        {
+          "code": "DEFAULT_SLOTS = slots.DEFAULT_SLOTS",
+          "line": 14
+        },
+        {
+          "code": "def main():",
+          "line": 27
+        },
+        {
+          "code": "    owner.SLOTS, owner.DEFAULT_SLOTS = slots.specifications(SLOTS), DEFAULT_SLOTS",
+          "line": 29
+        },
+        {
+          "code": "    owner.main()",
+          "line": 31
+        },
+        {
+          "code": "    main()",
+          "line": 34
+        }
+      ],
+      "sha256": "ae49681abb10bc14a73fb45f115a70498d580e3bb7a6adf4952ec874db0fc362"
+    },
+    {
+      "bytes": 20607,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/relay-generation-queued-owner-v2-downstream-r1/072cbe91ab5ad1a3d222821f30bd79219aba837ad6479a08ef97cde5e587a834/retrieval_relay_owner.py",
+      "selected_code_lines": [
+        {
+          "code": "    shared.require(not (Path(args.source_owner_ready).parent / 'drain-request.json').exists(), 'Source owner is draining')",
+          "line": 60
+        },
+        {
+          "code": "        detail = subprocess.check_output(['systemctl', 'show', row['unit'], '-p', 'Id', '-p', 'MainPID', '-p', 'ActiveState'], text=True, timeout=20)",
+          "line": 106
+        },
+        {
+          "code": "    hard_end = evidence['unit_hard_end_epoch']",
+          "line": 136
+        },
+        {
+          "code": "            deadline = min(time.time() + args.owner_seconds, root['deadline_epoch'] - 900, hard_end - 600)",
+          "line": 152
+        },
+        {
+          "code": "            shared.require(not (Path(upstream['job_ready_path']).parent / 'drain-request.json').exists(), 'Upstream is draining')",
+          "line": 169
+        },
+        {
+          "code": "            declared = pool.read(args.slot_manifest)",
+          "line": 175
+        },
+        {
+          "code": "                'Node10 owner accepts only its explicitly declared finite model slots')",
+          "line": 178
+        },
+        {
+          "code": "            slots = {name: dict(row, cuda_uuids=[inventory[index]['uuid'] for index in row['indices']]) for name, row in declared.items()}",
+          "line": 188
+        },
+        {
+          "code": "            deadline = min(time.time() + args.owner_seconds, upstream['deadline_epoch'] - 300,",
+          "line": 189
+        },
+        {
+          "code": "                           root['deadline_epoch'] - 1200, hard_end - 300)",
+          "line": 190
+        },
+        {
+          "code": "        consumer_deadline = min(root['consumer_deadline_epoch'], deadline - 300,",
+          "line": 191
+        },
+        {
+          "code": "                                upstream['consumer_deadline_epoch'] if upstream else float('inf'))",
+          "line": 192
+        },
+        {
+          "code": "        shared.require(consumer_deadline > time.time() + 1320, 'Too little source lifetime for model admission')",
+          "line": 193
+        },
+        {
+          "code": "            deadline_epoch=deadline, consumer_deadline_epoch=consumer_deadline, hard_end_epoch=hard_end,",
+          "line": 199
+        },
+        {
+          "code": "            allocation_evidence_sha256=pool.sha(args.allocation_evidence), slots={}, gpu_lock_proofs={})",
+          "line": 201
+        },
+        {
+          "code": "            binding.update(slots=slots, gpu_lock_proofs=primary, leased_indices=list(range(8)),",
+          "line": 203
+        },
+        {
+          "code": "        child = subprocess.Popen(command, env=dict(os.environ, CUDA_VISIBLE_DEVICES='', PYTHONUTF8='1', PYTHONDONTWRITEBYTECODE='1'),",
+          "line": 218
+        },
+        {
+          "code": "        while not raw_ready.exists():",
+          "line": 221
+        },
+        {
+          "code": "            shared.require(child.poll() is None and time.time() < consumer_deadline - 1200, 'Owned CPU relay initialization failed')",
+          "line": 222
+        },
+        {
+          "code": "        own_drain = jobdir / 'drain-owner.json'",
+          "line": 252
+        },
+        {
+          "code": "        source_drain = Path(args.source_owner_ready).parent / 'drain-request.json'",
+          "line": 253
+        },
+        {
+          "code": "        up_drain = Path(upstream['job_ready_path']).parent / 'drain-request.json' if upstream else None",
+          "line": 254
+        },
+        {
+          "code": "        while time.time() < deadline and not own_drain.exists() and not source_drain.exists() and not (up_drain and up_drain.exists()):",
+          "line": 255
+        },
+        {
+          "code": "        if own_drain.exists():",
+          "line": 262
+        },
+        {
+          "code": "            request = pool.read(own_drain)",
+          "line": 263
+        },
+        {
+          "code": "                'CPU relay owner drain binding differs')",
+          "line": 266
+        },
+        {
+          "code": "                (source_drain, root['owner'], root['allocation_sha256']),",
+          "line": 268
+        },
+        {
+          "code": "                (up_drain, upstream['owner'] if upstream else None, upstream['allocation_sha256'] if upstream else None)):",
+          "line": 269
+        },
+        {
+          "code": "                    'Original source/upstream drain binding differs')",
+          "line": 274
+        },
+        {
+          "code": "        pool.publish(jobdir / 'drain-request.json', dict(status='DRAIN_RETRIEVAL_OWNER', run_id=pool.RUN_ID,",
+          "line": 275
+        },
+        {
+          "code": "        while True:",
+          "line": 277
+        },
+        {
+          "code": "            busy = source.busy_slots(pool, base, binding) if upstream else (",
+          "line": 278
+        },
+        {
+          "code": "            shared.require(child.poll() is None and time.time() < min(hard_end - 120, root['deadline_epoch'] - 120),",
+          "line": 282
+        },
+        {
+          "code": "                           'CPU relay hard limit reached before dependent leases drained; partial work remains possible')",
+          "line": 283
+        },
+        {
+          "code": "            pool.publish(jobdir / 'draining.json', dict(active_dependents=busy, epoch=time.time()))",
+          "line": 284
+        },
+        {
+          "code": "def main():",
+          "line": 301
+        },
+        {
+          "code": "    parser.add_argument('--slot-manifest')",
+          "line": 314
+        },
+        {
+          "code": "    main()",
+          "line": 323
+        }
+      ],
+      "sha256": "6271dca1041041f4eeee8f77740654bcb1ad0010991a930d006ae152039e1685"
+    }
+  ],
+  "source_modified": false,
+  "status": "READONLY_OWNER_MECHANISM_STATIC_AND_QUEUE_METADATA"
+}
