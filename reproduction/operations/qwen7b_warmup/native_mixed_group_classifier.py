@@ -1,17 +1,20 @@
-"""Native causal block27 + direct, permutation-invariant real-G5 Mixed head.
+"""Official native block27 + direct, permutation-invariant real-G5 Mixed head.
 
-No actor files are opened here. Supply a checkpoint-restored legacy Probe and
-its verified block hash. Its retired scalar output is never registered or run.
+Production starts from the official a09a block, with both Adam optimizers fresh.
+Supply the existing official Probe loader's module and verified inventory/hash.
+No checkpoint or actor tensor files are opened by this adapter. The legacy
+loader's unused scalar output is never registered or run.
 The new head reads every retained policy token; only shared question *slots*
 are averaged across trajectories (equal in the ideal causal computation).
 This average also avoids making harmless HF numerical differences depend on
 which trajectory happens to be first. It never pools the100 policy tokens.
 """
-import copy,hashlib
+import copy,hashlib,json
+from pathlib import Path
 import torch
 from torch import nn
 import torch.nn.functional as F
-E4_SOURCE_SHA='e29168c36de152a57294f055e7d420cbba25cae31aeace32e793ba1098bf97a8'
+OFFICIAL_REVISION='a09a35458c702b33eeacc393d103063234e8bc28'
 
 
 def block_state_hash(block):
@@ -61,16 +64,42 @@ class NativeMixedGroupProbe(nn.Module):
         self.qmax,self.prefix=head.qmax,head.prefix;self.width=self.qmax+self.prefix
 
     @classmethod
-    def from_restored_probe(cls,legacy,*,expected_block_hash,source_checkpoint,head_seed,dimension=256,layers=2,heads=8,hidden_size=3584):
-        if source_checkpoint.get('sha256')!=E4_SOURCE_SHA or source_checkpoint.get('steps')!=14418:
-            raise ValueError('New Mixed-only branch must inherit the pre-round E4 checkpoint/Adam14418')
+    def _from_verified_legacy(cls,legacy,*,expected_block_hash,head_seed,dimension=256,layers=2,heads=8,hidden_size=3584):
         if legacy.prefix!=20 or block_state_hash(legacy.block)!=expected_block_hash:
-            raise ValueError('Restore the actual source checkpoint block first; actor initialization is not accepted')
+            raise ValueError('Actual loaded source native block hash or P20 geometry differs')
         # Seed ONLY the CPU default generator; preserve source CPU and CUDA RNG.
         with torch.random.fork_rng(devices=[]):
             torch.random.default_generator.manual_seed(head_seed)
             head=MixedTokenHead(hidden_size,legacy.qmax,20,dimension,layers,heads)
         return cls(legacy.block,legacy.rotary,legacy.cache_position,head)
+
+    @classmethod
+    def from_official_probe(cls,legacy,*,official_inventory,expected_block_hash,head_seed,official_revision=OFFICIAL_REVISION,dimension=256,layers=2,heads=8,hidden_size=3584):
+        """Production API: only the official block; zero checkpoint/state IO.
+
+        The existing Probe loader verifies the official28/3584/28/4/18944
+        config and loads only block27 safetensors. The caller binds that exact
+        official inventory and block hash; this adapter verifies the small
+        metadata file and the in-memory loaded block, not the whole7B model.
+        """
+        if official_revision!=OFFICIAL_REVISION:raise ValueError('Exact official Qwen2.5-7B-Instruct revision required')
+        p=Path(official_inventory['path'])
+        if not p.is_absolute()or not 0<p.stat().st_size<=16*1024**2:raise ValueError('Small absolute official inventory metadata required')
+        raw=p.read_bytes()
+        if hashlib.sha256(raw).hexdigest()!=official_inventory['sha256']or('bytes'in official_inventory and len(raw)!=official_inventory['bytes']):raise ValueError('Official inventory SHA/bytes differs')
+        if not isinstance(json.loads(raw),dict):raise ValueError('Official inventory must be metadata JSON')
+        if hidden_size==3584:
+            shape={n:tuple(v.shape)for n,v in legacy.block.state_dict().items()}
+            if legacy.qmax!=273 or shape.get('input_layernorm.weight')!=(3584,)or shape.get('mlp.down_proj.weight')!=(3584,18944)or shape.get('self_attn.q_proj.weight')!=(3584,3584):raise ValueError('Official block27 native7B geometry differs')
+        model=cls._from_verified_legacy(legacy,expected_block_hash=expected_block_hash,head_seed=head_seed,dimension=dimension,layers=layers,heads=heads,hidden_size=hidden_size)
+        model.initialization_source='official_initial_Qwen2.5-7B-Instruct_block27'
+        model.official_revision=official_revision;model.official_inventory_sha256=official_inventory['sha256']
+        return model
+
+    @classmethod
+    def from_restored_probe(cls,legacy,*,expected_block_hash,source_checkpoint,head_seed,dimension=256,layers=2,heads=8,hidden_size=3584):
+        """Historical nonproduction adapter; the new production uses official0."""
+        return cls._from_verified_legacy(legacy,expected_block_hash=expected_block_hash,head_seed=head_seed,dimension=dimension,layers=layers,heads=heads,hidden_size=hidden_size)
 
     def encode_trajectories(self,batch):
         features=batch['features'][:,:self.width].detach().contiguous();mask=batch['attention_mask'][:,:self.width].contiguous();positions=batch['position_ids'][:,:self.width].contiguous()
@@ -100,6 +129,17 @@ def mixed_only_bce(logits,own_em5,question_weights=None):
     if question_weights is None:return per.mean()
     if question_weights.shape!=logits.shape or not bool(torch.isfinite(question_weights).all())or not bool((question_weights>0).all()):raise ValueError('Positive question weights required')
     return (per*question_weights).sum()/question_weights.sum()
+
+
+def fresh_official_training_state(official_probe,*,official_inventory,expected_block_hash,head_seed,official_revision=OFFICIAL_REVISION,learning_rate=5e-6,**head_kwargs):
+    """Production raw/EMA plus nativeAdam0/headAdam0; no prior probe state."""
+    if learning_rate!=5e-6:raise ValueError('Official-start branch LR is fixed5e-6')
+    model=NativeMixedGroupProbe.from_official_probe(official_probe,official_inventory=official_inventory,expected_block_hash=expected_block_hash,head_seed=head_seed,official_revision=official_revision,**head_kwargs)
+    ema=copy.deepcopy(model).eval().requires_grad_(False)
+    block_adam=torch.optim.Adam(model.block.parameters(),lr=learning_rate)
+    head_adam=torch.optim.Adam(model.group_head.parameters(),lr=learning_rate)
+    assert not block_adam.state and not head_adam.state
+    return dict(model=model,ema=ema,block_adam=block_adam,head_adam=head_adam,provenance=dict(initialization_source=model.initialization_source,official_revision=official_revision,official_inventory=dict(official_inventory),initial_native_block_sha256=expected_block_hash,native_Adam_steps=0,group_head_Adam_steps=0,head_seed=head_seed,lr=learning_rate,ema_decay=.99,EMA_initial_full_raw_copy=True,posttraining_probe_checkpoint_read=False,source_four_rank_optimizer_or_RNG_inherited=False,whole_model_lossless_resume_claim=False))
 
 
 def optimizer_parameter_names(model,optimizer):
@@ -139,11 +179,10 @@ def map_block_adam_state(source_state,source_names,expected_block_names):
 
 
 def inherit_block_adam(restored_legacy,source_adam,new_model,learning_rate=5e-6):
-    """Return inherited block Adam + fresh separate head Adam + archived head."""
+    """Historical only; official production MUST use fresh_official_training_state."""
     source_names=optimizer_parameter_names(restored_legacy,source_adam);wanted=['block.'+n for n,_ in new_model.block.named_parameters()]
     if set(dict(new_model.block.named_parameters()))!=set(dict(restored_legacy.block.named_parameters()))or any(p is not dict(restored_legacy.block.named_parameters())[n]for n,p in new_model.block.named_parameters()):raise ValueError('Native block must be the actual restored legacy module')
     mapped,archive=map_block_adam_state(source_adam.state_dict(),source_names,wanted)
-    if archive['inherited_steps']!=14418:raise ValueError('Only the original E4 Adam14418 source is accepted')
     if learning_rate!=5e-6:raise ValueError('Initial Mixed-only branch LR is fixed5e-6')
     lookup=dict(new_model.named_parameters());names=iter(archive['inherited_block_names']);groups=[]
     for g in mapped['param_groups']:

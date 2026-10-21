@@ -1,10 +1,11 @@
 """Tiny synthetic structure tests only; no actor, checkpoint, or real feature IO."""
-import copy,unittest
+import copy,unittest,tempfile,json,hashlib
+from pathlib import Path
 import torch
 from torch import nn
 from reproduction.operations.qwen7b_warmup.native_mixed_group_classifier import (
     NativeMixedGroupProbe,MixedTokenHead,block_state_hash,mixed_only_bce,
-    inherit_block_adam,optimizer_parameter_names,map_block_adam_state,E4_SOURCE_SHA)
+    fresh_official_training_state,optimizer_parameter_names,map_block_adam_state,OFFICIAL_REVISION)
 
 
 class TinyBlock(nn.Linear):
@@ -23,14 +24,16 @@ class Legacy(nn.Module):
         self.block=TinyBlock(8,8);self.rotary=TinyRotary();self.output=nn.Linear(23*8,1)
 
 
+_FIXTURE=tempfile.TemporaryDirectory(prefix='official-mixed-tiny-')
+def inventory():
+    p=Path(_FIXTURE.name)/'official-inventory.json';raw=json.dumps(dict(revision=OFFICIAL_REVISION,synthetic_fixture=True)).encode();p.write_bytes(raw)
+    return dict(path=str(p),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
+
 def setup():
-    torch.manual_seed(7);legacy=Legacy();old=torch.optim.Adam(legacy.parameters(),lr=5e-6)
-    sum(p.square().sum()for p in legacy.parameters()).backward();old.step();old.zero_grad(set_to_none=True)
-    for state in old.state.values():state['step'].fill_(14418)
-    rng=torch.get_rng_state().clone();h=block_state_hash(legacy.block)
-    model=NativeMixedGroupProbe.from_restored_probe(legacy,expected_block_hash=h,source_checkpoint=dict(sha256=E4_SOURCE_SHA,steps=14418),head_seed=9137,hidden_size=8)
+    torch.manual_seed(7);legacy=Legacy();rng=torch.get_rng_state().clone();h=block_state_hash(legacy.block)
+    state=fresh_official_training_state(legacy,expected_block_hash=h,official_inventory=inventory(),head_seed=9137,hidden_size=8)
     torch.testing.assert_close(torch.get_rng_state(),rng,rtol=0,atol=0)
-    return legacy,old,model
+    return legacy,state['block_adam'],state['model'],state
 
 
 def batch(n=10):
@@ -42,7 +45,7 @@ class Tests(unittest.TestCase):
     def setUp(self):torch.set_num_threads(1)
 
     def test_real_two_layer_256_eight_head_structure_all100_prefix_and_single_logit(self):
-        _,_,m=setup();h=m.group_head
+        _,_,m,_=setup();h=m.group_head
         self.assertEqual(len(h.layers),2);self.assertEqual(h.dimension,256)
         self.assertTrue(all(layer.self_attn.num_heads==8 and layer.dropout.p==0 for layer in h.layers))
         self.assertFalse(any(name.startswith('output.')for name,_ in m.named_parameters()))
@@ -52,7 +55,7 @@ class Tests(unittest.TestCase):
         self.assertTrue(bool((hidden.grad[:,:,3:].abs().sum(-1)>0).all()))
 
     def test_group_permutation_and_shared_question_averaging(self):
-        _,_,m=setup();x=batch();enc=m.encode_trajectories(x);enc={k:v.reshape(2,5,*v.shape[1:])for k,v in enc.items()}
+        _,_,m,_=setup();x=batch();enc=m.encode_trajectories(x);enc={k:v.reshape(2,5,*v.shape[1:])for k,v in enc.items()}
         # Q hidden intentionally differ between trajectories, as qualified HF
         # floating arithmetic can; question masks and positions are shared.
         perm=[4,0,3,1,2];a=m.group_logits(enc);b=m.group_logits({k:v[:,perm]for k,v in enc.items()})
@@ -61,35 +64,37 @@ class Tests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'share question'):m.group_logits(wrong)
 
     def test_padding_zero_prefix_nan_erasure_and_no_hidden_pooling(self):
-        _,_,m=setup();h=m.group_head;x=torch.randn(2,5,23,8);mask=torch.ones(2,5,23,dtype=torch.bool);mask[:,:,2]=False;mask[0,:,3:]=False;mask[1,0,8:]=False;pos=torch.arange(23).expand(2,5,-1)
+        _,_,m,_=setup();h=m.group_head;x=torch.randn(2,5,23,8);mask=torch.ones(2,5,23,dtype=torch.bool);mask[:,:,2]=False;mask[0,:,3:]=False;mask[1,0,8:]=False;pos=torch.arange(23).expand(2,5,-1)
         a=h(x,mask,pos);changed=x.clone();changed[~mask]=float('nan');b=h(changed,mask,pos)
         torch.testing.assert_close(a,b,rtol=0,atol=0);self.assertTrue(bool(torch.isfinite(b).all()))
 
     def test_only_mixed_bce_joint_gradient_feature_detach_and_target_validation(self):
-        _,_,m=setup();x=batch();z=m(x);ys=torch.tensor([[0,0,0,0,0],[0,1,0,1,0]])
+        _,_,m,_=setup();x=batch();z=m(x);ys=torch.tensor([[0,0,0,0,0],[0,1,0,1,0]])
         loss=mixed_only_bce(z,ys);ref=torch.nn.functional.binary_cross_entropy_with_logits(z,torch.tensor([0.,1.]));torch.testing.assert_close(loss,ref,rtol=0,atol=0)
         loss.backward();self.assertIsNone(x['features'].grad);self.assertGreater(float(m.block.weight.grad.abs().sum()),0);self.assertGreater(float(m.group_head.classifier.weight.grad.abs().sum()),0)
         with self.assertRaises(ValueError):mixed_only_bce(z,torch.ones(2,10))
 
-    def test_E4_block_Adam_moments_and_clock_inherited_head_fresh_old_readout_archived(self):
-        legacy,old,m=setup();before=copy.deepcopy(old.state_dict());source_hash=block_state_hash(legacy.block)
-        bo,ho,archive=inherit_block_adam(legacy,old,m)
-        self.assertEqual(archive['inherited_steps'],14418);self.assertEqual(archive['new_head_steps'],0);self.assertFalse(ho.state)
-        for name,p in m.block.named_parameters():
-            for key,v in old.state[dict(legacy.block.named_parameters())[name]].items():torch.testing.assert_close(bo.state[p][key],v,rtol=0,atol=0)
-        self.assertEqual(set(archive['retired_parameters']),{'output.weight','output.bias'});self.assertEqual(block_state_hash(m.block),source_hash)
-        self.assertEqual(old.state_dict()['param_groups'],before['param_groups'])
-        x=batch();loss=mixed_only_bce(m(x),torch.tensor([[0,1,0,1,0],[1,1,1,1,1]]));loss.backward();bo.step();ho.step()
-        self.assertEqual({int(s['step'])for s in bo.state.values()},{14419});self.assertEqual({int(s['step'])for s in ho.state.values()},{1})
-        # The retired scalar output is never used or updated.
-        torch.testing.assert_close(legacy.output.weight,archive['retired_parameters']['output.weight'],rtol=0,atol=0)
+    def test_official_block_copy_fresh_Adam0_EMA_raw_identity_and_first_update(self):
+        legacy,bo,m,state=setup();ho=state['head_adam'];ema=state['ema'];source_hash=block_state_hash(legacy.block)
+        self.assertIs(m.block,legacy.block);self.assertFalse(bo.state);self.assertFalse(ho.state)
+        for name,value in m.state_dict().items():torch.testing.assert_close(value,ema.state_dict()[name],rtol=0,atol=0)
+        self.assertTrue(all(not p.requires_grad for p in ema.parameters()))
+        self.assertEqual(state['provenance']['native_Adam_steps'],0);self.assertEqual(state['provenance']['group_head_Adam_steps'],0)
+        self.assertFalse(state['provenance']['posttraining_probe_checkpoint_read']);self.assertEqual(block_state_hash(m.block),source_hash)
+        retired=legacy.output.weight.detach().clone();x=batch();loss=mixed_only_bce(m(x),torch.tensor([[0,1,0,1,0],[1,1,1,1,1]]));loss.backward();bo.step();ho.step()
+        self.assertEqual({int(s['step'])for s in bo.state.values()},{1});self.assertEqual({int(s['step'])for s in ho.state.values()},{1})
+        torch.testing.assert_close(legacy.output.weight,retired,rtol=0,atol=0)
 
-    def test_source_guard_and_name_map_fail_closed(self):
-        legacy,old,m=setup()
-        with self.assertRaisesRegex(ValueError,'pre-round E4'):NativeMixedGroupProbe.from_restored_probe(legacy,expected_block_hash=block_state_hash(legacy.block),source_checkpoint=dict(sha256='current-high-CP',steps=15826),head_seed=1,hidden_size=8)
-        with self.assertRaisesRegex(ValueError,'Restore'):NativeMixedGroupProbe.from_restored_probe(legacy,expected_block_hash='wrong',source_checkpoint=dict(sha256=E4_SOURCE_SHA,steps=14418),head_seed=1,hidden_size=8)
-        names=optimizer_parameter_names(legacy,old)
+    def test_official_revision_inventory_hash_geometry_and_Adam_mapping_fail_closed(self):
+        legacy,_,m,_=setup();kw=dict(expected_block_hash=block_state_hash(legacy.block),official_inventory=inventory(),head_seed=1,hidden_size=8)
+        with self.assertRaisesRegex(ValueError,'revision'):NativeMixedGroupProbe.from_official_probe(legacy,official_revision='wrong',**kw)
+        bad=dict(kw);bad['expected_block_hash']='wrong'
+        with self.assertRaisesRegex(ValueError,'block hash'):NativeMixedGroupProbe.from_official_probe(legacy,**bad)
+        bad=dict(kw);bad['official_inventory']=dict(kw['official_inventory'],sha256='0'*64)
+        with self.assertRaisesRegex(ValueError,'inventory SHA'):NativeMixedGroupProbe.from_official_probe(legacy,**bad)
+        old=torch.optim.Adam(legacy.parameters(),lr=5e-6);names=optimizer_parameter_names(legacy,old)
         with self.assertRaises(ValueError):map_block_adam_state(old.state_dict(),names[:-1],['block.weight','block.bias'])
+
 
 
 if __name__=='__main__':unittest.main()
