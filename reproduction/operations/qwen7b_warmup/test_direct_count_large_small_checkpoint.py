@@ -1,5 +1,6 @@
 """One bounded synthetic CPU qualification, no official weights or real data."""
 import copy
+import gc
 from pathlib import Path
 import tempfile
 import unittest
@@ -35,6 +36,9 @@ class SmallCheckpointTest(unittest.TestCase):
             meta=torch.load(p,map_location='meta',mmap=True,weights_only=False);a.geometry(meta,a.shapes(6,4))
             loaded=torch.load(p,map_location='cpu',mmap=True,weights_only=False);self.assertEqual(a.component_hashes(loaded),one['accepted_hashes'])
             with self.assertRaises(ValueError):a.zip_guard(p,limit=32)
+            # Shared-storage mmap must close before NFS removes the test file.
+            del loaded,meta
+            gc.collect()
         wrong=copy.deepcopy(one);wrong['raw']={}
         with self.assertRaises(ValueError):a.geometry(wrong,a.shapes(6,4))
         wrong=copy.deepcopy(one);wrong['head']['raw']['projection.weight']=torch.zeros(4,7)

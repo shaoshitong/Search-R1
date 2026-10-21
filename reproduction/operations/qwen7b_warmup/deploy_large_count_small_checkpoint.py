@@ -4,7 +4,7 @@ from pathlib import Path
 P='reproduction/operations/qwen7b_warmup/'
 FILES=[P+n for n in ('direct_count_large_small_checkpoint.py','test_direct_count_large_small_checkpoint.py','deploy_large_count_small_checkpoint.py')]
 TARGET='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2'
-BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-smallCP1-independent-v1'
+BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-smallCP1-independent-v2'
 CONFIG_SHA='fb637c02812dd070cf392a58df75e0d219bbb10d1a2d24cd6e201f3638147767'
 BRANCH='codex/large-count-smallcp-audit-20261021'
 COMMON=r'''
