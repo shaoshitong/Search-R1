@@ -1,0 +1,7 @@
+CP128 is actually pinned; independent evaluation is READY. This subagent has not submitted GPU work.
+
+After the producer accepted its full nine-component CPU reload and atomic checkpoint publication, the metadata watcher hardlinked the same inode11120380557 at1792602956. CP size3,777,515,802B; SHA f9d6860eb01f0f76051319f53d78bd6012e47292268a00456f15549464ef2b39. A second metadata-only read verified inode/owner/size/mtime and original config SHA. No checkpoint payload was read or rehashed on CPU. The receipt pinned=false remains unchanged from its original rolling producer; the independent hardlink fact is recorded in snapshot-pin.json.
+
+Original source-config bytes9615/SHA2a7f039f and MAIN base are unchanged. Original21 runtime files match exact accepted Git origins; the only new runtime file is the standalone evaluator. All22 remote file SHA checks and Python3.10 compilation passed. Actual evaluation-config4889B/SHA80ac508b and sbatch1276B/SHA055ec754 passed prepare. On the owned GPU allocation, the evaluator will fresh-hash the full checkpoint and official files, restore all9 components and verify they remain frozen while scoring fixed512/2048 only.
+
+Necessary qualification: three stdlib pin fixtures passed; exact21+1 source/static checks passed; event worker two-fixture CPU qualification is bound to c0f7a82. There are no CP128 evaluation metrics yet, and preparation is not evidence of learning gains. No main training pause/update or final4096 access.
