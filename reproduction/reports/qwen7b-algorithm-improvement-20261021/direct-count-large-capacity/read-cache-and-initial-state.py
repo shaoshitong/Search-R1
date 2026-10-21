@@ -23,7 +23,7 @@ for cursor in range(7):
 for epoch in(0,1,2,4,8,20):
  p=b/'evaluations'/('epoch-%02d'%epoch)/'complete.json'
  if p.exists():
-  n=read(p);out['epoch%d_complete'%epoch]=dict(file=proof(p),epoch=n['epoch'],cursor=n['cursor'],checkpoint=n['checkpoint'],metrics=n['metrics'],training_components_unchanged=n['training_components_unchanged'])
+  n=read(p);cp=n['checkpoint'];assert 0<cp['bytes']<64*1024**2 and pathlib.Path(cp['path']).stat().st_size==cp['bytes'];actual=proof(pathlib.Path(cp['path']));assert all(actual[k]==cp[k]for k in('path','bytes','sha256'));out['epoch%d_complete'%epoch]=dict(file=proof(p),epoch=n['epoch'],cursor=n['cursor'],checkpoint=cp,checkpoint_fresh_file_SHA256_verified=True,checkpoint_tensor_load_performed=False,metrics=n['metrics'],training_components_unchanged=n['training_components_unchanged'])
 print(json.dumps(out))"""
 cmd='python3 -c '+shlex.quote('BASE='+repr(BASE)+';CSHA='+repr(CSHA)+'\n'+body)
 assert len(cmd.encode())<16000

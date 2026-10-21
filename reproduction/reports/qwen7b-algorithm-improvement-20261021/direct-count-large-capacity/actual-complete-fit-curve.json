@@ -1,0 +1,2897 @@
+{
+  "scope": "Frozen-E1 head-only internal diagnostic; question texts were seen in original warmup",
+  "fit_questions": 30016,
+  "held_questions": 5120,
+  "held_domain_questions": {
+    "NQ": 2560,
+    "HotpotQA": 2560
+  },
+  "held_own_view": "Exact newseed source indices5..9; one G5 per question",
+  "fit_views": "Four fixed correlated real G5 views per original question, total question weight1",
+  "fit_metrics_source": "Immutable producer aggregates; fit all4 NLL and fixed-primary NLL are different statistics",
+  "held_metrics_source": "Independent own-G5 IDs/EM/q/metric rejoin",
+  "baseline": {
+    "HotpotQA": {
+      "K_histogram": [
+        1052,
+        300,
+        292,
+        271,
+        307,
+        338
+      ],
+      "Mixed_AUC": 0.5610865154030622,
+      "Mixed_BA": 0.5302896144622764,
+      "Mixed_recall": 0.9282051282051282,
+      "Top25percent": {
+        "K_histogram": [
+          263,
+          91,
+          99,
+          76,
+          63,
+          48
+        ],
+        "Mixed_count": 329,
+        "Mixed_fraction": 0.5140625,
+        "ordered_qids_sha256": "2ec9338e7e8b812bb17305ef73c802cbe8fd5191d5516e9e568513bd060cf3cc",
+        "questions": 640
+      },
+      "allcorrect_FPR": 0.7248520710059172,
+      "allwrong_FPR": 0.9134980988593155,
+      "confusion": {
+        "FN": 84,
+        "FP": 1206,
+        "TN": 184,
+        "TP": 1086
+      },
+      "nonMixed_recall": 0.13237410071942446,
+      "predicted_Mixed_fraction": 0.8953125,
+      "questions": 2560
+    },
+    "NQ": {
+      "K_histogram": [
+        1298,
+        228,
+        151,
+        161,
+        271,
+        451
+      ],
+      "Mixed_AUC": 0.51825633671945,
+      "Mixed_BA": 0.504760162403882,
+      "Mixed_recall": 0.9815043156596794,
+      "Top25percent": {
+        "K_histogram": [
+          355,
+          67,
+          44,
+          47,
+          49,
+          78
+        ],
+        "Mixed_count": 207,
+        "Mixed_fraction": 0.3234375,
+        "ordered_qids_sha256": "cce4e6c837d564dffdd1e213c46f0818afcbfdb642deaab6033cc2fec120b900",
+        "questions": 640
+      },
+      "allcorrect_FPR": 0.926829268292683,
+      "allwrong_FPR": 0.987673343605547,
+      "confusion": {
+        "FN": 15,
+        "FP": 1700,
+        "TN": 49,
+        "TP": 796
+      },
+      "nonMixed_recall": 0.02801600914808462,
+      "predicted_Mixed_fraction": 0.975,
+      "questions": 2560
+    },
+    "half0": {
+      "K_histogram": [
+        666,
+        104,
+        76,
+        72,
+        129,
+        233
+      ],
+      "Mixed_AUC": 0.5340521255755155,
+      "Mixed_BA": 0.5036056393951868,
+      "Mixed_recall": 0.9816272965879265,
+      "Top25percent": {
+        "K_histogram": [
+          183,
+          30,
+          18,
+          21,
+          27,
+          41
+        ],
+        "Mixed_count": 96,
+        "Mixed_fraction": 0.3,
+        "ordered_qids_sha256": "79fd5e68572fe82acdd001deb82cce858d5b26e072228314f0cdb82f050c6d2d",
+        "questions": 320
+      },
+      "allcorrect_FPR": 0.9399141630901288,
+      "allwrong_FPR": 0.9864864864864865,
+      "confusion": {
+        "FN": 7,
+        "FP": 876,
+        "TN": 23,
+        "TP": 374
+      },
+      "nonMixed_recall": 0.025583982202447165,
+      "predicted_Mixed_fraction": 0.9765625,
+      "questions": 1280
+    },
+    "half1": {
+      "K_histogram": [
+        632,
+        124,
+        75,
+        89,
+        142,
+        218
+      ],
+      "Mixed_AUC": 0.5036771545827633,
+      "Mixed_BA": 0.5059917920656635,
+      "Mixed_recall": 0.9813953488372092,
+      "Top25percent": {
+        "K_histogram": [
+          172,
+          37,
+          26,
+          26,
+          22,
+          37
+        ],
+        "Mixed_count": 111,
+        "Mixed_fraction": 0.346875,
+        "ordered_qids_sha256": "567ef757503ea0ddce8b7acb2d4a9ace24fda1eedeaf157f01956f7738516f0b",
+        "questions": 320
+      },
+      "allcorrect_FPR": 0.9128440366972477,
+      "allwrong_FPR": 0.9889240506329114,
+      "confusion": {
+        "FN": 8,
+        "FP": 824,
+        "TN": 26,
+        "TP": 422
+      },
+      "nonMixed_recall": 0.03058823529411765,
+      "predicted_Mixed_fraction": 0.9734375,
+      "questions": 1280
+    },
+    "pooled": {
+      "K_histogram": [
+        2350,
+        528,
+        443,
+        432,
+        578,
+        789
+      ],
+      "Mixed_AUC": 0.5405594948763813,
+      "Mixed_BA": 0.5121263503763613,
+      "Mixed_recall": 0.95002523977789,
+      "Top25percent": {
+        "K_histogram": [
+          612,
+          158,
+          141,
+          127,
+          117,
+          125
+        ],
+        "Mixed_count": 543,
+        "Mixed_fraction": 0.42421875,
+        "ordered_qids_sha256": "a4e629e3f8694a0a7d697306f99cafe4360c6ea9e09328dfbd2ddfa5a2b9b6bb",
+        "questions": 1280
+      },
+      "allcorrect_FPR": 0.8403041825095057,
+      "allwrong_FPR": 0.9544680851063829,
+      "confusion": {
+        "FN": 99,
+        "FP": 2906,
+        "TN": 233,
+        "TP": 1882
+      },
+      "nonMixed_recall": 0.07422746097483275,
+      "predicted_Mixed_fraction": 0.93515625,
+      "questions": 5120
+    }
+  },
+  "nodes": [
+    {
+      "epoch": 0,
+      "mode": "raw",
+      "producer_node": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/evaluations/epoch-00/complete.json",
+        "bytes": 7103,
+        "sha256": "f9a9fc4037f59403c6a34f4233b2ef8518e66c3f0ec617761c374b9ce2b9fac1"
+      },
+      "checkpoint": {
+        "accepted_hashes": {
+          "adam": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "ema": "ba4374baecaac80ca7720e0a0b67cd2845dc2c803e764f3b1d4b697c24371a65",
+          "raw": "ba4374baecaac80ca7720e0a0b67cd2845dc2c803e764f3b1d4b697c24371a65",
+          "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+        },
+        "bytes": 4175798,
+        "cursor": 0,
+        "epoch": 0,
+        "full_CPU_reload_passed": true,
+        "new_head_Adam_steps": 0,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-000000.pt",
+        "sha256": "acd1c4f4bc277a8cab83847f966cfbf2462b6391b6db1d9c52c9434447f562df"
+      },
+      "checkpoint_fresh_file_SHA256_verified": true,
+      "fit_all4": {
+        "G5_views": 120064,
+        "count_NLL": 1.8272051736235873,
+        "count_accuracy": 0.13943396855010662,
+        "questions": 30016,
+        "related_views_not_independent_questions": true
+      },
+      "fit_primaryG5": {
+        "G5_views": 30016,
+        "K_histogram": [
+          15352,
+          2619,
+          1969,
+          2155,
+          3034,
+          4887
+        ],
+        "Mixed_AUC": 0.5110832804809771,
+        "Mixed_BA": 0.5000247047779041,
+        "Mixed_recall": 1.0,
+        "Top25percent": {
+          "Mixed_count": 2554,
+          "Mixed_fraction": 0.3403518123667377,
+          "questions": 7504
+        },
+        "by_domain": {
+          "NQ": {
+            "K_histogram": [
+              15352,
+              2619,
+              1969,
+              2155,
+              3034,
+              4887
+            ],
+            "Mixed_AUC": 0.5110832804809771,
+            "Mixed_BA": 0.5000247047779041,
+            "Mixed_recall": 1.0,
+            "Top25percent": {
+              "Mixed_count": 2554,
+              "Mixed_fraction": 0.3403518123667377,
+              "questions": 7504
+            },
+            "count_NLL": 1.8268142153483147,
+            "count_accuracy": 0.1398254264392324,
+            "nonMixed_recall": 4.940955580809328e-05,
+            "predicted_Mixed_fraction": 0.9999666844349681,
+            "questions": 30016
+          }
+        },
+        "count_NLL": 1.8268142153483147,
+        "count_accuracy": 0.1398254264392324,
+        "nonMixed_recall": 4.940955580809328e-05,
+        "predicted_Mixed_fraction": 0.9999666844349681,
+        "questions": 30016,
+        "related_views_not_independent_questions": false
+      },
+      "held_NQ": {
+        "K_histogram": [
+          1298,
+          228,
+          151,
+          161,
+          271,
+          451
+        ],
+        "Mixed_AUC": 0.49824807411527744,
+        "Mixed_BA": 0.5,
+        "Mixed_recall": 1.0,
+        "Top25percent": {
+          "K_histogram": [
+            327,
+            56,
+            40,
+            40,
+            72,
+            105
+          ],
+          "Mixed_count": 208,
+          "Mixed_fraction": 0.325,
+          "ordered_qids_sha256": "c6139ae89da90498f4f3c3b3a70e7df9f461a4e850be1c3b27c79cccabaaa26e",
+          "questions": 640
+        },
+        "allcorrect_FPR": 1.0,
+        "allwrong_FPR": 1.0,
+        "confusion": {
+          "FN": 0,
+          "FP": 1749,
+          "TN": 0,
+          "TP": 811
+        },
+        "nonMixed_recall": 0.0,
+        "predicted_Mixed_fraction": 1.0,
+        "questions": 2560
+      },
+      "held_HotpotQA": {
+        "K_histogram": [
+          1052,
+          300,
+          292,
+          271,
+          307,
+          338
+        ],
+        "Mixed_AUC": 0.4997835577691693,
+        "Mixed_BA": 0.5003597122302158,
+        "Mixed_recall": 1.0,
+        "Top25percent": {
+          "K_histogram": [
+            270,
+            66,
+            83,
+            66,
+            74,
+            81
+          ],
+          "Mixed_count": 289,
+          "Mixed_fraction": 0.4515625,
+          "ordered_qids_sha256": "50fbac0e1036ab3ac113429623021787d3dcb627af4044d80cca187cc8c91ba0",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.9970414201183432,
+        "allwrong_FPR": 1.0,
+        "confusion": {
+          "FN": 0,
+          "FP": 1389,
+          "TN": 1,
+          "TP": 1170
+        },
+        "nonMixed_recall": 0.0007194244604316547,
+        "predicted_Mixed_fraction": 0.999609375,
+        "questions": 2560
+      },
+      "held_pooled": {
+        "K_histogram": [
+          2350,
+          528,
+          443,
+          432,
+          578,
+          789
+        ],
+        "Mixed_AUC": 0.4799968930709855,
+        "Mixed_BA": 0.5001592863969417,
+        "Mixed_recall": 1.0,
+        "Top25percent": {
+          "K_histogram": [
+            611,
+            106,
+            116,
+            102,
+            145,
+            200
+          ],
+          "Mixed_count": 469,
+          "Mixed_fraction": 0.36640625,
+          "ordered_qids_sha256": "03a7c795bfb9829b347c81f7917d735b614038996f606c28ae7b0e0534f74be2",
+          "questions": 1280
+        },
+        "allcorrect_FPR": 0.9987325728770595,
+        "allwrong_FPR": 1.0,
+        "confusion": {
+          "FN": 0,
+          "FP": 3138,
+          "TN": 1,
+          "TP": 1981
+        },
+        "nonMixed_recall": 0.00031857279388340236,
+        "predicted_Mixed_fraction": 0.9998046875,
+        "questions": 5120
+      },
+      "held_halves": null,
+      "independent_audit": {
+        "bytes": 8013,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v3/audits/epoch-00-raw.json",
+        "sha256": "ff7aebccdeae1d3343e5f58234f95a4ca0e42de08d81423cb166a9fa68d954db"
+      },
+      "internal_node_gate": {
+        "conditions": {
+          "NQ_strict_BA_and_Top640": false,
+          "half0_BA_and_Top320_noninferior": false,
+          "half1_BA_and_Top320_noninferior": false
+        },
+        "pass_internal_node": false
+      }
+    },
+    {
+      "epoch": 0,
+      "mode": "EMA",
+      "producer_node": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/evaluations/epoch-00/complete.json",
+        "bytes": 7103,
+        "sha256": "f9a9fc4037f59403c6a34f4233b2ef8518e66c3f0ec617761c374b9ce2b9fac1"
+      },
+      "checkpoint": {
+        "accepted_hashes": {
+          "adam": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "ema": "ba4374baecaac80ca7720e0a0b67cd2845dc2c803e764f3b1d4b697c24371a65",
+          "raw": "ba4374baecaac80ca7720e0a0b67cd2845dc2c803e764f3b1d4b697c24371a65",
+          "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+        },
+        "bytes": 4175798,
+        "cursor": 0,
+        "epoch": 0,
+        "full_CPU_reload_passed": true,
+        "new_head_Adam_steps": 0,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-000000.pt",
+        "sha256": "acd1c4f4bc277a8cab83847f966cfbf2462b6391b6db1d9c52c9434447f562df"
+      },
+      "checkpoint_fresh_file_SHA256_verified": true,
+      "fit_all4": {
+        "G5_views": 120064,
+        "count_NLL": 1.8272051736235873,
+        "count_accuracy": 0.13943396855010662,
+        "questions": 30016,
+        "related_views_not_independent_questions": true
+      },
+      "fit_primaryG5": {
+        "G5_views": 30016,
+        "K_histogram": [
+          15352,
+          2619,
+          1969,
+          2155,
+          3034,
+          4887
+        ],
+        "Mixed_AUC": 0.5110832804809771,
+        "Mixed_BA": 0.5000247047779041,
+        "Mixed_recall": 1.0,
+        "Top25percent": {
+          "Mixed_count": 2554,
+          "Mixed_fraction": 0.3403518123667377,
+          "questions": 7504
+        },
+        "by_domain": {
+          "NQ": {
+            "K_histogram": [
+              15352,
+              2619,
+              1969,
+              2155,
+              3034,
+              4887
+            ],
+            "Mixed_AUC": 0.5110832804809771,
+            "Mixed_BA": 0.5000247047779041,
+            "Mixed_recall": 1.0,
+            "Top25percent": {
+              "Mixed_count": 2554,
+              "Mixed_fraction": 0.3403518123667377,
+              "questions": 7504
+            },
+            "count_NLL": 1.8268142153483147,
+            "count_accuracy": 0.1398254264392324,
+            "nonMixed_recall": 4.940955580809328e-05,
+            "predicted_Mixed_fraction": 0.9999666844349681,
+            "questions": 30016
+          }
+        },
+        "count_NLL": 1.8268142153483147,
+        "count_accuracy": 0.1398254264392324,
+        "nonMixed_recall": 4.940955580809328e-05,
+        "predicted_Mixed_fraction": 0.9999666844349681,
+        "questions": 30016,
+        "related_views_not_independent_questions": false
+      },
+      "held_NQ": {
+        "K_histogram": [
+          1298,
+          228,
+          151,
+          161,
+          271,
+          451
+        ],
+        "Mixed_AUC": 0.49824807411527744,
+        "Mixed_BA": 0.5,
+        "Mixed_recall": 1.0,
+        "Top25percent": {
+          "K_histogram": [
+            327,
+            56,
+            40,
+            40,
+            72,
+            105
+          ],
+          "Mixed_count": 208,
+          "Mixed_fraction": 0.325,
+          "ordered_qids_sha256": "c6139ae89da90498f4f3c3b3a70e7df9f461a4e850be1c3b27c79cccabaaa26e",
+          "questions": 640
+        },
+        "allcorrect_FPR": 1.0,
+        "allwrong_FPR": 1.0,
+        "confusion": {
+          "FN": 0,
+          "FP": 1749,
+          "TN": 0,
+          "TP": 811
+        },
+        "nonMixed_recall": 0.0,
+        "predicted_Mixed_fraction": 1.0,
+        "questions": 2560
+      },
+      "held_HotpotQA": {
+        "K_histogram": [
+          1052,
+          300,
+          292,
+          271,
+          307,
+          338
+        ],
+        "Mixed_AUC": 0.4997835577691693,
+        "Mixed_BA": 0.5003597122302158,
+        "Mixed_recall": 1.0,
+        "Top25percent": {
+          "K_histogram": [
+            270,
+            66,
+            83,
+            66,
+            74,
+            81
+          ],
+          "Mixed_count": 289,
+          "Mixed_fraction": 0.4515625,
+          "ordered_qids_sha256": "50fbac0e1036ab3ac113429623021787d3dcb627af4044d80cca187cc8c91ba0",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.9970414201183432,
+        "allwrong_FPR": 1.0,
+        "confusion": {
+          "FN": 0,
+          "FP": 1389,
+          "TN": 1,
+          "TP": 1170
+        },
+        "nonMixed_recall": 0.0007194244604316547,
+        "predicted_Mixed_fraction": 0.999609375,
+        "questions": 2560
+      },
+      "held_pooled": {
+        "K_histogram": [
+          2350,
+          528,
+          443,
+          432,
+          578,
+          789
+        ],
+        "Mixed_AUC": 0.4799968930709855,
+        "Mixed_BA": 0.5001592863969417,
+        "Mixed_recall": 1.0,
+        "Top25percent": {
+          "K_histogram": [
+            611,
+            106,
+            116,
+            102,
+            145,
+            200
+          ],
+          "Mixed_count": 469,
+          "Mixed_fraction": 0.36640625,
+          "ordered_qids_sha256": "03a7c795bfb9829b347c81f7917d735b614038996f606c28ae7b0e0534f74be2",
+          "questions": 1280
+        },
+        "allcorrect_FPR": 0.9987325728770595,
+        "allwrong_FPR": 1.0,
+        "confusion": {
+          "FN": 0,
+          "FP": 3138,
+          "TN": 1,
+          "TP": 1981
+        },
+        "nonMixed_recall": 0.00031857279388340236,
+        "predicted_Mixed_fraction": 0.9998046875,
+        "questions": 5120
+      },
+      "held_halves": null,
+      "independent_audit": {
+        "bytes": 8013,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v3/audits/epoch-00-EMA.json",
+        "sha256": "02bcca43c6ad256cd87895d7f6d3f84be9829642b102b56af943c2c586481317"
+      },
+      "internal_node_gate": {
+        "conditions": {
+          "NQ_strict_BA_and_Top640": false,
+          "half0_BA_and_Top320_noninferior": false,
+          "half1_BA_and_Top320_noninferior": false
+        },
+        "pass_internal_node": false
+      }
+    },
+    {
+      "epoch": 1,
+      "mode": "raw",
+      "producer_node": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/evaluations/epoch-01/complete.json",
+        "bytes": 7323,
+        "sha256": "debec94a955072c578fd56a49c4ec078ef0d6b90634b66fb9a178614d4a400d2"
+      },
+      "checkpoint": {
+        "accepted_hashes": {
+          "adam": "73b1b3ecefa384d9cbadea26a7fdd6b75926bd90632460c4e0d7c18792c77bf8",
+          "ema": "131582672bc91150897540de48b52853b2a2612ad0efd224354844003408ac8a",
+          "raw": "027186ce3e45c1dd99dca0a01048f7a54d67f98f27ee5e3483206cde848543d0",
+          "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+        },
+        "bytes": 8281973,
+        "cursor": 938,
+        "epoch": 1,
+        "full_CPU_reload_passed": true,
+        "new_head_Adam_steps": 938,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-000938.pt",
+        "sha256": "20ab8e1942eb3043859aad6a7b3a8b7e917f41c760328b1fbd89dd2e6a1ac086"
+      },
+      "checkpoint_fresh_file_SHA256_verified": true,
+      "fit_all4": {
+        "G5_views": 120064,
+        "count_NLL": 1.3881100122608356,
+        "count_accuracy": 0.5149170442430704,
+        "questions": 30016,
+        "related_views_not_independent_questions": true
+      },
+      "fit_primaryG5": {
+        "G5_views": 30016,
+        "K_histogram": [
+          15352,
+          2619,
+          1969,
+          2155,
+          3034,
+          4887
+        ],
+        "Mixed_AUC": 0.5924223277562898,
+        "Mixed_BA": 0.5003085734655687,
+        "Mixed_recall": 0.0007159660427534008,
+        "Top25percent": {
+          "Mixed_count": 3079,
+          "Mixed_fraction": 0.4103144989339019,
+          "questions": 7504
+        },
+        "by_domain": {
+          "NQ": {
+            "K_histogram": [
+              15352,
+              2619,
+              1969,
+              2155,
+              3034,
+              4887
+            ],
+            "Mixed_AUC": 0.5924223277562898,
+            "Mixed_BA": 0.5003085734655687,
+            "Mixed_recall": 0.0007159660427534008,
+            "Top25percent": {
+              "Mixed_count": 3079,
+              "Mixed_fraction": 0.4103144989339019,
+              "questions": 7504
+            },
+            "count_NLL": 1.387701109642903,
+            "count_accuracy": 0.5151252665245203,
+            "nonMixed_recall": 0.9999011808883839,
+            "predicted_Mixed_fraction": 0.0002998400852878465,
+            "questions": 30016
+          }
+        },
+        "count_NLL": 1.387701109642903,
+        "count_accuracy": 0.5151252665245203,
+        "nonMixed_recall": 0.9999011808883839,
+        "predicted_Mixed_fraction": 0.0002998400852878465,
+        "questions": 30016,
+        "related_views_not_independent_questions": false
+      },
+      "held_NQ": {
+        "K_histogram": [
+          1298,
+          228,
+          151,
+          161,
+          271,
+          451
+        ],
+        "Mixed_AUC": 0.5638843122615776,
+        "Mixed_BA": 0.5003306451669758,
+        "Mixed_recall": 0.0012330456226880395,
+        "Top25percent": {
+          "K_histogram": [
+            276,
+            55,
+            47,
+            56,
+            84,
+            122
+          ],
+          "Mixed_count": 242,
+          "Mixed_fraction": 0.378125,
+          "ordered_qids_sha256": "c25c75a94b6d37b80779ec0a6fbbd52e99638d2cb6ae7372e0eb6edfb9b95626",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.0022172949002217295,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "FN": 810,
+          "FP": 1,
+          "TN": 1748,
+          "TP": 1
+        },
+        "nonMixed_recall": 0.9994282447112636,
+        "predicted_Mixed_fraction": 0.00078125,
+        "questions": 2560
+      },
+      "held_HotpotQA": {
+        "K_histogram": [
+          1052,
+          300,
+          292,
+          271,
+          307,
+          338
+        ],
+        "Mixed_AUC": 0.5248287523827092,
+        "Mixed_BA": 0.5004273504273504,
+        "Mixed_recall": 0.0008547008547008547,
+        "Top25percent": {
+          "K_histogram": [
+            227,
+            72,
+            73,
+            75,
+            85,
+            108
+          ],
+          "Mixed_count": 305,
+          "Mixed_fraction": 0.4765625,
+          "ordered_qids_sha256": "0a0699deecf164d9caf47efb908390f942f93880ebc8ea65842b07fd998525a6",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.0,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "FN": 1169,
+          "FP": 0,
+          "TN": 1390,
+          "TP": 1
+        },
+        "nonMixed_recall": 1.0,
+        "predicted_Mixed_fraction": 0.000390625,
+        "questions": 2560
+      },
+      "held_pooled": {
+        "K_histogram": [
+          2350,
+          528,
+          443,
+          432,
+          578,
+          789
+        ],
+        "Mixed_AUC": 0.5654561758174463,
+        "Mixed_BA": 0.5003455091608574,
+        "Mixed_recall": 0.0010095911155981827,
+        "Top25percent": {
+          "K_histogram": [
+            482,
+            138,
+            124,
+            139,
+            180,
+            217
+          ],
+          "Mixed_count": 581,
+          "Mixed_fraction": 0.45390625,
+          "ordered_qids_sha256": "ad45f54668251c16d0f44de118eeb5e5ba49ecd673dcd9fd7b35f9b454835920",
+          "questions": 1280
+        },
+        "allcorrect_FPR": 0.0012674271229404308,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "FN": 1979,
+          "FP": 1,
+          "TN": 3138,
+          "TP": 2
+        },
+        "nonMixed_recall": 0.9996814272061166,
+        "predicted_Mixed_fraction": 0.0005859375,
+        "questions": 5120
+      },
+      "held_halves": null,
+      "independent_audit": {
+        "bytes": 8163,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v3/audits/epoch-01-raw.json",
+        "sha256": "a8e48777b6d67536a424ec7a57d7343efcf7e203083cd122a12f25d6afb678bb"
+      },
+      "internal_node_gate": {
+        "conditions": {
+          "NQ_strict_BA_and_Top640": false,
+          "half0_BA_and_Top320_noninferior": false,
+          "half1_BA_and_Top320_noninferior": false
+        },
+        "pass_internal_node": false
+      }
+    },
+    {
+      "epoch": 1,
+      "mode": "EMA",
+      "producer_node": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/evaluations/epoch-01/complete.json",
+        "bytes": 7323,
+        "sha256": "debec94a955072c578fd56a49c4ec078ef0d6b90634b66fb9a178614d4a400d2"
+      },
+      "checkpoint": {
+        "accepted_hashes": {
+          "adam": "73b1b3ecefa384d9cbadea26a7fdd6b75926bd90632460c4e0d7c18792c77bf8",
+          "ema": "131582672bc91150897540de48b52853b2a2612ad0efd224354844003408ac8a",
+          "raw": "027186ce3e45c1dd99dca0a01048f7a54d67f98f27ee5e3483206cde848543d0",
+          "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+        },
+        "bytes": 8281973,
+        "cursor": 938,
+        "epoch": 1,
+        "full_CPU_reload_passed": true,
+        "new_head_Adam_steps": 938,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-000938.pt",
+        "sha256": "20ab8e1942eb3043859aad6a7b3a8b7e917f41c760328b1fbd89dd2e6a1ac086"
+      },
+      "checkpoint_fresh_file_SHA256_verified": true,
+      "fit_all4": {
+        "G5_views": 120064,
+        "count_NLL": 1.3876616612299164,
+        "count_accuracy": 0.5146838352878464,
+        "questions": 30016,
+        "related_views_not_independent_questions": true
+      },
+      "fit_primaryG5": {
+        "G5_views": 30016,
+        "K_histogram": [
+          15352,
+          2619,
+          1969,
+          2155,
+          3034,
+          4887
+        ],
+        "Mixed_AUC": 0.5883731800403001,
+        "Mixed_BA": 0.5001798569485969,
+        "Mixed_recall": 0.00040912345300194336,
+        "Top25percent": {
+          "Mixed_count": 3054,
+          "Mixed_fraction": 0.4069829424307036,
+          "questions": 7504
+        },
+        "by_domain": {
+          "NQ": {
+            "K_histogram": [
+              15352,
+              2619,
+              1969,
+              2155,
+              3034,
+              4887
+            ],
+            "Mixed_AUC": 0.5883731800403001,
+            "Mixed_BA": 0.5001798569485969,
+            "Mixed_recall": 0.00040912345300194336,
+            "Top25percent": {
+              "Mixed_count": 3054,
+              "Mixed_fraction": 0.4069829424307036,
+              "questions": 7504
+            },
+            "count_NLL": 1.3873625465171429,
+            "count_accuracy": 0.5150253198294243,
+            "nonMixed_recall": 0.9999505904441919,
+            "predicted_Mixed_fraction": 0.0001665778251599147,
+            "questions": 30016
+          }
+        },
+        "count_NLL": 1.3873625465171429,
+        "count_accuracy": 0.5150253198294243,
+        "nonMixed_recall": 0.9999505904441919,
+        "predicted_Mixed_fraction": 0.0001665778251599147,
+        "questions": 30016,
+        "related_views_not_independent_questions": false
+      },
+      "held_NQ": {
+        "K_histogram": [
+          1298,
+          228,
+          151,
+          161,
+          271,
+          451
+        ],
+        "Mixed_AUC": 0.5613508934822012,
+        "Mixed_BA": 0.5003306451669758,
+        "Mixed_recall": 0.0012330456226880395,
+        "Top25percent": {
+          "K_histogram": [
+            264,
+            53,
+            53,
+            54,
+            84,
+            132
+          ],
+          "Mixed_count": 244,
+          "Mixed_fraction": 0.38125,
+          "ordered_qids_sha256": "57e2959a7f7c4e6e78cc3d9960a5525bbe132a6a640a838400e157c2313eff41",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.0022172949002217295,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "FN": 810,
+          "FP": 1,
+          "TN": 1748,
+          "TP": 1
+        },
+        "nonMixed_recall": 0.9994282447112636,
+        "predicted_Mixed_fraction": 0.00078125,
+        "questions": 2560
+      },
+      "held_HotpotQA": {
+        "K_histogram": [
+          1052,
+          300,
+          292,
+          271,
+          307,
+          338
+        ],
+        "Mixed_AUC": 0.5228460308676136,
+        "Mixed_BA": 0.5004273504273504,
+        "Mixed_recall": 0.0008547008547008547,
+        "Top25percent": {
+          "K_histogram": [
+            216,
+            72,
+            74,
+            76,
+            89,
+            113
+          ],
+          "Mixed_count": 311,
+          "Mixed_fraction": 0.4859375,
+          "ordered_qids_sha256": "43e9d023ba9c51b2542d9f727e8e073682d42ac11fd2eaa8c176d76d07b948eb",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.0,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "FN": 1169,
+          "FP": 0,
+          "TN": 1390,
+          "TP": 1
+        },
+        "nonMixed_recall": 1.0,
+        "predicted_Mixed_fraction": 0.000390625,
+        "questions": 2560
+      },
+      "held_pooled": {
+        "K_histogram": [
+          2350,
+          528,
+          443,
+          432,
+          578,
+          789
+        ],
+        "Mixed_AUC": 0.5615372962545263,
+        "Mixed_BA": 0.5003455091608574,
+        "Mixed_recall": 0.0010095911155981827,
+        "Top25percent": {
+          "K_histogram": [
+            471,
+            134,
+            128,
+            135,
+            182,
+            230
+          ],
+          "Mixed_count": 579,
+          "Mixed_fraction": 0.45234375,
+          "ordered_qids_sha256": "ed7c53b8ccfda4507d68963c051dfea5f6e5ecfd7b97e3d4af95d5571638a337",
+          "questions": 1280
+        },
+        "allcorrect_FPR": 0.0012674271229404308,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "FN": 1979,
+          "FP": 1,
+          "TN": 3138,
+          "TP": 2
+        },
+        "nonMixed_recall": 0.9996814272061166,
+        "predicted_Mixed_fraction": 0.0005859375,
+        "questions": 5120
+      },
+      "held_halves": null,
+      "independent_audit": {
+        "bytes": 8164,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v3/audits/epoch-01-EMA.json",
+        "sha256": "2dbecf1b0fe91a4563af44da141fbcb89014a0cfc8b4c8c0fc733465d17bc4de"
+      },
+      "internal_node_gate": {
+        "conditions": {
+          "NQ_strict_BA_and_Top640": false,
+          "half0_BA_and_Top320_noninferior": false,
+          "half1_BA_and_Top320_noninferior": false
+        },
+        "pass_internal_node": false
+      }
+    },
+    {
+      "epoch": 2,
+      "mode": "raw",
+      "producer_node": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/evaluations/epoch-02/complete.json",
+        "bytes": 7338,
+        "sha256": "809240a7e5ed4e90dd1773b922ae1500fd743c1c65f25e45128d2870d0e7c0df"
+      },
+      "checkpoint": {
+        "accepted_hashes": {
+          "adam": "2d563484a8df1d12d6d609ed81d0be9687500a60c2a9f52b7b71bb25f69f2ae2",
+          "ema": "20749ad1466a3e36dc60e3b117b7478811c4976cd5cfab6d7942c02b7436b228",
+          "raw": "ae78fc3a614ec15187f29af7815eff8313018ccace3982b2d64d614a0e282ef7",
+          "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+        },
+        "bytes": 8281973,
+        "cursor": 1876,
+        "epoch": 2,
+        "full_CPU_reload_passed": true,
+        "new_head_Adam_steps": 1876,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-001876.pt",
+        "sha256": "90d0c55d1e15bccb49a2da4a2edad857ce3e75bff6c8e6c644f38d085734cc5d"
+      },
+      "checkpoint_fresh_file_SHA256_verified": true,
+      "fit_all4": {
+        "G5_views": 120064,
+        "count_NLL": 1.3795295561046235,
+        "count_accuracy": 0.5162413379530917,
+        "questions": 30016,
+        "related_views_not_independent_questions": true
+      },
+      "fit_primaryG5": {
+        "G5_views": 30016,
+        "K_histogram": [
+          15352,
+          2619,
+          1969,
+          2155,
+          3034,
+          4887
+        ],
+        "Mixed_AUC": 0.5997668204528352,
+        "Mixed_BA": 0.5008234395334553,
+        "Mixed_recall": 0.0019433364017592309,
+        "Top25percent": {
+          "Mixed_count": 3133,
+          "Mixed_fraction": 0.41751066098081024,
+          "questions": 7504
+        },
+        "by_domain": {
+          "NQ": {
+            "K_histogram": [
+              15352,
+              2619,
+              1969,
+              2155,
+              3034,
+              4887
+            ],
+            "Mixed_AUC": 0.5997668204528352,
+            "Mixed_BA": 0.5008234395334553,
+            "Mixed_recall": 0.0019433364017592309,
+            "Top25percent": {
+              "Mixed_count": 3133,
+              "Mixed_fraction": 0.41751066098081024,
+              "questions": 7504
+            },
+            "count_NLL": 1.379078399346916,
+            "count_accuracy": 0.5167577292110874,
+            "nonMixed_recall": 0.9997035426651515,
+            "predicted_Mixed_fraction": 0.0008328891257995735,
+            "questions": 30016
+          }
+        },
+        "count_NLL": 1.379078399346916,
+        "count_accuracy": 0.5167577292110874,
+        "nonMixed_recall": 0.9997035426651515,
+        "predicted_Mixed_fraction": 0.0008328891257995735,
+        "questions": 30016,
+        "related_views_not_independent_questions": false
+      },
+      "held_NQ": {
+        "K_histogram": [
+          1298,
+          228,
+          151,
+          161,
+          271,
+          451
+        ],
+        "Mixed_AUC": 0.5711236084174223,
+        "Mixed_BA": 0.5003306451669758,
+        "Mixed_recall": 0.0012330456226880395,
+        "Top25percent": {
+          "K_histogram": [
+            290,
+            62,
+            44,
+            48,
+            92,
+            104
+          ],
+          "Mixed_count": 246,
+          "Mixed_fraction": 0.384375,
+          "ordered_qids_sha256": "43e88c8d62a190a21372f300c62fbd3fe3a9aaeb881b8b01ca78bb768fd97b61",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.0022172949002217295,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "FN": 810,
+          "FP": 1,
+          "TN": 1748,
+          "TP": 1
+        },
+        "nonMixed_recall": 0.9994282447112636,
+        "predicted_Mixed_fraction": 0.00078125,
+        "questions": 2560
+      },
+      "held_HotpotQA": {
+        "K_histogram": [
+          1052,
+          300,
+          292,
+          271,
+          307,
+          338
+        ],
+        "Mixed_AUC": 0.5121309106560905,
+        "Mixed_BA": 0.5009899772489701,
+        "Mixed_recall": 0.003418803418803419,
+        "Top25percent": {
+          "K_histogram": [
+            260,
+            72,
+            74,
+            78,
+            70,
+            86
+          ],
+          "Mixed_count": 294,
+          "Mixed_fraction": 0.459375,
+          "ordered_qids_sha256": "fc471a7c1b69bba0cbfa38e40896a0f43832d3b443071bdab17a646ffb3530e4",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.0029585798816568047,
+        "allwrong_FPR": 0.0009505703422053232,
+        "confusion": {
+          "FN": 1166,
+          "FP": 2,
+          "TN": 1388,
+          "TP": 4
+        },
+        "nonMixed_recall": 0.9985611510791367,
+        "predicted_Mixed_fraction": 0.00234375,
+        "questions": 2560
+      },
+      "held_pooled": {
+        "K_histogram": [
+          2350,
+          528,
+          443,
+          432,
+          578,
+          789
+        ],
+        "Mixed_AUC": 0.5665895938140593,
+        "Mixed_BA": 0.5007841297036726,
+        "Mixed_recall": 0.002523977788995457,
+        "Top25percent": {
+          "K_histogram": [
+            539,
+            138,
+            129,
+            134,
+            160,
+            180
+          ],
+          "Mixed_count": 561,
+          "Mixed_fraction": 0.43828125,
+          "ordered_qids_sha256": "f952b3d081b9b615e06bb9ba618bf6c17fa956904612688582368381bd137267",
+          "questions": 1280
+        },
+        "allcorrect_FPR": 0.0025348542458808617,
+        "allwrong_FPR": 0.000425531914893617,
+        "confusion": {
+          "FN": 1976,
+          "FP": 3,
+          "TN": 3136,
+          "TP": 5
+        },
+        "nonMixed_recall": 0.9990442816183498,
+        "predicted_Mixed_fraction": 0.0015625,
+        "questions": 5120
+      },
+      "held_halves": null,
+      "independent_audit": {
+        "bytes": 8224,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v3/audits/epoch-02-raw.json",
+        "sha256": "19cc986c1e9ec7fb27a6077ae0f6af045d6a17f348bb8c9f55472bec772d6753"
+      },
+      "internal_node_gate": {
+        "conditions": {
+          "NQ_strict_BA_and_Top640": false,
+          "half0_BA_and_Top320_noninferior": false,
+          "half1_BA_and_Top320_noninferior": false
+        },
+        "pass_internal_node": false
+      }
+    },
+    {
+      "epoch": 2,
+      "mode": "EMA",
+      "producer_node": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/evaluations/epoch-02/complete.json",
+        "bytes": 7338,
+        "sha256": "809240a7e5ed4e90dd1773b922ae1500fd743c1c65f25e45128d2870d0e7c0df"
+      },
+      "checkpoint": {
+        "accepted_hashes": {
+          "adam": "2d563484a8df1d12d6d609ed81d0be9687500a60c2a9f52b7b71bb25f69f2ae2",
+          "ema": "20749ad1466a3e36dc60e3b117b7478811c4976cd5cfab6d7942c02b7436b228",
+          "raw": "ae78fc3a614ec15187f29af7815eff8313018ccace3982b2d64d614a0e282ef7",
+          "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+        },
+        "bytes": 8281973,
+        "cursor": 1876,
+        "epoch": 2,
+        "full_CPU_reload_passed": true,
+        "new_head_Adam_steps": 1876,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-001876.pt",
+        "sha256": "90d0c55d1e15bccb49a2da4a2edad857ce3e75bff6c8e6c644f38d085734cc5d"
+      },
+      "checkpoint_fresh_file_SHA256_verified": true,
+      "fit_all4": {
+        "G5_views": 120064,
+        "count_NLL": 1.3769054595849661,
+        "count_accuracy": 0.5159831423240938,
+        "questions": 30016,
+        "related_views_not_independent_questions": true
+      },
+      "fit_primaryG5": {
+        "G5_views": 30016,
+        "K_histogram": [
+          15352,
+          2619,
+          1969,
+          2155,
+          3034,
+          4887
+        ],
+        "Mixed_AUC": 0.6016604668210992,
+        "Mixed_BA": 0.500566006499512,
+        "Mixed_recall": 0.0013296512222563158,
+        "Top25percent": {
+          "Mixed_count": 3148,
+          "Mixed_fraction": 0.4195095948827292,
+          "questions": 7504
+        },
+        "by_domain": {
+          "NQ": {
+            "K_histogram": [
+              15352,
+              2619,
+              1969,
+              2155,
+              3034,
+              4887
+            ],
+            "Mixed_AUC": 0.6016604668210992,
+            "Mixed_BA": 0.500566006499512,
+            "Mixed_recall": 0.0013296512222563158,
+            "Top25percent": {
+              "Mixed_count": 3148,
+              "Mixed_fraction": 0.4195095948827292,
+              "questions": 7504
+            },
+            "count_NLL": 1.3765773259569083,
+            "count_accuracy": 0.5164578891257996,
+            "nonMixed_recall": 0.9998023617767676,
+            "predicted_Mixed_fraction": 0.00056636460554371,
+            "questions": 30016
+          }
+        },
+        "count_NLL": 1.3765773259569083,
+        "count_accuracy": 0.5164578891257996,
+        "nonMixed_recall": 0.9998023617767676,
+        "predicted_Mixed_fraction": 0.00056636460554371,
+        "questions": 30016,
+        "related_views_not_independent_questions": false
+      },
+      "held_NQ": {
+        "K_histogram": [
+          1298,
+          228,
+          151,
+          161,
+          271,
+          451
+        ],
+        "Mixed_AUC": 0.5703259005145798,
+        "Mixed_BA": 0.5003306451669758,
+        "Mixed_recall": 0.0012330456226880395,
+        "Top25percent": {
+          "K_histogram": [
+            280,
+            62,
+            45,
+            49,
+            90,
+            114
+          ],
+          "Mixed_count": 246,
+          "Mixed_fraction": 0.384375,
+          "ordered_qids_sha256": "67740cf04a7a6a37e770b83d5f0c988d76ed4e1a950a6b4ae3c83ed7cb8be8cf",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.0022172949002217295,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "FN": 810,
+          "FP": 1,
+          "TN": 1748,
+          "TP": 1
+        },
+        "nonMixed_recall": 0.9994282447112636,
+        "predicted_Mixed_fraction": 0.00078125,
+        "questions": 2560
+      },
+      "held_HotpotQA": {
+        "K_histogram": [
+          1052,
+          300,
+          292,
+          271,
+          307,
+          338
+        ],
+        "Mixed_AUC": 0.5158888273996187,
+        "Mixed_BA": 0.5005626268216197,
+        "Mixed_recall": 0.002564102564102564,
+        "Top25percent": {
+          "K_histogram": [
+            242,
+            66,
+            77,
+            79,
+            80,
+            96
+          ],
+          "Mixed_count": 302,
+          "Mixed_fraction": 0.471875,
+          "ordered_qids_sha256": "bb9dc385badba230509105b59187314dd5ec96fa37926864e5c59d11f538983d",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.0029585798816568047,
+        "allwrong_FPR": 0.0009505703422053232,
+        "confusion": {
+          "FN": 1167,
+          "FP": 2,
+          "TN": 1388,
+          "TP": 3
+        },
+        "nonMixed_recall": 0.9985611510791367,
+        "predicted_Mixed_fraction": 0.001953125,
+        "questions": 2560
+      },
+      "held_pooled": {
+        "K_histogram": [
+          2350,
+          528,
+          443,
+          432,
+          578,
+          789
+        ],
+        "Mixed_AUC": 0.5655390755020738,
+        "Mixed_BA": 0.5005317319247731,
+        "Mixed_recall": 0.0020191822311963654,
+        "Top25percent": {
+          "K_histogram": [
+            512,
+            135,
+            132,
+            131,
+            169,
+            201
+          ],
+          "Mixed_count": 567,
+          "Mixed_fraction": 0.44296875,
+          "ordered_qids_sha256": "17f9abbeaf9957f787d3c03246deee86fe1979598665298ad291dff8d853d8fd",
+          "questions": 1280
+        },
+        "allcorrect_FPR": 0.0025348542458808617,
+        "allwrong_FPR": 0.000425531914893617,
+        "confusion": {
+          "FN": 1977,
+          "FP": 3,
+          "TN": 3136,
+          "TP": 4
+        },
+        "nonMixed_recall": 0.9990442816183498,
+        "predicted_Mixed_fraction": 0.0013671875,
+        "questions": 5120
+      },
+      "held_halves": null,
+      "independent_audit": {
+        "bytes": 8231,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v3/audits/epoch-02-EMA.json",
+        "sha256": "d60b7438ea32aab596d476848bfbd04d7afb97376e03ded88f03bff6fa12d851"
+      },
+      "internal_node_gate": {
+        "conditions": {
+          "NQ_strict_BA_and_Top640": false,
+          "half0_BA_and_Top320_noninferior": false,
+          "half1_BA_and_Top320_noninferior": false
+        },
+        "pass_internal_node": false
+      }
+    },
+    {
+      "epoch": 4,
+      "mode": "raw",
+      "producer_node": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/evaluations/epoch-04/complete.json",
+        "bytes": 7307,
+        "sha256": "17a7c5197d3372796c95b6fbd25d833f06824ac76ea16d0fd83b530e4bf0ce4c"
+      },
+      "checkpoint": {
+        "accepted_hashes": {
+          "adam": "316f3f86cfa8053253766484793b7877b8187f800283f5362b6f9a154cf74273",
+          "ema": "584faecaf75707be5b0e4f05b06b3c4bfdb64fa5b6f89e6ec0f80a44a1fa0b1a",
+          "raw": "cea21f2f945fb428b487d4f7c5528365136bc80204bbd23eb75937f820656e23",
+          "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+        },
+        "bytes": 8281973,
+        "cursor": 3752,
+        "epoch": 4,
+        "full_CPU_reload_passed": true,
+        "new_head_Adam_steps": 3752,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-003752.pt",
+        "sha256": "311ba3b5dcd1e865b1449cdaaa5c9f189b0f966c3b3c96ab00e069f2d9a11ee8"
+      },
+      "checkpoint_fresh_file_SHA256_verified": true,
+      "fit_all4": {
+        "G5_views": 120064,
+        "count_NLL": 1.3713680841902425,
+        "count_accuracy": 0.5179154450959488,
+        "questions": 30016,
+        "related_views_not_independent_questions": true
+      },
+      "fit_primaryG5": {
+        "G5_views": 30016,
+        "K_histogram": [
+          15352,
+          2619,
+          1969,
+          2155,
+          3034,
+          4887
+        ],
+        "Mixed_AUC": 0.6060740864476603,
+        "Mixed_BA": 0.5011549869011108,
+        "Mixed_recall": 0.0025570215812621457,
+        "Top25percent": {
+          "Mixed_count": 3153,
+          "Mixed_fraction": 0.42017590618336886,
+          "questions": 7504
+        },
+        "by_domain": {
+          "NQ": {
+            "K_histogram": [
+              15352,
+              2619,
+              1969,
+              2155,
+              3034,
+              4887
+            ],
+            "Mixed_AUC": 0.6060740864476603,
+            "Mixed_BA": 0.5011549869011108,
+            "Mixed_recall": 0.0025570215812621457,
+            "Top25percent": {
+              "Mixed_count": 3153,
+              "Mixed_fraction": 0.42017590618336886,
+              "questions": 7504
+            },
+            "count_NLL": 1.3709733053566031,
+            "count_accuracy": 0.5186234008528785,
+            "nonMixed_recall": 0.9997529522209595,
+            "predicted_Mixed_fraction": 0.0009994669509594883,
+            "questions": 30016
+          }
+        },
+        "count_NLL": 1.3709733053566031,
+        "count_accuracy": 0.5186234008528785,
+        "nonMixed_recall": 0.9997529522209595,
+        "predicted_Mixed_fraction": 0.0009994669509594883,
+        "questions": 30016,
+        "related_views_not_independent_questions": false
+      },
+      "held_NQ": {
+        "K_histogram": [
+          1298,
+          228,
+          151,
+          161,
+          271,
+          451
+        ],
+        "Mixed_AUC": 0.5792141925031672,
+        "Mixed_BA": 0.5003306451669758,
+        "Mixed_recall": 0.0012330456226880395,
+        "Top25percent": {
+          "K_histogram": [
+            300,
+            63,
+            40,
+            49,
+            94,
+            94
+          ],
+          "Mixed_count": 246,
+          "Mixed_fraction": 0.384375,
+          "ordered_qids_sha256": "fd96bb8ae6e4457ed1cf13633724bd5d507b3f4adb6bd75a06c4b356258ecb02",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.0022172949002217295,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "FN": 810,
+          "FP": 1,
+          "TN": 1748,
+          "TP": 1
+        },
+        "nonMixed_recall": 0.9994282447112636,
+        "predicted_Mixed_fraction": 0.00078125,
+        "questions": 2560
+      },
+      "held_HotpotQA": {
+        "K_histogram": [
+          1052,
+          300,
+          292,
+          271,
+          307,
+          338
+        ],
+        "Mixed_AUC": 0.5097408227264343,
+        "Mixed_BA": 0.5022043903338868,
+        "Mixed_recall": 0.005128205128205128,
+        "Top25percent": {
+          "K_histogram": [
+            277,
+            68,
+            72,
+            78,
+            65,
+            80
+          ],
+          "Mixed_count": 283,
+          "Mixed_fraction": 0.4421875,
+          "ordered_qids_sha256": "1110ef67c442cd1734970ab6330a1ad8fdf76cf45384b185244df86f5f013b18",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.0029585798816568047,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "FN": 1164,
+          "FP": 1,
+          "TN": 1389,
+          "TP": 6
+        },
+        "nonMixed_recall": 0.9992805755395684,
+        "predicted_Mixed_fraction": 0.002734375,
+        "questions": 2560
+      },
+      "held_pooled": {
+        "K_histogram": [
+          2350,
+          528,
+          443,
+          432,
+          578,
+          789
+        ],
+        "Mixed_AUC": 0.5632002751851413,
+        "Mixed_BA": 0.5014482116584134,
+        "Mixed_recall": 0.0035335689045936395,
+        "Top25percent": {
+          "K_histogram": [
+            565,
+            140,
+            116,
+            135,
+            154,
+            170
+          ],
+          "Mixed_count": 545,
+          "Mixed_fraction": 0.42578125,
+          "ordered_qids_sha256": "c4d6ea38c06cbd55867ccd885c9b46bd87fd688722a5ff63a82e032f6a992402",
+          "questions": 1280
+        },
+        "allcorrect_FPR": 0.0025348542458808617,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "FN": 1974,
+          "FP": 2,
+          "TN": 3137,
+          "TP": 7
+        },
+        "nonMixed_recall": 0.9993628544122332,
+        "predicted_Mixed_fraction": 0.0017578125,
+        "questions": 5120
+      },
+      "held_halves": null,
+      "independent_audit": {
+        "bytes": 8196,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v3/audits/epoch-04-raw.json",
+        "sha256": "1b327e65ab24056b2d070069214f2d4bfaa58b089928bf640653df8fc6026f1b"
+      },
+      "internal_node_gate": {
+        "conditions": {
+          "NQ_strict_BA_and_Top640": false,
+          "half0_BA_and_Top320_noninferior": false,
+          "half1_BA_and_Top320_noninferior": false
+        },
+        "pass_internal_node": false
+      }
+    },
+    {
+      "epoch": 4,
+      "mode": "EMA",
+      "producer_node": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/evaluations/epoch-04/complete.json",
+        "bytes": 7307,
+        "sha256": "17a7c5197d3372796c95b6fbd25d833f06824ac76ea16d0fd83b530e4bf0ce4c"
+      },
+      "checkpoint": {
+        "accepted_hashes": {
+          "adam": "316f3f86cfa8053253766484793b7877b8187f800283f5362b6f9a154cf74273",
+          "ema": "584faecaf75707be5b0e4f05b06b3c4bfdb64fa5b6f89e6ec0f80a44a1fa0b1a",
+          "raw": "cea21f2f945fb428b487d4f7c5528365136bc80204bbd23eb75937f820656e23",
+          "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+        },
+        "bytes": 8281973,
+        "cursor": 3752,
+        "epoch": 4,
+        "full_CPU_reload_passed": true,
+        "new_head_Adam_steps": 3752,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-003752.pt",
+        "sha256": "311ba3b5dcd1e865b1449cdaaa5c9f189b0f966c3b3c96ab00e069f2d9a11ee8"
+      },
+      "checkpoint_fresh_file_SHA256_verified": true,
+      "fit_all4": {
+        "G5_views": 120064,
+        "count_NLL": 1.3662756964850273,
+        "count_accuracy": 0.5180070628997868,
+        "questions": 30016,
+        "related_views_not_independent_questions": true
+      },
+      "fit_primaryG5": {
+        "G5_views": 30016,
+        "K_histogram": [
+          15352,
+          2619,
+          1969,
+          2155,
+          3034,
+          4887
+        ],
+        "Mixed_AUC": 0.6096285801770206,
+        "Mixed_BA": 0.5010791416915815,
+        "Mixed_recall": 0.00245474071801166,
+        "Top25percent": {
+          "Mixed_count": 3186,
+          "Mixed_fraction": 0.4245735607675906,
+          "questions": 7504
+        },
+        "by_domain": {
+          "NQ": {
+            "K_histogram": [
+              15352,
+              2619,
+              1969,
+              2155,
+              3034,
+              4887
+            ],
+            "Mixed_AUC": 0.6096285801770206,
+            "Mixed_BA": 0.5010791416915815,
+            "Mixed_recall": 0.00245474071801166,
+            "Top25percent": {
+              "Mixed_count": 3186,
+              "Mixed_fraction": 0.4245735607675906,
+              "questions": 7504
+            },
+            "count_NLL": 1.3658979245217915,
+            "count_accuracy": 0.5186900319829424,
+            "nonMixed_recall": 0.9997035426651515,
+            "predicted_Mixed_fraction": 0.0009994669509594883,
+            "questions": 30016
+          }
+        },
+        "count_NLL": 1.3658979245217915,
+        "count_accuracy": 0.5186900319829424,
+        "nonMixed_recall": 0.9997035426651515,
+        "predicted_Mixed_fraction": 0.0009994669509594883,
+        "questions": 30016,
+        "related_views_not_independent_questions": false
+      },
+      "held_NQ": {
+        "K_histogram": [
+          1298,
+          228,
+          151,
+          161,
+          271,
+          451
+        ],
+        "Mixed_AUC": 0.5780171018986364,
+        "Mixed_BA": 0.5006165228113441,
+        "Mixed_recall": 0.0012330456226880395,
+        "Top25percent": {
+          "K_histogram": [
+            285,
+            63,
+            42,
+            53,
+            91,
+            106
+          ],
+          "Mixed_count": 249,
+          "Mixed_fraction": 0.3890625,
+          "ordered_qids_sha256": "1298864a672b3c3e5c2fd9913bdd7d514bd899c26e53de3d1ef9f4c1d3db5358",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.0,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "FN": 810,
+          "FP": 0,
+          "TN": 1749,
+          "TP": 1
+        },
+        "nonMixed_recall": 1.0,
+        "predicted_Mixed_fraction": 0.000390625,
+        "questions": 2560
+      },
+      "held_HotpotQA": {
+        "K_histogram": [
+          1052,
+          300,
+          292,
+          271,
+          307,
+          338
+        ],
+        "Mixed_AUC": 0.5153188218655844,
+        "Mixed_BA": 0.5012820512820513,
+        "Mixed_recall": 0.002564102564102564,
+        "Top25percent": {
+          "K_histogram": [
+            258,
+            73,
+            65,
+            82,
+            73,
+            89
+          ],
+          "Mixed_count": 293,
+          "Mixed_fraction": 0.4578125,
+          "ordered_qids_sha256": "743ec63530a04f4aec946592c7b42c3eb319038e71af1802213be967ab5054b3",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.0,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "FN": 1167,
+          "FP": 0,
+          "TN": 1390,
+          "TP": 3
+        },
+        "nonMixed_recall": 1.0,
+        "predicted_Mixed_fraction": 0.001171875,
+        "questions": 2560
+      },
+      "held_pooled": {
+        "K_histogram": [
+          2350,
+          528,
+          443,
+          432,
+          578,
+          789
+        ],
+        "Mixed_AUC": 0.5682471050642139,
+        "Mixed_BA": 0.5010095911155982,
+        "Mixed_recall": 0.0020191822311963654,
+        "Top25percent": {
+          "K_histogram": [
+            532,
+            142,
+            127,
+            131,
+            162,
+            186
+          ],
+          "Mixed_count": 562,
+          "Mixed_fraction": 0.4390625,
+          "ordered_qids_sha256": "44734ff608ab48a517333756424939d930b7e89edd8cc68266ed653844b2bb7d",
+          "questions": 1280
+        },
+        "allcorrect_FPR": 0.0,
+        "allwrong_FPR": 0.0,
+        "confusion": {
+          "FN": 1977,
+          "FP": 0,
+          "TN": 3139,
+          "TP": 4
+        },
+        "nonMixed_recall": 1.0,
+        "predicted_Mixed_fraction": 0.00078125,
+        "questions": 5120
+      },
+      "held_halves": null,
+      "independent_audit": {
+        "bytes": 8066,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v3/audits/epoch-04-EMA.json",
+        "sha256": "c97482826695be3a5a1f16faea725f75e26f561fac979358ac1a6d86a1c6267b"
+      },
+      "internal_node_gate": {
+        "conditions": {
+          "NQ_strict_BA_and_Top640": false,
+          "half0_BA_and_Top320_noninferior": false,
+          "half1_BA_and_Top320_noninferior": false
+        },
+        "pass_internal_node": false
+      }
+    },
+    {
+      "epoch": 8,
+      "mode": "raw",
+      "producer_node": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/evaluations/epoch-08/complete.json",
+        "bytes": 7330,
+        "sha256": "04c07227704616228eef583d828e582476884b1c72847676a3c1e72c834be98b"
+      },
+      "checkpoint": {
+        "accepted_hashes": {
+          "adam": "98bc577269ddac39eb7e344da6312e99ae7a835f536d4d6c05300e5b45a6886a",
+          "ema": "e3c25ecb36b92110edd4ffe1b3aa1ea748b69a4cfe34826015abcc217b5f3fd6",
+          "raw": "841a4a0e61d60bf9a27f0a395a60c19a7156ff0d304d155a17bb9208ef92a17d",
+          "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+        },
+        "bytes": 8281973,
+        "cursor": 7504,
+        "epoch": 8,
+        "full_CPU_reload_passed": true,
+        "new_head_Adam_steps": 7504,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-007504.pt",
+        "sha256": "f58ed35493bc6cb0341dd924dbb650d94ae1bb0827311df8fe35cdb70db92d4e"
+      },
+      "checkpoint_fresh_file_SHA256_verified": true,
+      "fit_all4": {
+        "G5_views": 120064,
+        "count_NLL": 1.3599098289826277,
+        "count_accuracy": 0.5211470549040512,
+        "questions": 30016,
+        "related_views_not_independent_questions": true
+      },
+      "fit_primaryG5": {
+        "G5_views": 30016,
+        "K_histogram": [
+          15352,
+          2619,
+          1969,
+          2155,
+          3034,
+          4887
+        ],
+        "Mixed_AUC": 0.6154816441428176,
+        "Mixed_BA": 0.502674880326867,
+        "Mixed_recall": 0.006239132658279636,
+        "Top25percent": {
+          "Mixed_count": 3238,
+          "Mixed_fraction": 0.43150319829424305,
+          "questions": 7504
+        },
+        "by_domain": {
+          "NQ": {
+            "K_histogram": [
+              15352,
+              2619,
+              1969,
+              2155,
+              3034,
+              4887
+            ],
+            "Mixed_AUC": 0.6154816441428176,
+            "Mixed_BA": 0.502674880326867,
+            "Mixed_recall": 0.006239132658279636,
+            "Top25percent": {
+              "Mixed_count": 3238,
+              "Mixed_fraction": 0.43150319829424305,
+              "questions": 7504
+            },
+            "count_NLL": 1.3595516243881638,
+            "count_accuracy": 0.5212220149253731,
+            "nonMixed_recall": 0.9991106279954544,
+            "predicted_Mixed_fraction": 0.0026319296375266524,
+            "questions": 30016
+          }
+        },
+        "count_NLL": 1.3595516243881638,
+        "count_accuracy": 0.5212220149253731,
+        "nonMixed_recall": 0.9991106279954544,
+        "predicted_Mixed_fraction": 0.0026319296375266524,
+        "questions": 30016,
+        "related_views_not_independent_questions": false
+      },
+      "held_NQ": {
+        "K_histogram": [
+          1298,
+          228,
+          151,
+          161,
+          271,
+          451
+        ],
+        "Mixed_AUC": 0.5866371412517564,
+        "Mixed_BA": 0.5016084583122714,
+        "Mixed_recall": 0.004932182490752158,
+        "Top25percent": {
+          "K_histogram": [
+            309,
+            67,
+            41,
+            57,
+            83,
+            83
+          ],
+          "Mixed_count": 248,
+          "Mixed_fraction": 0.3875,
+          "ordered_qids_sha256": "0fce65394e3923cf3a968c1d4720a68bbc5141c301b12bba9cb3cd3e3d59f061",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.0,
+        "allwrong_FPR": 0.0023112480739599386,
+        "confusion": {
+          "FN": 807,
+          "FP": 3,
+          "TN": 1746,
+          "TP": 4
+        },
+        "nonMixed_recall": 0.9982847341337907,
+        "predicted_Mixed_fraction": 0.002734375,
+        "questions": 2560
+      },
+      "held_HotpotQA": {
+        "K_histogram": [
+          1052,
+          300,
+          292,
+          271,
+          307,
+          338
+        ],
+        "Mixed_AUC": 0.5163235565393839,
+        "Mixed_BA": 0.5002705527885384,
+        "Mixed_recall": 0.003418803418803419,
+        "Top25percent": {
+          "K_histogram": [
+            271,
+            77,
+            73,
+            75,
+            80,
+            64
+          ],
+          "Mixed_count": 305,
+          "Mixed_fraction": 0.4765625,
+          "ordered_qids_sha256": "eb016543bda4a121d80b1eb9d9484d33aa0db7ebf821c8797f7d8a41b3169ebb",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.008875739644970414,
+        "allwrong_FPR": 0.0009505703422053232,
+        "confusion": {
+          "FN": 1166,
+          "FP": 4,
+          "TN": 1386,
+          "TP": 4
+        },
+        "nonMixed_recall": 0.9971223021582734,
+        "predicted_Mixed_fraction": 0.003125,
+        "questions": 2560
+      },
+      "held_pooled": {
+        "K_histogram": [
+          2350,
+          528,
+          443,
+          432,
+          578,
+          789
+        ],
+        "Mixed_AUC": 0.568848549914857,
+        "Mixed_BA": 0.5009041774526045,
+        "Mixed_recall": 0.004038364462392731,
+        "Top25percent": {
+          "K_histogram": [
+            565,
+            144,
+            121,
+            137,
+            162,
+            151
+          ],
+          "Mixed_count": 564,
+          "Mixed_fraction": 0.440625,
+          "ordered_qids_sha256": "f36ebd180c3f77ed0904bd870553a1a2b8933801f0c52e220ac3613b52bd2210",
+          "questions": 1280
+        },
+        "allcorrect_FPR": 0.0038022813688212928,
+        "allwrong_FPR": 0.001702127659574468,
+        "confusion": {
+          "FN": 1973,
+          "FP": 7,
+          "TN": 3132,
+          "TP": 8
+        },
+        "nonMixed_recall": 0.9977699904428162,
+        "predicted_Mixed_fraction": 0.0029296875,
+        "questions": 5120
+      },
+      "held_halves": null,
+      "independent_audit": {
+        "bytes": 8293,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v3/audits/epoch-08-raw.json",
+        "sha256": "384cc9db517af1d2bcdd5603b5cfb105f200933142c4f0c67255b69f8c1c86dd"
+      },
+      "internal_node_gate": {
+        "conditions": {
+          "NQ_strict_BA_and_Top640": false,
+          "half0_BA_and_Top320_noninferior": false,
+          "half1_BA_and_Top320_noninferior": false
+        },
+        "pass_internal_node": false
+      }
+    },
+    {
+      "epoch": 8,
+      "mode": "EMA",
+      "producer_node": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/evaluations/epoch-08/complete.json",
+        "bytes": 7330,
+        "sha256": "04c07227704616228eef583d828e582476884b1c72847676a3c1e72c834be98b"
+      },
+      "checkpoint": {
+        "accepted_hashes": {
+          "adam": "98bc577269ddac39eb7e344da6312e99ae7a835f536d4d6c05300e5b45a6886a",
+          "ema": "e3c25ecb36b92110edd4ffe1b3aa1ea748b69a4cfe34826015abcc217b5f3fd6",
+          "raw": "841a4a0e61d60bf9a27f0a395a60c19a7156ff0d304d155a17bb9208ef92a17d",
+          "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+        },
+        "bytes": 8281973,
+        "cursor": 7504,
+        "epoch": 8,
+        "full_CPU_reload_passed": true,
+        "new_head_Adam_steps": 7504,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-007504.pt",
+        "sha256": "f58ed35493bc6cb0341dd924dbb650d94ae1bb0827311df8fe35cdb70db92d4e"
+      },
+      "checkpoint_fresh_file_SHA256_verified": true,
+      "fit_all4": {
+        "G5_views": 120064,
+        "count_NLL": 1.352579373604199,
+        "count_accuracy": 0.5206889658848614,
+        "questions": 30016,
+        "related_views_not_independent_questions": true
+      },
+      "fit_primaryG5": {
+        "G5_views": 30016,
+        "K_histogram": [
+          15352,
+          2619,
+          1969,
+          2155,
+          3034,
+          4887
+        ],
+        "Mixed_AUC": 0.6205359026019349,
+        "Mixed_BA": 0.5046046830485144,
+        "Mixed_recall": 0.013705635675565101,
+        "Top25percent": {
+          "Mixed_count": 3287,
+          "Mixed_fraction": 0.4380330490405117,
+          "questions": 7504
+        },
+        "by_domain": {
+          "NQ": {
+            "K_histogram": [
+              15352,
+              2619,
+              1969,
+              2155,
+              3034,
+              4887
+            ],
+            "Mixed_AUC": 0.6205359026019349,
+            "Mixed_BA": 0.5046046830485144,
+            "Mixed_recall": 0.013705635675565101,
+            "Top25percent": {
+              "Mixed_count": 3287,
+              "Mixed_fraction": 0.4380330490405117,
+              "questions": 7504
+            },
+            "count_NLL": 1.3524821954650241,
+            "count_accuracy": 0.5210221215351812,
+            "nonMixed_recall": 0.9955037304214636,
+            "predicted_Mixed_fraction": 0.007496002132196162,
+            "questions": 30016
+          }
+        },
+        "count_NLL": 1.3524821954650241,
+        "count_accuracy": 0.5210221215351812,
+        "nonMixed_recall": 0.9955037304214636,
+        "predicted_Mixed_fraction": 0.007496002132196162,
+        "questions": 30016,
+        "related_views_not_independent_questions": false
+      },
+      "held_NQ": {
+        "K_histogram": [
+          1298,
+          228,
+          151,
+          161,
+          271,
+          451
+        ],
+        "Mixed_AUC": 0.5856511982538551,
+        "Mixed_BA": 0.5033064516697581,
+        "Mixed_recall": 0.012330456226880395,
+        "Top25percent": {
+          "K_histogram": [
+            291,
+            66,
+            45,
+            57,
+            86,
+            95
+          ],
+          "Mixed_count": 254,
+          "Mixed_fraction": 0.396875,
+          "ordered_qids_sha256": "cddbda25bf75b133e0cc57f7c42cff6ee868a5c7bcd6a05e6ec9622f74cb4c01",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.0022172949002217295,
+        "allwrong_FPR": 0.006933744221879815,
+        "confusion": {
+          "FN": 801,
+          "FP": 10,
+          "TN": 1739,
+          "TP": 10
+        },
+        "nonMixed_recall": 0.9942824471126358,
+        "predicted_Mixed_fraction": 0.0078125,
+        "questions": 2560
+      },
+      "held_HotpotQA": {
+        "K_histogram": [
+          1052,
+          300,
+          292,
+          271,
+          307,
+          338
+        ],
+        "Mixed_AUC": 0.5178853840004919,
+        "Mixed_BA": 0.5001137551497263,
+        "Mixed_recall": 0.005982905982905983,
+        "Top25percent": {
+          "K_histogram": [
+            267,
+            79,
+            68,
+            78,
+            71,
+            77
+          ],
+          "Mixed_count": 296,
+          "Mixed_fraction": 0.4625,
+          "ordered_qids_sha256": "b6c6caaea0a850123ce18110508a3b327948f2c5b306ff9903ec2c7ca5298d74",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.008875739644970414,
+        "allwrong_FPR": 0.004752851711026616,
+        "confusion": {
+          "FN": 1163,
+          "FP": 8,
+          "TN": 1382,
+          "TP": 7
+        },
+        "nonMixed_recall": 0.9942446043165467,
+        "predicted_Mixed_fraction": 0.005859375,
+        "questions": 2560
+      },
+      "held_pooled": {
+        "K_histogram": [
+          2350,
+          528,
+          443,
+          432,
+          578,
+          789
+        ],
+        "Mixed_AUC": 0.573105299967403,
+        "Mixed_BA": 0.5014236070963417,
+        "Mixed_recall": 0.008581524482584554,
+        "Top25percent": {
+          "K_histogram": [
+            538,
+            143,
+            129,
+            140,
+            160,
+            170
+          ],
+          "Mixed_count": 572,
+          "Mixed_fraction": 0.446875,
+          "ordered_qids_sha256": "fe091c9c8a44a348787ae8b9f21d71937580cfa3dba4e6181a743cc61967497b",
+          "questions": 1280
+        },
+        "allcorrect_FPR": 0.005069708491761723,
+        "allwrong_FPR": 0.005957446808510639,
+        "confusion": {
+          "FN": 1964,
+          "FP": 18,
+          "TN": 3121,
+          "TP": 17
+        },
+        "nonMixed_recall": 0.9942656897100988,
+        "predicted_Mixed_fraction": 0.0068359375,
+        "questions": 5120
+      },
+      "held_halves": null,
+      "independent_audit": {
+        "bytes": 8322,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v3/audits/epoch-08-EMA.json",
+        "sha256": "e9be1850b46bbde90f11657836a1369836110549598707343dbf7230e70273f4"
+      },
+      "internal_node_gate": {
+        "conditions": {
+          "NQ_strict_BA_and_Top640": false,
+          "half0_BA_and_Top320_noninferior": true,
+          "half1_BA_and_Top320_noninferior": false
+        },
+        "pass_internal_node": false
+      }
+    },
+    {
+      "epoch": 20,
+      "mode": "raw",
+      "producer_node": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/evaluations/epoch-20/complete.json",
+        "bytes": 7315,
+        "sha256": "64e972a656566b7ac5d680ae657966011c0da6b4fc4dbe270cf3d2912d175438"
+      },
+      "checkpoint": {
+        "accepted_hashes": {
+          "adam": "f658ea236dbc3169cd14cb94f5254285953c7fd5894bcf07abff19d273f85820",
+          "ema": "e86b51fa19ea4d8abd8ee7bb002f6d015112b77307c8c47379f79f5f4203af61",
+          "raw": "b0cb9539dc01f8870e9222d6e1434486e444fac467e2dfcc8433042bd812b2ab",
+          "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+        },
+        "bytes": 8281973,
+        "cursor": 18760,
+        "epoch": 20,
+        "full_CPU_reload_passed": true,
+        "new_head_Adam_steps": 18760,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-018760.pt",
+        "sha256": "c6451a2e61d54e8fdb9e40d4706bfe932fb865fbd15759c112891a2dc52878c5"
+      },
+      "checkpoint_fresh_file_SHA256_verified": true,
+      "fit_all4": {
+        "G5_views": 120064,
+        "count_NLL": 1.3505446492100575,
+        "count_accuracy": 0.5246785047974414,
+        "questions": 30016,
+        "related_views_not_independent_questions": true
+      },
+      "fit_primaryG5": {
+        "G5_views": 30016,
+        "K_histogram": [
+          15352,
+          2619,
+          1969,
+          2155,
+          3034,
+          4887
+        ],
+        "Mixed_AUC": 0.6169713217831408,
+        "Mixed_BA": 0.5234820973341162,
+        "Mixed_recall": 0.09563260713920425,
+        "Top25percent": {
+          "Mixed_count": 3258,
+          "Mixed_fraction": 0.4341684434968017,
+          "questions": 7504
+        },
+        "by_domain": {
+          "NQ": {
+            "K_histogram": [
+              15352,
+              2619,
+              1969,
+              2155,
+              3034,
+              4887
+            ],
+            "Mixed_AUC": 0.6169713217831408,
+            "Mixed_BA": 0.5234820973341162,
+            "Mixed_recall": 0.09563260713920425,
+            "Top25percent": {
+              "Mixed_count": 3258,
+              "Mixed_fraction": 0.4341684434968017,
+              "questions": 7504
+            },
+            "count_NLL": 1.3499036164769511,
+            "count_accuracy": 0.5248867270788913,
+            "nonMixed_recall": 0.9513315875290281,
+            "predicted_Mixed_fraction": 0.06396588486140725,
+            "questions": 30016
+          }
+        },
+        "count_NLL": 1.3499036164769511,
+        "count_accuracy": 0.5248867270788913,
+        "nonMixed_recall": 0.9513315875290281,
+        "predicted_Mixed_fraction": 0.06396588486140725,
+        "questions": 30016,
+        "related_views_not_independent_questions": false
+      },
+      "held_NQ": {
+        "K_histogram": [
+          1298,
+          228,
+          151,
+          161,
+          271,
+          451
+        ],
+        "Mixed_AUC": 0.58550843568176,
+        "Mixed_BA": 0.52251136636824,
+        "Mixed_recall": 0.09247842170160296,
+        "Top25percent": {
+          "K_histogram": [
+            299,
+            79,
+            43,
+            58,
+            75,
+            86
+          ],
+          "Mixed_count": 255,
+          "Mixed_fraction": 0.3984375,
+          "ordered_qids_sha256": "6959c4f0c4da4a15d30c836b8116ebc809e1a365b6c06f5f54ef6810e083e46c",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.04434589800443459,
+        "allwrong_FPR": 0.0485362095531587,
+        "confusion": {
+          "FN": 736,
+          "FP": 83,
+          "TN": 1666,
+          "TP": 75
+        },
+        "nonMixed_recall": 0.952544311034877,
+        "predicted_Mixed_fraction": 0.06171875,
+        "questions": 2560
+      },
+      "held_HotpotQA": {
+        "K_histogram": [
+          1052,
+          300,
+          292,
+          271,
+          307,
+          338
+        ],
+        "Mixed_AUC": 0.5266943368382218,
+        "Mixed_BA": 0.5100903892270798,
+        "Mixed_recall": 0.08205128205128205,
+        "Top25percent": {
+          "K_histogram": [
+            249,
+            77,
+            72,
+            75,
+            94,
+            73
+          ],
+          "Mixed_count": 318,
+          "Mixed_fraction": 0.496875,
+          "ordered_qids_sha256": "548ccb6c8ca307e2e226919b43711e2827de807b46342b8d618e0788eee9fa34",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.07396449704142012,
+        "allwrong_FPR": 0.05798479087452472,
+        "confusion": {
+          "FN": 1074,
+          "FP": 86,
+          "TN": 1304,
+          "TP": 96
+        },
+        "nonMixed_recall": 0.9381294964028777,
+        "predicted_Mixed_fraction": 0.07109375,
+        "questions": 2560
+      },
+      "held_pooled": {
+        "K_histogram": [
+          2350,
+          528,
+          443,
+          432,
+          578,
+          789
+        ],
+        "Mixed_AUC": 0.5700479821123225,
+        "Mixed_BA": 0.5162406191086748,
+        "Mixed_recall": 0.08632004038364463,
+        "Top25percent": {
+          "K_histogram": [
+            533,
+            157,
+            123,
+            136,
+            175,
+            156
+          ],
+          "Mixed_count": 591,
+          "Mixed_fraction": 0.46171875,
+          "ordered_qids_sha256": "8f0d3c1967c2b3e418f8671d709432dd1ae16c454ee58db46f2bedd432ab4cfd",
+          "questions": 1280
+        },
+        "allcorrect_FPR": 0.057034220532319393,
+        "allwrong_FPR": 0.05276595744680851,
+        "confusion": {
+          "FN": 1810,
+          "FP": 169,
+          "TN": 2970,
+          "TP": 171
+        },
+        "nonMixed_recall": 0.946161197833705,
+        "predicted_Mixed_fraction": 0.06640625,
+        "questions": 5120
+      },
+      "held_halves": {
+        "half0": {
+          "K_histogram": [
+            666,
+            104,
+            76,
+            72,
+            129,
+            233
+          ],
+          "Mixed_AUC": 0.556774952630365,
+          "Mixed_BA": 0.5177668976027607,
+          "Mixed_recall": 0.09448818897637795,
+          "Top25percent": {
+            "K_histogram": [
+              163,
+              31,
+              21,
+              27,
+              32,
+              46
+            ],
+            "Mixed_count": 111,
+            "Mixed_fraction": 0.346875,
+            "ordered_qids_sha256": "779ad9851942a257eef7a82dac76c4ac15d36e29e4eb9f48fa047d0ddfae1683",
+            "questions": 320
+          },
+          "allcorrect_FPR": 0.055793991416309016,
+          "allwrong_FPR": 0.06006006006006006,
+          "confusion": {
+            "FN": 345,
+            "FP": 53,
+            "TN": 846,
+            "TP": 36
+          },
+          "nonMixed_recall": 0.9410456062291435,
+          "predicted_Mixed_fraction": 0.06953125,
+          "questions": 1280
+        },
+        "half1": {
+          "K_histogram": [
+            632,
+            124,
+            75,
+            89,
+            142,
+            218
+          ],
+          "Mixed_AUC": 0.613595075239398,
+          "Mixed_BA": 0.5277017783857729,
+          "Mixed_recall": 0.09069767441860466,
+          "Top25percent": {
+            "K_histogram": [
+              133,
+              48,
+              24,
+              31,
+              44,
+              40
+            ],
+            "Mixed_count": 147,
+            "Mixed_fraction": 0.459375,
+            "ordered_qids_sha256": "cce932e668dc6dc153252de2f2ff3aee3c50cadc46989b18e883858fe0fbfec8",
+            "questions": 320
+          },
+          "allcorrect_FPR": 0.03211009174311927,
+          "allwrong_FPR": 0.03639240506329114,
+          "confusion": {
+            "FN": 391,
+            "FP": 30,
+            "TN": 820,
+            "TP": 39
+          },
+          "nonMixed_recall": 0.9647058823529412,
+          "predicted_Mixed_fraction": 0.05390625,
+          "questions": 1280
+        }
+      },
+      "independent_audit": {
+        "bytes": 8336,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v3/audits/epoch-20-raw.json",
+        "sha256": "3e4c1f6e1dfa9254838c4851db16c132da31029053fe953ddc18c96c0be3bceb"
+      },
+      "internal_node_gate": {
+        "conditions": {
+          "NQ_strict_BA_and_Top640": true,
+          "half0_BA_and_Top320_noninferior": true,
+          "half1_BA_and_Top320_noninferior": true
+        },
+        "pass_internal_node": true
+      }
+    },
+    {
+      "epoch": 20,
+      "mode": "EMA",
+      "producer_node": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/evaluations/epoch-20/complete.json",
+        "bytes": 7315,
+        "sha256": "64e972a656566b7ac5d680ae657966011c0da6b4fc4dbe270cf3d2912d175438"
+      },
+      "checkpoint": {
+        "accepted_hashes": {
+          "adam": "f658ea236dbc3169cd14cb94f5254285953c7fd5894bcf07abff19d273f85820",
+          "ema": "e86b51fa19ea4d8abd8ee7bb002f6d015112b77307c8c47379f79f5f4203af61",
+          "raw": "b0cb9539dc01f8870e9222d6e1434486e444fac467e2dfcc8433042bd812b2ab",
+          "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+        },
+        "bytes": 8281973,
+        "cursor": 18760,
+        "epoch": 20,
+        "full_CPU_reload_passed": true,
+        "new_head_Adam_steps": 18760,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-018760.pt",
+        "sha256": "c6451a2e61d54e8fdb9e40d4706bfe932fb865fbd15759c112891a2dc52878c5"
+      },
+      "checkpoint_fresh_file_SHA256_verified": true,
+      "fit_all4": {
+        "G5_views": 120064,
+        "count_NLL": 1.3295360736882509,
+        "count_accuracy": 0.5284181769722814,
+        "questions": 30016,
+        "related_views_not_independent_questions": true
+      },
+      "fit_primaryG5": {
+        "G5_views": 30016,
+        "K_histogram": [
+          15352,
+          2619,
+          1969,
+          2155,
+          3034,
+          4887
+        ],
+        "Mixed_AUC": 0.6355687586931342,
+        "Mixed_BA": 0.5157013658146508,
+        "Mixed_recall": 0.04899253349698272,
+        "Top25percent": {
+          "Mixed_count": 3375,
+          "Mixed_fraction": 0.4497601279317697,
+          "questions": 7504
+        },
+        "by_domain": {
+          "NQ": {
+            "K_histogram": [
+              15352,
+              2619,
+              1969,
+              2155,
+              3034,
+              4887
+            ],
+            "Mixed_AUC": 0.6355687586931342,
+            "Mixed_BA": 0.5157013658146508,
+            "Mixed_recall": 0.04899253349698272,
+            "Top25percent": {
+              "Mixed_count": 3375,
+              "Mixed_fraction": 0.4497601279317697,
+              "questions": 7504
+            },
+            "count_NLL": 1.3296673802513013,
+            "count_accuracy": 0.529251066098081,
+            "nonMixed_recall": 0.9824101981323188,
+            "predicted_Mixed_fraction": 0.027818496801705755,
+            "questions": 30016
+          }
+        },
+        "count_NLL": 1.3296673802513013,
+        "count_accuracy": 0.529251066098081,
+        "nonMixed_recall": 0.9824101981323188,
+        "predicted_Mixed_fraction": 0.027818496801705755,
+        "questions": 30016,
+        "related_views_not_independent_questions": false
+      },
+      "held_NQ": {
+        "K_histogram": [
+          1298,
+          228,
+          151,
+          161,
+          271,
+          451
+        ],
+        "Mixed_AUC": 0.591304243608643,
+        "Mixed_BA": 0.5156471304018009,
+        "Mixed_recall": 0.0530209617755857,
+        "Top25percent": {
+          "K_histogram": [
+            280,
+            65,
+            40,
+            59,
+            92,
+            104
+          ],
+          "Mixed_count": 256,
+          "Mixed_fraction": 0.4,
+          "ordered_qids_sha256": "a01e48b119bf215ee1e647ca3ef1a94413f8d72f26b5d734aa4f3f3281e3c3cc",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.024390243902439025,
+        "allwrong_FPR": 0.020801232665639446,
+        "confusion": {
+          "FN": 768,
+          "FP": 38,
+          "TN": 1711,
+          "TP": 43
+        },
+        "nonMixed_recall": 0.978273299028016,
+        "predicted_Mixed_fraction": 0.031640625,
+        "questions": 2560
+      },
+      "held_HotpotQA": {
+        "K_histogram": [
+          1052,
+          300,
+          292,
+          271,
+          307,
+          338
+        ],
+        "Mixed_AUC": 0.5268031728463383,
+        "Mixed_BA": 0.505177396544303,
+        "Mixed_recall": 0.02905982905982906,
+        "Top25percent": {
+          "K_histogram": [
+            246,
+            83,
+            68,
+            75,
+            89,
+            79
+          ],
+          "Mixed_count": 315,
+          "Mixed_fraction": 0.4921875,
+          "ordered_qids_sha256": "8e2f46afc48366f91bfae50e7618157cb64af71d020f007fea32586d81d3ddab",
+          "questions": 640
+        },
+        "allcorrect_FPR": 0.020710059171597635,
+        "allwrong_FPR": 0.01806083650190114,
+        "confusion": {
+          "FN": 1136,
+          "FP": 26,
+          "TN": 1364,
+          "TP": 34
+        },
+        "nonMixed_recall": 0.981294964028777,
+        "predicted_Mixed_fraction": 0.0234375,
+        "questions": 2560
+      },
+      "held_pooled": {
+        "K_histogram": [
+          2350,
+          528,
+          443,
+          432,
+          578,
+          789
+        ],
+        "Mixed_AUC": 0.5761185547505379,
+        "Mixed_BA": 0.5092402995709961,
+        "Mixed_recall": 0.038869257950530034,
+        "Top25percent": {
+          "K_histogram": [
+            520,
+            136,
+            127,
+            137,
+            178,
+            182
+          ],
+          "Mixed_count": 578,
+          "Mixed_fraction": 0.4515625,
+          "ordered_qids_sha256": "2912cd35de3cc880a2c7cffa0cafaf888da6b6a8a1a45eb479be3d524ab0f492",
+          "questions": 1280
+        },
+        "allcorrect_FPR": 0.022813688212927757,
+        "allwrong_FPR": 0.01957446808510638,
+        "confusion": {
+          "FN": 1904,
+          "FP": 64,
+          "TN": 3075,
+          "TP": 77
+        },
+        "nonMixed_recall": 0.9796113411914622,
+        "predicted_Mixed_fraction": 0.0275390625,
+        "questions": 5120
+      },
+      "held_halves": {
+        "half0": {
+          "K_histogram": [
+            666,
+            104,
+            76,
+            72,
+            129,
+            233
+          ],
+          "Mixed_AUC": 0.5682108145825487,
+          "Mixed_BA": 0.5097177090905906,
+          "Mixed_recall": 0.047244094488188976,
+          "Top25percent": {
+            "K_histogram": [
+              152,
+              28,
+              21,
+              27,
+              43,
+              49
+            ],
+            "Mixed_count": 119,
+            "Mixed_fraction": 0.371875,
+            "ordered_qids_sha256": "e3dcadb2b57bc9d28291816d52c1a9c99a414663e579e79ad9a285a8fb4d1b10",
+            "questions": 320
+          },
+          "allcorrect_FPR": 0.034334763948497854,
+          "allwrong_FPR": 0.025525525525525526,
+          "confusion": {
+            "FN": 363,
+            "FP": 25,
+            "TN": 874,
+            "TP": 18
+          },
+          "nonMixed_recall": 0.9721913236929922,
+          "predicted_Mixed_fraction": 0.03359375,
+          "questions": 1280
+        },
+        "half1": {
+          "K_histogram": [
+            632,
+            124,
+            75,
+            89,
+            142,
+            218
+          ],
+          "Mixed_AUC": 0.6138714090287277,
+          "Mixed_BA": 0.5214227086183311,
+          "Mixed_recall": 0.05813953488372093,
+          "Top25percent": {
+            "K_histogram": [
+              126,
+              38,
+              19,
+              32,
+              51,
+              54
+            ],
+            "Mixed_count": 140,
+            "Mixed_fraction": 0.4375,
+            "ordered_qids_sha256": "0a723b10981f7fb4dfc658ee30ac6e6bd7aed730108cb79a0d2399a7fbf0047d",
+            "questions": 320
+          },
+          "allcorrect_FPR": 0.013761467889908258,
+          "allwrong_FPR": 0.015822784810126583,
+          "confusion": {
+            "FN": 405,
+            "FP": 13,
+            "TN": 837,
+            "TP": 25
+          },
+          "nonMixed_recall": 0.9847058823529412,
+          "predicted_Mixed_fraction": 0.0296875,
+          "questions": 1280
+        }
+      },
+      "independent_audit": {
+        "bytes": 8340,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v3/audits/epoch-20-EMA.json",
+        "sha256": "320a5a4acc3356ba6688f2543a95765a0b962669e4d9d1da2d94419ed3e905f5"
+      },
+      "internal_node_gate": {
+        "conditions": {
+          "NQ_strict_BA_and_Top640": true,
+          "half0_BA_and_Top320_noninferior": true,
+          "half1_BA_and_Top320_noninferior": true
+        },
+        "pass_internal_node": true
+      }
+    }
+  ],
+  "selected_count12": {
+    "audit": {
+      "bytes": 8340,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v3/audits/epoch-20-EMA.json",
+      "sha256": "320a5a4acc3356ba6688f2543a95765a0b962669e4d9d1da2d94419ed3e905f5"
+    },
+    "epoch": 20,
+    "model": "EMA"
+  },
+  "independent_snapshot": {
+    "bytes": 45317,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-large-independent-audit-v3/audits/snapshot-ab2e83b08f781db4.json",
+    "sha256": "9552c4666235f182f31980278d3d3e93d135c8030ed80beede3f14efec44b893"
+  },
+  "external_scoring_permitted": false,
+  "final_pool_read": false
+}
