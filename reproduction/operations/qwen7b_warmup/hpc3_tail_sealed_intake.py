@@ -26,6 +26,9 @@ def load(p):
  return value,dict(path=str(p),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
 def checked(ref):
  value,actual=load(ref['path']);require(all(actual[k]==ref[k]for k in('path','bytes','sha256')),'Bound metadata SHA differs');return value,actual
+def local_bank_ref(ref,path):
+ require(ref.get('path',str(path))==str(path),'Original bank descriptor path differs')
+ return dict(ref,path=str(path))
 def write_once(p,value):
  p=Path(p);p.parent.mkdir(parents=True,exist_ok=True);raw=canonical(value)+b'\n'
  if p.exists():require(p.read_bytes()==raw,'Conflicting immutable intake metadata')
@@ -42,6 +45,7 @@ def own5(candidate):
  require(isinstance(candidate['qid'],str)and len(candidate['question_hash'])==64 and len(ids)==len(set(ids))==len(labels)==5,'Whole own G5 required')
  require(all(isinstance(t,str)and t for t in ids)and all(type(x)is int and x in(0,1)for x in labels),'Own IDs/binary labels invalid')
  require(candidate['metadata_verified']is True and candidate['execution_run_id']and candidate['execution_host_cluster'],'Explicit execution metadata required')
+ require(type(candidate['full_source_qualified'])is bool,'Explicit full-source qualification stage required')
  return candidate
 
 def choose_whole_g5(candidates):
@@ -55,9 +59,9 @@ def choose_whole_g5(candidates):
  selected=[];dropped=[]
  for qid in sorted(by):
   values=by[qid];require(len({x['question_hash']for x in values})==1,'Same qid has conflicting canonical text hash')
-  winner=min(values,key=lambda x:(x['source_priority'],x['execution_run_id'],x['seal']['path']))
+  winner=min(values,key=lambda x:(not x['full_source_qualified'],x['source_priority'],x['execution_run_id'],x['seal']['path']))
   selected.append(winner)
-  dropped.extend(dict(qid=qid,execution_run_id=x['execution_run_id'],seal=x['seal'],reason='one_whole_G5_chosen_by_explicit_priority_no_label_use')for x in values if x is not winner)
+  dropped.extend(dict(qid=qid,execution_run_id=x['execution_run_id'],seal=x['seal'],reason='qualified_first_then_whole_G5_explicit_priority_no_label_use')for x in values if x is not winner)
  allids=[t for c in selected for t in c['trajectory_ids']];require(len(allids)==len(set(allids)),'Selected distinct canonical qids share own trajectory IDs')
  return selected,dropped
 
@@ -108,7 +112,7 @@ def prepare():
   excluded,eref=checked(main['evaluation_exclusions']);require(len(excluded['groups'])==6656 and excluded['role']=='joint_training_fixed_evaluation_identity_exclusions'and excluded['final_labels_or_rollouts_read']is False and all(set(g)=={'qid','question_hash'}for g in excluded['groups']),'True6656 identity-only exclusions required')
   eq={g['qid']for g in excluded['groups']};eh={g['question_hash']for g in excluded['groups']}
   main_groups,mgref=checked(main['groups']);mq={g['qid']for g in main_groups['train']};mh={g['question_hash']for g in main_groups['train']};require(len(mq)==124194,'Main qid count differs');del main_groups
-  assets,_=checked(conf['assets_metadata']);oldconf,ocref=checked(assets['original_config']);oldbank,obref=load(B/'bank/complete.json');oldgroups,ogref=checked(oldbank['groups']);old={g['qid']:g for g in oldgroups['train']};require(len(old)==169028 and oldconf['seed']==1729 and oldconf['run_id']!=conf['run_id'],'Canonical original old5 source differs');del oldgroups
+  assets,_=checked(conf['assets_metadata']);oldconf,ocref=checked(assets['original_config']);oldbank,obref=load(B/'bank/complete.json');oldgroups,ogref=checked(local_bank_ref(oldbank['groups'],B/'bank/groups.json'));old={g['qid']:g for g in oldgroups['train']};require(len(old)==169028 and oldconf['seed']==1729 and oldconf['run_id']!=conf['run_id'],'Canonical original old5 source differs');del oldgroups
   oldmanifest,omref=checked(assets['input_manifest']);oldrefs={x['path']:x for x in oldmanifest['batches']if x['split']=='train'}
   newevents=[];candidates=[];seenq=set();seent=set();oldinputs={};oldwanted={};domains=collections.Counter();meta_rows=[]
   for item in frozen:
@@ -125,7 +129,7 @@ def prepare():
     require(len(oldids)==len(set(oldids))==5 and oldids==[tid(oldconf['run_id'],o,j)for j in range(5)]and not set(oldids).intersection(newids)and not seent.intersection(newids),'Old/new whole G5 ID association differs')
     seenq.add(q);seent.update(newids);domains[json.loads(q)[0]]+=1
     oldpath=str(B/'inputs'/('shard-%02d'%(o%8))/('batch-%06d.json'%((o//8)//128)));require(oldpath in oldrefs,'Original canonical input batch missing');oldinputs[oldpath]=oldrefs[oldpath];oldwanted[q]=g
-    candidates.append(dict(qid=q,question_hash=h,source_ordinal=o,trajectory_ids=newids,labels=[labels[t]for t in newids],metadata_verified=True,source_priority=10,execution_run_id=seal['execution_run_id'],execution_namespace=str(TAIL),execution_source_commit=seal['execution_source_commit'],execution_host_cluster='HPC3',execution_job=seal['execution_job'],sampling_protocol_source_run_id=conf['sampling_protocol_source_run_id'],sampling_seed=conf['seed'],sampling_attempt_id=conf['sampling_attempt_id'],seal=event['seal'],source_event_index=len(newevents),old5_trajectory_ids=oldids,old5_labels=source['labels'],old5_source_ordinal=o,old5_source_input=oldrefs[oldpath],old5_source_run_id=oldconf['run_id'],old5_seed=oldconf['seed'],old5_source_namespace=str(B),already_in_current124194=q in mq,text_hash_overlap_current124194=h in mh,strict_EM_recompute_pending=True))
+    candidates.append(dict(qid=q,question_hash=h,source_ordinal=o,trajectory_ids=newids,labels=[labels[t]for t in newids],metadata_verified=True,full_source_qualified=False,source_priority=10,execution_run_id=seal['execution_run_id'],execution_namespace=str(TAIL),execution_source_commit=seal['execution_source_commit'],execution_host_cluster='HPC3',execution_job=seal['execution_job'],sampling_protocol_source_run_id=conf['sampling_protocol_source_run_id'],sampling_seed=conf['seed'],sampling_attempt_id=conf['sampling_attempt_id'],seal=event['seal'],source_event_index=len(newevents),old5_trajectory_ids=oldids,old5_labels=source['labels'],old5_source_ordinal=o,old5_source_input=oldrefs[oldpath],old5_source_run_id=oldconf['run_id'],old5_seed=oldconf['seed'],old5_source_namespace=str(B),already_in_current124194=q in mq,text_hash_overlap_current124194=h in mh,strict_EM_recompute_pending=True))
    newevents.append(event)
    meta_rows.append(dict(batch=inp.name,input=event['input'],seal=event['seal'],questions=len(batch['rows'])))
   oldevents=[];old_seen=set();candidate_by_qid={g['qid']:g for g in candidates}
@@ -141,7 +145,7 @@ def prepare():
   overlaps=dict(current124194_qid_overlap=len(already),current124194_hash_overlap_questions=sum(g['text_hash_overlap_current124194']for g in selected),canonical_train_text_duplicates=len(selected)-len({g['question_hash']for g in selected}),true6656_qid_overlap=0,true6656_hash_overlap=0,donor_current_net_new_coverage_unknown=True,shared_donor_atomic_claim=False,cross_donor_potentialOverlap=True)
   outputs={};outputs['frozen-seals']=write_once(snapshot/'frozen-seals.json',dict(config=config,input_manifest=mref,batches=meta_rows,frozen_at=start,do_not_follow_newly_sealed_batches=True))
   outputs['identities']=write_once(snapshot/'whole-G5-identities.json',dict(role='train',identity_only=True,labels_read_from_this_file=False,groups=[{k:g[k]for k in('qid','question_hash','trajectory_ids','execution_run_id','execution_host_cluster','seal')}for g in selected],questions=len(selected),trajectories=5*len(selected),potentialOverlap=True,ordered_qid_own5_execution_sha256=digest([[g['qid'],g['trajectory_ids'],g['execution_run_id']]for g in selected])))
-  outputs['candidates']=write_once(snapshot/'canonical-g10-candidates.json',dict(role='train_candidate_metadata_not_raw_acceptance',groups=eligible,old5_original_config=ocref,old5_original_bank=ogref,newseed_config=config,complete_raw_acceptance=False,whole_G5_choice_policy=dict(existing_accepted=0,HPC3_own_sealed=10,donor_sealed=20,tie_break='execution_run_id_then_seal_path',labels_or_scores_used=False,identical_protocol_trajectory_IDs_do_not_prove_identical_payload=True)))
+  outputs['candidates']=write_once(snapshot/'canonical-g10-candidates.json',dict(role='train_candidate_metadata_not_raw_acceptance',groups=eligible,old5_original_config=ocref,old5_original_bank=ogref,newseed_config=config,complete_raw_acceptance=False,whole_G5_choice_policy=dict(qualification_tier_first=True,existing_accepted=0,HPC3_own_sealed=10,donor_sealed=20,tie_break='execution_run_id_then_seal_path',labels_or_scores_used=False,unqualified_cannot_displace_qualified=True,identical_protocol_trajectory_IDs_do_not_prove_identical_payload=True)))
   outputs['source-events']=write_once(snapshot/'source-events.json',dict(events=[dict(event='original',batches=oldevents),dict(event='HPC3_newseed20261021',batches=newevents)],repacked=False,hidden_present=False))
   outputs['future-feature-plan']=write_once(snapshot/'future-feature-intake.json',dict(role='independent_L26_P20_feature_intake_after_full_ingest_only',candidate_groups=outputs['candidates'],source_events=outputs['source-events'],prefix_tokens=20,feature_layer=26,actor_revision=REV,actor_updates=0,feature_bank_created=False,full_strict_EM_causal_seed_ingest_required=True,current124194_fit_must_remain_unchanged=True,label_blind_whole_G5_choice=True,original_warmup_unseen_claim=False))
   outputs['overlap']=write_once(snapshot/'overlap.json',dict(overlaps,whole_source_duplicate_G5_dropped=dropped))
