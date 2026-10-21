@@ -152,7 +152,8 @@ def run():
             v['delta_Mixed_BA_vs_same_state_E0'] = v['Mixed_balanced_accuracy'] - b['Mixed_balanced_accuracy']
             v['delta_Top512_Mixed_vs_same_state_E0'] = v['selected512_Mixed'] - b['selected512_Mixed']
     # Preserve the already recorded scientific gate; no threshold or label fit.
-    gate = dict(Mixed_BA_strictly_above=.562504968663, Top512_Mixed_strictly_above=196,
+    gate = dict(Mixed_BA_strictly_above=.5625049686633887, Top512_Mixed_strictly_above=196,
+                BA_equality_roundoff_tolerance=1e-12,
                 provenance='root-data-scaling-priority-20261021.json existing goal_gate',
                 fixed_threshold=.5, both_metrics_required=True)
     candidates = []
@@ -161,7 +162,7 @@ def run():
             continue
         for state in ('raw', 'EMA'):
             v = r['states'][state]['fixed_selection2048']
-            if (v['Mixed_balanced_accuracy'] > gate['Mixed_BA_strictly_above']
+            if (v['Mixed_balanced_accuracy'] > gate['Mixed_BA_strictly_above'] + gate['BA_equality_roundoff_tolerance']
                     and v['selected512_Mixed'] > gate['Top512_Mixed_strictly_above']):
                 candidates.append(dict(epoch=r['epoch'], state=state,
                                        Mixed_BA=v['Mixed_balanced_accuracy'],
