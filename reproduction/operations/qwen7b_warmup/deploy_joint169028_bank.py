@@ -126,9 +126,9 @@ for n in ('controller','worker','progress','complete','failure'):
   p=b/(n+'.json')
   if p.exists():out[n]=read(p)
  except FileNotFoundError:pass
-for name in ('controller','worker'):
- if name in out:
-  c=out[name];p=pathlib.Path('/proc')/str(c['pid']);out[name+'_same_birth']=p.exists()and p.joinpath('stat').read_text().rsplit(')',1)[1].split()[19]==c['birth']
+if'controller'in out:
+ c=out['controller'];p=pathlib.Path('/proc')/str(c['pid']);out['controller_same_birth']=p.exists()and p.joinpath('stat').read_text().rsplit(')',1)[1].split()[19]==c['birth']
+if'worker'in out:out['worker_process_observation']='ALLOCATED_NODE_PID_NOT_QUERIED_FROM_LOGIN_PID_NAMESPACE'
 if(b/'complete.json').exists():out['complete_ref']=proof(b/'complete.json')
 print(json.dumps(out))
 ''')
