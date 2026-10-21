@@ -1,0 +1,71 @@
+{
+  "epoch": 1792593377.6512158,
+  "status": "ACTUAL_TAIL_PRODUCTION_CONTINUES_ORIGINAL_WRITERS",
+  "jobs": [
+    {
+      "job_id": "745518",
+      "worker": 0,
+      "sealed_batches": 102,
+      "questions": 13056,
+      "trajectories": 65280,
+      "controller": {
+        "fields": {
+          "Slurm_job_id": "745518",
+          "birth_ticks": "571937208",
+          "epoch": 1792586511.2419302,
+          "execution_host_cluster": "HPC3",
+          "execution_run_id": "36b784a3bf964e69a6130bcc41d68809",
+          "host": "ACD1-21",
+          "pid": 3181675,
+          "sampling_protocol_source_run_id": "70188b8e50fd4b45bc420ce58014f46e",
+          "source_commit": "2590d0b272013264b6d727a6a38493a790ee1305"
+        },
+        "ref": {
+          "bytes": 667,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-0/controller.json",
+          "sha256": "d2546f32c1881156bf7b4909c99980b0775560a678b9d5b15363805638c1fb04"
+        }
+      },
+      "failure": null,
+      "recent_error_lines": []
+    },
+    {
+      "job_id": "745519",
+      "worker": 1,
+      "sealed_batches": 103,
+      "questions": 13184,
+      "trajectories": 65920,
+      "controller": {
+        "fields": {
+          "Slurm_job_id": "745519",
+          "birth_ticks": "847886196",
+          "epoch": 1792586511.241499,
+          "execution_host_cluster": "HPC3",
+          "execution_run_id": "36b784a3bf964e69a6130bcc41d68809",
+          "host": "ACD1-64",
+          "pid": 2326052,
+          "sampling_protocol_source_run_id": "70188b8e50fd4b45bc420ce58014f46e",
+          "source_commit": "2590d0b272013264b6d727a6a38493a790ee1305"
+        },
+        "ref": {
+          "bytes": 666,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-1/controller.json",
+          "sha256": "2648bd128a9c8debdfd67c32e8230637f66e40296a294aa3fccb027495418307"
+        }
+      },
+      "failure": null,
+      "recent_error_lines": []
+    }
+  ],
+  "queue": "745519|q7b-tail-newseed-w1|RUNNING|ACD1-64|ACD1-64\n745518|q7b-tail-newseed-w0|RUNNING|ACD1-21|ACD1-21",
+  "sacct": "745518|q7b-tail-newseed-w0|RUNNING|0:0|01:54:29|ACD1-21\n745519|q7b-tail-newseed-w1|RUNNING|0:0|01:54:28|ACD1-64",
+  "tail_sealed_batches": 205,
+  "tail_sealed_questions": 26240,
+  "tail_sealed_trajectories": 131200,
+  "actual_generated_union_questions": 164514,
+  "remaining_canonical_unsealed": 4514,
+  "full_qualified_union_questions": 147618,
+  "next14592_not_yet_qualified": true,
+  "original_writers_not_modified": true,
+  "new_GPU_submissions": 0
+}

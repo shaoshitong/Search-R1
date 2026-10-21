@@ -1,11 +1,11 @@
-当前实际状态（2026-10-21，所有数字附观测口径）
+当前执行实测（2026-10-21；目标保持active）
 
-主训练745501已完成789/15528次真实更新，Adam15207，当前第1个新增epoch（每epoch3882更新，共4epoch）。完整可恢复checkpoint已到768；CP1独立重载及下一次实际更新重放通过，滚动checkpoint的完整状态和采样器重载通过。原进程持续推进、无新失败。冻结124194题/1241940条真实G10，原生block27与readout联合训练，LR5e-6，Mixed/nonMixed各64视图，actor更新0。不能把所有accepted更新都称为已持久保存。
+主训练745501：1025/15528真实更新，Adam15443，完整可恢复CP1024；原PID300719/birth116543024在ACD1-28推进，无failure/interrupted。124194题G10冻结，原生block27+readout联合训练，LR5e-6，每batch64Mixed/64nonMixed真实G5视图。当前首个新增epoch尚未结束，没有本轮独立效果提升可报告。
 
-当前尚无本轮训练后的独立epoch结果。起点EMA固定2048题：Mixed均衡准确率55.7714%，Top512真实Mixed196/512=38.28125%，原池663/2048=32.37305%。真实全对题有236/330被判Mixed、全错题540/1055被判Mixed，类别误判仍待新模型改善；这些是原有模型结果，不是本轮增益。训练loss有波动，不能以动态batch loss替代固定验证。最终4096未读取。
+全量canonical169028题计划逐qid与sortedSHA闭合：aa14bce45fc6a793789369d6f33c84edf3c1d79e601fec45882ec193b1e4c58d，缺失/多余0。最后生产实测205/241批=26240own题；与main/donor去重联合164514题生成、4514待生成。真正full rawG10验收现162210题（95.9663%），剩6818待验；不能用生成数代替通过数。新14592题old5/new5各72960条strictEM/causal/seeds/fullSHA均0错，346份batch metadata回执freshSHA通过、audit/launch锁释放。
 
-数据：原124194题+HPC3新9344+donor新17664-跨源重叠3584=147618题真实G10已验收，距离169028还差21410题原始G10验收。当前可训练特征库仍冻结124194题。独立745731单H100已实际采集17577/93440行、54/292完整chunks（观测epoch1792592046.0258775）；两次2855->9020行/8->28chunks、同进程birth且无failure，完整特征库验收未完成。donor去重后另14080题待后续特征。源执行身份必须整G5择源，不能直接union有相同tid的packed manifests。
+特征745731（normal1H100）已生成93440/93440行、292/292完整chunks，仍等待完整逐行retained/sourceSHA最终bank接受。donor745832（独立normal1H100）最新可见38732/140800行、121chunks；启动后480->2656行/1->8chunk已实测，无GPU热改。可变progress存在NFS可见性窗口，仅只读control做窄修05f28e2b；缺失时标unknown，不报0或停训。下一14592独立L26入口准备中，只有完整raw与CPU投影/physical末次绑定通过后执行。所有模型/特征留远端，当前fit未扩容。
 
-当前四个本项目作业：745501训练1H100、745518/745519各2H100产轨迹、745731特征1H100，均normal/acd_u；他人任务未改。当前24h主训练可能需要续编排：同job48h扩时被Slurm权限拒绝，terminal-only完整状态续跑控制已发布，原writer活跃时不重复提交。整体goal仍active，未宣布科学目标完成。
+旧E0 EMA独立2048：MixedBA55.7714%，Top512196Mixed/209全错/107全对，实际Mixed38.28125%，原池32.37305%；全对题进入Top51232.42%仍高于Mixed29.56%。这些是旧模型短板，不是新训练收益。新epoch必须对比固定阈值MixedBA/真实Mixed@512及三类误选，不能以训练loss代替泛化。
 
-新增只读诊断：E0 EMA Top512实际209全错/196Mixed/107全对；全对题进入Top512比例32.42%，高于Mixed29.56%。未来epoch需同时跟踪误选构成；本次只读分析未改训练或读取最终4096。
+完整目标还要求把全169028 ownG10+同合同L26数据实际用于独立数据scaling联合训练；不能仅备齐数据就宣告完成。当前124194实验保持不变、不丢Adam/RNG。新增全量实验需独立source/config/output/locks及实际启动恢复验收，比较matched-update和epoch节点。最终选择完成前不读取untouched4096结果。当前head-only高LR分支仍延后。既有terminal-only精确续跑控制保留，不在原writer活动时重复提交，不静默回滚。最后还需实际收益确认、fullcheckpoint和资源收尾。

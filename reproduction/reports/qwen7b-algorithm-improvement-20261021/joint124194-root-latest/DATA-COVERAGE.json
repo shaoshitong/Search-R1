@@ -5,16 +5,16 @@
   "HPC3_qualified_raw_questions": 9344,
   "donor_qualified_raw_questions": 17664,
   "cross_source_overlap_qids": 3584,
-  "new_distinct_raw_questions": 23424,
-  "total_distinct_accepted_raw_G10_questions": 147618,
+  "new_distinct_raw_questions": 38016,
+  "total_distinct_accepted_raw_G10_questions": 162210,
   "canonical_target_questions": 169028,
-  "remaining_raw_questions_to_accept": 21410,
+  "remaining_raw_questions_to_accept": 6818,
   "future_feature_bank_job": 745731,
   "future_feature_bank_questions": 9344,
   "future_feature_bank_expected_rows": 93440,
-  "future_feature_bank_observed_epoch": 1792592046.0258775,
-  "future_feature_bank_retained_rows": 17577,
-  "future_feature_bank_complete_chunks": 54,
+  "future_feature_bank_observed_epoch": 1792594005.4039865,
+  "future_feature_bank_retained_rows": 93440,
+  "future_feature_bank_complete_chunks": 292,
   "future_feature_bank_complete": false,
   "donor_unique_questions_still_require_future_features": 14080,
   "same_protocol_tid_not_same_payload": true,
@@ -44,5 +44,128 @@
   },
   "actor_updates": 0,
   "final4096_read": false,
-  "goal_complete": false
+  "goal_complete": false,
+  "full_plan_actual_qid_closure": {
+    "canonical_bank_complete": {
+      "bytes": 822,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/bank/complete.json",
+      "sha256": "6f7a5510eb092bd4a414b13f4f7a8a7f1dbe836dbfdd55fd5db97a19ba2c303e"
+    },
+    "canonical_groups": {
+      "bytes": 111281750,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/bank/groups.json",
+      "sha256": "1dbec76bab828a391de66f01fdaabfafc1557f699df174e82d81952263278bf8"
+    },
+    "canonical_qid_sha256": "aa14bce45fc6a793789369d6f33c84edf3c1d79e601fec45882ec193b1e4c58d",
+    "planned_union_qid_sha256": "aa14bce45fc6a793789369d6f33c84edf3c1d79e601fec45882ec193b1e4c58d",
+    "actual_missing": 0,
+    "actual_extraneous": 0,
+    "planned_tail_questions": 30754,
+    "donor_vs_whole_tail_overlap": 3584,
+    "all_donor_overlap_in_first9344": true,
+    "current_fit_does_not_overlap_new_sources": true,
+    "epoch": 1792592778.619754
+  },
+  "latest_actual_generated_union_questions": 164514,
+  "latest_actual_generated_missing_questions": 4514,
+  "latest_actual_own_produced_questions": 26240,
+  "next_frozen_CPU_audit": {
+    "batches": 114,
+    "questions": 14592,
+    "raw_G10_accepted": true,
+    "complete": {
+      "bytes": 2588,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-completion-delta01-v1/complete.json",
+      "sha256": "f789b74c3f3b9fc7c813fdf4f958c148a8c2741cd7e37f7e2be5917d1dfb10a0"
+    },
+    "terminal_metadata_readback": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-completion-delta01-v1/terminal-metadata-readback.json",
+      "bytes": 2355,
+      "sha256": "d392cfbd9525b5f35ec4163140ffcfcc63b46bfe6af1fdaf320e31083e2ca1fe"
+    },
+    "new5_strict_EM": 72960,
+    "old5_strict_EM": 72960,
+    "strict_EM_mismatches": 0,
+    "source_code_sha256": "033900997b8884395e4dc2a50e6336e3be720c69d118e39b05546e56f18db92a",
+    "no_intersection_with_main_or_donor": true
+  },
+  "produced_is_not_qualified": true,
+  "latest_new14592_accepted": true,
+  "latest_production_observation": {
+    "epoch": 1792593377.6512158,
+    "status": "ACTUAL_TAIL_PRODUCTION_CONTINUES_ORIGINAL_WRITERS",
+    "jobs": [
+      {
+        "job_id": "745518",
+        "worker": 0,
+        "sealed_batches": 102,
+        "questions": 13056,
+        "trajectories": 65280,
+        "controller": {
+          "fields": {
+            "Slurm_job_id": "745518",
+            "birth_ticks": "571937208",
+            "epoch": 1792586511.2419302,
+            "execution_host_cluster": "HPC3",
+            "execution_run_id": "36b784a3bf964e69a6130bcc41d68809",
+            "host": "ACD1-21",
+            "pid": 3181675,
+            "sampling_protocol_source_run_id": "70188b8e50fd4b45bc420ce58014f46e",
+            "source_commit": "2590d0b272013264b6d727a6a38493a790ee1305"
+          },
+          "ref": {
+            "bytes": 667,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-0/controller.json",
+            "sha256": "d2546f32c1881156bf7b4909c99980b0775560a678b9d5b15363805638c1fb04"
+          }
+        },
+        "failure": null,
+        "recent_error_lines": []
+      },
+      {
+        "job_id": "745519",
+        "worker": 1,
+        "sealed_batches": 103,
+        "questions": 13184,
+        "trajectories": 65920,
+        "controller": {
+          "fields": {
+            "Slurm_job_id": "745519",
+            "birth_ticks": "847886196",
+            "epoch": 1792586511.241499,
+            "execution_host_cluster": "HPC3",
+            "execution_run_id": "36b784a3bf964e69a6130bcc41d68809",
+            "host": "ACD1-64",
+            "pid": 2326052,
+            "sampling_protocol_source_run_id": "70188b8e50fd4b45bc420ce58014f46e",
+            "source_commit": "2590d0b272013264b6d727a6a38493a790ee1305"
+          },
+          "ref": {
+            "bytes": 666,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-1/controller.json",
+            "sha256": "2648bd128a9c8debdfd67c32e8230637f66e40296a294aa3fccb027495418307"
+          }
+        },
+        "failure": null,
+        "recent_error_lines": []
+      }
+    ],
+    "queue": "745519|q7b-tail-newseed-w1|RUNNING|ACD1-64|ACD1-64\n745518|q7b-tail-newseed-w0|RUNNING|ACD1-21|ACD1-21",
+    "sacct": "745518|q7b-tail-newseed-w0|RUNNING|0:0|01:54:29|ACD1-21\n745519|q7b-tail-newseed-w1|RUNNING|0:0|01:54:28|ACD1-64",
+    "tail_sealed_batches": 205,
+    "tail_sealed_questions": 26240,
+    "tail_sealed_trajectories": 131200,
+    "actual_generated_union_questions": 164514,
+    "remaining_canonical_unsealed": 4514,
+    "full_qualified_union_questions": 147618,
+    "next14592_not_yet_qualified": true,
+    "original_writers_not_modified": true,
+    "new_GPU_submissions": 0
+  },
+  "production_observation_is_not_raw_G10_acceptance": true,
+  "latest_production_snapshot_ref": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/hpc3-tail-plan-completion/actual-production-205.json",
+    "bytes": 2720,
+    "sha256": "0e44f98eee210a29ee5756c4bce5df1b611f76f9f47b9645f4a87908fd427a2b"
+  }
 }
