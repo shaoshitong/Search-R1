@@ -1,0 +1,48 @@
+{
+  "status": "HUMAN_PIVOT_SOURCE_STOPPED_EXACT_CHECKPOINT_AND_PRIOR_E4_FRESH_SHA_PASSED",
+  "epoch": 1792597869.2865336,
+  "old_job": "745501",
+  "old_exit": "COMPLETED_0_0",
+  "old_accepted_updates": 1555,
+  "old_progress_equals_checkpoint_equals_intent_equals_interrupted": true,
+  "source_training_lock_free": true,
+  "old_checkpoint": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-124194-v1/checkpoints/.rolling-accepted-cursor-001555-bf02f2d7564d49309700f43747b3fec4.pt",
+    "sha256": "abd4ba988492d926f4298fb2878b00302b5f297d002baa121cf60166c1cda541",
+    "bytes": 3751800666,
+    "cursor": 1555,
+    "steps": 15973,
+    "config_sha256": "5aaa63c9348f410357be92ce491ba6d18286d618ab86dae6e63f193f2b4367b6",
+    "matched_binding_sha256": "01071ad024af352d576a2d02f7e8d4a867f71bd7f6609ca9110db13e9b2f307f",
+    "epoch_time": 1792597675.7599282,
+    "accepted_hashes": {
+      "raw": "becd344d6340d6b9cab29391aa7fe11decad68bc777a9e20f230fc90e092f104",
+      "ema": "76e7a97e551f478c851cbc5ca074dae2aa2437be272a4023d0db787b5c87e257",
+      "adam": "eb536c56934104f770bbfc0449aa6ed559af5672d90d331f5348dd1b7a36e3b4",
+      "raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+    },
+    "sampler_state_sha256": "bbc9dfea91702a62fdae0e0a34d0934e35a634e6fef09339d2bafa1f70e41c7a",
+    "data_cursor": {
+      "cursor": 1555,
+      "sampler_binding": "c9281ec1c271c5d6db71a8d77789a436619e4d707f1a8426393638119e9cc45d",
+      "sampler_state_sha256": "bbc9dfea91702a62fdae0e0a34d0934e35a634e6fef09339d2bafa1f70e41c7a"
+    },
+    "pinned": false,
+    "full_CPU_six_state_reload_passed": true,
+    "sampler_full_state_and_cursor_reload_passed": true,
+    "saved_all_four_source_RNG_states": true,
+    "checkpoint_kind": "native_joint_rolling",
+    "allocation_job_id": "745501"
+  },
+  "new_training_source": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/probe/epoch-0004.pt",
+    "bytes": 3745810528,
+    "sha256": "e29168c36de152a57294f055e7d420cbba25cae31aeace32e793ba1098bf97a8"
+  },
+  "old_checkpoint_is_archive_only": true,
+  "new_native_block_Adam_source_steps": 14418,
+  "new_group_head_random_initialization_only": true,
+  "model_or_tensor_loaded": false
+}

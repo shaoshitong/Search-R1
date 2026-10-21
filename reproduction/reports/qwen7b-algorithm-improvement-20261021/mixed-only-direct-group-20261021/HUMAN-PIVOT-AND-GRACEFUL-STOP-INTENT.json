@@ -1,0 +1,15 @@
+{
+  "observed_epoch": 1792597526.9984992,
+  "observed_UTC": "2026-10-21T15:45:26.998502+00:00",
+  "source": "latest_human_message_in_current_thread",
+  "instruction_excerpt": "直接把轨迹的预测去掉；直接接一个头预测混合；输入同题五条prefix和question；这种训练没有意义可以停掉",
+  "affected_job": 745501,
+  "affected_namespace": "joint-balanced-native-E4-124194-v1",
+  "stop_scope": "current trajectory_BCE_plus_Mixed_BCE training only after exact full checkpoint",
+  "new_direction": "joint_native_block27_and_direct_group_Mixed_head_only_binary_BCE",
+  "old_unsubmitted_full169028_dual_BCE_superseded": true,
+  "keep_features_generation_and_acceptance": true,
+  "keep_source_Adam_and_RNG": true,
+  "new_group_head_only_may_initialize_due_to_architecture_change": true,
+  "signal_only_after_PID_birth_source_job_validation": "SIGUSR1 to source-matched Python PID via owned Slurm step; not batch/full scancel"
+}
