@@ -92,8 +92,9 @@ def run(base):
   migration=dict(status='BATCH128_HIGHEST_COMPLETE_STATE_RESTORED',source_cursor=cursor,source_checkpoint=spec['source_checkpoint'],source_accepted_hashes=saved['accepted_hashes'],raw_EMA_twoAdam_RNG_buffers_and_sampling_position_preserved=True,sampler_binding_changed_for_user_batch128=True,source_config=spec['source_config'],restoration_receipt=dict(full_checkpoint_fresh_SHA_and_nine_state_restore_passed=True,accepted_hashes=saved['accepted_hashes']))
   u.atomic(base/'startup-binding-migration.json',migration)
  del saved;gc.collect()
- seal=dict(source_config=spec['source_config'],source_checkpoint=spec['source_checkpoint'],restoration_receipt=migration['restoration_receipt'])
- reader=PrefetchedReplayFeatureReader.from_inherited_seal(u.read(u.checked(c['features'])),26,seal);reader.proof['max_prefetched_feature_bytes']=8*128*10*293*3584*2;u.atomic(base/'reader-integrity.json',reader.proof)
+ inherited=u.read(oldfast.BASE/'reader-integrity.json')['proof']
+ seal={key:inherited[key]for key in('source_config','source_checkpoint','restoration_receipt')}
+ reader=PrefetchedReplayFeatureReader.from_inherited_seal(u.read(u.checked(c['features'])),26,seal);reader.proof['immediate_restored_checkpoint']=spec['source_checkpoint'];reader.proof['max_prefetched_feature_bytes']=8*128*10*293*3584*2;u.atomic(base/'reader-integrity.json',reader.proof)
  micro=128
  if(base/'progress.json').exists():micro=u.read(base/'progress.json').get('micro_questions',128)
  def epoch_due():return sampler.epoch_at(cursor)if cursor in c['epoch_end_cursors']else None
