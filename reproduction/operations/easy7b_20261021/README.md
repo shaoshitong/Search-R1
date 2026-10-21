@@ -39,3 +39,16 @@ The updated human goal also requires notification and a complete-state recovery
 on clear EM/reward collapse. The read-only training observer exposes completed
 outer metrics and actual fixed-validation summaries; it does not add a training
 threshold, change the loss, or restart a healthy job for a single fluctuation.
+
+The CP5 post-callback supplement uses `archive_post_callback5_local.py` and its
+independent `archive_post_callback5_hk.py` CPU runner. The core archive must first
+have actual fresh-source/fresh-destination SHA acceptance. Only then can the
+one-shot runner preserve the seven post-QA5 boundary files plus the rolling
+manifest in a separate child of that accepted archive. Module bytes are frozen
+at `b87a0c3d7a7ca2d9f6751a99179897d8d8aca56d`; runner/observer bytes come from the
+separately published operator commit. No model/Adam copy, model reload, training
+edit, Slurm submission, or healthy-controller restart is performed. The optional
+observer `--verify-files` reads all eight small destination files and their SHA.
+Existing launch or operation claims must be inspected, never replayed. A successful
+supplement preserves bytes; it does not certify an actual CUDA restore. The final
+outer200 native-four-rank recovery remains a separate required acceptance.
