@@ -1,0 +1,112 @@
+{
+  "result": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+    "checked_unix": 1792591709.065414,
+    "core_after": {
+      "archive_receipt_sha256": "9dcdb4a44860bc45b758fcc81b52edc6b238175dc95aa05b40d76e30edf82700",
+      "checkpoint_complete_sha256": "3d4582a5f02b3d33595cb05e97715b98282f4106e6ac7c0b67c1dbe63ee90442",
+      "existing_controller_claim_sha256": "1d077ec833dc5a160aabd565ce4a7c5c184f80b9a49c29daf2d17bde4e216980",
+      "source_acceptance_sha256": "9d866b468cdbfe47cedbb313d7c88debd5e1f6d5bf86c98cce03a763d16f9944",
+      "source_snapshot_sha256": "e0ab2957af7fda875de8409d3cca6905fe2411df3c6259f28526e68f473e8ed0"
+    },
+    "core_before": {
+      "archive_receipt_sha256": "9dcdb4a44860bc45b758fcc81b52edc6b238175dc95aa05b40d76e30edf82700",
+      "checkpoint_complete_sha256": "3d4582a5f02b3d33595cb05e97715b98282f4106e6ac7c0b67c1dbe63ee90442",
+      "existing_controller_claim_sha256": "1d077ec833dc5a160aabd565ce4a7c5c184f80b9a49c29daf2d17bde4e216980",
+      "source_acceptance_sha256": "9d866b468cdbfe47cedbb313d7c88debd5e1f6d5bf86c98cce03a763d16f9944",
+      "source_snapshot_sha256": "e0ab2957af7fda875de8409d3cca6905fe2411df3c6259f28526e68f473e8ed0"
+    },
+    "credentials_persisted": false,
+    "emit_returncode": 0,
+    "healthy_controller_modified": false,
+    "jobs_submitted": 0,
+    "module_commit": "b87a0c3d7a7ca2d9f6751a99179897d8d8aca56d",
+    "module_sha256": "082201e54ab06626e877ea66e70f881ff9f6e69cc81a2eb03b6e98ced51b2c99",
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "source_job": "745371",
+    "status": "EASY7B_CP5_POST_CALLBACK_ARCHIVE_ONCE_COMPLETE",
+    "step": 5,
+    "supplementary_receipt": {
+      "actual_cuda_restore_accepted": false,
+      "actual_model_optimizer_rng_dataequal_accepted": false,
+      "binding": {
+        "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+        "core_archive": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5",
+        "core_archive_receipt_sha256": "9dcdb4a44860bc45b758fcc81b52edc6b238175dc95aa05b40d76e30edf82700",
+        "core_checkpoint_complete_sha256": "3d4582a5f02b3d33595cb05e97715b98282f4106e6ac7c0b67c1dbe63ee90442",
+        "core_source_acceptance_sha256": "9d866b468cdbfe47cedbb313d7c88debd5e1f6d5bf86c98cce03a763d16f9944",
+        "core_source_snapshot_sha256": "e0ab2957af7fda875de8409d3cca6905fe2411df3c6259f28526e68f473e8ed0",
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+        "step": 5
+      },
+      "checked_unix": 1792591708.9851055,
+      "core_payload_unmodified": true,
+      "destination": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/post-callback-boundary",
+      "destination_fsynced": true,
+      "file_count": 8,
+      "files": {
+        "boundary/driver.pt": {
+          "bytes": 726812,
+          "sha256": "a619abd230502825868f6c1bb4a58e828eb4a4702120ce8593145a6d1d79f284"
+        },
+        "boundary/manifest.json": {
+          "bytes": 2624,
+          "sha256": "46aa8baca6fd02da0a7e320905034a7d5341a61faeaeb2e8a3b5d781f81d4edb"
+        },
+        "boundary/rank-0.pt": {
+          "bytes": 16912,
+          "sha256": "26adc63a56249daac2a52853d2edd95221e20bf3d00cfbb24195cb780151601f"
+        },
+        "boundary/rank-1.pt": {
+          "bytes": 16912,
+          "sha256": "033a69ce35e051b8e60eb11a1d026c3d1ea37674795eadcda9e9ce0c37611e34"
+        },
+        "boundary/rank-2.pt": {
+          "bytes": 16912,
+          "sha256": "be75353bf597572beea70ab8c8c02096d66eb34ddfe9d4a6692edae540443c41"
+        },
+        "boundary/rank-3.pt": {
+          "bytes": 16912,
+          "sha256": "f609110cd4096c509583c9a7aad789d427dc93fa51915ebe6fa1254fdca8b37b"
+        },
+        "boundary/reward-probe-manifest.json": {
+          "bytes": 468327,
+          "sha256": "a3aa29a31dba750c8a1d6bbe9d09ea105a4fba0a99216ce1b736865be51ec54f"
+        },
+        "rolling-full-manifest.json": {
+          "bytes": 16078,
+          "sha256": "ce9e904667fc1f2f90487ec6301d156ca3c0f9fd51d631dfb9f5dad3dd82e1f2"
+        }
+      },
+      "fresh_destination_sha_verified": true,
+      "phase": {
+        "callbacks_complete": true,
+        "final51713_pending_at_boundary": false,
+        "post_callback_rng_captured": true,
+        "probe_round": 0,
+        "reward_refresh_pending": false,
+        "sampling_rng_stage": "post_QA5"
+      },
+      "scope": "Preserved producer post-callback bytes; no actual reload performed",
+      "source_snapshot_sha256": "f52b6b8a31a3639d4cd33810feb82ba6bd112bb12ff7d291b6bc534028be4728",
+      "status": "EASY2560_POST_CALLBACK_BOUNDARY_ARCHIVE_SHA_FSYNC_PASS",
+      "total_bytes": 1281489
+    },
+    "training_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+    "training_runtime_modified": false
+  },
+  "eight_file_sha_readback": {
+    "boundary/driver.pt": true,
+    "boundary/manifest.json": true,
+    "boundary/rank-0.pt": true,
+    "boundary/rank-1.pt": true,
+    "boundary/rank-2.pt": true,
+    "boundary/rank-3.pt": true,
+    "boundary/reward-probe-manifest.json": true,
+    "rolling-full-manifest.json": true
+  },
+  "full_payload_sha_checked": true,
+  "staging_children": [],
+  "checked_unix": 1792591741.9065564
+}

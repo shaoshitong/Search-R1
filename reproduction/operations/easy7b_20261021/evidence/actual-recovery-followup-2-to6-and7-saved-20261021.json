@@ -1,0 +1,321 @@
+{
+  "status": "ACTUAL_CP1_ALL4_RESTORE_OUTER2_TO6_AND_SAVED_OUTER7_FOLLOWUP_PASS",
+  "checked_unix": 1792591939.4368865,
+  "job": "745371",
+  "run_id": "232f20e112ac4a978c5aba52a0367195",
+  "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+  "actual_cp1_restore": {
+    "acceptance": {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/actual-cp1-state-restore-acceptance.json",
+      "bytes": 7267,
+      "sha256": "b4f4a3e23c297c89c588c0b52fa3ec968a97910ef53dc258f08e576e0411b865"
+    },
+    "source_receipt": {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-sparse-cp1-20261021/preparation/cp1-full-state-source-receipt.json",
+      "bytes": 53385,
+      "sha256": "0a671ffd2941bfb417cd6968ee7b60d62e02ee67f0c400d929f1127aab7e5984"
+    },
+    "actual_producer_proofs_rehashed": 9,
+    "model_tensors": 339,
+    "all4_model_adam_scheduler_rng_dataequal": true,
+    "driver_cursor": 2560
+  },
+  "completed_followup_outers": [
+    {
+      "step": 2,
+      "attempt_id": "6b65b308ae474a81bb78d6277b4d9a8c",
+      "all4_optimizer_writes_before": 20,
+      "all4_optimizer_writes_after": 40,
+      "all4_writes_this_outer": 20,
+      "all4_scheduler_advances": 1,
+      "scheduler_epoch": 2,
+      "skipped_opportunities": 0,
+      "optimizer_rollbacks": 0,
+      "pool_retries": 0
+    },
+    {
+      "step": 3,
+      "attempt_id": "eefd4da7a7b445a4862963b159cbdfdc",
+      "all4_optimizer_writes_before": 40,
+      "all4_optimizer_writes_after": 60,
+      "all4_writes_this_outer": 20,
+      "all4_scheduler_advances": 1,
+      "scheduler_epoch": 3,
+      "skipped_opportunities": 0,
+      "optimizer_rollbacks": 0,
+      "pool_retries": 0
+    },
+    {
+      "step": 4,
+      "attempt_id": "af99f949b92f4d4bbce7de3a55fa66ef",
+      "all4_optimizer_writes_before": 60,
+      "all4_optimizer_writes_after": 80,
+      "all4_writes_this_outer": 20,
+      "all4_scheduler_advances": 1,
+      "scheduler_epoch": 4,
+      "skipped_opportunities": 0,
+      "optimizer_rollbacks": 0,
+      "pool_retries": 0
+    },
+    {
+      "step": 5,
+      "attempt_id": "bd4e2ec20d514d55810b4f07d5007207",
+      "all4_optimizer_writes_before": 80,
+      "all4_optimizer_writes_after": 100,
+      "all4_writes_this_outer": 20,
+      "all4_scheduler_advances": 1,
+      "scheduler_epoch": 5,
+      "skipped_opportunities": 0,
+      "optimizer_rollbacks": 0,
+      "pool_retries": 0
+    },
+    {
+      "step": 6,
+      "attempt_id": "e2db2510d7b845f1ae0e7d9ccc056938",
+      "all4_optimizer_writes_before": 100,
+      "all4_optimizer_writes_after": 120,
+      "all4_writes_this_outer": 20,
+      "all4_scheduler_advances": 1,
+      "scheduler_epoch": 6,
+      "skipped_opportunities": 0,
+      "optimizer_rollbacks": 0,
+      "pool_retries": 0
+    }
+  ],
+  "all4_cumulative_optimizer_writes_before": 20,
+  "all4_cumulative_optimizer_writes_after": 120,
+  "current_sealed_checkpoint": {
+    "step": 6,
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_6",
+    "manifest": {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_6/full-manifest.json",
+      "bytes": 16078,
+      "sha256": "eaceea0b97b3ce5e73a12ee5449b5808f245da93065886eca5209de944ba223d"
+    },
+    "latest_pointer": {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/latest.json",
+      "bytes": 778,
+      "sha256": "c0fc3738e09327483e1629fb999f013f19223297d6f72ee1825ca1e0a830b723"
+    },
+    "small_files_fresh_sha": [
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_6/added_tokens.json",
+        "bytes": 605,
+        "sha256": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_6/complete.json",
+        "bytes": 2032,
+        "sha256": "7a6790833b3201c7ce88626e6db043f5cba85414af38ddd61b3d32b1b29e8d35"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_6/config.json",
+        "bytes": 828,
+        "sha256": "16a1b264d9dfaf10adf1cb3b8fe6d3e254fbb04708c76724cbabf89653eacbe9"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_6/generation_config.json",
+        "bytes": 243,
+        "sha256": "5cbc3d054b73e70801535a65ffc9b427481257fa29f896e48f68e9ea3c285b96"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_6/merges.txt",
+        "bytes": 1671853,
+        "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_6/model.safetensors.index.json",
+        "bytes": 27752,
+        "sha256": "3cb581aa586322d386864a9f80d0adbaa1f0f838cc310d7d7670990fa42121be"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_6/special_tokens_map.json",
+        "bytes": 613,
+        "sha256": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_6/tokenizer.json",
+        "bytes": 11421896,
+        "sha256": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_6/tokenizer_config.json",
+        "bytes": 7306,
+        "sha256": "7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_6/training_state/driver.pt",
+        "bytes": 726812,
+        "sha256": "b0b80bf9909079d1b0de173a948a68ec1f4ee9bedcfe6713aef174259774b423"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_6/training_state/manifest.json",
+        "bytes": 2125,
+        "sha256": "692c93efe12e30c06064adf8c6d04bdcf83ac34b389e0750b3c03a022d7de5a3"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_6/vocab.json",
+        "bytes": 2776833,
+        "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_6/boundary/driver.pt",
+        "bytes": 726812,
+        "sha256": "aeef8ca876e06565e3341ef8687aa166f516820c2aa0b542be635ccac7d2b241"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_6/boundary/manifest.json",
+        "bytes": 2623,
+        "sha256": "e716aa7d8b222a0aa8a81f8210d73ec7cbd1bea5807e332165705b3837f18151"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_6/boundary/rank-0.pt",
+        "bytes": 16912,
+        "sha256": "ffe1d5e0f976825659a613baf92653373646a4bbe74025465e9ced312aa8c73d"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_6/boundary/rank-1.pt",
+        "bytes": 16912,
+        "sha256": "5581e0b0f68b12eef56a633efb98e64a56ddaf000de8a75965d1fcf546615760"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_6/boundary/rank-2.pt",
+        "bytes": 16912,
+        "sha256": "102c939a33a3d4487f360571699d7ff974ac1ff0ce6e01fe477c89a17ddcc1f1"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_6/boundary/rank-3.pt",
+        "bytes": 16912,
+        "sha256": "a78312766f8573fa6185acf6b3c909051a99d6f80a7963614b802c74d9da0188"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_6/boundary/reward-probe-manifest.json",
+        "bytes": 468327,
+        "sha256": "a3aa29a31dba750c8a1d6bbe9d09ea105a4fba0a99216ce1b736865be51ec54f"
+      }
+    ],
+    "large_files_identity_only": 11,
+    "large_bytes_not_rehashed": 91387600940,
+    "all_sealed_file_identities_verified": true,
+    "post_callback_boundary_verified": true
+  },
+  "actual_outer7_saved_generation": {
+    "pool": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-candidate-pools/ef893814f0a24d058072385e67194516-pool-0",
+    "progress": {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-candidate-pools/ef893814f0a24d058072385e67194516-pool-0/progress.json",
+      "bytes": 58112,
+      "sha256": "bea766ae497e964799bcc5bd2f3a22b85fea066f296baf5a9daf1e7c01ad6857"
+    },
+    "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:7:policy-ef893814f0a24d058072385e67194516",
+    "completed_questions": 512,
+    "source_consumed": 17920,
+    "saved_chunks": [
+      {
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-candidate-pools/ef893814f0a24d058072385e67194516-pool-0/0.pt",
+        "bytes": 653869694,
+        "inode": 11110854024,
+        "mtime_ns": 1792591875646692000,
+        "completed_questions": 512,
+        "raw_tensor_body_read": false
+      }
+    ]
+  },
+  "observed_complete_evidence_prefixes": [
+    {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/logs/actual-updates.jsonl",
+      "bytes": 5875,
+      "sha256": "96f106a1d5b90870c930ae04f9b3b57ec7901365391472753bdeb7c6af09a24a",
+      "prefix_only": true
+    },
+    {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/logs/actual-attempts.jsonl",
+      "bytes": 5998,
+      "sha256": "b6b10f84b49b535ad22f5525d26aa6dbd4a0e4273082860e44b6469321aa4467",
+      "prefix_only": true
+    },
+    {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/logs/scheduler-rank-0.jsonl",
+      "bytes": 18743,
+      "sha256": "bdf341f49e59fae1b9a3e6a6e8d05bd9ca8fbce2bad763255c97c3f01c6ff3b9",
+      "prefix_only": true
+    },
+    {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/logs/optimizer-rank-0.jsonl",
+      "bytes": 750032,
+      "sha256": "516a4820092e48162fe93f545b333086846fcf3daaaadc8dbf2541f772eab47c",
+      "prefix_only": true
+    },
+    {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/logs/scheduler-rank-1.jsonl",
+      "bytes": 18743,
+      "sha256": "6e11b0e80a07a075ef6249f8b56a04bd4c4b467452352270c0d1474cac67af8f",
+      "prefix_only": true
+    },
+    {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/logs/optimizer-rank-1.jsonl",
+      "bytes": 750032,
+      "sha256": "79b1bc048e1e6890aa735c25222ddcc3894cb1b511243cdaedbb8169f763e01e",
+      "prefix_only": true
+    },
+    {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/logs/scheduler-rank-2.jsonl",
+      "bytes": 18740,
+      "sha256": "1c345a32fed782340eff264a1851fb7b159df70a645f4166e0131d99f55b9d50",
+      "prefix_only": true
+    },
+    {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/logs/optimizer-rank-2.jsonl",
+      "bytes": 750072,
+      "sha256": "c207360b67a75bb92cfb080a6358c58ec79df1c9838b02ccc19eb125e936ec60",
+      "prefix_only": true
+    },
+    {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/logs/scheduler-rank-3.jsonl",
+      "bytes": 18742,
+      "sha256": "4ad1c73c17755b0132fabb498fc22b56ec58163ad5ae240830a7987808937bf6",
+      "prefix_only": true
+    },
+    {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/logs/optimizer-rank-3.jsonl",
+      "bytes": 750152,
+      "sha256": "73dccaaaea55ffecdf9b58e32e7ad376857eabba7e384df3c59aff142ee1f110",
+      "prefix_only": true
+    },
+    {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/6b65b308ae474a81bb78d6277b4d9a8c.json",
+      "bytes": 2751701,
+      "sha256": "c6ac50abf9ad053a02a0db5e75ede25dabb9c89da6656bcbcc49294e26fc1efb"
+    },
+    {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/eefd4da7a7b445a4862963b159cbdfdc.json",
+      "bytes": 2750777,
+      "sha256": "0c62dbb0c0072ed74eaf706f54b8106e4d962580709f48873614c0013f5f099b"
+    },
+    {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/af99f949b92f4d4bbce7de3a55fa66ef.json",
+      "bytes": 2751225,
+      "sha256": "f415813a06cffc37aec9580346d70b30956292e3d665cedcdd4f98e8bc205069"
+    },
+    {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/bd4e2ec20d514d55810b4f07d5007207.json",
+      "bytes": 2750964,
+      "sha256": "3f091b73b120aa918928f34c137adb09a6ce32976766c78dd4e3c2ec80ec8c07"
+    },
+    {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/e2db2510d7b845f1ae0e7d9ccc056938.json",
+      "bytes": 2751156,
+      "sha256": "704514069af397474f488c16c3816404d04ffa95b7e12b23586b4d3839e0b3a8"
+    }
+  ],
+  "read_only": true,
+  "torch_imported": false,
+  "model_loads": 0,
+  "gpu_allocations": 0,
+  "large_tensor_body_reads": 0,
+  "training_modified": false,
+  "jobs_submitted": 0,
+  "restart_performed": false,
+  "cuda_restoration_performed_by_this_reader": false,
+  "recovery_followup_accepted": true,
+  "goal_complete": false
+}

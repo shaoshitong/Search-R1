@@ -1,6 +1,6 @@
 {
-  "epoch": 1792590270.3853297,
-  "status": "OUTER5_FIXED512_VERIFIED_AND_FULLY_SEALED_OUTER6_ACTUAL_SAMPLING",
+  "epoch": 1792591939.4368865,
+  "status": "ACTUAL_CP1_RECOVERY_FOLLOWUP_2_TO6_AND_SAVED7_PASS_CP5_CORE_AND_POST_QA_ARCHIVE_ACCEPTED",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "745371",
@@ -11,7 +11,7 @@
   "global_mini": 128,
   "logical_micro": 4,
   "accumulation": 4,
-  "actual_completed_outer": 5,
+  "actual_completed_outer": 6,
   "initialization_is_not_training_acceptance": true,
   "old3b": {
     "job": "734689",
@@ -39,7 +39,9 @@
         "allocated_bytes": 2991781801984,
         "approximate": false,
         "other_task_assets_and_features_not_authorized_for_deletion": true
-      }
+      },
+      "historical_scan_precedes_authorized_legacy_cleanup": true,
+      "not_a_current_post_cleanup_total": true
     },
     "latest_human_no_delete_features": true
   },
@@ -47,13 +49,13 @@
     "actual_training_optimization_enabled": true,
     "selected_LM_head": "Actual 7B CUDA LPmax3.8147e-6/loss1.6925e-9, but gradient thresholds not met; dense repeat relativeL2 0.00904/0.00964, sparse0.01149; INCONCLUSIVE strictgrad; NOT ENABLED",
     "exact_query_cache": "11 CPU tests passed; preserves exact original fullbatch/context/score mode/version and logical search counts",
-    "pending": "Continue4..6completeand7start recoveryfollowup; fixedQA5/50/100/150/200,200outer,native51713,allmilestonearchivesandactualfinal200restorewithout201 remainpending",
+    "pending": "Continue200outer; fixedQA50/100/150/200; final native51713; remaining milestone core/post-callback archives; actual final200 native4 restore without201",
     "physical_micro16": "Not raised blindly; needs actual measured memory/throughput",
     "enabled_scope": "Exact retrieval cache + original dense head + external2H100 service; no throughput speedup claimed yet"
   },
   "previous_goal_turn_classification": "PROGRESS: actual CP2 full seal and outer3 start accepted",
-  "latest_turn_classification": "PROGRESS_OUTER5_NATIVE4_SEAL_FIXED512_VERIFIED_ACTUAL6_SAMPLING_CORE_ARCHIVE_STREAMING",
-  "last_observation": "training-progress-1792590270.json",
+  "latest_turn_classification": "PROGRESS_ACTUAL2_TO6_ALL4_WRITES_AND_SAVED7_VERIFIED_CP5_FULL_ARCHIVE_AND_POST_QA_BOUNDARY_SHA_PASS",
+  "last_observation": "training-progress-1792591917.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "stage": "GRPO_1_TO_200",
@@ -97,13 +99,13 @@
     "actor_visible_token_lists_exact_equal": 64,
     "http_and_projection_seconds": 3.5052835568785667,
     "last_actual_statistics": {
-      "logical_requests": 54546,
-      "logical_queries": 54672,
-      "completed_requests": 54546,
-      "completed_queries": 54672,
+      "logical_requests": 67808,
+      "logical_queries": 67934,
+      "completed_requests": 67808,
+      "completed_queries": 67934,
       "failed_requests": 0,
-      "backend_seconds": 2251.160828413442,
-      "last_completed_unix": 1792590271.1442728
+      "backend_seconds": 2788.6009433995932,
+      "last_completed_unix": 1792591917.7815564
     }
   },
   "failed_diagnostic_job": "745258",
@@ -111,7 +113,7 @@
   "storage_inventory_report": "HPC3-storage-distribution-20261021.txt",
   "last_measured_queue": {
     "rc": 0,
-    "stdout": "745371|RUNNING|ACD1-55|ACD1-55|2026-10-21T19:41:06|6-21:56:36\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-20:55:20\n",
+    "stdout": "745371|RUNNING|ACD1-55|ACD1-55|2026-10-21T19:41:06|6-21:29:09\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-20:27:53\n",
     "stderr": ""
   },
   "new_recovery_base_allocated_bytes": 62230528,
@@ -137,15 +139,16 @@
     2,
     3,
     4,
-    5
+    5,
+    6
   ],
   "archive_controller_for_current7b_not_yet_started": false,
   "remaining_goal_requirements": [
-    "complete2..6 and7startfollowup",
     "continue200outer",
-    "fixed512 QA5/50/100/150/200",
-    "native51713finalevaluation",
-    "full milestone archives and actual final200native4restore without201"
+    "fixed512 QA50/100/150/200",
+    "native51713 final evaluation",
+    "full50/100/150/200 core and post-callback archives",
+    "actual final200 native4 model/Adam/scheduler/RNG/driver/dataequal restore without201"
   ],
   "actual_state_restore_acceptance": "actual-cp1-state-acceptance-1792583368.json",
   "node": "ACD1-55",
@@ -175,13 +178,18 @@
     ],
     "same_birth_verified_twice": true,
     "latest_progress": {
-      "phase": "STREAMING_SOURCE_TO_HKUST3",
-      "step": 5,
-      "total_bytes": 106690057725,
-      "completed_steps": [],
-      "checked_unix": 1792589954.8211646
+      "phase": "WAITING_CHECKPOINT",
+      "source_job": "745371",
+      "step": 50,
+      "actual_job_state": "RUNNING",
+      "completed_steps": [
+        5
+      ],
+      "checked_unix": 1792591822.1434107
     },
-    "completed_steps": [],
+    "completed_steps": [
+      5
+    ],
     "cpu_only": true,
     "gpu_allocations": 0,
     "models_loaded": 0,
@@ -210,7 +218,8 @@
     "measured_observations": [
       "hk-archive-recovery-observation-1792587265.json",
       "hk-archive-recovery-observation-1792587305.json"
-    ]
+    ],
+    "last_same_birth_verified_unix": 1792591834.2842638
   },
   "actual_state_restore": {
     "model_tensors": 339,
@@ -226,15 +235,6 @@
   },
   "current_candidate_pools": [
     {
-      "name": "af99f949b92f4d4bbce7de3a55fa66ef-pool-0",
-      "step": 4,
-      "completed_questions": 2560,
-      "reserved_questions": 2560,
-      "source_consumed": 10240,
-      "saved_chunk_files": 15,
-      "progress_error": null
-    },
-    {
       "name": "bd4e2ec20d514d55810b4f07d5007207-pool-0",
       "step": 5,
       "completed_questions": 2560,
@@ -246,9 +246,18 @@
     {
       "name": "e2db2510d7b845f1ae0e7d9ccc056938-pool-0",
       "step": 6,
+      "completed_questions": 2560,
+      "reserved_questions": 2560,
+      "source_consumed": 15360,
+      "saved_chunk_files": 15,
+      "progress_error": null
+    },
+    {
+      "name": "ef893814f0a24d058072385e67194516-pool-0",
+      "step": 7,
       "completed_questions": 512,
       "reserved_questions": 512,
-      "source_consumed": 15360,
+      "source_consumed": 17920,
       "saved_chunk_files": 4,
       "progress_error": null
     }
@@ -256,12 +265,13 @@
   "outer2_started_not_complete": false,
   "outer2_completed_candidate_questions": 2560,
   "outer2_first_chunk_mixed_questions": 181,
-  "current_base_durable_checkpoint_outer": 5,
+  "current_base_durable_checkpoint_outer": 6,
   "most_recent_recoverable_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
-    "outer": 5,
-    "full_checkpoint_bytes": 91404239582,
-    "rolling_manifest_sha256": "ce9e904667fc1f2f90487ec6301d156ca3c0f9fd51d631dfb9f5dad3dd82e1f2"
+    "outer": 6,
+    "full_checkpoint_bytes": 91405505248,
+    "rolling_manifest_sha256": "eaceea0b97b3ce5e73a12ee5449b5808f245da93065886eca5209de944ba223d",
+    "bytes_scope": "checkpoint plus post-callback boundary members"
   },
   "outer2_candidate_mixed_questions": 979,
   "outer2_candidate_mixed_fraction": 0.382421875,
@@ -328,15 +338,15 @@
   },
   "rolling_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_5",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_6",
     "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_5/full-manifest.json",
-    "manifest_sha256": "ce9e904667fc1f2f90487ec6301d156ca3c0f9fd51d631dfb9f5dad3dd82e1f2",
-    "published_unix": 1792590068.9034464,
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_6/full-manifest.json",
+    "manifest_sha256": "eaceea0b97b3ce5e73a12ee5449b5808f245da93065886eca5209de944ba223d",
+    "published_unix": 1792591697.1895242,
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
     "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 5
+    "step": 6
   },
   "outer2_timings_seconds": {
     "timing_s/candidate_fill": 864.349,
@@ -347,7 +357,7 @@
   },
   "outer3_started": true,
   "actual_outer2_complete_receipt": "training-progress-1792585062.json",
-  "recovery_followup_accepted": false,
+  "recovery_followup_accepted": true,
   "actual_retrieval_cache": {
     "checked_unix": 1792585356.4676752,
     "job": "745371",
@@ -429,11 +439,12 @@
         "error_type": "RuntimeError"
       },
       "same_birth_now": false,
-      "recovery_pending": true,
-      "replacement_root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371/recovery-transport-r1-20261021"
+      "recovery_pending": false,
+      "replacement_root": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/archive-controller/job-745371/recovery-transport-r1-20261021",
+      "replacement_has_completed_milestone5_archive": true
     }
   ],
-  "current_outer": 6,
+  "current_outer": 7,
   "outer3_selection": {
     "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/eefd4da7a7b445a4862963b159cbdfdc.json",
     "bytes": 2750777,
@@ -699,6 +710,17 @@
       "optimizer_writes": 100,
       "optimizer_writes_before": 80,
       "optimizer_writes_this_outer": 20
+    },
+    {
+      "step": 6,
+      "attempt_index": 6,
+      "reward": 0.6223312020301819,
+      "pg_loss": 0.03754782245990292,
+      "ppo_kl": 0.000950373702471552,
+      "grad_norm": 2.690039113151089,
+      "optimizer_writes": 120,
+      "optimizer_writes_before": 100,
+      "optimizer_writes_this_outer": 20
     }
   ],
   "fixed_validation_results_pending": [
@@ -707,11 +729,8 @@
     150,
     200
   ],
-  "remaining_recovery_followup": [
-    "complete6",
-    "actual7sampling"
-  ],
-  "archive_boundary_supplement_todo": "After core archive acceptance, preserve the seven post-callback boundary files plus rolling full-manifest separately, bound to checkpoint complete SHA; do not claim current core snapshot alone contains post-QA RNG. CP200 boundary is before final51713.",
+  "remaining_recovery_followup": [],
+  "archive_boundary_supplement_todo": "CP5 complete and independently verified. Preserve equivalent post-callback boundaries after actual core acceptance at50/100/150/200; CP200 boundary precedes final51713. Do not replay CP5 one-shot launcher.",
   "actual_fixed512": {
     "step": 5,
     "question_count": 512,
@@ -803,19 +822,52 @@
     }
   ],
   "archive5_transfer_progress": {
-    "epoch": 1792590248.032979,
+    "epoch": 1792591657.1951473,
     "read_only": true,
     "target": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5",
     "target_exists": true,
-    "files": 13,
-    "apparent_bytes": 28119742781,
-    "allocated_bytes": 28119793664,
+    "files": 1076,
+    "apparent_bytes": 106690426987,
+    "allocated_bytes": 106692816896,
     "controller/progress.json": {
-      "phase": "STREAMING_SOURCE_TO_HKUST3",
+      "phase": "WAITING_CHECKPOINT",
+      "source_job": "745371",
+      "step": 50,
+      "actual_job_state": "RUNNING",
+      "completed_steps": [
+        5
+      ],
+      "checked_unix": 1792591639.9475605
+    },
+    "archive-receipt.json": {
+      "actual_cuda_restore_accepted": false,
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+      "checked_unix": 1792591387.0499918,
+      "destination_fsynced": true,
+      "file_count": 1072,
+      "fresh_destination_sha_verified": true,
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "snapshot_sha256": "e0ab2957af7fda875de8409d3cca6905fe2411df3c6259f28526e68f473e8ed0",
+      "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+      "status": "EASY2560_ARCHIVE_RECEIVED_FRESH_SHA_FSYNC_PASS",
       "step": 5,
-      "total_bytes": 106690057725,
-      "completed_steps": [],
-      "checked_unix": 1792589954.8211646
+      "total_bytes": 106690057725
+    },
+    "source-acceptance.json": {
+      "actual_cuda_restore_accepted": false,
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+      "checked_unix": 1792591578.8157086,
+      "destination_fsynced": true,
+      "file_count": 1072,
+      "fresh_destination_sha_verified": true,
+      "fresh_source_after_archive_sha_verified": true,
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "snapshot_sha256": "e0ab2957af7fda875de8409d3cca6905fe2411df3c6259f28526e68f473e8ed0",
+      "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+      "source_snapshot": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/checkpoint-archives/global_step_5/source-snapshot.json",
+      "status": "EASY2560_FULL_CHECKPOINT_SOURCE_ARCHIVE_SHA_PASS",
+      "step": 5,
+      "total_bytes": 106690057725
     },
     "snapshot": {
       "run_id": "232f20e112ac4a978c5aba52a0367195",
@@ -830,11 +882,120 @@
       0.5900579690933228,
       0.623258650302887,
       0.6241274476051331,
-      0.6170238852500916
+      0.6170238852500916,
+      0.6223312020301819
     ],
     "fixed512_baseline_step": 5,
     "fixed512_baseline_em": 0.376953125,
     "clear_collapse_observed": false,
     "training_resume_triggered": false
+  },
+  "session_id": "01a157e6-7a0b-71e3-a852-b74235cfe836",
+  "archive5_core_acceptance": {
+    "actual_cuda_restore_accepted": false,
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+    "checked_unix": 1792591578.8157086,
+    "destination_fsynced": true,
+    "file_count": 1072,
+    "fresh_destination_sha_verified": true,
+    "fresh_source_after_archive_sha_verified": true,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "snapshot_sha256": "e0ab2957af7fda875de8409d3cca6905fe2411df3c6259f28526e68f473e8ed0",
+    "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+    "source_snapshot": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/checkpoint-archives/global_step_5/source-snapshot.json",
+    "status": "EASY2560_FULL_CHECKPOINT_SOURCE_ARCHIVE_SHA_PASS",
+    "step": 5,
+    "total_bytes": 106690057725
+  },
+  "archive5_post_callback_supplement": {
+    "status": "EASY7B_CP5_POST_CALLBACK_ARCHIVE_ONCE_COMPLETE",
+    "module_commit": "b87a0c3d7a7ca2d9f6751a99179897d8d8aca56d",
+    "operator_commit": "9a5025a2471c5a3cf4476a0f5981e1c99af8dc06",
+    "receipt": {
+      "actual_cuda_restore_accepted": false,
+      "actual_model_optimizer_rng_dataequal_accepted": false,
+      "binding": {
+        "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+        "core_archive": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5",
+        "core_archive_receipt_sha256": "9dcdb4a44860bc45b758fcc81b52edc6b238175dc95aa05b40d76e30edf82700",
+        "core_checkpoint_complete_sha256": "3d4582a5f02b3d33595cb05e97715b98282f4106e6ac7c0b67c1dbe63ee90442",
+        "core_source_acceptance_sha256": "9d866b468cdbfe47cedbb313d7c88debd5e1f6d5bf86c98cce03a763d16f9944",
+        "core_source_snapshot_sha256": "e0ab2957af7fda875de8409d3cca6905fe2411df3c6259f28526e68f473e8ed0",
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+        "step": 5
+      },
+      "checked_unix": 1792591708.9851055,
+      "core_payload_unmodified": true,
+      "destination": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_5/post-callback-boundary",
+      "destination_fsynced": true,
+      "file_count": 8,
+      "files": {
+        "boundary/driver.pt": {
+          "bytes": 726812,
+          "sha256": "a619abd230502825868f6c1bb4a58e828eb4a4702120ce8593145a6d1d79f284"
+        },
+        "boundary/manifest.json": {
+          "bytes": 2624,
+          "sha256": "46aa8baca6fd02da0a7e320905034a7d5341a61faeaeb2e8a3b5d781f81d4edb"
+        },
+        "boundary/rank-0.pt": {
+          "bytes": 16912,
+          "sha256": "26adc63a56249daac2a52853d2edd95221e20bf3d00cfbb24195cb780151601f"
+        },
+        "boundary/rank-1.pt": {
+          "bytes": 16912,
+          "sha256": "033a69ce35e051b8e60eb11a1d026c3d1ea37674795eadcda9e9ce0c37611e34"
+        },
+        "boundary/rank-2.pt": {
+          "bytes": 16912,
+          "sha256": "be75353bf597572beea70ab8c8c02096d66eb34ddfe9d4a6692edae540443c41"
+        },
+        "boundary/rank-3.pt": {
+          "bytes": 16912,
+          "sha256": "f609110cd4096c509583c9a7aad789d427dc93fa51915ebe6fa1254fdca8b37b"
+        },
+        "boundary/reward-probe-manifest.json": {
+          "bytes": 468327,
+          "sha256": "a3aa29a31dba750c8a1d6bbe9d09ea105a4fba0a99216ce1b736865be51ec54f"
+        },
+        "rolling-full-manifest.json": {
+          "bytes": 16078,
+          "sha256": "ce9e904667fc1f2f90487ec6301d156ca3c0f9fd51d631dfb9f5dad3dd82e1f2"
+        }
+      },
+      "fresh_destination_sha_verified": true,
+      "phase": {
+        "callbacks_complete": true,
+        "final51713_pending_at_boundary": false,
+        "post_callback_rng_captured": true,
+        "probe_round": 0,
+        "reward_refresh_pending": false,
+        "sampling_rng_stage": "post_QA5"
+      },
+      "scope": "Preserved producer post-callback bytes; no actual reload performed",
+      "source_snapshot_sha256": "f52b6b8a31a3639d4cd33810feb82ba6bd112bb12ff7d291b6bc534028be4728",
+      "status": "EASY2560_POST_CALLBACK_BOUNDARY_ARCHIVE_SHA_FSYNC_PASS",
+      "total_bytes": 1281489
+    },
+    "all8_independent_readback_sha_pass": true,
+    "observation": "post-callback5-observe-1792591741.json",
+    "cpu_runner_exited_after_complete": true
+  },
+  "recovery_followup_evidence": "evidence/actual-recovery-followup-2-to6-and7-saved-20261021.json",
+  "checkpoint6_posthoc_verification": {
+    "native_world_size": 4,
+    "actual_saved_tensors": 339,
+    "small_member_sha_readback": true,
+    "large_member_identity_only": true,
+    "producer_full_sha_manifest": "eaceea0b97b3ce5e73a12ee5449b5808f245da93065886eca5209de944ba223d",
+    "actual_reload_performed": false
+  },
+  "published_operator_source": {
+    "commit": "9a5025a2471c5a3cf4476a0f5981e1c99af8dc06",
+    "branch": "codex/easy2560-qwen7b-20261021",
+    "remote_sha": "9a5025a2471c5a3cf4476a0f5981e1c99af8dc06",
+    "fresh_remote_fetch_and_blob_sha_pass": true,
+    "receipt": "source-publication-9a5025a2471c5a3cf4476a0f5981e1c99af8dc06-1792591701.json"
   }
 }
