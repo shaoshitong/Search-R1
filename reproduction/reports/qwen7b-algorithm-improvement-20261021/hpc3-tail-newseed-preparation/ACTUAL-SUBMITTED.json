@@ -1,0 +1,31 @@
+{
+  "status": "TWO_UNIQUE_TAIL_JOBS_RELEASED_AND_WAITING_NORMAL_PRIORITY",
+  "actual_epoch": 1792586355.087208,
+  "jobs": [
+    745518,
+    745519
+  ],
+  "namespace": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1",
+  "generation_commit": "2590d0b272013264b6d727a6a38493a790ee1305",
+  "submission_control_parser_fix_commit": "50b947e2f3dbb8fbb789e7b8d197f3f90648e32d",
+  "config_sha256": "368ad5d8df9e0238bdee8033964b56f0f4a6426e606f9514114fac0dcb05d835",
+  "execution_run_id": "36b784a3bf964e69a6130bcc41d68809",
+  "resources_per_job": {
+    "GPU": 2,
+    "CPU": 16,
+    "GiB": 128,
+    "partition": "acd_u",
+    "qos": "normal",
+    "time": "08:00:00",
+    "dependency": null
+  },
+  "worker0_original_held_id_adopted_no_second_sbatch": true,
+  "queue": "745518|q7b-tail-newseed-w0|PENDING|(Priority)|\n745519|q7b-tail-newseed-w1|PENDING|(Priority)|",
+  "sacct": "745518|q7b-tail-newseed-w0|PENDING|0:0|00:00:00|None assigned\n745519|q7b-tail-newseed-w1|PENDING|0:0|00:00:00|None assigned",
+  "actual_generated_questions": 0,
+  "actual_sealed_trajectories": 0,
+  "training_claimed_started": false,
+  "potentialOverlap": true,
+  "fixed124194_unchanged": true,
+  "next_required": "Follow actual own services and fullG5/strictEM/P20/seed seals plus two output increments; no duplicate submit or QOS upgrade"
+}
