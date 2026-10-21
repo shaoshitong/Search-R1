@@ -1,0 +1,88 @@
+{
+  "status": "NATIVE_CACHE_START_SAME_API_GOLDEN_AND_MULTIPLE_REAL_ADVANCES_PASSED",
+  "job_id": "743978",
+  "target": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2",
+  "source_commit": "805123aebf8af83a7c1c44947f39c294f7aeb624",
+  "config_sha256": "fb637c02812dd070cf392a58df75e0d219bbb10d1a2d24cd6e201f3638147767",
+  "native_same_API_golden": {
+    "IDs_sha256": "00f4f747ddb83f4d4614d34f4a0850a6ffaa9f872a59199083160c24675c2478",
+    "dtype": "bfloat16",
+    "extra_quantization": false,
+    "mask_positions_sha256": "c2b92518f46a7af96d67979a32b642b5b2760725c1ec9e794f0d1d58cc4e4cb9",
+    "micro": 8,
+    "status": "PASSED"
+  },
+  "observations": [
+    {
+      "epoch": 1792551503.4920313,
+      "job_id": "743978",
+      "stage": "NATIVE_FROZEN_E1_CACHE_ADVANCING",
+      "cache_trajectories": 256,
+      "cache_complete": false,
+      "native_golden": "PASSED",
+      "head_cursor": 0,
+      "head_Adam": null,
+      "head_full_CP": null,
+      "first_full_update_replay": null,
+      "failure": null,
+      "squeue": "743978|q7b-frozenE1-head30016|RUNNING|10:50|ACD1-24|ACD1-24",
+      "sacct": "743978|RUNNING|0:0|00:10:50|ACD1-24\n743978.batch|RUNNING|0:0|00:10:50|ACD1-24\n743978.extern|RUNNING|0:0|00:10:50|ACD1-24\n743978.0|RUNNING|0:0|00:10:50|ACD1-24\n743978.1|COMPLETED|0:0|00:00:00|ACD1-24\n743978.2|COMPLETED|0:0|00:00:00|ACD1-24\n743978.3|COMPLETED|0:0|00:00:00|ACD1-24\n743978.4|FAILED|1:0|00:00:15|ACD1-24\n743978.5|COMPLETED|0:0|00:00:00|ACD1-24"
+    },
+    {
+      "epoch": 1792551613.484149,
+      "job_id": "743978",
+      "stage": "NATIVE_FROZEN_E1_CACHE_ADVANCING",
+      "cache_trajectories": 9216,
+      "cache_complete": false,
+      "native_golden": "PASSED",
+      "head_cursor": 0,
+      "head_Adam": null,
+      "head_full_CP": null,
+      "first_full_update_replay": null,
+      "failure": null,
+      "squeue": "743978|q7b-frozenE1-head30016|RUNNING|12:40|ACD1-24|ACD1-24",
+      "sacct": "743978|RUNNING|0:0|00:12:40|ACD1-24\n743978.batch|RUNNING|0:0|00:12:40|ACD1-24\n743978.extern|RUNNING|0:0|00:12:40|ACD1-24\n743978.0|RUNNING|0:0|00:12:40|ACD1-24\n743978.1|COMPLETED|0:0|00:00:00|ACD1-24\n743978.2|COMPLETED|0:0|00:00:00|ACD1-24\n743978.3|COMPLETED|0:0|00:00:00|ACD1-24\n743978.4|FAILED|1:0|00:00:15|ACD1-24\n743978.5|COMPLETED|0:0|00:00:00|ACD1-24\n743978.6|COMPLETED|0:0|00:00:05|ACD1-24"
+    },
+    {
+      "epoch": 1792551977.234119,
+      "job_id": "743978",
+      "stage": "NATIVE_FROZEN_E1_CACHE_ADVANCING",
+      "cache_trajectories": 48640,
+      "cache_complete": false,
+      "native_golden": "PASSED",
+      "head_cursor": 0,
+      "head_Adam": null,
+      "head_full_CP": null,
+      "first_full_update_replay": null,
+      "failure": null,
+      "squeue": "743978|q7b-frozenE1-head30016|RUNNING|18:44|ACD1-24|ACD1-24",
+      "sacct": "743978|RUNNING|0:0|00:18:44|ACD1-24\n743978.batch|RUNNING|0:0|00:18:44|ACD1-24\n743978.extern|RUNNING|0:0|00:18:44|ACD1-24\n743978.0|RUNNING|0:0|00:18:44|ACD1-24\n743978.1|COMPLETED|0:0|00:00:00|ACD1-24\n743978.2|COMPLETED|0:0|00:00:00|ACD1-24\n743978.3|COMPLETED|0:0|00:00:00|ACD1-24\n743978.4|FAILED|1:0|00:00:15|ACD1-24\n743978.5|COMPLETED|0:0|00:00:00|ACD1-24\n743978.6|COMPLETED|0:0|00:00:05|ACD1-24"
+    }
+  ],
+  "latest_cache": {
+    "completed_trajectories": 48640,
+    "total_trajectories": 351360,
+    "accepted_chunk_receipts": 190,
+    "first_chunk": {
+      "bytes": 543,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/cache/chunk-000000.json",
+      "sha256": "1ef2a12338f6abcfa7ba860077d18ff91573fc600f8c46bdeaa92664afb934ac"
+    },
+    "last_chunk": {
+      "bytes": 568,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/cache/chunk-000189.json",
+      "sha256": "eb229bae97c471f3cf28c697f96123b817e31b1d250d6fbecf29992b5a71c116"
+    },
+    "epoch": 1792551976.2879303
+  },
+  "cache_complete": false,
+  "head_updates": 0,
+  "first_real_head_update_qualified": false,
+  "source_invariant": "E1 native_micro8 BF16; cached hidden does not undergo extra quantization",
+  "boundaries": [
+    "No full-cache completion claim",
+    "No head fitting or CP1 acceptance claim yet",
+    "The old failed auxiliary CPU fixture step is not the main Slurm allocation state",
+    "No external or final scoring"
+  ]
+}
