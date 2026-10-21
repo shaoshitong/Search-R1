@@ -11,11 +11,16 @@ def proof(p):
  p=Path(p);assert p.stat().st_size<4*1024**2 and p.suffix!='.pt','Small metadata/code only';raw=p.read_bytes();return dict(path=str(p),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
 def checked(ref):assert proof(ref['path'])==ref;return read(ref['path'])
 def read(p):return json.loads(Path(p).read_bytes())
+def syncdir(p):
+ fd=os.open(str(p),os.O_RDONLY|getattr(os,'O_DIRECTORY',0))
+ try:os.fsync(fd)
+ finally:os.close(fd)
 def once(p,data):
  p=Path(p);p.parent.mkdir(parents=True,exist_ok=True)
  if p.exists():assert p.read_bytes()==data,'Immutable handoff metadata differs'
  else:
   with p.open('xb')as f:f.write(data);f.flush();os.fsync(f.fileno())
+  syncdir(p.parent)
  return proof(p)
 def command(args):
  r=subprocess.run(args,stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=20);assert r.returncode==0,r.stderr[-1200:];return r.stdout.strip()
@@ -54,7 +59,7 @@ def pin_terminal_source(base=BASE,main=MAIN,*,terminal=None):
    try:
     before=os.fstat(fd);assert stat.S_ISREG(before.st_mode)and before.st_uid==os.getuid()and before.st_size==cp['bytes']and before.st_dev==inputs.stat().st_dev
     if target.exists():assert os.path.samefile(source,target)
-    else:os.link(str(source),str(target))
+    else:os.link(str(source),str(target));syncdir(inputs)
     after=os.fstat(fd);pinned=target.stat();assert inode(before)==inode(after)==inode(pinned)
    finally:os.close(fd)
    source_cfg=once(base/'source-config.json',(main/'config.json').read_bytes());original_receipt=once(base/'source-checkpoint-receipt.json',canonical(cp));pinned_cp=dict(cp,path=str(target));pinned_ref=once(base/'pinned-source-checkpoint.json',canonical(pinned_cp));hist=[]
@@ -63,5 +68,5 @@ def pin_terminal_source(base=BASE,main=MAIN,*,terminal=None):
     if path.exists():
      item=read(path);assert item['cursor']==epoch*5283 and item['config_sha256']==SOURCE_CONFIG['sha256'];hist.append(proof(path))
     else:assert epoch==cp['cursor']//5283 and cp['cursor']%5283==0 and read(main/'interrupted.json')['pending_evaluation']is True,'Missing required past fixed evaluation'
-   result=dict(status='OFFICIAL_DIRECT_MIXED_HIGHEST_ACCEPTED_SOURCE_GRACEFULLY_RETIRED_AND_PINNED',source_main=str(main),source_job_id=SOURCE_JOB,job_id=SOURCE_JOB,terminal_exit_0_0=True,highest_accepted_complete_cursor_equal=True,no_unresolved_tail=True,training_lock_free=True,source_main_terminal=terminal,source_config=source_cfg,source_main_config=dict(SOURCE_CONFIG,path=str(main/'config.json')),source_publication=dict(SOURCE_PUBLICATION,path=str(main/'source-publication.json')),source_checkpoint_original=cp,source_original_receipt_copy=original_receipt,checkpoint=cp,pinned_checkpoint=pinned_cp,pinned_checkpoint_receipt=pinned_ref,source_terminal_state_refs=refs,source_fixed_evaluation_history=hist,source_stat=inode(before),pinned_stat=inode(pinned),cursor=cp['cursor'],accepted_hashes=cp['accepted_hashes'],source_current_world_size=1,current_world_size=1,source_9state_unchanged=True,checkpoint_payload_read_or_rehashed_on_CPU=False,actual_complete_tensor_restore_required_on_new_GPU=True,no_silent_accepted_update_rollback=True,old_training_lock_released_before_new_submit=True,epoch=time.time());once(base/'source-handoff.json',canonical(result));return result
+   result=dict(status='OFFICIAL_DIRECT_MIXED_HIGHEST_ACCEPTED_SOURCE_GRACEFULLY_RETIRED_AND_PINNED',source_main=str(main),source_job_id=SOURCE_JOB,job_id=SOURCE_JOB,terminal_exit_0_0=True,highest_accepted_complete_cursor_equal=True,no_unresolved_tail=True,training_lock_free=True,source_main_terminal=terminal,source_config=source_cfg,source_main_config=dict(SOURCE_CONFIG,path=str(main/'config.json')),source_publication=dict(SOURCE_PUBLICATION,path=str(main/'source-publication.json')),source_checkpoint_original=cp,source_original_receipt_copy=original_receipt,checkpoint=cp,pinned_checkpoint=pinned_cp,pinned_checkpoint_receipt=pinned_ref,source_terminal_state_refs=refs,source_fixed_evaluation_history=hist,source_stat=inode(before),pinned_stat=inode(pinned),cursor=cp['cursor'],pending_evaluation=read(main/'interrupted.json')['pending_evaluation'],accepted_hashes=cp['accepted_hashes'],source_current_world_size=1,current_world_size=1,source_9state_unchanged=True,checkpoint_payload_read_or_rehashed_on_CPU=False,actual_complete_tensor_restore_required_on_new_GPU=True,no_silent_accepted_update_rollback=True,old_training_lock_released_before_new_submit=True,epoch=time.time());once(base/'source-handoff.json',canonical(result));return result
   finally:lock.close()
