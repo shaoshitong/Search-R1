@@ -19,7 +19,9 @@ while time.time()-started<11400:
  (HERE/'actual-milestone-latest-good.json').write_text(json.dumps(s,indent=2)+'\n')
  key=(cursor//32,tuple(accepted),bool(s.get('failure')))
  if key!=previous:print(json.dumps(row),flush=True);previous=key
- if s.get('failure')or any(x in sacct for x in ['FAILED','OUT_OF_MEMORY','NODE_FAIL','TIMEOUT','CANCELLED']):raise RuntimeError('Actual training exit/error requires diagnosis, no automatic rollback: '+json.dumps(row))
+ main_rows=[line for line in sacct.splitlines()if line.split('|')[0]=='743809']
+ if len(main_rows)!=1:raise RuntimeError('Exact allocation row unavailable; no inference/restart')
+ if s.get('failure')or any(x in main_rows[0]for x in ['FAILED','OUT_OF_MEMORY','NODE_FAIL','TIMEOUT','CANCELLED']):raise RuntimeError('Actual training exit/error requires diagnosis, no automatic rollback: '+json.dumps(row))
  for k in (256,512,768,938):
   if k in accepted or 'milestone_%d_complete'%k not in s:continue
   if k not in started_audits:

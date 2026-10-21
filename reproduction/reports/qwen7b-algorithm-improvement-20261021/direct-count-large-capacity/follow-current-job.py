@@ -17,7 +17,9 @@ while time.time()-started<11400:
  (HERE/'actual-current-latest-good.json').write_text(json.dumps(row,indent=2)+'\n')
  key=(row['cache_trajectories']//2560,row['head_cursor']//128,row['cache_complete'],bool(row['failure']))
  if key!=previous:print(json.dumps(row),flush=True);previous=key
- if row['failure']or any(x in row['sacct']for x in ('FAILED','OUT_OF_MEMORY','NODE_FAIL','TIMEOUT','CANCELLED')):
+ main_rows=[line for line in row['sacct'].splitlines()if line.split('|')[0]==s['job_id']]
+ if len(main_rows)!=1:raise RuntimeError('Exact allocation accounting row unavailable; no inference/restart')
+ if row['failure']or any(x in main_rows[0]for x in ('FAILED','OUT_OF_MEMORY','NODE_FAIL','TIMEOUT','CANCELLED')):
   raise RuntimeError('Actual exit/failure requires diagnosis; no blind restart: '+json.dumps(row))
  if s.get('complete'):
   print(json.dumps(dict(status='REAL_CAPACITY_COMPLETION_EXISTS_AWAITING_INDEPENDENT_METRICS',complete=s['complete'])),flush=True);break
