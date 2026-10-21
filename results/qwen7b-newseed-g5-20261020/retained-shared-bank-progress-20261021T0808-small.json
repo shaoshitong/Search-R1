@@ -1,0 +1,163 @@
+{
+  "status": "ACTUAL_PARTIAL_BANK_PROGRESS_NOT_GOAL_COMPLETE",
+  "utc": "2026-10-21T00:07:46.130721+00:00",
+  "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+  "storage": {
+    "owner": "shaoshitong",
+    "shared_path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020",
+    "physical_retained_node": "h100-10",
+    "physical_path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020",
+    "full_outputs_on_mac": false,
+    "foreign_disks_used": false
+  },
+  "actual_sealed_counts": {
+    "sealed_batches": 444,
+    "questions": 56832,
+    "trajectories": 284160,
+    "invalid_or_unreadable": [],
+    "metadata_observation_only": true,
+    "independent_full_audit_performed": false
+  },
+  "actual_observation_epoch": 1792541225.46044,
+  "actual_original_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-primary-cohort-follow-actual-1792541221645252000.json",
+  "actual_original_sha256": "89212958e98484ec39080299dd6c1b30a36f099f6fba9a8ad2678e8d120c310b",
+  "independent_audit": {
+    "auditor_sha256": "3def055adebfdb38e9326b9db385338c44800160c1b0a64e1ee78d8c3b68b906",
+    "base": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020",
+    "cache_reused_batches": 416,
+    "canonical_unique_input_qids": 169028,
+    "discovered_input_batches": 1322,
+    "epoch": 1792541221.331482,
+    "expected": {
+      "batches": 1322,
+      "questions": 169028,
+      "trajectories": 845140
+    },
+    "failed_batches": 0,
+    "independently_read_batches": 25,
+    "labels": 282240,
+    "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "policy_tokens": 29903223,
+    "questions": 56448,
+    "response_tokens": 183475712,
+    "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+    "sealed_pending_batches": 3,
+    "seed": 20261021,
+    "short_terminal_prefixes": 32,
+    "states_shards_independently_audited": false,
+    "status": "INCOMPLETE",
+    "strict_em_ones": 95607,
+    "strict_em_recomputed": false,
+    "strict_em_source": "reproduction/prefix20_online/rollout.py:strict_label -> search_g1.signals.decode_segments/contexts -> verl.utils.reward_score.qa_em.em_check",
+    "strict_em_verification": "Exact own-em/full label correspondence only; tokenizer-based strict_label was not rerun",
+    "trajectories": 282240,
+    "uniqueness_basis": "Per-batch exact actual trajectory IDs and G5 indices; globally unique canonical qid and candidate ordinal",
+    "unsealed_batches": 878,
+    "utc": "2026-10-21T00:07:01.331491+00:00",
+    "verified_batches": 441,
+    "verified_unique_qids": 56448,
+    "verified_unique_trajectories": 282240,
+    "first_errors": []
+  },
+  "audit_native_status": "MainPID=0\nResult=success\nExecMainStatus=0\nActiveState=inactive\n",
+  "audit_unit": "sst-q7b-data-audit-1792541192754271945",
+  "audit_original_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-audit-control-1792541232233784000.json",
+  "audit_original_sha256": "11b45e0c389696c83d51f38354bdb33d2bb967963b5b2a4cff8108487f9c6039",
+  "current_node10_units": {
+    "gpu1-tp1": {
+      "unit": "sst-q7b-g5-primary10-gpu1-tp1-v2-70188b8e50fd.service",
+      "native": {
+        "MainPID": "2904782",
+        "Result": "success",
+        "ExecMainStartTimestamp": "Wed 2026-10-21 07:01:09 CST",
+        "ExecMainExitTimestamp": "n/a",
+        "ExecMainCode": "0",
+        "ExecMainStatus": "0",
+        "ControlGroup": "/system.slice/sst-q7b-g5-primary10-gpu1-tp1-v2-70188b8e50fd.service",
+        "Id": "sst-q7b-g5-primary10-gpu1-tp1-v2-70188b8e50fd.service",
+        "LoadState": "loaded",
+        "ActiveState": "active",
+        "SubState": "running"
+      },
+      "own_complete_batches": 3,
+      "whole_and_next_observed": true
+    },
+    "gpu2-tp1": {
+      "unit": "sst-q7b-g5-primary10-gpu2-tp1-v3-70188b8e50fd.service",
+      "native": {
+        "MainPID": "2941517",
+        "Result": "success",
+        "ExecMainStartTimestamp": "Wed 2026-10-21 07:14:11 CST",
+        "ExecMainExitTimestamp": "n/a",
+        "ExecMainCode": "0",
+        "ExecMainStatus": "0",
+        "ControlGroup": "/system.slice/sst-q7b-g5-primary10-gpu2-tp1-v3-70188b8e50fd.service",
+        "Id": "sst-q7b-g5-primary10-gpu2-tp1-v3-70188b8e50fd.service",
+        "LoadState": "loaded",
+        "ActiveState": "active",
+        "SubState": "running"
+      },
+      "own_complete_batches": 1,
+      "whole_and_next_observed": true
+    },
+    "gpu3-tp1": {
+      "unit": "sst-q7b-g5-primary10-gpu3-tp1-v2-70188b8e50fd.service",
+      "native": {
+        "MainPID": "2906630",
+        "Result": "success",
+        "ExecMainStartTimestamp": "Wed 2026-10-21 07:01:48 CST",
+        "ExecMainExitTimestamp": "n/a",
+        "ExecMainCode": "0",
+        "ExecMainStatus": "0",
+        "ControlGroup": "/system.slice/sst-q7b-g5-primary10-gpu3-tp1-v2-70188b8e50fd.service",
+        "Id": "sst-q7b-g5-primary10-gpu3-tp1-v2-70188b8e50fd.service",
+        "LoadState": "loaded",
+        "ActiveState": "active",
+        "SubState": "running"
+      },
+      "own_complete_batches": 2,
+      "whole_and_next_observed": true
+    },
+    "gpu5-tp1": {
+      "unit": "sst-q7b-g5-primary10-gpu5-tp1-v3-70188b8e50fd.service",
+      "native": {
+        "MainPID": "2942924",
+        "Result": "success",
+        "ExecMainStartTimestamp": "Wed 2026-10-21 07:14:31 CST",
+        "ExecMainExitTimestamp": "n/a",
+        "ExecMainCode": "0",
+        "ExecMainStatus": "0",
+        "ControlGroup": "/system.slice/sst-q7b-g5-primary10-gpu5-tp1-v3-70188b8e50fd.service",
+        "Id": "sst-q7b-g5-primary10-gpu5-tp1-v3-70188b8e50fd.service",
+        "LoadState": "loaded",
+        "ActiveState": "active",
+        "SubState": "running"
+      },
+      "own_complete_batches": 1,
+      "whole_and_next_observed": true
+    },
+    "tp4-0-4-6-7": {
+      "unit": "sst-q7b-g5-primary10-tp4-0-4-6-7-v3-70188b8e50fd.service",
+      "native": {
+        "MainPID": "2943877",
+        "Result": "success",
+        "ExecMainStartTimestamp": "Wed 2026-10-21 07:14:50 CST",
+        "ExecMainExitTimestamp": "n/a",
+        "ExecMainCode": "0",
+        "ExecMainStatus": "0",
+        "ControlGroup": "/system.slice/sst-q7b-g5-primary10-tp4-0-4-6-7-v3-70188b8e50fd.service",
+        "Id": "sst-q7b-g5-primary10-tp4-0-4-6-7-v3-70188b8e50fd.service",
+        "LoadState": "loaded",
+        "ActiveState": "active",
+        "SubState": "running"
+      },
+      "own_complete_batches": 0,
+      "whole_and_next_observed": false
+    }
+  },
+  "current_sampling_runtime_changed": false,
+  "future_generation_code_staged": true,
+  "future_generation_started": false,
+  "future_readonly_observer_started": false,
+  "global_goal_complete": false
+}

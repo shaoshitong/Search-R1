@@ -343,3 +343,30 @@ SEARCH_G1_PHYSICAL_WORLD_SIZE=4 only for historical4/8-only science imports;
 actual CUDA_VISIBLE_DEVICES=7/--tp1 and perbatchworld1 remain unchanged. Both
 TP1 and TP4 generated environments really imported contract in CPU subprocesses.
 No futuremodel has been launched by these changes.
+
+Read-only supervision of the future generation
+----------------------------------------------
+follow_guarded_generation.py and guarded_generation_read.py derive the exact
+17-unit registry from the staged manifests: one source owner, eight source
+model slots, two CPU relays and six node10 model slots. The default `plan`
+action is local only. Only after real submission, `once` or
+`follow --hours 4 --interval 300` reads native status and small NAS10 metadata.
+It launches/stops no remote work, takes no locks and writes no primary state.
+Its immutable local observations contain metadata only. Keep current77291 as
+the sole current-cohort follower until the actual generation changes.
+
+Whole-plus-next acceptance requires an actual own batch seal and a different
+batch with a live, matching POSIX lock owner and GPU/unit binding. Historical
+failures retain their original records and are classified only by exact
+proof-path/SHA bindings, including the actual predecessor chain. New failures
+still require root attention. A finite model completion before the global
+bank is complete requests renewal; transport uncertainty never implies a
+native exit. Full metadata counts request the final independent data audit,
+not goal completion. Four focused CPU fixture tests passed; this is not a
+claim that the new generation is running or has produced data.
+Cross-shard batch identity uses the pair (shard,batch), and a submitted unit
+that has not yet loaded remains NOT_STARTED rather than an inferred exit.
+
+All full data, inputs and original logs remain in our own shaoshitong NAS10
+directory. Shared aliases refer to this same retained bank. No foreign user's
+disk and no Mac tensor/trajectory storage are part of this procedure.
