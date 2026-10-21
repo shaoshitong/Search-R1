@@ -1,0 +1,102 @@
+{
+  "status": "ALL_ELEVEN_CURRENT_MODELS_OWN_WHOLE_G5_AND_REAL_NEXT_PROGRESS_ACCEPTED",
+  "actual_epoch": 1792563557.348199,
+  "recorded_utc": "2026-10-21T06:20:37.835096+00:00",
+  "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+  "prior_ten": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-owner-v2-ten-model-first-whole-next-actual-proof.json",
+    "sha256": "72b2ab288cc99f5fe01a5dc94d8e1d36efa1670cbe745a3f0af005940c60c90a",
+    "acceptance_repeated": false
+  },
+  "new_source_residual": {
+    "unit": "sst-q7b-g5-guard-rollover-supp-residual-v1-gpu4-tp1-r1-70188b8e50fd.service",
+    "role": "model",
+    "state": "active",
+    "native": {
+      "MainPID": "3240713",
+      "Result": "success",
+      "ExecMainStatus": "0",
+      "ControlGroup": "/system.slice/sst-q7b-g5-guard-rollover-supp-residual-v1-gpu4-tp1-r1-70188b8e50fd.service",
+      "Id": "sst-q7b-g5-guard-rollover-supp-residual-v1-gpu4-tp1-r1-70188b8e50fd.service",
+      "LoadState": "loaded",
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "allocation_sha256": "2cbf9fdc6c13d8210fd488a3a94026355638b62ee84bda2038d31cf07b87d328",
+    "own_complete_batches": 1,
+    "questions": 128,
+    "trajectories": 640,
+    "initialized": true,
+    "model_initialized": [
+      {
+        "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-source-slot-gpu4-tp1-3240713/attempt-1792558090495553588-3240713/sampler-launches/launch-00/model-initialized.json",
+        "sha256": "375916ab51821f02d3b40cdf0a3b90313af4528e073968b2151fd0ceb4aa3721",
+        "actual_model_initialized": true,
+        "actual_compute_dtype": "torch.bfloat16",
+        "max_model_len": 4096,
+        "actual_num_gpu_blocks": 4096
+      }
+    ],
+    "latest_input": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/inputs/shard-00/batch-000606.json",
+    "whole_and_next_observed": true
+  },
+  "first_new_own_seal": {
+    "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/sampling/shard-00/batches/batch-000606/complete.json",
+    "sha256": "3dab4a1345cf93df59da3ef967975a89c7d53d6a302e1ff6d2e19f7703bf1847",
+    "bytes": 9629,
+    "device": 48,
+    "inode": 141310626,
+    "mtime_ns": 1792563407040968499
+  },
+  "first_new_own_seal_summary": {
+    "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+    "input_sha256": "493a5e372314ccf64d7e46ab64ccac48ee207833630d0685cc5b4b7e1c744bb9",
+    "batch": "batch-000606",
+    "questions": 128,
+    "trajectories": 640,
+    "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "actor_optimizer_updates": 0,
+    "hidden_cached": false,
+    "epoch": 1792563407.0425258
+  },
+  "next_actual_batch_proofs": [
+    {
+      "batch": "batch-000654",
+      "shard": "shard-00",
+      "phase": "prefix",
+      "completed": 100,
+      "utc": "2026-10-21T06:18:31.791327+00:00",
+      "actual_sampled_tokens": 2000,
+      "progress_path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/sampling/shard-00/batches/batch-000654/outers/outer-000001/prefix/rank-0-progress.json",
+      "lock_target": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/batch-locks/shard-00/batch-000654.lock",
+      "lock_owner": {
+        "pid": 3240722,
+        "birth": "10373683",
+        "state": "R",
+        "cgroup": "1:freezer:/\n0::/system.slice/sst-q7b-g5-guard-rollover-supp-residual-v1-gpu4-tp1-r1-70188b8e50fd.service\n"
+      },
+      "current_allocation": true
+    }
+  ],
+  "actual_originals": {
+    "h100-5": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-guarded-follow-56ea94a138171ccd/actual-h100-5-1792563549796773000.json",
+      "sha256": "82d052a6aa0b2daee2b3cc0167f0510155831036212ad357b80707a2cac00cf1"
+    },
+    "h100-10": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-guarded-follow-56ea94a138171ccd/actual-h100-10-1792563557345125000.json",
+      "sha256": "8208a716251e4015d1998900165ce4f81aa6463b04e31b2df6f97c197cfdc3eb"
+    }
+  },
+  "models_initialized": 11,
+  "distinct_physical_gpu_count": 14,
+  "global_sealed": {
+    "sealed_batches": 678,
+    "questions": 86784,
+    "trajectories": 433920
+  },
+  "new_batch_raw_independent_audit": "Pending the next normal new-only25 CPU audit at684; this flow acceptance is not a raw payload SHA proof.",
+  "model_tensor_independent_reload_performed": false,
+  "all_outputs_own_nas10": true,
+  "global_goal_complete": false
+}
