@@ -78,6 +78,25 @@ def summarize(rows, expected):
         raise ValueError('Balanced accuracy requires both real classes')
     chosen = sorted(rows, key=lambda r: (-r['predicted_mixed'], str(r['qid'])))[:512]
     selected_mixed = sum(0 < sum(r['strict_em']) < 5 for r in chosen)
+    pool_histogram = [sum(sum(r['strict_em']) == k for r in rows) for k in range(6)]
+    selected_histogram = [sum(sum(r['strict_em']) == k for r in chosen) for k in range(6)]
+    assert sum(selected_histogram) == 512 and sum(selected_histogram[1:5]) == selected_mixed
+    cutoff = chosen[-1]['predicted_mixed']
+    # Inspect class composition only after the label-blind ordering is fixed.
+    # This makes a rise in allcorrect/allwrong contamination visible directly.
+    selection = dict(
+        strict_EM_K_histogram=selected_histogram,
+        true_classes=dict(allwrong=selected_histogram[0], Mixed=selected_mixed,
+                          allcorrect=selected_histogram[5]),
+        Mixed_fraction=selected_mixed / 512,
+        pool_Mixed_fraction=(tp + fn) / expected,
+        Mixed_enrichment_pp=100 * (selected_mixed / 512 - (tp + fn) / expected),
+        score_cutoff=cutoff,
+        pool_questions_tied_at_cutoff=sum(r['predicted_mixed'] == cutoff for r in rows),
+        selected_questions_tied_at_cutoff=sum(r['predicted_mixed'] == cutoff for r in chosen),
+        deterministic_tie_break='string_qid_ascending',
+        selected_qids_sha256=hashlib.sha256(json.dumps([r['qid'] for r in chosen]).encode()).hexdigest(),
+        labels_used_to_select=False)
     for c in classes.values():
         n = c['n']
         for source, target in [('trajectory_BCE_sum', 'trajectory_BCE'),
@@ -88,6 +107,8 @@ def summarize(rows, expected):
                 Mixed_balanced_accuracy=.5 * (tp / (tp + fn) + tn / (tn + fp)),
                 Mixed_recall=tp / (tp + fn), nonMixed_recall=tn / (tn + fp),
                 selected512_Mixed=selected_mixed, selected512_Mixed_fraction=selected_mixed / 512,
+                pool_strict_EM_K_histogram=pool_histogram,
+                selected512_composition=selection,
                 true_class_diagnostics=classes,
                 own_G5_and_EM_identity_sha256=hashlib.sha256(json.dumps(identities, sort_keys=True).encode()).hexdigest(),
                 threshold=.5, labels_used_for_selection=False,

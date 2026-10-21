@@ -1,0 +1,39 @@
+{
+  "epoch": 1792592431.181917,
+  "status": "INDEPENDENT_E0_EXISTING_SCORE_TOP512_COMPOSITION_NOT_NEW_GAIN",
+  "prediction_audit_epoch": 1792592390.774912,
+  "pool_questions": 2048,
+  "pool_K_histogram": [
+    1055,
+    181,
+    136,
+    132,
+    214,
+    330
+  ],
+  "selected_K_histogram": [
+    209,
+    44,
+    38,
+    46,
+    68,
+    107
+  ],
+  "selected_true_classes": {
+    "allwrong": 209,
+    "Mixed": 196,
+    "allcorrect": 107
+  },
+  "selection_probability_by_true_class": {
+    "allwrong": 0.1981042654028436,
+    "Mixed": 0.2956259426847662,
+    "allcorrect": 0.3242424242424242
+  },
+  "score_cutoff": 0.8720808029174805,
+  "cutoff_tie_questions": 1,
+  "selected_ids_sha256": "574be968e210ab4fb6660068b21bad7d18123de4f0506e4b13f32cd2c79e33c7",
+  "ordering_uses_labels": false,
+  "final4096_read": false,
+  "active_training_changed": false,
+  "interpretation": "At fixedTop512 the old EMA selects32.42percent of allcorrect questions versus29.56percent of realMixed and19.81percent of allwrong; the dominant raw count of contamination is209allwrong and107allcorrect. Both class recall and selectedcomposition must be compared after actual new epochs."
+}
