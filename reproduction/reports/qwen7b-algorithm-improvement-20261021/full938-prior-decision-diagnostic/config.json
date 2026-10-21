@@ -1,0 +1,66 @@
+{
+  "derived_calibration_scalar_remote_only": true,
+  "diagnostic_cannot_be_promoted_as_new_model": true,
+  "final4096_outcomes_read": false,
+  "new_GPU_or_model_scoring": false,
+  "primary_gate_changed": false,
+  "prior_source": "Original actual30016 frozen938 plan; batch_epochs; actual501cf grouping factory; 4uniqueG5/q weights1/4",
+  "role": "FULL938_TRAIN_PRIOR_TWO_FIXED_DECISION_DIAGNOSTIC",
+  "rules": [
+    "PRIMARY_FIXED_0.5",
+    "DIAGNOSTIC_TRAIN_ONLY_MIXED_PRIOR"
+  ],
+  "sources": [
+    {
+      "kind": "product_Bernoulli",
+      "name": "E2",
+      "predictions": {
+        "bytes": 155453,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/E2-same-HF-baseline-20261021/predictions.jsonl.gz",
+        "sha256": "e0dc53be8c0847e8a736401452d309771bcdca98d5c129e6cef49afa3b12c2ac"
+      }
+    },
+    {
+      "kind": "product_Bernoulli",
+      "name": "E4",
+      "predictions": {
+        "bytes": 155299,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/E4-same-HF-validation/E4/predictions.jsonl.gz",
+        "sha256": "66cdf3e7c748bda7f508c4f381ad0456a413d5d73c73e5d9f1eb774b71bdb707"
+      }
+    },
+    {
+      "kind": "hidden_direct_count6",
+      "name": "control256",
+      "predictions": {
+        "bytes": 278736,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/evaluations/cursor-000256/selection2048FreshG5HF.jsonl.gz",
+        "sha256": "c828b4ea8d92a2af035f38770c760ac235f0ed07c9c869a6ea8c7cd6dd745b45"
+      }
+    },
+    {
+      "kind": "hidden_direct_count6",
+      "name": "control512",
+      "predictions": {
+        "bytes": 279847,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/evaluations/cursor-000512/selection2048FreshG5HF.jsonl.gz",
+        "sha256": "4346544162f6942f9a27828237c47db038b3e1347a089bd5fc73700d666e3ce3"
+      }
+    },
+    {
+      "kind": "hidden_direct_count6",
+      "name": "control768",
+      "predictions": {
+        "bytes": 280826,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/evaluations/cursor-000768/selection2048FreshG5HF.jsonl.gz",
+        "sha256": "ffd715fbad90ae0b7adae30e7ef41f1d164cfd66aefaa9769f348d68c005f327"
+      }
+    }
+  ],
+  "threshold_sweep": false,
+  "validation_complete": {
+    "bytes": 23003,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/complete.json",
+    "sha256": "54453790ae4f2ed2c1cdd0b87a17b383fe6737d5ada3dba640b3ee78b7605056"
+  }
+}
