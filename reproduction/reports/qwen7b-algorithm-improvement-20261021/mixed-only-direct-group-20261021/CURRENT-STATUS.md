@@ -1,9 +1,11 @@
-# Official 7B direct Mixed-only pretraining
+# Official 7B direct Mixed-only training: actual startup and speed
 
-Latest source: official Qwen2.5-7B-Instruct block27 revisiona09a35458c702b33eeacc393d103063234e8bc28. No E4/old probe or optimizer inheritance. New group head/native+head Adam0; LR5e-6/raw-copy EMA0.99. Shared question+five own Prefix20, direct Mixed BCE only. Both native block and group head train jointly, real G5 Mixed/nonMixed balanced50:50 from full169028 genuineG10 questions.
+Job746083 runs on ACD1-25, normal/acd_u1H1008CPU128GiB. It starts only from official Qwen2.5-7B-Instruct block27 (a09a), with a new direct G5 Mixed head and both Adam0. LR5e-6, EMA0.99. No old probe checkpoint or optimizer is inherited.
 
-All1690280trajectory feature rows,5356manifests/276628216789packed bytes accepted after source identity/index SHA coverage. Fixed6656evaluation identities have zero overlap.
+All169028 realG10 question inputs/1690280rows/5356manifests passed the source-bound join and fresh reader SHA. CP0raw=EMA and bothAdam0 was independently saved/reloaded. Actual update1 changed both native block and head; complete CP1 independently reloaded; next update after durable restore matched bit-for-bit. At least14updates now accepted and later iterations continue without failure. Latest complete restore point at this measurement is CP7; ordinary rolling interval is128updates after the startup pins.
 
-Single new job746083: normal/acd_u,1H1008CPU128GiB48hours, ACD1-25. Actual same-birth process two observations verify ongoing official/feature SHA loading (+10.77GB in103.2s). No accepted optimizer update yet; not claimed healthy training. Published source model8c0ccaf4, worker e2fd6e7f, evaluation7380f3bf; deployment controller4f4cf5e5, frozen runtime code-dd7ecdf7060f.
+Each optimizer update:32questions,320own native trajectory rows,128realG5 views with64Mixed/64nonMixed. Updates8–14 averaged 6.481seconds of training computation per update (296.3questions/minute). The accepted-update wall interval8→14 measured290.9questions/minute, approximately2909trajectory-row visits/minute. This is a short actual startup sample, not a long-run guarantee; checkpoint/evaluation can lower whole-run throughput.
 
-Prior rejected dual-BCE745501 stopped gracefully after1555 (COMPLETED0:0). Four source-bound terminal checkpoint paths removed per latest human authorization,15,005,276,200logical bytes; physical bytes reclaimed not claimed because of a retained hardlink. Reports, official models, rollouts/features and other threads preserved. Old E4 full169028 staged worker is superseded and must never be submitted.
+Initial independent2048test before any optimization: MixedBCE0.772123, BA49.4109%, AUC0.501164, Top512 trueMixed164/512. Raw and EMA match exactly. No trained-epoch independent result exists yet; no claim of algorithmic improvement.
+
+Four obsolete terminal checkpoint paths were removed under human instruction;15,005,276,200logical bytes. Models/data/features/code/statistics and other threads were preserved. All training state remains remote.

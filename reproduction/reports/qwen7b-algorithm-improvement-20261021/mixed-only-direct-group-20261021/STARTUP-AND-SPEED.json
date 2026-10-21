@@ -1,0 +1,114 @@
+{
+  "observed_UTC": "2026-10-21T17:02:00.880650+00:00",
+  "job_id": 746083,
+  "status": "REAL_OFFICIAL_NATIVE_DIRECT_MIXED_TRAINING_HEALTHY_FIRST14_PLUS_CONTINUATION_VERIFIED",
+  "accepted_updates": 14,
+  "checkpoint": {
+    "accepted_hashes": {
+      "ema": "87d16bddfdca2b3c3ee18a3728ebae9b88e8c91232079e95f2e6b8a14b4b2f93",
+      "ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "head_adam": "1381f32af3faf559f60e823f29c992c78dc24941fdbfe181af17346cabf90959",
+      "native_adam": "ccecc2e493673e2f714a7e1caeddb390e568ef7d46470ada64923c3591551936",
+      "official_source": "f56f31ea08617395aafcb67a1c1fb8a25d7a2552f0ae23f435ba1d9c4a8d95ee",
+      "raw": "74a427776c930efc0baf5cfc7ab1c54cf122228abfb6672a2f816b13d068c474",
+      "raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "rng": "2994b0b3702db59ba952402cab67a80637702621362a22f1201845fbc37b31b0",
+      "sampler": "2bc61a54f0192e949653e979ffa943fbd4567fdf55a308b9ea1aa27e17fd9b33"
+    },
+    "allocation_job_id": "746083",
+    "bytes": 3777442394,
+    "config_sha256": "2a7f039f4172f5284e3b8282e8ca6200e566bd92bb3013e9802306eca84e7393",
+    "cursor": 7,
+    "data_cursor": {
+      "cursor": 7,
+      "sampler_binding": "80490a3898f4bb8684aba1ce03de4e05a1fcc2eddef32414ef254024bb629e79",
+      "sampler_state_sha256": "2bc61a54f0192e949653e979ffa943fbd4567fdf55a308b9ea1aa27e17fd9b33"
+    },
+    "epoch_time": 1792601985.9439778,
+    "full_CPU_native_head_two_Adam_RNG_sampler_source_reload_passed": true,
+    "head_steps": 7,
+    "matched_binding_sha256": "e8f0e0f9ea8ede107c651c8b75ba9c22a6c2e3fc4f4e3dbced4387717b4989b9",
+    "native_steps": 7,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-v1/checkpoints/.rolling-accepted-cursor-000007-9949eb9a15fe4e42ac3e6dbaeadf5d04.pt",
+    "pinned": false,
+    "sampler_state_sha256": "2bc61a54f0192e949653e979ffa943fbd4567fdf55a308b9ea1aa27e17fd9b33",
+    "sha256": "03eebb8a28e2beed933574b197d074c1f784c6f63f3c619bece97f343383acf4",
+    "stage": "training"
+  },
+  "initialization_source": "official_Qwen2.5-7B-Instruct_block27_a09a",
+  "old_probe_loaded": false,
+  "lr": 5e-06,
+  "EMA": 0.99,
+  "real_G10_questions": 169028,
+  "batch": {
+    "questions": 32,
+    "real_native_trajectory_rows": 320,
+    "G5_views": 128,
+    "Mixed_views": 64,
+    "nonMixed_views": 64
+  },
+  "throughput": {
+    "first_cursor": 8,
+    "last_cursor": 14,
+    "updates": 7,
+    "mean_compute_step_seconds": 6.480922004207969,
+    "compute_questions_per_minute": 296.25414389393546,
+    "accepted_wall_questions_per_minute": 290.9261519083474,
+    "actual_window_seconds": 39.59767770767212,
+    "short_initial_window": true,
+    "long_run_steady_state_guaranteed": false
+  },
+  "first_actual_GPU_replay": "PASSED",
+  "independent_full_CP1": "DIRECT_MIXED_CP1_INDEPENDENT_CPU_FULL_RAW_EMA_TWO_ADAM_RNG_SAMPLER_SOURCE_PASSED",
+  "durable_next_update_exact": "PASSED",
+  "initial_evaluation": {
+    "raw": {
+      "diagnostic512": {
+        "binary_Mixed_BCE": 0.7314873202121817,
+        "mixed_balanced_accuracy": 0.48394375148963215,
+        "mixed_ROC_AUC": 0.49195201398268057,
+        "selected_Mixed": 205,
+        "selected_questions": 512,
+        "allwrong_false_Mixed": 0.7368421052631579,
+        "allcorrect_false_Mixed": 0.7848101265822784,
+        "trueMixed_false_nonMixed": 0.2829268292682927
+      },
+      "fixed_selection2048": {
+        "binary_Mixed_BCE": 0.7721227453730535,
+        "mixed_balanced_accuracy": 0.4941089348819228,
+        "mixed_ROC_AUC": 0.501164164638363,
+        "selected_Mixed": 164,
+        "selected_questions": 512,
+        "allwrong_false_Mixed": 0.9127962085308057,
+        "allcorrect_false_Mixed": 0.8787878787878788,
+        "trueMixed_false_nonMixed": 0.10708898944193057
+      }
+    },
+    "EMA": {
+      "diagnostic512": {
+        "binary_Mixed_BCE": 0.7314873202121817,
+        "mixed_balanced_accuracy": 0.48394375148963215,
+        "mixed_ROC_AUC": 0.49195201398268057,
+        "selected_Mixed": 205,
+        "selected_questions": 512,
+        "allwrong_false_Mixed": 0.7368421052631579,
+        "allcorrect_false_Mixed": 0.7848101265822784,
+        "trueMixed_false_nonMixed": 0.2829268292682927
+      },
+      "fixed_selection2048": {
+        "binary_Mixed_BCE": 0.7721227453730535,
+        "mixed_balanced_accuracy": 0.4941089348819228,
+        "mixed_ROC_AUC": 0.501164164638363,
+        "selected_Mixed": 164,
+        "selected_questions": 512,
+        "allwrong_false_Mixed": 0.9127962085308057,
+        "allcorrect_false_Mixed": 0.8787878787878788,
+        "trueMixed_false_nonMixed": 0.10708898944193057
+      }
+    }
+  },
+  "raw_EMA_initial_results_identical": true,
+  "posttraining_independent_evaluation_not_yet_due": true,
+  "scientific_gain_claim": false,
+  "whole_goal_complete": false
+}
