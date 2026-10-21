@@ -1,48 +1,93 @@
 {
-  "observed_UTC": "2026-10-21T10:34:21.967321+00:00",
-  "classification": "PROGRESS_WITH_REAL_STARTUP_FAILURES_FIXED_NO_TRAINING_SUCCESS_CLAIM",
-  "actual": {
-    "GPU_qualification": {
-      "job": 745177,
-      "namespace": "joint-balanced-native-E4-qualification-v3",
-      "commit": "919a277f94f12bb8e2d22b9bec056c0169617c7e",
+  "observed_UTC": "2026-10-21T11:33:19.888397+00:00",
+  "classification": "QUALIFICATION7_COMPLETE_ALL_RAW_SHA_ACCEPTED_DUAL_STRICT_EM_ACTIVE_MAIN_WAITING_FEATURES",
+  "target_questions": 124194,
+  "current_feature_accepted_questions": 59648,
+  "native_GPU_qualification": {
+    "job": 745177,
+    "namespace": "joint-balanced-native-E4-qualification-v3",
+    "commit": "919a277f94f12bb8e2d22b9bec056c0169617c7e",
+    "config_sha256": "a0aa78acee96ce25c98cc7c77c3bd5c6a20ffb91458fd217552d9a5e60a2355a",
+    "fresh_sacct": "745177|COMPLETED|0:0|00:07:46|ACD1-13",
+    "observed_epoch": 1792580017.7596338,
+    "accepted_updates_verified": 7,
+    "main124194_training_claim": false,
+    "first_double_replay_passed": true,
+    "block_and_readout_both_changed": true,
+    "CP1_independent_full_six_state_and_sampler_reload_passed": true,
+    "CP1_restore_next_actual_update_exact": true,
+    "goal_complete": false,
+    "complete_status": "NATIVE_BALANCED_HARD_REAL_G10_QUALIFICATION_COMPLETE",
+    "final_checkpoint": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-qualification-v3/checkpoints/cursor-000007.pt",
+      "sha256": "c93c5eafb8393efc80bc615b91adf87cd24591d9dd11c3504a6282d36a1082cc",
+      "bytes": 3748140634,
+      "cursor": 7,
+      "steps": 14425,
       "config_sha256": "a0aa78acee96ce25c98cc7c77c3bd5c6a20ffb91458fd217552d9a5e60a2355a",
-      "fresh_sacct": "RUNNING0:0 00:00:11 ACD1-13",
-      "observed_epoch": 1792578780.5560987,
-      "accepted_updates_verified": 0,
-      "main124194_training_claim": false
-    },
-    "prior_failures": [
-      {
-        "job": 745147,
-        "namespace": "qualification-v1",
-        "state": "FAILED1:0",
-        "accepted_updates": 0,
-        "cause": "Temporary sampler lookahead omitted same external exclusion binding; guard correctly rejected restore",
-        "repair": "Clone exact sampler including exclusion config; v2 immutable source",
-        "no_model_rollback": true
-      },
-      {
-        "job": 745155,
-        "namespace": "qualification-v2",
-        "state": "FAILED1:0",
-        "elapsed_seconds": 270,
-        "accepted_updates": 0,
-        "cause": "VJP adapter omitted import time before first update",
-        "repair": "919a277f import time; stdlib global references check undefined=[]; v3 separate immutable namespace",
-        "no_model_rollback": true
+      "matched_binding_sha256": "531b3775c728ac122ccf05e3ee796eb6c53a417ad73b9ead8ee5727225657aac",
+      "epoch_time": 1792579233.9364514,
+      "accepted_hashes": {
+        "raw": "edb981a4305efc4538ac89f850c15d965f77effaae296b4154261e00b9f18753",
+        "ema": "4d2a9a7dd5ff1ed3dda58802a09e78d56c4d59afb91d1cd0c1e43552ded69f72",
+        "adam": "64046a68ba837579d4a4d122379e936efea21d98385a2db6268b837066130bc8",
+        "raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+        "ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+        "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
       }
-    ],
-    "full_current_cohort": 124194,
-    "rollout_last_observed": 129442,
-    "new243_HF_actual_archives": [
-      14,
-      16
-    ],
-    "new262_source_proof": "261 original chain +1 separately attested metadata reseal; original failure preserved"
+    },
+    "all_actual_first_and_durable_next_replays_passed": true
   },
-  "next": "Native first real block and head updates, fullCP1 and exactnext replay, accepted1..7; remote raw ingest and only missing features before full124194 production",
+  "rollout_latest_actual": {
+    "epoch": 1792582365.2028267,
+    "current_sealed_questions": 136610,
+    "current_sealed_batches": 1068,
+    "current_sealed_new5_trajectories": 683050,
+    "source_all169028_complete": false,
+    "frozen_fit_questions": 124194,
+    "future_rows_added_to_current_fit": false,
+    "read_only_fresh_identity_verified": true
+  },
+  "real_EM_ingest_latest_actual": {
+    "audited243": {
+      "target_archives_accepted": 16,
+      "total_archives": 16,
+      "archive_bytes": 1699481600,
+      "member_files_SHA_accepted": 3452,
+      "strict_EM_writer_pid": 3528498,
+      "strict_EM_birth": "129191288",
+      "old5_accepted": 155050,
+      "new5_accepted": 32640,
+      "expected_real_G10_rows": 310100,
+      "observed_epoch": 1792582239.13,
+      "feature_bank_complete": false
+    },
+    "audited262": {
+      "target_archives_accepted": 17,
+      "total_archives": 17,
+      "archive_bytes": 1473259520,
+      "member_files_SHA_accepted": 3723,
+      "strict_EM_writer_pid": 3735957,
+      "strict_EM_birth": "129242964",
+      "old5_accepted": 101760,
+      "new5_accepted": 0,
+      "expected_real_G10_rows": 335360,
+      "observed_epoch": 1792582241.76,
+      "feature_bank_complete": false
+    },
+    "recovered1216": {
+      "feature_bank_complete": true,
+      "feature_manifests": 40,
+      "feature_rows": 12160,
+      "complete_sha256": "cedfa2e1892b03803182ec38a3d1c8d159167a62294e646858c3563d0942672a"
+    },
+    "not_feature_accepted_until_actual_subset_complete": true,
+    "frozen_current_cohort_questions": 124194,
+    "model_payload_on_Mac": false
+  },
+  "main_GPU_submitted": false,
   "goal_complete": false,
   "actor_updates": 0,
-  "final4096_outcomes_read": false
+  "final4096_outcomes_read": false,
+  "next": "Finish each realEM ingest then own normal2x2H100 capture independently; four-bank metadata join then unique main submit and verify seven updates."
 }
