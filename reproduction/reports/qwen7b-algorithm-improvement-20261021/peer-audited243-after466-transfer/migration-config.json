@@ -1,0 +1,51 @@
+{
+  "Mac_payload_transfer": false,
+  "canonical_training_text_hash_policy": "retain canonical distinct qids/authentic trajectory IDs; train-only repeated text hashes are reported; evaluation qid/hash exclusion remains hard",
+  "expected_new": {
+    "batches": 243,
+    "domains": {
+      "hotpotqa": 28706,
+      "nq": 2304
+    },
+    "questions": 31010,
+    "trajectories": 155050
+  },
+  "expected_prior": {
+    "batches": 466,
+    "questions": 59648,
+    "trajectories": 298240
+  },
+  "expected_train_hash_repeats": {
+    "prior_overlap_questions": 2,
+    "within_selected": 0
+  },
+  "latest_training_scope": {
+    "complete_canonical_target_questions": 169028,
+    "current_joint_target_questions": 124194,
+    "former_internal5120_if_fitted_no_longer_unseen_or_selection_pool": true,
+    "import_does_not_start_training_or_feature_GPU": true,
+    "native_block_and_head_joint": true,
+    "real_G5_Mixed_nonMixed_sampling": "50/50",
+    "true_diag512_selection2048_final4096_whole_question_qid_and_hash_exclusion": true
+  },
+  "no_GPU_or_training": true,
+  "no_source_discovery": true,
+  "parent505_record_sha256": "8e23374458fbeeccd8dcc9623e5493a4805ceeab4fe790da1c14cb20fca12de7",
+  "role": "frozen_audited_delta_transfer",
+  "route": [
+    "H100",
+    "management bounded RAM",
+    "private HF",
+    "HKUST2",
+    "HKUST3",
+    "HPC3"
+  ],
+  "selected_batch_records_sha256": "45227948af8bc3de0cf512401a51dacd864a8882303d57efca0897c18be23d05",
+  "snapshot": "audited243-after466-20261021-45227948",
+  "source_and_previous_snapshots_preserved": true,
+  "source_selection": {
+    "bytes": 405030,
+    "path": "/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/metadata-plans/after466-8e23374458fb-c011c094/audited243-plan.json",
+    "sha256": "d251a80dbbedc336b6dbc48246c06ec824461e38ff24df61717c5e3a6079ccdd"
+  }
+}
