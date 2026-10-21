@@ -2,10 +2,15 @@
 import fcntl,json,pathlib,subprocess,time
 ROOT=pathlib.Path(__file__).resolve().parents[4];HERE=pathlib.Path(__file__).parent
 lock=(HERE/'finite-current-job.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
-started=time.time();previous=None
+started=time.time();previous=None;status_errors=0
 while time.time()-started<11400:
  p=subprocess.run(['python3',str(HERE/'prepare-screen-and-entry.py'),'--action','status'],cwd=ROOT,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
- if p.returncode:raise RuntimeError('Readonly observation needs attention, training unchanged: '+p.stderr[-2000:])
+ if p.returncode:
+  status_errors+=1
+  with(HERE/'actual-readonly-query-failures.jsonl').open('a')as f:f.write(json.dumps(dict(epoch=time.time(),status='READONLY_QUERY_FAILED_NO_TRAINING_STATE_INFERENCE',attempt=status_errors,returncode=p.returncode,kind='optional_NFS_FileNotFound'if 'FileNotFoundError'in p.stderr else 'status_RPC_failed',last_good_preserved=True,training_mutated=False))+chr(10))
+  if status_errors>=3:raise RuntimeError('Three readonly observations failed; training unchanged: '+p.stderr[-2000:])
+  time.sleep(5);continue
+ status_errors=0
  s=json.loads(p.stdout.splitlines()[-1]);assert s['job_id']!='743933' and s['submission']['config']['sha256']=='fb637c02812dd070cf392a58df75e0d219bbb10d1a2d24cd6e201f3638147767'
  cache=s.get('cache-progress',{});progress=s.get('progress',{});latest=s.get('latest',{})
  row=dict(epoch=s['epoch'],job_id=s['job_id'],stage=progress.get('stage'),cache_trajectories=cache.get('completed_trajectories',0),

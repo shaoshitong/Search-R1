@@ -1,0 +1,30 @@
+{
+  "status": "READONLY_NFS_JSON_TRANSIENT_RECOVERED_TRAINING_UNCHANGED",
+  "previous_observer_session": 96190,
+  "previous_observer_exit": 1,
+  "first_error_type": "FileNotFoundError while reading an optional JSON receipt",
+  "training_restart_performed": false,
+  "active_805_runtime_edited": false,
+  "last_good_preserved": true,
+  "manual_fresh": {
+    "epoch": 1792553285.8019629,
+    "job_id": "743978",
+    "cache_trajectories": 171008,
+    "native_golden": "PASSED",
+    "failure": null,
+    "main_queue": "743978|q7b-frozenE1-head30016|RUNNING|40:32|ACD1-24|ACD1-24\n"
+  },
+  "fix": {
+    "optional_JSON_read_attempts": 5,
+    "delay_seconds": 0.05,
+    "observer_status_RPC_attempts": 3,
+    "observer_delay_seconds": 5,
+    "separate_failed_observation_log": true,
+    "persistent_failure_still_raises": true
+  },
+  "fixture": {
+    "transient_fails_once_then_passes": true,
+    "persistent_failure_raises_at_attempt5": true,
+    "both_control_scripts_compile": true
+  }
+}

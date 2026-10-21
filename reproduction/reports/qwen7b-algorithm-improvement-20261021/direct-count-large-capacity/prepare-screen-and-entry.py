@@ -6,7 +6,13 @@ BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algor
 CSHA='fb637c02812dd070cf392a58df75e0d219bbb10d1a2d24cd6e201f3638147767'
 COMMON='''import pathlib,json,hashlib,fcntl,os,base64,subprocess,time
 b=pathlib.Path(v['base']);root=b/'screen-auditor';root.mkdir(exist_ok=True);guard=(root/'operator.lock').open('a');fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB)
-def read(p):return json.loads(pathlib.Path(p).read_bytes())
+def read(p):
+ p=pathlib.Path(p)
+ for attempt in range(5):
+  try:return json.loads(p.read_bytes())
+  except FileNotFoundError:
+   if attempt==4:raise
+   time.sleep(.05)
 def proof(p):
  p=pathlib.Path(p);raw=p.read_bytes();return dict(path=str(p),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
 '''
