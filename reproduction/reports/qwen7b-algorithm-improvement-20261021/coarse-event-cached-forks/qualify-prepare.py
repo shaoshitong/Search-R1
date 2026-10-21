@@ -22,7 +22,7 @@ def call(body,extra=None):
  script='v='+repr(dict(commit=v.commit,**(extra or {})))+'\n'+common+body;compile(script,'remote-code-only','exec');packed=base64.b64encode(zlib.compress(script.encode())).decode();command='python3 -c '+shlex.quote('import base64,zlib;exec(zlib.decompress(base64.b64decode('+repr(packed)+')))')
  if len(command.encode())>=16000:raise ValueError('Code-only command exceeds16KB')
  r=ctl.run(command,account='mou176',source_address=ip,timeout=70)
- if r.returncode:raise RuntimeError(r.stderr[-3000:])
+ if r.returncode:raise RuntimeError(r.stdout[-3500:]+r.stderr[-800:])
  return json.loads(r.stdout.splitlines()[-1])
 refs={}
 for n,raw in blobs.items():
@@ -47,8 +47,10 @@ from reproduction.operations.qwen7b_warmup import coarse_event_cached_train as m
 print(json.dumps(dict(status='SYNTHETIC_COARSE_HEAD_CP0_REPLAY_RECOVERY_CPU_QUALIFIED_REAL_INPUTS_NOT_YET_ACCEPTED',tests=r.testsRun,actual_input_status=m.waiting_inputs(None),GPU_used=False,real_model_or_cache_tensors_loaded=False,new_model_scoring=False,active_Count_or_screen_modified=False,elapsed_seconds=time.time()-started,peak_RSS_KiB=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)))
 """)+"""
 env=dict(os.environ,QWEN7B_CODE_ROOT=str(code),CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONDONTWRITEBYTECODE='1')
-r=subprocess.run(['bash',str(code/'reproduction/operations/qwen7b_warmup/runtime.sh'),'-u','-c',fixture],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,env=env,universal_newlines=True,timeout=65);log=code/'cpu-fixtures.log';log.write_text(r.stdout)
-if r.returncode:raise RuntimeError(r.stdout[-3000:])
-result=json.loads([s for s in r.stdout.splitlines()if s.startswith('{')][-1]);result.update(source_commit=v['commit'],small_checkpoint_helper_origin='282bc1597fd720c6e6fad5c836effb52d5e65d78',code_root=str(code),baseline_publication=proof(source),files={n:proof(code/('reproduction/operations/qwen7b_warmup/'+n))for n in v['files']},log=proof(log));receipt.write_text(json.dumps(result,sort_keys=True)+'\\n');print(json.dumps(dict(result=result,receipt=proof(receipt))))
+log=code/'cpu-fixtures.log'
+with log.open('w')as stream:r=subprocess.run(['bash',str(code/'reproduction/operations/qwen7b_warmup/runtime.sh'),'-u','-c',fixture],stdout=stream,stderr=subprocess.STDOUT,env=env,universal_newlines=True,timeout=65)
+text=log.read_text()
+if r.returncode:raise RuntimeError(text[-3000:])
+result=json.loads([s for s in text.splitlines()if s.startswith('{')][-1]);result.update(source_commit=v['commit'],small_checkpoint_helper_origin='282bc1597fd720c6e6fad5c836effb52d5e65d78',code_root=str(code),baseline_publication=proof(source),files={n:proof(code/('reproduction/operations/qwen7b_warmup/'+n))for n in v['files']},log=proof(log));receipt.write_text(json.dumps(result,sort_keys=True)+'\\n');print(json.dumps(dict(result=result,receipt=proof(receipt))))
 """
 result=call(body,dict(files=refs));(OUT/'actual-cpu-qualification.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
