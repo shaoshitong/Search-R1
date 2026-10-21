@@ -1,0 +1,22 @@
+{
+  "session": "01a157e6-7a0b-71e3-a852-b74235cfe836",
+  "original_user_time_utc": "2026-10-21T16:46:34.094Z",
+  "original_user_message_id": "01a15f5b-7e6d-7fb3-ab3c-89aa8ec3d074",
+  "original_user_text": "如果本质上它就是推理的时候，就是其实你实现的就是利用的FlashAttention没有错误的话，那其实是可以切换的，就切换吧。因为FlashAttention3在 Hopper上面应该是更加精确的，我是这么认为的。你应该去比就是 SPDA的一个结果，而不是比FlashAttention2的一个结果。",
+  "scope": "Owned Qwen7B Easy2560 four-H100 actor attention transition from FA2 to FA3 at a complete full-state boundary; continue the same 200-outer experiment.",
+  "source_job": "745371",
+  "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+  "source_run_id": "232f20e112ac4a978c5aba52a0367195",
+  "source_base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+  "transition_boundary_minimum_outer": 12,
+  "acceptance_basis": "Unchanged exact attention mathematics, causal/packing/GQA implementation review, and FP32 mathematical attention reference. Strict numerical equality to FA2 is no longer the switch criterion; retain the prior failed FA2 comparison as historical evidence.",
+  "existing_fp32_reference_evidence": "evidence/actual-fa3-layer-shadow-cp10-20261022.json",
+  "actor_training_attention_only": true,
+  "rollout_backend_unchanged": "XFORMERS",
+  "grounding_backend_unchanged": "SDPA",
+  "preserve": ["model", "Adam", "scheduler", "worker RNG", "driver RNG", "next-data equality", "frozen grounding heads", "scientific configuration", "external retrieval job745198", "accepted checkpoint5 archive"],
+  "goal_remains_active": true,
+  "source_stop_is_authorized_transition_not_failure": true,
+  "historical_older_stop_requests_not_used": true,
+  "fa3_more_accurate_than_fa2_claimed": false
+}
