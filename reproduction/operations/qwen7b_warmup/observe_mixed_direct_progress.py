@@ -7,6 +7,7 @@ import argparse,base64,hashlib,importlib.util,json,shlex,subprocess,time,zlib
 from pathlib import Path
 R=Path(__file__).resolve().parents[3]
 BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-v1'
+ASSET_ROOT='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019'
 JOB_NAME='q7b-mixed-direct169028';MODULE='reproduction.operations.qwen7b_warmup.joint_mixed_direct_pretrain'
 PROC_SOURCE=r'''import json,os,pathlib,time
 v=__VALUES__
@@ -28,6 +29,19 @@ else:
    for line in(root/'io').read_text().splitlines():
     k,x=line.split(':',1);io[k]=int(x.strip())
    status=(root/'status').read_text().splitlines();out.update(io=io,status='OWNED_MAIN_PROCESS_OBSERVED',status_fields=[x for x in status if x.startswith(('VmRSS:','VmSize:','Threads:'))],cpu_clock_ticks_per_second=os.sysconf('SC_CLK_TCK'),cgroup_paths=cg.strip().splitlines())
+   # Diagnostic only: never open/read these targets or inspect foreign roots.
+   out.update(open_whitelisted_fds=[],fd_readlink_races=0,fd_diagnostic_errors=0,fd_scan_truncated=False)
+   try:
+    for number,fd in enumerate((root/'fd').iterdir()):
+     if number>=256:out['fd_scan_truncated']=True;break
+     try:link=os.readlink(str(fd))
+     except FileNotFoundError:out['fd_readlink_races']+=1;continue
+     except OSError:out['fd_diagnostic_errors']+=1;continue
+     path=pathlib.PurePosixPath(link)
+     if path.is_absolute()and'..'not in path.parts and str(path).startswith(v['asset_root'].rstrip('/')+'/')and path.suffix in('.bin','.jsonl','.safetensors'):
+      if len(out['open_whitelisted_fds'])<16:out['open_whitelisted_fds'].append(dict(fd=fd.name,path=str(path)))
+      else:out['fd_scan_truncated']=True
+   except Exception as e:out['fd_diagnostic_error']=type(e).__name__+': '+str(e)[:160]
    after=stat();out['same_birth_through_observation']=after['birth_ticks']==before['birth_ticks']
    if not out['same_birth_through_observation']:out['status']='PROCESS_IDENTITY_RACED_NO_DELTA_ACCEPTED'
   else:out['status']='CONTROLLER_PID_NOT_VERIFIED_AS_OWN_MAIN'
@@ -77,12 +91,30 @@ if fields.get('JobState')=='PENDING':out['status']='PENDING_NOT_TRAINING';out['q
 if fields.get('JobState')!='RUNNING':out['status']='TERMINAL_OR_TRANSITIONING_NO_PROCESS_STEP';print(json.dumps(out));raise SystemExit(0)
 controller=out.get('controller',{});pid=controller.get('pid')
 if str(controller.get('job_id'))!=job or controller.get('config_sha256')!=ref.get('sha256'):out['status']='RUNNING_CONTROLLER_NOT_YET_BOUND_NO_PROCESS_STEP';print(json.dumps(out));raise SystemExit(0)
-proc=v['proc_source'].replace('__VALUES__',repr(dict(job=job,pid=pid,module=v['module'],base=v['base'])))
+proc=v['proc_source'].replace('__VALUES__',repr(dict(job=job,pid=pid,module=v['module'],base=v['base'],asset_root=v['asset_root'])))
 step=command(['srun','--jobid='+job,'--overlap','--gres=gpu:0','--ntasks=1','--cpus-per-task=1','--mem=256M','env','CUDA_VISIBLE_DEVICES=','python3','-c',proc],timeout=18);out['allocation_step']=dict(returncode=step['returncode'],timeout=step.get('timeout',False),stderr=step.get('stderr',''))
 if step['returncode']==0:
  markers=[line for line in step['stdout'].splitlines()if line.startswith('MIXED_DIRECT_PROC_OBSERVATION=')]
  if markers:out['process']=json.loads(markers[-1].split('=',1)[1])
  else:out['allocation_step']['missing_marker']=True
+# All manifest-list work is small metadata on the login side; no tensor reads.
+# Any readlink close-race or optional mapping failure remains diagnostic only.
+if out.get('process',{}).get('status')=='OWNED_MAIN_PROCESS_OBSERVED':
+ try:
+  config=json.loads(raw);feature_ref=config['features'];feature_path=pathlib.Path(feature_ref['path'])
+  assert feature_path.is_absolute()and str(feature_path).startswith(v['asset_root'].rstrip('/')+'/')and 0<feature_ref['bytes']<=4*1024**2
+  with feature_path.open('rb')as stream:feature_raw=stream.read(4*1024**2+1)
+  assert len(feature_raw)==feature_ref['bytes']and hashlib.sha256(feature_raw).hexdigest()==feature_ref['sha256'],'Feature descriptor list SHA/bytes differs'
+  manifests=json.loads(feature_raw);assert isinstance(manifests,list)and len(manifests)==5356,'Expected frozen5356 manifest list'
+  by_parent={}
+  for ordinal,manifest in enumerate(manifests,1):by_parent.setdefault(str(pathlib.PurePosixPath(manifest['path']).parent),[]).append(ordinal)
+  matches=[]
+  for fd in out['process'].get('open_whitelisted_fds',[]):
+   ordinals=by_parent.get(str(pathlib.PurePosixPath(fd['path']).parent),[])
+   if ordinals:matches.append(dict(fd=fd['fd'],path=fd['path'],manifest_ordinals=ordinals))
+  ordinals=sorted({i for match in matches for i in match['manifest_ordinals']})
+  out['manifest_position']=dict(status='OPEN_FD_MANIFEST_PARENT_MATCH'if ordinals else'NO_OPEN_FD_FEATURE_MANIFEST_MATCH',manifest_total=len(manifests),current_manifest_ordinal=ordinals[0]if len(ordinals)==1 and not out['process'].get('fd_scan_truncated')else None,matched_manifest_ordinals=ordinals,matched_open_files=matches,features=feature_ref,completion_or_completed_byte_claim=False,ordinal_semantics='one-based frozen list position of currently open whitelisted file parent; not a completion count')
+ except Exception as e:out['manifest_position']=dict(status='OPTIONAL_FD_MANIFEST_DIAGNOSTIC_UNAVAILABLE',current_manifest_ordinal=None,diagnostic_error=type(e).__name__+': '+str(e)[:220],training_failure_inferred=False)
 progress=out.get('progress',{});cursor=progress.get('cursor');out['actual_accepted_updates_reported']=cursor if type(cursor)is int else None
 out['healthy_training_qualification_complete']=(out.get('process',{}).get('status')=='OWNED_MAIN_PROCESS_OBSERVED'and out.get('process',{}).get('same_birth_through_observation')is True and type(cursor)is int and cursor>=6 and out.get('first-update-replay',{}).get('status')=='PASSED'and out.get('durable-next-update-replay',{}).get('status')=='PASSED'and out.get('first-cp-independent-audit',{}).get('status')=='DIRECT_MIXED_CP1_INDEPENDENT_CPU_FULL_RAW_EMA_TWO_ADAM_RNG_SAMPLER_SOURCE_PASSED')
 out['status']='ACCEPTED_UPDATE_METADATA_PRESENT'if type(cursor)is int and cursor>0 else'LOADING_OR_INITIAL_EVALUATION_NO_ACCEPTED_UPDATE_YET'
@@ -103,7 +135,7 @@ def delta(current,previous):
 
 
 def remote_source():
- values=dict(base=BASE,job_name=JOB_NAME,module=MODULE,proc_source=PROC_SOURCE)
+ values=dict(base=BASE,job_name=JOB_NAME,module=MODULE,proc_source=PROC_SOURCE,asset_root=ASSET_ROOT)
  return REMOTE_SOURCE.replace('__VALUES__',repr(values),1)
 
 
