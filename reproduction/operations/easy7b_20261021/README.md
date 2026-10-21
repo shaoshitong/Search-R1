@@ -52,3 +52,27 @@ observer `--verify-files` reads all eight small destination files and their SHA.
 Existing launch or operation claims must be inspected, never replayed. A successful
 supplement preserves bytes; it does not certify an actual CUDA restore. The final
 outer200 native-four-rank recovery remains a separate required acceptance.
+
+Normal fixed512 evaluation precedes its checkpoint save; the extra QA5 callback
+and the grounding refits at50/100/150 follow the save. A core snapshot taken
+before a refit can therefore contain the previous grounding heads. The eight
+post-callback files preserve the new manifest and RNG, but that alone does not
+preserve the new head/report/dump bytes referenced by that manifest.
+
+`post_callback_dependencies.py` independently closes those references in a new
+`post-callback-dependencies` child: both sklearn heads, calibration report,
+version manifest, all `dump_sha256` members and exact encoder mappings. Files
+already covered by the accepted core reuse its SHA ACK and current physical
+identity; default inspection does not read model tensor bodies again. New
+transferred dependencies receive fresh source and destination SHA checks. A
+restored round without local dumps can follow one authenticated source receipt
+to its original manifest/dumps; no filesystem-wide search is performed.
+
+`archive_post_callback_future_local.py` launches an independent CPU companion.
+It qualifies this new dependency closure on CP5 without replaying the existing
+eight-file writer, then handles50/100/150/200 after each actual core ACK and
+post-callback boundary. Every writer has an exclusive claim. The existing core
+controller and training remain unchanged. A specific dead core-controller birth
+is a dependency failure; an observation timeout remains unknown. At200 the
+reward round is150 and the RNG boundary precedes final51713. None of these byte
+archives is an actual CUDA restore or a completion claim for the200-outer goal.
