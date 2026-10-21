@@ -78,3 +78,8 @@ identity_exclusion_acceptance. No placeholders pass prepare. All raw cache,
 models, optimizer states and probability rows remain remote. The current local
 metadata tests cover exact memory/update arithmetic, own-new5 identity/EM
 binding, disjoint questions and unchanged20-epoch original batch order.
+
+Actual CPU preparation completed successfully with three metadata tests (0.736s),
+followed by a separate status readback. Config0be60cc8… binds actual30016 fit and
+5120 holdout, with own new5 labels and original938 byte/record controls verified.
+See PREPARED.json and actual-config.json. No GPU job or sbatch was created.

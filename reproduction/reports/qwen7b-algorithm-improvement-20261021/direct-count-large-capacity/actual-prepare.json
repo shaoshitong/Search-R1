@@ -1,0 +1,42 @@
+{
+  "GPU_submitted": false,
+  "actual_GPU_or_model_tensor_loaded": false,
+  "config": {
+    "bytes": 7438,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v1/config.json",
+    "sha256": "0be60cc806a177790dce39fa28269303087a1b43ede90a439cce8a63f9e3a0fc"
+  },
+  "fit_questions": 30016,
+  "holdout_domain_counts": {
+    "HotpotQA": 2560,
+    "NQ": 2560
+  },
+  "holdout_questions": 5120,
+  "memory": {
+    "CPU_memory_request_bytes": 137438953472,
+    "GPU_cache_bytes": 50379402240,
+    "GPU_reserve_after_cache_required_bytes": 17179869184,
+    "cache_chunk_trajectories": 256,
+    "disk_free_before_cache_required_bytes": 58960904192,
+    "fit_updates_per_epoch": 938,
+    "fit_updates_total": 18760,
+    "frozen_logit_bytes": 1405440,
+    "hidden_bytes": 50370969600,
+    "hidden_dtype": "bfloat16",
+    "hidden_shape": [
+      351360,
+      20,
+      3584
+    ],
+    "linear_cache_planning_seconds": 3974.1764841377735,
+    "mask_bytes": 7027200,
+    "native_cache_micro": 8,
+    "prior_actual_cache": {
+      "native_cache_seconds": 173.73449110984802,
+      "questions": 1536,
+      "trajectories": 15360
+    },
+    "timing_is_extrapolation_not_actual_qualification": true
+  },
+  "status": "LARGE_FROZEN_E1_CAPACITY_METADATA_PREPARED_NO_SUBMISSION"
+}
