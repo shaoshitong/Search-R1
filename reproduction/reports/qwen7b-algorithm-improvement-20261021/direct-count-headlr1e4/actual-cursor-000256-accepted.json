@@ -1,0 +1,166 @@
+{
+  "status": "HEADLR1E4_UPDATE256_QUALIFICATION_PASS_SCIENTIFIC_NEGATIVE",
+  "job_id": "743809",
+  "source_commit": "c7947e478cb96e99f0ebe4b08c9a5bb202945cae",
+  "config": {
+    "bytes": 17000,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-headlr1e4-v1/config.json",
+    "sha256": "71c3ee90f0232b889d4ced2d0cb50d69e852eb1ebbdbb55fdff03eaefdbbcc71"
+  },
+  "checkpoint": {
+    "accepted_hashes": {
+      "head_adam": "6b458ae2e0b91cc0593e251eb5ed5c4c6bd4e193053997dd3252e0436cb90024",
+      "head_ema": "7e329362ee2eaa387b61072999c7f10dbff936eda7fee07a9b827b7a8a10f33f",
+      "head_raw": "8162441b99c6fdbd42b0ccb66238ff7b970dc3bed7dbfaba5311acdd6072581d",
+      "legacy_adam": "4c475e4e2903d8f4d2af6538059b4257ed1e452d009269d206e9293a68c11e72",
+      "legacy_ema": "b7584acfd4ab4999d50a8deab17626de72099256a92ff786372ad8b45aba2c5f",
+      "legacy_ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "legacy_raw": "348f951422144063d23404b756219f7db1efb75687044643edafd9e00c9a0f58",
+      "legacy_raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+    },
+    "actor_updates": 0,
+    "bytes": 3754035012,
+    "config_sha256": "5d58253b890c0da6428e7f12e16ab4bef6a39f2e3edc58a911a97c00802575d3",
+    "cursor": 256,
+    "data_cursor": {
+      "cursor": 256,
+      "plan_sha256": "8d6f5b046c8ee459c529f0750c80bac63455b2663f19cdcdce48d0fddd648cbf"
+    },
+    "epoch_time": 1792549385.9247518,
+    "full_CPU_reload_passed": true,
+    "full_file_SHA256_verified": true,
+    "head_buffer_hashes": {
+      "ema": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "legacy_Adam_steps": 10720,
+    "matched_binding_sha256": "5d58253b890c0da6428e7f12e16ab4bef6a39f2e3edc58a911a97c00802575d3",
+    "new_head_Adam_steps": 256,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-headlr1e4-v1/checkpoints/cursor-000256.pt",
+    "phase": "accepted_update_complete",
+    "sha256": "dc57d7acff277b043bf3960a183bec0dcad25dc75ca0c8d6be41867dd776d9bf",
+    "source_all_four_RNG_preserved": true,
+    "source_archive_sha256": "d74c3923202a4cb902d08f71e115415168199459a6f7e6b282e330d6e0cdbfeb",
+    "steps": 10720
+  },
+  "independent_audit": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-headlr1e4-v1/evaluations/cursor-000256/independent-audit.json",
+    "bytes": 5186,
+    "sha256": "05375d0645fdb9d94ddc8e67d2ca753027533a3c933ec873ffeacaba7537f502"
+  },
+  "metrics": {
+    "pool": {
+      "allcorrect_FPR": 0.0,
+      "allwrong_FPR": 0.0,
+      "confusion": {
+        "fn": 663,
+        "fp": 0,
+        "tn": 1385,
+        "tp": 0
+      },
+      "k_histogram": [
+        1055,
+        181,
+        136,
+        132,
+        214,
+        330
+      ],
+      "mixed_balanced_accuracy": 0.5,
+      "mixed_fraction": 0.32373046875,
+      "mixed_questions": 663,
+      "mixed_recall": 0.0,
+      "mixed_roc_auc": 0.5525719979744189,
+      "nonmixed_recall": 1.0,
+      "questions": 2048
+    },
+    "selected512": {
+      "allcorrect_FPR": 0.0,
+      "allwrong_FPR": 0.0,
+      "confusion": {
+        "fn": 188,
+        "fp": 0,
+        "tn": 324,
+        "tp": 0
+      },
+      "k_histogram": [
+        196,
+        41,
+        29,
+        36,
+        82,
+        128
+      ],
+      "mixed_balanced_accuracy": 0.5,
+      "mixed_fraction": 0.3671875,
+      "mixed_questions": 188,
+      "mixed_recall": 0.0,
+      "mixed_roc_auc": 0.492530207512477,
+      "nonmixed_recall": 1.0,
+      "questions": 512
+    }
+  },
+  "diagnostic512": {
+    "pool": {
+      "allcorrect_FPR": 0.0,
+      "allwrong_FPR": 0.0,
+      "confusion": {
+        "fn": 205,
+        "fp": 0,
+        "tn": 307,
+        "tp": 0
+      },
+      "k_histogram": [
+        228,
+        63,
+        50,
+        44,
+        48,
+        79
+      ],
+      "mixed_balanced_accuracy": 0.5,
+      "mixed_fraction": 0.400390625,
+      "mixed_questions": 205,
+      "mixed_recall": 0.0,
+      "mixed_roc_auc": 0.54041471359339,
+      "nonmixed_recall": 1.0,
+      "questions": 512
+    },
+    "selected512": {
+      "allcorrect_FPR": 0.0,
+      "allwrong_FPR": 0.0,
+      "confusion": {
+        "fn": 205,
+        "fp": 0,
+        "tn": 307,
+        "tp": 0
+      },
+      "k_histogram": [
+        228,
+        63,
+        50,
+        44,
+        48,
+        79
+      ],
+      "mixed_balanced_accuracy": 0.5,
+      "mixed_fraction": 0.400390625,
+      "mixed_questions": 205,
+      "mixed_recall": 0.0,
+      "mixed_roc_auc": 0.54041471359339,
+      "nonmixed_recall": 1.0,
+      "questions": 512
+    }
+  },
+  "all9_state_CPU_reload": true,
+  "source_four_rank_archive_preserved": true,
+  "head_Adam_LR": 0.0001,
+  "legacy_Adam_LR": 5e-06,
+  "original_plan_938_unchanged": true,
+  "threshold": 0.5,
+  "threshold_fitted": false,
+  "final_pool_read": false,
+  "scientific_gate_pass": false,
+  "training_continues_without_mutation": true
+}
