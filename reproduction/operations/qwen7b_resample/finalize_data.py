@@ -47,6 +47,15 @@ def load(name, path):
     return module
 
 
+def control_module():
+    if not __package__:
+        import sys
+        root = str(Path(__file__).resolve().parents[3])
+        if root not in sys.path:
+            sys.path.insert(0, root)
+    return importlib.import_module('reproduction.operations.qwen7b_resample.pool_control')
+
+
 def write(path, value, immutable=False):
     data = encoded(value)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -206,7 +215,7 @@ else:
 print(json.dumps(result,sort_keys=True))
 raise SystemExit(1 if result['status']=='FAILED' else 2 if result['status']=='PENDING' else 0)
 '''
-    control = load('finalizer_pool_control', Path(__file__).with_name('pool_control.py'))
+    control = control_module()
     result = control.transport(script)
     envelope = dict(action=args.action, returncode=result.returncode, stdout=result.stdout,
                     stderr=result.stderr, code_sha256=code, epoch=time.time())
