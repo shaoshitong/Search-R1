@@ -38,6 +38,6 @@ with log.open('wb')as stream:
 assert child.returncode==0,log.read_text()[-2400:]
 v=json.loads((r/'actual-login-synthetic-result.json').read_bytes());v.update(root=str(r),wall_seconds_including_import=elapsed,observed_max_RSS_bytes=peak,CPU_affinity=allowed,source_code_SHA256=p['proofs'],actual_stdout_log=dict(path=str(log),bytes=log.stat().st_size,sha256=hashlib.sha256(log.read_bytes()).hexdigest()));print(json.dumps(v))'''.replace('PACKET',repr(json.dumps(dict(proofs=proofs,runner=runner))))
 s=importlib.util.spec_from_file_location('ctl',C/'work/prefix-schedule-cp50-20261018/reproduction/hpc3_prefix5/direct_control.py');ctl=importlib.util.module_from_spec(s);s.loader.exec_module(ctl);cmd='python3 -c '+shlex.quote(worker);assert len(cmd.encode())<16000
-r=ctl.run(cmd,account='mou176',source_address=subprocess.check_output(['/usr/sbin/ipconfig','getifaddr','en0']).decode().strip(),timeout=35)
+r=ctl.run(cmd,account='mou176',source_address=subprocess.check_output(['/usr/sbin/ipconfig','getifaddr','en0']).decode().strip(),timeout=150)
 if r.returncode:raise RuntimeError(r.stderr.decode(errors='replace')[-2800:]+r.stdout.decode(errors='replace')[-1000:])
 v=json.loads(r.stdout.decode().splitlines()[-1]);(HERE/'actual-login-synthetic-result.json').write_text(json.dumps(v,indent=2)+'\n');print(json.dumps(v))
