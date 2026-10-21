@@ -26,6 +26,9 @@ def run(config):
  features=pathlib.Path(mc['features']['path']);assert fp(features)==mc['features'];refs=read(features);parents={str(pathlib.Path(v['path']).parent):i for i,v in enumerate(refs)}
  guard=(b/'prefetch.lock').open('a');fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB);assert not(b/'complete.json').exists()
  resource.setrlimit(resource.RLIMIT_DATA,(2*1024**3,2*1024**3));deadline=time.monotonic()+c['seconds'];started=time.time();accepted=set();count=0;total=0;last_hit=time.monotonic();last_current=None;reason='FINITE_TIME_BUDGET'
+ def mainio():
+  try:return {k:int(v)for k,v in(x.split(':',1)for x in proc.joinpath('io').read_text().splitlines())}
+  except FileNotFoundError:return {}
  def current():
   hits=[]
   for f in proc.joinpath('fd').iterdir():
@@ -41,7 +44,7 @@ def run(config):
     h.update(x);n+=len(x)
   assert n==item['bytes']and h.hexdigest()==item['sha256'],'Independent prefetch full-file SHA mismatch'
   return item['path'],n
- atomic(b/'process.json',dict(pid=os.getpid(),main_pid=pid,main_birth=c['main_birth'],job_id=c['job_id'],affinity=sorted(os.sched_getaffinity(0)),started=started,config=fp(config),main_config=mc['features']))
+ atomic(b/'process.json',dict(pid=os.getpid(),main_pid=pid,main_birth=c['main_birth'],job_id=c['job_id'],affinity=sorted(os.sched_getaffinity(0)),started=started,config=fp(config),features=mc['features'],main_io=mainio()))
  with concurrent.futures.ThreadPoolExecutor(max_workers=8)as pool:
   while time.monotonic()<deadline:
    if birth(proc)!=c['main_birth']:reason='MAIN_PROCESS_ENDED_OR_IDENTITY_CHANGED';break
@@ -68,7 +71,7 @@ def run(config):
    try:
     for path,n in pool.map(one,items):accepted.add(path);count+=1;total+=n
    except TimeoutError:reason='FINITE_TIME_BUDGET';break
-   atomic(b/'progress.json',dict(status='ACTUAL_READ_ONLY_FULL_SHA_PREFETCH_ADVANCING',files=count,bytes=total,main_manifest_index=i,main_manifest_count=len(refs),ahead_window_bytes=window,max_window_bytes=c['window_bytes'],elapsed=time.time()-started,time=time.time(),maxRSS_KiB=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,main_checksums_unchanged=True))
+   atomic(b/'progress.json',dict(status='ACTUAL_READ_ONLY_FULL_SHA_PREFETCH_ADVANCING',files=count,bytes=total,main_manifest_index=i,main_manifest_count=len(refs),ahead_window_bytes=window,max_window_bytes=c['window_bytes'],elapsed=time.time()-started,time=time.time(),maxRSS_KiB=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,main_checksums_unchanged=True,main_io=mainio()))
  result=dict(status='FINITE_READ_ONLY_PREFETCH_FINISHED',reason=reason,files=count,bytes=total,last_main_manifest_index=last_current,elapsed=time.time()-started,time=time.time(),maxRSS_KiB=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,main_checksums_unchanged=True,full_file_SHA_verified=True,actor_updates=0,probe_updates=0);atomic(b/'complete.json',result);return result
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--config',type=pathlib.Path,required=True);a=p.parse_args()
