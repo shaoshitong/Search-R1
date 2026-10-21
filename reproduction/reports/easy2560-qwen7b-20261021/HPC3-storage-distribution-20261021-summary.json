@@ -89,7 +89,7 @@
   "account_views_never_added": true,
   "format": "hpc3_saved_du_depth2_cross_uid_report_v1",
   "full_namespace_without_permission_gaps": false,
-  "generated_unix": 1792581720.193065,
+  "generated_unix": 1792582033.723604,
   "large_source": {
     "jxu": {
       "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019": 2991781801984,
@@ -235,7 +235,7 @@
     "accounting": {
       "rc": 0,
       "stderr": "",
-      "stdout": "745022|CANCELLED by 14090|0:0|00:57:43|ACD1-22\n745022.batch|CANCELLED|0:9|00:58:21|ACD1-22\n745022.extern|COMPLETED|0:0|00:57:43|ACD1-22\n745022.0|COMPLETED|0:0|00:01:16|ACD1-22\n745198|RUNNING|0:0|00:41:07|ACD1-26\n745198.batch|RUNNING|0:0|00:41:07|ACD1-26\n745198.extern|RUNNING|0:0|00:41:07|ACD1-26\n745198.0|COMPLETED|0:0|00:00:22|ACD1-26\n745198.1|COMPLETED|0:0|00:05:32|ACD1-26\n745198.2|COMPLETED|0:0|00:00:01|ACD1-26\n745198.3|COMPLETED|0:0|00:00:01|ACD1-26\n745198.4|COMPLETED|0:0|00:00:01|ACD1-26\n745320|PENDING|0:0|00:00:00|None assigned\n"
+      "stdout": "745022|CANCELLED by 14090|0:0|00:57:43|ACD1-22\n745022.batch|CANCELLED|0:9|00:58:21|ACD1-22\n745022.extern|COMPLETED|0:0|00:57:43|ACD1-22\n745022.0|COMPLETED|0:0|00:01:16|ACD1-22\n745198|RUNNING|0:0|00:47:04|ACD1-26\n745198.batch|RUNNING|0:0|00:47:04|ACD1-26\n745198.extern|RUNNING|0:0|00:47:04|ACD1-26\n745198.0|COMPLETED|0:0|00:00:22|ACD1-26\n745198.1|COMPLETED|0:0|00:05:32|ACD1-26\n745198.2|COMPLETED|0:0|00:00:01|ACD1-26\n745198.3|COMPLETED|0:0|00:00:01|ACD1-26\n745198.4|COMPLETED|0:0|00:00:01|ACD1-26\n745320|RUNNING|0:0|00:04:22|ACD1-36\n745320.batch|RUNNING|0:0|00:04:22|ACD1-36\n745320.extern|RUNNING|0:0|00:04:22|ACD1-36\n"
     },
     "actual_cuda_restore_accepted": false,
     "completed_old_outer": {
@@ -253,36 +253,36 @@
       "world_size": 4
     },
     "current_base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-20261021",
-    "current_base_allocated_bytes": 47509504,
+    "current_base_allocated_bytes": 62230528,
     "diagnostic_failures": {},
     "new_job": "745320",
     "note": "Saved observation only; PENDING/RUNNING and CPU-state receipt do not prove resumed training progress",
-    "observed_unix": 1792581657.273508,
+    "observed_unix": 1792582014.0613232,
     "queue": {
       "rc": 0,
       "stderr": "",
-      "stdout": "745320|jxu957|PENDING||(Priority)|2026-10-21T21:13:01\n745198|jxu957|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50\n"
+      "stdout": "745320|jxu957|RUNNING|ACD1-36|ACD1-36|2026-10-21T19:22:32\n745198|jxu957|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50\n"
     },
     "restore_receipts": {},
     "service_health": {
       "endpoint": "http://ACD1-26:18020/retrieve",
       "hostname": "ACD1-26",
       "logical_shards": 4,
-      "observed_unix": 1792581657.848528,
+      "observed_unix": 1792582018.202911,
       "ok": true,
       "physical_gpu_count": 2,
       "service_job_id": "745198",
       "statistics": {
-        "backend_seconds": 3.220445366576314,
-        "completed_queries": 64,
-        "completed_requests": 64,
+        "backend_seconds": 5.15881210193038,
+        "completed_queries": 128,
+        "completed_requests": 65,
         "failed_requests": 0,
-        "last_completed_unix": 1792579846.8758671,
-        "logical_queries": 64,
-        "logical_requests": 64
+        "last_completed_unix": 1792581832.5277846,
+        "logical_queries": 128,
+        "logical_requests": 65
       },
       "training_run_id": "232f20e112ac4a978c5aba52a0367195"
     },
-    "source_file": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp1-new-observation-1792581657.json"
+    "source_file": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp1-new-observation-1792582021.json"
   }
 }

@@ -1,5 +1,5 @@
 HPC3 实验目录存储分布（本地保存观测生成，2026-10-21）
-生成时间：2026-10-21T19:22:00+08:00
+生成时间：2026-10-21T19:27:13+08:00
 统计根目录：/data/user/jxu957/experiments
 扫描状态：两份du进程均结束，根目录总计均已收到
 删除操作：无。本报告生成器不执行远端命令、文件删除、chmod或训练操作。
@@ -1188,46 +1188,48 @@ mou 权限视图：UID=21930
   第二层路径名含feature的条目数：0；更深层features的归属不能仅由depth2清单进一步细分。
 
 训练与独立检索服务（时间为此份保存观测的时间）
-状态输入：/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp1-new-observation-1792581657.json
-观测时间：2026-10-21T19:20:57+08:00
+状态输入：/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp1-new-observation-1792582021.json
+观测时间：2026-10-21T19:26:54+08:00
 新训练作业：745320
 全根扫描完成后新增的恢复目录（独立单目录du，未混入原扫描总计）：
-  /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-20261021：0.047510 GB (47,509,504 B)
+  /data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-20261021：0.062231 GB (62,230,528 B)
   此目录未出现在上方63项19:13扫描中；上方总量仍保留原始扫描口径。
 queue 原始输出（rc=0）：
-745320|jxu957|PENDING||(Priority)|2026-10-21T21:13:01
+745320|jxu957|RUNNING|ACD1-36|ACD1-36|2026-10-21T19:22:32
 745198|jxu957|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50
 accounting 原始输出（rc=0）：
 745022|CANCELLED by 14090|0:0|00:57:43|ACD1-22
 745022.batch|CANCELLED|0:9|00:58:21|ACD1-22
 745022.extern|COMPLETED|0:0|00:57:43|ACD1-22
 745022.0|COMPLETED|0:0|00:01:16|ACD1-22
-745198|RUNNING|0:0|00:41:07|ACD1-26
-745198.batch|RUNNING|0:0|00:41:07|ACD1-26
-745198.extern|RUNNING|0:0|00:41:07|ACD1-26
+745198|RUNNING|0:0|00:47:04|ACD1-26
+745198.batch|RUNNING|0:0|00:47:04|ACD1-26
+745198.extern|RUNNING|0:0|00:47:04|ACD1-26
 745198.0|COMPLETED|0:0|00:00:22|ACD1-26
 745198.1|COMPLETED|0:0|00:05:32|ACD1-26
 745198.2|COMPLETED|0:0|00:00:01|ACD1-26
 745198.3|COMPLETED|0:0|00:00:01|ACD1-26
 745198.4|COMPLETED|0:0|00:00:01|ACD1-26
-745320|PENDING|0:0|00:00:00|None assigned
+745320|RUNNING|0:0|00:04:22|ACD1-36
+745320.batch|RUNNING|0:0|00:04:22|ACD1-36
+745320.extern|RUNNING|0:0|00:04:22|ACD1-36
 service_health：
 {
   "endpoint": "http://ACD1-26:18020/retrieve",
   "hostname": "ACD1-26",
   "logical_shards": 4,
-  "observed_unix": 1792581657.848528,
+  "observed_unix": 1792582018.202911,
   "ok": true,
   "physical_gpu_count": 2,
   "service_job_id": "745198",
   "statistics": {
-    "backend_seconds": 3.220445366576314,
-    "completed_queries": 64,
-    "completed_requests": 64,
+    "backend_seconds": 5.15881210193038,
+    "completed_queries": 128,
+    "completed_requests": 65,
     "failed_requests": 0,
-    "last_completed_unix": 1792579846.8758671,
-    "logical_queries": 64,
-    "logical_requests": 64
+    "last_completed_unix": 1792581832.5277846,
+    "logical_queries": 128,
+    "logical_requests": 65
   },
   "training_run_id": "232f20e112ac4a978c5aba52a0367195"
 }

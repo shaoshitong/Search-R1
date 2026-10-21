@@ -1,6 +1,6 @@
 {
-  "epoch": 1792581720.668629,
-  "status": "DENSE_EXACT_CP1_RECOVERY_SUBMITTED_GPU4_PENDING_PRIORITY",
+  "epoch": 1792582014.0613232,
+  "status": "DENSE_EXACT_CP1_RECOVERY_GPU4_RUNNING_STARTUP",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "745320",
@@ -36,8 +36,8 @@
       "root_scans_complete": true,
       "largest_component": {
         "path": "dynrpo-qwen25-7b-probe-warmup-20261019",
-        "allocated_bytes": 2960187000000,
-        "approximate": true,
+        "allocated_bytes": 2991781801984,
+        "approximate": false,
         "other_task_assets_and_features_not_authorized_for_deletion": true
       }
     },
@@ -47,16 +47,16 @@
     "actual_training_optimization_enabled": false,
     "selected_LM_head": "Actual 7B CUDA LPmax3.8147e-6/loss1.6925e-9, but gradient thresholds not met; dense repeat relativeL2 0.00904/0.00964, sparse0.01149; INCONCLUSIVE strictgrad; NOT ENABLED",
     "exact_query_cache": "11 CPU tests passed; preserves exact original fullbatch/context/score mode/version and logical search counts",
-    "pending": "745320 retains original dense head, enables exact retrieval cache; separate2H100 GPU service745198 actual64queryPASS; fullCUDArestore and outer2 pending allocation",
+    "pending": "745320 started normal dense HF forward + exact retrieval cache with external2 GPU service; actual all4 CUDA model/Adam/scheduler/RNG/driver restore and complete outer2 still pending",
     "physical_micro16": "Not raised blindly; needs actual measured memory/throughput"
   },
   "previous_goal_turn_classification": "PROGRESS",
-  "latest_turn_classification": "PROGRESS: published+deployed7B adapter, real9tests, uniquejob745022 allocated, realretrieval staging; authorized32retirements; explicit3Bstopverified; optionalinfra actualCPU numeric validation",
-  "last_observation": "cp1-new-observation-1792581657.json",
+  "latest_turn_classification": "PROGRESS: first outer + CP1 complete; external2 GPU real retrieval identity PASS; sparse qualification rejected; dense exact fallback allocated, startup advanced to production entry; full disk scan complete, no manual deletion",
+  "last_observation": "cp1-new-observation-1792582021.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "stage": "GRPO_1_TO_200",
-    "unix": 1792577852.1353621,
+    "unix": 1792581960.3626158,
     "execution_role": "production"
   },
   "calibration": {
@@ -100,8 +100,11 @@
   "storage_inventory_report": "HPC3-storage-distribution-20261021.txt",
   "last_measured_queue": {
     "rc": 0,
-    "stdout": "745320|jxu957|PENDING||(Priority)|2026-10-21T21:13:01\n745198|jxu957|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50\n",
+    "stdout": "745320|jxu957|RUNNING|ACD1-36|ACD1-36|2026-10-21T19:22:32\n745198|jxu957|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50\n",
     "stderr": ""
   },
-  "new_recovery_base_allocated_bytes": 47509504
+  "new_recovery_base_allocated_bytes": 62230528,
+  "node": "ACD1-36",
+  "allocation_started_cst": "2026-10-21T19:22:32+08:00",
+  "training_startup_is_not_completed_outer": true
 }
