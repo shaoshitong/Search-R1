@@ -1,0 +1,57 @@
+{
+  "status": "GLOBAL_BATCH128_ACTUAL_TWELVE_UPDATES_CONFIRMED",
+  "epoch": 1792607910.9633713,
+  "job_id": "746266",
+  "source_cursor": 1675,
+  "accepted_cursor": 1687,
+  "new_complete_updates": 12,
+  "effective_global_batch_questions": 128,
+  "GPU_micro_questions": 64,
+  "gradient_accumulation_microbatches": 2,
+  "real_native_rows_per_global_update": 1280,
+  "two_actual_observations": [
+    1677,
+    1687
+  ],
+  "native_Adam_steps": 1687,
+  "head_Adam_steps": 1687,
+  "new_failure": null,
+  "only_initial_actual_micro128_OOM": true,
+  "normal_window": {
+    "first_cursor": 1677,
+    "last_cursor": 1687,
+    "complete_updates": 10,
+    "elapsed_seconds": 35.40296912193298,
+    "end_to_end_seconds_per_update": 3.5402969121932983,
+    "question_visits_per_minute": 2169.309577834831,
+    "genuine_row_visits_per_minute": 21693.09577834831,
+    "body_mean_seconds": 3.1054888806538656,
+    "excludes_startup_first_OOM_and_first_checkpoint": true
+  },
+  "GPU_memory": {
+    "used_MiB": 73467.0,
+    "total_MiB": 81559.0,
+    "used_GiB": 71.7451171875,
+    "total_GiB": 79.6474609375,
+    "used_percent": 90.07834818965412,
+    "sample_GPU_utilization_mean": 52.125,
+    "sample_count": 8
+  },
+  "latest_full_checkpoint": {
+    "cursor": 1676,
+    "native_steps": 1676,
+    "head_steps": 1676,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/checkpoints/.rolling-accepted-cursor-001676-8cffe04a9d2047f4ba5a51eb98e271c1.pt",
+    "sha256": "81e059cff92606486e950ad99c0a8ee24085b51db4ad43014adf7891e4e8046c",
+    "bytes": 3778860698
+  },
+  "initial_failed_attempt": {
+    "job": "746263",
+    "accepted_updates": 0,
+    "archived": "attempts/746263"
+  },
+  "worker_commit": "40acb40530199f54fc1c0ab29694611919389d2c",
+  "updater_commit": "23000f23be50da5968eac2df145a1c8aac0ca11e",
+  "controller_commit": "659848a0c820d797fe90fcf65e27f5057a28aa8e",
+  "scientific_goal_complete": false
+}
