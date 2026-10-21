@@ -1,0 +1,11 @@
+# Exact continuation after planned resource expiry
+
+The original743619 remains active; no continuation checkpoint has been invented or submitted. The64-step measured mean was5.9251s plus26.53s durable-checkpoint overhead every16updates. At72,125.60min was projected before four fixed evaluations, beyond the original2h allocation. One authorized request to extend only743619 to3h returned Access/permission denied. Metadata confirms normal/RUNNING/2h remained unchanged.
+
+The independent operator stages code and runs four focused CPU qualifications now. Actual preparation is gated until the original job is terminal, its joint writer lock is free, interrupted/latest/progress/highest-intent match exactly, all original accepted curve cursors exist once, earlier required validation receipts are accepted, and a fresh full-file SHA plus nine-state CPU reload validates the actual latest checkpoint. A source requiring rollback or missing model/EMA/oldAdam/newAdam/nativebuffer/RNG/data state is refused.
+
+Only then may one normal/acd_u1H1008CPU64G3h continuation be submitted, without dependency. Original501 code/config/plan/job.id/sbatch remain intact. The continuation has its own immutable publication, intent/job ID, script and receipts; model outputs/checkpoints retain the same original remote namespace and938 total-update budget. Current topology is truthfully1→1; the nested4→1 records remain original E1 branch-creation history, with all four original rank states preserved.
+
+The new allocation restores the actual nine-state checkpoint, performs the first remaining update twice from exactly restored state, matches all nine components, durably saves exactly one accepted new update, and independently reloads that actual checkpoint in a separate CPU process. This transaction is embedded in the checkpoint before latest becomes visible. It then invokes the unchanged501 resume branch, which constructs modules and restores accepted latest before any further optimizer update. No completed training prefix is rerun.
+
+The two independent readers require another fresh48GB SHA pass each; this is bounded within the residual-work3h request. No actual future full-state restore/GPU replay or successful continuation is claimed by CPU tests or staged code. Submission waits for real terminal+state/lock evidence.

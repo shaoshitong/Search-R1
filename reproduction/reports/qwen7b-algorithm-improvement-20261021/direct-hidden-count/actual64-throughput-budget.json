@@ -1,0 +1,37 @@
+{
+  "status": "READ_ONLY_DIRECT64_ACTUAL_THROUGHPUT_BUDGET",
+  "job_id": "743619",
+  "current_cursor": 72,
+  "steady_17_to64_median_seconds": 5.869506095536053,
+  "steady_17_to64_mean_seconds": 5.925090343380968,
+  "steady_recent16_mean_seconds": 5.868584279320203,
+  "checkpoint_overheads": [
+    {
+      "after_cursor": 16,
+      "seconds": 26.590910671278834
+    },
+    {
+      "after_cursor": 32,
+      "seconds": 26.184354204684496
+    },
+    {
+      "after_cursor": 48,
+      "seconds": 26.469389953650534
+    },
+    {
+      "after_cursor": 64,
+      "seconds": 26.79966484103352
+    }
+  ],
+  "median_checkpoint_overhead": 26.530150312464684,
+  "save_every": 16,
+  "remaining_ordinary_saves": 55,
+  "job": "JobId=743619 JobName=q7b-direct-count938 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3343 Nice=0 Account=mou176 QOS=normal JobState=RUNNING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:15:46 TimeLimit=02:00:00 TimeMin=N/A SubmitTime=2026-10-21T08:14:51 EligibleTime=2026-10-21T08:14:51 AccrueTime=2026-10-21T08:14:51 StartTime=2026-10-21T08:15:12 EndTime=2026-10-21T10:15:12 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T08:15:12 Scheduler=Backfill Partition=acd_u AllocNode:Sid=ACD-Login-2:523947 ReqNodeList=(null) ExcNodeList=(null) NodeList=ACD1-18 BatchHost=ACD1-18 NumNodes=1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=8,mem=64G,node=1,billing=8,gres/gpu=1 AllocTRES=cpu=8,mem=64G,node=1,billing=8,gres/gpu=1 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=8 MinMemoryNode=64G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/training.sbatch WorkDir=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/logs/train-743619.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/logs/train-743619.log Power= TresPerNode=gres/gpu:1 TresPerTask=cpu:8 \n",
+  "accounting": "743619|2026-10-21T08:15:12|946|120|RUNNING\n",
+  "partition": "PartitionName=acd_u AllowGroups=formal,admin AllowAccounts=ALL AllowQos=ALL AllocNodes=ALL Default=YES QoS=N/A DefaultTime=NONE DisableRootJobs=NO ExclusiveUser=NO GraceTime=0 Hidden=NO MaxNodes=UNLIMITED MaxTime=7-00:00:00 MinNodes=0 LLN=NO MaxCPUsPerNode=UNLIMITED MaxCPUsPerSocket=UNLIMITED Nodes=ACD1-[1-4,6-9,11-26,28,30-33,36,50-52,54-56,59,61,64,67] PriorityJobFactor=100 PriorityTier=100 RootOnly=NO ReqResv=NO OverSubscribe=NO OverTimeLimit=NONE PreemptMode=OFF State=UP TotalCPUs=3840 TotalNodes=40 SelectTypeParameters=NONE JobDefaults=(null) DefMemPerCPU=10240 MaxMemPerNode=UNLIMITED TRES=cpu=3840,mem=78125G,node=40,billing=3840,gres/gpu=320\n",
+  "qos_stdout": "normal||\n",
+  "qos_returncode": 0,
+  "qos_stderr": "",
+  "time": 1792542658.432109,
+  "job_changed": false
+}
