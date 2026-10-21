@@ -767,7 +767,12 @@ def _validation_observation(base, step, bundle, chain=None):
                dict(path=str(path), bytes=len(sealed), sha256=digest(sealed), prefix_only=True))
     if chain is not None:
         need(all(row['step'] > chain['boundary'] for row in rows), 'CURRENT_VALIDATION_REPLAYS_HISTORICAL_BOUNDARY')
-        rows = _historical_rows(chain, 'logs/validation-identities.jsonl') + rows
+        # CP1 may precede every formal validation when the original initial
+        # evaluation was explicitly skipped. Only that pre5 absence is empty;
+        # later boundaries must retain their authenticated validation prefix.
+        relative = 'logs/validation-identities.jsonl'
+        if not (chain['boundary'] < 5 and relative not in chain['historical']):
+            rows = _historical_rows(chain, relative) + rows
     fixed = [r for r in rows if r['step'] == step and r['split'] == 'validation']
     need(step == 5 or len(fixed) == 1, 'PRE_SAVE_FIXED512_EVIDENCE_MISSING_OR_DUPLICATED')
     return dict(fixed512_seen_at_observation=bool(fixed),

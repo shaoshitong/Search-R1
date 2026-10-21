@@ -309,6 +309,51 @@ class FinalAcceptanceTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'FIXED5_SCALAR_ARTIFACT_SCORES_DIFFER'):
                 core.evaluations(self.base, self.run, self.load_canonical)
 
+    def test_cp1_without_historical_qa_uses_current_formal5_with_all_score_checks(self):
+        with tempfile.TemporaryDirectory() as td:
+            self.fixture(td)
+            chain = dict(boundary=1, historical={})
+            result = core.evaluations(self.base, self.run, self.load_canonical, chain=chain)
+            self.assertEqual(set(result['fixed512']), {'5', '50', '100', '150', '200'})
+            self.assertEqual(result['final51713']['question_count'], 51713)
+            self.assertEqual(result['fixed5_artifact']['path'], str(self.base/'logs/formal-inline-development-after.json'))
+            self.assertNotIn('authenticated_historical', result['fixed5_artifact'])
+            for change, expected in (('identity', 'FIXED5_SCALAR_ARTIFACT_IDENTITY_DIFFERS'),
+                                     ('score', 'FIXED5_SCALAR_ARTIFACT_SCORES_DIFFER')):
+                with self.subTest(change=change):
+                    bad = copy.deepcopy(self.after)
+                    if change == 'identity': bad['run_id'] = 'foreign-run'
+                    else: bad['rows'][0]['em'] = 0
+                    self.put('logs/formal-inline-development-after.json', bad)
+                    with self.assertRaisesRegex(ValueError, expected):
+                        core.evaluations(self.base, self.run, self.load_canonical, chain=chain)
+            self.put('logs/formal-inline-development-after.json', self.after)
+            for rows in (self.validations[1:], [self.validations[0]] + self.validations):
+                self.ledger('logs/validation-identities.jsonl', rows)
+                with self.assertRaisesRegex(ValueError, 'MISSING_OR_DUPLICATE_FIXED512_5'):
+                    core.evaluations(self.base, self.run, self.load_canonical, chain=chain)
+
+    def test_cp5_still_requires_historical_validation_and_uses_historical_qa5(self):
+        with tempfile.TemporaryDirectory() as td:
+            self.fixture(td)
+            self.ledger('logs/validation-identities.jsonl', self.validations[1:])
+            chain = dict(boundary=5, cutoff_attempt=5, source_base=self.base/'old',
+                source_run=self.run, source_job='old-job', historical={
+                    'logs/validation-identities.jsonl': json.dumps(self.validations[0]).encode()+b'\n',
+                    'logs/formal-inline-development-after.json': core.encoded(self.after)})
+            # A bad current QA5 cannot replace the authenticated historical one.
+            self.put('logs/formal-inline-development-after.json', dict(self.after, run_id='foreign-current'))
+            result = core.evaluations(self.base, self.run, self.load_canonical, chain=chain)
+            self.assertTrue(result['fixed5_artifact']['authenticated_historical'])
+            self.assertEqual(result['fixed5_artifact']['path'], str(chain['source_base']/'logs/formal-inline-development-after.json'))
+            self.ledger('logs/validation-identities.jsonl', self.validations)
+            with self.assertRaisesRegex(ValueError, 'MISSING_OR_DUPLICATE_FIXED512_5'):
+                core.evaluations(self.base, self.run, self.load_canonical, chain=chain)
+            self.ledger('logs/validation-identities.jsonl', self.validations[1:])
+            missing = dict(chain, historical={'logs/formal-inline-development-after.json': core.encoded(self.after)})
+            with self.assertRaises(KeyError):
+                core.evaluations(self.base, self.run, self.load_canonical, chain=missing)
+
     def test_extra201_driver_scheduler_worker_or_completed_row_fails(self):
         with tempfile.TemporaryDirectory() as td:
             self.fixture(td)

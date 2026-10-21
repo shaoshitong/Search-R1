@@ -212,6 +212,30 @@ class EvidenceTests(unittest.TestCase):
         with patch.object(core, 'owned_base', side_effect=lambda p: Path(p).resolve()):
             return core.seal(self.base, self.commit, self.run_id, self.job, self.step)
 
+    def test_pre5_chain_can_have_no_validation_prefix_but_cp5_cannot(self):
+        with tempfile.TemporaryDirectory() as folder:
+            self.base = Path(folder).resolve()
+            def observe(step, chain):
+                captured = {}
+                bundle = SimpleNamespace(put=lambda name, raw, record: captured.setdefault(name, raw))
+                result = core._validation_observation(self.base, step, bundle, chain=chain)
+                self.assertIn('segments/current/logs/validation-identities.jsonl', captured)
+                return result
+            self.lines('logs/validation-identities.jsonl', [dict(step=5, split='validation')])
+            chain = dict(boundary=1, historical={})
+            result = observe(5, chain)
+            self.assertTrue(result['fixed512_seen_at_observation'])
+            self.assertFalse(result['final51713_seen_at_observation'])
+            self.lines('logs/validation-identities.jsonl', [dict(step=1, split='validation'),
+                                                          dict(step=5, split='validation')])
+            with self.assertRaisesRegex(ValueError, 'CURRENT_VALIDATION_REPLAYS_HISTORICAL_BOUNDARY'):
+                observe(5, chain)
+            self.lines('logs/validation-identities.jsonl', [dict(step=50, split='validation')])
+            with self.assertRaises(KeyError):
+                observe(50, dict(boundary=5, historical={}))
+            historical = {'logs/validation-identities.jsonl': b'{"step":5,"split":"validation"}\n'}
+            self.assertTrue(observe(50, dict(boundary=5, historical=historical))['fixed512_seen_at_observation'])
+
     def test_exact_prefixes_and_refs_are_sealed_without_old_receipt_mutation(self):
         with tempfile.TemporaryDirectory() as folder:
             self.fixture(folder, abort_first=True)

@@ -1,11 +1,11 @@
 {
-  "epoch": 1792582014.0613232,
-  "status": "DENSE_EXACT_CP1_RECOVERY_GPU4_RUNNING_STARTUP",
+  "epoch": 1792582486.628163,
+  "status": "FAILED745320_STRUCTURE_REPAIRED_R2_PUBLICATION_IN_PROGRESS",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
-  "job": "745320",
+  "job": null,
   "run_id": "232f20e112ac4a978c5aba52a0367195",
-  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-20261021",
+  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
   "runtime_commit": "0eed1015b0696101227fc8deccc9b132d9e3a207",
   "actor_physical_micro": 8,
   "global_mini": 128,
@@ -47,11 +47,11 @@
     "actual_training_optimization_enabled": false,
     "selected_LM_head": "Actual 7B CUDA LPmax3.8147e-6/loss1.6925e-9, but gradient thresholds not met; dense repeat relativeL2 0.00904/0.00964, sparse0.01149; INCONCLUSIVE strictgrad; NOT ENABLED",
     "exact_query_cache": "11 CPU tests passed; preserves exact original fullbatch/context/score mode/version and logical search counts",
-    "pending": "745320 started normal dense HF forward + exact retrieval cache with external2 GPU service; actual all4 CUDA model/Adam/scheduler/RNG/driver restore and complete outer2 still pending",
+    "pending": "R2 deployment/submission from originalCP1; dense original forward plus exact cache; existing separate2 H100745198 unchanged",
     "physical_micro16": "Not raised blindly; needs actual measured memory/throughput"
   },
   "previous_goal_turn_classification": "PROGRESS",
-  "latest_turn_classification": "PROGRESS: first outer + CP1 complete; external2 GPU real retrieval identity PASS; sparse qualification rejected; dense exact fallback allocated, startup advanced to production entry; full disk scan complete, no manual deletion",
+  "latest_turn_classification": "PROGRESS: verified own745320 FAILED1:0 before Adam/RNG; preserved remote evidence; fixed loaded7B28layer check and CP1 QA5 history; 40 CPU tests pass; preparing unique R2 from same completeCP1",
   "last_observation": "cp1-new-observation-1792582021.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
@@ -106,5 +106,14 @@
   "new_recovery_base_allocated_bytes": 62230528,
   "node": "ACD1-36",
   "allocation_started_cst": "2026-10-21T19:22:32+08:00",
-  "training_startup_is_not_completed_outer": true
+  "training_startup_is_not_completed_outer": true,
+  "previous_failed_job": "745320",
+  "failed_actual_restore": {
+    "job": "745320",
+    "new_updates": 0,
+    "actual_restore_accepted": false,
+    "cause": "legacy len(layers)==36 check rejected official7B28",
+    "failure_receipt": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/preserved-failure745320-1792582401.json",
+    "source_cp1_intact": true
+  }
 }

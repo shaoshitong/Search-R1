@@ -187,6 +187,13 @@ def chained_lines(base, relative, chain):
     current = list(lines(base/relative))
     if chain is None:
         return current
+    # A genuine pre-QA5 restore (for example CP1 with initial evaluation
+    # explicitly skipped) has no validation prefix yet. Only this one ledger
+    # may be absent before5; evaluations still requires every fixed milestone
+    # and the final native51713 result exactly once from the current execution.
+    if (relative == 'logs/validation-identities.jsonl' and chain['boundary'] < 5 and
+            relative not in chain['historical']):
+        return current
     from reproduction.easy2560_joint4.checkpoint_evidence import _historical_rows
     return _historical_rows(chain, relative) + current
 
@@ -207,7 +214,7 @@ def evaluations(base, run, load_canonical=canonical, chain=None):
     result = scores(final, final_identity, run, 200, split='final', final=True)
     # At5 the producer also writes a distinct fixed512 scalar-row artifact;
     # stage64 is intentionally excluded from the fixed validation curve.
-    if chain:
+    if chain and chain['boundary'] >= 5:
         from reproduction.easy2560_joint4.checkpoint_evidence import digest as history_digest
         raw = chain['historical']['logs/formal-inline-development-after.json']
         after = decode(raw)
