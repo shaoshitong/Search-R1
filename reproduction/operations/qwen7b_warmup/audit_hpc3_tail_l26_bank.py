@@ -49,9 +49,9 @@ def audit(base,job,questions):
  seen=set();executions={};physical_prefix={};physical_seal={};shards=[]
  for i,(selection_ref,side_ref,cap_ref)in enumerate(zip(prep['selections'],side_refs,done['shard_completes'])):
   selection=read(check(selection_ref));cap=read(check(cap_ref));assert cap['source_selection']==selection_ref and cap['feature_manifests_by_capture_layer']['26']==[r for r in manifests if r in cap['feature_manifests_by_capture_layer']['26']];wanted={x['trajectory_id']:x['qid']for x in selection['trajectories']};count=0
-  original=rows(check(selection['chosen_physical_prefix_bindings']));bound=rows(check(side_ref));shard_seen=set()
-  for a,z in itertools.zip_longest(original,bound):
-   assert a is not None and z is not None and all(z[k]==v for k,v in a.items());t=z['trajectory_id'];assert t not in seen and t not in shard_seen and wanted[t]==z['qid'];qid,psha,rsha,mref,iref=feature_rows[t];assert z['qid']==qid and z['prefix_body_sha256']==psha and z['feature_retained_row_sha256']==rsha and z['feature_manifest']==mref and z['feature_index']==iref and len(z['canonical_prefix_row_sha256'])==64
+  original={x['trajectory_id']:x for x in rows(check(selection['chosen_physical_prefix_bindings']))};bound=rows(check(side_ref));shard_seen=set();assert set(original)==set(wanted)
+  for z in bound:
+   t=z['trajectory_id'];a=original[t];assert all(z[k]==v for k,v in a.items());assert t not in seen and t not in shard_seen and wanted[t]==z['qid'];qid,psha,rsha,mref,iref=feature_rows[t];assert z['qid']==qid and z['prefix_body_sha256']==psha and z['feature_retained_row_sha256']==rsha and z['feature_manifest']==mref and z['feature_index']==iref and len(z['canonical_prefix_row_sha256'])==64
    kind=z['chosen_execution'];executions[kind]=executions.get(kind,0)+1
    for key,dest in(('physical_prefix',physical_prefix),('physical_seal',physical_seal)):
     item=z[key]
