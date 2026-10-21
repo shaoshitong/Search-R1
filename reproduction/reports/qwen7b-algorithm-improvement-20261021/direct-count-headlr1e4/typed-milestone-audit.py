@@ -29,17 +29,23 @@ def main():
   result=call("""folder=b/'evaluations'/('cursor-%06d'%v['cursor']);assert (folder/'complete.json').exists(),'Wait for real fixed evaluation complete'
 if (folder/'independent-audit.json').exists():print(json.dumps(dict(status='EXISTING_TYPED_AUDIT_PRESERVED',receipt=proof(folder/'independent-audit.json'))))
 else:
- work=root/('cursor-%06d'%v['cursor']);work.mkdir(exist_ok=True)
+ work=root/('cursor-%06d-operator-v2'%v['cursor']);work.mkdir(exist_ok=True)
+ legacy=root/('cursor-%06d'%v['cursor'])
+ if (legacy/'controller.json').exists():
+  old=read(legacy/'controller.json');text=(legacy/'cpu.log').read_text()
+  assert 'SyntaxError: EOL while scanning string literal'in text and not pathlib.Path('/proc/'+str(old['pid'])).exists(),'Only the known exited pre-execution wrapper syntax failure may be recovered'
+  (work/'preserved-attempt01.json').write_text(json.dumps(dict(controller=proof(legacy/'controller.json'),log=proof(legacy/'cpu.log'),failure='WRAPPER_PARSE_BEFORE_AUDIT_EXECUTION',no_model_or_training_state_modified=True))+chr(10))
  if (work/'controller.json').exists():print(json.dumps(dict(status='EXISTING_TYPED_CPU_AUDIT_CONTROLLER_PRESERVED',controller=read(work/'controller.json'))));sys.exit(0)
  pub=read(root/'source-publication.json');assert proof(pub['source']['path'])==pub['source'];runtime=read(b/'source-publication.json')['code_root']
  code="import importlib.util,json; s=importlib.util.spec_from_file_location('reproduction.operations.qwen7b_warmup.typed_headlr_actual_auditor',"+repr(pub['source']['path'])+"); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); r=m.audit("+repr(str(b))+","+str(v['cursor'])+",checkpoint_metadata_only="+str(v['cursor']==938)+"); print(json.dumps(dict(status=r['status'],cursor=r['cursor'])))"
  args=['bash',runtime+'/reproduction/operations/qwen7b_warmup/runtime.sh','-u','-c',code]
  if v['cursor']!=938:args=['srun','--jobid=743809','--overlap','--gres=gpu:0','--ntasks=1','--cpus-per-task=2']+args
  env=dict(os.environ,QWEN7B_CODE_ROOT=runtime,CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONDONTWRITEBYTECODE='1')
- wrapper="import subprocess,pathlib,json,time; r=subprocess.run("+repr(args)+"); pathlib.Path("+repr(str(work/'exit.json'))+").write_text(json.dumps(dict(returncode=r.returncode,epoch=time.time()))+'\\n'); raise SystemExit(r.returncode)"
- with (work/'cpu.log').open('ab',0)as log:p=subprocess.Popen(['python3','-u','-c',wrapper],stdout=log,stderr=subprocess.STDOUT,env=env,stdin=subprocess.DEVNULL,start_new_session=True)
+ wrapper="import subprocess,pathlib,json,time; r=subprocess.run("+repr(args)+"); pathlib.Path("+repr(str(work/'exit.json'))+").write_text(json.dumps(dict(returncode=r.returncode,epoch=time.time()))+chr(10)); raise SystemExit(r.returncode)"
+ compile(wrapper,str(work/'wrapper.py'),'exec');(work/'wrapper.py').write_text(wrapper+chr(10))
+ with (work/'cpu.log').open('ab',0)as log:p=subprocess.Popen(['python3','-u',str(work/'wrapper.py')],stdout=log,stderr=subprocess.STDOUT,env=env,stdin=subprocess.DEVNULL,start_new_session=True)
  result=dict(status='ONE_TYPED_CPU_MILESTONE_AUDIT_STARTED',pid=p.pid,cursor=v['cursor'],config_sha256='71c3ee90f0232b889d4ced2d0cb50d69e852eb1ebbdbb55fdff03eaefdbbcc71',head_LR=1e-4,existing_allocation_CPU_step=v['cursor']!=938,terminal_no_tensor_load=v['cursor']==938,source=pub['source'],epoch=time.time());(work/'controller.json').write_text(json.dumps(result)+'\\n');print(json.dumps(result))""")
  else:
-  result=call("work=root/('cursor-%06d'%v['cursor']);p=b/'evaluations'/('cursor-%06d'%v['cursor'])/'independent-audit.json';out=dict(cursor=v['cursor'],epoch=time.time())\nif (work/'controller.json').exists():out['controller']=read(work/'controller.json')\nif (work/'exit.json').exists():out['exit']=read(work/'exit.json')\nif p.exists():out.update(receipt=proof(p),result=read(p))\nif (work/'cpu.log').exists()and not p.exists():out['log_tail']=(work/'cpu.log').read_text()[-2000:]\nprint(json.dumps(out))")
+  result=call("work=root/('cursor-%06d-operator-v2'%v['cursor']);p=b/'evaluations'/('cursor-%06d'%v['cursor'])/'independent-audit.json';out=dict(cursor=v['cursor'],epoch=time.time())\nif (work/'controller.json').exists():out['controller']=read(work/'controller.json')\nif (work/'exit.json').exists():out['exit']=read(work/'exit.json')\nif p.exists():out.update(receipt=proof(p),result=read(p))\nif (work/'cpu.log').exists()and not p.exists():out['log_tail']=(work/'cpu.log').read_text()[-2000:]\nprint(json.dumps(out))")
  (HERE/('actual-milestone-%06d-%s.json'%(a.cursor,a.action))).write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result),flush=True)
 if __name__=='__main__':main()
