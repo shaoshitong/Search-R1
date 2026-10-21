@@ -25,7 +25,7 @@ def cohort_config(path,sha):
 
 def prepare(base,code_root,commit,golden,config_path,config_sha):
     ref,c=cohort_config(config_path,config_sha)
-    cohort=dict(target=str(TARGET),ingest=str(INGEST),questions=QUESTIONS,raw_sha=c['raw_complete']['sha256'],audit_sha=c['independent_join_audit']['sha256'],group_sha=c['raw_groups']['sha256'],event_sha=c['source_events']['sha256'],domains=c['domains'],tag=TAG,audit_status='FROZEN_DELTA_RECEIVER_AND_ELIGIBLE_RAW_G10_INDEPENDENTLY_ACCEPTED',old_controlled_overlap=None,selection_description='all accepted fixed100-after366 delta; original ordered identity; labels/scores unused')
+    cohort=dict(target=str(TARGET),ingest=str(INGEST),questions=QUESTIONS,raw_sha=c['raw_complete']['sha256'],audit_sha=c['independent_join_audit']['sha256'],group_sha=c['raw_groups']['sha256'],event_sha=c['source_events']['sha256'],domains=c['domains'],tag=TAG,minimum_free_bytes=c['minimum_free_bytes'],audit_status='FROZEN_DELTA_RECEIVER_AND_ELIGIBLE_RAW_G10_INDEPENDENTLY_ACCEPTED',old_controlled_overlap=None,selection_description='all accepted fixed100-after366 delta; original ordered identity; labels/scores unused')
     done=capture_core.prepare(base,code_root,commit,golden,cohort=cohort)
     # A sidecar binds the unchanged producer preparation to the typed config.
     raw.immutable(TARGET/'cohort-binding.json',dict(config=ref,preparation=r.fingerprints(TARGET/'preparation.json'),source_selection=c['source_selection'],actor_updates=0))
