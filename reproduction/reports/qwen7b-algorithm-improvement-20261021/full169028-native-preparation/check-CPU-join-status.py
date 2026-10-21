@@ -12,6 +12,9 @@ def proof(p):
 out = dict(epoch=time.time(), job_id='746061', GPU=0)
 out['squeue'] = subprocess.check_output(['squeue', '-h', '-j', '746061', '-o', '%i|%j|%T|%R'], universal_newlines=True)
 out['sacct'] = subprocess.check_output(['sacct', '-n', '-P', '-j', '746061', '--format=JobIDRaw,State,ExitCode,Elapsed,AllocCPUS,ReqMem,AllocTRES'], universal_newlines=True)
+if 'PENDING' in out['squeue']:
+    out['estimated_start'] = subprocess.check_output(['squeue', '--start', '-h', '-j', '746061', '-o', '%i|%T|%S|%R'], universal_newlines=True)
+    out['job_configuration'] = subprocess.check_output(['scontrol', 'show', 'job', '-o', '746061'], universal_newlines=True)
 for name in ('worker.json', 'progress.json', 'failure.json', 'complete.json'):
     p = b / name
     out[name] = dict(reference=proof(p), value=json.loads(p.read_bytes())) if p.exists() else None
