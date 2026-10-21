@@ -1,0 +1,43 @@
+{
+  "status": "BATCHED_DIRECT_UPDATE_SMALL_CPU_OBJECTIVE_AND_RESTORE_QUALIFIED",
+  "source_commit": "6731016ad5fa0b05a53d4390f8e4f5312a5140f3",
+  "source_remote_SHA_verified": true,
+  "module": {
+    "path": "reproduction/operations/qwen7b_warmup/direct_update_fast.py",
+    "bytes": 5923,
+    "sha256": "1450902a23108c2e89d78bd1a7e743857f392abf8aab34fd166233073b58c17f"
+  },
+  "tests": {
+    "path": "reproduction/operations/qwen7b_warmup/test_direct_update_fast.py",
+    "bytes": 4684,
+    "sha256": "1b4ab50634907a12dc356b31f8251d6b0534e989b5ab56f5688fa6f13f1491a2"
+  },
+  "actual_result": {
+    "status": "PASSED",
+    "tests": 2,
+    "seconds": 14.565064249094576,
+    "test_seconds": 5.628,
+    "CPU": 2,
+    "GPU": 0,
+    "source_in_RAM_only": true,
+    "new_runtime_deployed": false,
+    "real_model_or_tensor_read": false,
+    "peak_RSS_bytes": 506687488
+  },
+  "properties": {
+    "B32_unchanged": true,
+    "four_real_G5_views_per_question_unchanged": true,
+    "question_total_weight_one": true,
+    "Mixed_nonMixed_50_50_unchanged": true,
+    "native_block_and_original_two_layer_head_unchanged": true,
+    "original_view_order_for_sampler_observations": true,
+    "same_micro_full_state_restore_next_update_bitexact": true,
+    "different_micro_scalar_gradient_Adam_EMA_numerically_equivalent": true,
+    "different_micro_bitexact_claim": false,
+    "one_GPU_to_CPU_metric_vector": true
+  },
+  "GPU_production_step_qualified_here": false,
+  "main746083_changed": false,
+  "optimizer_or_sampler_reset": false,
+  "new_GPU_job_submitted": false
+}

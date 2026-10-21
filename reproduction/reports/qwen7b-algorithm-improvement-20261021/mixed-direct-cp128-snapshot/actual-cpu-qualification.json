@@ -1,0 +1,37 @@
+{
+  "status": "FROZEN_CP128_SNAPSHOT_WORKER_SMALL_CPU_QUALIFIED",
+  "worker_source_commit": "c0f7a82b6c28b2c8b5a353905c77b8b8eb1cb5ac",
+  "worker_source_remote_SHA_verified": true,
+  "module": {
+    "path": "reproduction/operations/qwen7b_warmup/evaluate_mixed_direct_checkpoint.py",
+    "bytes": 10466,
+    "sha256": "d7035860b0aec256b10633f5bb4e59e261477fd16bada2f2838a979ddeb0dcd1"
+  },
+  "actual_result": {
+    "status": "PASSED",
+    "tests": 2,
+    "seconds": 23.512410879135132,
+    "test_seconds": 8.128,
+    "CPU": 2,
+    "GPU": 0,
+    "peak_RSS_bytes": 542400512,
+    "real_model_or_tensor_read": false
+  },
+  "source_publication": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-cp128-eval-cpu-qualification-v1/source-publication.json",
+    "bytes": 2225,
+    "sha256": "e3aaf4e86a090aab49042d1295feb8c8918f80984f52d14a9be612ba2fa995cb"
+  },
+  "test_log": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-cp128-eval-cpu-qualification-v1/cpu-fixtures.log",
+    "bytes": 426,
+    "sha256": "5d6265838667b9c967a0f9f31c2d54fd8f6cd86530558ce4d0647ae5163fb0c8"
+  },
+  "checks": [
+    "exact original source-config/main base and pinnedCP128 receipt only path changes",
+    "raw/EMA authentic fixed G5 score path preserves all nine component hashes/two Adam/RNG/native buffers/sampler"
+  ],
+  "GPU_submitted": false,
+  "actual_CP128_evaluated_here": false,
+  "main_training_changed": false
+}
