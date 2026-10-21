@@ -55,3 +55,26 @@ The first audit control call timed out while the remote launch later
 succeeded; the intent guard prevented a second writer. Read the existing
 status first. Actual target completion and strict-EM acceptance are required
 before this increment is reported as migrated training data.
+
+The terminal state is now recorded in `FINAL.json`: all nine archives and
+1,961 target members passed fresh SHA, and 176,640 old5/new5 trajectories
+passed tokenizer strict EM, causal and seed verification. The independent
+ordered own-ID/label join accepted all 17,664 training questions. All five
+owned audit/export/upload/receive/ingest processes have completed; no matching
+live birth remains. Source and intermediate copies are preserved. No GPU or
+feature capture was started, and the active 124,194-question inputs remain
+unchanged.
+
+The actual intermediate machines are xielab2 (`/data`, device2065) and
+xielab3 (`/backup`, device2081). Each has nine source-SHA-bound archive
+receipts. Their copied target completion receipt is identical to HPC3:
+726 bytes, SHA256
+`afe88dd9b3518043be3255ca80b1730966b2fa37bb212499ef38570f9d10dfb6`.
+The localhost:17898 endpoint was only xielab2's HF exit, not a substitute
+for these disk/transfer receipts.
+
+The frozen HPC3 tail73 overlaps the donor138 by 3,584 questions. The two
+candidate sets have 23,424 distinct qids, not 27,008. Both whole-G5 execution
+sources remain separate. A parent-owned canonical source choice must precede
+future feature capture/reader union; matching protocol tids do not prove
+matching response payloads.
