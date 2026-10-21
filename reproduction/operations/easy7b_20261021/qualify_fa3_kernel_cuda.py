@@ -91,7 +91,7 @@ def run(interface, output):
         values = [torch.randn((size, heads, 128), device='cuda', dtype=torch.bfloat16,
                               generator=generator) for heads in (28, 4, 4)]
         upstream = torch.randn((size, 28, 128), device='cuda', dtype=torch.float32,
-                               generator=generator)
+                               generator=generator).to(torch.bfloat16).float()
         old, old_ms = measure(baseline, values, cu, max(lengths), upstream)
         repeated, repeated_ms = measure(baseline, values, cu, max(lengths), upstream)
         new, new_ms = measure(candidate, values, cu, max(lengths), upstream)
