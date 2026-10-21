@@ -1,0 +1,524 @@
+{
+  "GPU_operation": false,
+  "epoch": 1792583672.5082698,
+  "frozen_cohort_expanded": false,
+  "frozen_training_cohort": 124194,
+  "latest_seals": [
+    {
+      "mtime": 1792583609.6589348,
+      "path": "sampling/shard-01/batches/batch-000415/complete.json",
+      "questions": 128,
+      "sha256": "5ae0d19bce4ea0006edfc3bb4af600ab006b1b3e35bffe90481fb21898b27694"
+    },
+    {
+      "mtime": 1792583447.0486093,
+      "path": "sampling/shard-01/batches/batch-000414/complete.json",
+      "questions": 128,
+      "sha256": "3629a7781702296923551d4e4840ffa21ee1ce72b5a424854fe979496c25d4dd"
+    },
+    {
+      "mtime": 1792583289.7980978,
+      "path": "sampling/shard-01/batches/batch-000413/complete.json",
+      "questions": 128,
+      "sha256": "b69142f9ca60efa8d81c30facc8f4c9ed92f12a3f85961ad78bd0e892844d408"
+    },
+    {
+      "mtime": 1792583124.023884,
+      "path": "sampling/shard-01/batches/batch-000412/complete.json",
+      "questions": 128,
+      "sha256": "3b29bcaf74f20085ea207d0341a7e0f4ac82110d1443ce33a0d718173691a059"
+    }
+  ],
+  "launch_invoked": false,
+  "lease_free_slot_claim_not_inferred_from_missing_json": true,
+  "lease_metadata": [],
+  "lease_registry_counts": [
+    {
+      "files": 34,
+      "name": "gpu-slot-leases"
+    },
+    {
+      "files": 5,
+      "name": "relay-live-slots"
+    },
+    {
+      "files": 12,
+      "name": "gpu-subleases"
+    },
+    {
+      "files": 2,
+      "name": "retrieval-relay-leases"
+    }
+  ],
+  "node": "h100-10",
+  "nonterminal_job_candidates": [
+    {
+      "attempt": "attempt-1792565993786828592-3532221",
+      "job": "job-source-slot-gpu6-tp1-3532221",
+      "last_metadata_age_seconds": 62.845335245132446,
+      "last_metadata_epoch": 1792583609.6629345,
+      "metadata": [
+        {
+          "age_seconds": 62.845335245132446,
+          "bytes": 567,
+          "fields": {
+            "completed_own_batches": 130,
+            "deadline_epoch": 1792594493.7911088,
+            "epoch": 1792583609.6651888,
+            "global_goal_complete": false,
+            "job_id": "source-slot-gpu6-tp1-3532221",
+            "latest_batch_seconds": 162.60815224899852,
+            "latest_input": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/inputs/shard-01/batch-000415.json",
+            "longest_batch_seconds": 247.3926063550025,
+            "questions": 16640,
+            "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+            "status": "POOL_OWN_SEALED_BATCH_ADVANCED",
+            "trajectories": 83200
+          },
+          "mtime": 1792583609.6629345,
+          "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-source-slot-gpu6-tp1-3532221/attempt-1792565993786828592-3532221/progress.json",
+          "root_keys": [
+            "completed_own_batches",
+            "deadline_epoch",
+            "epoch",
+            "global_goal_complete",
+            "job_id",
+            "latest_batch_seconds",
+            "latest_input",
+            "longest_batch_seconds",
+            "questions",
+            "run_id",
+            "status",
+            "trajectories"
+          ],
+          "sha256": "95f1a42d293077c8c071e7f1b56024f0193a330e5f091ee41b1065e84de2061e"
+        },
+        {
+          "age_seconds": 17678.725804567337,
+          "bytes": 5088,
+          "fields": {
+            "controller_pid": 3532221,
+            "epoch": 1792565993.7867758,
+            "job_id": "source-slot-gpu6-tp1-3532221",
+            "model_engine_count": 1,
+            "model_indices": [
+              2
+            ],
+            "native_unit": "sst-q7b-g5-guard-rollover-supp-tp1-v1-gpu6-tp1-r1-70188b8e50fd.service",
+            "node": "h100-5",
+            "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+            "source_owner": {
+              "birth": "8973866",
+              "pid": 2714543,
+              "unit": "sst-q7b-g5-guard-rollover-owner-v2-70188b8e50fd.service"
+            }
+          },
+          "mtime": 1792565993.7824652,
+          "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-source-slot-gpu6-tp1-3532221/attempt-1792565993786828592-3532221/allocation.json",
+          "root_keys": [
+            "actual_cuda_runtime_uuids",
+            "allocation_evidence",
+            "allocation_evidence_sha256",
+            "anchor_terminal",
+            "controller_pid",
+            "epoch",
+            "finite_slot",
+            "foreign_processes_signalled",
+            "initial_gpu_memory",
+            "job_id",
+            "local_relay_process",
+            "model_cuda_uuids",
+            "model_cuda_visible_devices",
+            "model_engine_count",
+            "model_indices",
+            "native_cgroup",
+            "native_resource_limits",
+            "native_unit",
+            "node",
+            "original_cuda_visible_devices",
+            "original_primary_lock_proofs",
+            "primary_gpu_locks_modified",
+            "run_id",
+            "shared_retriever_owned_by_consumer",
+            "slot_lease_paths",
+            "source_model_deadline_epoch",
+            "source_owner",
+            "source_owner_allocation_sha256",
+            "source_owner_ready",
+            "source_owner_ready_sha256",
+            "source_parent_owned",
+            "supplementary_manifest_sha256",
+            "supplementary_specification",
+            "tensor_parallel_size"
+          ],
+          "sha256": "d8fd5aa86f361c9eb6ee46d4c96f65c39414a73375b35cb4e1ab5f082c042ed5"
+        }
+      ],
+      "terminal_receipt_present": false
+    },
+    {
+      "attempt": "attempt-1792544294256215242",
+      "job": "job-relay-owner-downstream-3221084",
+      "last_metadata_age_seconds": 39377.20301985741,
+      "last_metadata_epoch": 1792544295.30525,
+      "metadata": [
+        {
+          "age_seconds": 39377.4190120697,
+          "bytes": 6113,
+          "fields": {
+            "consumer_deadline_epoch": 1792628692.3353126,
+            "controller_pid": 3221084,
+            "deadline_epoch": 1792629292.3353126,
+            "hard_end_epoch": 1792634293.9497352,
+            "native_unit": "sst-q7b-g5-relaygen-queued-owner-v2-downstream-r1-70188b8e50fd.service",
+            "owner": {
+              "birth": "1960484824",
+              "pid": 3221084,
+              "unit": "sst-q7b-g5-relaygen-queued-owner-v2-downstream-r1-70188b8e50fd.service"
+            },
+            "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+            "slots": {},
+            "source_owner": {
+              "birth": "8973866",
+              "pid": 2714543,
+              "unit": "sst-q7b-g5-guard-rollover-owner-v2-70188b8e50fd.service"
+            }
+          },
+          "mtime": 1792544295.0892577,
+          "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-relay-owner-downstream-3221084/attempt-1792544294256215242/allocation.json",
+          "root_keys": [
+            "allocation_evidence",
+            "allocation_evidence_sha256",
+            "allocation_role",
+            "consumer_deadline_epoch",
+            "controller_pid",
+            "deadline_epoch",
+            "dependency_path",
+            "gpu_lock_proofs",
+            "hard_end_epoch",
+            "leased_cuda_uuids",
+            "leased_indices",
+            "model_processes_owned",
+            "native_cgroup",
+            "native_unit",
+            "owner",
+            "predecessor",
+            "role",
+            "run_id",
+            "slots",
+            "source_owner",
+            "source_owner_allocation_sha256",
+            "source_owner_ready",
+            "source_owner_ready_sha256",
+            "source_retriever",
+            "upstream_owner_ready",
+            "upstream_owner_ready_sha256"
+          ],
+          "sha256": "24ec3e6e965a2c4376f6f53007c3d8dede8e447e62a3286bb3390a5c624d8933"
+        },
+        {
+          "age_seconds": 39377.20301985741,
+          "bytes": 6249,
+          "fields": {
+            "consumer_deadline_epoch": 1792628692.3353126,
+            "controller_pid": 3221084,
+            "deadline_epoch": 1792629292.3353126,
+            "epoch": 1792544295.3061912,
+            "hard_end_epoch": 1792634293.9497352,
+            "native_unit": "sst-q7b-g5-relaygen-queued-owner-v2-downstream-r1-70188b8e50fd.service",
+            "owner": {
+              "birth": "1960484824",
+              "pid": 3221084,
+              "unit": "sst-q7b-g5-relaygen-queued-owner-v2-downstream-r1-70188b8e50fd.service"
+            },
+            "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+            "slots": {},
+            "source_owner": {
+              "birth": "8973866",
+              "pid": 2714543,
+              "unit": "sst-q7b-g5-guard-rollover-owner-v2-70188b8e50fd.service"
+            },
+            "status": "RETRIEVAL_RELAY_OWNER_READY"
+          },
+          "mtime": 1792544295.30525,
+          "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-relay-owner-downstream-3221084/attempt-1792544294256215242/relay-owner-ready.json",
+          "root_keys": [
+            "allocation_evidence",
+            "allocation_evidence_sha256",
+            "allocation_path",
+            "allocation_role",
+            "allocation_sha256",
+            "consumer_deadline_epoch",
+            "controller_pid",
+            "deadline_epoch",
+            "dependency_path",
+            "epoch",
+            "gpu_lock_proofs",
+            "hard_end_epoch",
+            "job_ready_path",
+            "leased_cuda_uuids",
+            "leased_indices",
+            "model_processes_owned",
+            "native_cgroup",
+            "native_unit",
+            "owner",
+            "predecessor",
+            "relay",
+            "role",
+            "run_id",
+            "slots",
+            "source_owner",
+            "source_owner_allocation_sha256",
+            "source_owner_ready",
+            "source_owner_ready_sha256",
+            "source_processes_owned",
+            "source_retriever",
+            "status",
+            "transport_ready_path",
+            "transport_ready_sha256",
+            "upstream_owner_ready",
+            "upstream_owner_ready_sha256"
+          ],
+          "sha256": "3427756fcc8885aeb0f234f324a174d1d7a7bc5a1703cb9a9dc980a441d69b40"
+        }
+      ],
+      "terminal_receipt_present": false
+    },
+    {
+      "attempt": "attempt-1792544246829200404",
+      "job": "job-relay-owner-upstream-2721810",
+      "last_metadata_age_seconds": 39425.473304986954,
+      "last_metadata_epoch": 1792544247.0349648,
+      "metadata": [
+        {
+          "age_seconds": 39425.68129777908,
+          "bytes": 2339,
+          "fields": {
+            "consumer_deadline_epoch": 1792628692.3353126,
+            "controller_pid": 2721810,
+            "deadline_epoch": 1792629592.3353126,
+            "hard_end_epoch": 1792634246.5759764,
+            "native_unit": "sst-q7b-g5-relaygen-queued-owner-v2-upstream-r1-70188b8e50fd.service",
+            "owner": {
+              "birth": "8989290",
+              "pid": 2721810,
+              "unit": "sst-q7b-g5-relaygen-queued-owner-v2-upstream-r1-70188b8e50fd.service"
+            },
+            "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+            "slots": {},
+            "source_owner": {
+              "birth": "8973866",
+              "pid": 2714543,
+              "unit": "sst-q7b-g5-guard-rollover-owner-v2-70188b8e50fd.service"
+            }
+          },
+          "mtime": 1792544246.826972,
+          "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-relay-owner-upstream-2721810/attempt-1792544246829200404/allocation.json",
+          "root_keys": [
+            "allocation_evidence",
+            "allocation_evidence_sha256",
+            "allocation_role",
+            "consumer_deadline_epoch",
+            "controller_pid",
+            "deadline_epoch",
+            "dependency_path",
+            "gpu_lock_proofs",
+            "hard_end_epoch",
+            "model_processes_owned",
+            "native_cgroup",
+            "native_unit",
+            "owner",
+            "role",
+            "run_id",
+            "slots",
+            "source_owner",
+            "source_owner_allocation_sha256",
+            "source_owner_ready",
+            "source_owner_ready_sha256",
+            "source_retriever"
+          ],
+          "sha256": "dbbfc033cd6d5aa54b607a4e0d71fe539745cd8326fbbf5a33611efe2f0f7021"
+        },
+        {
+          "age_seconds": 39425.473304986954,
+          "bytes": 3350,
+          "fields": {
+            "consumer_deadline_epoch": 1792628692.3353126,
+            "controller_pid": 2721810,
+            "deadline_epoch": 1792629592.3353126,
+            "epoch": 1792544247.0367098,
+            "hard_end_epoch": 1792634246.5759764,
+            "native_unit": "sst-q7b-g5-relaygen-queued-owner-v2-upstream-r1-70188b8e50fd.service",
+            "owner": {
+              "birth": "8989290",
+              "pid": 2721810,
+              "unit": "sst-q7b-g5-relaygen-queued-owner-v2-upstream-r1-70188b8e50fd.service"
+            },
+            "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+            "slots": {},
+            "source_owner": {
+              "birth": "8973866",
+              "pid": 2714543,
+              "unit": "sst-q7b-g5-guard-rollover-owner-v2-70188b8e50fd.service"
+            },
+            "status": "RETRIEVAL_RELAY_OWNER_READY"
+          },
+          "mtime": 1792544247.0349648,
+          "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-relay-owner-upstream-2721810/attempt-1792544246829200404/relay-owner-ready.json",
+          "root_keys": [
+            "allocation_evidence",
+            "allocation_evidence_sha256",
+            "allocation_path",
+            "allocation_role",
+            "allocation_sha256",
+            "consumer_deadline_epoch",
+            "controller_pid",
+            "deadline_epoch",
+            "dependency_path",
+            "epoch",
+            "gpu_lock_proofs",
+            "hard_end_epoch",
+            "job_ready_path",
+            "model_processes_owned",
+            "native_cgroup",
+            "native_unit",
+            "owner",
+            "relay",
+            "role",
+            "run_id",
+            "slots",
+            "source_owner",
+            "source_owner_allocation_sha256",
+            "source_owner_ready",
+            "source_owner_ready_sha256",
+            "source_processes_owned",
+            "source_retriever",
+            "status",
+            "transport_ready_path",
+            "transport_ready_sha256"
+          ],
+          "sha256": "9b783f6f7cb76bdb0c0ae953291abd45572df1c0af98671b9e61a8fa7c7acf44"
+        }
+      ],
+      "terminal_receipt_present": false
+    },
+    {
+      "attempt": "attempt-1792544093218863922",
+      "job": "job-retrieval-owner-2714543",
+      "last_metadata_age_seconds": 39481.16336083412,
+      "last_metadata_epoch": 1792544191.344909,
+      "metadata": [
+        {
+          "age_seconds": 39579.29193401337,
+          "bytes": 11764,
+          "fields": {
+            "captured_epoch": 1792544093.2188387,
+            "consumer_deadline_epoch": 1792628692.3353126,
+            "controller_pid": 2714543,
+            "deadline_epoch": 1792630492.3353126,
+            "hard_end_epoch": 1792634092.3353126,
+            "job_id": "shared5-2714543",
+            "model_engine_count": 0,
+            "model_indices": [],
+            "native_unit": "sst-q7b-g5-guard-rollover-owner-v2-70188b8e50fd.service",
+            "node": "h100-5",
+            "owner": {
+              "birth": "8973866",
+              "pid": 2714543,
+              "unit": "sst-q7b-g5-guard-rollover-owner-v2-70188b8e50fd.service"
+            },
+            "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+            "slots": {}
+          },
+          "mtime": 1792544093.2163358,
+          "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-retrieval-owner-2714543/attempt-1792544093218863922/allocation.json",
+          "root_keys": [
+            "actual_cuda_runtime_uuids",
+            "allocation_evidence",
+            "allocation_evidence_sha256",
+            "allocation_kind",
+            "allocation_role",
+            "captured_epoch",
+            "consumer_deadline_epoch",
+            "controller_pid",
+            "deadline_epoch",
+            "foreign_contexts_allowed",
+            "foreign_initial_contexts",
+            "foreign_processes_signalled",
+            "gpu_exclusive_allocation",
+            "gpu_lock_proofs",
+            "hard_end_epoch",
+            "initial_gpu_memory",
+            "job_id",
+            "leased_cuda_uuids",
+            "leased_indices",
+            "model_cuda_uuids",
+            "model_cuda_visible_devices",
+            "model_engine_count",
+            "model_indices",
+            "model_processes_owned",
+            "native_cgroup",
+            "native_resource_limits",
+            "native_unit",
+            "node",
+            "original_cuda_visible_devices",
+            "owner",
+            "remote_relay_guard",
+            "retrieval_cuda_uuids",
+            "retrieval_cuda_visible_devices",
+            "retrieval_indices",
+            "run_id",
+            "slots",
+            "tensor_parallel_size"
+          ],
+          "sha256": "4b63804b0b69e00649bd244a719e6960a9dd46a7c64f8cc1cf1f61f569a9a795"
+        },
+        {
+          "age_seconds": 39481.16336083412,
+          "bytes": 3800,
+          "fields": {
+            "consumer_deadline_epoch": 1792628692.3353126,
+            "deadline_epoch": 1792630492.3353126,
+            "epoch": 1792544191.3443704,
+            "owner": {
+              "birth": "8973866",
+              "pid": 2714543,
+              "unit": "sst-q7b-g5-guard-rollover-owner-v2-70188b8e50fd.service"
+            },
+            "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+            "slots": {},
+            "status": "RETRIEVAL_ONLY_OWNER_READY"
+          },
+          "mtime": 1792544191.344909,
+          "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-retrieval-owner-2714543/attempt-1792544093218863922/owner-ready.json",
+          "root_keys": [
+            "allocation_path",
+            "allocation_sha256",
+            "consumer_deadline_epoch",
+            "deadline_epoch",
+            "epoch",
+            "model_processes_owned",
+            "owner",
+            "remote_relay_guard",
+            "retriever",
+            "run_id",
+            "slots",
+            "status"
+          ],
+          "sha256": "5e315e371aa8bebd20f1fa858bb1512300f72c7a61c84835a840993d9972b70f"
+        }
+      ],
+      "terminal_receipt_present": false
+    }
+  ],
+  "nonterminal_job_count": 4,
+  "nonterminal_older_than_1h": 3,
+  "pool_worker_PIDs_on_other_hosts_not_directly_probed": true,
+  "raw_payload_read": false,
+  "remaining_questions_to169028": 31266,
+  "sealed_batches": 1077,
+  "sealed_questions": 137762,
+  "source_modified": false,
+  "status": "READONLY_ACTIVE_PRODUCER_POOL_METADATA_SINGLE_AGGREGATE",
+  "terminal_jobs_skipped": 60
+}

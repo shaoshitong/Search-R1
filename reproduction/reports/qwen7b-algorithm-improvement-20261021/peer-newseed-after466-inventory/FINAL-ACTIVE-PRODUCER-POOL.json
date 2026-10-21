@@ -1,0 +1,73 @@
+{
+  "status": "RECENT_SEALING_GPU_PRODUCER_IDENTIFIED_FROM_EXISTING_REMOTE_METADATA",
+  "observed_epoch": 1792583672.5082698,
+  "source_metadata_aggregate": {
+    "path": "reproduction/reports/qwen7b-algorithm-improvement-20261021/peer-newseed-after466-inventory/actual-active-producer-pool.json",
+    "bytes": 19368,
+    "sha256": "f8e6dd74fc1345c5dfb74eca4bc3dfd3c843dee93a1de90419ee6712e5332b19"
+  },
+  "generator": {
+    "job": "job-source-slot-gpu6-tp1-3532221",
+    "host_from_allocation": "h100-5",
+    "controller_pid_from_allocation": 3532221,
+    "model_engines": 1,
+    "model_indices": [
+      2
+    ],
+    "unit": "sst-q7b-g5-guard-rollover-supp-tp1-v1-gpu6-tp1-r1-70188b8e50fd.service",
+    "progress": {
+      "age_seconds": 62.845335245132446,
+      "bytes": 567,
+      "fields": {
+        "completed_own_batches": 130,
+        "deadline_epoch": 1792594493.7911088,
+        "epoch": 1792583609.6651888,
+        "global_goal_complete": false,
+        "job_id": "source-slot-gpu6-tp1-3532221",
+        "latest_batch_seconds": 162.60815224899852,
+        "latest_input": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/inputs/shard-01/batch-000415.json",
+        "longest_batch_seconds": 247.3926063550025,
+        "questions": 16640,
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+        "status": "POOL_OWN_SEALED_BATCH_ADVANCED",
+        "trajectories": 83200
+      },
+      "mtime": 1792583609.6629345,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-source-slot-gpu6-tp1-3532221/attempt-1792565993786828592-3532221/progress.json",
+      "root_keys": [
+        "completed_own_batches",
+        "deadline_epoch",
+        "epoch",
+        "global_goal_complete",
+        "job_id",
+        "latest_batch_seconds",
+        "latest_input",
+        "longest_batch_seconds",
+        "questions",
+        "run_id",
+        "status",
+        "trajectories"
+      ],
+      "sha256": "95f1a42d293077c8c071e7f1b56024f0193a330e5f091ee41b1065e84de2061e"
+    },
+    "terminal_receipt_present": false,
+    "remote_PID_directly_probed": false,
+    "remaining_declared_slot_seconds_at_observation": 10821.28283905983
+  },
+  "source_counts": {
+    "sealed_batches": 1077,
+    "sealed_questions": 137762,
+    "remaining_to169028": 31266,
+    "latest_seal_epoch": 1792583609.6589348
+  },
+  "other_nonterminal_records_are_owners_not_generator_counts": 3,
+  "CPU_relay_is_not_GPU_generation": true,
+  "free_slot_not_established_from_empty_JSON_projection": true,
+  "same_H10010_run_queued_systemd_start_observed": false,
+  "minimal_handoff": "Keep the existing worker untouched; donor owner must arrange any later legal slot continuation. Do not assume CPU relay automatically replaces expired auxiliary generation. Fixed124194 launch does not depend on the source tail.",
+  "current_training_cohort_questions": 124194,
+  "training_cohort_expanded": false,
+  "new_routes_or_remote_PID_probes": false,
+  "source_or_process_modified": false,
+  "GPU_or_launch_operation": false
+}
