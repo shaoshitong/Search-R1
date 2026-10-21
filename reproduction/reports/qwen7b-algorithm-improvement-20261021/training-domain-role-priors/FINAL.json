@@ -1,0 +1,128 @@
+{
+  "canonical_qid_sha256": "aa14bce45fc6a793789369d6f33c84edf3c1d79e601fec45882ec193b1e4c58d",
+  "domains": {
+    "hotpotqa": {
+      "G10_heterogeneous_fraction": 0.5798440498241956,
+      "K10_histogram": [
+        31793,
+        7488,
+        5661,
+        5087,
+        5008,
+        5089,
+        5360,
+        5722,
+        6218,
+        6644,
+        6087
+      ],
+      "negative_eligible_questions": 90157,
+      "positive_eligible_questions": 52277,
+      "questions": 90157,
+      "uniform_G10_then_uniform_real_G5_natural_Mixed_probability": 0.45901290183209503,
+      "uniform_G5_Mixed_subsets_total": 10428573
+    },
+    "nq": {
+      "G10_heterogeneous_fraction": 0.4313752836910905,
+      "K10_histogram": [
+        36492,
+        5400,
+        3458,
+        2894,
+        2617,
+        2638,
+        2907,
+        3415,
+        4480,
+        6214,
+        8356
+      ],
+      "negative_eligible_questions": 78871,
+      "positive_eligible_questions": 34023,
+      "questions": 78871,
+      "uniform_G10_then_uniform_real_G5_natural_Mixed_probability": 0.3267841118096599,
+      "uniform_G5_Mixed_subsets_total": 6494995
+    }
+  },
+  "elapsed_seconds": 2.1088470979593694,
+  "feature_rollout_tensor_checkpoint_read": false,
+  "final_outcomes_read": false,
+  "finite_B128_first_fresh_batch_correction": {
+    "hotpotqa": {
+      "P_Mixed_role_given_domain": 0.531779624131157,
+      "P_domain_given_nonMixed_role": 0.5333575875645742,
+      "negative_domain_probability_delta_from_pool_marginal": -2.7413736985337778e-05
+    },
+    "nq": {
+      "P_Mixed_role_given_domain": 0.4579493633898752,
+      "P_domain_given_nonMixed_role": 0.4666424124354258,
+      "negative_domain_probability_delta_from_pool_marginal": 2.7413736985337778e-05
+    }
+  },
+  "fresh_readback": {
+    "epoch": 1792608452.0872724,
+    "receipt": {
+      "bytes": 6127,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-domain-role-priors-v1/complete.json",
+      "sha256": "e9b67c1dc80e8a8def53746a6fbfc78167330cc153cd9955eda2dd5f0571c8eb"
+    },
+    "status": "FRESH_SMALL_RECEIPT_SHA_READBACK"
+  },
+  "groups": {
+    "bytes": 127068810,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint169028-native-training-bank-v1/groups.json",
+    "sha256": "9b6616b041170e7b3fc3de5128376e12f971842360b7a79b178991941038915f"
+  },
+  "hard_mining_after_epoch0_not_modelled": true,
+  "illustrative_domain_only_BCE_population_constants": {
+    "hotpotqa": 0.5317668267438332,
+    "nq": 0.4579639466687654
+  },
+  "illustrative_domain_only_classifier_at_half": {
+    "Hotpot_predicted_role": "Mixed",
+    "NQ_predicted_role": "nonMixed",
+    "not_an_actual_fitted_model": true,
+    "training_balanced_role_BA": 0.5361869894998575
+  },
+  "interpretation": "Global 50:50 role balancing induces a modest domain-class shortcut: NQ Mixed-role prior45.80%, Hotpot53.18%. A hypothetical domain-only BCE predictor falls below0.5 for NQ; directionally compatible with mean score~0.47/low TPR but not causal attribution to the actual model.",
+  "main_job_changed": false,
+  "natural_uniform_G5_Mixed": 0.39731296514788006,
+  "negative_eligible": 169028,
+  "new_model_or_score_or_fixture_or_GPU": false,
+  "observed_actual_batch_domain_counts": false,
+  "peak_RSS_MiB": 451.46875,
+  "positive_eligible": 86300,
+  "questions": 169028,
+  "remote_complete": {
+    "bytes": 6127,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-domain-role-priors-v1/complete.json",
+    "sha256": "e9b67c1dc80e8a8def53746a6fbfc78167330cc153cd9955eda2dd5f0571c8eb"
+  },
+  "source_commit": "568bbceaae43885663e01db91f3d1d7d8daa11bb",
+  "source_config": {
+    "bytes": 19415,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/config.json",
+    "sha256": "e5f0027dfcff4b6db442b38e9b2452e86cc2c9adcabd97a194971dc4d8f8d837"
+  },
+  "status": "CURRENT_B128_REAL_G10_DOMAIN_ROLE_PRIORS_METADATA_COMPLETE",
+  "uniform_role_marginals": {
+    "hotpotqa": {
+      "P_Mixed_role_given_domain": 0.5317668267438332,
+      "P_domain_given_Mixed_role": 0.6057589803012746,
+      "P_domain_given_nonMixed_role": 0.5333850013015595,
+      "P_domain_in_balanced_stream": 0.5695719908014171,
+      "P_nonMixed_role_given_domain": 0.4682331732561668,
+      "negative_question_draw_weight_per_question": 2.958089783941122e-06,
+      "positive_question_draw_weight_per_question": 5.793742757821553e-06
+    },
+    "nq": {
+      "P_Mixed_role_given_domain": 0.4579639466687654,
+      "P_domain_given_Mixed_role": 0.3942410196987254,
+      "P_domain_given_nonMixed_role": 0.4666149986984405,
+      "P_domain_in_balanced_stream": 0.43042800919858293,
+      "P_nonMixed_role_given_domain": 0.5420360533312346,
+      "negative_question_draw_weight_per_question": 2.958089783941122e-06,
+      "positive_question_draw_weight_per_question": 5.793742757821553e-06
+    }
+  }
+}

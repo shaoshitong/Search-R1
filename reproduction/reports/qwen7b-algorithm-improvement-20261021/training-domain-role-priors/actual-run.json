@@ -1,0 +1,170 @@
+{
+  "epoch": 1792608451.7862737,
+  "receipt": {
+    "bytes": 6127,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-domain-role-priors-v1/complete.json",
+    "sha256": "e9b67c1dc80e8a8def53746a6fbfc78167330cc153cd9955eda2dd5f0571c8eb"
+  },
+  "result": {
+    "K10_histogram": [
+      68285,
+      12888,
+      9119,
+      7981,
+      7625,
+      7727,
+      8267,
+      9137,
+      10698,
+      12858,
+      14443
+    ],
+    "canonical_domain_counts": {
+      "hotpotqa": 90157,
+      "nq": 78871
+    },
+    "canonical_qid_sha256": "aa14bce45fc6a793789369d6f33c84edf3c1d79e601fec45882ec193b1e4c58d",
+    "complete_bank": {
+      "bytes": 9418,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint169028-native-training-bank-v1/complete.json",
+      "sha256": "18aec908cfaeb5cd5a0a1bb486fe8b09a76d674c1f32b2643e12c319101398a8"
+    },
+    "config": {
+      "bytes": 19415,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/config.json",
+      "sha256": "e5f0027dfcff4b6db442b38e9b2452e86cc2c9adcabd97a194971dc4d8f8d837"
+    },
+    "domains": {
+      "hotpotqa": {
+        "G10_heterogeneous_fraction": 0.5798440498241956,
+        "K10_histogram": [
+          31793,
+          7488,
+          5661,
+          5087,
+          5008,
+          5089,
+          5360,
+          5722,
+          6218,
+          6644,
+          6087
+        ],
+        "negative_eligible_questions": 90157,
+        "positive_eligible_questions": 52277,
+        "questions": 90157,
+        "uniform_G10_then_uniform_real_G5_natural_Mixed_probability": 0.45901290183209503,
+        "uniform_G5_Mixed_subsets_total": 10428573
+      },
+      "nq": {
+        "G10_heterogeneous_fraction": 0.4313752836910905,
+        "K10_histogram": [
+          36492,
+          5400,
+          3458,
+          2894,
+          2617,
+          2638,
+          2907,
+          3415,
+          4480,
+          6214,
+          8356
+        ],
+        "negative_eligible_questions": 78871,
+        "positive_eligible_questions": 34023,
+        "questions": 78871,
+        "uniform_G10_then_uniform_real_G5_natural_Mixed_probability": 0.3267841118096599,
+        "uniform_G5_Mixed_subsets_total": 6494995
+      }
+    },
+    "elapsed_seconds": 2.1088470979593694,
+    "epoch": 1792608451.6850877,
+    "first_fresh_uniform_batch_expected_distinct_question_correction": {
+      "hotpotqa": {
+        "P_Mixed_role_given_domain": 0.531779624131157,
+        "P_domain_given_nonMixed_role": 0.5333575875645742,
+        "negative_domain_probability_delta_from_pool_marginal": -2.7413736985337778e-05
+      },
+      "nq": {
+        "P_Mixed_role_given_domain": 0.4579493633898752,
+        "P_domain_given_nonMixed_role": 0.4666424124354258,
+        "negative_domain_probability_delta_from_pool_marginal": 2.7413736985337778e-05
+      }
+    },
+    "formulas": {
+      "P_Mixed_role_given_domain": "(M_domain/M) / ((M_domain/M)+(N_domain/N))",
+      "P_domain_given_Mixed_role": "M_domain / sum(M_domain)",
+      "P_domain_given_nonMixed_role": "N_domain / sum(N_domain)",
+      "finite_batch": "positive slots are selected first; hypothetical fresh uniform permutations: negative domain mass=(N_domain-(B/2)*M_domain/M)/(N-B/2)",
+      "natural_G5_Mixed": "mean_q [1-(C(K10,5)+C(10-K10,5))/C(10,5)]",
+      "negative_pool": "all G10 questions; even heterogeneous G10 has >=5 own trajectories sharing a label",
+      "positive_pool": "K10 in 1..9",
+      "role_prior": "P(Mixed-role)=P(nonMixed-role)=1/2; four conditional G5 views each weight1/4 per question"
+    },
+    "groups": {
+      "bytes": 127068810,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint169028-native-training-bank-v1/groups.json",
+      "sha256": "9b6616b041170e7b3fc3de5128376e12f971842360b7a79b178991941038915f"
+    },
+    "identity_exclusions": {
+      "bytes": 848051,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-124194-v1/evaluation-identity-exclusions.json",
+      "sha256": "585893c9960fcb6b1934887ebb3034c7da1f479197ddd9e30201569ebdb5fdfc"
+    },
+    "identity_overlap": {
+      "evaluation_hashes": 0,
+      "evaluation_qids": 0
+    },
+    "negative_eligible": 169028,
+    "peak_RSS_KiB": 462304,
+    "positive_eligible": 86300,
+    "questions": 169028,
+    "sampler_file_sha256": "5d0fbb1e582ae4972957e0fbea18da6d12b61b7f7aac2f7094ba3de81a03e7d3",
+    "sampler_source_commit": "c98ddcd7861b7023f3efa0d82d3c1fbea0664a13",
+    "scope": {
+      "GPU_used": false,
+      "actual_batch_domain_unavailable_reason": "Existing saved curves do not retain per-question sampled IDs; no checkpoint/sampler or RNG replay requested.",
+      "actual_per_qid_batch_domain_observed": false,
+      "causal_effect_of_domain_prior_on_validation_not_established": true,
+      "early_uniform_only": true,
+      "evaluation_identity_metadata_only": true,
+      "feature_rollout_tensor_checkpoint_read": false,
+      "final_outcomes_read": false,
+      "four_views_are_correlated_within_question": true,
+      "hard_pool_after_epoch0_not_modelled": true,
+      "training_job_changed": false,
+      "training_text_already_in_original_warmup": true,
+      "uniform_shuffled_cycles_and_cross_role_duplicate_skips_mean_marginals_are_not_actual_batch_counts": true,
+      "validation_predictions_or_labels_read": false
+    },
+    "status": "CURRENT_B128_REAL_G10_DOMAIN_ROLE_PRIORS_METADATA_COMPLETE",
+    "uniform_early_role_pool_marginals": {
+      "hotpotqa": {
+        "P_Mixed_role_given_domain": 0.5317668267438332,
+        "P_domain_given_Mixed_role": 0.6057589803012746,
+        "P_domain_given_nonMixed_role": 0.5333850013015595,
+        "P_domain_in_balanced_stream": 0.5695719908014171,
+        "P_nonMixed_role_given_domain": 0.4682331732561668,
+        "negative_question_draw_weight_per_question": 2.958089783941122e-06,
+        "positive_question_draw_weight_per_question": 5.793742757821553e-06
+      },
+      "nq": {
+        "P_Mixed_role_given_domain": 0.4579639466687654,
+        "P_domain_given_Mixed_role": 0.3942410196987254,
+        "P_domain_given_nonMixed_role": 0.4666149986984405,
+        "P_domain_in_balanced_stream": 0.43042800919858293,
+        "P_nonMixed_role_given_domain": 0.5420360533312346,
+        "negative_question_draw_weight_per_question": 2.958089783941122e-06,
+        "positive_question_draw_weight_per_question": 5.793742757821553e-06
+      }
+    },
+    "uniform_natural_Mixed_overall": 0.39731296514788006
+  },
+  "source_publication": {
+    "bytes": 427,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-domain-role-priors-v1/code-568bbceaae43/source-publication.json",
+    "sha256": "22e732523011a2ef800874b1453281de2fc6389ea5d0db680a74176a5e099d8b"
+  },
+  "status": "ONE_SHOT_DOMAIN_ROLE_CPU_AUDIT_COMPLETE"
+}
