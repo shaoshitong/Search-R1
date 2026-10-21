@@ -1,0 +1,65 @@
+{
+  "active_training_CP_reserve_bytes": 214748364800,
+  "actor_updates": 0,
+  "allocations": 2,
+  "batch_size": 32,
+  "compute_layers": [
+    20,
+    23,
+    26
+  ],
+  "cpus_per_allocation": 16,
+  "domains": {
+    "hotpotqa": 12672,
+    "nq": 128
+  },
+  "existing30016_changed": false,
+  "gpus_per_allocation": 2,
+  "independent_join_audit": {
+    "bytes": 2749,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited100-after366-20261021-636015f5-a02/independent-final-audit.json",
+    "sha256": "bbb696e68f982d90ede6b9e67c9fd04bad85ee5ce476a070f5c239a88393942d"
+  },
+  "max_context_tokens": 16384,
+  "memory_per_allocation": "128G",
+  "minimum_free_bytes": 697932185600,
+  "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "new_rollouts_generated": 0,
+  "persist_layers": [
+    26
+  ],
+  "prefix_tokens": 20,
+  "priority": "normal/acd_u",
+  "probe_updates": 0,
+  "question_max_tokens": 273,
+  "questions": 12800,
+  "questions_per_shard": 3200,
+  "raw_complete": {
+    "bytes": 8540,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited100-after366-20261021-636015f5-a02/complete.json",
+    "sha256": "25a17d9a70b4d4b49a9034c45ffb95b927aa8f391f8545cbf44466a5cd3c09dd"
+  },
+  "raw_groups": {
+    "bytes": 19249426,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited100-after366-20261021-636015f5-a02/raw-g10/groups.json",
+    "sha256": "aaef93bbc749765c10c56a6a232f8a5a3a75d7d700e4ed8649c7e5ecbf4096a7"
+  },
+  "shards": 4,
+  "source_events": {
+    "bytes": 343194,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited100-after366-20261021-636015f5-a02/raw-g10/source-events.json",
+    "sha256": "a008963ed544fff9fa082aa75cff34f75af4f821d66699a390b34a61ae5949d1"
+  },
+  "source_intermediates_preserved": true,
+  "source_selection": {
+    "bytes": 170253,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-delta-import-runtime-audited100-after366-20261021-636015f5-a02/independent-audit-e21e61e8fbfa/selection.json",
+    "sha256": "00e5021284cb8f6614670452b749c7add10c028e50578822432600762074662a"
+  },
+  "status": "FROZEN_AUDITED100_AFTER366_ACCEPTED_G10_LAYER26_CONFIG",
+  "time_limit": "02:00:00",
+  "trajectories": 128000,
+  "trajectories_per_shard": 32000,
+  "unseen_in_all_previous_training_claim": false,
+  "writer_layout": "lossless_question_base_xor_policy_v1"
+}
