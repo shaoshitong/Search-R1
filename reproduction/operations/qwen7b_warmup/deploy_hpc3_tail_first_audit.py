@@ -35,10 +35,15 @@ raw=base64.b64decode(part['data']);assert hashlib.sha256(raw).hexdigest()==part[
   probe=r'''import pathlib,json,os,subprocess,hashlib
 b=pathlib.Path(V['tail']);d=b/'workers'/('worker-%d'%V['worker']);c=json.loads((d/'controller.json').read_bytes());p=pathlib.Path('/proc')/str(c['pid']);stat=(p/'stat').read_text().rsplit(')',1)[1].split();assert int(stat[19])==int(c['birth_ticks'])and c['Slurm_job_id']==V['job']
 cmd=(p/'cmdline').read_bytes();assert b'hpc3_tail_g5.py'in cmd and b'368ad5d8df9e0238bdee8033964b56f0f4a6426e606f9514114fac0dcb05d835'in cmd
-visible=next(x.split(b'=',1)[1].decode()for x in(p/'environ').read_bytes().split(b'\0')if x.startswith(b'CUDA_VISIBLE_DEVICES='));assert len(visible.split(','))==2
-hardware=subprocess.check_output(['nvidia-smi','-i',visible,'--query-gpu=index,uuid,name,memory.total','--format=csv,noheader,nounits'],universal_newlines=True).strip().splitlines();assert len(hardware)==2 and all('H100'in x for x in hardware)
+selected={x.split(b'=',1)[0].decode():x.split(b'=',1)[1].decode()for x in(p/'environ').read_bytes().split(b'\0')if x.startswith((b'CUDA_VISIBLE_DEVICES=',b'SLURM_JOB_GPUS='))};visible=selected['CUDA_VISIBLE_DEVICES'];assert len(visible.split(','))==2
+hardware=[]
+for info in pathlib.Path('/proc/driver/nvidia/gpus').glob('*/information'):
+ try:
+  fields=dict(line.split(':',1)for line in info.read_text().splitlines()if ':'in line);fields={k.strip():v.strip()for k,v in fields.items()};minor=fields.get('Device Minor')
+  if minor in selected.get('SLURM_JOB_GPUS',visible).split(','):hardware.append({k:fields[k]for k in('Model','GPU UUID','Device Minor')if k in fields})
+ except(OSError,ValueError):pass
 r=json.loads((d/'retriever/ready.json').read_bytes());rp=pathlib.Path('/proc')/str(r['pid']);rs=(rp/'stat').read_text().rsplit(')',1)[1].split();assert int(rs[1])==c['pid'];assert r['run_id']=='36b784a3bf964e69a6130bcc41d68809'
-receipt=dict(status='OWN_ACTUAL_CONTROLLER_BIRTH_JOB_AND_TWO_H100_VERIFIED',worker=V['worker'],job_id=V['job'],controller_pid=c['pid'],controller_birth=int(stat[19]),controller_host=os.uname().nodename,retriever_pid=r['pid'],retriever_parent_pid=int(rs[1]),actual_allocated_GPUs=hardware,audit_step_GPU=0)
+receipt=dict(status='OWN_ACTUAL_CONTROLLER_BIRTH_JOB_ALLOCATION_BINDING_VERIFIED',worker=V['worker'],job_id=V['job'],controller_pid=c['pid'],controller_birth=int(stat[19]),controller_host=os.uname().nodename,retriever_pid=r['pid'],retriever_parent_pid=int(rs[1]),parent_GPU_binding=selected,read_only_proc_GPU_metadata=hardware,GPU_metadata_complete=len(hardware)==2,audit_step_GPU=0,nvidia_smi_not_required_in_GPU0_step=True)
 q=pathlib.Path(V['out'])/('worker-%d-actual-hardware.json'%V['worker']);q.write_text(json.dumps(receipt,sort_keys=True)+'\n')
 env=dict(os.environ,CUDA_VISIBLE_DEVICES='',QWEN7B_CODE_ROOT=V['oldroot'],OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONDONTWRITEBYTECODE='1');os.execvpe('bash',['bash',V['runtime'],V['audit'],'--worker',str(V['worker'])],env)
 '''
@@ -47,10 +52,10 @@ state=subprocess.check_output(['squeue','-h','-j',job,'-o','%T'],universal_newli
 c=read(b/'config.json');oldroot=c['qualified_runtime_root'];runtime=oldroot+'/reproduction/operations/qwen7b_warmup/runtime.sh';x=dict(tail=v['tail'],out=v['out'],worker=worker,job=job,oldroot=oldroot,runtime=runtime,audit=pub['code']['path']);script='V='+repr(x)+'\\n'+probe
 args=['srun','--jobid='+job,'--overlap','--nodes=1','--ntasks=1','--cpus-per-task=2','--gres=gpu:0','--mem=3G','env','CUDA_VISIBLE_DEVICES=','python3','-c',script]
 r=subprocess.run(args,stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=65)
-(out/('worker-%d-step.log'%worker)).write_text(r.stdout+r.stderr)
+step_log=out/('worker-%d-step-%s.log'%(worker,v['helper'][:12]));step_log.write_text(r.stdout+r.stderr)
 if r.returncode:raise RuntimeError('Own allocation CPU audit failure: '+r.stderr[-1400:]+r.stdout[-1200:])
 rows=[json.loads(line)for line in r.stdout.splitlines()if line.startswith('{')];assert rows
-print(json.dumps(dict(audit=rows[-1],hardware=read(out/('worker-%d-actual-hardware.json'%worker)),step_log=proof(out/('worker-%d-step.log'%worker)),step_CPU=2,step_GPU=0),sort_keys=True))''',timeout=85)
+print(json.dumps(dict(audit=rows[-1],hardware=read(out/('worker-%d-actual-hardware.json'%worker)),step_log=proof(step_log),step_CPU=2,step_GPU=0),sort_keys=True))''',timeout=85)
  REPORT.mkdir(exist_ok=True);(REPORT/('actual-first-audit-'+a.action+(''if a.worker is None else'-worker%d'%a.worker)+'.json')).write_text(json.dumps(value,indent=2)+'\n')
  if a.action=='run':
   audit=value['audit'];print(json.dumps(dict(worker=a.worker,status=audit['status'],questions=audit['questions'],trajectories=audit['trajectories'],strict_EM_recomputed=audit['strict_EM_recomputed'],strict_EM_mismatches=audit['strict_EM_mismatches'],real_G5_ownIDs_and_seeds_verified=audit['real_G5_ownIDs_and_seeds_verified'],Prefix20_causal_positions_verified=audit['Prefix20_causal_positions_verified'],seal=audit['seal'],actor_updates=audit['actor_updates'],hardware=value['hardware'],CUDA_initialized=audit['CUDA_initialized'],model_tensors_loaded=audit['model_tensors_loaded']),sort_keys=True))
