@@ -1,0 +1,170 @@
+{
+  "action": "inspect",
+  "before": {
+    "epoch": 1792588086.339141,
+    "job": {
+      "args": [
+        "scontrol",
+        "show",
+        "job",
+        "-o",
+        "745501"
+      ],
+      "returncode": 0,
+      "stdout": "JobId=745501 JobName=q7b-native-joint124194 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3343 Nice=0 Account=mou176 QOS=normal JobState=RUNNING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:40:19 TimeLimit=1-00:00:00 TimeMin=N/A SubmitTime=2026-10-21T20:27:31 EligibleTime=2026-10-21T20:27:31 AccrueTime=2026-10-21T20:27:31 StartTime=2026-10-21T20:27:47 EndTime=2026-10-22T20:27:47 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T20:27:47 Scheduler=Backfill Partition=acd_u AllocNode:Sid=ACD-Login-2:714826 ReqNodeList=(null) ExcNodeList=(null) NodeList=ACD1-28 BatchHost=ACD1-28 NumNodes=1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=8,mem=128G,node=1,billing=8,gres/gpu=1 AllocTRES=cpu=8,mem=128G,node=1,billing=8,gres/gpu=1 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=8 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-124194-v1/training.sbatch WorkDir=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-124194-v1 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-124194-v1/logs/train-745501.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-124194-v1/logs/train-745501.log Power= TresPerNode=gres/gpu:1 TresPerTask=cpu:8",
+      "stderr": ""
+    },
+    "queue": {
+      "args": [
+        "squeue",
+        "-h",
+        "-j",
+        "745501",
+        "-o",
+        "%i|%T|%M|%l|%L|%R"
+      ],
+      "returncode": 0,
+      "stdout": "745501|RUNNING|40:19|1-00:00:00|23:19:41|ACD1-28",
+      "stderr": ""
+    },
+    "progress": {
+      "cursor": 138,
+      "steps": 14556,
+      "budget": 15528,
+      "seen_questions": 4379,
+      "time": 1792588083.225801,
+      "block_gradient_L2": 11.416118055100544,
+      "readout_gradient_L2": 335.3753570951373,
+      "loss": 1.566377878189087,
+      "components": {
+        "trajectory": 0.680707573890686,
+        "binary_mixed": 0.8856703639030457,
+        "three_event": 1.6924794912338257,
+        "stat_mean": 0.14660610258579254,
+        "stat_variance": 0.016506660729646683,
+        "within_rank": 0.0,
+        "inter_rank": 0.3380347788333893
+      },
+      "grouping": {
+        "mode": "training_balanced_hard_real_G10",
+        "questions": 32,
+        "covered_questions": 32,
+        "views": 128,
+        "mixed_views": 64,
+        "nonmixed_views": 64,
+        "count_balanced": true,
+        "weighted_class_mass_balanced": true,
+        "weighted_mixed_fraction": 0.5,
+        "per_question_total_weight_exactly_one": true,
+        "four_subset_draws_with_replacement": true,
+        "repeated_subset_draws": 3,
+        "synthetic_labels": false,
+        "homogeneous_questions_can_create_Mixed": false,
+        "labels_recomputed_from_own_subset": true,
+        "training_only": true,
+        "hard_pool_actual_counts": {
+          "mixed": 0,
+          "nonmixed": 0
+        },
+        "epoch": 0,
+        "source_question_pool_size": 124194,
+        "claim_every_question_once_per_epoch": false,
+        "selected_views_sha256": "f62c8d8e911bdd80661c831e08aff7f51b705c26645293488bce7ab1d4ba7cf9"
+      },
+      "original_questions": 32,
+      "unique_real_trajectories": 320,
+      "virtual_views": 128,
+      "view_trajectory_exposures": 640,
+      "actual_forward_trajectory_exposures": 640,
+      "forward_passes": 2,
+      "backward_passes": 1,
+      "micro_trajectories": 5,
+      "maximum_retained_transformer_graph_microbatches": 1,
+      "native_replay_snapshot_bytes": 32768,
+      "gradient_strategy": "two_pass_same_micro_RNG_native_buffer_logit_VJP",
+      "recomputed_logits_bit_identical": true,
+      "monolithic_bitexact_claim": false,
+      "denominators": {
+        "question": 32,
+        "inter_ordered_original_question_pairs": 992
+      },
+      "inter_eligible_weighted_pair_mass_exact": "256",
+      "question_weighted_confusion": {
+        "tp": 14.0,
+        "fp": 12.0,
+        "fn": 2.0,
+        "tn": 4.0
+      },
+      "mixed_recall": 0.875,
+      "nonmixed_recall": 0.25,
+      "mixed_balanced_accuracy": 0.5625,
+      "seconds": 6.831964740995318,
+      "actor_updates": 0,
+      "supports_G20": false,
+      "batch_token": "3b301cd4201ee490c670e573b36bcecf428129b18bb5c692630c063c082a6dec",
+      "source_qids_sha256": "56a161b50b8bd63cb340984d8276689bd0d296f5bee4c42568961c31d731daa7",
+      "sampler_epoch": 0,
+      "sampler_accepted_updates": 138,
+      "sampler_state_sha256": "1f7d185b4a69134a3442c03623def3ddab5336884b33e3e7ccbce45b9eed875e"
+    },
+    "latest": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-balanced-native-E4-124194-v1/checkpoints/.rolling-accepted-cursor-000128-b62802132f4346bdb42f23621f2c3a81.pt",
+      "sha256": "66b17e0458f7d68d025f5895c8544aebca5030476565970f636903c9a88556ce",
+      "bytes": 3750958234,
+      "cursor": 128,
+      "steps": 14546,
+      "config_sha256": "5aaa63c9348f410357be92ce491ba6d18286d618ab86dae6e63f193f2b4367b6",
+      "matched_binding_sha256": "01071ad024af352d576a2d02f7e8d4a867f71bd7f6609ca9110db13e9b2f307f",
+      "epoch_time": 1792588016.513793,
+      "accepted_hashes": {
+        "raw": "01cf3cdbac059102ac32159cde73ec18df229e84a6f89bd81ccc1232db947cf5",
+        "ema": "ba8b12c06dc179cf6c541bc259e1aa88ed4564f4a9053f9a2278d06383811255",
+        "adam": "41fa5599e56da72a4a63c2d32b1fcc0546dc3b5ad33292022119f943b3aa2f62",
+        "raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+        "ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+        "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+      },
+      "sampler_state_sha256": "ef43cfdb72e2df7301ca51ff80af15ec2c8b7abd736b19ddbb1f919dcf1d4ee0",
+      "data_cursor": {
+        "cursor": 128,
+        "sampler_binding": "c9281ec1c271c5d6db71a8d77789a436619e4d707f1a8426393638119e9cc45d",
+        "sampler_state_sha256": "ef43cfdb72e2df7301ca51ff80af15ec2c8b7abd736b19ddbb1f919dcf1d4ee0"
+      },
+      "pinned": false,
+      "full_CPU_six_state_reload_passed": true,
+      "sampler_full_state_and_cursor_reload_passed": true,
+      "saved_all_four_source_RNG_states": true,
+      "checkpoint_kind": "native_joint_rolling",
+      "allocation_job_id": "745501"
+    }
+  },
+  "partition": {
+    "args": [
+      "scontrol",
+      "show",
+      "partition",
+      "acd_u",
+      "-o"
+    ],
+    "returncode": 0,
+    "stdout": "PartitionName=acd_u AllowGroups=formal,admin AllowAccounts=ALL AllowQos=ALL AllocNodes=ALL Default=YES QoS=N/A DefaultTime=NONE DisableRootJobs=NO ExclusiveUser=NO GraceTime=0 Hidden=NO MaxNodes=UNLIMITED MaxTime=7-00:00:00 MinNodes=0 LLN=NO MaxCPUsPerNode=UNLIMITED MaxCPUsPerSocket=UNLIMITED Nodes=ACD1-[1-4,6-9,11-26,28,30-33,36,50-52,54-56,59,61,64,67] PriorityJobFactor=100 PriorityTier=100 RootOnly=NO ReqResv=NO OverSubscribe=NO OverTimeLimit=NONE PreemptMode=OFF State=UP TotalCPUs=3840 TotalNodes=40 SelectTypeParameters=NONE JobDefaults=(null) DefMemPerCPU=10240 MaxMemPerNode=UNLIMITED TRES=cpu=3840,mem=78125G,node=40,billing=3840,gres/gpu=320",
+    "stderr": ""
+  },
+  "normal_QOS": {
+    "args": [
+      "sacctmgr",
+      "-n",
+      "-P",
+      "show",
+      "qos",
+      "where",
+      "Name=normal",
+      "format=Name,MaxWall"
+    ],
+    "returncode": 0,
+    "stdout": "normal|",
+    "stderr": ""
+  },
+  "only_requested_change": "TimeLimit=2-00:00:00",
+  "no_code_config_resources_priority_or_writer_change": true
+}
