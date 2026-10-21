@@ -93,7 +93,7 @@ else:assert(b/'retirement-signal.json').exists(),'Prior unknown signal intent re
 watchlock=(b/'retire-watch.lock').open('a+')
 try:fcntl.flock(watchlock,fcntl.LOCK_EX|fcntl.LOCK_NB)
 except BlockingIOError:print(json.dumps(dict(status='GRACEFUL_RETIREMENT_ALREADY_IN_PROGRESS',signal=proof(b/'retirement-signal.json'))));raise SystemExit(0)
-watchlock.close();path=b/('retire-observer-'+v['controller']['commit'][:12]+'.py');text=v['watch_source']
+watchlock.close();path=b/('retire-observer-'+v['controller']['commit'][:12]+'.py');watch_value={k:x for k,x in v.items()if k not in('common_body','watch_body','signal_body','handoff_authorized')};text='v='+repr(watch_value)+chr(10)+v['common_body']+v['watch_body']
 if path.exists():assert path.read_text()==text
 else:path.write_text(text);path.chmod(0o444)
 log=(b/'retire-observer.log').open('ab');child=subprocess.Popen(['python3','-u',str(path)],stdout=log,stderr=subprocess.STDOUT,start_new_session=True);print(json.dumps(dict(status='OLD_OWN_PYTHON_SIGUSR1_SENT_BOUNDED_EXACT_RETIREMENT_OBSERVER_STARTED',pid=child.pid,signal=proof(b/'retirement-signal.json'),observer=proof(path),GPU_submitted=False)))
@@ -176,11 +176,11 @@ def main():
   exists=call("print(json.dumps(dict(exists=(b/'source-publication.json').exists())))")
   if exists['exists']:result=call("publication();print(json.dumps(dict(status='EXISTING_IMMUTABLE_FAST_SOURCE_REVERIFIED',publication=proof(b/'source-publication.json'))))")
   else:
-   chunks=[raw[i:i+4096]for i in range(0,len(raw),4096)]
+   chunks=[raw[i:i+1024]for i in range(0,len(raw),1024)]
    for i,data in enumerate(chunks):call(STAGE,part=i,data=base64.b64encode(data).decode(),sha=hashlib.sha256(data).hexdigest())
    result=call(EXTRACT,parts=len(chunks),archive_bytes=len(raw))
  elif a.action=='retire':
-  watch_value=dict(value,entry=ENTRY);watch_source='v='+repr(watch_value)+'\n'+COMMON+WATCH;result=call(RETIRE,handoff_authorized=True,signal_body=SIGNAL,watch_source=watch_source,entry=ENTRY)
+  result=call(RETIRE,handoff_authorized=True,signal_body=SIGNAL,common_body=COMMON,watch_body=WATCH,entry=ENTRY)
  else:result=call(dict(prepare=PREPARE,submit=SUBMIT,status=STATUS)[a.action],entry=ENTRY,submit_authorized=a.submit_authorized)
  OUT.mkdir(parents=True,exist_ok=True);(OUT/('actual-'+a.action+'.json')).write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
 for script in(COMMON,STAGE,EXTRACT,PREPARE,SIGNAL,RETIRE,WATCH,SUBMIT,STATUS):compile(script,'fast_continuation_static','exec')
