@@ -1,0 +1,138 @@
+{
+  "GPU_submission": false,
+  "actor_updates": 0,
+  "append_order_seed": 1729,
+  "controlled6528_plan": {
+    "bytes": 568740,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/matched-loss128-v2/plan.json",
+    "sha256": "3423f65455a60c76d38d09802502e6bc343205fb3ffa2316541e35b80f7d195a"
+  },
+  "current_training_config": {
+    "bytes": 16144,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-hidden-count30016-train-v2/config.json",
+    "sha256": "3e910b12c0ff52eac70e61566c6135e2ec188bb47ec64ad79524abbd7a657526"
+  },
+  "effective_total_question_weight": 1.0,
+  "evaluation_protocol": {
+    "by_domain": {
+      "hotpotqa": {
+        "metrics": [
+          "balanced_accuracy",
+          "Mixed_TPR",
+          "nonMixed_TNR",
+          "all_wrong_false_Mixed_rate",
+          "all_correct_false_Mixed_rate",
+          "AUC"
+        ],
+        "primary_Top": {
+          "coverage": 0.25,
+          "pool": 2560,
+          "selected": 640
+        },
+        "questions": 2560
+      },
+      "nq": {
+        "metrics": [
+          "balanced_accuracy",
+          "Mixed_TPR",
+          "nonMixed_TNR",
+          "all_wrong_false_Mixed_rate",
+          "all_correct_false_Mixed_rate",
+          "AUC"
+        ],
+        "primary_Top": {
+          "coverage": 0.25,
+          "pool": 2560,
+          "selected": 640
+        },
+        "questions": 2560
+      }
+    },
+    "checkpoint_LR_recipe_selection_not_performed": true,
+    "domain_quota_is_not_Mixed_class_balance": true,
+    "final4096_outcomes_untouched": true,
+    "fixed_source_indices": [
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "group_event": "actual_original_actor_independent_newseed20261021_G5",
+    "group_size": 5,
+    "labels": "these_exact_five_own_strict_EM",
+    "original_warmup_unseen_question_claim": false,
+    "pooled": {
+      "metrics": [
+        "balanced_accuracy",
+        "Mixed_TPR",
+        "nonMixed_TNR",
+        "all_wrong_false_Mixed_rate",
+        "all_correct_false_Mixed_rate",
+        "AUC"
+      ],
+      "optional_Top512": {
+        "comparison_to_2048_Top512_coverage_equivalence": false,
+        "coverage": 0.1,
+        "pool": 5120,
+        "selected": 512
+      },
+      "primary_Top": {
+        "coverage": 0.25,
+        "pool": 5120,
+        "selected": 1280
+      },
+      "questions": 5120
+    },
+    "role": "new_internal_diagnostic_only_not_untouched_confirmation",
+    "threshold": 0.5,
+    "threshold_fitting": false
+  },
+  "global_questions": 32,
+  "historical_plan": {
+    "bytes": 1918071,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-append-only-plan-v1/plan.json",
+    "sha256": "8d6f5b046c8ee459c529f0750c80bac63455b2663f19cdcdce48d0fddd648cbf"
+  },
+  "holdout_per_domain": 2560,
+  "holdout_seed": 9137,
+  "identity_exclusion_config": {
+    "bytes": 824277,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-audited100-after366-20261021-636015f5-a02/config.json",
+    "sha256": "4c446949ebb796f7aabca81db38a3388c28d0e37fea30acce17fe35ec13d21a5"
+  },
+  "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "probe_updates": 0,
+  "role": "three_bank_internal_holdout_append_metadata_only",
+  "source_banks": [
+    {
+      "bytes": 2280,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-L26-replay-v1/bank/complete.json",
+      "sha256": "12f5e89581628e1e6d08f2d1b76829445e9f69237cecf77db057ff8b377e340d"
+    },
+    {
+      "bytes": 2705,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited122-L26-replay-v1/bank/complete.json",
+      "sha256": "96aa8f2cabc1beb92422d59695292d4fe572546e4cbc0906b9ac36345f6c096a"
+    },
+    {
+      "bytes": 2772,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-audited100-after366-L26-replay-v1/bank/complete.json",
+      "sha256": "b6b21e37defa3c2157daa93b333db33f9d2dbc39e830e66a0187b8a1d9ea609b"
+    }
+  ],
+  "source_counts": [
+    30016,
+    15616,
+    12800
+  ],
+  "source_cursor": 938,
+  "source_statuses": [
+    "EXPANDED_REAL_G10_LAYER26_REUSED8192_PLUS_ADDITIONAL21824_ACCEPTED",
+    "AUDITED122_REAL_G10_LAYER26_FEATURE_BANK_ACCEPTED",
+    "AUDITED100_AFTER366_REAL_G10_LAYER26_FEATURE_BANK_ACCEPTED"
+  ],
+  "target_cursor": 1666,
+  "view_weight": 0.25,
+  "views_per_question": 4
+}
