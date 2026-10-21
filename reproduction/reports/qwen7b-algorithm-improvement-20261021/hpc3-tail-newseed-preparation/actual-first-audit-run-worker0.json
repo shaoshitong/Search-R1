@@ -1,0 +1,193 @@
+{
+  "audit": {
+    "CUDA_initialized": false,
+    "K5_histogram": {
+      "0": 51,
+      "1": 16,
+      "2": 8,
+      "3": 19,
+      "4": 16,
+      "5": 18
+    },
+    "Prefix20_causal_positions_verified": true,
+    "actor_updates": 0,
+    "artifacts": {
+      "full": {
+        "bytes": 5177049,
+        "count": 640,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/sampling/shard-01/batches/batch-000420/outers/outer-000001/full/rank-0-full.jsonl.gz",
+        "sha256": "1bf8a1a61cd337fa38dfbe2285c36cc68d9106bf1b37fc9acb3a45b74d52ee41"
+      },
+      "own_em": {
+        "bytes": 298175,
+        "count": 640,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/sampling/shard-01/batches/batch-000420/outers/outer-000001/full/rank-0-own-em.jsonl",
+        "sha256": "cb43e14f287ba4a20253448f78c7a0601dcaae0b7c24b6091d4a1e30e81c480b"
+      },
+      "prefix": {
+        "bytes": 80442,
+        "count": 640,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/sampling/shard-01/batches/batch-000420/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz",
+        "sha256": "9b63d716d2b8187e0f85c641a71ae039fc99aff407a92869275004cb8024e225"
+      },
+      "states": {
+        "bytes": 456058,
+        "count": 640,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/sampling/shard-01/batches/batch-000420/outers/outer-000001/prefix/rank-0-states.jsonl.gz",
+        "sha256": "1c22ddc23db6c6d13ddf8c7117e4c4a753fb19805419f18892f6e8be69e623f6"
+      }
+    },
+    "auditor_source": {
+      "bytes": 16301,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-firstbatch-audit-v1/code-8599d1fdc7ff/audit.py",
+      "sha256": "3bc69a9e5258a3cb46b719f82654bc9ddeefd7a2c9a0d188daf0db49735fae2e"
+    },
+    "config": {
+      "bytes": 8775,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/sampling/shard-01/batches/batch-000420/config.json",
+      "sha256": "51095029c3c8418b68b582bc051d3d249e35853104bca495eb60aaca426a065d"
+    },
+    "epoch": 1792587273.5135016,
+    "execution_run_id": "36b784a3bf964e69a6130bcc41d68809",
+    "inherited_function_binding": {
+      "commit": "1864f7246e9642b958deed401dd4797be80c099b",
+      "functions": {
+        "audit_trajectory": {
+          "sha256": "524f2166bc4dbdbc875a13a8884bb429174d8f0024f2a75aed9cdd9d31eeada5",
+          "source": "reproduction/operations/qwen7b_warmup/peer_newseed_ingest.py"
+        },
+        "canonical": {
+          "sha256": "0299bd6afe1ddbd8b04d2105dd3d780d53749f6390a8eb43afb354a74eafe29d",
+          "source": "reproduction/operations/qwen7b_warmup/peer_newseed_audit_reference.py"
+        },
+        "log_probs": {
+          "sha256": "c2d1cbd611e9dab9622c54c56569e68f1840b569caef6a155c006aff51a85573",
+          "source": "reproduction/operations/qwen7b_warmup/peer_newseed_audit_reference.py"
+        },
+        "require": {
+          "sha256": "570ace48effbcffbb325b4bdc4424b575500114187d28c59c86b8870081e9f76",
+          "source": "reproduction/operations/qwen7b_warmup/peer_newseed_audit_reference.py"
+        },
+        "seed_for": {
+          "sha256": "23588ba858aed9e07c05d78ec10e65935284c942f2cddf8b45bbdf07a56c7e64",
+          "source": "reproduction/operations/qwen7b_warmup/peer_newseed_audit_reference.py"
+        },
+        "token_ids": {
+          "sha256": "39697d74a6178fc85777bdc4782e0cd767ba01a7fa0f472654e59dc8bdb11046",
+          "source": "reproduction/operations/qwen7b_warmup/peer_newseed_audit_reference.py"
+        }
+      }
+    },
+    "input": {
+      "bytes": 425070,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/inputs/shard-01/batch-000420.json",
+      "sha256": "0389c7cef4a673aed04df5124906400138694e87bcc90c96a7d211b87ebcdc90"
+    },
+    "job_id": "745518",
+    "main_config": {
+      "bytes": 8430,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/config.json",
+      "sha256": "368ad5d8df9e0238bdee8033964b56f0f4a6426e606f9514114fac0dcb05d835"
+    },
+    "model_tensors_loaded": false,
+    "multi_segment_prefix": 0,
+    "policy_tokens": 82973,
+    "potentialOverlap": true,
+    "questions": 128,
+    "real_G5_ownIDs_and_seeds_verified": true,
+    "response_tokens": 504032,
+    "sampling_protocol_source_run_id": "70188b8e50fd4b45bc420ce58014f46e",
+    "seal": {
+      "bytes": 8982,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/sampling/shard-01/batches/batch-000420/complete.json",
+      "sha256": "53c8d82349dc62058e434f0bfe10cdc49abba01c6880951ce05bbf00f87892af"
+    },
+    "seed_chunks": 2153,
+    "short_terminal_prefix": 0,
+    "source_commit": "2590d0b272013264b6d727a6a38493a790ee1305",
+    "status": "HPC3_OWN_FIRST_BATCH_P20_G5_STRICT_EM_CAUSAL_NATIVE_SEEDS_INDEPENDENTLY_PASSED",
+    "strict_EM_mismatches": 0,
+    "strict_EM_recomputed": 640,
+    "tokenizer_files": {
+      "config.json": {
+        "bytes": 663,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/config.json",
+        "sha256": "7463bb0ea78315365e6c6b74de4e73bbcc8359dfb0c5a737584e077d42c0b03c"
+      },
+      "generation_config.json": {
+        "bytes": 243,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/generation_config.json",
+        "sha256": "3a8f9087e486054c8a4a08dae2e5a3ba62e23da212b5b8c08bc42cb983c3459f"
+      },
+      "merges.txt": {
+        "bytes": 1671839,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/merges.txt",
+        "sha256": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3"
+      },
+      "model.safetensors.index.json": {
+        "bytes": 27752,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/model.safetensors.index.json",
+        "sha256": "624bf7c47cd12468fdc16e38a47cf4f19e0415b859a223ba3c027eed2f0e1028"
+      },
+      "tokenizer.json": {
+        "bytes": 7031645,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/tokenizer.json",
+        "sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539"
+      },
+      "tokenizer_config.json": {
+        "bytes": 7305,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/tokenizer_config.json",
+        "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+      },
+      "vocab.json": {
+        "bytes": 2776833,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/vocab.json",
+        "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      }
+    },
+    "tokenizer_strict_scorer": {
+      "bytes": 24322,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/matched-g10-collector-code-20261021/code-2b293d6e6a0b/reproduction/prefix20_online/rollout.py",
+      "sha256": "97518e07fcaa360eaa575770e3c605a782ca711917a2ba655ed79183f3b0db25"
+    },
+    "trajectories": 640,
+    "whole_tail_accepted": false,
+    "worker": 0
+  },
+  "hardware": {
+    "GPU_metadata_complete": true,
+    "audit_step_GPU": 0,
+    "controller_birth": 571937208,
+    "controller_host": "ACD1-21",
+    "controller_pid": 3181675,
+    "job_id": "745518",
+    "nvidia_smi_not_required_in_GPU0_step": true,
+    "parent_GPU_binding": {
+      "CUDA_VISIBLE_DEVICES": "0,1",
+      "SLURM_JOB_GPUS": "1,2"
+    },
+    "read_only_proc_GPU_metadata": [
+      {
+        "Device Minor": "1",
+        "GPU UUID": "GPU-6ca82272-1c1f-cfec-1bf3-a9c2ff9a9703",
+        "Model": "NVIDIA H100 80GB HBM3"
+      },
+      {
+        "Device Minor": "2",
+        "GPU UUID": "GPU-405bdb8f-7314-a597-c495-ec31a9fd2195",
+        "Model": "NVIDIA H100 80GB HBM3"
+      }
+    ],
+    "retriever_parent_pid": 3181675,
+    "retriever_pid": 3181896,
+    "status": "OWN_ACTUAL_CONTROLLER_BIRTH_JOB_ALLOCATION_BINDING_VERIFIED",
+    "worker": 0
+  },
+  "step_CPU": 2,
+  "step_GPU": 0,
+  "step_log": {
+    "bytes": 6944,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-firstbatch-audit-v1/worker-0-step-ef0270a4ca93.log",
+    "sha256": "6a6a43ec0d6f2dafab27cd9dacb9f9047c2209fade4fd68f2d3b99de1c775133"
+  }
+}

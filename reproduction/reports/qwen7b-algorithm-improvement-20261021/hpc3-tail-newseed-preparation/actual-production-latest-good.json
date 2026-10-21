@@ -1,0 +1,299 @@
+{
+  "epoch": 1792587298.499988,
+  "inflight_phases": [
+    {
+      "batch": "batch-000438",
+      "phase": "prefix",
+      "progress": {
+        "fields": {
+          "actual_sampled_tokens": 12800,
+          "elapsed_seconds": 5.193022960796952,
+          "phase": "prefix",
+          "stage": "NATIVE_RANK_PHASE_COMPLETE"
+        },
+        "ref": {
+          "bytes": 837,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/sampling/shard-01/batches/batch-000438/outers/outer-000001/prefix/rank-0-progress.json",
+          "sha256": "1b716027bcb86757a77759454fc7b2b902b3786a50210bc32e3fd3fe24fd9820"
+        }
+      }
+    },
+    {
+      "batch": "batch-000438",
+      "phase": "full",
+      "progress": {
+        "fields": {
+          "actual_sampled_tokens": 22509,
+          "elapsed_seconds": 26.31503041088581,
+          "phase": "continue",
+          "stage": "NATIVE_PHASE_ADVANCING"
+        },
+        "ref": {
+          "bytes": 844,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/sampling/shard-01/batches/batch-000438/outers/outer-000001/full/rank-0-progress.json",
+          "sha256": "b22036979a6847646fa22eb1a1032917cb46b30631af32284931d6d5fc4f01d3"
+        }
+      }
+    },
+    {
+      "batch": "batch-000439",
+      "phase": "prefix",
+      "progress": {
+        "fields": {
+          "actual_sampled_tokens": 12800,
+          "elapsed_seconds": 5.446570441126823,
+          "phase": "prefix",
+          "stage": "NATIVE_RANK_PHASE_COMPLETE"
+        },
+        "ref": {
+          "bytes": 837,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/sampling/shard-01/batches/batch-000439/outers/outer-000001/prefix/rank-0-progress.json",
+          "sha256": "7854cc15e5730c0b5f024914ff304e7a3dc0f87d83d48df4fefa76c77615acb2"
+        }
+      }
+    },
+    {
+      "batch": "batch-000439",
+      "phase": "full",
+      "progress": {
+        "fields": {
+          "actual_sampled_tokens": 62498,
+          "elapsed_seconds": 50.726158985868096,
+          "phase": "continue",
+          "stage": "NATIVE_PHASE_ADVANCING"
+        },
+        "ref": {
+          "bytes": 843,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/sampling/shard-01/batches/batch-000439/outers/outer-000001/full/rank-0-progress.json",
+          "sha256": "37a471d3f6fb8c593662761f96f787ceff7ad344d5a19c56668f9bd1ba869a48"
+        }
+      }
+    }
+  ],
+  "model_or_tensor_loaded": false,
+  "observer_restarts_or_submissions": 0,
+  "potentialOverlap": true,
+  "queue": "745519|q7b-tail-newseed-w1|RUNNING|ACD1-64|ACD1-64\n745518|q7b-tail-newseed-w0|RUNNING|ACD1-21|ACD1-21",
+  "sacct": "745518|q7b-tail-newseed-w0|RUNNING|0:0|00:13:10|ACD1-21\n745519|q7b-tail-newseed-w1|RUNNING|0:0|00:13:09|ACD1-64",
+  "sealed_questions": 2304,
+  "sealed_trajectories": 11520,
+  "status": "READONLY_ACTUAL_HPC3_TAIL_PROGRESS",
+  "workers": [
+    {
+      "complete": null,
+      "controller": {
+        "fields": {
+          "Slurm_job_id": "745518",
+          "birth_ticks": "571937208",
+          "epoch": 1792586511.2419302,
+          "execution_host_cluster": "HPC3",
+          "execution_run_id": "36b784a3bf964e69a6130bcc41d68809",
+          "host": "ACD1-21",
+          "pid": 3181675,
+          "sampling_protocol_source_run_id": "70188b8e50fd4b45bc420ce58014f46e",
+          "source_commit": "2590d0b272013264b6d727a6a38493a790ee1305"
+        },
+        "ref": {
+          "bytes": 667,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-0/controller.json",
+          "sha256": "d2546f32c1881156bf7b4909c99980b0775560a678b9d5b15363805638c1fb04"
+        }
+      },
+      "failure": null,
+      "job_id": "745518",
+      "latest_seal": {
+        "epoch": 1792587261.1283946,
+        "questions": 128,
+        "ref": {
+          "bytes": 8981,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/sampling/shard-01/batches/batch-000436/complete.json",
+          "sha256": "56fd1a2b5c1c1322bedd230d716f1d8a935329d990459c45aed374149c0bb343"
+        },
+        "trajectories": 640,
+        "worker": 0
+      },
+      "log_bytes": 12594,
+      "progress": {
+        "fields": {
+          "completed_batches": 9,
+          "elapsed": 749.8896490372717,
+          "epoch": 1792587261.1314883,
+          "execution_run_id": "36b784a3bf964e69a6130bcc41d68809",
+          "latest_batch": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/sampling/shard-01/batches/batch-000436/complete.json",
+          "questions": 1152,
+          "status": "HPC3_OWN_REAL_G5_SEALED",
+          "trajectories": 5760,
+          "worker": 0
+        },
+        "ref": {
+          "bytes": 483,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-0/progress.json",
+          "sha256": "ee63fd0a9495db4b4f3a4d8e79ac722d249ff9fc87e0be6346d2798094951de3"
+        }
+      },
+      "recent_error_lines": [],
+      "retriever_gpu-index-load-progress.json": {
+        "fields": {
+          "added": 21015324,
+          "dimension": 768,
+          "elapsed_seconds": 52.80831564217806,
+          "gpu_name": "NVIDIA H100 80GB HBM3",
+          "gpu_total_bytes": 85009367040,
+          "status": "STREAMING_ORIGINAL_FLAT_TO_FP16",
+          "total": 21015324
+        },
+        "ref": {
+          "bytes": 316,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-0/retriever/gpu-index-load-progress.json",
+          "sha256": "647b95395e00d5d6cc831def50b7217fb14bba559c5c15e74ac624e4a29e6303"
+        }
+      },
+      "retriever_gpu-index-load-verified.json": {
+        "fields": {
+          "added": 21015324,
+          "dimension": 768,
+          "elapsed_seconds": 52.80831564217806,
+          "gpu_name": "NVIDIA H100 80GB HBM3",
+          "gpu_total_bytes": 85009367040,
+          "status": "ORIGINAL_FLAT_FP16_STREAMED_AND_SAMPLED_STORAGE_VERIFIED",
+          "total": 21015324
+        },
+        "ref": {
+          "bytes": 861,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-0/retriever/gpu-index-load-verified.json",
+          "sha256": "8b03635faf08a7e87fcc7c921964b2526509bb040ea145735e7e5624ce200b06"
+        }
+      },
+      "retriever_ready.json": {
+        "fields": {
+          "dimension": 768,
+          "documents": 21015324,
+          "encoder_dtype": "float16",
+          "gpu_shards": 1,
+          "index_dtype": "float16",
+          "initialization_seconds": 70.48851120006293,
+          "pid": 3181896,
+          "ready": true,
+          "run_id": "36b784a3bf964e69a6130bcc41d68809"
+        },
+        "ref": {
+          "bytes": 1091,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-0/retriever/ready.json",
+          "sha256": "c48e992da58f1cf0a4e5c105a8ebb8c6f65f6652a2fee60cca9803a3209690d4"
+        }
+      },
+      "sealed_batch_count": 9,
+      "sealed_questions": 1152,
+      "sealed_trajectories": 5760,
+      "worker": 0
+    },
+    {
+      "complete": null,
+      "controller": {
+        "fields": {
+          "Slurm_job_id": "745519",
+          "birth_ticks": "847886196",
+          "epoch": 1792586511.241499,
+          "execution_host_cluster": "HPC3",
+          "execution_run_id": "36b784a3bf964e69a6130bcc41d68809",
+          "host": "ACD1-64",
+          "pid": 2326052,
+          "sampling_protocol_source_run_id": "70188b8e50fd4b45bc420ce58014f46e",
+          "source_commit": "2590d0b272013264b6d727a6a38493a790ee1305"
+        },
+        "ref": {
+          "bytes": 666,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-1/controller.json",
+          "sha256": "2648bd128a9c8debdfd67c32e8230637f66e40296a294aa3fccb027495418307"
+        }
+      },
+      "failure": null,
+      "job_id": "745519",
+      "latest_seal": {
+        "epoch": 1792587239.874983,
+        "questions": 128,
+        "ref": {
+          "bytes": 8981,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/sampling/shard-01/batches/batch-000437/complete.json",
+          "sha256": "b8439202840343f5c14085b79ffe0dbc5908c820e598d68fb366ab53abb4e90d"
+        },
+        "trajectories": 640,
+        "worker": 1
+      },
+      "log_bytes": 12594,
+      "progress": {
+        "fields": {
+          "completed_batches": 9,
+          "elapsed": 728.6366517059505,
+          "epoch": 1792587239.8780649,
+          "execution_run_id": "36b784a3bf964e69a6130bcc41d68809",
+          "latest_batch": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/sampling/shard-01/batches/batch-000437/complete.json",
+          "questions": 1152,
+          "status": "HPC3_OWN_REAL_G5_SEALED",
+          "trajectories": 5760,
+          "worker": 1
+        },
+        "ref": {
+          "bytes": 483,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-1/progress.json",
+          "sha256": "b3a7d21a74c3dc8788449d4b37c383fa738ed5c169c27bd284e54da8c1110b66"
+        }
+      },
+      "recent_error_lines": [],
+      "retriever_gpu-index-load-progress.json": {
+        "fields": {
+          "added": 21015324,
+          "dimension": 768,
+          "elapsed_seconds": 51.887231627479196,
+          "gpu_name": "NVIDIA H100 80GB HBM3",
+          "gpu_total_bytes": 85009367040,
+          "status": "STREAMING_ORIGINAL_FLAT_TO_FP16",
+          "total": 21015324
+        },
+        "ref": {
+          "bytes": 317,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-1/retriever/gpu-index-load-progress.json",
+          "sha256": "1c47c5aeecf01a6d5c94de741b192c9101f4d05eb1367c1aa1e708ce8430f3d9"
+        }
+      },
+      "retriever_gpu-index-load-verified.json": {
+        "fields": {
+          "added": 21015324,
+          "dimension": 768,
+          "elapsed_seconds": 51.887231627479196,
+          "gpu_name": "NVIDIA H100 80GB HBM3",
+          "gpu_total_bytes": 85009367040,
+          "status": "ORIGINAL_FLAT_FP16_STREAMED_AND_SAMPLED_STORAGE_VERIFIED",
+          "total": 21015324
+        },
+        "ref": {
+          "bytes": 862,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-1/retriever/gpu-index-load-verified.json",
+          "sha256": "8ca5628b1038b63a63e415776d61eea38e7a8e99bed943ae4ff585d1c4300bbf"
+        }
+      },
+      "retriever_ready.json": {
+        "fields": {
+          "dimension": 768,
+          "documents": 21015324,
+          "encoder_dtype": "float16",
+          "gpu_shards": 1,
+          "index_dtype": "float16",
+          "initialization_seconds": 70.24400564469397,
+          "pid": 2326273,
+          "ready": true,
+          "run_id": "36b784a3bf964e69a6130bcc41d68809"
+        },
+        "ref": {
+          "bytes": 1091,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-1/retriever/ready.json",
+          "sha256": "55c507a18212e5b097a0cb7b2c3ffde99b80ce406317b0ff5c4d103162d74767"
+        }
+      },
+      "sealed_batch_count": 9,
+      "sealed_questions": 1152,
+      "sealed_trajectories": 5760,
+      "worker": 1
+    }
+  ]
+}
