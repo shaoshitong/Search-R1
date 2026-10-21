@@ -1,0 +1,154 @@
+{
+  "epoch": 1792588434.4679072,
+  "job": "745371",
+  "completed_outer": 4,
+  "actual_update": {
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "step": 4,
+    "metrics": {
+      "critic/rewards/mean": 0.6241274476051331,
+      "actor/pg_loss": 0.059337858842134474,
+      "actor/entropy_loss": 0.0,
+      "actor/kl_loss": 0.0,
+      "actor/ppo_kl": 0.001153127943052823,
+      "actor/grad_norm": 2.7814474127204813,
+      "actor/optimizer_steps_this_update": 20.0,
+      "actor/update_opportunities_this_attempt": 20.0,
+      "actor/skipped_update_opportunities": 0.0,
+      "actor/actual_monitor_forward_count": 21.0,
+      "actor/reused_monitor_forward_count": 19.0
+    },
+    "probe_version": "232f20e112ac4a978c5aba52a0367195:0:c7f8da3ab2f84097ae6430983e5329af",
+    "behavior_probability_gate_sha256": "318c22d728886448d38fe51d3818895c8fb792607c1fa543237800fe26be1e5c",
+    "behavior_trace_sha256": "42dc7d9b1a28a83a268a8513749947cfcbc1e9b1244ee285a62d8c749c387c34",
+    "attempt_id": "af99f949b92f4d4bbce7de3a55fa66ef",
+    "attempt_index": 4,
+    "optimizer_writes_before": 60,
+    "optimizer_writes_after": 80,
+    "opportunities_processed": 20,
+    "actual_optimizer_writes": 20,
+    "update_status": "complete",
+    "recovery_protocol_version": 2,
+    "full_budget_complete": true,
+    "opportunities_unattempted": 0,
+    "actual_monitor_forward_count": 21,
+    "reused_monitor_forward_count": 19
+  },
+  "scheduler_complete": {
+    "scheduler-rank-0.jsonl": {
+      "rank": 0,
+      "logical_update": 4,
+      "writes_before": 60,
+      "writes_after": 80,
+      "actual_optimizer_writes": 20,
+      "opportunities_processed": 20,
+      "scheduler_advances": 1,
+      "scheduler_last_epoch_before": 3,
+      "scheduler_last_epoch_after": 4,
+      "full_budget_complete": true
+    },
+    "scheduler-rank-1.jsonl": {
+      "rank": 1,
+      "logical_update": 4,
+      "writes_before": 60,
+      "writes_after": 80,
+      "actual_optimizer_writes": 20,
+      "opportunities_processed": 20,
+      "scheduler_advances": 1,
+      "scheduler_last_epoch_before": 3,
+      "scheduler_last_epoch_after": 4,
+      "full_budget_complete": true
+    },
+    "scheduler-rank-2.jsonl": {
+      "rank": 2,
+      "logical_update": 4,
+      "writes_before": 60,
+      "writes_after": 80,
+      "actual_optimizer_writes": 20,
+      "opportunities_processed": 20,
+      "scheduler_advances": 1,
+      "scheduler_last_epoch_before": 3,
+      "scheduler_last_epoch_after": 4,
+      "full_budget_complete": true
+    },
+    "scheduler-rank-3.jsonl": {
+      "rank": 3,
+      "logical_update": 4,
+      "writes_before": 60,
+      "writes_after": 80,
+      "actual_optimizer_writes": 20,
+      "opportunities_processed": 20,
+      "scheduler_advances": 1,
+      "scheduler_last_epoch_before": 3,
+      "scheduler_last_epoch_after": 4,
+      "full_budget_complete": true
+    }
+  },
+  "rolling": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_4",
+    "manager": "easy2560_per_outer_full_state_v1",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_4/full-manifest.json",
+    "manifest_sha256": "939d216d1b4b64ce062e83620964faf8c9a9fa62aa73501a9ff01cf3a5373d3c",
+    "published_unix": 1792588229.3996043,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+    "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+    "step": 4
+  },
+  "checkpoint_files": [
+    {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_4",
+      "files": 23,
+      "bytes": 91404239577,
+      "last_mtime": 1792588159.033079
+    }
+  ],
+  "candidate_pools": [
+    {
+      "name": "eefd4da7a7b445a4862963b159cbdfdc-pool-0",
+      "step": 3,
+      "completed_questions": 2560,
+      "reserved_questions": 2560,
+      "source_consumed": 7680,
+      "saved_chunk_files": 15,
+      "progress_error": null
+    },
+    {
+      "name": "af99f949b92f4d4bbce7de3a55fa66ef-pool-0",
+      "step": 4,
+      "completed_questions": 2560,
+      "reserved_questions": 2560,
+      "source_consumed": 10240,
+      "saved_chunk_files": 15,
+      "progress_error": null
+    },
+    {
+      "name": "bd4e2ec20d514d55810b4f07d5007207-pool-0",
+      "step": 5,
+      "completed_questions": 512,
+      "reserved_questions": 512,
+      "source_consumed": 12800,
+      "saved_chunk_files": 4,
+      "progress_error": null
+    }
+  ],
+  "service_health": {
+    "ok": true,
+    "service_job_id": "745198",
+    "hostname": "ACD1-26",
+    "physical_gpu_count": 2,
+    "statistics": {
+      "logical_requests": 41130,
+      "logical_queries": 41256,
+      "completed_requests": 41130,
+      "completed_queries": 41256,
+      "failed_requests": 0,
+      "backend_seconds": 1691.6922633256763,
+      "last_completed_unix": 1792588435.1683931
+    }
+  },
+  "source_receipt": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/training-progress-1792588434.json",
+  "read_only": true,
+  "training_restarted": false
+}

@@ -23,3 +23,19 @@ still bind the original training runtime. Observe it with
 The recovery launcher has already been executed once. Never replay a launcher
 because an observation timed out; inspect its existing claim and process birth.
 No training or retrieval job was restarted for this CPU-only recovery.
+
+The human's later 2026-10-21 cleanup instruction supersedes latest-two retention
+only for the twelve explicit legacy roots in `apply_authorized_old_checkpoint_cleanup.py`.
+It authorizes all old experiment checkpoint payloads there, while retaining logs,
+all text, and evaluation trajectories. The 7B feature/probe root, QProbe roots,
+current 7B source/recovery roots, shared model/data/index assets, and HK archives
+are outside this cleanup. Use the frozen exact manifest and inspect existing
+per-UID claims before any apply; never replay an uncertain deletion attempt.
+The initial foreground read-only inventory timed out, so the completed inventories
+were collected under separate pinned `/tmp/authorized-old-checkpoints-20261021-<uid>`
+claims. No training was restarted for this inventory or cleanup.
+
+The updated human goal also requires notification and a complete-state recovery
+on clear EM/reward collapse. The read-only training observer exposes completed
+outer metrics and actual fixed-validation summaries; it does not add a training
+threshold, change the loss, or restart a healthy job for a single fluctuation.

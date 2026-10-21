@@ -3,6 +3,7 @@ import json
 import re
 import subprocess
 import time
+from collections import Counter
 from pathlib import Path
 
 BASE = Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021')
@@ -35,6 +36,116 @@ def command(args):
         return dict(observation_timeout=True)
 
 
+def complete_jsonl(path):
+    """Read complete durable records; an in-progress final line is not evidence."""
+    rows, errors = [], []
+    if not path.is_file():
+        return rows, errors
+    try:
+        with path.open('rb') as stream:
+            for number, line in enumerate(stream, 1):
+                if not line.endswith(b'\n'):
+                    break
+                try:
+                    value = json.loads(line)
+                    if not isinstance(value, dict):
+                        raise ValueError('record is not an object')
+                    rows.append(value)
+                except (ValueError, UnicodeError) as error:
+                    errors.append(dict(path=str(path), line=number, observation_error=str(error)))
+    except OSError as error:
+        errors.append(dict(path=str(path), observation_error=str(error)))
+    return rows, errors
+
+
+def completed_outer_metrics(base):
+    """Current execution's measured completed updates, without a synthetic prefix."""
+    path = base/'logs/actual-updates.jsonl'
+    rows, errors = complete_jsonl(path)
+    result = []
+    metric_names = dict(reward='critic/rewards/mean', pg_loss='actor/pg_loss',
+                        ppo_kl='actor/ppo_kl', grad_norm='actor/grad_norm')
+    for row in rows:
+        if row.get('update_status') != 'complete' or type(row.get('step')) is not int:
+            continue
+        value = dict(step=row['step'])
+        if 'attempt_index' in row:
+            value['attempt_index'] = row['attempt_index']
+        metrics = row.get('metrics', {})
+        for name, key in metric_names.items():
+            if key in metrics:
+                value[name] = metrics[key]
+        for name, key in (('optimizer_writes', 'optimizer_writes_after'),
+                          ('optimizer_writes_before', 'optimizer_writes_before'),
+                          ('optimizer_writes_this_outer', 'actual_optimizer_writes')):
+            if key in row:
+                value[name] = row[key]
+        result.append(value)
+    return result, errors
+
+
+def validation_summary(record, path):
+    """Derive small EM aggregates from actual persisted per-question results."""
+    final = record.get('final', False)
+    if type(final) is not bool or type(record.get('step')) is not int:
+        raise ValueError('invalid validation step/final identity')
+    if isinstance(record.get('em'), list):
+        em, sources = record['em'], record.get('data_sources', [])
+    else:
+        rows = record.get('rows', [])
+        em = [row['em'] for row in rows]
+        sources = [row['data_source'] for row in rows]
+    count = len(em)
+    counts = dict(Counter(sources))
+    if len(sources) != count or any(value not in (0, 1) for value in em):
+        raise ValueError('incomplete or invalid per-question EM results')
+    if final:
+        if count != 51713 or len(counts) != 7:
+            raise ValueError('final identity is not native51713 across seven sources')
+    elif count != 512 or counts != dict(nq=256, hotpotqa=256):
+        raise ValueError('fixed validation identity is not NQ256/Hotpot256')
+    correct = {source: sum(score for label, score in zip(sources, em) if label == source)
+               for source in counts}
+    total = sum(em)
+    if record.get('counts', record.get('source_counts', counts)) != counts:
+        raise ValueError('persisted validation source counts differ from measured rows')
+    if record.get('correct', record.get('correct_count', total)) != total or \
+            record.get('weighted_em', total/count) != total/count:
+        raise ValueError('persisted validation scalar EM differs from measured rows')
+    return dict(step=record['step'], final=final, count=count, source_counts=counts,
+                source_correct=correct, source_em={source: correct[source]/counts[source] for source in counts},
+                weighted_em=total/count, correct_count=total, source_path=str(path))
+
+
+def fixed_validation_summaries(base):
+    path = base/'logs/validation-identities.jsonl'
+    rows, errors = complete_jsonl(path)
+    result = []
+    identities = set()
+    for record in rows:
+        if record.get('split') != 'validation' and record.get('final') is not True:
+            continue  # Stage64 is not fixed512 or final51713 evaluation.
+        try:
+            value = validation_summary(record, path)
+            result.append(value)
+            identities.add((value['step'], value['final']))
+        except (KeyError, TypeError, ValueError) as error:
+            errors.append(dict(path=str(path), step=record.get('step'), observation_error=str(error)))
+    # QA5 is written just before the normal identity ledger. Summarize this
+    # genuine completed result during that brief window, without duplicating it.
+    after = base/'logs/formal-inline-development-after.json'
+    if after.is_file():
+        record = read_json(after)
+        if (record.get('step'), False) not in identities:
+            try:
+                if record.get('role') != 'formal_inline_development_evaluation' or record.get('step') != 5:
+                    raise ValueError('unexpected fixedQA5 artifact identity')
+                result.append(validation_summary(record, after))
+            except (KeyError, TypeError, ValueError) as error:
+                errors.append(dict(path=str(after), observation_error=str(error)))
+    return result, errors
+
+
 def main():
     job = (BASE/'job.id').read_text().strip()
     result = dict(epoch=time.time(), base=str(BASE), job=job,
@@ -51,6 +162,14 @@ def main():
         path = BASE/'logs'/name
         if path.is_file():
             result['ledgers'][name] = tail(path, 18000)
+    metrics, errors = completed_outer_metrics(BASE)
+    result['completed_outer_metrics'] = metrics
+    result['completed_outer_metrics_scope'] = 'Current execution actual-updates.jsonl only; inherited checkpoint prefix is not synthesized'
+    validations, validation_errors = fixed_validation_summaries(BASE)
+    if validations:
+        result['fixed_validation_identities'] = validations
+    if errors or validation_errors:
+        result['compact_summary_observation_errors'] = errors + validation_errors
     result['candidate_pools'] = []
     pools = BASE/'artifacts/mixed-candidate-pools'
     if pools.is_dir():
