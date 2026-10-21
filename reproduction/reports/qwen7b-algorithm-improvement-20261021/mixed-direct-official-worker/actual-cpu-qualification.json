@@ -1,0 +1,65 @@
+{
+  "status": "OFFICIAL_MIXED_ONLY_WORKER_SMALL_CPU_FIXTURES_READY",
+  "worker_source_commit": "e2fd6e7fbe4fbd6d62fc86923565c01765d02794",
+  "remote_branch": "refs/heads/codex/mixed-direct-official-worker-20261022",
+  "worker_remote_SHA_verified": "e2fd6e7fbe4fbd6d62fc86923565c01765d02794",
+  "model_source_commit": "8c0ccaf4eda6d97d46c9f0ea82620aa1a6d9a973",
+  "evaluation_source_commit": "7380f3bfa82e4d699a617590d25d56bf4ef8b5ad",
+  "sampler_source_commit": "c98ddcd7861b7023f3efa0d82d3c1fbea0664a13",
+  "qualified_support_source": "3b56e583efe2469ac9108873c31de7144a5201e6",
+  "files": {
+    "reproduction/operations/qwen7b_warmup/joint_mixed_direct_pretrain.py": {
+      "bytes": 22438,
+      "sha256": "56e7a46f472270e2efdce13375e7303c88e60c115c9f9dc7306d0c92f1b5b6b9"
+    },
+    "reproduction/operations/qwen7b_warmup/mixed_group_checkpoint.py": {
+      "bytes": 9512,
+      "sha256": "3cb9729358569a1c693fe4b6ec7e4a28f42a10f5394247c1c133e19a59399c8d"
+    },
+    "reproduction/operations/qwen7b_warmup/test_joint_mixed_direct_pretrain.py": {
+      "bytes": 8818,
+      "sha256": "5f4235ab7f71ebb8e5758389f3c0153901037595885d4e21877a0f563f062441"
+    }
+  },
+  "actual_CPU_qualification": {
+    "status": "PASSED",
+    "returncode": 0,
+    "seconds": 5.977677345275879,
+    "CPU": 2,
+    "GPU": 0,
+    "synthetic_only": true,
+    "no_real_tensor_data_read": true,
+    "peak_child_RSS_bytes": 541245440,
+    "log": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-official-worker-cpu-qualification-v2/cpu-fixtures.log",
+      "bytes": 714,
+      "sha256": "c0e8807c58b4975ba92ac0359562e06002dfaa56a07865fc5f15f4ae9d7ee102"
+    },
+    "source_publication": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-official-worker-cpu-qualification-v2/source-publication.json",
+      "sha256": "2060e9b80f05ee9c6c554cb6450ebed15ae1dc4eb78b18d6e7f9119362d1c04b"
+    }
+  },
+  "qualification_receipt": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-official-worker-cpu-qualification-v2/cpu-qualification.json",
+    "bytes": 746,
+    "sha256": "57fc1920d87714a66b1d1bfd3f85bdb8308d78a06f72d17e27059631d1cbb0eb"
+  },
+  "source_publication": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-official-worker-cpu-qualification-v2/source-publication.json",
+    "bytes": 1533,
+    "sha256": "2060e9b80f05ee9c6c554cb6450ebed15ae1dc4eb78b18d6e7f9119362d1c04b"
+  },
+  "tested": [
+    "external official inventory and actual per-file SHA/LFS/Git-blob binding",
+    "microquestion mean-four-view/32 gradient equivalence and own EM identity binding",
+    "CP0 native/head Adam0 then CP1 full raw/EMA/twoAdam/RNG/sampler reload and exact next update",
+    "failed new full-CPU reload never publishes latest; accepted clock and own labels fail closed"
+  ],
+  "actual_GPU_first_update_qualified": false,
+  "GPU_jobs_submitted": 0,
+  "old_probe_checkpoint_read": false,
+  "real_model_or_feature_tensor_read": false,
+  "production_namespace": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-v1",
+  "superseded_dual_BCE_resume_drafts_excluded": true
+}
