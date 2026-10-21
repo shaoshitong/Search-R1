@@ -27,4 +27,29 @@ g=b/('logs/gpu-samples-'+d.get('logs/run-manifest.json',{}).get('run_id','')+'.j
 if g.is_file():
  with g.open('rb') as f:f.seek(max(0,g.stat().st_size-20000));lines=f.read().decode(errors='replace').splitlines()
  d['latest_gpu_samples']=[json.loads(z) for z in lines[-2:] if z]
+pool=b/'artifacts/mixed-candidate-pools'
+d['candidate_progress']=[]
+if pool.is_dir():
+ for a in sorted(pool.iterdir(),key=lambda a:a.stat().st_mtime)[-2:]:
+  item=dict(pool=a.name)
+  q=a/'progress.json'
+  if q.is_file():
+   z=json.loads(q.read_text());item.update(step=z.get('step'),completed_candidates=len(z.get('complete_ordinals',[])),mtime=q.stat().st_mtime)
+  item['files']=[dict(name=q.name,bytes=q.stat().st_size,mtime=q.stat().st_mtime)for q in a.iterdir()if q.is_file() and q.name.endswith('.pt')]
+  d['candidate_progress'].append(item)
+c=b/'control/storage-breakdown'
+for name in ('claim.json','result.json'):
+ q=c/name
+ if q.is_file():d['storage_breakdown_'+name]=json.loads(q.read_text())
+q=c/'usage.tsv'
+if q.is_file():
+ rows=[]
+ for line in q.read_text().splitlines():
+  try:n,name=line.split('\t',1);rows.append(dict(bytes=int(n),path=name))
+  except ValueError:pass
+ d['storage_breakdown_partial']=sorted(rows,key=lambda r:r['bytes'],reverse=True)[:15]
+p=b/'logs/search-g1-common8-training.log'
+if p.is_file():
+ with p.open('rb') as f:f.seek(max(0,p.stat().st_size-2000000));s=f.read().decode(errors='replace')
+ d['actor_cache_log_lines']=[z for z in s.splitlines()if any(k in z for k in ('# GPU blocks','before init cache','after init cache','Maximum concurrency','gpu_memory_utilization','cache block'))][-20:]
 print(json.dumps(d))
