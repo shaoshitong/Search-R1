@@ -11,6 +11,12 @@ class FrozenDeltaTests(unittest.TestCase):
   for key,value in [('questions',99),('trajectories',99),('batches',99),('batch_records_sha256','a'*64),('status','FROZEN_SOURCE_AUDITED2_AFTER_ACCEPTED244_METADATA_ONLY')]:
    v=fixture();v[key]=value
    with self.assertRaises(ValueError):f.validate_selection(v)
+ def test_sorted_proof_vs_ordered_plan_at_decimal_width_boundary(self):
+  ids=['run-c%04d-g%d'%(i,j) for i in (99998,99999,100000,100001) for j in range(5)]
+  self.assertNotEqual(f.digest(ids),f.digest(sorted(ids)))
+  f.verify_id_digests(ids,f.digest(ids),f.digest(sorted(ids)))
+  with self.assertRaises(ValueError):f.verify_id_digests(ids,f.digest(ids),f.digest(ids))
+  with self.assertRaises(ValueError):f.verify_id_digests(ids+ids[:1],f.digest(ids+ids[:1]),f.digest(sorted(ids+ids[:1])))
  def test_prior_and_own_identity_recurrence_rejected(self):
   old=dict(qids={'old'},hashes={'oldh'},tids={'oldt'});seen=dict(qids=set(),hashes=set(),tids=set());g=dict(qid='new',question_hash='newh',trajectory_ids=['t%d'%i for i in range(5)])
   f.identity_guard(old,[g],seen)

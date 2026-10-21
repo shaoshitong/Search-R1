@@ -49,6 +49,9 @@ def identity_guard(old,groups,seen):
         if q in seen['qids'] or h in seen['hashes'] or seen['tids'].intersection(ts) or len(ts)!=5 or len(set(ts))!=5:raise ValueError('New delta repeats question/hash/authentic-five identity')
         seen['qids'].add(q);seen['hashes'].add(h);seen['tids'].update(ts)
 
+def verify_id_digests(ids,ordered_digest,sorted_proof_digest):
+    if len(ids)!=len(set(ids)) or digest(ids)!=ordered_digest or digest(sorted(ids))!=sorted_proof_digest:raise ValueError('Actual ordered plan IDs or independently sorted proof IDs differ')
+
 def freeze(base,selection_path,selection_sha,root):
     base,selection_path,root=map(Path,(base,selection_path,root));selref=e.fp(selection_path)
     if selref['sha256']!=selection_sha:raise ValueError('Exact published frozen selection file SHA required')
@@ -65,12 +68,13 @@ def freeze(base,selection_path,selection_sha,root):
         if inp!=base/item['input'] or e.sha(seal)!=item['seal_sha256'] or e.sha(inp)!=item['input_sha256']:raise ValueError('Frozen input/seal differs')
         cfg=checked(item['config']);d.contract(e.read(cfg));auditfile=checked(item['audit']['proof'])
         fresh=d.cached_audit(base,item['input'],selection['source_config']['sha256'],item['input_sha256'],item['questions'])
-        if fresh['status']!='EXISTING_INDEPENDENT_AUDIT_CURRENT_FSTAT_BOUND' or fresh['proof']['sha256']!=item['audit']['proof']['sha256'] or fresh['own_trajectory_ids_sha256']!=item['expected_own_G5_IDs_sha256']:raise ValueError('Frozen independent audit no longer matches source fstats/own IDs')
+        if fresh['status']!='EXISTING_INDEPENDENT_AUDIT_CURRENT_FSTAT_BOUND' or fresh['proof']['sha256']!=item['audit']['proof']['sha256']:raise ValueError('Frozen independent audit no longer matches source fstats/own IDs')
         rows=e.read(inp)['rows'];own=[];qids=[];hashes=[];counts={}
         for row in rows:
             if row['split']!='train':raise ValueError('Nontraining source question')
             ts=[e.RUN_ID+'-outer000001-c%04d-g%d'%(row['candidate_ordinal'],j) for j in range(5)];own.append(dict(qid=row['qid'],question_hash=row['question_hash'],trajectory_ids=ts));qids.append(row['qid']);hashes.append(row['question_hash']);domain=json.loads(row['qid'])[0];counts[domain]=counts.get(domain,0)+1;domains[domain]=domains.get(domain,0)+1
         if len(rows)!=item['questions'] or digest(qids)!=item['ordered_qids_sha256'] or digest(hashes)!=item['ordered_question_hashes_sha256'] or counts!=item['domain_counts'] or digest([t for g in own for t in g['trajectory_ids']])!=item['expected_own_G5_IDs_sha256']:raise ValueError('Actual frozen identity differs')
+        verify_id_digests([t for g in own for t in g['trajectory_ids']],item['expected_own_G5_IDs_sha256'],fresh['own_trajectory_ids_sha256'])
         identity_guard(old,own,seen);selected.append(dict(input=item['input'],input_sha256=item['input_sha256'],input_stat=e.fs(inp),seal=item['seal'],seal_sha256=item['seal_sha256'],seal_stat=e.fs(seal),questions=item['questions'],trajectories=item['trajectories']))
         e.atomic(root/'subset-preflight-progress.json',dict(stage='FROZEN_SUBSET_INPUT_AND_CURRENT_PROOF_ADVANCING',batches=index+1,questions=len(seen['qids']),trajectories=len(seen['tids']),epoch=time.time()))
     if len(seen['qids'])!=selection['questions'] or len(seen['tids'])!=selection['trajectories'] or domains!=selection['domain_counts']:raise ValueError('Actual frozen totals/domains differ')

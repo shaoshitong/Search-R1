@@ -1,0 +1,29 @@
+{
+  "epoch": 1792544330.3526645,
+  "launch": {
+    "commit": "9cd8662fbab38b3650ffa2581bf55392364a9b41",
+    "epoch": 1792544290.5652814,
+    "pid": 3220983,
+    "selection": {
+      "bytes": 170253,
+      "path": "/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/_code-frozen-delta-audited100-after366-20261021-636015f5-9cd8662fbab3/frozen-selection.json",
+      "sha256": "00e5021284cb8f6614670452b749c7add10c028e50578822432600762074662a"
+    },
+    "snapshot": "/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/audited100-after366-20261021-636015f5",
+    "start_ticks": "1960484486",
+    "status": "SUBSET_EXPORT_STARTED_NOT_ADVANCEMENT_VERIFIED"
+  },
+  "log_tail": "y\", line 86, in _run_code\n    exec(code, run_globals)\n  File \"/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/_code-frozen-delta-audited100-after366-20261021-636015f5-9cd8662fbab3/reproduction/operations/qwen7b_warmup/peer_newseed_frozen_subset_export.py\", line 103, in <module>\n    if __name__=='__main__':main()\n  File \"/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/_code-frozen-delta-audited100-after366-20261021-636015f5-9cd8662fbab3/reproduction/operations/qwen7b_warmup/peer_newseed_frozen_subset_export.py\", line 102, in main\n    print(json.dumps(run(a.base,a.output_root,a.snapshot_id,a.selection,a.selection_sha256)),flush=True)\n  File \"/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/_code-frozen-delta-audited100-after366-20261021-636015f5-9cd8662fbab3/reproduction/operations/qwen7b_warmup/peer_newseed_frozen_subset_export.py\", line 80, in run\n    root=Path(output)/snapshot;root.mkdir(parents=True,exist_ok=True);frozen=freeze(base,selection_path,selection_sha,root)\n  File \"/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/_code-frozen-delta-audited100-after366-20261021-636015f5-9cd8662fbab3/reproduction/operations/qwen7b_warmup/peer_newseed_frozen_subset_export.py\", line 68, in freeze\n    if fresh['status']!='EXISTING_INDEPENDENT_AUDIT_CURRENT_FSTAT_BOUND' or fresh['proof']['sha256']!=item['audit']['proof']['sha256'] or fresh['own_trajectory_ids_sha256']!=item['expected_own_G5_IDs_sha256']:raise ValueError('Frozen independent audit no longer matches source fstats/own IDs')\nValueError: Frozen independent audit no longer matches source fstats/own IDs\n",
+  "operator_source_commit": "9cd8662fbab38b3650ffa2581bf55392364a9b41",
+  "root": "/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/audited100-after366-20261021-636015f5",
+  "same_process_birth": false,
+  "snapshot": "audited100-after366-20261021-636015f5",
+  "status": "READ_ONLY_FROZEN_DELTA_EXPORT_STATUS",
+  "subset-preflight-progress.json": {
+    "batches": 56,
+    "epoch": 1792544291.3368504,
+    "questions": 7168,
+    "stage": "FROZEN_SUBSET_INPUT_AND_CURRENT_PROOF_ADVANCING",
+    "trajectories": 35840
+  }
+}
