@@ -1,0 +1,97 @@
+{
+  "epoch": 1792580431.403093,
+  "status": "CP1_COMPLETE_HUMAN_AUTHORIZED_TRANSITION_CPU_SOURCE_AUDIT",
+  "active_goal_achieved": false,
+  "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
+  "job": null,
+  "run_id": "232f20e112ac4a978c5aba52a0367195",
+  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-sparse-cp1-20261021",
+  "runtime_commit": "921610632eece86be319098351c21b450fd4a236",
+  "actor_physical_micro": 8,
+  "global_mini": 128,
+  "logical_micro": 4,
+  "accumulation": 4,
+  "actual_completed_outer": 1,
+  "initialization_is_not_training_acceptance": true,
+  "old3b": {
+    "job": "734689",
+    "state": "HUMAN_REQUESTED_CANCELLED",
+    "last_completed_outer": 145,
+    "preserved_durable_checkpoint": 100,
+    "authorizing_current_message_observation_unix": 1792576538.0,
+    "scope": "Only3B stopped; 7B goal continues; never resume 3B from stale200 goal"
+  },
+  "cleanup": {
+    "authorization": "Current2026-10-21 human approval stopped old QProbe checkpoints only",
+    "exact_removed_files": 32,
+    "confirmed_lastlink_released_bytes": 16865304576,
+    "raw_archives_untouched": true,
+    "personal_storage_budget_bytes": 2000000000000,
+    "current_global_usage": {
+      "visible_allocated_lower_bound_bytes": 5095177170944,
+      "checked_unix": 1792577381.3862753,
+      "uid": 14090,
+      "permission_incomplete": true,
+      "under_budget": false,
+      "root_scans_complete": true,
+      "largest_component": {
+        "path": "dynrpo-qwen25-7b-probe-warmup-20261019",
+        "allocated_bytes": 2960187000000,
+        "approximate": true,
+        "other_task_assets_and_features_not_authorized_for_deletion": true
+      }
+    }
+  },
+  "infra": {
+    "actual_training_optimization_enabled": false,
+    "selected_LM_head": "Three real tinyQwen CPU model/logprob/PPO/all-gradient/checkpointing tests passed in existing745022 CPU-only substep; no7B CUDA equivalence yet",
+    "exact_query_cache": "11 CPU tests passed; preserves exact original fullbatch/context/score mode/version and logical search counts",
+    "pending": "Explicit single-allocation CP1 sparse CUDA diagnosis, then independent production full-state restoration; no 7B CUDA pass/throughput claim yet",
+    "physical_micro16": "Not raised blindly; needs actual measured memory/throughput"
+  },
+  "previous_goal_turn_classification": "PROGRESS",
+  "latest_turn_classification": "PROGRESS: published+deployed7B adapter, real9tests, uniquejob745022 allocated, realretrieval staging; authorized32retirements; explicit3Bstopverified; optionalinfra actualCPU numeric validation",
+  "last_observation": "cp1-new-observation-1792580375.json",
+  "pipeline": {
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "stage": "GRPO_1_TO_200",
+    "unix": 1792577852.1353621,
+    "execution_role": "production"
+  },
+  "calibration": {
+    "actual_rollouts": 1500,
+    "valid_rollouts": 1180,
+    "feature_dump_bytes": 48956084,
+    "both_heads_fitted": true,
+    "commit_cv_auc": 0.892,
+    "boundary_cv_auc": 0.691,
+    "one_time_not_actor_outer": true
+  },
+  "old_7b_job": "745022",
+  "old_7b_state": "CANCELLED_BY_AUTHORIZED_CP1_TRANSITION",
+  "actual_cuda_restore_accepted": false,
+  "first_outer": {
+    "completed": true,
+    "optimizer_writes_per_rank": 20,
+    "selected_questions": 512,
+    "actual_mixed_selected_questions": 512,
+    "candidate_questions": 2560,
+    "candidate_mixed_questions": 984,
+    "full_checkpoint_bytes": 91404238199,
+    "rolling_pointer_complete": true,
+    "model_tensors": 339
+  },
+  "external_retrieval": {
+    "job": "745198",
+    "node": "ACD1-26",
+    "physical_h100": 2,
+    "logical_shards": 4,
+    "endpoint": "http://ACD1-26:18020/retrieve",
+    "ready": true,
+    "stage64_ordered_document_ids_and_hashes_equal": true,
+    "stage64_score_max_abs_error": 0.0,
+    "actual_saved_observations_compared": 64,
+    "actor_visible_token_lists_exact_equal": 64,
+    "http_and_projection_seconds": 3.5052835568785667
+  }
+}

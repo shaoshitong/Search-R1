@@ -35,7 +35,10 @@ else:
 root=new/'preparation/cp1-source-audit';root.mkdir(exist_ok=True);claim=root/'launch.json'
 if claim.exists():print(json.dumps(dict(status='SOURCE_AUDIT_ALREADY_LAUNCHED',claim=json.loads(claim.read_text()))));raise SystemExit(0)
 output=new/'preparation/cp1-full-state-source-receipt.json'
-code='import sys,runpy; sys.path.insert(0,'+repr(str(src))+'); sys.argv=["restore","--base",'+repr(str(old))+',"--checkpoint","latest","--output",'+repr(str(output))+']; runpy.run_module("search_g1.easy2560_restore",run_name="__main__")'
+# Pin the already inspected CP1 path. The publisher below freshly hashes every
+# member itself; resolving "latest" with verify=True would read all91GB twice.
+# This only affects future launches; never restart an existing audit for this.
+code='import sys,runpy; sys.path.insert(0,'+repr(str(src))+'); sys.argv=["restore","--base",'+repr(str(old))+',"--checkpoint",'+repr(latest['checkpoint'])+',"--output",'+repr(str(output))+']; runpy.run_module("search_g1.easy2560_restore",run_name="__main__")'
 cmd=['srun','--jobid=745198','--overlap','--exact','--ntasks=1','--cpus-per-task=4','--mem=64G','--gres=none','env','CUDA_VISIBLE_DEVICES=','OMP_NUM_THREADS=4',str(new/'env/bin/python'),'-B','-c',code]
 publish(claim,dict(epoch=time.time(),source_commit=commit,command=cmd,output=str(output),source_checkpoint=latest['checkpoint'],no_new_gpu_allocation=True,no_model_reload=True,cpu_only_optimizer_and_rng_inspection=True))
 wrapper='import subprocess,json,time,pathlib; r=subprocess.run('+repr(cmd)+'); pathlib.Path('+repr(str(root/'exit.json'))+').write_text(json.dumps(dict(returncode=r.returncode,completed_unix=time.time()))+"\\n")'
