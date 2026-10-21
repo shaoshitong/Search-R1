@@ -67,7 +67,8 @@ def remote(script, timeout=45):
 
 
 def bundle(commit):
-    paths = [str(p.relative_to(R)) for p in (R/'reproduction').rglob('*.py') if '__pycache__' not in p.parts]
+    paths = [str(p.relative_to(R)) for folder in ('reproduction', 'search_g1', 'search_r1', 'verl')
+             for p in (R/folder).rglob('*.py') if '__pycache__' not in p.parts]
     names, _, missing = import_closure(paths, lambda n: (R/n).read_bytes(),
         seeds=(PKG+'joint124194_bank.py',), resource_files=())
     if missing: raise ValueError('Missing exact source closure '+str(missing))
