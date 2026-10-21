@@ -19,6 +19,19 @@ if curve.exists():
                 rows.append({key: row.get(key) for key in fields})
 out = dict(epoch=time.time(), job_id='746083', accepted_rows=len(rows),
            first_updates=rows[:12], last_updates=rows[-12:], metrics_are_actual_not_estimated=True)
+out['training_curve_blocks'] = []
+for start in range(0, len(rows), 32):
+    block = rows[start:start + 32]
+    confusion = {key: sum(v['confusion'][key] for v in block) for key in ('tp', 'tn', 'fp', 'fn')}
+    positive = confusion['tp'] + confusion['fn']
+    negative = confusion['tn'] + confusion['fp']
+    out['training_curve_blocks'].append(dict(
+        first_cursor=block[0]['cursor'], last_cursor=block[-1]['cursor'], updates=len(block),
+        mean_binary_Mixed_BCE=sum(v['binary_Mixed_BCE'] for v in block) / len(block),
+        mixed_balanced_accuracy=.5 * (confusion['tp'] / positive + confusion['tn'] / negative),
+        mixed_recall=confusion['tp'] / positive,
+        nonmixed_recall=confusion['tn'] / negative,
+        confusion=confusion, training_views_only=True, independent_test_result=False))
 window = rows[-min(32, len(rows)):]
 if window:
     seconds = sum(v['seconds'] for v in window)
