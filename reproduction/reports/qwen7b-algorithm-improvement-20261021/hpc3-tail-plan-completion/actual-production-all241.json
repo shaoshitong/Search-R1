@@ -1,0 +1,93 @@
+{
+  "epoch": 1792594647.075689,
+  "queue": "",
+  "sacct": "745518|q7b-tail-newseed-w0|COMPLETED|0:0|02:13:47|ACD1-21\n745519|q7b-tail-newseed-w1|COMPLETED|0:0|02:12:16|ACD1-64",
+  "sealed_questions": 30754,
+  "sealed_trajectories": 153770,
+  "workers": [
+    {
+      "worker": 0,
+      "job_id": "745518",
+      "complete": {
+        "fields": {
+          "actor_updates": 0,
+          "batches": 121,
+          "epoch": 1792594530.9689386,
+          "questions": 15394,
+          "status": "HPC3_OWN_ASSIGNED_TAIL_REAL_G5_COMPLETE",
+          "trajectories": 76970
+        },
+        "ref": {
+          "bytes": 350,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-0/complete.json",
+          "sha256": "7492763b3e346a19a6b31ae2822791ea60f8c72e28370d3ad5bd5426e910c645"
+        }
+      },
+      "failure": null,
+      "sealed_batch_count": 121,
+      "sealed_questions": 15394,
+      "sealed_trajectories": 76970,
+      "recent_error_lines": [],
+      "controller": {
+        "fields": {
+          "Slurm_job_id": "745518",
+          "birth_ticks": "571937208",
+          "epoch": 1792586511.2419302,
+          "execution_host_cluster": "HPC3",
+          "execution_run_id": "36b784a3bf964e69a6130bcc41d68809",
+          "host": "ACD1-21",
+          "pid": 3181675,
+          "sampling_protocol_source_run_id": "70188b8e50fd4b45bc420ce58014f46e",
+          "source_commit": "2590d0b272013264b6d727a6a38493a790ee1305"
+        },
+        "ref": {
+          "bytes": 667,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-0/controller.json",
+          "sha256": "d2546f32c1881156bf7b4909c99980b0775560a678b9d5b15363805638c1fb04"
+        }
+      }
+    },
+    {
+      "worker": 1,
+      "job_id": "745519",
+      "complete": {
+        "fields": {
+          "actor_updates": 0,
+          "batches": 120,
+          "epoch": 1792594439.763525,
+          "questions": 15360,
+          "status": "HPC3_OWN_ASSIGNED_TAIL_REAL_G5_COMPLETE",
+          "trajectories": 76800
+        },
+        "ref": {
+          "bytes": 349,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-1/complete.json",
+          "sha256": "7562fc80525557dd14e276fe180d05b665425b3d12f6355778b86fc245b1fa3d"
+        }
+      },
+      "failure": null,
+      "sealed_batch_count": 120,
+      "sealed_questions": 15360,
+      "sealed_trajectories": 76800,
+      "recent_error_lines": [],
+      "controller": {
+        "fields": {
+          "Slurm_job_id": "745519",
+          "birth_ticks": "847886196",
+          "epoch": 1792586511.241499,
+          "execution_host_cluster": "HPC3",
+          "execution_run_id": "36b784a3bf964e69a6130bcc41d68809",
+          "host": "ACD1-64",
+          "pid": 2326052,
+          "sampling_protocol_source_run_id": "70188b8e50fd4b45bc420ce58014f46e",
+          "source_commit": "2590d0b272013264b6d727a6a38493a790ee1305"
+        },
+        "ref": {
+          "bytes": 666,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/workers/worker-1/controller.json",
+          "sha256": "2648bd128a9c8debdfd67c32e8230637f66e40296a294aa3fccb027495418307"
+        }
+      }
+    }
+  ]
+}
