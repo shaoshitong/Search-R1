@@ -1,0 +1,66 @@
+{
+  "status": "ASYNC_MICRO32_CONTINUATION_IMPLEMENTATION_CPU_QUALIFIED",
+  "source_commit": "24c689334b40da9e40c9052f3a40348ba572da0b",
+  "remote_SHA_verified": true,
+  "files": [
+    {
+      "path": "reproduction/operations/qwen7b_warmup/direct_update_fast.py",
+      "bytes": 6149,
+      "sha256": "8ae602896b278dd866ec3f841171612693cfbb8924881043961e20c1f2dd744c"
+    },
+    {
+      "path": "reproduction/operations/qwen7b_warmup/test_direct_update_fast.py",
+      "bytes": 4690,
+      "sha256": "b45710e7e489f2af9abf04db313246c8cc8803a48997fbd1e850a372a2dac8ba"
+    },
+    {
+      "path": "reproduction/operations/qwen7b_warmup/joint_mixed_direct_fast_continuation.py",
+      "bytes": 21081,
+      "sha256": "89ef6b0bf8433930674445c931c3ae435a543dc2a14e57a61d5a1ba4871c6dcb"
+    },
+    {
+      "path": "reproduction/operations/qwen7b_warmup/test_joint_mixed_direct_fast_continuation.py",
+      "bytes": 5628,
+      "sha256": "5ca7f2b3a05d6c74392e3bbd63ae55dd9f028ae9886aeba125efd844100bdfab"
+    }
+  ],
+  "reader_origin": "c2fdc9598ad55fea11bc5a5d2298ba4560807c24",
+  "old_worker_checkpoint_origin": "e2fd6e7fbe4fbd6d62fc86923565c01765d02794",
+  "model_origin": "8c0ccaf4eda6d97d46c9f0ea82620aa1a6d9a973",
+  "evaluation_origin": "7380f3bfa82e4d699a617590d25d56bf4ef8b5ad",
+  "actual_CPU_qualification": {
+    "tests": 5,
+    "seconds": 18.71555141801946,
+    "test_seconds": 6.854,
+    "CPU": 2,
+    "GPU": 0,
+    "source_in_RAM_only": true,
+    "real_model_or_tensor_read": false,
+    "peak_RSS_bytes": 506253312
+  },
+  "scope": {
+    "source": "actual terminal highest accepted complete checkpoint of746083; never CP128 substitution",
+    "source_config_SHA256": "2a7f039f4172f5284e3b8282e8ca6200e566bd92bb3013e9802306eca84e7393",
+    "B32_unchanged": true,
+    "views4_real_G5_per_question": true,
+    "question_view_weight_total": 1,
+    "Mixed_nonMixed_50_50": true,
+    "LR": 5e-06,
+    "EMA": 0.99,
+    "global_update_budget": 21132,
+    "micro_questions": 32,
+    "CPU_prefetch_batches": 8,
+    "CPU_workers": 8,
+    "nine_saved_components_inherited": true,
+    "source_checkpoint_pinned_and_preserved": true,
+    "optimizer_or_sampler_reset": false,
+    "reader_integrity_mode": "inherited_full_seal_with_fresh_metadata_and_each_row_SHA",
+    "fresh_whole_payload_scan_claimed": false,
+    "each_used_row_SHA_required": true,
+    "background_full_scan_started": false,
+    "source_old21_files_changed": false
+  },
+  "production_GPU_continuation_qualified_here": false,
+  "old_job_signaled_here": false,
+  "new_job_submitted_here": false
+}
