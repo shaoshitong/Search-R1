@@ -1,0 +1,100 @@
+{
+  "epoch": 1792585062.2690115,
+  "job": "745371",
+  "runtime_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+  "completed_outer": 2,
+  "rolling": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_2",
+    "manager": "easy2560_per_outer_full_state_v1",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_2/full-manifest.json",
+    "manifest_sha256": "933b8e438d52b001728c985a5214596161cd0d404aba342d3152bc9bcfb136b7",
+    "published_unix": 1792584981.7272606,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+    "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+    "step": 2
+  },
+  "checkpoint_files": [
+    {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_2",
+      "files": 23,
+      "bytes": 91404239065,
+      "last_mtime": 1792584907.425285
+    }
+  ],
+  "scheduler_complete": {
+    "scheduler-rank-0.jsonl": {
+      "rank": 0,
+      "logical_update": 2,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20,
+      "writes_before": 20,
+      "writes_after": 40,
+      "scheduler_advances": 1,
+      "full_budget_complete": true
+    },
+    "scheduler-rank-1.jsonl": {
+      "rank": 1,
+      "logical_update": 2,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20,
+      "writes_before": 20,
+      "writes_after": 40,
+      "scheduler_advances": 1,
+      "full_budget_complete": true
+    },
+    "scheduler-rank-2.jsonl": {
+      "rank": 2,
+      "logical_update": 2,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20,
+      "writes_before": 20,
+      "writes_after": 40,
+      "scheduler_advances": 1,
+      "full_budget_complete": true
+    },
+    "scheduler-rank-3.jsonl": {
+      "rank": 3,
+      "logical_update": 2,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20,
+      "writes_before": 20,
+      "writes_after": 40,
+      "scheduler_advances": 1,
+      "full_budget_complete": true
+    }
+  },
+  "timings": {
+    "timing_s/candidate_fill": 864.349,
+    "timing_s/adv": 138.043,
+    "timing_s/update_actor": 254.327,
+    "timing_s/save_checkpoint": 165.316,
+    "timing_s/step": 700.36
+  },
+  "next_outer_started": 3,
+  "service": {
+    "ok": true,
+    "service_job_id": "745198",
+    "hostname": "ACD1-26",
+    "physical_gpu_count": 2,
+    "statistics": {
+      "logical_requests": 14050,
+      "logical_queries": 14176,
+      "completed_requests": 14050,
+      "completed_queries": 14176,
+      "failed_requests": 0,
+      "backend_seconds": 570.2851380053908,
+      "last_completed_unix": 1792585063.0007043
+    }
+  },
+  "recovery_five_outer_followup_pending": [
+    3,
+    4,
+    5,
+    6
+  ],
+  "required_next_outer_after_followup": 7,
+  "training_runtime_changed": false,
+  "goal_complete": false
+}

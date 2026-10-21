@@ -1,6 +1,6 @@
 {
-  "epoch": 1792583523.1332765,
-  "status": "ACTUAL_CP1_ALL4_STATE_RESTORE_PASS_OUTER2_SAMPLING",
+  "epoch": 1792585062.2690115,
+  "status": "ACTUAL_OUTER2_ALL4_COMPLETE_ROLLING_CP2_READY_OUTER3_SAMPLING",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "745371",
@@ -11,7 +11,7 @@
   "global_mini": 128,
   "logical_micro": 4,
   "accumulation": 4,
-  "actual_completed_outer": 1,
+  "actual_completed_outer": 2,
   "initialization_is_not_training_acceptance": true,
   "old3b": {
     "job": "734689",
@@ -47,13 +47,13 @@
     "actual_training_optimization_enabled": true,
     "selected_LM_head": "Actual 7B CUDA LPmax3.8147e-6/loss1.6925e-9, but gradient thresholds not met; dense repeat relativeL2 0.00904/0.00964, sparse0.01149; INCONCLUSIVE strictgrad; NOT ENABLED",
     "exact_query_cache": "11 CPU tests passed; preserves exact original fullbatch/context/score mode/version and logical search counts",
-    "pending": "ActualCP1 state restore accepted; outer2candidate sampling active, 2..6complete+7startfollowup pending; no sparse head, no201",
+    "pending": "Recoveryfollowup complete2; 3..6complete+7start pending, followed by200/fixedmilestones/native51713/finalactualrestore; no sparse head, no201",
     "physical_micro16": "Not raised blindly; needs actual measured memory/throughput",
     "enabled_scope": "Exact retrieval cache + original dense head + external2H100 service; no throughput speedup claimed yet"
   },
   "previous_goal_turn_classification": "PROGRESS",
-  "latest_turn_classification": "PROGRESS: actual all4CP1 restore accepted; outer2 first512questions2560trajectories complete,181mixed; external GPU queries192to2807 zeroerrors; HK CPU archivecontroller live twice, waiting5; original dense forward retained",
-  "last_observation": "training-progress-1792583523.json",
+  "latest_turn_classification": "PROGRESS: all4 outer2 actual20updates and1scheduleradvance, CP2 23files91.404GB SHAsealed, nextouter3samplingandexternalGPUqueries13233to14176, zeroerrors; no restarts/hotedits/deletions",
+  "last_observation": "training-progress-1792585062.json",
   "pipeline": {
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "stage": "GRPO_1_TO_200",
@@ -97,13 +97,13 @@
     "actor_visible_token_lists_exact_equal": 64,
     "http_and_projection_seconds": 3.5052835568785667,
     "last_actual_statistics": {
-      "logical_requests": 2681,
-      "logical_queries": 2807,
-      "completed_requests": 2681,
-      "completed_queries": 2807,
+      "logical_requests": 14050,
+      "logical_queries": 14176,
+      "completed_requests": 14050,
+      "completed_queries": 14176,
       "failed_requests": 0,
-      "backend_seconds": 111.40624066069722,
-      "last_completed_unix": 1792583497.1318378
+      "backend_seconds": 570.2851380053908,
+      "last_completed_unix": 1792585063.0007043
     }
   },
   "failed_diagnostic_job": "745258",
@@ -111,7 +111,7 @@
   "storage_inventory_report": "HPC3-storage-distribution-20261021.txt",
   "last_measured_queue": {
     "rc": 0,
-    "stdout": "745371|RUNNING|ACD1-55|ACD1-55|2026-10-21T19:41:06|6-23:49:03\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-22:47:47\n",
+    "stdout": "745371|RUNNING|ACD1-55|ACD1-55|2026-10-21T19:41:06|6-23:23:24\n745198|RUNNING|ACD1-26|ACD1-26|2026-10-21T18:39:50|6-22:22:08\n",
     "stderr": ""
   },
   "new_recovery_base_allocated_bytes": 62230528,
@@ -133,7 +133,9 @@
     6
   ],
   "recovery_followup_required_next_outer_started": 7,
-  "actual_new_completed_outers": [],
+  "actual_new_completed_outers": [
+    2
+  ],
   "archive_controller_for_current7b_not_yet_started": false,
   "remaining_goal_requirements": [
     "complete2..6 and7startfollowup",
@@ -190,20 +192,115 @@
     {
       "name": "6b65b308ae474a81bb78d6277b4d9a8c-pool-0",
       "step": 2,
-      "completed_questions": 512,
-      "reserved_questions": 512,
+      "completed_questions": 2560,
+      "reserved_questions": 2560,
       "source_consumed": 5120,
-      "saved_chunk_files": 4,
+      "saved_chunk_files": 15,
       "progress_error": null
+    },
+    {
+      "name": "eefd4da7a7b445a4862963b159cbdfdc-pool-0",
+      "step": null,
+      "completed_questions": 0,
+      "reserved_questions": 0,
+      "source_consumed": null,
+      "saved_chunk_files": 1,
+      "progress_error": "[Errno 2] No such file or directory: '/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-candidate-pools/eefd4da7a7b445a4862963b159cbdfdc-pool-0/progress.json'"
     }
   ],
-  "outer2_started_not_complete": true,
-  "outer2_completed_candidate_questions": 512,
+  "outer2_started_not_complete": false,
+  "outer2_completed_candidate_questions": 2560,
   "outer2_first_chunk_mixed_questions": 181,
-  "current_base_durable_checkpoint_outer": null,
+  "current_base_durable_checkpoint_outer": 2,
   "most_recent_recoverable_checkpoint": {
-    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021",
-    "outer": 1,
-    "full_checkpoint_bytes": 91404238199
-  }
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+    "outer": 2,
+    "full_checkpoint_bytes": 91404239065,
+    "rolling_manifest_sha256": "933b8e438d52b001728c985a5214596161cd0d404aba342d3152bc9bcfb136b7"
+  },
+  "outer2_candidate_mixed_questions": 979,
+  "outer2_candidate_mixed_fraction": 0.382421875,
+  "outer2_selected_mixed_questions": 512,
+  "outer2_selected_all_correct_fallback": 0,
+  "outer2_candidate_fill_seconds": 864.3486736146733,
+  "outer2_full_candidate_histogram": {
+    "0": 1174,
+    "1": 281,
+    "2": 238,
+    "3": 194,
+    "4": 266,
+    "5": 407
+  },
+  "outer2_parameter_update_evidence": {
+    "scheduler-rank-0.jsonl": {
+      "rank": 0,
+      "logical_update": 2,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20,
+      "writes_before": 20,
+      "writes_after": 40,
+      "scheduler_advances": 1,
+      "full_budget_complete": true
+    },
+    "scheduler-rank-1.jsonl": {
+      "rank": 1,
+      "logical_update": 2,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20,
+      "writes_before": 20,
+      "writes_after": 40,
+      "scheduler_advances": 1,
+      "full_budget_complete": true
+    },
+    "scheduler-rank-2.jsonl": {
+      "rank": 2,
+      "logical_update": 2,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20,
+      "writes_before": 20,
+      "writes_after": 40,
+      "scheduler_advances": 1,
+      "full_budget_complete": true
+    },
+    "scheduler-rank-3.jsonl": {
+      "rank": 3,
+      "logical_update": 2,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20,
+      "writes_before": 20,
+      "writes_after": 40,
+      "scheduler_advances": 1,
+      "full_budget_complete": true
+    }
+  },
+  "phase_gap_observation": {
+    "earlier_idle_sample": "live-phase-observation-1792584412.json",
+    "later_active_sample": "live-phase-observation-1792584612.json",
+    "result": "TRANSIENT_PHASE_WAIT_NOT_CONFIRMED_STALL",
+    "production_grounding_http_200": true,
+    "training_workers_active_cpu_after_wait": true,
+    "no_intervention": true
+  },
+  "rolling_checkpoint": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/checkpoints/search-g1-common8/actor/global_step_2",
+    "manager": "easy2560_per_outer_full_state_v1",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/preparation/rolling-checkpoints/global_step_2/full-manifest.json",
+    "manifest_sha256": "933b8e438d52b001728c985a5214596161cd0d404aba342d3152bc9bcfb136b7",
+    "published_unix": 1792584981.7272606,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "source_commit": "e082a23b5a65b302e2016aa0e5ab43b10b543d4f",
+    "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+    "step": 2
+  },
+  "outer2_timings_seconds": {
+    "timing_s/candidate_fill": 864.349,
+    "timing_s/adv": 138.043,
+    "timing_s/update_actor": 254.327,
+    "timing_s/save_checkpoint": 165.316,
+    "timing_s/step": 700.36
+  },
+  "outer3_started": true,
+  "actual_outer2_complete_receipt": "training-progress-1792585062.json",
+  "recovery_followup_accepted": false
 }

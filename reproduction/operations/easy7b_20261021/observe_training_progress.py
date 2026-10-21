@@ -61,6 +61,25 @@ def main():
                 reserved_questions=len(value.get('reserved', [])), source_consumed=value.get('source_consumed'),
                 saved_chunk_files=len(list(path.glob('[0-9]*.pt'))),
                 progress_error=value.get('observation_error')))
+    # File metadata only: distinguish checkpoint writes from an idle process.
+    result['checkpoint_files'] = []
+    actor = BASE/'checkpoints/search-g1-common8/actor'
+    for directory in sorted(actor.glob('global_step_*'), key=lambda p:p.stat().st_mtime)[-2:]:
+        files = [path for path in directory.rglob('*') if path.is_file()]
+        result['checkpoint_files'].append(dict(path=str(directory), files=len(files),
+            bytes=sum(path.stat().st_size for path in files),
+            last_mtime=max((path.stat().st_mtime for path in files), default=None)))
+    result['scheduler_ledgers'] = {}
+    for rank in range(4):
+        path = BASE/f'logs/scheduler-rank-{rank}.jsonl'
+        if path.is_file():
+            rows = []
+            for line in tail(path, 12000)['tail'].splitlines():
+                try:
+                    rows.append(json.loads(line))
+                except ValueError:
+                    continue
+            result['scheduler_ledgers'][path.name] = rows[-2:]
     result['training_log'] = tail(BASE/'logs/search-g1-common8-training.log', 20000)
     result['trainer_log'] = tail(BASE/'logs/trainer.log', 5000)
     gpu = BASE/'logs/gpu-samples-232f20e112ac4a978c5aba52a0367195.jsonl'
