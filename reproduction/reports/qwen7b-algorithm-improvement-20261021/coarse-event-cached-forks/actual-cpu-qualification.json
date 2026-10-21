@@ -1,0 +1,68 @@
+{
+  "result": {
+    "status": "SYNTHETIC_COARSE_HEAD_CP0_REPLAY_RECOVERY_CPU_QUALIFIED_REAL_INPUTS_NOT_YET_ACCEPTED",
+    "tests": 3,
+    "actual_input_status": {
+      "status": "WAITING_FOR_VERIFIED_BASELINE_CACHE_CP0",
+      "missing": [
+        "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/cache/complete.json",
+        "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/checkpoints/cursor-000000.pt",
+        "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/evaluations/epoch-00/complete.json",
+        "actual_family_resolved_input_packet"
+      ],
+      "prepared_inputs_passed": false,
+      "GPU_submitted": false
+    },
+    "GPU_used": false,
+    "real_model_or_cache_tensors_loaded": false,
+    "new_model_scoring": false,
+    "active_Count_or_screen_modified": false,
+    "elapsed_seconds": 14.540725946426392,
+    "peak_RSS_KiB": 585156,
+    "monitor_peak_RSS_KiB": 576916,
+    "RSS_limit_bytes": 3221225472,
+    "virtual_address_space_not_capped": true,
+    "wall_limit_seconds": 60,
+    "synthetic_checkpoint_storage": "/tmp (remote local scratch)",
+    "source_commit": "c888a2281859e1a930218d490aae5bbeb5adcc22",
+    "small_checkpoint_helper_origin": "282bc1597fd720c6e6fad5c836effb52d5e65d78",
+    "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/coarse-event-cached-prepare-code-v1/code-c888a2281859",
+    "baseline_publication": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/direct-count-frozenE1-fit30016-hold5120-v2/source-publication.json",
+      "bytes": 9942,
+      "sha256": "5a6c98c0766b481f43e370e924915f238ea59b540a739fe061f9d1a5db443fc9"
+    },
+    "files": {
+      "coarse_event_cached_train.py": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/coarse-event-cached-prepare-code-v1/code-c888a2281859/reproduction/operations/qwen7b_warmup/coarse_event_cached_train.py",
+        "bytes": 30207,
+        "sha256": "3df59bf976554e7f6c5aea13bc216fc5b1a4a528607a45c2485d15f2abff5199"
+      },
+      "test_coarse_event_cached_train.py": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/coarse-event-cached-prepare-code-v1/code-c888a2281859/reproduction/operations/qwen7b_warmup/test_coarse_event_cached_train.py",
+        "bytes": 5841,
+        "sha256": "4b89f0e139927af8b677ae929eb1ebba05b96808216975384965971739ee5459"
+      },
+      "prior_logit_event_loss.py": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/coarse-event-cached-prepare-code-v1/code-c888a2281859/reproduction/operations/qwen7b_warmup/prior_logit_event_loss.py",
+        "bytes": 5697,
+        "sha256": "c2d12a38b54280fa34aa7d69221eae42193d749beca39edff70d35cf3fffb109"
+      },
+      "direct_count_large_small_checkpoint.py": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/coarse-event-cached-prepare-code-v1/code-c888a2281859/reproduction/operations/qwen7b_warmup/direct_count_large_small_checkpoint.py",
+        "bytes": 14250,
+        "sha256": "8e579096948c999a76da80a98d9e0182eaa85b2fb4acd08222b4312412765c84"
+      }
+    },
+    "log": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/coarse-event-cached-prepare-code-v1/code-c888a2281859/cpu-fixtures.log",
+      "bytes": 1534,
+      "sha256": "49c02d5b86d320720be73f443e1c49f6612410384cacc819f8249ce9d4aece69"
+    }
+  },
+  "receipt": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/coarse-event-cached-prepare-code-v1/code-c888a2281859/cpu-qualification.json",
+    "bytes": 3574,
+    "sha256": "a58dd76a24cd6cbe3b0605a8f249e81ce2b8cb56bc4dd4560262422beb838368"
+  }
+}
