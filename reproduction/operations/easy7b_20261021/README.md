@@ -179,6 +179,10 @@ All parameter bytes/RNG remained unchanged and no backward/update occurred.
 Postprocess weakref deallocation warnings were preserved; they did not change
 the completed0 exit or the parameter/RNG readback. The evidence is
 `evidence/actual-fa3-layer-shadow-cp10-20261022.json`.
+This batch's longest individual sequence was2343, and the largest local output
+absolute difference was0.125. Aggregate relative norms do not bound each token;
+the FP32 reference samples first/middle/last queries, not every query. No
+backward, full4096 batch, or subsequent FA3-propagated inputs were tested here.
 
 The4096 synthetic attention-only first-call forward/backward timings were
 FA2-first13.1184ms/FA2-repeat13.1057ms/FA3-first7.6400ms: approximately1.715x

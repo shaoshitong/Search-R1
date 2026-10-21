@@ -529,5 +529,14 @@
       }
     ]
   },
-  "final200_goal_complete": false
+  "final200_goal_complete": false,
+  "largest_local_output_absolute_error": 0.125,
+  "actual_longest_individual_sequence": 2343,
+  "coverage_limits": [
+    "CP10 differs from original CP9 failed full-model batch",
+    "One FA2 trajectory per rank; not FA3-propagated later-layer inputs",
+    "Forward-only; no backward comparison",
+    "Only actual varlen/causal/full-window shapes observed; no complete4096 coverage from this batch",
+    "FP32 reference samples first/middle/last queries only; relative aggregate norms do not bound every token"
+  ]
 }
