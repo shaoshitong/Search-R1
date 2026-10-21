@@ -1,0 +1,30 @@
+{
+  "epoch": 1792594725.4701931,
+  "job": "JobId=745932 JobName=q7b-tail14592-L26 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=0 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=JobHeldUser Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=02:00:00 TimeMin=N/A SubmitTime=2026-10-21T22:58:45 EligibleTime=Unknown AccrueTime=Unknown StartTime=Unknown EndTime=Unknown Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T22:58:45 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:3566716 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=8,mem=128G,node=1,billing=8,gres/gpu=1 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=8 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail14592-independent-L26-prepared-v1/capture.sbatch WorkDir=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail14592-independent-L26-prepared-v1 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail14592-independent-L26-prepared-v1/logs/capture-745932.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail14592-independent-L26-prepared-v1/logs/capture-745932.log Power= TresPerNode=gres/gpu:1 TresPerTask=cpu:8",
+  "job_id": "745932",
+  "plan": {
+    "QOS": "normal",
+    "cpus": 8,
+    "dependency": null,
+    "entry": {
+      "bytes": 2055,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail14592-independent-L26-prepared-v1/capture.sbatch",
+      "sha256": "7887eb1c9f5834b36ac029bdae0232b64a9fca3b356456ac8cafc37d12fc5fa3"
+    },
+    "gpus": 1,
+    "memory": "128G",
+    "partition": "acd_u",
+    "preparation": {
+      "bytes": 3807,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail14592-independent-L26-prepared-v1/preparation.json",
+      "sha256": "1d4fdc6cef690416c96d5dee8135549caf5793c42d9514c662d131fdd817035c"
+    },
+    "publication": {
+      "bytes": 1096,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail14592-independent-L26-prepared-v1/source-publication.json",
+      "sha256": "d829a22730406106b9dcd3a7edccd5008c8b8ac285ede4ba70c3046f14cf5a49"
+    },
+    "status": "FIXED14592_ONE_NORMAL_H100_SEQUENTIAL_FOUR_SHARDS_READY_NOT_SUBMITTED",
+    "time": "02:00:00"
+  }
+}
