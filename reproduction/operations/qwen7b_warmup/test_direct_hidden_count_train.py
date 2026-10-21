@@ -62,6 +62,9 @@ class EntryTests(unittest.TestCase):
 
     def test_submission_is_guarded_and_separate_from_preparation(self):
         from . import deploy_direct_hidden_count_train as d
+        from types import SimpleNamespace
+        for output in ('{"status":"PASS"}\n',b'{"status":"PASS"}\n'):
+            self.assertEqual(d.parse_result(SimpleNamespace(stdout=output,stderr=b'',returncode=0)),dict(status='PASS'))
         self.assertIn("joint-training.lock",d.SUBMIT)
         self.assertIn("q7b-direct-count938",d.SUBMIT)
         self.assertIn("submit-intent.json",d.SUBMIT)

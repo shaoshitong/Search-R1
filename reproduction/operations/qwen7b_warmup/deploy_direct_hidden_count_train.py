@@ -59,6 +59,15 @@ def bundle(repo,commit):
                 files[name]=dict(bytes=len(data),sha256=hashlib.sha256(data).hexdigest());m=tarfile.TarInfo(name);m.size=len(data);m.mode=0o444;m.mtime=0;archive.addfile(m,io.BytesIO(data))
     return output.getvalue(),files,origins
 
+
+def parse_result(result):
+    out=result.stdout.decode(errors='replace') if isinstance(result.stdout,bytes) else result.stdout
+    err=result.stderr.decode(errors='replace') if isinstance(result.stderr,bytes) else result.stderr
+    lines=[json.loads(x) for x in out.splitlines() if x.startswith('{')]
+    if result.returncode or not lines:raise RuntimeError('Unconfirmed control outcome; inspect own identity before retry: '+err[-1500:])
+    return lines[-1]
+
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('--control-root',type=Path,required=True);p.add_argument('--commit',required=True)
     p.add_argument('--action',choices=('stage','prepare','submit','status'),required=True);p.add_argument('--submit-authorized',action='store_true');args=p.parse_args()
@@ -70,9 +79,7 @@ def main():
         v=dict(values);v.update(extra or {});command='python3 -c '+shlex.quote(remote_source(v,action))
         if len(command.encode())>=16000:raise ValueError('Control command exceeds16KB')
         result=ctl.run(command,account='mou176',source_address=ip,timeout=55)
-        lines=[json.loads(x) for x in result.stdout.splitlines() if x.startswith('{')]
-        if result.returncode or not lines:raise RuntimeError('Unconfirmed control outcome; inspect own identity before retry: '+result.stderr[-1500:])
-        return lines[-1]
+        return parse_result(result)
     if args.action=='stage':
         data,files,origins=bundle(Path(__file__).resolve().parents[3],args.commit);chunks=[data[i:i+4096] for i in range(0,len(data),4096)]
         call('init',dict(commit=args.commit,remote_branch=BRANCH,bundle_sha256=hashlib.sha256(data).hexdigest(),bundle_bytes=len(data),chunks=len(chunks),files=files,file_origins=origins))

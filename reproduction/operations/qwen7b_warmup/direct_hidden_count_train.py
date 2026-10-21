@@ -9,7 +9,7 @@ from contextlib import nullcontext
 from pathlib import Path
 from . import peer_append_train as a,direct_hidden_count_prepare as prep
 
-TARGET=a.A/'direct-hidden-count30016-train-v1'
+TARGET=a.A/'direct-hidden-count30016-train-v2'
 STOP=False
 MILESTONES=(256,512,768,938)
 
