@@ -1,0 +1,140 @@
+{
+  "checks": {
+    "all_rows_valid": true,
+    "first_cursor": 1676,
+    "invalid_batch128_512views_256perclass_rows": 0,
+    "invalid_clock_rows": 0,
+    "invalid_confusion_rows": 0,
+    "invalid_loss_rows": 0,
+    "last_cursor": 2048,
+    "missing_fields": {},
+    "rows": 373
+  },
+  "curve": {
+    "complete_prefix_bytes": 640085,
+    "complete_prefix_sha256": "80e06637a78c99de823ef48b2626e9f3fbac5818b244a13605bc9c9fc54cef79",
+    "inode": 11129927147,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/curve.jsonl",
+    "snapshot_bytes": 640085,
+    "trailing_incomplete_bytes": 0,
+    "uid": 21930
+  },
+  "loss_weight": "actual_G5_views; each accepted row512 equally weighted views",
+  "model_or_threshold_changed": false,
+  "no_new_scoring": true,
+  "no_trajectory_accuracy": true,
+  "scope": "training_sampler_windows_not_independent_test; repeated question visits are not unique questions",
+  "snapshot_epoch": 1792609272.613778,
+  "status": "READONLY_B128_TRAINING_SAMPLED_WINDOWS_SUMMARIZED",
+  "window_width": 100,
+  "windows": [
+    {
+      "Mixed_BA": 0.54234375,
+      "complete_100_updates": true,
+      "confusion": {
+        "fn": 10750,
+        "fp": 12682,
+        "tn": 12918,
+        "tp": 14850
+      },
+      "expected_first": 1676,
+      "expected_last": 1775,
+      "first_cursor": 1676,
+      "invalid_rows": 0,
+      "last_cursor": 1775,
+      "loss_weight": 51200,
+      "loss_weighted_mean": 0.6871596560365287,
+      "micro_questions": [
+        64
+      ],
+      "mixed_recall": 0.580078125,
+      "mixed_views": 25600,
+      "nonmixed_recall": 0.504609375,
+      "nonmixed_views": 25600,
+      "question_visits": 12800,
+      "updates": 100,
+      "views": 51200
+    },
+    {
+      "Mixed_BA": 0.55029296875,
+      "complete_100_updates": true,
+      "confusion": {
+        "fn": 10599,
+        "fp": 12426,
+        "tn": 13174,
+        "tp": 15001
+      },
+      "expected_first": 1776,
+      "expected_last": 1875,
+      "first_cursor": 1776,
+      "invalid_rows": 0,
+      "last_cursor": 1875,
+      "loss_weight": 51200,
+      "loss_weighted_mean": 0.6851966936368262,
+      "micro_questions": [
+        64
+      ],
+      "mixed_recall": 0.5859765625,
+      "mixed_views": 25600,
+      "nonmixed_recall": 0.514609375,
+      "nonmixed_views": 25600,
+      "question_visits": 12800,
+      "updates": 100,
+      "views": 51200
+    },
+    {
+      "Mixed_BA": 0.5508984375,
+      "complete_100_updates": true,
+      "confusion": {
+        "fn": 10822,
+        "fp": 12172,
+        "tn": 13428,
+        "tp": 14778
+      },
+      "expected_first": 1876,
+      "expected_last": 1975,
+      "first_cursor": 1876,
+      "invalid_rows": 0,
+      "last_cursor": 1975,
+      "loss_weight": 51200,
+      "loss_weighted_mean": 0.6853679501090665,
+      "micro_questions": [
+        64
+      ],
+      "mixed_recall": 0.577265625,
+      "mixed_views": 25600,
+      "nonmixed_recall": 0.52453125,
+      "nonmixed_views": 25600,
+      "question_visits": 12800,
+      "updates": 100,
+      "views": 51200
+    },
+    {
+      "Mixed_BA": 0.5534300085616439,
+      "complete_100_updates": false,
+      "confusion": {
+        "fn": 7753,
+        "fp": 8938,
+        "tn": 9750,
+        "tp": 10935
+      },
+      "expected_first": 1976,
+      "expected_last": 2075,
+      "first_cursor": 1976,
+      "invalid_rows": 0,
+      "last_cursor": 2048,
+      "loss_weight": 37376,
+      "loss_weighted_mean": 0.6842623338707697,
+      "micro_questions": [
+        64
+      ],
+      "mixed_recall": 0.585134845890411,
+      "mixed_views": 18688,
+      "nonmixed_recall": 0.5217251712328768,
+      "nonmixed_views": 18688,
+      "question_visits": 9344,
+      "updates": 73,
+      "views": 37376
+    }
+  ]
+}
