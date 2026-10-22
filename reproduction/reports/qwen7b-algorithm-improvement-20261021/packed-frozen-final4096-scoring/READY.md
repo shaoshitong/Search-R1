@@ -19,3 +19,5 @@ Future Root command after freeze and current job/lock check:
 ```bash
 sbatch /data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/packed-variance-frozen-final4096-20261023-v1/scoring.sbatch REMOTE_FREEZE_JSON EXACT_FREEZE_SHA256
 ```
+
+Actual source commit67dc1a3509a3af82de0d4f8b17cca21e1216acaf was pushed and ls-remote verified before staging. The remote CPU import and bash syntax passed. A separate fresh source-only read at1792687191 verified all9 immutable runtime file SHA values, source-publication1805B SHAa6cf1909049303c388488243d3268fccd05d0dcf2c084a91cf4608e2ce0d8b8c, and entry1358B SHAe46eda0bdc8bdf57527d260e2f406e9629240cd9c02b0e4e31de1729060e1d98. Template remains invalid/not frozen, no final data/model checkpoint opened and no Slurm submitted.
