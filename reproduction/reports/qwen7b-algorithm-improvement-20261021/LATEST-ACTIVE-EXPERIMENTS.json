@@ -1,5 +1,5 @@
 {
-  "recorded_epoch": 1792683889.06618,
+  "recorded_epoch": 1792685057.1977851,
   "goal_status": "ACTIVE_NOT_ACHIEVED_NEW_LOSS_COMPARISON_PREPARING",
   "network_permission": "USER_REAUTHORIZED_FRESH_SSH_AND_GIT_SUCCESS",
   "last_remote_observation_epoch": 1792683816.57811,
@@ -353,7 +353,7 @@
     "749399": "L18P20_COMPLETE_CPU_ACCEPTED",
     "749400": "L24P20_COMPLETE_CPU_ACCEPTED",
     "749079": "L27P80_COMPLETE_CPU_ACCEPTED",
-    "749369": "L21P80_E3_CURSOR150_RUNNING"
+    "749369": "L21P80_COMPLETE_CPU_ACCEPTED"
   },
   "natural_G5_paired_control": {
     "jobs": {
@@ -361,7 +361,7 @@
       "749460": "L27P20"
     },
     "last_root_epoch": 1792682297.3203611,
-    "last_observed_state": "L21_COMPLETED_CPU_ACCEPTED_L27_REAL_TWO_RANK_UPDATES_8_TO25_TO40",
+    "last_observed_state": "BOTH_COMPLETED192_AND_FINAL_CPU_ACCEPTED",
     "source_commit": "1fdb1755c699994ec9d8f7f0a7527957c3f58796",
     "new_difficult_G5_negatives_per_epoch": [
       851,
@@ -580,5 +580,100 @@
     "cause_evidence": "login just restarted; temporary shared-storage and Slurm initialization unavailable, then actual restored",
     "model_training_failure_not_inferred": true,
     "existing_jobs_not_cancelled_or_restarted": true
+  },
+  "full_variable_M_variance_loss_comparison": {
+    "status": "ALL_THREE_ARMS_REAL_OPTIMIZER_UPDATES_VERIFIED",
+    "source_commit": "7ac274ac8ff5dea0a12dfd44cfb03fe57491458f",
+    "fixture": {
+      "training_questions": 169028,
+      "validation_questions": 2048,
+      "trajectories": 1710760,
+      "prepare_seconds": 174.851,
+      "compact_bytes": 86292631,
+      "shared_read_only": true
+    },
+    "configuration": {
+      "epochs": 10,
+      "updates_per_epoch": 1321,
+      "updates_total": 13210,
+      "EMA_decay": 0.9995,
+      "global_batch": 128,
+      "micro_per_rank": 8,
+      "accumulation": 8,
+      "GPUs_per_arm": 2,
+      "losses": [
+        "mse",
+        "mae",
+        "z_mse_anchor"
+      ],
+      "anchor_weight": 1.0,
+      "normalization_populationSTD_epsilon": 1e-06,
+      "training_scale": "4v",
+      "new_fresh_official_initialization": true,
+      "same_seed_and_data_plans": true,
+      "selection": "descending predicted variance"
+    },
+    "jobs": {
+      "mse": {
+        "job_id": "749568",
+        "accounting": "749568|RUNNING|0:0|00:06:25|ACD1-51",
+        "cursor_by_rank": [
+          319,
+          319
+        ],
+        "epoch": 1
+      },
+      "mae": {
+        "job_id": "749576",
+        "accounting": "749576|RUNNING|0:0|00:02:54|ACD1-14",
+        "cursor_by_rank": [
+          36,
+          36
+        ],
+        "epoch": 1
+      },
+      "z_mse_anchor": {
+        "job_id": "749577",
+        "accounting": "749577|RUNNING|0:0|00:02:55|ACD1-16",
+        "cursor_by_rank": [
+          38,
+          38
+        ],
+        "epoch": 1
+      }
+    },
+    "observed_epoch": 1792685020.7102451,
+    "node_failure_recovery": {
+      "failed_before_any_updates": [
+        749569,
+        749570
+      ],
+      "node": "ACD1-13",
+      "requeue_disabled_by_cluster": true,
+      "replacements": [
+        749576,
+        749577
+      ],
+      "original_logs_and_receipts_preserved": true,
+      "source_and_loss_unchanged": true,
+      "bad_node_excluded": true
+    },
+    "final4096_scored": false,
+    "z_alignment_actual": {
+      "anchor4variance_MSE": 0.15872617065906525,
+      "anchor_weight": 1.0,
+      "normalization_epsilon": 1e-06,
+      "normalization_global_questions": 128,
+      "normalization_population_std": true,
+      "normalization_scope": "actual_global_optimizer_batch_autograd_all_gather",
+      "normalized_MSE": 1.6779645681381226,
+      "prediction_mean": 0.35344791412353516,
+      "prediction_std": 0.06808848679065704,
+      "target_mean": 0.3574906885623932,
+      "target_std": 0.4036388695240021,
+      "total_loss": 1.8366907835006714,
+      "z_MSE": 1.6779645681381226
+    },
+    "z_alignment_two_ranks_identical": true
   }
 }
