@@ -1,0 +1,41 @@
+{
+  "status": "DEVELOPMENT_ONLY_EPOCH_STATE_CHOICES_FROZEN_FOR_REPLICATION_FINAL_NOT_OPENED",
+  "time": 1792695617.0156028,
+  "selection_policy": "Highest seed1 development Top512 realMixed count; ties earliest epoch then EMA. No seed2 or final scores used.",
+  "ranking_candidate": {
+    "family": "L15P80_current64_pure_TopK_K16",
+    "seed1_job": "749889",
+    "source_commit": "237968e8acb8ffd8b5ebcc1c8197247878926ce0",
+    "epoch": 5,
+    "state": "raw",
+    "development_Top512_Mixed": 266,
+    "development_questions": 2048,
+    "seed1_init_seed": 9137,
+    "seed1_train_plan_seed": 2026102227,
+    "seed2_init_seed": 19137,
+    "seed2_train_plan_seed": 2026102302,
+    "seed2_stage_source": "34579cbfb9729afb21c88b540b7ded7d3db823f4",
+    "selected_checkpoint_CPU_acceptance": "pending; E10 actual CPU restore already accepted",
+    "primary_metric": "Top512 realMixed proportion"
+  },
+  "variance_candidate": {
+    "family": "L15P80_MSE_own_G5",
+    "seed1_job": "749857",
+    "source_commit": "0436c2c1e3c1b38a2abcbc252bf3524eff0e6deb",
+    "epoch": 7,
+    "state": "raw",
+    "development_Top512_Mixed": 278,
+    "tie_context": "randomM MSE also278 atE10; fixedG5 atE7 chosen as earlier fitting checkpoint aligned with actual G5 selection, not a significant objective superiority claim",
+    "seed1_init_seed": 9137,
+    "seed1_train_plan_seed": 2026102227,
+    "seed2_init_seed": 19137,
+    "seed2_train_plan_seed": 2026102302,
+    "selected_checkpoint_CPU_acceptance": "pending",
+    "primary_metric": "Top512 realMixed proportion",
+    "secondary_variance_BA_threshold": 0.08
+  },
+  "replication_evaluation": "Each configuration uses the same selected epoch and raw state on both training seeds; never choose the better seed.",
+  "window2018": "Seed1stillrunning; compare allsameepoch/state grid, no claimcacheimproves yet.",
+  "whole_goal_final_candidate_configuration_frozen": false,
+  "final4096_read": false
+}
