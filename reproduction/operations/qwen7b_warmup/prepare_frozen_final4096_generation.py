@@ -154,7 +154,7 @@ def prepare():
         'print("FROZEN_FINAL_COLLECTOR_CPU_IMPORT_PASS")')
     imported = subprocess.run(['bash', str(code/'reproduction/operations/qwen7b_warmup/runtime.sh'),
         '-c', script], env=environment, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-        text=True, timeout=40)
+        universal_newlines=True, timeout=40)
     if imported.returncode or 'FROZEN_FINAL_COLLECTOR_CPU_IMPORT_PASS' not in imported.stdout:
         raise RuntimeError('Published mature collector import failed: '+imported.stderr[-1500:])
     result = dict(status='FOUR_FROZEN_FINAL_G5_GENERATION_ARRAYS_PREPARED_NOT_SUBMITTED',
