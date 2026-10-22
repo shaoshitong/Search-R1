@@ -3,7 +3,7 @@ import argparse,base64,hashlib,importlib.util,json,shlex,subprocess,zlib
 from pathlib import Path
 R=Path(__file__).resolve().parents[3]; CONTROL=R.parents[1]; P='reproduction/operations/qwen7b_warmup/'
 BRANCH='codex/q7b-frozen-final4096-scoring-20261022'
-BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozen-final4096-scoring-20261022-v2'
+BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozen-final4096-scoring-20261022-v3'
 FILES=['score_frozen_final4096.py','deploy_frozen_final4096_scoring.py','online_mixed_prefix_explore.py','peer_long_prefix_diagnostic.py','native_mixed_group_classifier.py','runtime.sh']
 SBATCH='''#!/usr/bin/env bash
 #SBATCH --job-name=q7b-final4096-paired

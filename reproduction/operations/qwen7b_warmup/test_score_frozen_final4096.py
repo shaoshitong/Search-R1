@@ -15,6 +15,9 @@ class FinalFreezeTests(unittest.TestCase):
 
     def test_freeze_required_before_final_read(self):
         f=self.freeze(); self.assertTrue(s.freeze_contract(f))
+        for layer in(15,18,24):
+            layer_only=copy.deepcopy(f);layer_only['candidate'].update(layer=layer,prefix=20)
+            self.assertTrue(s.freeze_contract(layer_only))
         for key,value in [('status','TEMPLATE_ONLY_NOT_CANDIDATE_FREEZE'),
                           ('final_labels_or_scores_used_for_selection',True),
                           ('further_candidate_selection_on_final_allowed',True)]:
