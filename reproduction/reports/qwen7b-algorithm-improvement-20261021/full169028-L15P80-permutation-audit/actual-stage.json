@@ -1,0 +1,60 @@
+{
+  "status": "FULL169028_L15P80_MSE_PERMUTATION_AUDIT_SOURCE_STAGED_ONLY_NOT_AUTHORIZED_NOT_SUBMITTED",
+  "source_publication": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-viewed-permutation-audit-20261023-v1/source-publication.json",
+    "bytes": 2497,
+    "sha256": "c773c3cd574002a606c6617efa232e70faea95574091515edea24bb620eb4936"
+  },
+  "entry": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-viewed-permutation-audit-20261023-v1/audit.sbatch",
+    "bytes": 1410,
+    "sha256": "0f7bbb120f4500cf8f6b6c23cfa99e1dc0c86e61bf02174e7448e80bd8b57142"
+  },
+  "invalid_future_template": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-viewed-permutation-audit-20261023-v1/future-unbound-audit-template.json",
+    "bytes": 2047,
+    "sha256": "8d33a48a481ecd9dfb7c88cd1df6d43ad3fa16e34d0d77a28a32f70a7ee2059f"
+  },
+  "CPU_tests_passed": 5,
+  "source_import_and_entry_syntax_passed": true,
+  "training_geometry": {
+    "layer": 15,
+    "prefix": 80,
+    "head_max_positions": 2048,
+    "training_questions": 169028,
+    "objective": "mse"
+  },
+  "protocol": {
+    "pool": "viewed_NQ_fixed2048_ownG5",
+    "same_selected_epoch_state_both_seeds": true,
+    "orders": [
+      "original",
+      "reverse",
+      "cyclic1"
+    ],
+    "no_order_selection": true,
+    "original_saved_score_alignment_required": true,
+    "fixed_absolute_score_tolerance": 0.001
+  },
+  "resources": {
+    "GPUs": 2,
+    "CPUs": 12,
+    "memory_GiB": 128,
+    "partition": "acd_u",
+    "qos": "normal",
+    "time": "01:00:00"
+  },
+  "actual_work_after_root_authorization": {
+    "questions": 2048,
+    "replicas": 2,
+    "orders": 3,
+    "actor_prefill_rows": 12288,
+    "probe_states_per_replica": 1
+  },
+  "checkpoint_files_statted_hashed_or_opened": false,
+  "real_prediction_or_EM_aggregate_read": false,
+  "GPU_started": false,
+  "Slurm_submitted": false,
+  "final4096_read": false,
+  "existing_jobs_changed": false
+}

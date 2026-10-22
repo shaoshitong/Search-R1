@@ -1,0 +1,185 @@
+{
+  "time": 1792702482.4919128,
+  "job": "750190",
+  "epoch": 1,
+  "actual_Adam_updates": 1321,
+  "EMA_updates": 1321,
+  "progress_next_epoch": {
+    "0": {
+      "epoch": 2,
+      "actual_Adam_updates": 1428,
+      "time": 1792702482.1166906
+    },
+    "1": {
+      "epoch": 2,
+      "actual_Adam_updates": 1428,
+      "time": 1792702482.1174815
+    }
+  },
+  "metrics": {
+    "fixed_train2048_G5": {
+      "EMA": {
+        "balanced_accuracy": 0.622654551102827,
+        "Mixed_AUC": 0.6753985127368748,
+        "Top512": {
+          "Mixed": 316,
+          "Mixed_fraction": 0.6171875,
+          "questions": 512
+        },
+        "Mixed_recall": 0.5461711711711712,
+        "nonMixed_false_positive_rate": 0.30086206896551726,
+        "variance_MSE": 0.008581894401611048,
+        "classwise": {
+          "Mixed": {
+            "mean_score": 0.3246840585593705,
+            "predicted_Mixed": 485,
+            "predicted_Mixed_fraction": 0.5461711711711712,
+            "questions": 888
+          },
+          "all_correct": {
+            "mean_score": 0.31679332093113943,
+            "predicted_Mixed": 87,
+            "predicted_Mixed_fraction": 0.4142857142857143,
+            "questions": 210
+          },
+          "all_wrong": {
+            "mean_score": 0.2977133008523991,
+            "predicted_Mixed": 262,
+            "predicted_Mixed_fraction": 0.27578947368421053,
+            "questions": 950
+          }
+        },
+        "confusion": {
+          "fn": 403,
+          "fp": 349,
+          "tn": 811,
+          "tp": 485
+        }
+      },
+      "raw": {
+        "balanced_accuracy": 0.6666627834731282,
+        "Mixed_AUC": 0.7663220332401367,
+        "Top512": {
+          "Mixed": 367,
+          "Mixed_fraction": 0.716796875,
+          "questions": 512
+        },
+        "Mixed_recall": 0.5281531531531531,
+        "nonMixed_false_positive_rate": 0.19482758620689655,
+        "variance_MSE": 0.007380125219206041,
+        "classwise": {
+          "Mixed": {
+            "mean_score": 0.3433526077030881,
+            "predicted_Mixed": 469,
+            "predicted_Mixed_fraction": 0.5281531531531531,
+            "questions": 888
+          },
+          "all_correct": {
+            "mean_score": 0.15350925037193866,
+            "predicted_Mixed": 20,
+            "predicted_Mixed_fraction": 0.09523809523809523,
+            "questions": 210
+          },
+          "all_wrong": {
+            "mean_score": 0.2153417961064138,
+            "predicted_Mixed": 206,
+            "predicted_Mixed_fraction": 0.2168421052631579,
+            "questions": 950
+          }
+        },
+        "confusion": {
+          "fn": 419,
+          "fp": 226,
+          "tn": 934,
+          "tp": 469
+        }
+      }
+    },
+    "fixed_validation2048_G5": {
+      "EMA": {
+        "balanced_accuracy": 0.6052278506515075,
+        "Mixed_AUC": 0.644387996798275,
+        "Top512": {
+          "Mixed": 249,
+          "Mixed_fraction": 0.486328125,
+          "questions": 512
+        },
+        "Mixed_recall": 0.55052790346908,
+        "nonMixed_false_positive_rate": 0.34007220216606493,
+        "variance_MSE": 0.008504426339823104,
+        "classwise": {
+          "Mixed": {
+            "mean_score": 0.3236650657554917,
+            "predicted_Mixed": 365,
+            "predicted_Mixed_fraction": 0.55052790346908,
+            "questions": 663
+          },
+          "all_correct": {
+            "mean_score": 0.3153440244270094,
+            "predicted_Mixed": 136,
+            "predicted_Mixed_fraction": 0.4121212121212121,
+            "questions": 330
+          },
+          "all_wrong": {
+            "mean_score": 0.3013483799888059,
+            "predicted_Mixed": 335,
+            "predicted_Mixed_fraction": 0.3175355450236967,
+            "questions": 1055
+          }
+        },
+        "confusion": {
+          "fn": 298,
+          "fp": 471,
+          "tn": 914,
+          "tp": 365
+        }
+      },
+      "raw": {
+        "balanced_accuracy": 0.6604058785413638,
+        "Mixed_AUC": 0.7442099416828659,
+        "Top512": {
+          "Mixed": 286,
+          "Mixed_fraction": 0.55859375,
+          "questions": 512
+        },
+        "Mixed_recall": 0.530920060331825,
+        "nonMixed_false_positive_rate": 0.21010830324909746,
+        "variance_MSE": 0.007143883931983772,
+        "classwise": {
+          "Mixed": {
+            "mean_score": 0.3445067870491051,
+            "predicted_Mixed": 352,
+            "predicted_Mixed_fraction": 0.530920060331825,
+            "questions": 663
+          },
+          "all_correct": {
+            "mean_score": 0.15721292644456933,
+            "predicted_Mixed": 32,
+            "predicted_Mixed_fraction": 0.09696969696969697,
+            "questions": 330
+          },
+          "all_wrong": {
+            "mean_score": 0.2310443660297312,
+            "predicted_Mixed": 259,
+            "predicted_Mixed_fraction": 0.24549763033175356,
+            "questions": 1055
+          }
+        },
+        "confusion": {
+          "fn": 311,
+          "fp": 291,
+          "tn": 1094,
+          "tp": 352
+        }
+      }
+    }
+  },
+  "seed1_queue": {
+    "returncode": 0,
+    "stdout": "750189|PENDING|0:00|(Resources)",
+    "stderr": ""
+  },
+  "selection_rule": "choose epoch/state from seed1; never select based on seed2",
+  "final4096_read": false,
+  "checkpoint_CPU_loaded": false
+}

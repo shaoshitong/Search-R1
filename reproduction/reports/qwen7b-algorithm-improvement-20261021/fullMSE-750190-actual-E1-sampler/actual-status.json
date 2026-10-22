@@ -1,0 +1,601 @@
+{
+  "status": "ACTUAL_E1_SAMPLER_METADATA_ANALYSIS_STAGED",
+  "source_commit": "d489aa36868c178ea09a213e56f70e51af3a522e",
+  "worker": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/fullMSE-750190-actual-E1-sampler-diagnostic-20261023-v1/code-d489aa36868c/analyze_fullMSE_actual_epoch1_sampling.py",
+    "bytes": 8437,
+    "sha256": "301041f41c07c32439abecc67741deed90acf5af1e9c08059df548be3ae9f9e5"
+  },
+  "noCP_or_RAW_or_plan_regeneration": true,
+  "Slurm_mutated": false,
+  "launch.json": {
+    "pid": 2936538,
+    "source": {
+      "bytes": 8437,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/fullMSE-750190-actual-E1-sampler-diagnostic-20261023-v1/code-d489aa36868c/analyze_fullMSE_actual_epoch1_sampling.py",
+      "sha256": "301041f41c07c32439abecc67741deed90acf5af1e9c08059df548be3ae9f9e5"
+    },
+    "start_ticks": "1251927",
+    "time": 1792701788.8422916
+  },
+  "receipt": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/fullMSE-750190-actual-E1-sampler-diagnostic-20261023-v1/result.json",
+    "bytes": 12580,
+    "sha256": "8824e5d4fcf3c937520a1622c03db7d91c20604e59e6029c6e594f9407096172"
+  },
+  "result": {
+    "K10_by_K5_hypergeometric": {
+      "0": {
+        "exact_uniform_5of10_expected_K5_0_to5": [
+          68285.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "observed_K5_0_to5": [
+          68285,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "questions": 68285
+      },
+      "1": {
+        "exact_uniform_5of10_expected_K5_0_to5": [
+          6444.0,
+          6444.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "observed_K5_0_to5": [
+          6407,
+          6481,
+          0,
+          0,
+          0,
+          0
+        ],
+        "questions": 12888
+      },
+      "10": {
+        "exact_uniform_5of10_expected_K5_0_to5": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          14443.0
+        ],
+        "observed_K5_0_to5": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          14443
+        ],
+        "questions": 14443
+      },
+      "2": {
+        "exact_uniform_5of10_expected_K5_0_to5": [
+          2026.4444444444443,
+          5066.111111111111,
+          2026.4444444444443,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "observed_K5_0_to5": [
+          2049,
+          5069,
+          2001,
+          0,
+          0,
+          0
+        ],
+        "questions": 9119
+      },
+      "3": {
+        "exact_uniform_5of10_expected_K5_0_to5": [
+          665.0833333333334,
+          3325.4166666666665,
+          3325.4166666666665,
+          665.0833333333334,
+          0.0,
+          0.0
+        ],
+        "observed_K5_0_to5": [
+          681,
+          3285,
+          3393,
+          622,
+          0,
+          0
+        ],
+        "questions": 7981
+      },
+      "4": {
+        "exact_uniform_5of10_expected_K5_0_to5": [
+          181.54761904761904,
+          1815.4761904761904,
+          3630.9523809523807,
+          1815.4761904761904,
+          181.54761904761904,
+          0.0
+        ],
+        "observed_K5_0_to5": [
+          192,
+          1811,
+          3669,
+          1779,
+          174,
+          0
+        ],
+        "questions": 7625
+      },
+      "5": {
+        "exact_uniform_5of10_expected_K5_0_to5": [
+          30.66269841269841,
+          766.5674603174604,
+          3066.2698412698414,
+          3066.2698412698414,
+          766.5674603174604,
+          30.66269841269841
+        ],
+        "observed_K5_0_to5": [
+          38,
+          742,
+          3139,
+          3039,
+          737,
+          32
+        ],
+        "questions": 7727
+      },
+      "6": {
+        "exact_uniform_5of10_expected_K5_0_to5": [
+          0.0,
+          196.83333333333334,
+          1968.3333333333333,
+          3936.6666666666665,
+          1968.3333333333333,
+          196.83333333333334
+        ],
+        "observed_K5_0_to5": [
+          0,
+          182,
+          2001,
+          3950,
+          1955,
+          179
+        ],
+        "questions": 8267
+      },
+      "7": {
+        "exact_uniform_5of10_expected_K5_0_to5": [
+          0.0,
+          0.0,
+          761.4166666666666,
+          3807.0833333333335,
+          3807.0833333333335,
+          761.4166666666666
+        ],
+        "observed_K5_0_to5": [
+          0,
+          0,
+          770,
+          3756,
+          3850,
+          761
+        ],
+        "questions": 9137
+      },
+      "8": {
+        "exact_uniform_5of10_expected_K5_0_to5": [
+          0.0,
+          0.0,
+          0.0,
+          2377.3333333333335,
+          5943.333333333333,
+          2377.3333333333335
+        ],
+        "observed_K5_0_to5": [
+          0,
+          0,
+          0,
+          2415,
+          5908,
+          2375
+        ],
+        "questions": 10698
+      },
+      "9": {
+        "exact_uniform_5of10_expected_K5_0_to5": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          6429.0,
+          6429.0
+        ],
+        "observed_K5_0_to5": [
+          0,
+          0,
+          0,
+          0,
+          6441,
+          6417
+        ],
+        "questions": 12858
+      }
+    },
+    "RAW_reads": 0,
+    "Slurm_mutated": false,
+    "actual_plan_sha256": "23f931ee5e8923399c35b3469a2ee8c72ce190c15f0ee1be2506549c7530a28c",
+    "actual_saved_plan_SHA_matches": true,
+    "canonical_ownG10_exact_for_every_question": true,
+    "checkpoint_or_tensor_reads": 0,
+    "chi2_pvalue_not_claimed": true,
+    "descriptive_hypergeometric_Pearson_chi2": 19.332634639341872,
+    "epoch": 1,
+    "final4096_read": false,
+    "hard_negative_diagnostic": {
+      "G10_Mixed_questions": 86300,
+      "K10_strata": {
+        "0": {
+          "G10_Mixed": false,
+          "G5_Mixed": 0,
+          "G5_all_correct": 0,
+          "G5_all_wrong": 68285,
+          "K10": 0,
+          "expected_G5_all_correct": 0.0,
+          "expected_G5_all_wrong": 68285.0,
+          "expected_G5_homogeneous": 68285.0,
+          "probability_G5_all_correct_numerator_over_252": 0,
+          "probability_G5_all_wrong_numerator_over_252": 252,
+          "probability_G5_homogeneous_numerator_over_252": 252,
+          "questions": 68285
+        },
+        "1": {
+          "G10_Mixed": true,
+          "G5_Mixed": 6481,
+          "G5_all_correct": 0,
+          "G5_all_wrong": 6407,
+          "K10": 1,
+          "expected_G5_all_correct": 0.0,
+          "expected_G5_all_wrong": 6444.0,
+          "expected_G5_homogeneous": 6444.0,
+          "probability_G5_all_correct_numerator_over_252": 0,
+          "probability_G5_all_wrong_numerator_over_252": 126,
+          "probability_G5_homogeneous_numerator_over_252": 126,
+          "questions": 12888
+        },
+        "10": {
+          "G10_Mixed": false,
+          "G5_Mixed": 0,
+          "G5_all_correct": 14443,
+          "G5_all_wrong": 0,
+          "K10": 10,
+          "expected_G5_all_correct": 14443.0,
+          "expected_G5_all_wrong": 0.0,
+          "expected_G5_homogeneous": 14443.0,
+          "probability_G5_all_correct_numerator_over_252": 252,
+          "probability_G5_all_wrong_numerator_over_252": 0,
+          "probability_G5_homogeneous_numerator_over_252": 252,
+          "questions": 14443
+        },
+        "2": {
+          "G10_Mixed": true,
+          "G5_Mixed": 7070,
+          "G5_all_correct": 0,
+          "G5_all_wrong": 2049,
+          "K10": 2,
+          "expected_G5_all_correct": 0.0,
+          "expected_G5_all_wrong": 2026.4444444444443,
+          "expected_G5_homogeneous": 2026.4444444444443,
+          "probability_G5_all_correct_numerator_over_252": 0,
+          "probability_G5_all_wrong_numerator_over_252": 56,
+          "probability_G5_homogeneous_numerator_over_252": 56,
+          "questions": 9119
+        },
+        "3": {
+          "G10_Mixed": true,
+          "G5_Mixed": 7300,
+          "G5_all_correct": 0,
+          "G5_all_wrong": 681,
+          "K10": 3,
+          "expected_G5_all_correct": 0.0,
+          "expected_G5_all_wrong": 665.0833333333334,
+          "expected_G5_homogeneous": 665.0833333333334,
+          "probability_G5_all_correct_numerator_over_252": 0,
+          "probability_G5_all_wrong_numerator_over_252": 21,
+          "probability_G5_homogeneous_numerator_over_252": 21,
+          "questions": 7981
+        },
+        "4": {
+          "G10_Mixed": true,
+          "G5_Mixed": 7433,
+          "G5_all_correct": 0,
+          "G5_all_wrong": 192,
+          "K10": 4,
+          "expected_G5_all_correct": 0.0,
+          "expected_G5_all_wrong": 181.54761904761904,
+          "expected_G5_homogeneous": 181.54761904761904,
+          "probability_G5_all_correct_numerator_over_252": 0,
+          "probability_G5_all_wrong_numerator_over_252": 6,
+          "probability_G5_homogeneous_numerator_over_252": 6,
+          "questions": 7625
+        },
+        "5": {
+          "G10_Mixed": true,
+          "G5_Mixed": 7657,
+          "G5_all_correct": 32,
+          "G5_all_wrong": 38,
+          "K10": 5,
+          "expected_G5_all_correct": 30.66269841269841,
+          "expected_G5_all_wrong": 30.66269841269841,
+          "expected_G5_homogeneous": 61.32539682539682,
+          "probability_G5_all_correct_numerator_over_252": 1,
+          "probability_G5_all_wrong_numerator_over_252": 1,
+          "probability_G5_homogeneous_numerator_over_252": 2,
+          "questions": 7727
+        },
+        "6": {
+          "G10_Mixed": true,
+          "G5_Mixed": 8088,
+          "G5_all_correct": 179,
+          "G5_all_wrong": 0,
+          "K10": 6,
+          "expected_G5_all_correct": 196.83333333333334,
+          "expected_G5_all_wrong": 0.0,
+          "expected_G5_homogeneous": 196.83333333333334,
+          "probability_G5_all_correct_numerator_over_252": 6,
+          "probability_G5_all_wrong_numerator_over_252": 0,
+          "probability_G5_homogeneous_numerator_over_252": 6,
+          "questions": 8267
+        },
+        "7": {
+          "G10_Mixed": true,
+          "G5_Mixed": 8376,
+          "G5_all_correct": 761,
+          "G5_all_wrong": 0,
+          "K10": 7,
+          "expected_G5_all_correct": 761.4166666666666,
+          "expected_G5_all_wrong": 0.0,
+          "expected_G5_homogeneous": 761.4166666666666,
+          "probability_G5_all_correct_numerator_over_252": 21,
+          "probability_G5_all_wrong_numerator_over_252": 0,
+          "probability_G5_homogeneous_numerator_over_252": 21,
+          "questions": 9137
+        },
+        "8": {
+          "G10_Mixed": true,
+          "G5_Mixed": 8323,
+          "G5_all_correct": 2375,
+          "G5_all_wrong": 0,
+          "K10": 8,
+          "expected_G5_all_correct": 2377.3333333333335,
+          "expected_G5_all_wrong": 0.0,
+          "expected_G5_homogeneous": 2377.3333333333335,
+          "probability_G5_all_correct_numerator_over_252": 56,
+          "probability_G5_all_wrong_numerator_over_252": 0,
+          "probability_G5_homogeneous_numerator_over_252": 56,
+          "questions": 10698
+        },
+        "9": {
+          "G10_Mixed": true,
+          "G5_Mixed": 6441,
+          "G5_all_correct": 6417,
+          "G5_all_wrong": 0,
+          "K10": 9,
+          "expected_G5_all_correct": 6429.0,
+          "expected_G5_all_wrong": 0.0,
+          "expected_G5_homogeneous": 6429.0,
+          "probability_G5_all_correct_numerator_over_252": 126,
+          "probability_G5_all_wrong_numerator_over_252": 0,
+          "probability_G5_homogeneous_numerator_over_252": 126,
+          "questions": 12858
+        }
+      },
+      "assumption": "Natural label-independent uniform5-of10 without replacement; expected counts are not enforced class balancing",
+      "expectation_denominator": 252,
+      "expectation_formula": "[C(K10,5)+C(10-K10,5)]/C(10,5)",
+      "expected_G10Mixed_to_G5_all_correct_numerator": 2468402,
+      "expected_G10Mixed_to_G5_all_wrong_numerator": 2355630,
+      "expected_G10Mixed_to_G5_homogeneous": 19142.984126984127,
+      "observed_G10Mixed_to_G5_all_correct": 9764,
+      "observed_G10Mixed_to_G5_all_wrong": 9367,
+      "observed_G10Mixed_to_G5_homogeneous": 19131,
+      "source": "Existing actual sampling-plan-epoch-01.json only; no plan regeneration",
+      "status": "ACTUAL_PLAN_G10_MIXED_TO_G5_HOMOGENEOUS_VS_EXACT_HYPERGEOMETRIC_EXPECTATION"
+    },
+    "hard_negative_fraction_of_G10Mixed": 0.22168018539976825,
+    "hard_negative_fraction_of_all_questions": 0.11318243131315521,
+    "homogeneous_hard_negative_expected_variance": 11599.49606324011,
+    "homogeneous_hard_negative_standardized_residual": -0.11127224267019692,
+    "init_seed": 19137,
+    "job_id": "750190",
+    "natural_random_G5_exact_expected_classes": {
+      "Mixed": 67157.01587301586,
+      "all_correct": 24238.24603174603,
+      "all_wrong": 77632.73809523808
+    },
+    "observed_G5_classes": {
+      "Mixed": {
+        "fraction": 0.39738386539508247,
+        "questions": 67169
+      },
+      "all_correct": {
+        "fraction": 0.14321295879972548,
+        "questions": 24207
+      },
+      "all_wrong": {
+        "fraction": 0.459403175805192,
+        "questions": 77652
+      }
+    },
+    "peak_RSS_bytes": 970022912,
+    "plan_regenerations": 0,
+    "question_order_SHA256": "9a9228a5279ed3f38c791a557b4d900cba3b44b918a4dd3af5c6cd1edc3384d6",
+    "question_order_is_lexically_sorted": false,
+    "questions": 169028,
+    "rank_progress": {
+      "0": {
+        "cursor": 678,
+        "epoch": 1,
+        "time": 1792701794.7337348
+      },
+      "1": {
+        "cursor": 678,
+        "epoch": 1,
+        "time": 1792701794.7336164
+      }
+    },
+    "seconds": 6.3573222160339355,
+    "source_P20_alignment": {
+      "bytes": 29999,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/P20-crosscheck-complete.json",
+      "sha256": "7c92730b6f711a25c9d8999314f188c4e53a3780437fcaa8583685ea8ea51a38"
+    },
+    "source_accepted_fixture": {
+      "bytes": 2822,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/fixture/accepted.json",
+      "sha256": "399ee700eadc5c767dae444d766f3b690458ec85e65ab8a7e4c9cf08f9b061a9"
+    },
+    "source_actual_plan": {
+      "bytes": 75673768,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed19137-plan2026102302-20261023-v3/sampling-plan-epoch-01.json",
+      "sha256": "3c0dd27fb666738459e35cf4b02baa86001c86ca9c762280268551a37c9a32bf"
+    },
+    "source_canonical_G10": {
+      "bytes": 127068810,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint169028-native-training-bank-v1/groups.json",
+      "sha256": "9b6616b041170e7b3fc3de5128376e12f971842360b7a79b178991941038915f"
+    },
+    "source_fixture": {
+      "bytes": 41653,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/fixture/fixture-complete.json",
+      "sha256": "745bdef27a1098603142a3e9f5506b4bd2777f8b699933923dbc1a208f44f1f8"
+    },
+    "source_goal6_helper": {
+      "bytes": 16383,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-terminal-CPU-acceptance-20261023-v1/code-693a81dfbbae/accept_full169028_L15P80_MSE_checkpoint.py",
+      "sha256": "40e308e6a3c65bc0132c7b249939059775f4513d867576e8df74fa7aabc61448"
+    },
+    "source_physical_contract": {
+      "bytes": 3529468,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/physical-source-contract.json",
+      "sha256": "8b6c59c2151cd27350e6c0e5763cdfbd0a8c36f3382662c48d6f9289834ca5b4"
+    },
+    "source_train_groups": {
+      "bytes": 133368410,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/fixture/inputs/train-groups.json",
+      "sha256": "4528712a7dd5f34e676e2bf2c2e8746b07ebda8112ed59ba100551c4891ae6f2"
+    },
+    "source_training_publication": {
+      "bytes": 2021,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed19137-plan2026102302-20261023-v3/source-publication.json",
+      "sha256": "c9538c9ee66d6d598fe9fe62740ad004746cd5b9da104b22418df7611eef13fa"
+    },
+    "status": "ACTUAL_FIRST_EPOCH_169028_UNIQUE_OWN_G5_CANONICAL_LABELS_AND_NATURAL_HARD_NEGATIVES_VERIFIED",
+    "time": 1792701795.2997444,
+    "train_plan_seed": 2026102302,
+    "training_source_or_labels_modified": false,
+    "trajectory_index_inclusion_counts": [
+      84271,
+      84070,
+      84473,
+      84662,
+      84923,
+      84564,
+      84784,
+      84354,
+      84509,
+      84530
+    ],
+    "trajectory_index_inclusion_expected_each": 84514.0,
+    "trajectory_index_inclusion_zscores": [
+      -1.182107418644987,
+      -2.1598999748081242,
+      -0.19945022289894843,
+      0.7199666582693748,
+      1.989637589406583,
+      0.24323197914505904,
+      1.3134526873833188,
+      -0.7783423332641889,
+      -0.024323197914505903,
+      0.0778342333264189
+    ],
+    "trajectory_position_index_counts": [
+      [
+        16818,
+        17025,
+        16900,
+        16758,
+        16943,
+        16733,
+        16949,
+        16887,
+        16901,
+        17114
+      ],
+      [
+        16782,
+        16660,
+        16968,
+        17094,
+        17215,
+        16960,
+        16994,
+        17007,
+        16695,
+        16653
+      ],
+      [
+        17166,
+        16619,
+        16778,
+        17040,
+        16916,
+        16902,
+        17037,
+        16789,
+        17011,
+        16770
+      ],
+      [
+        16805,
+        16768,
+        16796,
+        16886,
+        17127,
+        16967,
+        17043,
+        16759,
+        16968,
+        16909
+      ],
+      [
+        16700,
+        16998,
+        17031,
+        16884,
+        16722,
+        17002,
+        16761,
+        16912,
+        16934,
+        17084
+      ]
+    ],
+    "trajectory_visits": 845140,
+    "unique_questions": 169028,
+    "unique_selected_trajectory_ids": 845140
+  }
+}
