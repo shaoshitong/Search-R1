@@ -1,0 +1,59 @@
+{
+  "schema": "easy7b_requested_fastpath_coverage_v1",
+  "checked_unix": 1792690246.033632,
+  "active_runtime": "c7976da3afc863a1c20b99daa7cc99de3bb61f15",
+  "active_job": "749598",
+  "candidate_fa3": {
+    "proven": true,
+    "evidence": "native-prefix-deployment-and-first-outer-evidence.json",
+    "scope": "Actual positive native4 candidate prefill/decode counters"
+  },
+  "rollback_snapshots": {
+    "proven_removed_in_active_lean": true,
+    "source": "verl/workers/actor/dp_actor.py::_optimizer_step lean branch",
+    "independent_cost_evidence": "rollback-snapshot-measured-summary.json",
+    "actual_twenty_constructors_measured_per_rank": true
+  },
+  "weight_sync": {
+    "proven": true,
+    "evidence": "native-prefix-deployment-and-first-outer-evidence.json",
+    "actual_phase_sync_counts_each_rank": [
+      1,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "gradient_monitoring": {
+    "active_finite_scans_removed": true,
+    "active_extra_forward_count_each_rank": 0,
+    "remaining_measurement_scan": "Current c7976da still measures max_abs and postclip norm for logs",
+    "remaining_scan_code_fixed": "c14bedd9e897e4bed51de9c693a1ef29302b436d",
+    "candidate_native4_probe_job": "749812",
+    "candidate_native4_probe_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+    "candidate_native4_paired_actual_gradient_timing_pending": true,
+    "candidate_active_in_production": false
+  },
+  "compact_gqa": {
+    "active_Q_heads": 28,
+    "active_KV_heads": 4,
+    "actual_forward_backward_counters": true,
+    "sdpa_reference": "FP32 SDPBackend.MATH, causal dropout0 TF32 off",
+    "kernel_result": "fastpath-numerical-kernel-1792677643791054000.json",
+    "kernel_output_gradient_test_passed": true,
+    "scope": "packed lengths31..4096 and random attention block Q/K/V/O + RoPE gradients; not complete pretrained actor/Adam/QA equivalence"
+  },
+  "speed": {
+    "actual_full_completed_outers": [
+      55,
+      56
+    ],
+    "whole_mean_seconds": 1766.2105519771576,
+    "source": "native-prefix-two-complete-outers-summary.json",
+    "cross_policy_question_node_causal_claim": false
+  },
+  "goal_complete": false,
+  "remaining_work": "Actual native4 paired clipping placement/timing and any qualified activation; continue original training200/finalnative51713/seven metrics/fullarchive/actual final native4 recovery/no201",
+  "production_modified_for_new_diagnostic": false
+}

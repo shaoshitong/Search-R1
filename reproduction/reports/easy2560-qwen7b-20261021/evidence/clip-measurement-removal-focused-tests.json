@@ -1,0 +1,23 @@
+{
+  "checked_unix": 1792690202.2579079,
+  "source_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+  "production_modified": false,
+  "results": [
+    {
+      "command": "python3 -B -m unittest search_g1.test_gradient_clipping search_g1.test_actor_performance reproduction.common8.test_safety_calibration_evidence reproduction.common8.test_easy2560_monitor_identity reproduction.common8.test_native4_monitor_readers -q",
+      "tests": 59,
+      "elapsed_seconds": 5.861,
+      "status": "PASS"
+    },
+    {
+      "command": "python3 -B -m unittest reproduction.operations.easy7b_20261021.test_benchmark_clip_native4 -q",
+      "tests": 5,
+      "elapsed_seconds": 0.037,
+      "status": "PASS",
+      "scope": "CPU fixture of independently wrapped real clipping and toy backward/20Adam; not actual CUDA native4"
+    }
+  ],
+  "all64_passed": true,
+  "no_new_production_startup_gate": true,
+  "source_scope": "Core implementation c14bedd plus native4 wrapper and CPU fixture included in 2d51834; no production runtime changed."
+}
