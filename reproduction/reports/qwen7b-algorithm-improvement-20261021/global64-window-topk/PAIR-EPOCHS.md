@@ -4,5 +4,9 @@ Root-owned jobs current64=749889, window2018=749890. No final4096 read. Primary 
 
 | Cell | Epoch | Pool | State | BA% | AUC% | Top512 Mixed | FPR% | rho |
 |---|---:|---|---|---:|---:|---:|---:|---:|
+| current64 | 0 | fixed_train2048_G5 | EMA | 50.00 | 52.55 | 246/512 (48.05%) | 0.00 | 0.0490 |
+| current64 | 0 | fixed_train2048_G5 | raw | 50.00 | 52.55 | 246/512 (48.05%) | 0.00 | 0.0490 |
+| current64 | 0 | fixed_validation2048_G5 | EMA | 50.00 | 54.85 | 175/512 (34.18%) | 0.00 | 0.0835 |
+| current64 | 0 | fixed_validation2048_G5 | raw | 50.00 | 54.85 | 175/512 (34.18%) | 0.00 | 0.0835 |
 
 Only actual epoch receipts appear above; process start and queue status are not training acceptance. Each epoch audit is preserved in the small latest JSON and covers only its exact training-cache window, not a future or final pool.

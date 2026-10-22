@@ -1,41 +1,56 @@
 {
-  "time": 1792693658.702218,
+  "time": 1792693888.0097644,
   "observer_pid": 22661,
   "accounting": {
     "returncode": 0,
-    "stdout": "749889|PENDING|0:0|00:00:00|None assigned\n749890|PENDING|0:0|00:00:00|None assigned",
+    "stdout": "749889|RUNNING|0:0|00:02:13|ACD1-6\n749890|PENDING|0:0|00:00:00|None assigned",
     "stderr": ""
   },
   "queue": {
     "returncode": 0,
-    "stdout": "749889|q7b-L15P80-current64|acd_u|PENDING|2026-10-23T03:14:12|(Priority)\n749890|q7b-L15P80-window2018|acd_u|PENDING|2026-10-23T03:54:08|(Priority)",
+    "stdout": "749890|q7b-L15P80-window2018|acd_u|PENDING|2026-10-23T03:45:35|(QOSMaxGRESPerUser)",
     "stderr": ""
   },
   "cells": {
     "current64": {
       "job_id": "749889",
       "rank_attempts": [
-        null,
-        null
+        128,
+        128
       ],
       "rank_Adam_updates": [
-        null,
-        null
+        128,
+        128
       ],
       "rank_epochs": [
-        null,
-        null
+        1,
+        1
       ],
-      "last_six_actual_Adam_steps": [],
-      "last_six_steps_consecutive": false,
-      "N_eff": null,
-      "K": null,
-      "history": null,
-      "initial_head_sha256": null,
-      "evaluations": [],
-      "audits": [],
+      "last_six_actual_Adam_steps": [
+        123,
+        124,
+        125,
+        126,
+        127,
+        128
+      ],
+      "last_six_steps_consecutive": true,
+      "N_eff": 64,
+      "K": 16,
+      "history": 0,
+      "initial_head_sha256": "777b9a7c77d0402084fcb99929b05c975011e8bf17fe44e4cfe1db016bb02327",
+      "evaluations": [
+        "evaluation-epoch-00.json"
+      ],
+      "audits": [
+        "score-window-audit-epoch-01.json"
+      ],
       "failures": {},
-      "checkpoint": null
+      "checkpoint": {
+        "bytes": 3777431252,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/current64/checkpoint-epoch-01.pt",
+        "sha256": "156f8fa114ffe47ac2b466e65d832beb78b30f096262042cdf2b53e8dbb7068b"
+      }
     },
     "window2018": {
       "job_id": "749890",
