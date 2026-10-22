@@ -110,7 +110,7 @@ def run(args):
  groups=read(SUITE/'inputs/train-groups.json');validation=read(SUITE/'inputs/validation-groups.json');fixed_train=read(SUITE/'inputs/fixed-train2048.json');torch.manual_seed(9137);np.random.seed(9137);random.seed(9137)
  if rank==0:atomic(base/'controller.json',dict(pid=os.getpid(),job_id=os.environ['SLURM_JOB_ID'],stage='LOADING_FROZEN_OFFICIAL_ACTOR_FOR_ONLINE_PREFILL',layer=args.layer,capture_layer=args.layer-1,prefix=args.prefix,world_size=4,training_questions=8192,training_G5_per_epoch=8192,validation_questions=2048,raw_gradient_updates_EMA=True,EMA_decay=.99,fresh_official_block_and_head=True,not_E1_continuation=True,hidden_feature_cache=False,final4096_read=False,time=time.time()))
  model_dir=B/'assets/qwen25-7b-instruct-a09a35458c70';actor=AutoModel.from_pretrained(str(model_dir),local_files_only=True,torch_dtype=torch.bfloat16,attn_implementation='flash_attention_2').to(device).eval().requires_grad_(False)
- block=copy.deepcopy(actor.layers[args.layer]).float();rotary=copy.deepcopy(actor.rotary_emb).float();actor.layers=nn.ModuleList(list(actor.layers[:args.layer]));actor.norm=nn.Identity();torch.cuda.empty_cache()
+ block=copy.deepcopy(actor.layers[args.layer]).float().requires_grad_(True);rotary=copy.deepcopy(actor.rotary_emb).float();actor.layers=nn.ModuleList(list(actor.layers[:args.layer]));actor.norm=nn.Identity();torch.cuda.empty_cache()
  head=MixedTokenHead();
  if args.prefix!=20:
   slots=nn.Embedding(args.prefix,256);slots.weight.data[:20].copy_(head.policy_slots.weight.data);head.policy_slots=slots;head.prefix=args.prefix
@@ -165,10 +165,11 @@ def run(args):
     sub=batch[lo:lo+8];sl={k:v[lo*5:(lo+len(sub))*5]for k,v in data.items()};target=torch.tensor([v['true_mixed']for v in sub],device=device,dtype=torch.float32);weights=torch.tensor([len(plan)/(2*counts[v['true_mixed']])for v in sub],device=device)
     with torch.autocast('cuda',dtype=torch.bfloat16):logits=ddp(sl);loss=(torch.nn.functional.binary_cross_entropy_with_logits(logits,target,reduction='none')*weights).sum()/len(batch)
     loss.backward();lossnum+=float(loss.detach())
+   native_grad_norm=math.sqrt(sum(float(p.grad.detach().float().square().sum())for p in probe.block.parameters()if p.grad is not None));head_grad_norm=math.sqrt(sum(float(p.grad.detach().float().square().sum())for p in probe.group_head.parameters()if p.grad is not None));assert native_grad_norm>0 and head_grad_norm>0
    torch.nn.utils.clip_grad_norm_(probe.parameters(),1.);optim.step()
    with torch.no_grad():
     for p,e in zip(probe.parameters(),ema.parameters()):e.mul_(.99).add_(p,alpha=.01)
-   cursor+=1;cumulative+=lossnum;progress=dict(stage='ONLINE_PREFILL_REAL_MIXED_UPDATES',epoch=epoch,cursor=cursor,rank=rank,epoch_questions_seen=offset+len(batch),epoch_unique_questions=8192,prefill_seconds=prefill,train_seconds=time.monotonic()-train_start,loss=lossnum,global_batch_questions=128,trajectory_rows_per_rank=len(batch)*5,layer=args.layer,prefix=args.prefix,time=time.time());atomic(base/('progress-rank-%d.json'%rank),progress)
+   cursor+=1;cumulative+=lossnum;progress=dict(stage='ONLINE_PREFILL_REAL_MIXED_UPDATES',epoch=epoch,cursor=cursor,rank=rank,epoch_questions_seen=offset+len(batch),epoch_unique_questions=8192,prefill_seconds=prefill,train_seconds=time.monotonic()-train_start,loss=lossnum,native_gradient_L2=native_grad_norm,head_gradient_L2=head_grad_norm,global_batch_questions=128,trajectory_rows_per_rank=len(batch)*5,layer=args.layer,prefix=args.prefix,time=time.time());atomic(base/('progress-rank-%d.json'%rank),progress)
    if rank==0:
     print(json.dumps(progress),flush=True)
     with(base/'curve.jsonl').open('a')as f:f.write(json.dumps(progress)+'\n')
