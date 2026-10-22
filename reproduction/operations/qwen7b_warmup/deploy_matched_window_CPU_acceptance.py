@@ -15,14 +15,14 @@ for name,ref in v['files'].items():
 entries=[]
 for suite,cell in [('online-packed-matched-L15P80-8192-20261023-v1',n)for n in('mse-Mrandom','mse-M5','mixed-bce-Mrandom','mixed-bce-M5')]+[('online-packed-global64-window2018-L15P80-8192-20261023-v1',n)for n in('current64','window2018')]:
  base=A/suite/cell;pub=json.loads((base.parent/'source-publication.json').read_bytes());root=pathlib.Path(pub['code_root']);runtime=root/'reproduction/operations/qwen7b_warmup/runtime.sh';assert runtime.is_file();entry=code/(cell+'.sh')
- text='#!/usr/bin/env bash\nset -euo pipefail\nexport CUDA_VISIBLE_DEVICES="" OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONDONTWRITEBYTECODE=1 QWEN7B_CODE_ROOT='+repr(str(root))+'\nexec bash '+repr(str(runtime))+' -u '+repr(str(code/'accept_matched_window_checkpoint.py'))+' --base '+repr(str(base))+' --source-sha '+v['files']['accept_matched_window_checkpoint.py']['sha256']+' "$@"\n'
+ text=chr(10).join(['#!/usr/bin/env bash','set -euo pipefail','export CUDA_VISIBLE_DEVICES="" OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONDONTWRITEBYTECODE=1 QWEN7B_CODE_ROOT='+repr(str(root)),'exec bash '+repr(str(runtime))+' -u '+repr(str(code/'accept_matched_window_checkpoint.py'))+' --base '+repr(str(base))+' --source-sha '+v['files']['accept_matched_window_checkpoint.py']['sha256']+' "$@"',''])
  if entry.exists():assert entry.read_text()==text
  else:entry.write_text(text)
  subprocess.check_call(['bash','-n',str(entry)]);entries.append(dict(cell=cell,base=str(base),entry=proof(entry),training_source_publication=proof(base.parent/'source-publication.json')))
 result=dict(status='MATCHED_WINDOW_TERMINAL_ONLY_CPU_ACCEPTOR_STAGED_NOT_STARTED',source_commit=v['commit'],files={n:proof(code/n)for n in v['files']},entries=entries,shared_global_CPU_lock=str(A/'online-mixed-P80-handoff-CPU-acceptance-20261023-v1/acceptance.lock'),checkpoints_opened=False,GPU_or_Slurm_action=False,final4096_read=False)
 path=code/'staged.json'
 if path.exists():assert json.loads(path.read_bytes())==result
-else:path.write_text(json.dumps(result,sort_keys=True)+'\n')
+else:path.write_text(json.dumps(result,sort_keys=True)+chr(10))
 print(json.dumps(result))
 '''
 def main():
@@ -33,4 +33,5 @@ def main():
  spec=importlib.util.spec_from_file_location('private_control',ROOT/'work/prefix-schedule-cp50-20261018/reproduction/hpc3_prefix5/direct_control.py');ctl=importlib.util.module_from_spec(spec);spec.loader.exec_module(ctl);address=subprocess.check_output(['/usr/sbin/ipconfig','getifaddr','en0'],text=True).strip();r=ctl.run(command,account='mou176',source_address=address,timeout=35)
  if r.returncode:raise RuntimeError(repr(r.stdout[-1500:])+repr(r.stderr[-1500:]))
  result=json.loads(r.stdout);out=R/'reproduction/reports/qwen7b-algorithm-improvement-20261021/matched-window-CPU-acceptance';out.mkdir(exist_ok=True,parents=True);(out/'actual-stage.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
+compile(REMOTE,'remote_CPU_acceptor_stage','exec')
 if __name__=='__main__':main()
