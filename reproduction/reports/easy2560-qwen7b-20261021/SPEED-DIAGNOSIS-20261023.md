@@ -1,12 +1,14 @@
 # 7B Easy2560 四卡训练：整轮速度归因
 
-正式训练已切换到优化实现。作业 `749598`，`ACD1-14` 四张 H100，运行源码
-`c7976da3afc863a1c20b99daa7cc99de3bb61f15`。实际从完整第54轮状态恢复，四卡
-model／Adam／scheduler／RNG 和 driver／数据流游标回读一致。第55轮四卡各完成20次
-Adam更新，完整断点已封存。第56—59轮随后也完成并封存，第60轮候选生成已实际
-开始。第55—59轮完整壁钟均值1741.910秒，即29分02秒；训练继续到200轮，
-不允许update201。去除剩余梯度日志扫描的`2d51834`版本已完成独立四卡配对验证，
-尚未在生产激活；计划在第60轮完整断点后按已有授权切换。
+旧作业 `749598` 在 `ACD1-14` 四张H100上运行源码
+`c7976da3afc863a1c20b99daa7cc99de3bb61f15`，现已完整完成并封存第60轮，
+四卡各累计1200次Adam、scheduler60。第55—59轮完整壁钟均值1741.910秒，
+即29分02秒的性能历史保持有效。完整第60轮断点后按已有授权取消旧作业，
+唯一续训作业 `750029` 已于2026-10-23 03:33:27CST在ACD1-14分配四张H100、
+48CPU、512G；03:35实测为RUNNING，去除剩余梯度日志扫描的runtime
+`2d5183455551145c52d1783a38663e2fcf170ceb` 身份匹配。检索745198继续运行。
+四卡实际GPU恢复和第61轮完整更新尚未通过，第61—65轮及第66轮开始仍待验证；目标仍为200轮，
+不允许update201。
 
 ## 为什么局部接近两倍，整轮没有接近两倍
 
@@ -24,7 +26,7 @@ Adam更新，完整断点已封存。第56—59轮随后也完成并封存，第
 的独立测试中，active batch16时FA3比XFormers慢18.6%；batch32和64分别少用约6.3%
 和14.0%时间。这是限定形状测试，没有正式训练batch直方图，不能套用到全部rollout。
 
-## 当前正式训练的实测
+## 旧作业完整轮次的实测
 
 | 完整轮次 | 候选生成 | Actor更新 | 含完整断点写入／封存和轮间工作的整轮时间 |
 | --- | ---: | ---: | ---: |
@@ -57,15 +59,16 @@ checkpoint为91,405,594,385字节，manifest SHA为
 91,405,595,410字节已封存，manifest SHA为
 `e412b2a50829fea49347f71a313206485ceb4cee5a82f33ea674be790f20ed70`。
 第59轮选中490／512道混合题（95.70%），训练EM日志四舍五入为53.9%，reward
-均值0.697。第60轮已留下实际`0-before-generation.pt`，候选生成开始；该观测不
-等于第60轮完成，也未出现第60轮完整更新结果。
+均值0.697。第60轮随后也完整完成：四卡各累计1200次Adam、scheduler60，
+完整断点91,405,595,410字节已封存，manifest SHA为
+`b1dbae539f4a1e1513293b930009bac19f84a83358c90d3d427958860ee31ed5`。
 
 第55—59轮完整均值按连续生成边界计算：
 `(mtime60 - mtime55) / 5 = (1792694894.188066 - 1792686184.637950) / 5`
 `= 1741.910秒`，即29分02秒，较旧第52轮观测耗时少12.52%。这个口径包括完整
 断点写入、封存和轮间工作，不能用日志里的`candidate_fill + timing_s/step`替代；
-仍不将不同轮问题和policy下的差值当作同输入因果收益。未观察到新训练错误，
-继续推进同一生产目标的100／150／200里程碑。见
+仍不将不同轮问题和policy下的差值当作同输入因果收益。这是旧749598在完成60轮
+后取消前的历史计时，不代表已RUNNING的750029已经通过实际GPU恢复和完整迭代。见
 [五轮完整计时与第59轮完整断点](evidence/native-prefix-five-complete-outers-summary.json)。
 
 发现的另一个CPU开销是反复经过Hugging Face层进行前缀解码。对同一1024条已有
@@ -97,7 +100,7 @@ actor为Q28／KV4；每卡五个候选阶段的权重同步次数为 `[1,0,0,0,0
 273.788秒，节点和计时包装与原266.079秒实验不同，不能精确相减分摊其他检查
 的独立耗时。直接测得的119–123秒说明CPU快照确实是旧版更新阶段的大项。
 
-## 剩余梯度日志扫描：实际四卡配对通过，生产尚未切换
+## 剩余梯度日志扫描：实际四卡配对通过，新续训GPU恢复待验证
 
 复核发现旧lean虽已关闭所有有限性检查，仍为日志计算max_abs并重扫裁剪后全部
 梯度范数。源码`c14bedd9e897e4bed51de9c693a1ef29302b436d`让lean跳过这些
@@ -133,10 +136,27 @@ clip body约2.40—2.50倍，但正式每outer只有20次clip，对应约3秒／
 不是两个独立完整训练的全部Adam状态或最终QA质量相等的证明。见
 [实际四卡全梯度配对与计时](evidence/clip-native4-paired-final-summary.json)。
 
-下一版源码`2d5183455551145c52d1783a38663e2fcf170ceb`及独立运行环境已准备，
-生产749598仍运行`c7976da`，未热改。计划在第60轮完整checkpoint封存后按已有
-授权，使用完整断点恢复流程切换；这里记录计划，不代表已停止旧作业或启动新版。
-准备结果见[目标环境准备回执](evidence/leanmetrics-target-preparation-1792690562356391000.json)。
+下一版源码`2d5183455551145c52d1783a38663e2fcf170ceb`及独立运行环境已准备。
+完整60断点后，按人类2026-10-22 13:34:40UTC的既有条件授权，于03:17:44CST
+取消旧749598；03:18:35回读终态为`CANCELLED by14090 / 0:0`。随后既有CPU
+恢复读取从03:18:51运行至03:23:30，约279秒，通过
+`EASY2560_NATIVE4_FULL_SHA_CPU_STATES_PASS`，receipt SHA为
+`6651c5ff154eb43fb644e3bc754dbf2536bf67a6e77360b9d09955b81de51cd5`。
+完整模型／Adam／scheduler／RNG／数据边界保留，不从零训练或重置Adam；CPU
+读核验通过不等于新四卡已实际恢复。
+
+唯一新作业750029已于2026-10-23 03:33:27CST在ACD1-14分配四张H100、
+48CPU、512G，分区emergency_acd、7天。03:35实测RUNNING且runtime2d身份匹配，
+实际四卡GPU恢复与第61轮完整迭代尚未通过，61—65完整更新及66开始仍待验收；
+不能把RUNNING或源码身份匹配当作恢复／训练验收。检索745198保持运行；
+独立绑定750029的100／150／200归档pair，CPU core640634／companion640635
+同birth身份实际live且轮询推进，无错误。见
+[完整断点切换进展](evidence/leanmetrics-transition-progress.json)与
+[目标环境准备回执](evidence/leanmetrics-target-preparation-1792690562356391000.json)。
+
+最后补丁只有约3秒／轮的组件收益，不值得为此失去已有allocation再排队；
+**这次切换时机判断错误**。完整状态已保留，但不能用局部clip的2.5倍掩盖实际
+排队代价，也没有新版本正式整轮提速结果。
 
 一次SSH观测通道超时／认证前断连已经保存原始小型错误回执；随后原固定路由恢复，
 当时749812仍为PENDING(Resources)，未观察到诊断或生产作业故障。没有据观测超时
@@ -169,6 +189,13 @@ CUDA初始化报unknown error，available devices变为zero，actual_clipping_ca
 见[真实失败与唯一恢复记录](evidence/clip-native4-node-failure-and-recovery-summary.json)。
 恢复作业749913已完成上述实际四卡配对验收；749812仅保留为历史失败证据。
 
+随后独立节点健康短测750051在ACD1-13真实`FAILED / 1:0`，用时8秒，四rank
+均读到`cudaDeviceCount=3`，虽然`CUDA_VISIBLE_DEVICES=0,1,2,3`。没有进入
+model／forward／NCCL；此结果保留，不改变正式750029对该节点的排除。
+其余健康节点实测最多3张空GPU，没有可同时提供4张空GPU的健康节点，因而没有
+降低CPU／内存请求制造无用改动。见
+[节点13实际健康短测](evidence/node13-health-final-summary.json)。
+
 ## 数值与证据范围
 
 前缀解码优化不改模型前向、loss、reward、采样和截断逻辑。紧凑GQA已有独立输出／
@@ -200,6 +227,8 @@ CUDA初始化报unknown error，available devices变为zero，actual_clipping_ca
 - [四轮完整计时与第58轮完整断点](evidence/native-prefix-four-complete-outers-summary.json)
 - [五轮完整计时与第59轮完整断点](evidence/native-prefix-five-complete-outers-summary.json)
 - [实际四卡全梯度配对与计时](evidence/clip-native4-paired-final-summary.json)
+- [完整60断点与续训排队状态](evidence/leanmetrics-transition-progress.json)
+- [节点13实际健康短测](evidence/node13-health-final-summary.json)
 - [此前候选实际工作量与内核形状测试](evidence/fa3-production-speed-cause-20261022.json)
 - [四卡20次回滚快照的独立计时](evidence/rollback-snapshot-measured-summary.json)
 - [同legacy重复20步的样本差异](evidence/rollback-snapshot-legacy-repeatability-summary-20261023.json)

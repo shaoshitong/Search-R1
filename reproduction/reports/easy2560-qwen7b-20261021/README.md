@@ -1,10 +1,12 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
-**Current evidence, 2026-10-23:** production job `749598` runs immutable
-`c7976da3afc863a1c20b99daa7cc99de3bb61f15` on four H100 at `ACD1-14`.
-Actual native4 model/Adam/scheduler/RNG/data restoration from completed54 passed;
-outers55–59 completed and their full rolling checkpoints were sealed; outer60
-has saved candidate chunks. Complete outer55–59 wall time averaged **29m02s**,
+**Current evidence, 2026-10-23:** job `749598`, immutable runtime
+`c7976da3afc863a1c20b99daa7cc99de3bb61f15`, completed and sealed CP60 on four
+H100 at `ACD1-14`: all four ranks reached Adam1200/scheduler60. Its complete
+checkpoint is91,405,595,410 bytes, manifest SHA
+`b1dbae539f4a1e1513293b930009bac19f84a83358c90d3d427958860ee31ed5`.
+The completed54 native4 model/Adam/scheduler/RNG/data restore and complete55–59
+performance history remain valid. Complete outer55–59 wall time averaged **29m02s**,
 including checkpoint write/seal and inter-outer work. This is an observational
 12.5% time reduction relative to old outer52, not a same-input causal comparison.
 Actor and candidate FA3 execution, compact GQA, one weight sync for five candidate
@@ -19,8 +21,39 @@ bitwise-equal full gradients and preclip norms. Old/new20-clip bodies took about
 5.01/2.05 seconds per rank; the approximately3-second saving is a component
 measurement, not a whole-outer2.5x gain. Prior probe749812 failed in CUDA
 initialization onACD1-13 before any clipping or Adam; evidence is retained.
-The prepared new continuation remains unsubmitted, pending complete60 and the
-already-authorized checkpoint transition. Healthy production is not hot-edited.
+After CP60 was sealed, the existing human conditional authorization of
+2026-10-22 13:34:40UTC was exercised: old job749598 was cancelled at03:17:44CST;
+at03:18:35 its terminal state was `CANCELLED by14090 / 0:0`. The existing CPU
+full-state recovery read ran03:18:51–03:23:30 (about279 seconds) and passed
+`EASY2560_NATIVE4_FULL_SHA_CPU_STATES_PASS`, receipt SHA
+`6651c5ff154eb43fb644e3bc754dbf2536bf67a6e77360b9d09955b81de51cd5`.
+This preserves CP60 and its Adam state; the continuation does not restart from
+zero or reset Adam. CPU readback is not actual GPU restoration acceptance.
+
+The unique continuation750029 was allocated four H100/48CPU/512G onACD1-14 at
+2026-10-23 03:33:27CST, in `emergency_acd` for seven days. The03:35 observation
+shows `RUNNING` and runtime identity matching
+`2d5183455551145c52d1783a38663e2fcf170ceb`. Allocation and matching runtime do
+**not** establish actual GPU restoration or a completed outer61: both remain
+unverified, as do complete61–65 and the start of66. Retriever745198 remains running.
+The independently bound archive pair for750029 milestones100/150/200 has CPU
+core640634/companion640635 live at the same recorded birth identities, with
+polling advancing and no errors. See
+[checkpoint transition progress](evidence/leanmetrics-transition-progress.json).
+
+Node-health probe750051 independently failed1:0 after8 seconds onACD1-13:
+all four ranks saw `cudaDeviceCount=3` despite `CUDA_VISIBLE_DEVICES=0,1,2,3`;
+no model, forward or NCCL step ran. Formal750029 keeps its node exclusion.
+No healthy node currently supplies four idle GPUs (the maximum observed is
+three), so lowering CPU/RAM requests would not resolve the measured GPU shortage.
+See [node13 health result](evidence/node13-health-final-summary.json).
+
+The last patch saves only about3 seconds per outer at the measured component
+level. That did not justify surrendering the existing allocation and queuing
+again: **the timing of this transition was a judgment error**. The complete
+training state is retained, but the queue delay is real and is not offset by
+calling the clip component2.5x faster.
+
 The remaining sections below retain the original Oct21 preparation history;
 their descriptions of optimizations as unimplemented are historical. The
 200/no201, native51713, seven-source metrics, full archive and actual final

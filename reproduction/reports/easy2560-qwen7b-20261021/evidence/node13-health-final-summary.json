@@ -1,0 +1,88 @@
+{
+  "schema": "easy7b_node13_actual_cuda_visibility_failure_v1",
+  "job": "750051",
+  "root": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022/diagnostics/node13-health-after749812-r1-20261023",
+  "source_commit": "cebd7a760f501055a50c372cc3a523c5230e8ae7",
+  "observed_unix": 1792697528.8563688,
+  "accounting": {
+    "returncode": 0,
+    "stdout": "750051|jxu957|FAILED|1:0|00:00:08|ACD1-13\n",
+    "stderr": ""
+  },
+  "actual_allocation": {
+    "returncode": 0,
+    "stdout": "JobId=750051 JobName=easy7b-node13-health UserId=jxu957(14090) GroupId=mhq_share(21919) MCS_label=N/A Priority=10030 Nice=0 Account=jxu957 QOS=formal-user JobState=FAILED Reason=NonZeroExitCode Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=1:0 RunTime=00:00:08 TimeLimit=00:02:00 TimeMin=N/A SubmitTime=2026-10-23T03:29:28 EligibleTime=2026-10-23T03:29:28 AccrueTime=2026-10-23T03:29:28 StartTime=2026-10-23T03:29:52 EndTime=2026-10-23T03:30:00 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-23T03:29:52 Scheduler=Backfill Partition=emergency_acd AllocNode:Sid=ACD-Login-1:1680143 ReqNodeList=ACD1-13 ExcNodeList=(null) NodeList=ACD1-13 BatchHost=ACD1-13 NumNodes=1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=8,mem=32G,node=1,billing=8,gres/gpu=4 AllocTRES=cpu=8,mem=32G,node=1,billing=8,gres/gpu=4 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=8 MinMemoryNode=32G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022/diagnostics/node13-health-after749812-r1-20261023/job.sh WorkDir=/data/user/jxu957 StdErr=/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022/diagnostics/node13-health-after749812-r1-20261023/slurm.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022/diagnostics/node13-health-after749812-r1-20261023/slurm.log Power= TresPerNode=gres/gpu:4 TresPerTask=cpu:8 \n",
+    "stderr": ""
+  },
+  "actual_allocated_gpus": 4,
+  "ranks": {
+    "0": {
+      "rank": 0,
+      "slurm_job_id": "750051",
+      "hostname": "ACD1-13",
+      "started_unix": 1792697399.471642,
+      "cuda_visible_devices": "0,1,2,3",
+      "model_loaded": false,
+      "training_updates": 0,
+      "status": "FAILED",
+      "cuda_device_count": 3,
+      "error_type": "AssertionError",
+      "error": "",
+      "finished_unix": 1792697399.5302274
+    },
+    "1": {
+      "rank": 1,
+      "slurm_job_id": "750051",
+      "hostname": "ACD1-13",
+      "started_unix": 1792697399.468151,
+      "cuda_visible_devices": "0,1,2,3",
+      "model_loaded": false,
+      "training_updates": 0,
+      "status": "FAILED",
+      "cuda_device_count": 3,
+      "error_type": "AssertionError",
+      "error": "",
+      "finished_unix": 1792697399.5272422
+    },
+    "2": {
+      "rank": 2,
+      "slurm_job_id": "750051",
+      "hostname": "ACD1-13",
+      "started_unix": 1792697399.4687884,
+      "cuda_visible_devices": "0,1,2,3",
+      "model_loaded": false,
+      "training_updates": 0,
+      "status": "FAILED",
+      "cuda_device_count": 3,
+      "error_type": "AssertionError",
+      "error": "",
+      "finished_unix": 1792697399.5352235
+    },
+    "3": {
+      "rank": 3,
+      "slurm_job_id": "750051",
+      "hostname": "ACD1-13",
+      "started_unix": 1792697399.4713125,
+      "cuda_visible_devices": "0,1,2,3",
+      "model_loaded": false,
+      "training_updates": 0,
+      "status": "FAILED",
+      "cuda_device_count": 3,
+      "error_type": "AssertionError",
+      "error": "",
+      "finished_unix": 1792697399.532241
+    }
+  },
+  "model_loaded": false,
+  "training_updates": 0,
+  "forward_backward_reached": false,
+  "nccl_reached": false,
+  "formal750029_exclusion_changed": false,
+  "formal_resubmitted": false,
+  "decision": "KeepACD1-13 excluded. Negative health result; do not replay this test without actual external node change. Hardware root cause not established.",
+  "evidence": [
+    "node13-health-submit-1792697368849014000.json",
+    "node13-health-live-1792697413985307000.json",
+    "node13-health-final-allocation-1792697528965997000.json"
+  ]
+}
