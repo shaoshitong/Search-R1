@@ -1,0 +1,44 @@
+{
+  "status": "PACKED_Z_E8_DEV2048_TRAJECTORY_ORDER_AUDIT_STAGED_NOT_SUBMITTED",
+  "entry": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/packed-Z-E8-trajectory-permutation-audit-20261023-v1/audit.sbatch",
+    "bytes": 1510,
+    "sha256": "f028372b9c94b43f425a246a72bb8e153529eace685f861baeb32d9c62813e78"
+  },
+  "config": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/packed-Z-E8-trajectory-permutation-audit-20261023-v1/audit-config.json",
+    "bytes": 2869,
+    "sha256": "41fbd8e36070501a257fd068f41615f05d09f0ee50d3ebfc8736b64daabced16"
+  },
+  "source_publication": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/packed-Z-E8-trajectory-permutation-audit-20261023-v1/source-publication.json",
+    "bytes": 1170,
+    "sha256": "b5c6a8dd54426d8a897094e205bf86e7205acfc539724bb4470388acb55b3d45"
+  },
+  "checkpoint": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/checkpoint-epoch-08.pt",
+    "bytes": 3773206036,
+    "sha256": "2d81f15cd4af00fe192963cba6f6db86aba22bf47523bd3e10982b86f7178483"
+  },
+  "CPU_packing_tests_passed": true,
+  "CPU_tests": 3,
+  "checkpoint_contents_opened": false,
+  "checkpoint_fresh_SHA_deferred_to_owned_GPU_job": true,
+  "final4096_read": false,
+  "Slurm_submitted": false,
+  "resources": {
+    "GPUs": 2,
+    "CPUs": 12,
+    "memoryGiB": 128,
+    "partition": "acd_u",
+    "qos": "normal",
+    "time": "00:25:00"
+  },
+  "expected_work": {
+    "questions": 2048,
+    "orders": 3,
+    "actor_prefill_rows": 6144,
+    "raw_EMA_share_actor_features": true
+  },
+  "existing_jobs_changed": false
+}
