@@ -7,10 +7,17 @@ with zero extra monitor forwards. The required post-restore five-outer follow-up
 is accepted. The overall200-outer experiment and final acceptance remain incomplete.
 See [five complete post-restore outers](evidence/leanmetrics-five-complete-outers-summary.json).
 
-Outer66 has subsequently performed all20 real Adam updates on each of four
-ranks, reaching1320 writes. Its checkpoint save has actually started; at the
-latest evidence it is not yet sealed, so CP65 remains the durable boundary.
-See [outer66 update/save progress](evidence/leanmetrics-outer66-progress-summary.json).
+Outer66 subsequently completed all20 real Adam updates on each of four ranks,
+reaching1320 writes, and its full checkpoint is sealed. Manifest SHA is
+`16f35596a5b89354e89d6ded00a1d036434d1e0cffe9f1f3708e7a22b1b3a64a`.
+At the next actual observation, outer67 has saved1024 candidate questions.
+See [CP66 seal and actual67 progress](evidence/leanmetrics-outer66-sealed67-progress-summary.json).
+
+The private batching service is now submitted once as750396 on2H100, using
+immutable source0f48a49. The real native4 candidate A/B uses hardlinked HF policy66
+and all five fixed parent chunks. It regenerates trajectories with that policy;
+the saved parent artifacts came from outer66 under the earlier pre-update policy65.
+This is an inference-only diagnostic; production750029 and retriever745198 continue.
 
 Natural candidate-generation counters identify a concrete remaining serial path:
 the local proxy and external retriever synchronously handle single-query calls.
