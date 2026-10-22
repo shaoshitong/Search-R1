@@ -12,7 +12,7 @@ for _ in range(40):
     result = subprocess.run(['python3', str(CONTROL), str(HERE / 'read-actual-natural-progress.py'),
                              '--timeout', '30'], cwd=REPOSITORY, capture_output=True, text=True)
     if result.returncode:
-        print(json.dumps({'observer_error': result.stderr[-2000:], 'returncode': result.returncode}), flush=True)
+        print(json.dumps({'observer_error': result.stderr[-2000:], 'stdout_tail': result.stdout[-2000:], 'returncode': result.returncode}), flush=True)
         break
     snapshot = json.loads(result.stdout)
     (HERE / 'actual-natural-progress-latest.json').write_text(json.dumps(snapshot, sort_keys=True) + '\n')

@@ -1,6 +1,6 @@
 {
   "recorded_epoch": 1792683889.06618,
-  "goal_status": "ACTIVE_NOT_ACHIEVED",
+  "goal_status": "ACTIVE_NOT_ACHIEVED_NEW_LOSS_COMPARISON_PREPARING",
   "network_permission": "USER_REAUTHORIZED_FRESH_SSH_AND_GIT_SUCCESS",
   "last_remote_observation_epoch": 1792683816.57811,
   "last_remote_observation_CST": "2026-10-22T23:43:36.578110+08:00",
@@ -526,6 +526,21 @@
           }
         }
       }
+    },
+    "latest_human_update": {
+      "full_training_questions": 169028,
+      "epochs": 10,
+      "EMA_decay": 0.9995,
+      "independent_matched_losses": [
+        "MSE_on4variance",
+        "MAE_on4variance",
+        "globalbatch_zMSE_plus_original4v_MSE_anchor1"
+      ],
+      "loss_reporting": "original_variance_units_for_comparison",
+      "same_fresh_official_initialization": true,
+      "no_existing_job_hot_changed": true,
+      "status": "PREPARING_NOT_YET_SUBMITTED",
+      "normalization": "own current globalbatch mean/populationSTD of prediction and target; prediction statistics differentiable; no validation stats"
     }
   },
   "resume_after_network_permission_restored": [
@@ -547,5 +562,23 @@
     "last_denied_epoch": 1792682816,
     "restored_after_user_authorization_epoch": 1792683071,
     "no_remote_job_cancelled_or_restarted": true
+  },
+  "login_incident": {
+    "observed_epoch": 1792684233.248137,
+    "hostname": "ACD-Login-2",
+    "uid": 21930,
+    "uptime": "up3min",
+    "data_mount": {
+      "target": "/data",
+      "source": "/LK02",
+      "type": "dpc",
+      "options": "rw,relatime",
+      "st_dev": 47
+    },
+    "exact_existing_task_root_exists": true,
+    "slurm_primary_and_backup_UP": true,
+    "cause_evidence": "login just restarted; temporary shared-storage and Slurm initialization unavailable, then actual restored",
+    "model_training_failure_not_inferred": true,
+    "existing_jobs_not_cancelled_or_restarted": true
   }
 }

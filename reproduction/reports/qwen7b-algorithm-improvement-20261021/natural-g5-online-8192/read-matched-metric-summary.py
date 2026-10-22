@@ -3,5 +3,5 @@ b=pathlib.Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-2026
 for layer,epochs in x['metrics'].items():
  for epoch,pools in epochs.items():
   for pool,value in pools.items():
-   out.append(dict(layer=layer,epoch=int(epoch),pool=pool,models={label:{scheme:{k:row[k]for k in('binary_Mixed_BCE','balanced_accuracy','Mixed_recall','nonMixed_false_positive_rate','selected512')}for scheme,row in data.items()if scheme!='delta'}for label,data in value['metrics'].items()},deltas={label:data['delta']for label,data in value['metrics'].items()}))
+   out.append(dict(layer=layer,epoch=int(epoch),pool=pool,models={label:{scheme:{k:row[k]for k in('binary_Mixed_BCE','balanced_accuracy','Mixed_recall','nonMixed_false_positive_rate','selected512','confusion','classwise')}for scheme,row in data.items()if scheme!='delta'}for label,data in value['metrics'].items()},deltas={label:data['delta']for label,data in value['metrics'].items()}))
 print(json.dumps(dict(status=x['status'],rows=out,initial_logits=x['initial_raw_EMA_max_logit_difference_by_layer_pool'],missing=len(x['missing']),final4096_read=False)))
