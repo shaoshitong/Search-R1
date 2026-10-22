@@ -11,10 +11,11 @@ import subprocess
 import time
 
 
-def stop(target_base):
+def stop(target_base, authorization_path=None):
     from reproduction.easy2560_joint4.control import own_base, publish, sha
     target = own_base(target_base)
-    authorization_path = Path(__file__).with_name('human-fa3-sdpa-transition-authorization.json')
+    authorization_path = (Path(authorization_path) if authorization_path is not None else
+                          Path(__file__).with_name('human-fa3-sdpa-transition-authorization.json'))
     authorization = json.loads(authorization_path.read_text())
     source = own_base(authorization['source_base'])
     job = authorization['source_job']
@@ -65,4 +66,6 @@ def stop(target_base):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--target-base', required=True)
-    print(json.dumps(stop(parser.parse_args().target_base)), flush=True)
+    parser.add_argument('--authorization-json')
+    args = parser.parse_args()
+    print(json.dumps(stop(args.target_base, args.authorization_json)), flush=True)
