@@ -26,6 +26,8 @@ Same fixed trainB2048 and viewed development2048 ownG5. Both raw/EMA and all com
 | seed2 | 5 | EMA | 72.78% | 405/512 (79.10%) | 69.37% | 319/512 (62.30%) | 0.00662849 |
 | seed2 | 6 | raw | 74.64% | 408/512 (79.69%) | 70.95% | 325/512 (63.48%) | 0.00658111 |
 | seed2 | 6 | EMA | 73.78% | 410/512 (80.08%) | 70.53% | 325/512 (63.48%) | 0.00654615 |
+| seed2 | 7 | raw | 75.09% | 418/512 (81.64%) | 70.90% | 318/512 (62.11%) | 0.00657380 |
+| seed2 | 7 | EMA | 74.39% | 413/512 (80.66%) | 71.05% | 328/512 (64.06%) | 0.00649732 |
 
 Seed1 E3→E4/raw: Top512 **318→312**, while BA **69.0950%→70.1886%**. The saved Top512 composition check reports all-wrong191→197 (net+6), Mixed318→312 (net−6), all-correct3→3; these are net class-count changes, not six identified question swaps. Ranking and the fixed-threshold BA need not move together. No epoch/state is selected from this partial-run change.
 
@@ -60,7 +62,7 @@ Copied from local `actual-live.json`, snapshot `1792707990.0928564`, epoch4/curs
 | Viewed dev | raw | 452 | 211 | 385 | 1000 | 0.4118943362 | 0.2522608355 | 0.0950272345 | 452 / 366 / 19 |
 | Viewed dev | EMA | 399 | 264 | 330 | 1055 | 0.3658838251 | 0.2402586589 | 0.1194097771 | 399 / 303 / 27 |
 
-All values are copied from already completed fixed diagnostics, not online training batches. Existing E1–E5 seed1 and E1–E6 seed2 rows above are preserved. Final4096 remains blind and the seed1-only full-budget checkpoint selection rule is unchanged.
+All values are copied from already completed fixed diagnostics, not online training batches. Existing E1–E5 seed1 and E1–E7 seed2 rows above are preserved. Final4096 remains blind and the seed1-only full-budget checkpoint selection rule is unchanged.
 
 ## Seed1 E5: fixed trainB/development diagnostics
 
@@ -74,3 +76,16 @@ Local snapshot `1792709138.225533`; epoch5/cursor6605. Same ownG5 pools, varianc
 | Viewed dev | EMA | 69.275474% | 62.594268% | 24.043321% | 29.668246% | 6.060606% | 312/512 (60.937500%) | 0.7823779887 | 0.0066918926 | 0.0660570021 | 0.4619808844 |
 
 These are completed fixed diagnostics, not online batch metrics. All earlier completed rows remain above. No epoch/state selection or final4096 access.
+
+## Seed2 E7: fixed trainB/development diagnostics
+
+Local snapshot `1792709474.336931`; epoch7/cursor9247. Same ownG5 pools, variance threshold0.08 (4v score0.32), no fitted threshold.
+
+| Pool | State | BA | Mixed recall | nonMixed FPR | all-wrong FPR | all-correct FPR | Mixed@512 | AUC | Variance MSE(v) | Variance MAE(v) | Variance Spearman |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| TrainB | raw | 75.090090% | 67.680180% | 17.500000% | 20.421053% | 4.285714% | 418/512 (81.640625%) | 0.8389105701 | 0.0061300775 | 0.0607579967 | 0.5685300265 |
+| TrainB | EMA | 74.390727% | 67.229730% | 18.448276% | 22.000000% | 2.380952% | 413/512 (80.664062%) | 0.8325256291 | 0.0062443194 | 0.0615472446 | 0.5556673225 |
+| Viewed dev | raw | 70.903235% | 62.745098% | 20.938628% | 25.402844% | 6.666667% | 318/512 (62.109375%) | 0.7966213089 | 0.0065737987 | 0.0625030268 | 0.4808648068 |
+| Viewed dev | EMA | 71.053302% | 64.705882% | 22.599278% | 27.962085% | 5.454545% | 328/512 (64.062500%) | 0.8012594541 | 0.0064973227 | 0.0625321861 | 0.4873464434 |
+
+Completed fixed diagnostics only. All earlier completed rows are preserved; no seed2-based epoch/state selection or final4096 access.
