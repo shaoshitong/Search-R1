@@ -80,7 +80,8 @@ def summarize(value, job, runtime_commit, completed=39, next_outer=40):
         r.get('slurm_job_id')==job and r.get('status')=='complete' and r.get('complete_outer') is True and
         r.get('all_ranks_agreed') is True and r.get('real_rank_count')==4 and
         r.get('full_budget_complete') is True and r.get('optimizer_writes_this_attempt')==20 and
-        r.get('optimizer_rollbacks_this_attempt',0)==0 and r.get('scheduler_advances')==1 and
+        type(r.get('optimizer_calls_this_attempt')) is int and r['optimizer_calls_this_attempt']==20 and
+        type(r.get('optimizer_rollbacks_this_attempt')) is int and r['optimizer_rollbacks_this_attempt']==0 and r.get('scheduler_advances')==1 and
         r.get('optimizer_writes_after')==r['logical_update']*20 for r in attempts))
     rank_proofs={}; all_ranks=True
     for rank in range(4):
@@ -125,7 +126,9 @@ def summarize(value, job, runtime_commit, completed=39, next_outer=40):
     if value.get('post_restore_ledger_observation_errors') or progress.get('compact_summary_observation_errors'):
         issues.append('Actual ledger reader reported malformed evidence')
     for row in attempts:
-        if row.get('status')!='complete' or row.get('optimizer_writes_this_attempt')!=20 or row.get('optimizer_rollbacks_this_attempt',0)!=0:
+        if (row.get('status')!='complete' or row.get('optimizer_writes_this_attempt')!=20 or
+            type(row.get('optimizer_calls_this_attempt')) is not int or row.get('optimizer_calls_this_attempt')!=20 or
+            type(row.get('optimizer_rollbacks_this_attempt')) is not int or row.get('optimizer_rollbacks_this_attempt')!=0):
             issues.append('Observed guarded/partial/aborted recovery attempt')
     cache=value.get('grounding_cache_release',{}).get('latest') or {}
     cache_ok=(cache.get('role')=='probe_post_judge_cuda_cache_release' and cache.get('cuda_synchronized') is True and
@@ -141,6 +144,7 @@ def summarize(value, job, runtime_commit, completed=39, next_outer=40):
         source_completed_outer=34,source_writes_per_rank=680,source_candidate_cursor=87040,
         completed_outer=last.get('step'),reward=last.get('reward'),checkpoint_outer=latest.get('step'),
         required_completed_outers=wanted,actual_all4_restore_observed=restore_ok,
+        restore_manifest_pending=value.get('restore_manifest_pending',False),
         complete_updates_observed=updates_ok,complete_attempts_observed=attempts_ok,all4_rank_proofs=rank_proofs,
         sealed_through_target=seal,next_outer_saved=saved,candidate_pools=progress.get('candidate_pools',[]),
         grounding_cache_release_observed=cache_ok,grounding_cache_release=cache,

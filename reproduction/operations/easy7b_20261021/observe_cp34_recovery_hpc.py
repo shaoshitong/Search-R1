@@ -80,9 +80,19 @@ def observe(job, runtime_commit, operator_commit):
     audit = types.FunctionType(existing.execution_audits.__code__,
         dict(existing.execution_audits.__globals__, BASE=BASE))
     value['actual_flash3_execution'] = audit(reader)
-    original_binding = value['documents']['logs/run-manifest.json'].get('value',{}).get('full_state_restore',{})
+    manifest_entry = value['documents']['logs/run-manifest.json']
+    manifest = manifest_entry.get('value')
+    original_binding = manifest.get('full_state_restore') if isinstance(manifest,dict) else None
+    value['restore_manifest_pending'] = (manifest_entry.get('present') is not True or
+                                        not isinstance(original_binding,dict))
+    if not isinstance(manifest,dict):
+        manifest_entry['value'] = {}
+    elif not isinstance(original_binding,dict):
+        manifest_entry['value'] = dict(manifest,full_state_restore={})
     add_runtime_evidence(value, reader, BASE)
-    value['documents']['logs/run-manifest.json']['value']['full_state_restore']['source_checkpoint'] = original_binding.get('source_checkpoint')
+    compact_binding = manifest_entry.get('value',{}).get('full_state_restore')
+    if isinstance(original_binding,dict) and isinstance(compact_binding,dict):
+        compact_binding['source_checkpoint'] = original_binding.get('source_checkpoint')
     optimizer_evidence(reader, value)
     metrics, errors = reader.completed_outer_metrics(BASE)
     progress = dict(completed_outer_metrics=metrics, compact_summary_observation_errors=errors,

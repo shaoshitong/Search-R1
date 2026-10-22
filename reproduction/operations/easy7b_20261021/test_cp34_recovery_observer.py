@@ -54,7 +54,8 @@ def fixture():
             opportunities_unattempted=0,optimizer_writes_before=(step-1)*20,optimizer_writes_after=step*20))
         value['post_restore_attempt_records'].append(dict(logical_update=step,run_id=remote.RUN,slurm_job_id=JOB,
             status='complete',complete_outer=True,all_ranks_agreed=True,real_rank_count=4,full_budget_complete=True,
-            optimizer_writes_this_attempt=20,optimizer_rollbacks_this_attempt=0,scheduler_advances=1,optimizer_writes_after=step*20))
+            optimizer_writes_this_attempt=20,optimizer_calls_this_attempt=20,optimizer_rollbacks_this_attempt=0,
+            scheduler_advances=1,optimizer_writes_after=step*20))
     for rank in range(4):
         value['post_restore_scheduler_records'][str(rank)]=[dict(kind='COMPLETE',rank=rank,
             logical_update=step,run_id=remote.RUN,slurm_job_id=JOB,actual_optimizer_writes=20,
@@ -79,6 +80,21 @@ def fixture():
 
 
 class CP34ObserverTests(unittest.TestCase):
+    def test_queued_job_without_manifest_or_complete_binding_is_pending_not_an_error(self):
+        for manifest in ('absent',None,{'run_id':remote.RUN,'full_state_restore':None}):
+            with self.subTest(manifest=manifest), tempfile.TemporaryDirectory() as td:
+                base=Path(td);(base/'logs').mkdir();(base/'job.id').write_text(JOB)
+                if manifest!='absent': (base/'logs/run-manifest.json').write_text(json.dumps(manifest))
+                reader=remote.existing.private_progress_reader()
+                with patch.object(remote,'BASE',base), patch.object(remote.existing,'private_progress_reader',return_value=reader), \
+                     patch.object(reader,'command',return_value=dict(rc=0,stdout=JOB+'|PENDING|node\n745198|RUNNING|node\n',stderr='')):
+                    value=remote.observe(JOB,RUNTIME,OPERATOR)
+                self.assertTrue(value['restore_manifest_pending'])
+                summary=watch.summarize(value,JOB,RUNTIME)
+                self.assertTrue(summary['restore_manifest_pending'])
+                self.assertEqual(summary['inspection_issues'],[])
+                self.assertFalse(summary['requested_followup_observed'])
+
     def test_real_small_file_reader_keeps_checkpoint_binding_without_reading_tensor_payloads(self):
         with tempfile.TemporaryDirectory() as td:
             base=Path(td); (base/'logs').mkdir(); (base/'job.id').write_text(JOB)
@@ -134,6 +150,17 @@ class CP34ObserverTests(unittest.TestCase):
             elif change=='no_fa3': altered['actual_flash3_execution']['2']['latest_actual_record']['kernel_backward_success_returns']=0
             else: altered['grounding_cache_release']={}
             with self.subTest(change=change): self.assertFalse(watch.summarize(altered,JOB,RUNTIME)['requested_followup_observed'])
+
+    def test_actual_optimizer_call_and_rollback_fields_must_be_present_and_exact(self):
+        for field,bad in (('optimizer_calls_this_attempt','missing'),('optimizer_calls_this_attempt',21),
+                          ('optimizer_rollbacks_this_attempt','missing'),('optimizer_rollbacks_this_attempt',False)):
+            value=fixture();row=value['post_restore_attempt_records'][0]
+            if bad=='missing': row.pop(field)
+            else: row[field]=bad
+            with self.subTest(field=field,bad=bad):
+                summary=watch.summarize(value,JOB,RUNTIME)
+                self.assertFalse(summary['complete_attempts_observed'])
+                self.assertFalse(summary['requested_followup_observed'])
 
     def test_command_uses_operator_tree_but_passes_distinct_runtime_identity(self):
         args=shlex.split(watch.command(JOB,RUNTIME,OPERATOR)); code=args[-1]
