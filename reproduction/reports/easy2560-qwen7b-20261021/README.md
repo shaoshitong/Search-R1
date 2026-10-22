@@ -9,15 +9,21 @@ The five-outer post-restore follow-up61–65 is accepted; overall200 and final
 acceptance remain incomplete. See
 [CP68 seal and actual69 progress](evidence/leanmetrics-outer68-sealed69-progress-summary.json).
 
-The real native4 candidate startup comparison completed both512-question cases:
-legacy generation179.024s versus private asynchronous2ms batching165.799s,
-a7.39% reduction. The asynchronous case generated1.57% more tokens. Its actual
-FAISS batch averaged1.510 queries despite the configured upper limit16; this
-explains why the4.59x fixed-query component result does not translate into an
-identical candidate-phase multiplier. Full five-chunk A/B750423 continues.
-A separate16ms service750432 is actually READY onACD1-7; its startup-only
-four-GPU comparison750433 has been submitted once. No production cutover has
-been made from this startup result.
+The full native4 candidate A/B750423 completed0:0. For all2560 parents and
+12800 trajectories, generation893.886s became841.931s (5.81% less time), and
+input I/O + generation + scoring + saving1032.909s became980.517s (5.07% less).
+New raw token work was0.287% larger; the average actual FAISS batch was1.485
+rather than the configured upper limit16. This is a candidate-pipeline result,
+not an entire training-outer ratio. The earlier512-parent startup comparison
+reduced generation179.024s to165.799s (7.39%). Production has not been cut over
+on the basis of this limited batching gain. See
+[complete full-pool result](evidence/candidate-retrieval-full2560-final-summary.json).
+
+Private16ms service750432 remains READY; startup-only4GPU pair750433 is the
+existing next scheduling attempt. Search-only early-stop pair750449 has been
+submitted separately using the same asynchronous2ms retrieval route on both
+sides. Its real saved-token replay passed, while actual GPU performance remains
+pending. Both probes are independent of training750029 and retriever745198.
 
 Both probes use hardlinked frozen HF policy66 and fixed parent chunks. They
 regenerate trajectories; saved parents came from outer66 under pre-update

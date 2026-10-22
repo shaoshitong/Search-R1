@@ -418,3 +418,31 @@ version may stop only at a confirmed search boundary; stopping on an early answe
 would change that rule. EOS/generation-config provenance must remain truthful.
 The generated/retained ratio does not imply the same training-outer speed ratio.
 See [actual token counters](evidence/candidate-raw-retained-token-accounting.json).
+
+
+## 私有完整2560候选检索合批实测完成（2026-10-23）
+
+后续实测确认750423在ACD1-32完成，Slurm为 **COMPLETED，退出码0:0**，
+总作业时间44分41秒；两组完整五块均各完成2560道父题、12,800条真实轨迹。
+完成观测时间为2026-10-23 07:54:22（CST），取代上文较早快照中的“五块尚未完成”。
+详细计数、输入指纹及实际Slurm行见
+[完整2560候选最终摘要](evidence/candidate-retrieval-full2560-final-summary.json)。
+
+生成阶段893.886→841.931秒，省51.955秒，耗时减少 **5.8123%**；包含输入读取、
+评分和输出保存的pipeline为1032.909→980.517秒，省52.392秒，耗时减少
+**5.0723%**。async实际FAISS平均batch为18,320／12,335＝ **1.4852**；
+两组proxy的failed_requests与backend_exceptions均为0。
+
+完整两组使用相同父题和固定policy，输入指纹相同，仍产生了不同的随机轨迹：
+raw生成token为5,343,550→5,358,907（增加 **0.2874%**），生成请求39,536→39,617
+（增加 **0.2049%**），prompt token增加0.4216%，逻辑检索26,724→26,808。
+缓存命中率32.62%→31.66%，命中数8718→8488，后端请求18,006→18,320。
+因此这里报告候选阶段的实测耗时变化，不把它推成正式训练整轮的因果加速倍率。
+
+Easy选中的混合组分别为438／512（85.55%）与422／512（82.42%）。这是上述
+两次随机生成的选题质量样本，既不是固定验证集准确率，也不能据此断言最终模型
+性能下降或质量等价；本实验没有执行actor训练和最终51,713题验证。
+
+另有[真实token的CPU search-stop回放](evidence/search-action-stop-saved-cpu-replay-summary.json)：
+15,832个实际action、591,019个保留LP精确一致，可避免原raw token的68.39%；
+这是固定已存token的CPU结果，独立GPU实验750449当时仍待完成，不是GPU提速验收。

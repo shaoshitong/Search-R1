@@ -1,0 +1,255 @@
+{
+  "actual_slurm_completion": {
+    "actual_sacct_row": "750423|jxu957|COMPLETED|0:0|00:44:41|ACD1-32",
+    "elapsed": "00:44:41",
+    "exit_code": "0:0",
+    "job_id": "750423",
+    "node": "ACD1-32",
+    "observed_epoch": 1792713262.0890083,
+    "observed_timestamp": "2026-10-22T23:54:22.088993+00:00",
+    "owner": "jxu957",
+    "source_evidence": "candidate-retrieval-pair-r4-live-1792713262467559000.json",
+    "state": "COMPLETED"
+  },
+  "input": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/candidate-pair-r4-results-1792713262137100000.json",
+  "observed_epoch": 1792713262.072424,
+  "pairs": {
+    "full": {
+      "async_over_legacy_work_ratios": {
+        "actual_generation_requests": 1.0020487656819101,
+        "actual_prompt_tokens": 1.004216301016332,
+        "actual_raw_generated_tokens": 1.0028739321237754,
+        "actual_retrieval_calls": 1.0031432420296362
+      },
+      "both_complete": true,
+      "causal_speedup_proven": false,
+      "covers_entire_training_outer": false,
+      "interpretation": "Observed candidate-stage timing. Same parents/policy can produce different stochastic asynchronous trajectories; assess work ratios alongside wall reduction.",
+      "same_input_fingerprints": true,
+      "scope": "2560-parent full candidate pool",
+      "timings": {
+        "generation_phase_wall_seconds": {
+          "async_seconds": 841.9309310214594,
+          "legacy_seconds": 893.8860018346459,
+          "observed_legacy_over_async_ratio": 1.0617094216388425,
+          "observed_wall_reduction_percent": 5.8122703237943
+        },
+        "pipeline_seconds_including_input_io_score_and_output_save": {
+          "async_seconds": 980.5172243220732,
+          "legacy_seconds": 1032.9094329038635,
+          "observed_legacy_over_async_ratio": 1.0534332363391312,
+          "observed_wall_reduction_percent": 5.07229452194059
+        }
+      },
+      "work_counts_equal": false
+    },
+    "startup": {
+      "async_over_legacy_work_ratios": {
+        "actual_generation_requests": 1.0065906210392903,
+        "actual_prompt_tokens": 1.017018851566039,
+        "actual_raw_generated_tokens": 1.0157468460859653,
+        "actual_retrieval_calls": 1.0095684803001876
+      },
+      "both_complete": true,
+      "causal_speedup_proven": false,
+      "covers_entire_training_outer": false,
+      "interpretation": "Observed candidate-stage timing. Same parents/policy can produce different stochastic asynchronous trajectories; assess work ratios alongside wall reduction.",
+      "same_input_fingerprints": true,
+      "scope": "512-parent startup candidates",
+      "timings": {
+        "generation_phase_wall_seconds": {
+          "async_seconds": 165.79906124062836,
+          "legacy_seconds": 179.02358225733042,
+          "observed_legacy_over_async_ratio": 1.0797623395316394,
+          "observed_wall_reduction_percent": 7.387027368100019
+        },
+        "pipeline_seconds_including_input_io_score_and_output_save": {
+          "async_seconds": 193.01720654498786,
+          "legacy_seconds": 205.8878437243402,
+          "observed_legacy_over_async_ratio": 1.0666812944282897,
+          "observed_wall_reduction_percent": 6.25128562548094
+        }
+      },
+      "work_counts_equal": false
+    }
+  },
+  "runner": {
+    "checked_unix": 1792713195.3614526,
+    "completed_children": 4,
+    "full_actual_work_counts_equal": false,
+    "full_observed_generation_wall_ratio": 1.0617094216388425,
+    "stage": "NATIVE4_REAL_CANDIDATE_RETRIEVAL_PAIR_COMPLETED"
+  },
+  "scope": "Independent candidate generation, retrieval and selection only; no full training-outer speedup or final-quality equivalence proven. Missing batch counters remain null.",
+  "source_root": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022/diagnostics/candidate-retrieval-pair-r1-20261023/attempt-r4",
+  "transport_exits": [
+    {
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "variants": {
+    "full-async": {
+      "actual_fa3_prefill_and_decode": true,
+      "actual_generation_requests": 39617,
+      "actual_mean_faiss_batch": 1.4852047020672883,
+      "actual_prompt_tokens": 31109667,
+      "actual_raw_generated_tokens": 5358907,
+      "actual_retrieval_calls": 26808,
+      "candidate_complete": true,
+      "candidate_exit_code": 0,
+      "completed_questions": 2560,
+      "completed_trajectories": 12800,
+      "faiss_batch_attempts": 12335,
+      "faiss_batch_input_queries": 18320,
+      "generation_phase_wall_seconds": 841.9309310214594,
+      "input_fingerprints_sha256": "bbd77cc1b1adb36e889d2f29e28051fd94fb74523b5e193a86688562cdc67742",
+      "pipeline_seconds_including_input_io_score_and_output_save": 980.5172243220732,
+      "proxy": {
+        "backend_exceptions": 0,
+        "backend_requests": 18320,
+        "cache_hit_fraction": 0.3166219039092808,
+        "cache_hits": 8488,
+        "failed_requests": 0,
+        "logical_requests": 26808
+      },
+      "selection": {
+        "candidate_categories": {
+          "all_correct": 1206,
+          "all_wrong": 932,
+          "mixed": 422
+        },
+        "candidate_groups": 2560,
+        "candidate_mixed_fraction": 0.16484375,
+        "selected_groups": 512,
+        "selected_mixed": 422,
+        "selected_mixed_fraction": 0.82421875,
+        "selection_performed": true,
+        "selection_status": "COMPLETE",
+        "training_em": 0.556953125
+      },
+      "status": "REAL_CANDIDATE_PIPELINE_COMPLETED"
+    },
+    "full-legacy": {
+      "actual_fa3_prefill_and_decode": true,
+      "actual_generation_requests": 39536,
+      "actual_mean_faiss_batch": null,
+      "actual_prompt_tokens": 30979050,
+      "actual_raw_generated_tokens": 5343550,
+      "actual_retrieval_calls": 26724,
+      "candidate_complete": true,
+      "candidate_exit_code": 0,
+      "completed_questions": 2560,
+      "completed_trajectories": 12800,
+      "faiss_batch_attempts": 0,
+      "faiss_batch_input_queries": 0,
+      "generation_phase_wall_seconds": 893.8860018346459,
+      "input_fingerprints_sha256": "bbd77cc1b1adb36e889d2f29e28051fd94fb74523b5e193a86688562cdc67742",
+      "pipeline_seconds_including_input_io_score_and_output_save": 1032.9094329038635,
+      "proxy": {
+        "backend_exceptions": 0,
+        "backend_requests": 18006,
+        "cache_hit_fraction": 0.3262236192186798,
+        "cache_hits": 8718,
+        "failed_requests": 0,
+        "logical_requests": 26724
+      },
+      "selection": {
+        "candidate_categories": {
+          "all_correct": 1200,
+          "all_wrong": 922,
+          "mixed": 438
+        },
+        "candidate_groups": 2560,
+        "candidate_mixed_fraction": 0.17109375,
+        "selected_groups": 512,
+        "selected_mixed": 438,
+        "selected_mixed_fraction": 0.85546875,
+        "selection_performed": true,
+        "selection_status": "COMPLETE",
+        "training_em": 0.560703125
+      },
+      "status": "REAL_CANDIDATE_PIPELINE_COMPLETED"
+    },
+    "startup-async": {
+      "actual_fa3_prefill_and_decode": true,
+      "actual_generation_requests": 7942,
+      "actual_mean_faiss_batch": 1.5102375102375103,
+      "actual_prompt_tokens": 6263992,
+      "actual_raw_generated_tokens": 1072779,
+      "actual_retrieval_calls": 5381,
+      "candidate_complete": true,
+      "candidate_exit_code": 0,
+      "completed_questions": 512,
+      "completed_trajectories": 2560,
+      "faiss_batch_attempts": 2442,
+      "faiss_batch_input_queries": 3688,
+      "generation_phase_wall_seconds": 165.79906124062836,
+      "input_fingerprints_sha256": "b89824e7e032010732f4875f97d5aba59f2b11823c45bb42bcb2b3068145aab6",
+      "pipeline_seconds_including_input_io_score_and_output_save": 193.01720654498786,
+      "proxy": {
+        "backend_exceptions": 0,
+        "backend_requests": 3688,
+        "cache_hit_fraction": 0.3146255342873072,
+        "cache_hits": 1693,
+        "failed_requests": 0,
+        "logical_requests": 5381
+      },
+      "selection": {
+        "candidate_categories": {
+          "all_correct": 237,
+          "all_wrong": 187,
+          "mixed": 88
+        },
+        "candidate_groups": 512,
+        "candidate_mixed_fraction": 0.171875,
+        "selected_groups": null,
+        "selected_mixed_fraction": null,
+        "selection_performed": false,
+        "selection_status": "STARTUP_CHUNKS_ONLY_NOT_FULL_2560_SELECTION",
+        "training_em": 0.552734375
+      },
+      "status": "REAL_CANDIDATE_PIPELINE_COMPLETED"
+    },
+    "startup-legacy": {
+      "actual_fa3_prefill_and_decode": true,
+      "actual_generation_requests": 7890,
+      "actual_mean_faiss_batch": null,
+      "actual_prompt_tokens": 6159170,
+      "actual_raw_generated_tokens": 1056148,
+      "actual_retrieval_calls": 5330,
+      "candidate_complete": true,
+      "candidate_exit_code": 0,
+      "completed_questions": 512,
+      "completed_trajectories": 2560,
+      "faiss_batch_attempts": 0,
+      "faiss_batch_input_queries": 0,
+      "generation_phase_wall_seconds": 179.02358225733042,
+      "input_fingerprints_sha256": "b89824e7e032010732f4875f97d5aba59f2b11823c45bb42bcb2b3068145aab6",
+      "pipeline_seconds_including_input_io_score_and_output_save": 205.8878437243402,
+      "proxy": {
+        "backend_exceptions": 0,
+        "backend_requests": 3577,
+        "cache_hit_fraction": 0.32889305816135084,
+        "cache_hits": 1753,
+        "failed_requests": 0,
+        "logical_requests": 5330
+      },
+      "selection": {
+        "candidate_categories": {
+          "all_correct": 234,
+          "all_wrong": 188,
+          "mixed": 90
+        },
+        "candidate_groups": 512,
+        "candidate_mixed_fraction": 0.17578125,
+        "selected_groups": null,
+        "selected_mixed_fraction": null,
+        "selection_performed": false,
+        "selection_status": "STARTUP_CHUNKS_ONLY_NOT_FULL_2560_SELECTION",
+        "training_em": 0.55078125
+      },
+      "status": "REAL_CANDIDATE_PIPELINE_COMPLETED"
+    }
+  }
+}
