@@ -48,21 +48,49 @@ def identity(rows):
  return rows,ids
 
 
+def auc_layout(y,logits):
+ order=np.argsort(logits,kind='stable');z=logits[order]
+ starts=np.r_[0,np.flatnonzero(z[1:]!=z[:-1])+1]
+ return order,starts,y[order]
+
+
+def weighted_auc(layout,counts):
+ """Mann-Whitney AUC with half-credit exact ties; bootstrap question counts."""
+ order,starts,positive=layout;w=counts[order]
+ pos=np.add.reduceat(w*positive,starts);neg=np.add.reduceat(w*(~positive),starts)
+ npos=pos.sum();nneg=neg.sum()
+ if npos==0 or nneg==0:raise ValueError('Both Mixed classes required for AUC')
+ return float((pos*(np.cumsum(neg)-.5*neg)).sum()/(npos*nneg))
+
+
 def metrics(labels,logits,qids):
  y=(labels.sum(1)>0)&(labels.sum(1)<5);p=logits>=0
  tp=int((p&y).sum());fn=int((~p&y).sum());tn=int((~p&~y).sum());fp=int((p&~y).sum())
  top=sorted(range(len(qids)),key=lambda i:(-float(logits[i]),qids[i]))[:512]
+ probability=1/(1+np.exp(-np.clip(logits,-700,700)))
  loss=np.logaddexp(0.,logits)-y*logits;types={}
  for name,mask in [('all_wrong',labels.sum(1)==0),('Mixed',y),('all_correct',labels.sum(1)==5)]:
   n=int(mask.sum());types[name]=dict(questions=n,predicted_Mixed=int(p[mask].sum()),predicted_nonMixed=int((~p[mask]).sum()),
    predicted_Mixed_fraction=float(p[mask].mean())if n else None,BCE=float(loss[mask].mean())if n else None,
    false_positive_rate=float(p[mask].mean())if name!='Mixed'and n else None,
-   false_negative_rate=float((~p[mask]).mean())if name=='Mixed'and n else None)
+   false_negative_rate=float((~p[mask]).mean())if name=='Mixed'and n else None,
+   mean_predicted_Mixed_probability=float(probability[mask].mean())if n else None,
+   probability_quantiles_10_25_50_75_90=np.quantile(probability[mask],[.1,.25,.5,.75,.9]).tolist()if n else None)
+ bins=np.minimum((probability*10).astype(int),9);calibration=[];ece=0.
+ for index in range(10):
+  mask=bins==index;n=int(mask.sum());mean=float(probability[mask].mean())if n else None;truth=float(y[mask].mean())if n else None
+  if n:ece+=n/len(y)*abs(mean-truth)
+  calibration.append(dict(bin=index,lower=index/10,upper=(index+1)/10,questions=n,mean_predicted_Mixed=mean,actual_Mixed_fraction=truth))
  return dict(questions=len(y),Mixed_questions=int(y.sum()),nonMixed_questions=int((~y).sum()),BCE=float(loss.mean()),
-  Mixed_balanced_accuracy=.5*(tp/(tp+fn)+tn/(tn+fp)),Mixed_recall=tp/(tp+fn),nonMixed_false_positive_rate=fp/(fp+tn),
+  Mixed_balanced_accuracy=.5*(tp/(tp+fn)+tn/(tn+fp)),Mixed_ROC_AUC=weighted_auc(auc_layout(y,logits),np.ones(len(y),dtype=np.int64)),
+  Mixed_recall=tp/(tp+fn),nonMixed_false_positive_rate=fp/(fp+tn),
   confusion=dict(tp=tp,tn=tn,fp=fp,fn=fn),classwise=types,
   Top512=dict(questions=512,Mixed=int(y[top].sum()),Mixed_fraction=float(y[top].mean()),
-   selected_qid_sha256=digest([qids[i]for i in top])),threshold=.5,labels_used_for_ranking=False)
+   selected_qid_sha256=digest([qids[i]for i in top])),threshold=.5,labels_used_for_ranking=False,
+  score_and_calibration=dict(observed_Mixed_prevalence=float(y.mean()),mean_predicted_Mixed_probability=float(probability.mean()),
+   mean_logit=float(logits.mean()),probability_quantiles_10_25_50_75_90=np.quantile(probability,[.1,.25,.5,.75,.9]).tolist(),
+   Brier_score=float(((probability-y)**2).mean()),ECE10_equal_width=ece,fixed_probability_bins=calibration,
+   calibration_fitted=False,threshold_tuned=False))
 
 
 def run():
@@ -108,14 +136,16 @@ def run():
  for candidate in[n for n in names if n.startswith('L')]:
   for baseline in('E1_raw','E1_EMA'):pairs.append((candidate,baseline))
  for state in('raw','EMA'):pairs.append(('L21P20_E3_'+state,'L27P20_E3_'+state))
- rng=np.random.default_rng(BOOTSTRAP_SEED);ba_samples=[];top_samples=[]
+ layouts=[auc_layout(y,scores[:,j])for j in range(len(names))]
+ rng=np.random.default_rng(BOOTSTRAP_SEED);ba_samples=[];top_samples=[];auc_samples=[]
  for sample in range(BOOTSTRAP_REPEATS):
   ids=rng.integers(0,2048,size=2048);yy=y[ids];zz=scores[ids];pred=zz>=0
   if not yy.any()or yy.all():raise ValueError('Unexpected one-class bootstrap resample')
   ba_samples.append(.5*(pred[yy].mean(0)+(~pred[~yy]).mean(0)))
   ranks=np.argsort(-zz,axis=0,kind='stable')[:512]
   top_samples.append(np.take_along_axis(np.broadcast_to(yy[:,None],zz.shape),ranks,axis=0).mean(0))
- ba=np.array(ba_samples);top=np.array(top_samples);comparisons={}
+  counts=np.bincount(ids,minlength=2048);auc_samples.append([weighted_auc(layout,counts)for layout in layouts])
+ ba=np.array(ba_samples);top=np.array(top_samples);aucs=np.array(auc_samples);comparisons={}
  for candidate,baseline in pairs:
   a,b=index[candidate],index[baseline];delta_ba=summary[candidate]['Mixed_balanced_accuracy']-summary[baseline]['Mixed_balanced_accuracy']
   delta_top=summary[candidate]['Top512']['Mixed_fraction']-summary[baseline]['Top512']['Mixed_fraction']
@@ -124,6 +154,10 @@ def run():
    Mixed_balanced_accuracy_difference=delta_ba,Mixed_balanced_accuracy_percentile95=np.quantile(ba[:,a]-ba[:,b],[.025,.975]).tolist(),
    Top512_true_Mixed_fraction_difference=delta_top,Top512_true_Mixed_fraction_percentile95=np.quantile(top[:,a]-top[:,b],[.025,.975]).tolist(),
    BCE_difference=summary[candidate]['BCE']-summary[baseline]['BCE'],
+   Mixed_ROC_AUC_difference=summary[candidate]['Mixed_ROC_AUC']-summary[baseline]['Mixed_ROC_AUC'],
+   Mixed_ROC_AUC_percentile95=np.quantile(aucs[:,a]-aucs[:,b],[.025,.975]).tolist(),
+   Brier_score_difference=summary[candidate]['score_and_calibration']['Brier_score']-summary[baseline]['score_and_calibration']['Brier_score'],
+   ECE10_difference=summary[candidate]['score_and_calibration']['ECE10_equal_width']-summary[baseline]['score_and_calibration']['ECE10_equal_width'],
    paired_correctness=dict(candidate_only=int((ccorrect&~bcorrect).sum()),baseline_only=int((~ccorrect&bcorrect).sum()),both_correct=int((ccorrect&bcorrect).sum()),both_wrong=int((~ccorrect&~bcorrect).sum())),
    scope='matched_pilot_depth_with_same8192_budget'if baseline.startswith('L')else'different_E1_training_budget_and_data_recipe_not_LR_or_depth_causality')
  receipt=dict(status='EXISTING_VIEWED2048_MATCHED_E1_AND_PILOT_DEPTH_PAIRED_ANALYSIS_COMPLETE',questions=2048,
