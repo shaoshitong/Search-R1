@@ -1,6 +1,6 @@
 # Current development decision
 
-现有信号仍在**已浏览的 NQ 开发集**：MSE-M5 E7/raw 两seed为278/512与277/512，均值54.20%；原E1 EMA为205/512（40.04%）。这尚非最终4096确认，也不是七集结论。
+现有信号仍在**已浏览的 NQ 开发集**：MSE-M5 E7/raw 两seed为278/512与277/512，均值54.20%；原E1 EMA为205/512（40.04%）。这里54.20%是选出512题的真实Mixed占比，不是Mixed均衡准确率；两seed开发BA分别63.51%与65.38%，平均64.44%。这尚非最终4096确认，也不是七集结论。
 
 CURRENT64与WINDOW2018在完全相同E10/raw、每seed相同采样计划及1280次global64批次尝试下，窗口的两seed平均Top512仅提高2.2461个百分点，配对题目95%区间[0.0000,+4.6875]个百分点触及零；单seed区间均跨零，不能称稳健确认提升。BA诊断反而平均下降7.40个百分点。
 
@@ -61,9 +61,9 @@ B及所有8192题pilot均为NQ。B为2048题、888 Mixed、950全错、210全对
 - 领先探索信号为MSE-M5 E7/raw两seed均约54%，但MSE与CURRENT64的已选checkpoint比较还混合epoch/global batch/更新预算差异，不是单独损失因果比较。
 - WINDOW2018应按同E10比较，不能用CURRENT64的E5替代对照，也不能把触零区间说成已确认收益。
 - fullP20三臂E10的raw/EMA全部保留。full Z第二seed仍按单独状态记录，不拿进行中的epoch替代第一seedE10。
-- fullP80物理源输入仍以实际生产验收状态为准；本报告生成时的qualifier状态见下，不把source-stage当训练ready。训练只由root取得actual ready后唯一提交。
+- fullP80全部169,028题的真实物理源输入现已验收，两seed独立v3入口取得actual ready证明；物理执行/seal与全部1,690,280条轨迹的P20 prompt/token/ownEM均通过。该输入ready不是训练完成，Slurm提交及运行状态由root单独核对。
 - 最终4096仍未读取，没有新推理、模型加载、CP读取、阈值拟合或Slurm操作。完整JSON保留全部原指标、AUC缺项、来源与配对区间；未保存的指标明确为null。
 
-Qualifier snapshot: `WAITING_FRESH_FULL_P20_ALIGNMENT_NO_TRAINING`, timestamp `1792700575.78527`, fixture complete=`True`, accepted=`True`。
+Qualifier snapshot: `TWO_IMMUTABLE_V3_FULL_MSE_SEED_INPUTS_QUALIFIED_ROOT_MAY_SUBMIT_ONCE`, timestamp `1792700671.869853`, fixture complete=`True`, accepted=`True`。
 
 [完整指标、来源及比较区间](CURRENT-DEVELOPMENT-DECISION.json)

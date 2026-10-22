@@ -1,6 +1,6 @@
 {
   "status": "CURRENT_VIEWED_NQ_DEVELOPMENT_DECISION_FROM_EXISTING_FIXED_METRICS",
-  "generated_at": 1792700673.588428,
+  "generated_at": 1792700878.059835,
   "rows": [
     {
       "experiment": "E1 baseline",
@@ -1777,18 +1777,27 @@
     "observer_pid": 65820,
     "source_commit": "7a8ff6ae8a33324846d85f77ffc28e9ab699c028",
     "Slurm_submitted": false,
-    "final4096_read": false
+    "final4096_read": false,
+    "fixture_complete_exists": true,
+    "fixture_accepted_exists": true,
+    "ready_evidence": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5/actual-v3-ready-proofs.json",
+      "bytes": 8397,
+      "sha256": "a844bc5a2b95a86b284c67d19d7cf6afa473475ceafbccc98149604481681d91"
+    },
+    "ready_proofs_time": 1792700671.89043,
+    "phase_note": "Both immutable v3 roots have actual accepted-input ready proofs; source-stage alone is not used as ready evidence."
   },
   "full_Z_seed2_actual_status": {
-    "time": 1792700630.072433,
+    "time": 1792700859.4573956,
     "job_id": "749935",
     "rank_epochs": [
       6,
       6
     ],
     "rank_cursors": [
-      6641,
-      6641
+      6954,
+      6954
     ],
     "completed_eval_epochs": [
       "evaluation-epoch-00.json",
@@ -1840,10 +1849,16 @@
       "snapshot": "reproduction/reports/qwen7b-algorithm-improvement-20261021/current-development-decision-sources/04-full169028-L15P80-MSE-ownG5--qualification-watch-latest.json"
     },
     {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5/actual-v3-ready-proofs.json",
+      "bytes": 8397,
+      "sha256": "a844bc5a2b95a86b284c67d19d7cf6afa473475ceafbccc98149604481681d91",
+      "snapshot": "reproduction/reports/qwen7b-algorithm-improvement-20261021/current-development-decision-sources/05-full169028-L15P80-MSE-ownG5--actual-v3-ready-proofs.json"
+    },
+    {
       "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/seed2-agent-observer/agent-seed2-watch-latest.json",
-      "bytes": 5390,
-      "sha256": "b92e4fb25fc2e39ae71b583c5c2252a453f89a7a75b23d5c14d159f45cd3b558",
-      "snapshot": "reproduction/reports/qwen7b-algorithm-improvement-20261021/current-development-decision-sources/05-seed2-agent-observer--agent-seed2-watch-latest.json"
+      "bytes": 5391,
+      "sha256": "3988ac59eaa443ce1c87ee5abe3edbc27018a422a15c1e61838ee663f1e7d5e2",
+      "snapshot": "reproduction/reports/qwen7b-algorithm-improvement-20261021/current-development-decision-sources/06-seed2-agent-observer--agent-seed2-watch-latest.json"
     }
   ],
   "new_inference": false,
