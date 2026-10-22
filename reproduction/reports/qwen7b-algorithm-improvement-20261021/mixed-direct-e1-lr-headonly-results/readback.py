@@ -1,0 +1,3 @@
+import pathlib,hashlib,json,subprocess
+p=pathlib.Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-e1-lr-headonly-results-v1/independent-metrics.json');raw=p.read_bytes();assert len(raw)==13306and hashlib.sha256(raw).hexdigest()=='b9e9aada7d3e5697531684cefd4414d050c24d0908eb73122a0c68f92d43df21';x=json.loads(raw);assert x["all_four_predictions_same_own_G5_IDs_and_EM"] and x["training_curve"]["checks"]["rows"]==2642
+print(json.dumps(dict(status="EXISTING_INDEPENDENT_RESULT_FRESH_READBACK_PASS",proof=dict(path=str(p),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest()),terminal=subprocess.check_output(["sacct","-X","-n","-P","-j","747723","--format=JobIDRaw,State,ExitCode,Elapsed"]).decode().strip())))
