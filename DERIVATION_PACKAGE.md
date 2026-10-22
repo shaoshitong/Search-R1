@@ -1,192 +1,230 @@
 # Derivation Package
 
-Date: 2026-10-16, Asia/Shanghai. This note records the new human-authorized
-fresh probe experiment. It does not alter the completed replay70 experiment.
+Updated: 2026-10-23 Asia/Shanghai. The historical2026-10-16 trajectory-BCE note is preserved in reproduction/reports/qwen7b-algorithm-improvement-20261021/group-topk-alignment/DERIVATION-20261016-ARCHIVE.md. It is not the current objective.
 
 ## Target
 
-Train the existing question-plus20-token trajectory correctness probe with both
-its own trajectory label and its original G5 group's mixed/nonmixed label.
-The acquisition score remains a deterministic function of the five predicted
-trajectory probabilities. No additional classification head is introduced.
+Explain when a group-level loss can control the number of true Mixed questions selected by Top-K. Derive a margin objective that stops contributing gradients once sufficient ordering is achieved. Extend the analysis to the human-proposed window:64 current question groups with gradients and1954 historical detached scores, total2018, selecting500. The established development/confirmation evaluation remains2048-select512.
+
+The experiment geometry is Qwen2.5-7B, block15 and real Prefix80. The actor is frozen; only the probe block and group head train. No trajectory BCE is introduced.
 
 ## Status
 
 COHERENT AFTER REFRAMING / EXTRA ASSUMPTION.
 
-The observed group target is a binary event, not a measured conditional
-probability. The product score represents its probability under conditional
-independence of the five future continuations. Joint supervision is a valid
-multiobjective training choice; improved held-out accuracy is an empirical
-question rather than a consequence of the algebra.
+A deterministic upper bound on empirical Top-K regret is available. This is not a guarantee of a strong measured correlation between training loss and future Top512 outcomes, nor of monotonic SGD improvement. Stale-score windows add a quantifiable score-drift term; small-batch and unseen-question generalization remain empirical requirements.
 
 ## Invariant Object
 
-The probability that the same five prefix-conditioned trajectories contain
-at least one correct and at least one incorrect final answer.
+For one pool of N distinct question groups, define
+
+\[
+ y_i=\mathbf1\{0<\sum_{j=1}^{G_i}EM_{ij}<G_i\},\quad
+ P@K(s)=\frac1K\sum_{i\in S_K(s)}y_i .
+\]
+
+S_K uses descending model score with a deterministic label-independent tie rule. Each label belongs to the actual sampled own trajectories, not the wholeG10. The invariant quantity is the lost true-Mixed count relative to the best possible sizeK selection:
+
+\[
+ M=\sum_i y_i,\quad b=\min(K,M),\quad
+ r(s)=b-\sum_{i\in S_K(s)}y_i,\quad
+ R_K(s)=r(s)/K .
+\]
+
+When M<K, optimal precision is M/K, not100%.
 
 ## Assumptions
 
-- The actor, official frozen encoder, tokenizer, generation protocol and strict
-  EM labels are fixed for the retained trajectories.
-- Inputs contain actual question/context and the same trajectory's first20
-  retained policy-token positions. No future answer or final label enters the
-  encoder or probe input. Encoder output is detached at index27 post-block.
-- Each G5 group is identified using its actual question and trajectory IDs.
-  The five members remain together within one rank and optimizer update.
-- To interpret the product score as the true event probability, future
-  continuations are conditionally independent given the question, their
-  respective prefixes, actor version and generation protocol. Marginal
-  correctness probabilities alone do not establish this assumption.
-- Reusing a cached trajectory preserves its original label; replaying it does
-  not create a new independent label observation.
+- N is finite,1<=K<=N; the scores are finite and gamma>0.
+- The pool and its actual binary own-group EM labels are fixed while evaluating a loss/bound.
+- Scores and model inputs do not contain labels, full future rollouts or label-derived visible features. The prescribed prefix is retained and masked/padded consistently, even when a naturally short generation ends before80.
+- Exact finite-pool statements use the complete stated score vector. A batch128/K32 is not the future2048/K512 pool.
+- The current warmup actor is frozen. Historical trajectory labels therefore remain valid for their saved ownG5; this does not automatically justify reusing old-actor labels during later changing-student RL.
+- Conditional expected-utility statements use true conditional probabilities. Training losses do not establish that these probabilities or a population risk are known.
 
 ## Notation
 
-- i: question/group index; j in {1,...,5}: trajectory within its own group.
-- C_ij in {0,1}: that trajectory's final strict EM.
-- K_i = sum_j C_ij: observed correct count. G=5 is the fixed group size.
-- Y_i = 1{0<K_i<5}: observed mixed label. K_i=1 is mixed as well.
-- z_ij: probe logit; p_ij = sigmoid(z_ij): predicted trajectory correctness.
-- Q_i = 1 - product_j p_ij - product_j(1-p_ij): predicted mixed score.
-- lambda: group-loss weight, explicitly 1 for this experiment.
-- B: number of complete question groups in an optimizer batch.
+- s_i: real group-ranking logit; not a trajectory probability.
+- v_i: observed population variance of the actual binaryEM group; v_i=p_i(1-p_i), p_i=mean_j EM_ij.
+- C*_K(s): maximum score sum over sizeK sets containing exactlyb positives.
+- L_K: normalized K-specific structured margin surrogate.
+- tilde s: vector combining historical detached scores and current differentiable scores.
+- delta: maximum absolute discrepancy between tilde s and all-fresh scores from the current model on that exact window.
+- B: number of current groups; cache rows do not receive gradients.
 
 ## Derivation Strategy
 
-Define the mixed event from the five own labels, derive its complement
-probability under the stated factorization, and add its binary log loss to
-the existing per-trajectory binary log loss. Separate the probability
-interpretation from the finite-model optimization choice.
+Define the real selection utility first. Separate exact observed variance, conditional mean variance and Mixed probability. Construct the loss-augmented Top-K objective and prove its empirical bound. Then detach historical score entries and state precisely which guarantee survives.
 
 ## Derivation Map
 
-1. Identity: Y_i is a deterministic function of the five observed C_ij.
-2. Probability identity: a nonmixed group is either all correct or all wrong.
-3. Conditional-independence assumption: replace those two joint probabilities
-   by products of the five corresponding marginal probabilities.
-4. Proposed objective: separately average the trajectory and group log losses.
-5. Exact differentiation: the group term sends gradient through the same five
-   logits; no detached or second group prediction is needed.
-6. Implementation: stable log-event probabilities and complete-group batching
-   preserve the mathematical objective in eight-rank training.
+1. Identity: G5 observed Mixed iff its variance is positive.
+2. Counterexample: lower variance MSE need not improve empirical precision.
+3. Population distinction: conditional mean variance and conditional Mixed probability can rank groups differently.
+4. Proposition: the K-specific surrogate upper bounds empirical precision regret.
+5. Proposition: all-pair hinge gives another, looser Top-K regret bound.
+6. Interpretation: margin satisfaction removes that loss gradient; actual Adam/EMA skipping is separately implemented.
+7. Proposition: a detached historical window has the same bound for its mixed score vector, with a drift correction for all-fresh current scores.
+8. Approximation: current-batch gradient scaling and partial gradients are training heuristics under staleness, not an unbiased/full-pool gradient theorem.
 
 ## Main Derivation
 
-### Step 1. Event label — identity
+### Step1. Why continuous variance is a proxy rather than the final metric
 
-K_i = sum_j C_ij and Y_i = 1{0<K_i<5}. The condition 1<K_i<5 would incorrectly
-exclude a group with exactly one correct trajectory. One retained G5 supplies
-one observed Y_i, not the population probability P(0<K_i<5 | inputs).
+For G5, v is0,0.16 or0.24. Both positive values count equally as Mixed in P@K.
 
-### Step 2. Predicted event probability — conditional factorization
+An exact empirical counterexample, all predictions in[0,0.25]:
 
-The complement of mixed is the disjoint union of all-correct and all-wrong:
+\[
+ v=(.16,.24,0),\quad y=(1,1,0),\quad K=1.
+\]
 
-Q_i = 1 - P(C_i1=...=C_i5=1 | inputs)
-        - P(C_i1=...=C_i5=0 | inputs).
+Prediction a=(.16,0,0) has MSE=.0192 and selects a Mixed group. Prediction b=(.07,.08,.09) has smaller MSE=.0139333 but selects the nonMixed group. Thus MSE reduction is not a monotonic guarantee on Top-K.
 
-Under the stated conditional-independence model this becomes
+There is still a conditional MSE bound: if positive target variance is at least d>0 and negative variance is0, pairr disjoint missed positives withr selected negatives. A reversed pair requires squared errors totaling at least d^2/2. Therefore
 
-Q_i = 1 - product_j p_ij - product_j(1-p_ij).
+\[
+ R_K(s)\le \frac{2N\,MSE_v}{K d^2}.
+\]
 
-The five p values need not be equal. Averaging them before applying the
-identically distributed formula would change the modeled event.
+For G5,d=.16. AtN2048,K512 and MSE around.008, this bound exceeds1 and is uninformative. Exact fitting would order positives above negatives; current small average losses do not prove near-perfect selection.
 
-### Step 3. Joint objective — proposed training choice
+A stronger distinction concerns new data: the MSE-optimal predictor is E[v|x], whereas expected Mixed selection wants eta(x)=P(Y=1|x). For example:
 
-L_traj = (1/(5B)) sum_i sum_j BCEWithLogits(z_ij, C_ij).
+- TypeA: Mixed probability.7; when Mixed, v=.16. Then E[v|A]=.112.
+- TypeB: Mixed probability.5; when Mixed, v=.24. Then E[v|B]=.120.
 
-L_group = (1/B) sum_i [-Y_i log Q_i - (1-Y_i) log(1-Q_i)].
+Perfect mean-variance regression prefersB, despiteA having a higher Mixed chance. Additional distributional assumptions would be needed to rule out this reversal.
 
-L = L_traj + lambda L_group, with lambda=1.
+For contrast, binary groupBCE targets eta directly. On a fixed feature pool, if E_i is excess conditional natural-logBCE, a Pinsker/Cauchy argument gives expected precision regret at most sqrt(sum_i E_i/K). This uses true conditional risk, not observed trainingBCE, and provides no automatic neural-network generalization guarantee.
 
-Both components have their own mean reduction. Merely summing five trajectory
-losses and one group loss would silently change their relative weight.
-Y_i reuses the original five EM labels; it adds no new teacher observations.
-It does explicitly make errors in the final group score part of the objective.
+### Step2. K-specific margin construction and exact empirical bound
 
-If the factorization is correct and model capacity and optimization suffice,
-true conditional trajectory probabilities minimize both population log losses.
-If the factorization or representation is inadequate, the two objectives can
-trade off trajectory calibration against group discrimination. Improvement of
-both is not guaranteed.
+Define the best score sum among label-optimal selections:
 
-### Step 4. Gradient — exact algebra
+\[
+ C_K^*(s)=
+ \sum\operatorname{Top}_{b}\{s_i:y_i=1\}
+ +\sum\operatorname{Top}_{K-b}\{s_i:y_i=0\}.
+\]
 
-For A_i=product_k p_ik and D_i=product_k(1-p_ik),
+Empty sums are0. Define
 
-dQ_i/dz_ij = p_ij D_i - (1-p_ij) A_i.
+\[
+ L_K(s,y)=\frac{
+ \gamma b+\sum\operatorname{Top}_K(s-\gamma y)-C_K^*(s)
+ }{\gamma K}.
+\]
 
-The group BCE derivative for 0<Q_i<1 is
+The numerator is nonnegative: substitute a label-optimal set into the first maximum. ReLU is mathematically redundant and selects zero derivative at an exact zero in the implementation.
 
-dL_group_i/dz_ij = ((Q_i-Y_i)/(Q_i(1-Q_i)))
-                  * (p_ij D_i - (1-p_ij) A_i).
+LetS be the actual scoreTopK andt its positive count. Then
 
-At p_i1=...=p_i5=0.5, Q_i=15/16 and every dQ_i/dz_ij is zero.
-Trajectory BCE still has derivative p_ij-C_ij. The trajectory term anchors
-which particular response is correct; the group label alone cannot do so.
-The group score is unchanged by permutation of trajectories and by complementing
-all five probabilities. These symmetries are another reason to retain the
-own-trajectory objective.
+\[
+ \sum\operatorname{Top}_K(s-\gamma y)
+ \ge \sum_{i\in S}s_i-\gamma t,\qquad
+ \sum_{i\in S}s_i\ge C_K^*(s).
+\]
 
-### Step 5. Stable computation — equivalent event log probabilities
+Consequently,
 
-For each binary pattern a in {0,1}^5 define
+\[
+ \boxed{R_K(s)=\frac{b-t}{K}\le L_K(s,y)},\qquad
+ \boxed{P@K(s)\ge\frac{\min(K,M)}K-L_K(s,y)}.
+\]
 
-ell_i(a) = sum_j [a_j log sigmoid(z_ij)
-                    + (1-a_j) log sigmoid(-z_ij)].
+This is an upper-bound relationship, not a theorem that every decrease in L_K increases observedP@K. The surrogate is generally nonconvex and piecewise linear. It is not bounded above.
 
-log Q_i = logsumexp_{a: 0<sum(a)<5} ell_i(a),
-log(1-Q_i) = logsumexp_{a: sum(a) in {0,5}} ell_i(a).
+Its exact zero condition is that every sizeK setT obeys
 
-There are30 mixed patterns and2 nonmixed patterns. Their log-probability
-difference is an event logit. BCEWithLogits on that event logit gives the group
-loss without probability clipping or loss of gradients at rounded0/1 outputs.
+\[
+ C_K^*(s)-\sum_{i\in T}s_i
+ \ge \gamma\left(b-\sum_{i\in T}y_i\right).
+\]
 
-### Step 6. Complete groups and DDP — exact mean scaling
+Thus correctly selected groups need only achieve a sufficient margin; there is no requirement to push a sigmoid probability arbitrarily close to0/1. C*_K MUST retain its gradient. Detaching the oracle term destroys the intended gradient cancellation.
 
-An epoch contains5120 complete groups,25600 trajectories. A strict256-trajectory
-batch cannot simultaneously consist solely of complete G5 groups. The chosen
-100-update plan uses80 batches of51 groups (255 trajectories) and20 batches of52
-groups (260 trajectories), averaging256 trajectories per update.
+For M>=K this is the precision-at-the-top ramp construction studied by Kar etal.; the above proof explicitly includes the M<K oracle-floor case. Source: [Kar,Narasimhan,Jain2015](https://proceedings.mlr.press/v37/kar15.html). The finite-pool proof here does not import their conditional-consistency or learning guarantees for this neural training procedure.
 
-Each rank receives6 or7 complete groups. Rotating the extra groups gives640
-groups and3200 trajectories per rank per epoch. There is no padding, duplication,
-dropped tail or gradient accumulation. For n_r local groups and N global groups,
-multiply the local mean loss by 8*n_r/N before DDP's mean gradient reduction.
-This is the gradient of the intended global mean for both loss components.
+### Step3. Simpler all-pair bound
+
+For the dimensionless SUM over all positive-negative group pairs,
+
+\[
+ H_\gamma=\sum_{i:y_i=1,j:y_j=0}
+ [1-(s_i-s_j)/\gamma]_+,
+\]
+
+every missed-positive/selected-negative crosspair contributes at least1. Hence
+
+\[
+ H_\gamma\ge(M-t)(K-t)=r(r+|M-K|)\ge r^2.
+\]
+
+So R_K<=sqrt(H_gamma)/K. A mean pairloss requires multiplying by M(N-M) before applying this bound. These are pairs of QUESTION GROUPS, never correctness ranking of individual trajectories.
+
+The K-specific loss focuses on the actual retained portion and avoids requiring every low-ranked positive to outrank every negative.
+
+### Step4. Dead-zone regression is a separate option
+
+The proposed tolerance loss
+
+\[
+ L_\epsilon=\frac1N\sum_i[|\hat v_i-v_i|-\epsilon]_+^2
+\]
+
+has zero gradient inside the band. If epsilon<d/2, the disjoint reversed-pair argument gives
+
+\[
+ R_K\le\frac{2N L_\epsilon}{K(d-2\epsilon)^2}.
+\]
+
+A vanishing dead-zone loss is sufficient for correct empirical class ordering in that regime; arbitrary tolerance and nonzero average loss do not automatically imply highTopK.
+
+For a tolerance on the structured loss, [L_K-tau]_+, the guarantee becomes R_K<=[L_K-tau]_++tau. A nonzero tolerance must not be omitted from the reported bound.
+
+### Step5. Historical-score window with current-only gradients
+
+For the human-proposedN2018/K500 window, combine1954 historical detached scores with64 current group scores. In a global two-GPU64-group update, each rank contributes32 current groups. The cache stores raw pre-update logit, actual ownG5 view/label, questionID and actualAdam modelversion. It stores neither hidden features nor an autograd graph.
+
+Within a window, questionIDs remain unique. When a question returns with a new ownG5, remove its previous cached version before insertion. Eviction is chronological and label-independent. Save the queue and sampler/RNG state in the remote checkpoint.
+
+During startup the queue may warm-fill; report the actual N_eff and use ceil(N_eff*500/2018), not a fictitious full2018. Development results remain the same fixed2048/G5 and Top512.
+
+The empirical bound inStep2 remains exact for the mixed old/new vector tilde s. For comparison to the all-fresh current vector s, suppose
+
+\[
+ \|s-\tilde s\|_\infty\le\delta.
+\]
+
+Each sizeK score sum changes by at mostK*delta, including both maxima inL_K. Therefore
+
+\[
+ |L_K(s)-L_K(\tilde s)|\le2\delta/\gamma,\qquad
+ \boxed{R_K(s)\le L_K(\tilde s)+2\delta/\gamma}.
+\]
+
+If the cached TopK boundary gap exceeds2delta, its selected set also equals the fresh selected set. Unknown score drift is not zero drift. Epoch-end fresh-window audits measure delta and selection changes at that saved model, without mutating the training queue.
+
+Only current scores receive gradients. Loss>0 can involve exclusively cached rows and yield zero current gradient. Skip actualAdam/EMA updates in this case, preserving moments; also skip them when the global loss is exactly0. Report batchattempts separately from actualAdam/EMA updates and distinguish margin-satisfied from cache-only-inactive batches.
+
+The optional multiplier N_eff/B compensates for smaller current-only gradient magnitude. With stale chronological rows, this is a declared scaling heuristic, not an unbiased-gradient claim. Log scaled trainingloss separately from the unscaled empirical-bound loss.
 
 ## Remarks and Interpretation
 
-- Human-authorized fresh run:100 epochs; start with official copied block35
-  and a new standard-initialized Linear. No old probe, Adam, optimizer step or
-  RNG checkpoint is imported. The official frozen encoder remains pretrained.
-- Epoch data order: cached sources1..70, then1..30. Every epoch uses one source
-  batch exactly once. There is no new rollout or retrieval work.
-- Frozen-encoder extraction occurs inside each training batch. Already consumed
-  features may remain in per-rank CPU RAM until that epoch's post-update train
-  evaluation, then are released. No full-epoch precomputed feature stage or
-  persistent training-feature tensor cache is required.
-- Reuse the unchanged fixed512G5 test features. Report train and test group
-  ordinary and balanced accuracy, both class recalls, and the separate losses.
-  The threshold remains0.5. Train batches differ across epochs.
-- For actual Adam update t=0,...,9999, use
-  lr(t)=3e-6 + (3e-5-3e-6)/2 * [1+cos(pi*t/9999)].
-  The first applied LR is3e-5 and the last is3e-6; no extra warmup is added.
+- The new controls use real Prefix80, block15 and an identical2048-position group head. No80-token prefix is fabricated from20-token assets.
+- Matched MSE/BCE controls compare fixedG5 and randomM3..10 at the same initialization/EMA/LR/batch/budget. The cache experiment has its own matched global64 no-cache/window2018 pair.
+- All current2048-question results are development results. They are not an untouched final generalization proof.
+- Freeze the leading checkpoint, score/threshold rule and primarymetric before two-seed replication and the two untouched2048 confirmation pools.
+- Raw receives gradients; EMA follows only actual raw updates. No EMA-to-raw reset or lost Adam state is allowed.
 
 ## Boundaries and Non-Claims
 
-This objective does not provide new EM labels, establish conditional
-independence, guarantee perfect fitting, prove calibration, or demonstrate
-better held-out selection or QA performance. It changes the probe's objective;
-it does not update actor/PPO or change cached trajectories. A fixed test used
-repeatedly for diagnosis is not an untouched confirmation set for later tuning.
+An empirical upper bound is not a statistical correlation coefficient, SGD monotonicity theorem or guarantee against overfitting. Smaller trainingloss can coexist with worse development selection. Cached-score theorems do not make historical logits current; finite sampled drift checks do not bound every future update. An online changing actor requires additional versioning and distribution checks.
+
+Prefix-group ordering changes a causal packed input despite the label being permutation-invariant. The model's order sensitivity must be measured, not assumed absent. No confirmed improvement is claimed until the selected scheme is reproduced and evaluated on previously unused questions.
 
 ## Open Risks
 
-Finite information in early policy tokens, conditional-factorization error,
-competing calibration and group objectives, and generalization from repeated
-cached question clusters remain empirical issues. Numerical stability is handled
-by equivalent log-domain algebra, not by speculative stopping gates or changes
-to the scientific labels.
+Generalization, label noise conditional on short prefixes, raw/EMA lag, stale-score drift, current-only inactive constraints, the difference between randomM and G5, and training-subset comparability remain measured questions. The margin mechanism removes unnecessary optimization pressure after sufficient ordering; it does not prove that memorization cannot occur.
+

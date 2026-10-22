@@ -27,6 +27,10 @@ files.extend(report.relative_to(repo)/n for n in ('read-current-metrics-table.py
 files.append(report.relative_to(repo)/'historical-all-experiments/ALL-HISTORICAL-RESULTS.json')
 files.extend(pathlib.Path('reproduction/operations/qwen7b_warmup')/n for n in ('compare_full169028_packed_variance.py','deploy_compare_full169028_packed_variance.py'))
 files.extend(p.relative_to(repo) for p in (report/'viewed2048-full169028-packed-comparison').rglob('*') if p.is_file() and p.suffix in ('.py','.md','.json','.txt') and p.stat().st_size<1000000)
+files.append(pathlib.Path('DERIVATION_PACKAGE.md'))
+files.extend(pathlib.Path('reproduction/operations/qwen7b_warmup')/n for n in ('group_topk_losses.py','test_group_topk_losses.py','online_packed_matched_objective.py','deploy_matched_packed_objective.py'))
+for folder in ('group-topk-alignment','matched-packed-objective','P80-terminal-CPU-acceptance','P80-boundary-handoff'):
+ files.extend(p.relative_to(repo) for p in (report/folder).rglob('*') if p.is_file() and p.suffix in ('.py','.md','.json','.txt') and p.stat().st_size<1000000)
 files=sorted(set(p for p in files if (repo/p).is_file()))
 fd,index=tempfile.mkstemp(prefix='q7b-root-publish-');os.close(fd);os.unlink(index)
 env=dict(os.environ,GIT_INDEX_FILE=index)
