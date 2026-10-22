@@ -3,19 +3,24 @@
 **Current evidence, 2026-10-23:** production job `749598` runs immutable
 `c7976da3afc863a1c20b99daa7cc99de3bb61f15` on four H100 at `ACD1-14`.
 Actual native4 model/Adam/scheduler/RNG/data restoration from completed54 passed;
-outers55–58 completed and their full rolling checkpoints were sealed; outer59 started.
-Whole outer55/56/57/58, including checkpoint write/seal and inter-outer work, took
-**1756.665/1775.756/1679.849/1691.419 seconds**, averaging **28m45.922s**. Actor and candidate FA3 execution, compact GQA, one weight sync
-for five candidate phases, and zero extra monitor forwards were observed in the
-actual worker reports. The evidence is
-[`evidence/native-prefix-deployment-and-first-outer-evidence.json`](evidence/native-prefix-deployment-and-first-outer-evidence.json).
-The [speed attribution report](SPEED-DIAGNOSIS-20261023.md) includes the completed
-independent native4 measurement of 20 CPU rollback snapshots per rank.
-The remaining gradient max/post-norm measurement pass is removed in published
-candidate code; its independent actual-native4 paired probe is job749913.
-Prior job749812 failed before any update in CUDA initialization on ACD1-13;
-its evidence is retained and the replacement restores that node exclusion.
-That candidate is not hot-applied to the healthy producer.
+outers55–59 completed and their full rolling checkpoints were sealed; outer60
+has saved candidate chunks. Complete outer55–59 wall time averaged **29m02s**,
+including checkpoint write/seal and inter-outer work. This is an observational
+12.5% time reduction relative to old outer52, not a same-input causal comparison.
+Actor and candidate FA3 execution, compact GQA, one weight sync for five candidate
+phases, and zero extra monitor forwards were observed in actual worker reports.
+See [five complete outers](evidence/native-prefix-five-complete-outers-summary.json)
+and the [speed attribution report](SPEED-DIAGNOSIS-20261023.md).
+
+The remaining gradient max/post-norm measurement pass is removed in immutable
+candidate runtime `2d5183455551145c52d1783a38663e2fcf170ceb`. Its independent
+actual-native4 probe749913 completed0:0: all20 paired clips on all4 ranks had
+bitwise-equal full gradients and preclip norms. Old/new20-clip bodies took about
+5.01/2.05 seconds per rank; the approximately3-second saving is a component
+measurement, not a whole-outer2.5x gain. Prior probe749812 failed in CUDA
+initialization onACD1-13 before any clipping or Adam; evidence is retained.
+The prepared new continuation remains unsubmitted, pending complete60 and the
+already-authorized checkpoint transition. Healthy production is not hot-edited.
 The remaining sections below retain the original Oct21 preparation history;
 their descriptions of optimizations as unimplemented are historical. The
 200/no201, native51713, seven-source metrics, full archive and actual final
