@@ -1,6 +1,6 @@
 # 7B探针历史实验完整记录
 
-汇总时间：2026-10-22T16:29:40.883824+00:00。共 **363条 checkpoint×权重×评测池/判定规则记录**，其中336条有实际指标，27条明确未完成或未留存指标。这些条目包含同一模型的参考复评，不能当作独立实验数量。
+汇总时间：2026-10-22T16:42:38.320913+00:00。共 **363条 checkpoint×权重×评测池/判定规则记录**，其中336条有实际指标，27条明确未完成或未留存指标。这些条目包含同一模型的参考复评，不能当作独立实验数量。
 
 BA指Mixed均衡准确率：0.5×(Mixed召回率＋nonMixed召回率)，不使用轨迹准确率替代。raw为实际训练权重，EMA为滑动平均权重；缺失记“—”。
 
@@ -273,7 +273,7 @@ BA指Mixed均衡准确率：0.5×(Mixed召回率＋nonMixed召回率)，不使�
 
 | 编号 | checkpoint | 权重 | 训练Mixed BA | 验证Mixed BA | 真实Mixed / TopK | 比例 | 候选池题数 | 训练loss | 验证loss |
 |---|---|---|---:|---:|---:|---:|---:|---|---|
-| R102 | cursor128 | EMA | — | 54.16% | — | — | 2048 | — | — |
+| R102 | cursor128 | EMA | — | 54.16% | 185/512 | 36.13% | 2048 | — | — |
 
 - 评测池：historical selection2048 ownG5 / 641 Mixed; differs from fixed-HF G5 / 663 Mixed
 - EMA evaluated by archived runner; raw fixed-pool evaluation and fixed-training BA were not archived. 512 diagnostic is not training accuracy. Original all-169028 warmup had already seen canonical training texts. Fixed 2048 is recipe selection, not untouched final.
@@ -283,7 +283,7 @@ BA指Mixed均衡准确率：0.5×(Mixed召回率＋nonMixed召回率)，不使�
 
 | 编号 | checkpoint | 权重 | 训练Mixed BA | 验证Mixed BA | 真实Mixed / TopK | 比例 | 候选池题数 | 训练loss | 验证loss |
 |---|---|---|---:|---:|---:|---:|---:|---|---|
-| R103 | cursor128 | EMA | — | 54.52% | — | — | 2048 | — | — |
+| R103 | cursor128 | EMA | — | 54.52% | 194/512 | 37.89% | 2048 | — | — |
 
 - 评测池：historical selection2048 ownG5 / 641 Mixed; differs from fixed-HF G5 / 663 Mixed
 - EMA evaluated by archived runner; raw fixed-pool evaluation and fixed-training BA were not archived. 512 diagnostic is not training accuracy. Original all-169028 warmup had already seen canonical training texts. Fixed 2048 is recipe selection, not untouched final.
@@ -293,7 +293,7 @@ BA指Mixed均衡准确率：0.5×(Mixed召回率＋nonMixed召回率)，不使�
 
 | 编号 | checkpoint | 权重 | 训练Mixed BA | 验证Mixed BA | 真实Mixed / TopK | 比例 | 候选池题数 | 训练loss | 验证loss |
 |---|---|---|---:|---:|---:|---:|---:|---|---|
-| R104 | cursor128 | EMA | — | 54.52% | — | — | 2048 | — | — |
+| R104 | cursor128 | EMA | — | 54.52% | 183/512 | 35.74% | 2048 | — | — |
 
 - 评测池：historical selection2048 ownG5 / 641 Mixed; differs from fixed-HF G5 / 663 Mixed
 - EMA evaluated by archived runner; raw fixed-pool evaluation and fixed-training BA were not archived. 512 diagnostic is not training accuracy. Original all-169028 warmup had already seen canonical training texts. Fixed 2048 is recipe selection, not untouched final.
@@ -303,7 +303,7 @@ BA指Mixed均衡准确率：0.5×(Mixed召回率＋nonMixed召回率)，不使�
 
 | 编号 | checkpoint | 权重 | 训练Mixed BA | 验证Mixed BA | 真实Mixed / TopK | 比例 | 候选池题数 | 训练loss | 验证loss |
 |---|---|---|---:|---:|---:|---:|---:|---|---|
-| R105 | cursor128 | EMA | — | 53.40% | — | — | 2048 | — | — |
+| R105 | cursor128 | EMA | — | 53.40% | 189/512 | 36.91% | 2048 | — | — |
 
 - 评测池：historical selection2048 ownG5 / 641 Mixed; differs from fixed-HF G5 / 663 Mixed
 - EMA evaluated by archived runner; raw fixed-pool evaluation and fixed-training BA were not archived. 512 diagnostic is not training accuracy. Original all-169028 warmup had already seen canonical training texts. Fixed 2048 is recipe selection, not untouched final.
@@ -313,7 +313,7 @@ BA指Mixed均衡准确率：0.5×(Mixed召回率＋nonMixed召回率)，不使�
 
 | 编号 | checkpoint | 权重 | 训练Mixed BA | 验证Mixed BA | 真实Mixed / TopK | 比例 | 候选池题数 | 训练loss | 验证loss |
 |---|---|---|---:|---:|---:|---:|---:|---|---|
-| R106 | cursor128 | EMA | — | 53.84% | — | — | 2048 | — | — |
+| R106 | cursor128 | EMA | — | 53.84% | 190/512 | 37.11% | 2048 | — | — |
 
 - 评测池：historical selection2048 ownG5 / 641 Mixed; differs from fixed-HF G5 / 663 Mixed
 - EMA evaluated by archived runner; raw fixed-pool evaluation and fixed-training BA were not archived. 512 diagnostic is not training accuracy. Original all-169028 warmup had already seen canonical training texts. Fixed 2048 is recipe selection, not untouched final.
@@ -323,7 +323,7 @@ BA指Mixed均衡准确率：0.5×(Mixed召回率＋nonMixed召回率)，不使�
 
 | 编号 | checkpoint | 权重 | 训练Mixed BA | 验证Mixed BA | 真实Mixed / TopK | 比例 | 候选池题数 | 训练loss | 验证loss |
 |---|---|---|---:|---:|---:|---:|---:|---|---|
-| R107 | cursor128 | EMA | — | 53.35% | — | — | 2048 | — | — |
+| R107 | cursor128 | EMA | — | 53.35% | 189/512 | 36.91% | 2048 | — | — |
 
 - 评测池：historical selection2048 ownG5 / 641 Mixed; differs from fixed-HF G5 / 663 Mixed
 - EMA evaluated by archived runner; raw fixed-pool evaluation and fixed-training BA were not archived. 512 diagnostic is not training accuracy. Original all-169028 warmup had already seen canonical training texts. Fixed 2048 is recipe selection, not untouched final.
@@ -333,7 +333,7 @@ BA指Mixed均衡准确率：0.5×(Mixed召回率＋nonMixed召回率)，不使�
 
 | 编号 | checkpoint | 权重 | 训练Mixed BA | 验证Mixed BA | 真实Mixed / TopK | 比例 | 候选池题数 | 训练loss | 验证loss |
 |---|---|---|---:|---:|---:|---:|---:|---|---|
-| R108 | cursor128 | EMA | — | 55.84% | — | — | 2048 | — | — |
+| R108 | cursor128 | EMA | — | 55.84% | 187/512 | 36.52% | 2048 | — | — |
 
 - 评测池：historical selection2048 ownG5 / 641 Mixed; differs from fixed-HF G5 / 663 Mixed
 - EMA evaluated by archived runner; raw fixed-pool evaluation and fixed-training BA were not archived. 512 diagnostic is not training accuracy. Original all-169028 warmup had already seen canonical training texts. Fixed 2048 is recipe selection, not untouched final.
@@ -343,7 +343,7 @@ BA指Mixed均衡准确率：0.5×(Mixed召回率＋nonMixed召回率)，不使�
 
 | 编号 | checkpoint | 权重 | 训练Mixed BA | 验证Mixed BA | 真实Mixed / TopK | 比例 | 候选池题数 | 训练loss | 验证loss |
 |---|---|---|---:|---:|---:|---:|---:|---|---|
-| R109 | cursor128 | EMA | — | 54.35% | — | — | 2048 | — | — |
+| R109 | cursor128 | EMA | — | 54.35% | 192/512 | 37.50% | 2048 | — | — |
 
 - 评测池：historical selection2048 ownG5 / 641 Mixed; differs from fixed-HF G5 / 663 Mixed
 - EMA evaluated by archived runner; raw fixed-pool evaluation and fixed-training BA were not archived. 512 diagnostic is not training accuracy. Original all-169028 warmup had already seen canonical training texts. Fixed 2048 is recipe selection, not untouched final.
