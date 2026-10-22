@@ -1,5 +1,5 @@
 {
-  "recorded_epoch": 1792685057.1977851,
+  "recorded_epoch": 1792685197.1247501,
   "goal_status": "ACTIVE_NOT_ACHIEVED_NEW_LOSS_COMPARISON_PREPARING",
   "network_permission": "USER_REAUTHORIZED_FRESH_SSH_AND_GIT_SUCCESS",
   "last_remote_observation_epoch": 1792683816.57811,
@@ -616,33 +616,33 @@
     "jobs": {
       "mse": {
         "job_id": "749568",
-        "accounting": "749568|RUNNING|0:0|00:06:25|ACD1-51",
+        "accounting": "749568|RUNNING|0:0|00:07:34|ACD1-51",
         "cursor_by_rank": [
-          319,
-          319
+          406,
+          406
         ],
         "epoch": 1
       },
       "mae": {
         "job_id": "749576",
-        "accounting": "749576|RUNNING|0:0|00:02:54|ACD1-14",
+        "accounting": "749576|RUNNING|0:0|00:04:04|ACD1-14",
         "cursor_by_rank": [
-          36,
-          36
+          124,
+          124
         ],
         "epoch": 1
       },
       "z_mse_anchor": {
         "job_id": "749577",
-        "accounting": "749577|RUNNING|0:0|00:02:55|ACD1-16",
+        "accounting": "749577|RUNNING|0:0|00:04:04|ACD1-16",
         "cursor_by_rank": [
-          38,
-          38
+          131,
+          131
         ],
         "epoch": 1
       }
     },
-    "observed_epoch": 1792685020.7102451,
+    "observed_epoch": 1792685089.8090599,
     "node_failure_recovery": {
       "failed_before_any_updates": [
         749569,
@@ -660,20 +660,37 @@
     },
     "final4096_scored": false,
     "z_alignment_actual": {
-      "anchor4variance_MSE": 0.15872617065906525,
+      "anchor4variance_MSE": 0.15131539106369019,
       "anchor_weight": 1.0,
       "normalization_epsilon": 1e-06,
       "normalization_global_questions": 128,
       "normalization_population_std": true,
       "normalization_scope": "actual_global_optimizer_batch_autograd_all_gather",
-      "normalized_MSE": 1.6779645681381226,
-      "prediction_mean": 0.35344791412353516,
-      "prediction_std": 0.06808848679065704,
-      "target_mean": 0.3574906885623932,
-      "target_std": 0.4036388695240021,
-      "total_loss": 1.8366907835006714,
-      "z_MSE": 1.6779645681381226
+      "normalized_MSE": 1.5099430084228516,
+      "prediction_mean": 0.3138080835342407,
+      "prediction_std": 0.07506731152534485,
+      "target_mean": 0.3335449695587158,
+      "target_std": 0.40000736713409424,
+      "total_loss": 1.6612584590911865,
+      "z_MSE": 1.5099430084228516
     },
-    "z_alignment_two_ranks_identical": true
+    "z_alignment_two_ranks_identical": true,
+    "two_actual_z_samples": [
+      {
+        "time": 1792685020.7102451,
+        "cursors": [
+          38,
+          38
+        ]
+      },
+      {
+        "time": 1792685089.8090599,
+        "cursors": [
+          131,
+          131
+        ]
+      }
+    ],
+    "five_real_updates_and_two_measurements_verified_for_all": true
   }
 }

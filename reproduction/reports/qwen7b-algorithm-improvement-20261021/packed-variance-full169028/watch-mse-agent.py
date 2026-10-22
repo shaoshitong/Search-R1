@@ -54,7 +54,17 @@ def run():
    # complete/COMPLETED0:0 again. It does not open any still-running loss arm.
    script=REPO/'reproduction/operations/qwen7b_warmup/deploy_full169028_packed_CPU_acceptance.py';p=subprocess.run([sys.executable,str(script),'--action','start','--commit',ACCEPT_COMMIT],cwd=REPO,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
    if p.returncode:raise RuntimeError((p.stdout+p.stderr)[-2400:])
-   atomic(B/'agent-mse-terminal-CPU-launch.json',json.loads(p.stdout.splitlines()[-1]));c=publish('Record MSE all10epochs terminal completion and locked CPU acceptance launch');print(json.dumps(dict(event='MSE_TERMINAL_CPU_VALIDATOR_LAUNCHED_NEEDS_FINAL_RECEIPT',commit=c,**current)),flush=True);return
+   launch=json.loads(p.stdout.splitlines()[-1]);atomic(B/'agent-mse-terminal-CPU-launch.json',launch);c=publish('Record MSE all10epochs terminal completion and locked CPU acceptance launch');print(json.dumps(dict(event='MSE_TERMINAL_CPU_VALIDATOR_LAUNCHED_NOT_YET_ACCEPTED',commit=c,**current)),flush=True)
+   for attempt in range(40):
+    time.sleep(15)
+    status=subprocess.run([sys.executable,str(script),'--action','status','--commit',ACCEPT_COMMIT],cwd=REPO,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+    if status.returncode:raise RuntimeError((status.stdout+status.stderr)[-2400:])
+    accepted=json.loads(status.stdout.splitlines()[-1]);atomic(B/'agent-mse-terminal-CPU-status.json',accepted)
+    if'mse'in accepted['accepted']:
+     atomic(B/'agent-mse-terminal-CPU-accepted.json',accepted['accepted']['mse']);c=publish('Accept actual MSE E10 SHA native model Adam sampler and two-rank RNG checkpoint');print(json.dumps(dict(event='MSE_ALL10_EPOCHS_AND_REAL_CPU_CHECKPOINT_ACCEPTANCE_COMPLETE',commit=c,receipt=accepted['accepted']['mse'],final_read=False)),flush=True);return
+    if not accepted['actual_validator_identity_live']:
+     raise RuntimeError('Terminal validator exited without actual MSE acceptance: '+str(accepted)[-1800:])
+   raise RuntimeError('Terminal CPU acceptance bounded follow-up timed out; no checkpoint accepted claim')
   if time.time()-heartbeat>300:print(json.dumps(dict(event='READ_ONLY_PROGRESS',**current)),flush=True);heartbeat=time.time()
   time.sleep(55)
  raise RuntimeError('Bounded8hour observer expired; remote job was not modified')
