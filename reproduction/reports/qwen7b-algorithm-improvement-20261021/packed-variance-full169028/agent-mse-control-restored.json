@@ -1,0 +1,93 @@
+{
+  "status": "EXPLICIT_AUTHORIZED_CAMPUS_ROUTE_FRESH_STATE_RESTORED",
+  "time": 1792689720.1766098,
+  "control_route": "campus",
+  "prior_direct_route_failed": true,
+  "last_successful_preflight": {
+    "time": 1792689503.5394206,
+    "epoch": 5,
+    "cursor": 5624
+  },
+  "fresh_ranks": [
+    {
+      "M_counts": {
+        "3": 8,
+        "4": 6,
+        "5": 13,
+        "6": 9,
+        "7": 1,
+        "8": 8,
+        "9": 10,
+        "10": 9
+      },
+      "actor_rows": 64,
+      "actual_global_batch": 128,
+      "alignment": {},
+      "configured_global_batch": 128,
+      "cursor": 5896,
+      "epoch": 5,
+      "epoch_questions_seen": 39168,
+      "gradient_accumulation": 8,
+      "head_gradient_L2": 0.7427054604472969,
+      "local_batch": 64,
+      "loss_name": "MSE",
+      "micro": 8,
+      "native_gradient_L2": 0.38972267022650053,
+      "prefill_rows_equal_groups": true,
+      "prefill_seconds": 0.608843956142664,
+      "question_groups": 64,
+      "rank": 0,
+      "stage": "ONE_QUESTION_VARIABLE_M_PACKED_VARIANCE_MSE_UPDATES",
+      "target4variance_MAE": 0.28236611373722553,
+      "target4variance_MSE": 0.11285466328263283,
+      "time": 1792689719.9397733,
+      "training_loss": 0.11285466328263283,
+      "variance_MAE": 0.07059152843430638,
+      "variance_MSE": 0.007053416455164552
+    },
+    {
+      "M_counts": {
+        "3": 9,
+        "4": 6,
+        "5": 7,
+        "6": 13,
+        "7": 6,
+        "8": 7,
+        "9": 7,
+        "10": 9
+      },
+      "actor_rows": 64,
+      "actual_global_batch": 128,
+      "alignment": {},
+      "configured_global_batch": 128,
+      "cursor": 5896,
+      "epoch": 5,
+      "epoch_questions_seen": 39168,
+      "gradient_accumulation": 8,
+      "head_gradient_L2": 0.7427054604472969,
+      "local_batch": 64,
+      "loss_name": "MSE",
+      "micro": 8,
+      "native_gradient_L2": 0.38972267022650053,
+      "prefill_rows_equal_groups": true,
+      "prefill_seconds": 0.5982996039092541,
+      "question_groups": 64,
+      "rank": 1,
+      "stage": "ONE_QUESTION_VARIABLE_M_PACKED_VARIANCE_MSE_UPDATES",
+      "target4variance_MAE": 0.3287440109997988,
+      "target4variance_MSE": 0.1504111671820283,
+      "time": 1792689719.9392452,
+      "training_loss": 0.1504111671820283,
+      "variance_MAE": 0.0821860027499497,
+      "variance_MSE": 0.009400697948876768
+    }
+  ],
+  "two_actual_samples_progress": true,
+  "Slurm": {
+    "returncode": 0,
+    "stdout": "749568|RUNNING|0:0|01:24:45|ACD1-51",
+    "stderr": ""
+  },
+  "no_remote_job_mutation": true,
+  "final_read": false
+}

@@ -64,4 +64,4 @@ Existing MSE job749568 only. Each epoch uses the full169028-question pool, per-e
 | 3 | 169028 | 169028 | 1098015 | `d69d31e109e93823a81a8cb1976c8a6493e349ed448ad004f6679a64c7485e26` |
 | 4 | 169028 | 169028 | 1098520 | `18888e5d157aaeb10b5cd7c015e311bd579121fac6661276ec6880aeb70adc89` |
 
-Latest actual sample epoch1792689269.956969. Each metric is copied from the completed epoch evaluation receipt; an epoch absent from the table is not claimed complete. Terminal model/Adam/RNG acceptance is separate.
+Latest actual sample epoch1792689878.322659. Each metric is copied from the completed epoch evaluation receipt; an epoch absent from the table is not claimed complete. Terminal model/Adam/RNG acceptance is separate.

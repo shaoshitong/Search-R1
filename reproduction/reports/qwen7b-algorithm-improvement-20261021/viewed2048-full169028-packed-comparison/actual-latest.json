@@ -1,141 +1,141 @@
 {
   "receipt": {
-    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/viewed2048-full169028-packed-comparison-20261023-v1/analysis-1792687522.json",
-    "bytes": 93954,
-    "sha256": "6152e8660f0f2f4edf422f4bc39af1d2911dad6c155a8e51440fc5a78bee8f66"
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/viewed2048-full169028-packed-comparison-20261023-v1/analysis-1792689883.json",
+    "bytes": 156395,
+    "sha256": "3fb4d5ee1010eb346edc22d488b2867baec6f077f12be8544a03f9ffc16f0a35"
   },
   "result": {
     "status": "VIEWED2048_PACKED_FULL_ACTUAL_ANALYSIS_COMPLETE",
-    "time": 1792687522.5817583,
+    "time": 1792689883.5054507,
     "observed": {
       "mse": {
         "progress": {
           "M_counts": {
-            "3": 4,
-            "4": 4,
-            "5": 8,
-            "6": 10,
-            "7": 12,
-            "8": 12,
-            "9": 9,
-            "10": 5
+            "3": 14,
+            "4": 13,
+            "5": 9,
+            "6": 4,
+            "7": 10,
+            "8": 5,
+            "9": 5,
+            "10": 4
           },
           "actor_rows": 64,
           "actual_global_batch": 128,
           "alignment": {},
           "configured_global_batch": 128,
-          "cursor": 3287,
-          "epoch": 3,
-          "epoch_questions_seen": 41280,
+          "cursor": 6096,
+          "epoch": 5,
+          "epoch_questions_seen": 51968,
           "gradient_accumulation": 8,
-          "head_gradient_L2": 0.24545818614124087,
+          "head_gradient_L2": 1.1035061066761653,
           "local_batch": 64,
           "loss_name": "MSE",
           "micro": 8,
-          "native_gradient_L2": 0.16876564606354555,
+          "native_gradient_L2": 0.4170084036878087,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6004433073103428,
+          "prefill_seconds": 0.5795165598392487,
           "question_groups": 64,
           "rank": 0,
           "stage": "ONE_QUESTION_VARIABLE_M_PACKED_VARIANCE_MSE_UPDATES",
-          "target4variance_MAE": 0.3566167280077934,
-          "target4variance_MSE": 0.16632585786283016,
-          "time": 1792687519.0684814,
-          "training_loss": 0.16632585786283016,
-          "variance_MAE": 0.08915418200194836,
-          "variance_MSE": 0.010395366116426885
+          "target4variance_MAE": 0.32694582268595695,
+          "target4variance_MSE": 0.1339965695515275,
+          "time": 1792689879.9892366,
+          "training_loss": 0.1339965695515275,
+          "variance_MAE": 0.08173645567148924,
+          "variance_MSE": 0.008374785596970469
         },
         "complete": null
       },
       "mae": {
         "progress": {
           "M_counts": {
-            "3": 10,
-            "4": 8,
-            "5": 10,
-            "6": 6,
+            "3": 9,
+            "4": 5,
+            "5": 8,
+            "6": 9,
             "7": 8,
-            "8": 8,
-            "9": 4,
-            "10": 10
+            "8": 9,
+            "9": 7,
+            "10": 9
           },
           "actor_rows": 64,
           "actual_global_batch": 128,
           "alignment": {},
           "configured_global_batch": 128,
-          "cursor": 3103,
-          "epoch": 3,
-          "epoch_questions_seen": 29504,
+          "cursor": 5998,
+          "epoch": 5,
+          "epoch_questions_seen": 45696,
           "gradient_accumulation": 8,
-          "head_gradient_L2": 0.6637506657810552,
+          "head_gradient_L2": 0.9341436261099562,
           "local_batch": 64,
           "loss_name": "MAE",
           "micro": 8,
-          "native_gradient_L2": 0.5047427149104855,
+          "native_gradient_L2": 0.6524915732992445,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.586791830835864,
+          "prefill_seconds": 0.5853512261528522,
           "question_groups": 64,
           "rank": 0,
           "stage": "ONE_QUESTION_VARIABLE_M_PACKED_VARIANCE_MAE_UPDATES",
-          "target4variance_MAE": 0.3271217383444309,
-          "target4variance_MSE": 0.24271351471543312,
-          "time": 1792687519.089443,
-          "training_loss": 0.3271217383444309,
-          "variance_MAE": 0.08178043458610773,
-          "variance_MSE": 0.01516959466971457
+          "target4variance_MAE": 0.3012433145195246,
+          "target4variance_MSE": 0.1818682048469782,
+          "time": 1792689879.910287,
+          "training_loss": 0.3012433145195246,
+          "variance_MAE": 0.07531082862988114,
+          "variance_MSE": 0.011366762802936137
         },
         "complete": null
       },
       "z_mse_anchor": {
         "progress": {
           "M_counts": {
-            "3": 5,
-            "4": 7,
+            "3": 6,
+            "4": 9,
             "5": 8,
-            "6": 11,
+            "6": 5,
             "7": 7,
-            "8": 7,
-            "9": 5,
-            "10": 14
+            "8": 9,
+            "9": 8,
+            "10": 12
           },
           "actor_rows": 64,
           "actual_global_batch": 128,
           "alignment": {
-            "anchor4variance_MSE": 0.1403939127922058,
+            "anchor4variance_MSE": 0.14963428676128387,
             "anchor_weight": 1.0,
             "normalization_epsilon": 1e-06,
             "normalization_global_questions": 128,
             "normalization_population_std": true,
             "normalization_scope": "actual_global_optimizer_batch_autograd_all_gather",
-            "normalized_MSE": 1.2735317945480347,
-            "prediction_mean": 0.31602010130882263,
-            "prediction_std": 0.1364787220954895,
-            "target_mean": 0.33786481618881226,
-            "target_std": 0.40135180950164795,
-            "total_loss": 1.4139256477355957,
-            "z_MSE": 1.2735317945480347
+            "normalized_MSE": 1.4453080892562866,
+            "prediction_mean": 0.3013496398925781,
+            "prediction_std": 0.15716007351875305,
+            "target_mean": 0.3126785159111023,
+            "target_std": 0.3995463252067566,
+            "total_loss": 1.594942331314087,
+            "z_MSE": 1.4453080892562866
           },
           "configured_global_batch": 128,
-          "cursor": 3241,
-          "epoch": 3,
-          "epoch_questions_seen": 38336,
+          "cursor": 6267,
+          "epoch": 5,
+          "epoch_questions_seen": 62912,
           "gradient_accumulation": 8,
-          "head_gradient_L2": 5.279960566482512,
+          "head_gradient_L2": 16.613794344978807,
           "local_batch": 64,
           "loss_name": "Z_MSE_ANCHOR",
           "micro": 8,
-          "native_gradient_L2": 3.5828038470466534,
+          "native_gradient_L2": 9.101124520522951,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.594809134490788,
+          "prefill_seconds": 0.5920210722833872,
           "question_groups": 64,
           "rank": 0,
           "stage": "ONE_QUESTION_VARIABLE_M_PACKED_VARIANCE_Z_MSE_ANCHOR_UPDATES",
-          "target4variance_MAE": 0.32808807492256165,
-          "target4variance_MSE": 0.1403939127922058,
-          "time": 1792687519.9218128,
-          "training_loss": 1.4139256477355957,
-          "variance_MAE": 0.08202201873064041,
-          "variance_MSE": 0.008774619549512863
+          "target4variance_MAE": 0.3304530382156372,
+          "target4variance_MSE": 0.14963428676128387,
+          "time": 1792689880.8572063,
+          "training_loss": 1.594942331314087,
+          "variance_MAE": 0.0826132595539093,
+          "variance_MSE": 0.009352142922580242
         },
         "complete": null
       }
@@ -879,6 +879,498 @@
             "bytes": 10285,
             "sha256": "5beaabf3b9257ddc511695ee74882ad4e1bf8caf9766a381010b9604ea0ba8d5"
           }
+        },
+        "3": {
+          "cursor": 3963,
+          "roles": {
+            "fixed_train2048_G5": {
+              "raw": {
+                "questions": 2048,
+                "Mixed_questions": 888,
+                "Mixed_balanced_accuracy": 0.6070790618204411,
+                "Mixed_recall": 0.34346846846846846,
+                "nonMixed_FPR": 0.1293103448275862,
+                "Mixed_ROC_AUC": 0.7029429753028891,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 329,
+                  "fraction": 0.642578125
+                },
+                "score_mean": 0.06267074391723781,
+                "score_std": 0.02246116903934171,
+                "score_quantiles": [
+                  0.0029218143317848444,
+                  0.03392238914966583,
+                  0.04798319563269615,
+                  0.06309600919485092,
+                  0.07851263880729675,
+                  0.09081007689237594,
+                  0.133045494556427
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 950,
+                    "mean_score": 0.053787550379914284,
+                    "predicted_Mixed_fraction": 0.11473684210526315,
+                    "error_rate": 0.11473684210526315,
+                    "variance_MSE": 0.00335639769281561,
+                    "variance_MAE": 0.053787550379914284
+                  },
+                  "Mixed": {
+                    "questions": 888,
+                    "mean_score": 0.07177657724844778,
+                    "predicted_Mixed_fraction": 0.34346846846846846,
+                    "error_rate": 0.6565315315315315,
+                    "variance_MSE": 0.014608933948410577,
+                    "variance_MAE": 0.11353873806686754
+                  },
+                  "all_correct": {
+                    "questions": 210,
+                    "mean_score": 0.06435195278553736,
+                    "predicted_Mixed_fraction": 0.19523809523809524,
+                    "error_rate": 0.19523809523809524,
+                    "variance_MSE": 0.004511332741011288,
+                    "variance_MAE": 0.06435195278553736
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.008353853041980368,
+                "variance_MAE": 0.0807785558345995,
+                "variance_Pearson": 0.3507215095767378,
+                "variance_Spearman": 0.33147989632581837,
+                "mean_only_oracle_MSE": 0.009034251403808594,
+                "constant_zero_MAE": 0.0803515625
+              },
+              "EMA": {
+                "questions": 2048,
+                "Mixed_questions": 888,
+                "Mixed_balanced_accuracy": 0.5739787200994098,
+                "Mixed_recall": 0.2376126126126126,
+                "nonMixed_FPR": 0.08965517241379306,
+                "Mixed_ROC_AUC": 0.6791215245417832,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 336,
+                  "fraction": 0.65625
+                },
+                "score_mean": 0.06293000902996937,
+                "score_std": 0.01695131933971792,
+                "score_quantiles": [
+                  0.009762072935700417,
+                  0.041668850928545,
+                  0.05140376091003418,
+                  0.06272819638252258,
+                  0.0747762992978096,
+                  0.08430088311433792,
+                  0.12204034626483917
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 950,
+                    "mean_score": 0.056765194089200936,
+                    "predicted_Mixed_fraction": 0.07263157894736842,
+                    "error_rate": 0.07263157894736842,
+                    "variance_MSE": 0.0034840947176365696,
+                    "variance_MAE": 0.056765194089200936
+                  },
+                  "Mixed": {
+                    "questions": 888,
+                    "mean_score": 0.06902113240967328,
+                    "predicted_Mixed_fraction": 0.2376126126126126,
+                    "error_rate": 0.7623873873873874,
+                    "variance_MSE": 0.015100499248303555,
+                    "variance_MAE": 0.11629418290564203
+                  },
+                  "all_correct": {
+                    "questions": 210,
+                    "mean_score": 0.06506170728022144,
+                    "predicted_Mixed_fraction": 0.16666666666666666,
+                    "error_rate": 0.16666666666666666,
+                    "variance_MSE": 0.004457148007489544,
+                    "variance_MAE": 0.06506170728022144
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.008620671091709522,
+                "variance_MAE": 0.08342730826845582,
+                "variance_Pearson": 0.3117048613275387,
+                "variance_Spearman": 0.2900554630145421,
+                "mean_only_oracle_MSE": 0.009034251403808594,
+                "constant_zero_MAE": 0.0803515625
+              }
+            },
+            "fixed_validation2048_G5": {
+              "raw": {
+                "questions": 2048,
+                "Mixed_questions": 663,
+                "Mixed_balanced_accuracy": 0.541755285841079,
+                "Mixed_recall": 0.2654600301659125,
+                "nonMixed_FPR": 0.18194945848375454,
+                "Mixed_ROC_AUC": 0.632548148390153,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 212,
+                  "fraction": 0.4140625
+                },
+                "score_mean": 0.06252231837493127,
+                "score_std": 0.021817436564651703,
+                "score_quantiles": [
+                  0.004100758116692305,
+                  0.03484909608960152,
+                  0.04708099365234375,
+                  0.06272819638252258,
+                  0.07683949917554855,
+                  0.09081007689237594,
+                  0.14258283376693726
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 1055,
+                    "mean_score": 0.057170350534920866,
+                    "predicted_Mixed_fraction": 0.16303317535545023,
+                    "error_rate": 0.16303317535545023,
+                    "variance_MSE": 0.0037633615976732557,
+                    "variance_MAE": 0.057170350534920866
+                  },
+                  "Mixed": {
+                    "questions": 663,
+                    "mean_score": 0.06937043358421524,
+                    "predicted_Mixed_fraction": 0.2654600301659125,
+                    "error_rate": 0.7345399698340875,
+                    "variance_MSE": 0.016913527931140468,
+                    "variance_MAE": 0.12296742463599591
+                  },
+                  "all_correct": {
+                    "questions": 330,
+                    "mean_score": 0.06587391136722132,
+                    "predicted_Mixed_fraction": 0.24242424242424243,
+                    "error_rate": 0.24242424242424243,
+                    "variance_MSE": 0.0047330143031578354,
+                    "variance_MAE": 0.06587391136722132
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.008176713976530029,
+                "variance_MAE": 0.07987329741171378,
+                "variance_Pearson": 0.2217823192582048,
+                "variance_Spearman": 0.21634778811024716,
+                "mean_only_oracle_MSE": 0.008597991943359376,
+                "constant_zero_MAE": 0.06226562499999999
+              },
+              "EMA": {
+                "questions": 2048,
+                "Mixed_questions": 663,
+                "Mixed_balanced_accuracy": 0.5462387898786285,
+                "Mixed_recall": 0.22171945701357465,
+                "nonMixed_FPR": 0.12924187725631764,
+                "Mixed_ROC_AUC": 0.629352413000746,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 225,
+                  "fraction": 0.439453125
+                },
+                "score_mean": 0.06271927628858975,
+                "score_std": 0.016592779917306556,
+                "score_quantiles": [
+                  0.01592874899506569,
+                  0.0419408343732357,
+                  0.05068982020020485,
+                  0.061996862292289734,
+                  0.07416356354951859,
+                  0.08480364680290221,
+                  0.1180187463760376
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 1055,
+                    "mean_score": 0.05885875302221255,
+                    "predicted_Mixed_fraction": 0.11090047393364928,
+                    "error_rate": 0.11090047393364928,
+                    "variance_MSE": 0.0037431511345470815,
+                    "variance_MAE": 0.05885875302221255
+                  },
+                  "Mixed": {
+                    "questions": 663,
+                    "mean_score": 0.06770715554319266,
+                    "predicted_Mixed_fraction": 0.22171945701357465,
+                    "error_rate": 0.7782805429864253,
+                    "variance_MSE": 0.017236743106797948,
+                    "variance_MAE": 0.12463070267701849
+                  },
+                  "all_correct": {
+                    "questions": 330,
+                    "mean_score": 0.0650401493195783,
+                    "predicted_Mixed_fraction": 0.18787878787878787,
+                    "error_rate": 0.18787878787878787,
+                    "variance_MSE": 0.004467961393808584,
+                    "variance_MAE": 0.0650401493195783
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.008228228704448752,
+                "variance_MAE": 0.0811471628851359,
+                "variance_Pearson": 0.20970406773949538,
+                "variance_Spearman": 0.20714749349145573,
+                "mean_only_oracle_MSE": 0.008597991943359376,
+                "constant_zero_MAE": 0.06226562499999999
+              }
+            }
+          },
+          "evaluation": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mse/evaluation-epoch-03.json",
+            "bytes": 10281,
+            "sha256": "d6401ef79a24a60596b09e012d14711f6109e66b1656d1de805db9c48b8eae37"
+          }
+        },
+        "4": {
+          "cursor": 5284,
+          "roles": {
+            "fixed_train2048_G5": {
+              "raw": {
+                "questions": 2048,
+                "Mixed_questions": 888,
+                "Mixed_balanced_accuracy": 0.6687713575644609,
+                "Mixed_recall": 0.615990990990991,
+                "nonMixed_FPR": 0.278448275862069,
+                "Mixed_ROC_AUC": 0.7305767513202858,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 357,
+                  "fraction": 0.697265625
+                },
+                "score_mean": 0.07476911974049472,
+                "score_std": 0.0279946190975655,
+                "score_quantiles": [
+                  0.003205303568392992,
+                  0.03954358398914337,
+                  0.05738380551338196,
+                  0.07395996898412704,
+                  0.09324046969413757,
+                  0.1117021195590496,
+                  0.16635264456272125
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 950,
+                    "mean_score": 0.06260245577530249,
+                    "predicted_Mixed_fraction": 0.25157894736842107,
+                    "error_rate": 0.25157894736842107,
+                    "variance_MSE": 0.004617628405142031,
+                    "variance_MAE": 0.06260245577530249
+                  },
+                  "Mixed": {
+                    "questions": 888,
+                    "mean_score": 0.08751209294801024,
+                    "predicted_Mixed_fraction": 0.615990990990991,
+                    "error_rate": 0.38400900900900903,
+                    "variance_MSE": 0.011355554504815965,
+                    "variance_MAE": 0.09781753012532922
+                  },
+                  "all_correct": {
+                    "questions": 210,
+                    "mean_score": 0.07592421763887008,
+                    "predicted_Mixed_fraction": 0.4,
+                    "error_rate": 0.4,
+                    "variance_MSE": 0.006251854747091536,
+                    "variance_MAE": 0.07592421763887008
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.007706723086938833,
+                "variance_MAE": 0.07923749289159786,
+                "variance_Pearson": 0.4025761354567769,
+                "variance_Spearman": 0.3865779736517084,
+                "mean_only_oracle_MSE": 0.009034251403808594,
+                "constant_zero_MAE": 0.0803515625
+              },
+              "EMA": {
+                "questions": 2048,
+                "Mixed_questions": 888,
+                "Mixed_balanced_accuracy": 0.6062247592420006,
+                "Mixed_recall": 0.32882882882882886,
+                "nonMixed_FPR": 0.11637931034482762,
+                "Mixed_ROC_AUC": 0.7016833643988817,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 345,
+                  "fraction": 0.673828125
+                },
+                "score_mean": 0.06308548047718432,
+                "score_std": 0.02074572329725883,
+                "score_quantiles": [
+                  0.004360621329396963,
+                  0.036692832037806516,
+                  0.04912954103201628,
+                  0.06272819638252258,
+                  0.07725592702627182,
+                  0.08984103053808212,
+                  0.13125087320804596
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 950,
+                    "mean_score": 0.05491376534202381,
+                    "predicted_Mixed_fraction": 0.09789473684210526,
+                    "error_rate": 0.09789473684210526,
+                    "variance_MSE": 0.003398318546847508,
+                    "variance_MAE": 0.05491376534202381
+                  },
+                  "Mixed": {
+                    "questions": 888,
+                    "mean_score": 0.07147140280335201,
+                    "predicted_Mixed_fraction": 0.32882882882882886,
+                    "error_rate": 0.6711711711711712,
+                    "variance_MSE": 0.014609047909566124,
+                    "variance_MAE": 0.1138439125119633
+                  },
+                  "all_correct": {
+                    "questions": 210,
+                    "mean_score": 0.06459229168082986,
+                    "predicted_Mixed_fraction": 0.2,
+                    "error_rate": 0.2,
+                    "variance_MSE": 0.0044812035444168966,
+                    "variance_MAE": 0.06459229168082986
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.008370258743909863,
+                "variance_MAE": 0.08145793585865249,
+                "variance_Pearson": 0.35309296937764145,
+                "variance_Spearman": 0.33066798066435305,
+                "mean_only_oracle_MSE": 0.009034251403808594,
+                "constant_zero_MAE": 0.0803515625
+              }
+            },
+            "fixed_validation2048_G5": {
+              "raw": {
+                "questions": 2048,
+                "Mixed_questions": 663,
+                "Mixed_balanced_accuracy": 0.6006632144665698,
+                "Mixed_recall": 0.5565610859728507,
+                "nonMixed_FPR": 0.35523465703971124,
+                "Mixed_ROC_AUC": 0.6367697426096237,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 218,
+                  "fraction": 0.42578125
+                },
+                "score_mean": 0.07473384432444163,
+                "score_std": 0.0269846965185041,
+                "score_quantiles": [
+                  0.0038561380933970213,
+                  0.04112911596894264,
+                  0.05567503347992897,
+                  0.07498118281364441,
+                  0.09415578097105026,
+                  0.10987068265676497,
+                  0.1583525687456131
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 1055,
+                    "mean_score": 0.06844959147384841,
+                    "predicted_Mixed_fraction": 0.34218009478672984,
+                    "error_rate": 0.34218009478672984,
+                    "variance_MSE": 0.005477079035947607,
+                    "variance_MAE": 0.06844959147384841
+                  },
+                  "Mixed": {
+                    "questions": 663,
+                    "mean_score": 0.08331862553465286,
+                    "predicted_Mixed_fraction": 0.5565610859728507,
+                    "error_rate": 0.4434389140271493,
+                    "variance_MSE": 0.013814948172704414,
+                    "variance_MAE": 0.1090192326855583
+                  },
+                  "all_correct": {
+                    "questions": 330,
+                    "mean_score": 0.07757680436991381,
+                    "predicted_Mixed_fraction": 0.396969696969697,
+                    "error_rate": 0.396969696969697,
+                    "variance_MSE": 0.00657187921796364,
+                    "variance_MAE": 0.07757680436991381
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.0083527095524198,
+                "variance_MAE": 0.08305391392456385,
+                "variance_Pearson": 0.2255871303339442,
+                "variance_Spearman": 0.2241487783116149,
+                "mean_only_oracle_MSE": 0.008597991943359376,
+                "constant_zero_MAE": 0.06226562499999999
+              },
+              "EMA": {
+                "questions": 2048,
+                "Mixed_questions": 663,
+                "Mixed_balanced_accuracy": 0.5509090612084878,
+                "Mixed_recall": 0.27149321266968324,
+                "nonMixed_FPR": 0.16967509025270755,
+                "Mixed_ROC_AUC": 0.6358081360842032,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 220,
+                  "fraction": 0.4296875
+                },
+                "score_mean": 0.06281661055413679,
+                "score_std": 0.020222100961319968,
+                "score_quantiles": [
+                  0.007553645875304937,
+                  0.037507202476263046,
+                  0.04798319563269615,
+                  0.062361814081668854,
+                  0.07663176208734512,
+                  0.08984103053808212,
+                  0.1353522092103958
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 1055,
+                    "mean_score": 0.05794276189350333,
+                    "predicted_Mixed_fraction": 0.15260663507109004,
+                    "error_rate": 0.15260663507109004,
+                    "variance_MSE": 0.003775603955886453,
+                    "variance_MAE": 0.05794276189350333
+                  },
+                  "Mixed": {
+                    "questions": 663,
+                    "mean_score": 0.06920487198242595,
+                    "predicted_Mixed_fraction": 0.27149321266968324,
+                    "error_rate": 0.7285067873303167,
+                    "variance_MSE": 0.01693922897986128,
+                    "variance_MAE": 0.12313298623778521
+                  },
+                  "all_correct": {
+                    "questions": 330,
+                    "mean_score": 0.06556355906932643,
+                    "predicted_Mixed_fraction": 0.22424242424242424,
+                    "error_rate": 0.22424242424242424,
+                    "variance_MSE": 0.004644505918062779,
+                    "variance_MAE": 0.06556355906932643
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.008177079072299295,
+                "variance_MAE": 0.08027478426082779,
+                "variance_Pearson": 0.2213612981225456,
+                "variance_Spearman": 0.21936158835633782,
+                "mean_only_oracle_MSE": 0.008597991943359376,
+                "constant_zero_MAE": 0.06226562499999999
+              }
+            }
+          },
+          "evaluation": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mse/evaluation-epoch-04.json",
+            "bytes": 10253,
+            "sha256": "6555702da26d7869cd5242c9c73d6dd545099a60b8c5dd18682bf8cfb00fc4bb"
+          }
         }
       },
       "mae": {
@@ -1618,6 +2110,498 @@
             "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mae/evaluation-epoch-02.json",
             "bytes": 10237,
             "sha256": "68a290c97788e6bfba8f53f02a3ca7984e99a9c6bce16733b55bab4b9c5ef669"
+          }
+        },
+        "3": {
+          "cursor": 3963,
+          "roles": {
+            "fixed_train2048_G5": {
+              "raw": {
+                "questions": 2048,
+                "Mixed_questions": 888,
+                "Mixed_balanced_accuracy": 0.5194703324013669,
+                "Mixed_recall": 0.04842342342342342,
+                "nonMixed_FPR": 0.009482758620689702,
+                "Mixed_ROC_AUC": 0.5123485554520038,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 241,
+                  "fraction": 0.470703125
+                },
+                "score_mean": 0.004297194734782295,
+                "score_std": 0.021421241406800545,
+                "score_quantiles": [
+                  4.2163184843957424e-05,
+                  5.413601320469752e-05,
+                  5.762667569797486e-05,
+                  6.950773968128487e-05,
+                  8.924266148824245e-05,
+                  0.000142578937811777,
+                  0.1682979166507721
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 950,
+                    "mean_score": 0.0012191651542755272,
+                    "predicted_Mixed_fraction": 0.004210526315789474,
+                    "error_rate": 0.004210526315789474,
+                    "variance_MSE": 0.00010167761176229109,
+                    "variance_MAE": 0.0012191651542755272
+                  },
+                  "Mixed": {
+                    "questions": 888,
+                    "mean_score": 0.007453860544247364,
+                    "predicted_Mixed_fraction": 0.04842342342342342,
+                    "error_rate": 0.9515765765765766,
+                    "variance_MSE": 0.033697348755035474,
+                    "variance_MAE": 0.1778633293559404
+                  },
+                  "all_correct": {
+                    "questions": 210,
+                    "mean_score": 0.004873427414193949,
+                    "predicted_Mixed_fraction": 0.03333333333333333,
+                    "error_rate": 0.03333333333333333,
+                    "variance_MSE": 0.0004857533271955497,
+                    "variance_MAE": 0.004873427414193949
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.01470793341033044,
+                "variance_MAE": 0.07818567535235232,
+                "variance_Pearson": 0.13984220430649447,
+                "variance_Spearman": 0.03326106075071073,
+                "mean_only_oracle_MSE": 0.009034251403808594,
+                "constant_zero_MAE": 0.0803515625
+              },
+              "EMA": {
+                "questions": 2048,
+                "Mixed_questions": 888,
+                "Mixed_balanced_accuracy": 0.5016891891891891,
+                "Mixed_recall": 0.0033783783783783786,
+                "nonMixed_FPR": 0.0,
+                "Mixed_ROC_AUC": 0.47911327275551413,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 215,
+                  "fraction": 0.419921875
+                },
+                "score_mean": 0.00048014647870786575,
+                "score_std": 0.005491175529691963,
+                "score_quantiles": [
+                  5.0856746383942664e-05,
+                  6.950773968128487e-05,
+                  7.398927118629217e-05,
+                  8.649790106574073e-05,
+                  0.00010432893759571016,
+                  0.00012583388888742775,
+                  0.1340782195329666
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 950,
+                    "mean_score": 0.00025932400455195946,
+                    "predicted_Mixed_fraction": 0.0,
+                    "error_rate": 0.0,
+                    "variance_MSE": 9.240578626582105e-06,
+                    "variance_MAE": 0.00025932400455195946
+                  },
+                  "Mixed": {
+                    "questions": 888,
+                    "mean_score": 0.000714352249323801,
+                    "predicted_Mixed_fraction": 0.0033783783783783786,
+                    "error_rate": 0.9966216216216216,
+                    "variance_MSE": 0.03549971831111844,
+                    "variance_MAE": 0.18460096306599152
+                  },
+                  "all_correct": {
+                    "questions": 210,
+                    "mean_score": 0.0004887494603324393,
+                    "predicted_Mixed_fraction": 0.0,
+                    "error_rate": 0.0,
+                    "variance_MSE": 2.0519597345382283e-05,
+                    "variance_MAE": 0.0004887494603324393
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.01539884644795457,
+                "variance_MAE": 0.08021223163749738,
+                "variance_Pearson": 0.04311033056271568,
+                "variance_Spearman": -0.01452807522360363,
+                "mean_only_oracle_MSE": 0.009034251403808594,
+                "constant_zero_MAE": 0.0803515625
+              }
+            },
+            "fixed_validation2048_G5": {
+              "raw": {
+                "questions": 2048,
+                "Mixed_questions": 663,
+                "Mixed_balanced_accuracy": 0.5080876227191793,
+                "Mixed_recall": 0.04072398190045249,
+                "nonMixed_FPR": 0.02454873646209388,
+                "Mixed_ROC_AUC": 0.5020293927068189,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 174,
+                  "fraction": 0.33984375
+                },
+                "score_mean": 0.004525399919030448,
+                "score_std": 0.02244665561104377,
+                "score_quantiles": [
+                  3.960905451094732e-05,
+                  5.3152233158471116e-05,
+                  5.762667569797486e-05,
+                  6.950773968128487e-05,
+                  8.718409117136616e-05,
+                  0.00012312516264501011,
+                  0.17169757187366486
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 1055,
+                    "mean_score": 0.0033679162143904528,
+                    "predicted_Mixed_fraction": 0.02085308056872038,
+                    "error_rate": 0.02085308056872038,
+                    "variance_MSE": 0.00039096357845386486,
+                    "variance_MAE": 0.0033679162143904528
+                  },
+                  "Mixed": {
+                    "questions": 663,
+                    "mean_score": 0.00612788296657774,
+                    "predicted_Mixed_fraction": 0.04072398190045249,
+                    "error_rate": 0.9592760180995475,
+                    "variance_MSE": 0.03676074688939296,
+                    "variance_MAE": 0.18624709647440477
+                  },
+                  "all_correct": {
+                    "questions": 330,
+                    "mean_score": 0.0050063061247011785,
+                    "predicted_Mixed_fraction": 0.03636363636363636,
+                    "error_rate": 0.03636363636363636,
+                    "variance_MSE": 0.000529239620625354,
+                    "variance_MAE": 0.0050063061247011785
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.012187251385616566,
+                "variance_MAE": 0.06283547733880063,
+                "variance_Pearson": 0.059702503762164925,
+                "variance_Spearman": 0.015386577280898458,
+                "mean_only_oracle_MSE": 0.008597991943359376,
+                "constant_zero_MAE": 0.06226562499999999
+              },
+              "EMA": {
+                "questions": 2048,
+                "Mixed_questions": 663,
+                "Mixed_balanced_accuracy": 0.5007862739652928,
+                "Mixed_recall": 0.0030165912518853697,
+                "nonMixed_FPR": 0.0014440433212996595,
+                "Mixed_ROC_AUC": 0.47246298686094823,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 155,
+                  "fraction": 0.302734375
+                },
+                "score_mean": 0.0005487507507488942,
+                "score_std": 0.005961359567815477,
+                "score_quantiles": [
+                  5.413601320469752e-05,
+                  6.950773968128487e-05,
+                  7.398927118629217e-05,
+                  8.649790106574073e-05,
+                  0.00010432893759571016,
+                  0.00012583388888742775,
+                  0.13626089692115784
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 1055,
+                    "mean_score": 0.00036633067376198804,
+                    "predicted_Mixed_fraction": 0.0009478672985781991,
+                    "error_rate": 0.0009478672985781991,
+                    "variance_MSE": 1.9784641486342743e-05,
+                    "variance_MAE": 0.00036633067376198804
+                  },
+                  "Mixed": {
+                    "questions": 663,
+                    "mean_score": 0.0007710081217888649,
+                    "predicted_Mixed_fraction": 0.0030165912518853697,
+                    "error_rate": 0.9969834087481146,
+                    "variance_MSE": 0.03825482518116685,
+                    "variance_MAE": 0.19156685009842228
+                  },
+                  "all_correct": {
+                    "questions": 330,
+                    "mean_score": 0.0006854069453600624,
+                    "predicted_Mixed_fraction": 0.0030303030303030303,
+                    "error_rate": 0.0030303030303030303,
+                    "variance_MSE": 5.096379176261516e-05,
+                    "variance_MAE": 0.0006854069453600624
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.012402656222247743,
+                "variance_MAE": 0.06231517810939535,
+                "variance_Pearson": 0.03604225440606959,
+                "variance_Spearman": -0.026733030480801945,
+                "mean_only_oracle_MSE": 0.008597991943359376,
+                "constant_zero_MAE": 0.06226562499999999
+              }
+            }
+          },
+          "evaluation": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mae/evaluation-epoch-03.json",
+            "bytes": 10333,
+            "sha256": "3e94894230d8f0549074832c88f47299404156d66eb274b7397bc36f9d70c4ac"
+          }
+        },
+        "4": {
+          "cursor": 5284,
+          "roles": {
+            "fixed_train2048_G5": {
+              "raw": {
+                "questions": 2048,
+                "Mixed_questions": 888,
+                "Mixed_balanced_accuracy": 0.5289919229574402,
+                "Mixed_recall": 0.10022522522522523,
+                "nonMixed_FPR": 0.04224137931034477,
+                "Mixed_ROC_AUC": 0.5627825023299161,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 288,
+                  "fraction": 0.5625
+                },
+                "score_mean": 0.010296832374926623,
+                "score_std": 0.03172635703255004,
+                "score_quantiles": [
+                  3.495551572996192e-05,
+                  4.4881991925649345e-05,
+                  5.0856746383942664e-05,
+                  6.134236900834367e-05,
+                  8.924266148824245e-05,
+                  0.030821466073393793,
+                  0.1774560958147049
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 950,
+                    "mean_score": 0.0056026787984171135,
+                    "predicted_Mixed_fraction": 0.037894736842105266,
+                    "error_rate": 0.037894736842105266,
+                    "variance_MSE": 0.0005892033340429479,
+                    "variance_MAE": 0.0056026787984171135
+                  },
+                  "Mixed": {
+                    "questions": 888,
+                    "mean_score": 0.015262009976439757,
+                    "predicted_Mixed_fraction": 0.10022522522522523,
+                    "error_rate": 0.8997747747747747,
+                    "variance_MSE": 0.03161260348210914,
+                    "variance_MAE": 0.17016042386516464
+                  },
+                  "all_correct": {
+                    "questions": 210,
+                    "mean_score": 0.01053668088702363,
+                    "predicted_Mixed_fraction": 0.06190476190476191,
+                    "error_rate": 0.06190476190476191,
+                    "variance_MSE": 0.001060365692988792,
+                    "variance_MAE": 0.01053668088702363
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.014089068288565116,
+                "variance_MAE": 0.07745981652199091,
+                "variance_Pearson": 0.14249648236467694,
+                "variance_Spearman": 0.10312391000880482,
+                "mean_only_oracle_MSE": 0.009034251403808594,
+                "constant_zero_MAE": 0.0803515625
+              },
+              "EMA": {
+                "questions": 2048,
+                "Mixed_questions": 888,
+                "Mixed_balanced_accuracy": 0.5085430257844051,
+                "Mixed_recall": 0.021396396396396396,
+                "nonMixed_FPR": 0.004310344827586188,
+                "Mixed_ROC_AUC": 0.5075528114321218,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 234,
+                  "fraction": 0.45703125
+                },
+                "score_mean": 0.0018908863238245033,
+                "score_std": 0.013627490577237032,
+                "score_quantiles": [
+                  4.4881991925649345e-05,
+                  5.762667569797486e-05,
+                  6.134236900834367e-05,
+                  6.950773968128487e-05,
+                  8.649790106574073e-05,
+                  0.00011211168166482806,
+                  0.15607337653636932
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 950,
+                    "mean_score": 0.0005377069407557811,
+                    "predicted_Mixed_fraction": 0.003157894736842105,
+                    "error_rate": 0.003157894736842105,
+                    "variance_MSE": 4.517349412667925e-05,
+                    "variance_MAE": 0.0005377069407557811
+                  },
+                  "Mixed": {
+                    "questions": 888,
+                    "mean_score": 0.0033216420545957932,
+                    "predicted_Mixed_fraction": 0.021396396396396396,
+                    "error_rate": 0.9786036036036037,
+                    "variance_MSE": 0.03475329122480946,
+                    "variance_MAE": 0.18199367326071952
+                  },
+                  "all_correct": {
+                    "questions": 210,
+                    "mean_score": 0.0019623592999691722,
+                    "predicted_Mixed_fraction": 0.009523809523809525,
+                    "error_rate": 0.009523809523809525,
+                    "variance_MSE": 0.00016884119594203683,
+                    "variance_MAE": 0.0019623592999691722
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.015107077186620592,
+                "variance_MAE": 0.07936196235460471,
+                "variance_Pearson": 0.10382367719821735,
+                "variance_Spearman": 0.02227370220386001,
+                "mean_only_oracle_MSE": 0.009034251403808594,
+                "constant_zero_MAE": 0.0803515625
+              }
+            },
+            "fixed_validation2048_G5": {
+              "raw": {
+                "questions": 2048,
+                "Mixed_questions": 663,
+                "Mixed_balanced_accuracy": 0.5215506585861226,
+                "Mixed_recall": 0.09653092006033183,
+                "nonMixed_FPR": 0.053429602888086625,
+                "Mixed_ROC_AUC": 0.54341822260701,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 216,
+                  "fraction": 0.421875
+                },
+                "score_mean": 0.010054545069248633,
+                "score_std": 0.031036239447131898,
+                "score_quantiles": [
+                  3.283795012976043e-05,
+                  4.777608046424575e-05,
+                  5.0856746383942664e-05,
+                  6.134236900834367e-05,
+                  9.49961322476156e-05,
+                  0.02568447217345236,
+                  0.16700363159179688
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 1055,
+                    "mean_score": 0.0076500778584317605,
+                    "predicted_Mixed_fraction": 0.052132701421800945,
+                    "error_rate": 0.052132701421800945,
+                    "variance_MSE": 0.0008104228632299261,
+                    "variance_MAE": 0.0076500778584317605
+                  },
+                  "Mixed": {
+                    "questions": 663,
+                    "mean_score": 0.014060102587954577,
+                    "predicted_Mixed_fraction": 0.09653092006033183,
+                    "error_rate": 0.9034690799396682,
+                    "variance_MSE": 0.03450195707863665,
+                    "variance_MAE": 0.17827823520062006
+                  },
+                  "all_correct": {
+                    "questions": 330,
+                    "mean_score": 0.00969402468291457,
+                    "predicted_Mixed_fraction": 0.05757575757575758,
+                    "error_rate": 0.05757575757575758,
+                    "variance_MSE": 0.0009690682918328006,
+                    "variance_MAE": 0.00969402468291457
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.011742962011791258,
+                "variance_MAE": 0.06321695811719649,
+                "variance_Pearson": 0.09456289220939502,
+                "variance_Spearman": 0.06973616907686675,
+                "mean_only_oracle_MSE": 0.008597991943359376,
+                "constant_zero_MAE": 0.06226562499999999
+              },
+              "EMA": {
+                "questions": 2048,
+                "Mixed_questions": 663,
+                "Mixed_balanced_accuracy": 0.5028162111831681,
+                "Mixed_recall": 0.013574660633484163,
+                "nonMixed_FPR": 0.007942238267148016,
+                "Mixed_ROC_AUC": 0.4860697736467539,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 169,
+                  "fraction": 0.330078125
+                },
+                "score_mean": 0.0016982737859745356,
+                "score_std": 0.01305953839947975,
+                "score_quantiles": [
+                  4.4881991925649345e-05,
+                  5.762667569797486e-05,
+                  6.134236900834367e-05,
+                  6.950773968128487e-05,
+                  8.649790106574073e-05,
+                  0.00010763928003143519,
+                  0.16613507270812988
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 1055,
+                    "mean_score": 0.0011188918547998612,
+                    "predicted_Mixed_fraction": 0.007582938388625593,
+                    "error_rate": 0.007582938388625593,
+                    "variance_MSE": 0.00011093607471182769,
+                    "variance_MAE": 0.0011188918547998612
+                  },
+                  "Mixed": {
+                    "questions": 663,
+                    "mean_score": 0.0024260606802892423,
+                    "predicted_Mixed_fraction": 0.013574660633484163,
+                    "error_rate": 0.9864253393665159,
+                    "variance_MSE": 0.037799795622468345,
+                    "variance_MAE": 0.1899117975399219
+                  },
+                  "all_correct": {
+                    "questions": 330,
+                    "mean_score": 0.002088350229788568,
+                    "predicted_Mixed_fraction": 0.00909090909090909,
+                    "error_rate": 0.00909090909090909,
+                    "variance_MSE": 0.00019817073259645798,
+                    "variance_MAE": 0.002088350229788568
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.012326024608532382,
+                "variance_MAE": 0.062393119263482566,
+                "variance_Pearson": 0.045799941113852154,
+                "variance_Spearman": -0.010064652946368224,
+                "mean_only_oracle_MSE": 0.008597991943359376,
+                "constant_zero_MAE": 0.06226562499999999
+              }
+            }
+          },
+          "evaluation": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mae/evaluation-epoch-04.json",
+            "bytes": 10364,
+            "sha256": "09032a4addd2203778488a42111cce19154733d9159fa3cfa674f8085b6f88d4"
           }
         }
       },
@@ -2359,6 +3343,498 @@
             "bytes": 10271,
             "sha256": "121ebf7f890d2ed393803145501b99308812ab1750bf10478c3ba0e212199806"
           }
+        },
+        "3": {
+          "cursor": 3963,
+          "roles": {
+            "fixed_train2048_G5": {
+              "raw": {
+                "questions": 2048,
+                "Mixed_questions": 888,
+                "Mixed_balanced_accuracy": 0.6170045045045045,
+                "Mixed_recall": 0.38400900900900903,
+                "nonMixed_FPR": 0.15000000000000002,
+                "Mixed_ROC_AUC": 0.7080857797452625,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 340,
+                  "fraction": 0.6640625
+                },
+                "score_mean": 0.06395795222880452,
+                "score_std": 0.024324854738808997,
+                "score_quantiles": [
+                  0.0018364567076787353,
+                  0.03324105963110924,
+                  0.047380272299051285,
+                  0.06346525251865387,
+                  0.0802585557103157,
+                  0.09522428512573242,
+                  0.1433001607656479
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 950,
+                    "mean_score": 0.054271193027226744,
+                    "predicted_Mixed_fraction": 0.13473684210526315,
+                    "error_rate": 0.13473684210526315,
+                    "variance_MSE": 0.003459826974894443,
+                    "variance_MAE": 0.054271193027226744
+                  },
+                  "Mixed": {
+                    "questions": 888,
+                    "mean_score": 0.0740405283852581,
+                    "predicted_Mixed_fraction": 0.38400900900900903,
+                    "error_rate": 0.615990990990991,
+                    "variance_MSE": 0.01416058559071683,
+                    "variance_MAE": 0.11127478693005721
+                  },
+                  "all_correct": {
+                    "questions": 210,
+                    "mean_score": 0.0651441122981764,
+                    "predicted_Mixed_fraction": 0.21904761904761905,
+                    "error_rate": 0.21904761904761905,
+                    "variance_MSE": 0.004707911769863837,
+                    "variance_MAE": 0.0651441122981764
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.008227586475770347,
+                "variance_MAE": 0.0801024940197135,
+                "variance_Pearson": 0.36052795646718877,
+                "variance_Spearman": 0.34411536301618617,
+                "mean_only_oracle_MSE": 0.009034251403808594,
+                "constant_zero_MAE": 0.0803515625
+              },
+              "EMA": {
+                "questions": 2048,
+                "Mixed_questions": 888,
+                "Mixed_balanced_accuracy": 0.6003650201926064,
+                "Mixed_recall": 0.3119369369369369,
+                "nonMixed_FPR": 0.11120689655172411,
+                "Mixed_ROC_AUC": 0.6877043530599565,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 335,
+                  "fraction": 0.654296875
+                },
+                "score_mean": 0.06542436239533345,
+                "score_std": 0.01709519788936199,
+                "score_quantiles": [
+                  0.010059485211968422,
+                  0.04360256716609001,
+                  0.05400288850069046,
+                  0.06533273309469223,
+                  0.07725592702627182,
+                  0.08671826869249344,
+                  0.12394717335700989
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 950,
+                    "mean_score": 0.0589735574245845,
+                    "predicted_Mixed_fraction": 0.09473684210526316,
+                    "error_rate": 0.09473684210526316,
+                    "variance_MSE": 0.003747092494282637,
+                    "variance_MAE": 0.0589735574245845
+                  },
+                  "Mixed": {
+                    "questions": 888,
+                    "mean_score": 0.07184205143209044,
+                    "predicted_Mixed_fraction": 0.3119369369369369,
+                    "error_rate": 0.6880630630630631,
+                    "variance_MSE": 0.014443702248048947,
+                    "variance_MAE": 0.11347326388322489
+                  },
+                  "all_correct": {
+                    "questions": 210,
+                    "mean_score": 0.06746891885995865,
+                    "predicted_Mixed_fraction": 0.18571428571428572,
+                    "error_rate": 0.18571428571428572,
+                    "variance_MSE": 0.0047684011424945156,
+                    "variance_MAE": 0.06746891885995865
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.008489799661015537,
+                "variance_MAE": 0.08347539591906752,
+                "variance_Pearson": 0.32603067878954267,
+                "variance_Spearman": 0.30437168873099907,
+                "mean_only_oracle_MSE": 0.009034251403808594,
+                "constant_zero_MAE": 0.0803515625
+              }
+            },
+            "fixed_validation2048_G5": {
+              "raw": {
+                "questions": 2048,
+                "Mixed_questions": 663,
+                "Mixed_balanced_accuracy": 0.549088760747287,
+                "Mixed_recall": 0.3046757164404223,
+                "nonMixed_FPR": 0.20649819494584842,
+                "Mixed_ROC_AUC": 0.6321533778743378,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 217,
+                  "fraction": 0.423828125
+                },
+                "score_mean": 0.06367801832152509,
+                "score_std": 0.023551807680056724,
+                "score_quantiles": [
+                  0.002746735466644168,
+                  0.03392238914966583,
+                  0.04708099365234375,
+                  0.06346525251865387,
+                  0.07914512604475021,
+                  0.09449994564056396,
+                  0.14887313544750214
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 1055,
+                    "mean_score": 0.058125593875627525,
+                    "predicted_Mixed_fraction": 0.18862559241706162,
+                    "error_rate": 0.18862559241706162,
+                    "variance_MSE": 0.003942232311890705,
+                    "variance_MAE": 0.058125593875627525
+                  },
+                  "Mixed": {
+                    "questions": 663,
+                    "mean_score": 0.07090633329942396,
+                    "predicted_Mixed_fraction": 0.3046757164404223,
+                    "error_rate": 0.6953242835595776,
+                    "variance_MSE": 0.01659822270898674,
+                    "variance_MAE": 0.1214315249207872
+                  },
+                  "all_correct": {
+                    "questions": 330,
+                    "mean_score": 0.06690660910963109,
+                    "predicted_Mixed_fraction": 0.2636363636363636,
+                    "error_rate": 0.2636363636363636,
+                    "variance_MSE": 0.00496508413905841,
+                    "variance_MAE": 0.06690660910963109
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.0082041770073204,
+                "variance_MAE": 0.08003456228879258,
+                "variance_Pearson": 0.21761969173295637,
+                "variance_Spearman": 0.2166477719320878,
+                "mean_only_oracle_MSE": 0.008597991943359376,
+                "constant_zero_MAE": 0.06226562499999999
+              },
+              "EMA": {
+                "questions": 2048,
+                "Mixed_questions": 663,
+                "Mixed_balanced_accuracy": 0.5517672106332119,
+                "Mixed_recall": 0.2609351432880845,
+                "nonMixed_FPR": 0.15740072202166067,
+                "Mixed_ROC_AUC": 0.6308841226021095,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 225,
+                  "fraction": 0.439453125
+                },
+                "score_mean": 0.06525083834594625,
+                "score_std": 0.01659029735935184,
+                "score_quantiles": [
+                  0.013955785892903805,
+                  0.044452715665102005,
+                  0.05367285758256912,
+                  0.06495640426874161,
+                  0.07668369635939598,
+                  0.08693964034318924,
+                  0.11744087189435959
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 1055,
+                    "mean_score": 0.06136704699635082,
+                    "predicted_Mixed_fraction": 0.14312796208530806,
+                    "error_rate": 0.14312796208530806,
+                    "variance_MSE": 0.004048911711038754,
+                    "variance_MAE": 0.06136704699635082
+                  },
+                  "Mixed": {
+                    "questions": 663,
+                    "mean_score": 0.07031839665413173,
+                    "predicted_Mixed_fraction": 0.2609351432880845,
+                    "error_rate": 0.7390648567119156,
+                    "variance_MSE": 0.016586402463013596,
+                    "variance_MAE": 0.12201946156607943
+                  },
+                  "all_correct": {
+                    "questions": 330,
+                    "mean_score": 0.06748601627169233,
+                    "predicted_Mixed_fraction": 0.20303030303030303,
+                    "error_rate": 0.20303030303030303,
+                    "variance_MSE": 0.004787192078597352,
+                    "variance_MAE": 0.06748601627169233
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.00822664066116261,
+                "variance_MAE": 0.08198804832476525,
+                "variance_Pearson": 0.21305440033720957,
+                "variance_Spearman": 0.21005929537795062,
+                "mean_only_oracle_MSE": 0.008597991943359376,
+                "constant_zero_MAE": 0.06226562499999999
+              }
+            }
+          },
+          "evaluation": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/evaluation-epoch-03.json",
+            "bytes": 10291,
+            "sha256": "08e7ab442284894ba56543db0962000347a4b79334b1781d2eaa9e73bd1f8cc9"
+          }
+        },
+        "4": {
+          "cursor": 5284,
+          "roles": {
+            "fixed_train2048_G5": {
+              "raw": {
+                "questions": 2048,
+                "Mixed_questions": 888,
+                "Mixed_balanced_accuracy": 0.6706585896241068,
+                "Mixed_recall": 0.5585585585585585,
+                "nonMixed_FPR": 0.21724137931034482,
+                "Mixed_ROC_AUC": 0.745515882261572,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 360,
+                  "fraction": 0.703125
+                },
+                "score_mean": 0.0711293096807708,
+                "score_std": 0.029794211576263763,
+                "score_quantiles": [
+                  0.0018364567076787353,
+                  0.034083185344934465,
+                  0.05108547583222389,
+                  0.06917262822389603,
+                  0.09142079204320908,
+                  0.1108338326215744,
+                  0.17336823046207428
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 950,
+                    "mean_score": 0.05790969534078613,
+                    "predicted_Mixed_fraction": 0.19894736842105262,
+                    "error_rate": 0.19894736842105262,
+                    "variance_MSE": 0.004056637492432231,
+                    "variance_MAE": 0.05790969534078613
+                  },
+                  "Mixed": {
+                    "questions": 888,
+                    "mean_score": 0.0855777777316099,
+                    "predicted_Mixed_fraction": 0.5585585585585585,
+                    "error_rate": 0.44144144144144143,
+                    "variance_MSE": 0.011800676923499181,
+                    "variance_MAE": 0.09976998263105816
+                  },
+                  "all_correct": {
+                    "questions": 210,
+                    "mean_score": 0.06983594774667706,
+                    "predicted_Mixed_fraction": 0.3,
+                    "error_rate": 0.3,
+                    "variance_MSE": 0.005441902620922955,
+                    "variance_MAE": 0.06983594774667706
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.007556448377085797,
+                "variance_MAE": 0.07728296102389094,
+                "variance_Pearson": 0.4326684598112278,
+                "variance_Spearman": 0.4174805684273262,
+                "mean_only_oracle_MSE": 0.009034251403808594,
+                "constant_zero_MAE": 0.0803515625
+              },
+              "EMA": {
+                "questions": 2048,
+                "Mixed_questions": 888,
+                "Mixed_balanced_accuracy": 0.61150201926064,
+                "Mixed_recall": 0.3186936936936937,
+                "nonMixed_FPR": 0.09568965517241379,
+                "Mixed_ROC_AUC": 0.7116311354457906,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 349,
+                  "fraction": 0.681640625
+                },
+                "score_mean": 0.06234539456454513,
+                "score_std": 0.020669499820464822,
+                "score_quantiles": [
+                  0.003625894896686077,
+                  0.03627884015440941,
+                  0.048821878619492054,
+                  0.061996862292289734,
+                  0.0764761883765459,
+                  0.08856360837817191,
+                  0.1305505484342575
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 950,
+                    "mean_score": 0.05385763801242176,
+                    "predicted_Mixed_fraction": 0.07894736842105263,
+                    "error_rate": 0.07894736842105263,
+                    "variance_MSE": 0.0032723309423140466,
+                    "variance_MAE": 0.05385763801242176
+                  },
+                  "Mixed": {
+                    "questions": 888,
+                    "mean_score": 0.07109162752172565,
+                    "predicted_Mixed_fraction": 0.3186936936936937,
+                    "error_rate": 0.6813063063063063,
+                    "variance_MSE": 0.014670893083548523,
+                    "variance_MAE": 0.11422368779358966
+                  },
+                  "all_correct": {
+                    "questions": 210,
+                    "mean_score": 0.06375831770045416,
+                    "predicted_Mixed_fraction": 0.17142857142857143,
+                    "error_rate": 0.17142857142857143,
+                    "variance_MSE": 0.004367333422220098,
+                    "variance_MAE": 0.06375831770045416
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.008326956773464674,
+                "variance_MAE": 0.08104718632304866,
+                "variance_Pearson": 0.37125585605129524,
+                "variance_Spearman": 0.34905508782064293,
+                "mean_only_oracle_MSE": 0.009034251403808594,
+                "constant_zero_MAE": 0.0803515625
+              }
+            },
+            "fixed_validation2048_G5": {
+              "raw": {
+                "questions": 2048,
+                "Mixed_questions": 663,
+                "Mixed_balanced_accuracy": 0.5966583356475054,
+                "Mixed_recall": 0.48717948717948717,
+                "nonMixed_FPR": 0.2938628158844765,
+                "Mixed_ROC_AUC": 0.640657007040528,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 223,
+                  "fraction": 0.435546875
+                },
+                "score_mean": 0.07081546774429626,
+                "score_std": 0.028599466561176557,
+                "score_quantiles": [
+                  0.0020789445843547583,
+                  0.03555797412991524,
+                  0.0504533052444458,
+                  0.06956420093774796,
+                  0.09006598591804504,
+                  0.10913148745894431,
+                  0.1782580465078354
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 1055,
+                    "mean_score": 0.06448187651907168,
+                    "predicted_Mixed_fraction": 0.28056872037914693,
+                    "error_rate": 0.28056872037914693,
+                    "variance_MSE": 0.005018224022269366,
+                    "variance_MAE": 0.06448187651907168
+                  },
+                  "Mixed": {
+                    "questions": 663,
+                    "mean_score": 0.07990936303390457,
+                    "predicted_Mixed_fraction": 0.48717948717948717,
+                    "error_rate": 0.5128205128205128,
+                    "variance_MSE": 0.014609863715702507,
+                    "variance_MAE": 0.11242849518630658
+                  },
+                  "all_correct": {
+                    "questions": 330,
+                    "mean_score": 0.07279330460975568,
+                    "predicted_Mixed_fraction": 0.33636363636363636,
+                    "error_rate": 0.33636363636363636,
+                    "variance_MSE": 0.005981607602190587,
+                    "variance_MAE": 0.07279330460975568
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.008278562742054608,
+                "variance_MAE": 0.08134290163933655,
+                "variance_Pearson": 0.22822512787944105,
+                "variance_Spearman": 0.2334561748390736,
+                "mean_only_oracle_MSE": 0.008597991943359376,
+                "constant_zero_MAE": 0.06226562499999999
+              },
+              "EMA": {
+                "questions": 2048,
+                "Mixed_questions": 663,
+                "Mixed_balanced_accuracy": 0.5501304103979832,
+                "Mixed_recall": 0.25188536953242835,
+                "nonMixed_FPR": 0.15162454873646214,
+                "Mixed_ROC_AUC": 0.6378211934593332,
+                "threshold": 0.08,
+                "Top512": {
+                  "Mixed": 220,
+                  "fraction": 0.4296875
+                },
+                "score_mean": 0.06204821915730463,
+                "score_std": 0.02001069465445879,
+                "score_quantiles": [
+                  0.005922367330640554,
+                  0.03701179847121239,
+                  0.04768100753426552,
+                  0.06127125397324562,
+                  0.07559777051210403,
+                  0.08849657326936722,
+                  0.12701398134231567
+                ],
+                "classwise": {
+                  "all_wrong": {
+                    "questions": 1055,
+                    "mean_score": 0.0571986597265289,
+                    "predicted_Mixed_fraction": 0.13270142180094788,
+                    "error_rate": 0.13270142180094788,
+                    "variance_MSE": 0.003681413550422212,
+                    "variance_MAE": 0.0571986597265289
+                  },
+                  "Mixed": {
+                    "questions": 663,
+                    "mean_score": 0.06840126996306452,
+                    "predicted_Mixed_fraction": 0.25188536953242835,
+                    "error_rate": 0.7481146304675717,
+                    "variance_MSE": 0.01712714659777898,
+                    "variance_MAE": 0.12393658825714664
+                  },
+                  "all_correct": {
+                    "questions": 330,
+                    "mean_score": 0.06478825708230336,
+                    "predicted_Mixed_fraction": 0.21212121212121213,
+                    "error_rate": 0.21212121212121213,
+                    "variance_MSE": 0.004537132313224532,
+                    "variance_MAE": 0.06478825708230336
+                  }
+                },
+                "score_semantics": "predicted_population_variance_not_Mixed_probability",
+                "Mixed_BCE": null,
+                "variance_MSE": 0.008172091383489743,
+                "variance_MAE": 0.08002669378082827,
+                "variance_Pearson": 0.2226829027850274,
+                "variance_Spearman": 0.22295523505996634,
+                "mean_only_oracle_MSE": 0.008597991943359376,
+                "constant_zero_MAE": 0.06226562499999999
+              }
+            }
+          },
+          "evaluation": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/evaluation-epoch-04.json",
+            "bytes": 10280,
+            "sha256": "e18e5180e18896a0e796f0f43ed8672ffc22c5c5fd1f339d90c2e2dfe83c0b0d"
+          }
         }
       }
     },
@@ -2775,6 +4251,238 @@
         "mean_only_oracle_MSE": 0.008597991943359376,
         "constant_zero_MAE": 0.06226562499999999
       },
+      "mse_E3_raw": {
+        "questions": 2048,
+        "Mixed_questions": 663,
+        "Mixed_balanced_accuracy": 0.541755285841079,
+        "Mixed_recall": 0.2654600301659125,
+        "nonMixed_FPR": 0.18194945848375454,
+        "Mixed_ROC_AUC": 0.632548148390153,
+        "threshold": 0.08,
+        "Top512": {
+          "Mixed": 212,
+          "fraction": 0.4140625
+        },
+        "score_mean": 0.06252231837493127,
+        "score_std": 0.021817436564651703,
+        "score_quantiles": [
+          0.004100758116692305,
+          0.03484909608960152,
+          0.04708099365234375,
+          0.06272819638252258,
+          0.07683949917554855,
+          0.09081007689237594,
+          0.14258283376693726
+        ],
+        "classwise": {
+          "all_wrong": {
+            "questions": 1055,
+            "mean_score": 0.057170350534920866,
+            "predicted_Mixed_fraction": 0.16303317535545023,
+            "error_rate": 0.16303317535545023,
+            "variance_MSE": 0.0037633615976732557,
+            "variance_MAE": 0.057170350534920866
+          },
+          "Mixed": {
+            "questions": 663,
+            "mean_score": 0.06937043358421524,
+            "predicted_Mixed_fraction": 0.2654600301659125,
+            "error_rate": 0.7345399698340875,
+            "variance_MSE": 0.016913527931140468,
+            "variance_MAE": 0.12296742463599591
+          },
+          "all_correct": {
+            "questions": 330,
+            "mean_score": 0.06587391136722132,
+            "predicted_Mixed_fraction": 0.24242424242424243,
+            "error_rate": 0.24242424242424243,
+            "variance_MSE": 0.0047330143031578354,
+            "variance_MAE": 0.06587391136722132
+          }
+        },
+        "score_semantics": "predicted_population_variance_not_Mixed_probability",
+        "Mixed_BCE": null,
+        "variance_MSE": 0.008176713976530029,
+        "variance_MAE": 0.07987329741171378,
+        "variance_Pearson": 0.2217823192582048,
+        "variance_Spearman": 0.21634778811024716,
+        "mean_only_oracle_MSE": 0.008597991943359376,
+        "constant_zero_MAE": 0.06226562499999999
+      },
+      "mse_E3_EMA": {
+        "questions": 2048,
+        "Mixed_questions": 663,
+        "Mixed_balanced_accuracy": 0.5462387898786285,
+        "Mixed_recall": 0.22171945701357465,
+        "nonMixed_FPR": 0.12924187725631764,
+        "Mixed_ROC_AUC": 0.629352413000746,
+        "threshold": 0.08,
+        "Top512": {
+          "Mixed": 225,
+          "fraction": 0.439453125
+        },
+        "score_mean": 0.06271927628858975,
+        "score_std": 0.016592779917306556,
+        "score_quantiles": [
+          0.01592874899506569,
+          0.0419408343732357,
+          0.05068982020020485,
+          0.061996862292289734,
+          0.07416356354951859,
+          0.08480364680290221,
+          0.1180187463760376
+        ],
+        "classwise": {
+          "all_wrong": {
+            "questions": 1055,
+            "mean_score": 0.05885875302221255,
+            "predicted_Mixed_fraction": 0.11090047393364928,
+            "error_rate": 0.11090047393364928,
+            "variance_MSE": 0.0037431511345470815,
+            "variance_MAE": 0.05885875302221255
+          },
+          "Mixed": {
+            "questions": 663,
+            "mean_score": 0.06770715554319266,
+            "predicted_Mixed_fraction": 0.22171945701357465,
+            "error_rate": 0.7782805429864253,
+            "variance_MSE": 0.017236743106797948,
+            "variance_MAE": 0.12463070267701849
+          },
+          "all_correct": {
+            "questions": 330,
+            "mean_score": 0.0650401493195783,
+            "predicted_Mixed_fraction": 0.18787878787878787,
+            "error_rate": 0.18787878787878787,
+            "variance_MSE": 0.004467961393808584,
+            "variance_MAE": 0.0650401493195783
+          }
+        },
+        "score_semantics": "predicted_population_variance_not_Mixed_probability",
+        "Mixed_BCE": null,
+        "variance_MSE": 0.008228228704448752,
+        "variance_MAE": 0.0811471628851359,
+        "variance_Pearson": 0.20970406773949538,
+        "variance_Spearman": 0.20714749349145573,
+        "mean_only_oracle_MSE": 0.008597991943359376,
+        "constant_zero_MAE": 0.06226562499999999
+      },
+      "mse_E4_raw": {
+        "questions": 2048,
+        "Mixed_questions": 663,
+        "Mixed_balanced_accuracy": 0.6006632144665698,
+        "Mixed_recall": 0.5565610859728507,
+        "nonMixed_FPR": 0.35523465703971124,
+        "Mixed_ROC_AUC": 0.6367697426096237,
+        "threshold": 0.08,
+        "Top512": {
+          "Mixed": 218,
+          "fraction": 0.42578125
+        },
+        "score_mean": 0.07473384432444163,
+        "score_std": 0.0269846965185041,
+        "score_quantiles": [
+          0.0038561380933970213,
+          0.04112911596894264,
+          0.05567503347992897,
+          0.07498118281364441,
+          0.09415578097105026,
+          0.10987068265676497,
+          0.1583525687456131
+        ],
+        "classwise": {
+          "all_wrong": {
+            "questions": 1055,
+            "mean_score": 0.06844959147384841,
+            "predicted_Mixed_fraction": 0.34218009478672984,
+            "error_rate": 0.34218009478672984,
+            "variance_MSE": 0.005477079035947607,
+            "variance_MAE": 0.06844959147384841
+          },
+          "Mixed": {
+            "questions": 663,
+            "mean_score": 0.08331862553465286,
+            "predicted_Mixed_fraction": 0.5565610859728507,
+            "error_rate": 0.4434389140271493,
+            "variance_MSE": 0.013814948172704414,
+            "variance_MAE": 0.1090192326855583
+          },
+          "all_correct": {
+            "questions": 330,
+            "mean_score": 0.07757680436991381,
+            "predicted_Mixed_fraction": 0.396969696969697,
+            "error_rate": 0.396969696969697,
+            "variance_MSE": 0.00657187921796364,
+            "variance_MAE": 0.07757680436991381
+          }
+        },
+        "score_semantics": "predicted_population_variance_not_Mixed_probability",
+        "Mixed_BCE": null,
+        "variance_MSE": 0.0083527095524198,
+        "variance_MAE": 0.08305391392456385,
+        "variance_Pearson": 0.2255871303339442,
+        "variance_Spearman": 0.2241487783116149,
+        "mean_only_oracle_MSE": 0.008597991943359376,
+        "constant_zero_MAE": 0.06226562499999999
+      },
+      "mse_E4_EMA": {
+        "questions": 2048,
+        "Mixed_questions": 663,
+        "Mixed_balanced_accuracy": 0.5509090612084878,
+        "Mixed_recall": 0.27149321266968324,
+        "nonMixed_FPR": 0.16967509025270755,
+        "Mixed_ROC_AUC": 0.6358081360842032,
+        "threshold": 0.08,
+        "Top512": {
+          "Mixed": 220,
+          "fraction": 0.4296875
+        },
+        "score_mean": 0.06281661055413679,
+        "score_std": 0.020222100961319968,
+        "score_quantiles": [
+          0.007553645875304937,
+          0.037507202476263046,
+          0.04798319563269615,
+          0.062361814081668854,
+          0.07663176208734512,
+          0.08984103053808212,
+          0.1353522092103958
+        ],
+        "classwise": {
+          "all_wrong": {
+            "questions": 1055,
+            "mean_score": 0.05794276189350333,
+            "predicted_Mixed_fraction": 0.15260663507109004,
+            "error_rate": 0.15260663507109004,
+            "variance_MSE": 0.003775603955886453,
+            "variance_MAE": 0.05794276189350333
+          },
+          "Mixed": {
+            "questions": 663,
+            "mean_score": 0.06920487198242595,
+            "predicted_Mixed_fraction": 0.27149321266968324,
+            "error_rate": 0.7285067873303167,
+            "variance_MSE": 0.01693922897986128,
+            "variance_MAE": 0.12313298623778521
+          },
+          "all_correct": {
+            "questions": 330,
+            "mean_score": 0.06556355906932643,
+            "predicted_Mixed_fraction": 0.22424242424242424,
+            "error_rate": 0.22424242424242424,
+            "variance_MSE": 0.004644505918062779,
+            "variance_MAE": 0.06556355906932643
+          }
+        },
+        "score_semantics": "predicted_population_variance_not_Mixed_probability",
+        "Mixed_BCE": null,
+        "variance_MSE": 0.008177079072299295,
+        "variance_MAE": 0.08027478426082779,
+        "variance_Pearson": 0.2213612981225456,
+        "variance_Spearman": 0.21936158835633782,
+        "mean_only_oracle_MSE": 0.008597991943359376,
+        "constant_zero_MAE": 0.06226562499999999
+      },
       "mae_E1_raw": {
         "questions": 2048,
         "Mixed_questions": 663,
@@ -3004,6 +4712,238 @@
         "variance_MAE": 0.062321284160000934,
         "variance_Pearson": 0.018855870896394965,
         "variance_Spearman": -0.023518677426609153,
+        "mean_only_oracle_MSE": 0.008597991943359376,
+        "constant_zero_MAE": 0.06226562499999999
+      },
+      "mae_E3_raw": {
+        "questions": 2048,
+        "Mixed_questions": 663,
+        "Mixed_balanced_accuracy": 0.5080876227191793,
+        "Mixed_recall": 0.04072398190045249,
+        "nonMixed_FPR": 0.02454873646209388,
+        "Mixed_ROC_AUC": 0.5020293927068189,
+        "threshold": 0.08,
+        "Top512": {
+          "Mixed": 174,
+          "fraction": 0.33984375
+        },
+        "score_mean": 0.004525399919030448,
+        "score_std": 0.02244665561104377,
+        "score_quantiles": [
+          3.960905451094732e-05,
+          5.3152233158471116e-05,
+          5.762667569797486e-05,
+          6.950773968128487e-05,
+          8.718409117136616e-05,
+          0.00012312516264501011,
+          0.17169757187366486
+        ],
+        "classwise": {
+          "all_wrong": {
+            "questions": 1055,
+            "mean_score": 0.0033679162143904528,
+            "predicted_Mixed_fraction": 0.02085308056872038,
+            "error_rate": 0.02085308056872038,
+            "variance_MSE": 0.00039096357845386486,
+            "variance_MAE": 0.0033679162143904528
+          },
+          "Mixed": {
+            "questions": 663,
+            "mean_score": 0.00612788296657774,
+            "predicted_Mixed_fraction": 0.04072398190045249,
+            "error_rate": 0.9592760180995475,
+            "variance_MSE": 0.03676074688939296,
+            "variance_MAE": 0.18624709647440477
+          },
+          "all_correct": {
+            "questions": 330,
+            "mean_score": 0.0050063061247011785,
+            "predicted_Mixed_fraction": 0.03636363636363636,
+            "error_rate": 0.03636363636363636,
+            "variance_MSE": 0.000529239620625354,
+            "variance_MAE": 0.0050063061247011785
+          }
+        },
+        "score_semantics": "predicted_population_variance_not_Mixed_probability",
+        "Mixed_BCE": null,
+        "variance_MSE": 0.012187251385616566,
+        "variance_MAE": 0.06283547733880063,
+        "variance_Pearson": 0.059702503762164925,
+        "variance_Spearman": 0.015386577280898458,
+        "mean_only_oracle_MSE": 0.008597991943359376,
+        "constant_zero_MAE": 0.06226562499999999
+      },
+      "mae_E3_EMA": {
+        "questions": 2048,
+        "Mixed_questions": 663,
+        "Mixed_balanced_accuracy": 0.5007862739652928,
+        "Mixed_recall": 0.0030165912518853697,
+        "nonMixed_FPR": 0.0014440433212996595,
+        "Mixed_ROC_AUC": 0.47246298686094823,
+        "threshold": 0.08,
+        "Top512": {
+          "Mixed": 155,
+          "fraction": 0.302734375
+        },
+        "score_mean": 0.0005487507507488942,
+        "score_std": 0.005961359567815477,
+        "score_quantiles": [
+          5.413601320469752e-05,
+          6.950773968128487e-05,
+          7.398927118629217e-05,
+          8.649790106574073e-05,
+          0.00010432893759571016,
+          0.00012583388888742775,
+          0.13626089692115784
+        ],
+        "classwise": {
+          "all_wrong": {
+            "questions": 1055,
+            "mean_score": 0.00036633067376198804,
+            "predicted_Mixed_fraction": 0.0009478672985781991,
+            "error_rate": 0.0009478672985781991,
+            "variance_MSE": 1.9784641486342743e-05,
+            "variance_MAE": 0.00036633067376198804
+          },
+          "Mixed": {
+            "questions": 663,
+            "mean_score": 0.0007710081217888649,
+            "predicted_Mixed_fraction": 0.0030165912518853697,
+            "error_rate": 0.9969834087481146,
+            "variance_MSE": 0.03825482518116685,
+            "variance_MAE": 0.19156685009842228
+          },
+          "all_correct": {
+            "questions": 330,
+            "mean_score": 0.0006854069453600624,
+            "predicted_Mixed_fraction": 0.0030303030303030303,
+            "error_rate": 0.0030303030303030303,
+            "variance_MSE": 5.096379176261516e-05,
+            "variance_MAE": 0.0006854069453600624
+          }
+        },
+        "score_semantics": "predicted_population_variance_not_Mixed_probability",
+        "Mixed_BCE": null,
+        "variance_MSE": 0.012402656222247743,
+        "variance_MAE": 0.06231517810939535,
+        "variance_Pearson": 0.03604225440606959,
+        "variance_Spearman": -0.026733030480801945,
+        "mean_only_oracle_MSE": 0.008597991943359376,
+        "constant_zero_MAE": 0.06226562499999999
+      },
+      "mae_E4_raw": {
+        "questions": 2048,
+        "Mixed_questions": 663,
+        "Mixed_balanced_accuracy": 0.5215506585861226,
+        "Mixed_recall": 0.09653092006033183,
+        "nonMixed_FPR": 0.053429602888086625,
+        "Mixed_ROC_AUC": 0.54341822260701,
+        "threshold": 0.08,
+        "Top512": {
+          "Mixed": 216,
+          "fraction": 0.421875
+        },
+        "score_mean": 0.010054545069248633,
+        "score_std": 0.031036239447131898,
+        "score_quantiles": [
+          3.283795012976043e-05,
+          4.777608046424575e-05,
+          5.0856746383942664e-05,
+          6.134236900834367e-05,
+          9.49961322476156e-05,
+          0.02568447217345236,
+          0.16700363159179688
+        ],
+        "classwise": {
+          "all_wrong": {
+            "questions": 1055,
+            "mean_score": 0.0076500778584317605,
+            "predicted_Mixed_fraction": 0.052132701421800945,
+            "error_rate": 0.052132701421800945,
+            "variance_MSE": 0.0008104228632299261,
+            "variance_MAE": 0.0076500778584317605
+          },
+          "Mixed": {
+            "questions": 663,
+            "mean_score": 0.014060102587954577,
+            "predicted_Mixed_fraction": 0.09653092006033183,
+            "error_rate": 0.9034690799396682,
+            "variance_MSE": 0.03450195707863665,
+            "variance_MAE": 0.17827823520062006
+          },
+          "all_correct": {
+            "questions": 330,
+            "mean_score": 0.00969402468291457,
+            "predicted_Mixed_fraction": 0.05757575757575758,
+            "error_rate": 0.05757575757575758,
+            "variance_MSE": 0.0009690682918328006,
+            "variance_MAE": 0.00969402468291457
+          }
+        },
+        "score_semantics": "predicted_population_variance_not_Mixed_probability",
+        "Mixed_BCE": null,
+        "variance_MSE": 0.011742962011791258,
+        "variance_MAE": 0.06321695811719649,
+        "variance_Pearson": 0.09456289220939502,
+        "variance_Spearman": 0.06973616907686675,
+        "mean_only_oracle_MSE": 0.008597991943359376,
+        "constant_zero_MAE": 0.06226562499999999
+      },
+      "mae_E4_EMA": {
+        "questions": 2048,
+        "Mixed_questions": 663,
+        "Mixed_balanced_accuracy": 0.5028162111831681,
+        "Mixed_recall": 0.013574660633484163,
+        "nonMixed_FPR": 0.007942238267148016,
+        "Mixed_ROC_AUC": 0.4860697736467539,
+        "threshold": 0.08,
+        "Top512": {
+          "Mixed": 169,
+          "fraction": 0.330078125
+        },
+        "score_mean": 0.0016982737859745356,
+        "score_std": 0.01305953839947975,
+        "score_quantiles": [
+          4.4881991925649345e-05,
+          5.762667569797486e-05,
+          6.134236900834367e-05,
+          6.950773968128487e-05,
+          8.649790106574073e-05,
+          0.00010763928003143519,
+          0.16613507270812988
+        ],
+        "classwise": {
+          "all_wrong": {
+            "questions": 1055,
+            "mean_score": 0.0011188918547998612,
+            "predicted_Mixed_fraction": 0.007582938388625593,
+            "error_rate": 0.007582938388625593,
+            "variance_MSE": 0.00011093607471182769,
+            "variance_MAE": 0.0011188918547998612
+          },
+          "Mixed": {
+            "questions": 663,
+            "mean_score": 0.0024260606802892423,
+            "predicted_Mixed_fraction": 0.013574660633484163,
+            "error_rate": 0.9864253393665159,
+            "variance_MSE": 0.037799795622468345,
+            "variance_MAE": 0.1899117975399219
+          },
+          "all_correct": {
+            "questions": 330,
+            "mean_score": 0.002088350229788568,
+            "predicted_Mixed_fraction": 0.00909090909090909,
+            "error_rate": 0.00909090909090909,
+            "variance_MSE": 0.00019817073259645798,
+            "variance_MAE": 0.002088350229788568
+          }
+        },
+        "score_semantics": "predicted_population_variance_not_Mixed_probability",
+        "Mixed_BCE": null,
+        "variance_MSE": 0.012326024608532382,
+        "variance_MAE": 0.062393119263482566,
+        "variance_Pearson": 0.045799941113852154,
+        "variance_Spearman": -0.010064652946368224,
         "mean_only_oracle_MSE": 0.008597991943359376,
         "constant_zero_MAE": 0.06226562499999999
       },
@@ -3238,175 +5178,407 @@
         "variance_Spearman": 0.19149123698332288,
         "mean_only_oracle_MSE": 0.008597991943359376,
         "constant_zero_MAE": 0.06226562499999999
+      },
+      "z_mse_anchor_E3_raw": {
+        "questions": 2048,
+        "Mixed_questions": 663,
+        "Mixed_balanced_accuracy": 0.549088760747287,
+        "Mixed_recall": 0.3046757164404223,
+        "nonMixed_FPR": 0.20649819494584842,
+        "Mixed_ROC_AUC": 0.6321533778743378,
+        "threshold": 0.08,
+        "Top512": {
+          "Mixed": 217,
+          "fraction": 0.423828125
+        },
+        "score_mean": 0.06367801832152509,
+        "score_std": 0.023551807680056724,
+        "score_quantiles": [
+          0.002746735466644168,
+          0.03392238914966583,
+          0.04708099365234375,
+          0.06346525251865387,
+          0.07914512604475021,
+          0.09449994564056396,
+          0.14887313544750214
+        ],
+        "classwise": {
+          "all_wrong": {
+            "questions": 1055,
+            "mean_score": 0.058125593875627525,
+            "predicted_Mixed_fraction": 0.18862559241706162,
+            "error_rate": 0.18862559241706162,
+            "variance_MSE": 0.003942232311890705,
+            "variance_MAE": 0.058125593875627525
+          },
+          "Mixed": {
+            "questions": 663,
+            "mean_score": 0.07090633329942396,
+            "predicted_Mixed_fraction": 0.3046757164404223,
+            "error_rate": 0.6953242835595776,
+            "variance_MSE": 0.01659822270898674,
+            "variance_MAE": 0.1214315249207872
+          },
+          "all_correct": {
+            "questions": 330,
+            "mean_score": 0.06690660910963109,
+            "predicted_Mixed_fraction": 0.2636363636363636,
+            "error_rate": 0.2636363636363636,
+            "variance_MSE": 0.00496508413905841,
+            "variance_MAE": 0.06690660910963109
+          }
+        },
+        "score_semantics": "predicted_population_variance_not_Mixed_probability",
+        "Mixed_BCE": null,
+        "variance_MSE": 0.0082041770073204,
+        "variance_MAE": 0.08003456228879258,
+        "variance_Pearson": 0.21761969173295637,
+        "variance_Spearman": 0.2166477719320878,
+        "mean_only_oracle_MSE": 0.008597991943359376,
+        "constant_zero_MAE": 0.06226562499999999
+      },
+      "z_mse_anchor_E3_EMA": {
+        "questions": 2048,
+        "Mixed_questions": 663,
+        "Mixed_balanced_accuracy": 0.5517672106332119,
+        "Mixed_recall": 0.2609351432880845,
+        "nonMixed_FPR": 0.15740072202166067,
+        "Mixed_ROC_AUC": 0.6308841226021095,
+        "threshold": 0.08,
+        "Top512": {
+          "Mixed": 225,
+          "fraction": 0.439453125
+        },
+        "score_mean": 0.06525083834594625,
+        "score_std": 0.01659029735935184,
+        "score_quantiles": [
+          0.013955785892903805,
+          0.044452715665102005,
+          0.05367285758256912,
+          0.06495640426874161,
+          0.07668369635939598,
+          0.08693964034318924,
+          0.11744087189435959
+        ],
+        "classwise": {
+          "all_wrong": {
+            "questions": 1055,
+            "mean_score": 0.06136704699635082,
+            "predicted_Mixed_fraction": 0.14312796208530806,
+            "error_rate": 0.14312796208530806,
+            "variance_MSE": 0.004048911711038754,
+            "variance_MAE": 0.06136704699635082
+          },
+          "Mixed": {
+            "questions": 663,
+            "mean_score": 0.07031839665413173,
+            "predicted_Mixed_fraction": 0.2609351432880845,
+            "error_rate": 0.7390648567119156,
+            "variance_MSE": 0.016586402463013596,
+            "variance_MAE": 0.12201946156607943
+          },
+          "all_correct": {
+            "questions": 330,
+            "mean_score": 0.06748601627169233,
+            "predicted_Mixed_fraction": 0.20303030303030303,
+            "error_rate": 0.20303030303030303,
+            "variance_MSE": 0.004787192078597352,
+            "variance_MAE": 0.06748601627169233
+          }
+        },
+        "score_semantics": "predicted_population_variance_not_Mixed_probability",
+        "Mixed_BCE": null,
+        "variance_MSE": 0.00822664066116261,
+        "variance_MAE": 0.08198804832476525,
+        "variance_Pearson": 0.21305440033720957,
+        "variance_Spearman": 0.21005929537795062,
+        "mean_only_oracle_MSE": 0.008597991943359376,
+        "constant_zero_MAE": 0.06226562499999999
+      },
+      "z_mse_anchor_E4_raw": {
+        "questions": 2048,
+        "Mixed_questions": 663,
+        "Mixed_balanced_accuracy": 0.5966583356475054,
+        "Mixed_recall": 0.48717948717948717,
+        "nonMixed_FPR": 0.2938628158844765,
+        "Mixed_ROC_AUC": 0.640657007040528,
+        "threshold": 0.08,
+        "Top512": {
+          "Mixed": 223,
+          "fraction": 0.435546875
+        },
+        "score_mean": 0.07081546774429626,
+        "score_std": 0.028599466561176557,
+        "score_quantiles": [
+          0.0020789445843547583,
+          0.03555797412991524,
+          0.0504533052444458,
+          0.06956420093774796,
+          0.09006598591804504,
+          0.10913148745894431,
+          0.1782580465078354
+        ],
+        "classwise": {
+          "all_wrong": {
+            "questions": 1055,
+            "mean_score": 0.06448187651907168,
+            "predicted_Mixed_fraction": 0.28056872037914693,
+            "error_rate": 0.28056872037914693,
+            "variance_MSE": 0.005018224022269366,
+            "variance_MAE": 0.06448187651907168
+          },
+          "Mixed": {
+            "questions": 663,
+            "mean_score": 0.07990936303390457,
+            "predicted_Mixed_fraction": 0.48717948717948717,
+            "error_rate": 0.5128205128205128,
+            "variance_MSE": 0.014609863715702507,
+            "variance_MAE": 0.11242849518630658
+          },
+          "all_correct": {
+            "questions": 330,
+            "mean_score": 0.07279330460975568,
+            "predicted_Mixed_fraction": 0.33636363636363636,
+            "error_rate": 0.33636363636363636,
+            "variance_MSE": 0.005981607602190587,
+            "variance_MAE": 0.07279330460975568
+          }
+        },
+        "score_semantics": "predicted_population_variance_not_Mixed_probability",
+        "Mixed_BCE": null,
+        "variance_MSE": 0.008278562742054608,
+        "variance_MAE": 0.08134290163933655,
+        "variance_Pearson": 0.22822512787944105,
+        "variance_Spearman": 0.2334561748390736,
+        "mean_only_oracle_MSE": 0.008597991943359376,
+        "constant_zero_MAE": 0.06226562499999999
+      },
+      "z_mse_anchor_E4_EMA": {
+        "questions": 2048,
+        "Mixed_questions": 663,
+        "Mixed_balanced_accuracy": 0.5501304103979832,
+        "Mixed_recall": 0.25188536953242835,
+        "nonMixed_FPR": 0.15162454873646214,
+        "Mixed_ROC_AUC": 0.6378211934593332,
+        "threshold": 0.08,
+        "Top512": {
+          "Mixed": 220,
+          "fraction": 0.4296875
+        },
+        "score_mean": 0.06204821915730463,
+        "score_std": 0.02001069465445879,
+        "score_quantiles": [
+          0.005922367330640554,
+          0.03701179847121239,
+          0.04768100753426552,
+          0.06127125397324562,
+          0.07559777051210403,
+          0.08849657326936722,
+          0.12701398134231567
+        ],
+        "classwise": {
+          "all_wrong": {
+            "questions": 1055,
+            "mean_score": 0.0571986597265289,
+            "predicted_Mixed_fraction": 0.13270142180094788,
+            "error_rate": 0.13270142180094788,
+            "variance_MSE": 0.003681413550422212,
+            "variance_MAE": 0.0571986597265289
+          },
+          "Mixed": {
+            "questions": 663,
+            "mean_score": 0.06840126996306452,
+            "predicted_Mixed_fraction": 0.25188536953242835,
+            "error_rate": 0.7481146304675717,
+            "variance_MSE": 0.01712714659777898,
+            "variance_MAE": 0.12393658825714664
+          },
+          "all_correct": {
+            "questions": 330,
+            "mean_score": 0.06478825708230336,
+            "predicted_Mixed_fraction": 0.21212121212121213,
+            "error_rate": 0.21212121212121213,
+            "variance_MSE": 0.004537132313224532,
+            "variance_MAE": 0.06478825708230336
+          }
+        },
+        "score_semantics": "predicted_population_variance_not_Mixed_probability",
+        "Mixed_BCE": null,
+        "variance_MSE": 0.008172091383489743,
+        "variance_MAE": 0.08002669378082827,
+        "variance_Pearson": 0.2226829027850274,
+        "variance_Spearman": 0.22295523505996634,
+        "mean_only_oracle_MSE": 0.008597991943359376,
+        "constant_zero_MAE": 0.06226562499999999
       }
     },
     "latest_epoch_paired_comparisons": {
-      "mse_E2_raw_minus_E1_EMA": {
-        "candidate": "mse_E2_raw",
+      "mse_E4_raw_minus_E1_EMA": {
+        "candidate": "mse_E4_raw",
         "baseline": "E1_EMA",
-        "BA_delta": 0.04417672650843174,
+        "BA_delta": 0.07181719674817999,
         "BA_percentile95": [
-          0.023221372316321487,
-          0.06566302723818879
+          0.04924700016263911,
+          0.09491548080666538
         ],
-        "Top512_delta": 0.03125,
+        "Top512_delta": 0.025390625,
         "Top512_percentile95": [
-          -0.0078125,
+          -0.013671875,
+          0.06840820312499973
+        ]
+      },
+      "mse_E4_raw_minus_L21P80_E3_raw": {
+        "candidate": "mse_E4_raw",
+        "baseline": "L21P80_E3_raw",
+        "BA_delta": 0.0013046484908876277,
+        "BA_percentile95": [
+          -0.02504903936287651,
+          0.02664398626062648
+        ],
+        "Top512_delta": 0.005859375,
+        "Top512_percentile95": [
+          -0.041015625,
+          0.046875
+        ]
+      },
+      "mse_E4_EMA_minus_E1_EMA": {
+        "candidate": "mse_E4_EMA",
+        "baseline": "E1_EMA",
+        "BA_delta": 0.022063043490098022,
+        "BA_percentile95": [
+          0.00276981010184785,
+          0.042151027541678834
+        ],
+        "Top512_delta": 0.029296875,
+        "Top512_percentile95": [
+          -0.005859375,
           0.0703125
         ]
       },
-      "mse_E2_raw_minus_L21P80_E3_raw": {
-        "candidate": "mse_E2_raw",
+      "mse_E4_EMA_minus_L21P80_E3_raw": {
+        "candidate": "mse_E4_EMA",
         "baseline": "L21P80_E3_raw",
-        "BA_delta": -0.02633582174886062,
+        "BA_delta": -0.04844950476719434,
         "BA_percentile95": [
-          -0.04966295523517117,
-          -0.0015791978965183358
+          -0.0736104199343301,
+          -0.022655341802174503
         ],
-        "Top512_delta": 0.01171875,
+        "Top512_delta": 0.009765625,
         "Top512_percentile95": [
-          -0.03515625,
-          0.044921875
+          -0.03125,
+          0.046875
         ]
       },
-      "mse_E2_EMA_minus_E1_EMA": {
-        "candidate": "mse_E2_EMA",
+      "mae_E4_raw_minus_E1_EMA": {
+        "candidate": "mae_E4_raw",
         "baseline": "E1_EMA",
-        "BA_delta": 0.004330496430730024,
+        "BA_delta": -0.0072953591322671985,
         "BA_percentile95": [
-          -0.01391257018907304,
-          0.023117074570827602
-        ],
-        "Top512_delta": 0.041015625,
-        "Top512_percentile95": [
-          0.0078125,
-          0.083984375
-        ]
-      },
-      "mse_E2_EMA_minus_L21P80_E3_raw": {
-        "candidate": "mse_E2_EMA",
-        "baseline": "L21P80_E3_raw",
-        "BA_delta": -0.06618205182656234,
-        "BA_percentile95": [
-          -0.09009124901202506,
-          -0.04121341026034769
+          -0.0261728783367041,
+          0.010628597526588877
         ],
         "Top512_delta": 0.021484375,
         "Top512_percentile95": [
-          -0.021484375,
-          0.0625
+          -0.013671875,
+          0.05859375
         ]
       },
-      "mae_E2_raw_minus_E1_EMA": {
-        "candidate": "mae_E2_raw",
-        "baseline": "E1_EMA",
-        "BA_delta": -0.02766660677045052,
-        "BA_percentile95": [
-          -0.04615856492248744,
-          -0.010254016060606658
-        ],
-        "Top512_delta": -0.10546875,
-        "Top512_percentile95": [
-          -0.162158203125,
-          -0.052734375
-        ]
-      },
-      "mae_E2_raw_minus_L21P80_E3_raw": {
-        "candidate": "mae_E2_raw",
+      "mae_E4_raw_minus_L21P80_E3_raw": {
+        "candidate": "mae_E4_raw",
         "baseline": "L21P80_E3_raw",
-        "BA_delta": -0.09817915502774288,
+        "BA_delta": -0.07780790738955956,
         "BA_percentile95": [
-          -0.12117255322076806,
-          -0.07548080388209014
+          -0.10168549213152855,
+          -0.05316748851024419
         ],
-        "Top512_delta": -0.125,
+        "Top512_delta": 0.001953125,
         "Top512_percentile95": [
-          -0.181640625,
-          -0.076171875
+          -0.044921875,
+          0.0390625
         ]
       },
-      "mae_E2_EMA_minus_E1_EMA": {
-        "candidate": "mae_E2_EMA",
+      "mae_E4_EMA_minus_E1_EMA": {
+        "candidate": "mae_E4_EMA",
         "baseline": "E1_EMA",
-        "BA_delta": -0.028846017718389794,
+        "BA_delta": -0.02602980653522169,
         "BA_percentile95": [
-          -0.04742316370974852,
-          -0.011069761183028635
+          -0.044611006713390716,
+          -0.008212426899570456
         ],
-        "Top512_delta": -0.083984375,
+        "Top512_delta": -0.0703125,
         "Top512_percentile95": [
-          -0.1328125,
-          -0.03125
+          -0.12109375,
+          -0.021484375
         ]
       },
-      "mae_E2_EMA_minus_L21P80_E3_raw": {
-        "candidate": "mae_E2_EMA",
+      "mae_E4_EMA_minus_L21P80_E3_raw": {
+        "candidate": "mae_E4_EMA",
         "baseline": "L21P80_E3_raw",
-        "BA_delta": -0.09935856597568216,
+        "BA_delta": -0.09654235479251405,
         "BA_percentile95": [
-          -0.12268355015469272,
-          -0.07650941014771119
+          -0.11984150880918865,
+          -0.07367180213336438
         ],
-        "Top512_delta": -0.103515625,
+        "Top512_delta": -0.08984375,
         "Top512_percentile95": [
-          -0.16015625,
-          -0.056640625
+          -0.146484375,
+          -0.044921875
         ]
       },
-      "z_mse_anchor_E2_raw_minus_E1_EMA": {
-        "candidate": "z_mse_anchor_E2_raw",
+      "z_mse_anchor_E4_raw_minus_E1_EMA": {
+        "candidate": "z_mse_anchor_E4_raw",
         "baseline": "E1_EMA",
-        "BA_delta": 0.026909191891141382,
+        "BA_delta": 0.06781231792911557,
         "BA_percentile95": [
-          0.00709795309469049,
-          0.04685768035068582
-        ],
-        "Top512_delta": 0.037109375,
-        "Top512_percentile95": [
-          -0.001953125,
-          0.07421875
-        ]
-      },
-      "z_mse_anchor_E2_raw_minus_L21P80_E3_raw": {
-        "candidate": "z_mse_anchor_E2_raw",
-        "baseline": "L21P80_E3_raw",
-        "BA_delta": -0.04360335636615098,
-        "BA_percentile95": [
-          -0.06761409219955605,
-          -0.017766802084968062
-        ],
-        "Top512_delta": 0.017578125,
-        "Top512_percentile95": [
-          -0.029296875,
-          0.05078125
-        ]
-      },
-      "z_mse_anchor_E2_EMA_minus_E1_EMA": {
-        "candidate": "z_mse_anchor_E2_EMA",
-        "baseline": "E1_EMA",
-        "BA_delta": 0.020554747864155343,
-        "BA_percentile95": [
-          0.0025339647869163317,
-          0.03972334376132108
+          0.044639056769661734,
+          0.0910601989485832
         ],
         "Top512_delta": 0.03515625,
         "Top512_percentile95": [
-          0.00390625,
+          -0.003955078124999997,
           0.080078125
         ]
       },
-      "z_mse_anchor_E2_EMA_minus_L21P80_E3_raw": {
-        "candidate": "z_mse_anchor_E2_EMA",
+      "z_mse_anchor_E4_raw_minus_L21P80_E3_raw": {
+        "candidate": "z_mse_anchor_E4_raw",
         "baseline": "L21P80_E3_raw",
-        "BA_delta": -0.04995780039313702,
+        "BA_delta": -0.002700230328176789,
         "BA_percentile95": [
-          -0.07407749885470417,
-          -0.024031053355775614
+          -0.029258451665329078,
+          0.023396022783217413
         ],
         "Top512_delta": 0.015625,
         "Top512_percentile95": [
-          -0.025390625,
-          0.05859375
+          -0.029345703124999997,
+          0.0546875
+        ]
+      },
+      "z_mse_anchor_E4_EMA_minus_E1_EMA": {
+        "candidate": "z_mse_anchor_E4_EMA",
+        "baseline": "E1_EMA",
+        "BA_delta": 0.021284392679593367,
+        "BA_percentile95": [
+          0.0010374363642787576,
+          0.040999575067505754
+        ],
+        "Top512_delta": 0.029296875,
+        "Top512_percentile95": [
+          -0.005859375,
+          0.068359375
+        ]
+      },
+      "z_mse_anchor_E4_EMA_minus_L21P80_E3_raw": {
+        "candidate": "z_mse_anchor_E4_EMA",
+        "baseline": "L21P80_E3_raw",
+        "BA_delta": -0.049228155577698995,
+        "BA_percentile95": [
+          -0.0733189378673868,
+          -0.02348427982136285
+        ],
+        "Top512_delta": 0.009765625,
+        "Top512_percentile95": [
+          -0.033203125,
+          0.048828125
         ]
       }
     },
@@ -3466,6 +5638,26 @@
         "bytes": 77321,
         "sha256": "c1c8f424a1869e9da0bf15a697bf199c5662892e4dfa3bf23e8444115d51415f"
       },
+      "mse_E3_fixed_train2048_G5": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mse/epoch-03-fixed_train2048_G5-predictions.jsonl.gz",
+        "bytes": 80717,
+        "sha256": "dd46f96f6efb1176970f5a0c9d176c46f64a21ba28deef60fbd1ec3005709eca"
+      },
+      "mse_E3_fixed_validation2048_G5": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mse/epoch-03-fixed_validation2048_G5-predictions.jsonl.gz",
+        "bytes": 79330,
+        "sha256": "e1470c8d606d1421c301de46944acc5ee7382095889ebdc6610dc3481f826bbb"
+      },
+      "mse_E4_fixed_train2048_G5": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mse/epoch-04-fixed_train2048_G5-predictions.jsonl.gz",
+        "bytes": 83505,
+        "sha256": "feeffed7f272f905ef56c47311dce163b87a4f2c8b339a277a1ba5f6bb630e12"
+      },
+      "mse_E4_fixed_validation2048_G5": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mse/epoch-04-fixed_validation2048_G5-predictions.jsonl.gz",
+        "bytes": 82066,
+        "sha256": "e3380e70e4bbc3f4cd3ae11f189d637822c4b2a2e5c0384287f718b5d161e60c"
+      },
       "mae_E0_fixed_train2048_G5": {
         "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mae/epoch-00-fixed_train2048_G5-predictions.jsonl.gz",
         "bytes": 74244,
@@ -3496,6 +5688,26 @@
         "bytes": 57296,
         "sha256": "5a38af9c86404c9568ea6bffd5afcf804f6ff5163ffa86fcb34f5e224e46a008"
       },
+      "mae_E3_fixed_train2048_G5": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mae/epoch-03-fixed_train2048_G5-predictions.jsonl.gz",
+        "bytes": 58150,
+        "sha256": "a03256036334133a4548c2fb108402b9e13b7ce1257407b00382f94433892991"
+      },
+      "mae_E3_fixed_validation2048_G5": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mae/epoch-03-fixed_validation2048_G5-predictions.jsonl.gz",
+        "bytes": 56621,
+        "sha256": "1d9594f411249b9a70241d55e32b71e109db5525af391556b6f4432d155c5866"
+      },
+      "mae_E4_fixed_train2048_G5": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mae/epoch-04-fixed_train2048_G5-predictions.jsonl.gz",
+        "bytes": 60548,
+        "sha256": "7ef2ab580e9d65a3ff1ab7e4e768f73ad4ecd0a2afb805570289b2081b8fcd12"
+      },
+      "mae_E4_fixed_validation2048_G5": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mae/epoch-04-fixed_validation2048_G5-predictions.jsonl.gz",
+        "bytes": 59917,
+        "sha256": "12a3c24fdbfbf3d4912d84b8b6374f595e341bebf96c748c2275fa47563da991"
+      },
       "z_mse_anchor_E0_fixed_train2048_G5": {
         "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/epoch-00-fixed_train2048_G5-predictions.jsonl.gz",
         "bytes": 74244,
@@ -3525,6 +5737,26 @@
         "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/epoch-02-fixed_validation2048_G5-predictions.jsonl.gz",
         "bytes": 77607,
         "sha256": "161c091c708148b64a6c57eb3b488dd19a602246978eb064b7561ba9a603c4b7"
+      },
+      "z_mse_anchor_E3_fixed_train2048_G5": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/epoch-03-fixed_train2048_G5-predictions.jsonl.gz",
+        "bytes": 81029,
+        "sha256": "4ee1affa0446143a963061e9d134430b3845b6755089c66959ac47d9b31fb200"
+      },
+      "z_mse_anchor_E3_fixed_validation2048_G5": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/epoch-03-fixed_validation2048_G5-predictions.jsonl.gz",
+        "bytes": 79848,
+        "sha256": "78d48b5f0bc17e0628ffb66b2b82fff8680637e1b33cb91948e8a0624a4d05c8"
+      },
+      "z_mse_anchor_E4_fixed_train2048_G5": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/epoch-04-fixed_train2048_G5-predictions.jsonl.gz",
+        "bytes": 83124,
+        "sha256": "5661cc3bbb8b7b5d3abe7a7e615c725875e467922b4f4cc2bd30f9c92de1e008"
+      },
+      "z_mse_anchor_E4_fixed_validation2048_G5": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/epoch-04-fixed_validation2048_G5-predictions.jsonl.gz",
+        "bytes": 81746,
+        "sha256": "c3cd7b72bf22f4f5580b22ada198c703b037c2491e292fdac96219e795ec0e7f"
       }
     },
     "identical_question_own_G5_EM": true,
@@ -3539,6 +5771,6 @@
     "final4096_read": false,
     "no_model_tensor_or_hidden_read": true,
     "no_new_inference": true,
-    "seconds": 3.450911045074463
+    "seconds": 3.7898967266082764
   }
 }

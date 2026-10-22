@@ -1,47 +1,23 @@
 {
-  "task": "Follow MSE749568 to all10epochs and actual locked CPU E10 acceptance",
-  "last_successful_observation": {
-    "time": 1792686909.2206268,
-    "job": "749568",
-    "observer_pid": 74289,
-    "latest_rank_cursors": [
-      2596,
-      2596
-    ],
-    "latest_rank_epochs": [
-      2,
-      2
-    ],
-    "completed_evaluation_epochs": [
-      "evaluation-epoch-00.json",
-      "evaluation-epoch-01.json"
-    ],
-    "failures": {},
-    "Slurm": "749568|RUNNING|0:0|00:37:54|ACD1-51",
-    "final_read": false
-  },
-  "watcher_pid": 74289,
-  "watcher_unified_exec_session": 79609,
-  "watcher_source_commit": "5a61020dae3b09881a878ac03644d23e926a937b",
-  "watcher_source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/packed-variance-full169028/watch-mse-agent.py",
-  "observer_branch": "codex/q7b-full169028-mse-observer-20261023",
-  "CPU_acceptor_commit": "799e75f3",
-  "CPU_gate": "actual complete.json and sacct COMPLETED0:0; continue until accepted.mse actual receipt",
-  "root_owns_all_Slurm_and_training_mutations": true,
-  "never_final4096_score_or_freeze": true,
-  "per_epoch_fixed_pool_table": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/packed-variance-full169028/MSE-EPOCHS.md",
-  "MSE_source_commit": "7ac274ac8ff5dea0a12dfd44cfb03fe57491458f",
-  "training_questions": 169028,
-  "updates_per_epoch": 1321,
-  "total_updates": 13210,
-  "EMA_decay": 0.9995,
-  "root_parallel_jobs": {
-    "MAE": 749576,
-    "z_mse_anchor": 749577
-  },
-  "original_CUDA_failure_jobs_preserved": [
-    749569,
-    749570
+  "time": 1792689789.128871,
+  "status": "READ_ONLY_MSE_OBSERVER_CONTINUES_THROUGH_ACTUAL_E10_AND_CPU_ACCEPTANCE",
+  "observer_pid": 96476,
+  "exec_session": 53477,
+  "explicit_control_route": "campus",
+  "job": "749568",
+  "latest_actual_time": 1792689757.2025192,
+  "latest_actual_cursors": [
+    5942,
+    5942
   ],
-  "do_not_claim_future_completion_from_this_handoff": true
+  "latest_actual_epochs": [
+    5,
+    5
+  ],
+  "actual_terminal_required": true,
+  "published_acceptor_commit": "799e75f3",
+  "branch": "codex/q7b-full169028-mse-observer-20261023",
+  "last_verified_source_commit": "2e8c353018484b917df02119fbac294d2a9b76c1",
+  "no_Slurm_mutations": true,
+  "final_read": false
 }
