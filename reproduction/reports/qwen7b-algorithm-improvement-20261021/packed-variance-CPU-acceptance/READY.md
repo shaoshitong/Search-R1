@@ -9,3 +9,7 @@ It recomputes each epoch8192 unique question/ownM3..10 label-blind deterministic
 Sources reuse the established bounded CPU mmap/finite/meta/Adam/RNG logic; only model geometry and packed plan/objective gates differ. Local static compilation passes. No actual packed checkpoint has been opened yet; runtime proof remains pending until terminal acceptance.
 
 Root or delegated read-only worker may start after full training completes using deploy_packed_variance_CPU_acceptance.py --action start --commit PUBLISHED_COMMIT. Until then stage only.
+
+## Actual terminal acceptance
+
+Job749515 was independently observed COMPLETED0:0 and complete192/3epochs before opening finalCP. Final3773205524B SHA fbc7a7e4ea0dc739dd6168b04da55242ad78f566271f15a53fc91728ae3643a2 passed. Real raw and EMA each45tensors/235819009parameters strict-load; Adam45states with192steps, finite471638018moment elements and exact CPU optimizer restore; bothrank RNGs accepted and CUDA16B states recorded. Three8192unique ownM epoch plans, selectedEM populationvariance, actual coverage and prediction sorting fields passed. Actual checkpoint verification14.838sec, peakRSS4450304000B. Validator exited normally. GPU next-update equivalence remains untested. See accepted.json for complete source proofs.
