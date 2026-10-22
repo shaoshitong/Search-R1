@@ -1,0 +1,115 @@
+{
+  "time": 1792698272.3485084,
+  "Slurm_mutation": false,
+  "final4096_read": false,
+  "fixture_complete_exists": false,
+  "fixture_accepted_exists": false,
+  "source-publication.json": {
+    "branch": "codex/q7b-full169028-L15P80-MSE-ownG5-20261023",
+    "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-seed19137-plan2026102302-20261023-v2/code-889a6c685343",
+    "commit": "889a6c6853435c736136798994d9b1517611fa19",
+    "expanded_from_runtime_commit": "92ec87b0c1a02a068517c8ed84aa4b8f5727599c",
+    "file_origins": {
+      "reproduction/operations/qwen7b_warmup/group_topk_losses.py": "92ec87b0c1a02a068517c8ed84aa4b8f5727599c",
+      "reproduction/operations/qwen7b_warmup/online_packed_full169028_MSE_P80.py": "889a6c6853435c736136798994d9b1517611fa19",
+      "reproduction/operations/qwen7b_warmup/online_packed_variance_scaling.py": "92ec87b0c1a02a068517c8ed84aa4b8f5727599c",
+      "reproduction/operations/qwen7b_warmup/packed_variance_probe.py": "92ec87b0c1a02a068517c8ed84aa4b8f5727599c",
+      "reproduction/operations/qwen7b_warmup/runtime.sh": "92ec87b0c1a02a068517c8ed84aa4b8f5727599c",
+      "reproduction/operations/qwen7b_warmup/test_full169028_MSE_P80_cpu.py": "889a6c6853435c736136798994d9b1517611fa19"
+    },
+    "files": {
+      "reproduction/operations/qwen7b_warmup/group_topk_losses.py": {
+        "bytes": 3174,
+        "sha256": "abf956398fbf948e497fa7d0282da40809f6824685f74b388cf96a210cd28c28"
+      },
+      "reproduction/operations/qwen7b_warmup/online_packed_full169028_MSE_P80.py": {
+        "bytes": 24201,
+        "sha256": "26d12ef0d0d704ee147880c066a6661bb063070567983262e39cdf3e8d6a91de"
+      },
+      "reproduction/operations/qwen7b_warmup/online_packed_variance_scaling.py": {
+        "bytes": 22608,
+        "sha256": "d786c2ca99a564adec82180321c86dd94aa2dab04e984ad4363b1f09a130d1d1"
+      },
+      "reproduction/operations/qwen7b_warmup/packed_variance_probe.py": {
+        "bytes": 3770,
+        "sha256": "91dfe479abb080ce20f0da9450c3b47bde1d04a9abec73186fe072ff790c4439"
+      },
+      "reproduction/operations/qwen7b_warmup/runtime.sh": {
+        "bytes": 1575,
+        "sha256": "678d4e72c1c1fd90777d76ba63198658b735ecfe513439ee5f5b07f8664d8288"
+      },
+      "reproduction/operations/qwen7b_warmup/test_full169028_MSE_P80_cpu.py": {
+        "bytes": 5343,
+        "sha256": "e24a802aa7977cc461558c475c00f4193f27befed9ee3b667b3b38c0414d7e88"
+      }
+    }
+  },
+  "source-staged.json": {
+    "CPU_import_and_entry_syntax_passed": true,
+    "P20_alignment_required_before_root_submission": true,
+    "Slurm_submitted": false,
+    "actual_SBATCH_full_CLI_parser_passed": true,
+    "entry": {
+      "bytes": 1790,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-seed19137-plan2026102302-20261023-v2/training.sbatch",
+      "sha256": "1edd1df9b7d1521754affa7a198b9cab44e7e6ef396248627b1c4a8e7352f9ba"
+    },
+    "evaluation_protocol": {
+      "epoch_and_raw_or_EMA_selected_using_seed1_dev_only": true,
+      "final4096_read": false,
+      "primary": "viewed_independent2048_ownG5_Top512_true_Mixed",
+      "same_selected_epoch_state_applied_to_seed2": true,
+      "seed2_not_used_for_selection": true
+    },
+    "final4096_read": false,
+    "fixture_CPU_acceptance_required_before_root_submission": true,
+    "fixture_expected": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-ownG10-20261023-v1/fixture",
+    "fixture_expected_status": "FULL169028_AUTHENTIC_POLICY80_OWN_G10_FIXED2048_READY",
+    "publication": {
+      "bytes": 2012,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-seed19137-plan2026102302-20261023-v2/source-publication.json",
+      "sha256": "8b488c5a67ac540b29ef105e711a227f3bc391b7b487e8a71a82595b6e6778ca"
+    },
+    "replica": "seed2",
+    "resources": {
+      "CPUs": 12,
+      "GPUs": 2,
+      "memory_GiB": 128,
+      "partition": "acd_u",
+      "qos": "normal",
+      "time": "12:00:00"
+    },
+    "status": "FULL169028_L15P80_MSE_OWNG5_SOURCE_STAGED_NOT_TRAINING_READY",
+    "training": {
+      "EMA_decay": 0.9995,
+      "LR": 5e-06,
+      "accumulation": 8,
+      "diagnostic_seed": 2026102228,
+      "epochs": 10,
+      "fixed_m": 5,
+      "fresh_official_block": true,
+      "global_batch": 128,
+      "head_max_positions": 2048,
+      "init_seed": 19137,
+      "layer": 15,
+      "local_batch": 64,
+      "micro": 8,
+      "pilot_resume": false,
+      "prefix": 80,
+      "questions": 169028,
+      "raw_to_EMA_continuous": true,
+      "tail_global_batch": 68,
+      "tail_local_batch": 34,
+      "tail_micro_counts": [
+        8,
+        8,
+        8,
+        8,
+        2
+      ],
+      "total_updates": 13210,
+      "train_plan_seed": 2026102302,
+      "updates_per_epoch": 1321
+    }
+  }
+}

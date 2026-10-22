@@ -1,0 +1,121 @@
+{
+  "time": 1792698424.80987,
+  "status": "THREE_CHOSEN_HPC3_EXECUTION_STRICT_EM_RECOMPUTED_WITH_OFFICIAL_TOKENIZER_NO_MODEL",
+  "chosen_physical_seal": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/sampling/shard-01/batches/batch-000420/complete.json",
+  "chosen_physical_full_ref": {
+    "bytes": 5177049,
+    "count": 640,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hpc3-tail-newseedG5-20261021-v1/sampling/shard-01/batches/batch-000420/outers/outer-000001/full/rank-0-full.jsonl.gz",
+    "sha256": "1bf8a1a61cd337fa38dfbe2285c36cc68d9106bf1b37fc9acb3a45b74d52ee41"
+  },
+  "source_resolution_contract": {
+    "current124194_fit_expanded": false,
+    "donor_and_HPC3_feature_manifest_union_before_source_selection_forbidden": true,
+    "every_selected_tid_must_bind_chosen_execution_physical_prefix_and_retained_row_SHA": true,
+    "qualification_tier_before_source_priority": true,
+    "qualified_execution_source_selection_before_L26": true,
+    "same_protocol_tid_not_payload_identity": true,
+    "source_priority": {
+      "HPC3_fully_qualified": 10,
+      "accepted_existing": 0,
+      "donor_fully_qualified": 20
+    },
+    "whole_G5_per_qid_no_mixing": true
+  },
+  "cases": [
+    {
+      "qid": "[\"hotpotqa\", \"hotpotqa:train:70604\"]",
+      "trajectory_id": "70188b8e50fd4b45bc420ce58014f46e-outer000001-c107521-g3",
+      "raw_strict_em": 1,
+      "independent_current_strict_em": 1,
+      "answer": "England",
+      "normalized_answer": "england",
+      "ground_truth": [
+        "England"
+      ],
+      "normalized_ground_truth": [
+        "england"
+      ],
+      "last_model_authored_excerpt": "<think> The question asks for the country where Leeds United Football Club is based. The club is located in Leeds, which is in West Yorkshire. West Yorkshire is a metropolitan county in the country of England.</think>\n<answer> England </answer>",
+      "authored_segments": 1,
+      "response_tokens": 51,
+      "strict_answer_from_last_complete_model_authored_segment_only": true,
+      "physical_run_id": "70188b8e50fd4b45bc420ce58014f46e",
+      "donor_same_tid": true,
+      "first20_policy_equal": true,
+      "first80_policy_equal": false,
+      "full_response_ids_equal": false
+    },
+    {
+      "qid": "[\"hotpotqa\", \"hotpotqa:train:2094\"]",
+      "trajectory_id": "70188b8e50fd4b45bc420ce58014f46e-outer000001-c107529-g3",
+      "raw_strict_em": 1,
+      "independent_current_strict_em": 1,
+      "answer": "No",
+      "normalized_answer": "no",
+      "ground_truth": [
+        "no"
+      ],
+      "normalized_ground_truth": [
+        "no"
+      ],
+      "last_model_authored_excerpt": "Oingo Boingo was an American new wave band formed by songwriter Danny Elfman. It originated in 1979 and was part of a theatrical group called The Mystic Knights of the Oingo Boingo since 1972, which was founded by Danny Elfman's brother Richard Elfman. Therefore, Oingo Boingo is indeed American.\n\n<answer> No </answer>",
+      "authored_segments": 2,
+      "response_tokens": 595,
+      "strict_answer_from_last_complete_model_authored_segment_only": true,
+      "physical_run_id": "70188b8e50fd4b45bc420ce58014f46e",
+      "donor_same_tid": true,
+      "first20_policy_equal": true,
+      "first80_policy_equal": false,
+      "full_response_ids_equal": false
+    },
+    {
+      "qid": "[\"hotpotqa\", \"hotpotqa:train:81793\"]",
+      "trajectory_id": "70188b8e50fd4b45bc420ce58014f46e-outer000001-c107543-g2",
+      "raw_strict_em": 0,
+      "independent_current_strict_em": 0,
+      "answer": "Mr & Mrs T",
+      "normalized_answer": "mr mrs t",
+      "ground_truth": [
+        "Lea & Perrins"
+      ],
+      "normalized_ground_truth": [
+        "lea perrins"
+      ],
+      "last_model_authored_excerpt": "<think> From the information, Mr & Mrs T is a company that created a Bloody Mary mix, and their origin story seems to be related to spices and sauces. The question asks which company's sauce Bloody Mary often includes, but more clarity is needed. Since Mr & Mrs T Bloody Mary mix is a well-known brand, it's likely the sauce in a common Bloody Mary mix.</think>\n<answer> Mr & Mrs T </answer>",
+      "authored_segments": 2,
+      "response_tokens": 596,
+      "strict_answer_from_last_complete_model_authored_segment_only": true,
+      "physical_run_id": "70188b8e50fd4b45bc420ce58014f46e",
+      "donor_same_tid": true,
+      "first20_policy_equal": true,
+      "first80_policy_equal": false,
+      "full_response_ids_equal": false
+    }
+  ],
+  "sources": {
+    "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/repo/search_g1/signals.py": {
+      "bytes": 3119,
+      "sha256": "470865b441c1f9944695006c143481e64afab0bcf041ae882f8ddf1b536a9d20"
+    },
+    "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/repo/search_r1/qa_protocol.py": {
+      "bytes": 2984,
+      "sha256": "9a825a7b222b5a3fd2c1de7f63ed38e157258fcf858e773ff64c963a4b6daddd"
+    },
+    "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/repo/verl/utils/reward_score/qa_em.py": {
+      "bytes": 11184,
+      "sha256": "565933963b21062b37c5d4923306f18fa08fbef9a1b54270fb99aab600c323fa"
+    },
+    "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/tokenizer.json": {
+      "bytes": 7031645,
+      "sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539"
+    },
+    "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/tokenizer_config.json": {
+      "bytes": 7305,
+      "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+    }
+  },
+  "final4096_read": false,
+  "model_or_checkpoint_loaded": false,
+  "label_or_training_modified": false
+}

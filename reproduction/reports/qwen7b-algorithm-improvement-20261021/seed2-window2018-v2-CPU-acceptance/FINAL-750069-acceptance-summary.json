@@ -1,0 +1,37 @@
+{
+  "status": "ACTUAL_WINDOW_V2_ALL10_EPOCHS_COMPLETED_AND_TERMINAL_CPU_ACCEPTED",
+  "job_id": 750069,
+  "source_complete_accounting": "750069|COMPLETED|0:0\n",
+  "checkpoint": {
+    "bytes": 3779267924,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-window2018-seed19137-plan2026102302-L15P80-8192-20261023-v2/window2018/checkpoint-epoch-10.pt",
+    "sha256": "2887a89b75824d3fcae2bdec3cdd46244c7499432653f5e6f044d8c505d81c50"
+  },
+  "accepted_receipt": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/seed2-window2018-v2-terminal-CPU-acceptance-20261023-v1/online-packed-window2018-seed19137-plan2026102302-L15P80-8192-20261023-v2/window2018/epoch-10/accepted.json",
+    "bytes": 5248,
+    "sha256": "b710c5cb816463edf50a9cfbfc0df4f76bcf09c9c6561646fefeadb3484eae69"
+  },
+  "actual_Adam_updates": 1273,
+  "EMA_updates": 1273,
+  "batch_attempts": 1280,
+  "cached_only_zero_current_gradient_batches": 7,
+  "queue": {
+    "capacity": 2018,
+    "graph_and_hidden_features_absent": true,
+    "model_version": 1273,
+    "roundtrip_exact": true,
+    "rows": 2018,
+    "sha256": "350cd058f8dd2ede6f842238cad927406ba569c8de62c49936fb45623e04c883"
+  },
+  "source_recipe": {
+    "initial_head_sha256": "10684fda52c0f9f7b670b0472ccd8b7e581346e4d01572bc078a143cc782b41e",
+    "module": "reproduction.operations.qwen7b_warmup.online_packed_window_topk_seeded_v2",
+    "train_plan_seed": 2026102302
+  },
+  "CPU_only": true,
+  "GPU_next_update_restoration_tested": false,
+  "final4096_read": false,
+  "model_or_optimizer_updated_by_acceptor": false,
+  "coordinator_and_observer_naturally_exited": true
+}

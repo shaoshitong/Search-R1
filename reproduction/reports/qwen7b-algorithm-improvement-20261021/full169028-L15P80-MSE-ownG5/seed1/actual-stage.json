@@ -1,0 +1,69 @@
+{
+  "status": "FULL169028_L15P80_MSE_OWNG5_SOURCE_STAGED_NOT_TRAINING_READY",
+  "publication": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/source-publication.json",
+    "bytes": 2020,
+    "sha256": "e6832ea245d9467bdf8abef0585c7511372a057b7fc058c2298f816021e61490"
+  },
+  "entry": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/training.sbatch",
+    "bytes": 1829,
+    "sha256": "d065167ea206cc2b894ab1a9becc4d2c7e283b5a81aa47c7092f42184d5e91c8"
+  },
+  "fixture_expected": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/fixture",
+  "fixture_expected_status": "FULL169028_AUTHENTIC_POLICY80_OWN_G10_FIXED2048_READY",
+  "training": {
+    "questions": 169028,
+    "epochs": 10,
+    "updates_per_epoch": 1321,
+    "total_updates": 13210,
+    "global_batch": 128,
+    "local_batch": 64,
+    "micro": 8,
+    "accumulation": 8,
+    "tail_global_batch": 68,
+    "tail_local_batch": 34,
+    "tail_micro_counts": [
+      8,
+      8,
+      8,
+      8,
+      2
+    ],
+    "fixed_m": 5,
+    "layer": 15,
+    "prefix": 80,
+    "head_max_positions": 2048,
+    "LR": 5e-06,
+    "EMA_decay": 0.9995,
+    "init_seed": 9137,
+    "train_plan_seed": 2026102227,
+    "diagnostic_seed": 2026102228,
+    "fresh_official_block": true,
+    "pilot_resume": false,
+    "raw_to_EMA_continuous": true
+  },
+  "resources": {
+    "partition": "acd_u",
+    "qos": "normal",
+    "GPUs": 2,
+    "CPUs": 12,
+    "memory_GiB": 128,
+    "time": "12:00:00"
+  },
+  "replica": "seed1",
+  "evaluation_protocol": {
+    "primary": "viewed_independent2048_ownG5_Top512_true_Mixed",
+    "epoch_and_raw_or_EMA_selected_using_seed1_dev_only": true,
+    "same_selected_epoch_state_applied_to_seed2": true,
+    "seed2_not_used_for_selection": true,
+    "final4096_read": false
+  },
+  "actual_SBATCH_full_CLI_parser_passed": true,
+  "CPU_import_and_entry_syntax_passed": true,
+  "fixture_CPU_acceptance_required_before_root_submission": true,
+  "P20_alignment_required_before_root_submission": true,
+  "actual_physical_execution_and_seal_source_required_before_root_submission": true,
+  "Slurm_submitted": false,
+  "final4096_read": false
+}

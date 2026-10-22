@@ -1,0 +1,136 @@
+{
+  "status": "TWO_IMMUTABLE_FULL_V3_SOURCES_STAGED_AWAITING_PHYSICAL_FIXTURE_ACCEPTANCE",
+  "source_commit": "7a8ff6ae8a33324846d85f77ffc28e9ab699c028",
+  "branch": "codex/q7b-full169028-L15P80-MSE-ownG5-20261023",
+  "remote_SHA_at_verification": "7a8ff6ae8a33324846d85f77ffc28e9ab699c028",
+  "verified_at": 1792699509.039417,
+  "replicas": {
+    "seed1": {
+      "root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3",
+      "source_commit": "7a8ff6ae8a33324846d85f77ffc28e9ab699c028",
+      "job_name": "q7b-fullP80-MSE5-s9137",
+      "entry": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/training.sbatch",
+        "bytes": 1829,
+        "sha256": "d065167ea206cc2b894ab1a9becc4d2c7e283b5a81aa47c7092f42184d5e91c8"
+      },
+      "publication": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/source-publication.json",
+        "bytes": 2020,
+        "sha256": "e6832ea245d9467bdf8abef0585c7511372a057b7fc058c2298f816021e61490"
+      },
+      "actual_SBATCH_full_CLI_parser_passed": true,
+      "CPU_import_and_entry_syntax_passed": true,
+      "training": {
+        "questions": 169028,
+        "epochs": 10,
+        "updates_per_epoch": 1321,
+        "total_updates": 13210,
+        "global_batch": 128,
+        "local_batch": 64,
+        "micro": 8,
+        "accumulation": 8,
+        "tail_global_batch": 68,
+        "tail_local_batch": 34,
+        "tail_micro_counts": [
+          8,
+          8,
+          8,
+          8,
+          2
+        ],
+        "fixed_m": 5,
+        "layer": 15,
+        "prefix": 80,
+        "head_max_positions": 2048,
+        "LR": 5e-06,
+        "EMA_decay": 0.9995,
+        "init_seed": 9137,
+        "train_plan_seed": 2026102227,
+        "diagnostic_seed": 2026102228,
+        "fresh_official_block": true,
+        "pilot_resume": false,
+        "raw_to_EMA_continuous": true
+      },
+      "resources": {
+        "partition": "acd_u",
+        "qos": "normal",
+        "GPUs": 2,
+        "CPUs": 12,
+        "memory_GiB": 128,
+        "time": "12:00:00"
+      },
+      "actual_status_time": 1792699455.104911,
+      "fixture_complete_exists": false,
+      "fixture_accepted_exists": false,
+      "ready": null,
+      "root_only_submit_after_actual_ready_proof": true
+    },
+    "seed2": {
+      "root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed19137-plan2026102302-20261023-v3",
+      "source_commit": "7a8ff6ae8a33324846d85f77ffc28e9ab699c028",
+      "job_name": "q7b-fullP80-MSE5-s19137",
+      "entry": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed19137-plan2026102302-20261023-v3/training.sbatch",
+        "bytes": 1835,
+        "sha256": "9d1f13c12ac1781000f99ac209295826ac30d90dff318b36608bcb9fd900d02e"
+      },
+      "publication": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed19137-plan2026102302-20261023-v3/source-publication.json",
+        "bytes": 2021,
+        "sha256": "c9538c9ee66d6d598fe9fe62740ad004746cd5b9da104b22418df7611eef13fa"
+      },
+      "actual_SBATCH_full_CLI_parser_passed": true,
+      "CPU_import_and_entry_syntax_passed": true,
+      "training": {
+        "questions": 169028,
+        "epochs": 10,
+        "updates_per_epoch": 1321,
+        "total_updates": 13210,
+        "global_batch": 128,
+        "local_batch": 64,
+        "micro": 8,
+        "accumulation": 8,
+        "tail_global_batch": 68,
+        "tail_local_batch": 34,
+        "tail_micro_counts": [
+          8,
+          8,
+          8,
+          8,
+          2
+        ],
+        "fixed_m": 5,
+        "layer": 15,
+        "prefix": 80,
+        "head_max_positions": 2048,
+        "LR": 5e-06,
+        "EMA_decay": 0.9995,
+        "init_seed": 19137,
+        "train_plan_seed": 2026102302,
+        "diagnostic_seed": 2026102228,
+        "fresh_official_block": true,
+        "pilot_resume": false,
+        "raw_to_EMA_continuous": true
+      },
+      "resources": {
+        "partition": "acd_u",
+        "qos": "normal",
+        "GPUs": 2,
+        "CPUs": 12,
+        "memory_GiB": 128,
+        "time": "12:00:00"
+      },
+      "actual_status_time": 1792699455.0956378,
+      "fixture_complete_exists": false,
+      "fixture_accepted_exists": false,
+      "ready": null,
+      "root_only_submit_after_actual_ready_proof": true
+    }
+  },
+  "fixture": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/fixture",
+  "physical_source_contract_required": true,
+  "P20_exact_alignment_required": true,
+  "Slurm_submitted": false,
+  "final4096_read": false
+}

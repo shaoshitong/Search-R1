@@ -1,0 +1,89 @@
+{
+  "status": "VIEWED_NQ_DEV_AND_FIXEDB_SELECTED_OWN_G5_SOURCE_LABELS_VERIFIED",
+  "dev": {
+    "questions": 2048,
+    "trajectories": 10240,
+    "source_events_read": 32,
+    "full_files_fresh_SHA_verified": 32,
+    "seal_bindings_verified": 32,
+    "own_em_rows_read": 20480,
+    "missing": 0,
+    "duplicate_source_identity": 0,
+    "label_mismatches": 0,
+    "wrong_question": 0,
+    "wrong_actor": 0,
+    "examples": [],
+    "execution_run_ids": [
+      [
+        "run_id",
+        "7276b1c76cfc4d639b2e7c7ed03c4271"
+      ],
+      [
+        "run_id",
+        "b5a4ca3fb459439fb35b47556a080460"
+      ]
+    ],
+    "unique_selected_own_EM_rows": 10240,
+    "all_selected_labels_equal_authoritative_own_EM": true,
+    "observed_selected_identity_and_labels_SHA256": "38cc1478a1aa9d3c16e32edcd3d74da43b7caeecb5eefb7b4b6a7c8eefff6651",
+    "status": "ALL_10240_SELECTED_LABELS_OWN_EM_AND_ACTUAL_FULL_SEAL_VERIFIED"
+  },
+  "fixedB": {
+    "questions": 2048,
+    "trajectories": 10240,
+    "source_events_read": 492,
+    "full_files_fresh_SHA_verified": 0,
+    "seal_bindings_verified": 492,
+    "own_em_rows_read": 314880,
+    "missing": 0,
+    "duplicate_source_identity": 0,
+    "label_mismatches": 0,
+    "wrong_question": 0,
+    "wrong_actor": 0,
+    "examples": [],
+    "execution_run_ids": [
+      [
+        "run_id",
+        "bdbb550fd9324cefab979728acb0f5e1"
+      ],
+      [
+        "run_id",
+        "70188b8e50fd4b45bc420ce58014f46e"
+      ]
+    ],
+    "full_files_size_verified_against_sealed_SHA_ref": 492,
+    "unique_selected_own_EM_rows": 10240,
+    "all_selected_labels_equal_authoritative_own_EM": true,
+    "observed_selected_identity_and_labels_SHA256": "d30153ac090d9920a752a894cb26df8960a6fd67c09695c1d070647dff66deda",
+    "status": "ALL_10240_SELECTED_LABELS_OWN_EM_AND_ACTUAL_FULL_SEAL_VERIFIED"
+  },
+  "NQ_only": true,
+  "HPC3_first9344_pool_intersection": {
+    "pilot_train8192": 0,
+    "viewed_dev2048": 0,
+    "fixed_trainB2048": 0
+  },
+  "scope_note": "All81920 NQ pilot ownG10 actual full sources are now freshly SHA verified and every selected Prefix80/prompt/RAW strictEM/ownEM/canonical label agrees. Exact fixedB ownG5 is a subset. Fixed dev2048 source is independently verified. No full169028 or final4096 correctness claim.",
+  "source_reports": [
+    "actual-dev-labels-ownEM.json",
+    "actual-fixedB-labels-ownEM.json",
+    "actual-pilot-HPC3-intersection.json"
+  ],
+  "final4096_read": false,
+  "Slurm_mutated": false,
+  "all81920_pilot_physical_P80_audit": {
+    "status": "ALL81920_NQ_PILOT_OWN_G10_PHYSICAL_SEAL_EM_PREFIX80_VERIFIED",
+    "time": 1792699305.2196589,
+    "seconds": 229.95879983901978,
+    "questions": 8192,
+    "own_G10_trajectories": 81920,
+    "domains": {
+      "nq": 81920
+    },
+    "selected_sources": 492,
+    "fresh_full_compressed_bytes_SHA_verified": 1849227304,
+    "mismatch_count": 0,
+    "selected_trajectory_physical_P80_and_prompt_identity_SHA256": "14db8020cdae69fdfe4fc1d0f4dabd7520bbd741943be963ed12dde46dff306c"
+  },
+  "fixedB_full_files_fresh_SHA_now_covered_by_completed_pilot_audit": true
+}
