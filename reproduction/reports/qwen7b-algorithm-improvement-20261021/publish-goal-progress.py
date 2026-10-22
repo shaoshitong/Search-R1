@@ -45,6 +45,8 @@ for folder in ('selected-state-fixed-trainB','frozen-full169028-MSE-final4096-sc
  files.extend(p.relative_to(repo) for p in (report/folder).rglob('*') if p.is_file() and p.suffix in ('.py','.md','.json','.txt') and p.stat().st_size<1000000)
 files.extend(pathlib.Path('reproduction/operations/qwen7b_warmup')/n for n in ('select_compare_full169028_P80_MSE.py','test_full169028_MSE_family_selection.py','deploy_full169028_P80_MSE_family_analysis.py'))
 files.extend(p.relative_to(repo) for p in (report/'full169028-P80-MSE-family-selection').rglob('*') if p.is_file() and p.suffix in ('.py','.md','.json','.txt') and p.stat().st_size<1000000)
+files.extend(pathlib.Path('reproduction/operations/qwen7b_warmup')/n for n in ('fullP80_MSE_terminal_CPU_coordinator.py','deploy_fullP80_MSE_terminal_CPU_coordinators.py','test_fullP80_MSE_terminal_coordinator.py','bind_submit_selected_trainB_once.py','deploy_selected_trainB_root_control.py','test_bind_submit_selected_trainB_once.py'))
+files.extend(p.relative_to(repo) for p in (report/'fullP80-MSE-terminal-CPU-coordinators').rglob('*') if p.is_file() and p.suffix in ('.py','.md','.json','.txt') and p.stat().st_size<1000000)
 files=sorted(set(p for p in files if (repo/p).is_file()))
 fd,index=tempfile.mkstemp(prefix='q7b-root-publish-');os.close(fd);os.unlink(index)
 env=dict(os.environ,GIT_INDEX_FILE=index)
