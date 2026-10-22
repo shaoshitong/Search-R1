@@ -60,6 +60,13 @@ def validate_one(layer,prefix):
   return dict(status='WAITING_FOR_ACTUAL_TERMINAL_COMPLETED_JOB',variant=variant,job_id=job,sacct=actual.strip())
  if (complete['status']!='MATCHED_ONLINE_MIXED_LAYER_PREFIX_PILOT_COMPLETE'or complete['epochs']!=3
      or complete['cursor']!=192 or complete['layer']!=layer or complete['prefix']!=prefix):raise ValueError('Actual completed three-epoch pilot required')
+ training_pub=SUITE/'source-publication.json'
+ if layer in(15,18,24):
+  binding=read(base/'depth-ready.json')
+  if binding['original_runtime_commit']!='5a3cfa1588c883d1c816d77ff95191acaa71eb35'or binding['layer']!=layer or binding['prefix']!=20:
+   raise ValueError('Matched depth-expansion source binding differs')
+  training_pub=Path(binding['source_publication']['path'])
+  if sha(training_pub)!=binding['source_publication']:raise ValueError('Depth-expansion publication SHA differs')
  path=Path(latest['path']);expected=base/'checkpoint-epoch-03.pt'
  if path!=expected or path.is_symlink()or path.stat().st_size!=latest['bytes']:raise ValueError('Immutable final epoch3 checkpoint path required')
  if layer==27 and prefix==20 and latest['sha256']!=PINNED_L27P20_SHA:raise ValueError('Original observed L27P20 completed checkpoint SHA changed')
@@ -124,6 +131,7 @@ def validate_one(layer,prefix):
  if before!=stamp(path):raise ValueError('Completed checkpoint changed during CPU verification')
  result=dict(status='COMPLETED_ONLINE_PILOT_CPU_SHA_MODEL_ADAM_TWO_RANK_RNG_ACCEPTED',variant=variant,job_id=job,
   checkpoint=actualproof,file_stat=before,source_complete=sha(base/'complete.json'),source_plan_sha256=plan_sha,
+  source_training_publication=sha(training_pub),
   cursor=192,completed_epoch=3,layer=layer,prefix=prefix,geometry=geometry,
   Adam=dict(actual_steps=192,parameter_states=len(ids),finite_first_and_second_moment_elements=moments,strict_actual_optimizer_state_load_passed=True),
   source_RNG_by_rank=rngproof,raw_and_EMA_separate=True,actor_updates=0,probe_optimizer_updates=0,
@@ -141,7 +149,7 @@ def main():
  atomic(OUT/'controller.json',dict(pid=os.getpid(),start_ticks=Path('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19],source_sha=args.source_sha,time=time.time()))
  results=[]
  try:
-  for layer,prefix in((27,20),(21,20),(27,80),(21,80)):
+  for layer,prefix in((27,20),(21,20),(27,80),(21,80),(15,20),(18,20),(24,20)):
    if not(SUITE/('layer%d-prefix%d'%(layer,prefix))/'complete.json').exists():
     results.append(dict(variant='layer%d-prefix%d'%(layer,prefix),status='NOT_COMPLETE_NOT_TOUCHED'));continue
    result=validate_one(layer,prefix);results.append(result);atomic(OUT/'progress.json',dict(stage='VARIANT_CPU_ACCEPTANCE_FINISHED',variant=result['variant'],status=result['status'],time=time.time()))
