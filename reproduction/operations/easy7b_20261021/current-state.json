@@ -1,6 +1,6 @@
 {
-  "epoch": 1792653828.3789012,
-  "status": "ACTUAL_NATIVE4_CP34_RESTORE_AND35_TO39_COMPLETE_CP39_SEALED_40_SAVED_GOAL200_ACTIVE",
+  "epoch": 1792674007.6842923,
+  "status": "ACTUAL_NATIVE4_49_COMPLETE_CP49_SEALED_50_ACTOR_UPDATE_ADVANCING_GOAL200_ACTIVE",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "747219",
@@ -11,7 +11,7 @@
   "global_mini": 128,
   "logical_micro": 4,
   "accumulation": 4,
-  "actual_completed_outer": 39,
+  "actual_completed_outer": 49,
   "initialization_is_not_training_acceptance": true,
   "old3b": {
     "job": "734689",
@@ -54,8 +54,11 @@
     "enabled_scope": "Exact retrieval cache + original dense head + separate2H100 retrieval service + authorized actor-local FA3; vLLM rollout XFormers and grounding SDPA unchanged"
   },
   "previous_goal_turn_classification": "PROGRESS_ACTUAL_OUTERS27_TO30_COMPLETE_AND31_GENERATION",
-  "latest_turn_classification": "PROGRESS_ACTUAL_NATIVE4_RESTORE_FIVE_COMPLETE_35_TO39_AND40_SAVED_ACCEPTED_GOAL200_ACTIVE",
-  "last_observation": null,
+  "latest_turn_classification": "PROGRESS_ACTUAL40_TO49_COMPLETE_AND50_ACTOR_WRITES984_TO987",
+  "last_observation": {
+    "epoch": 1792674007.6842923,
+    "raw": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp34-recovery-watch-1792674004722406000/observation-001.json"
+  },
   "pipeline": {
     "execution_role": "production",
     "run_id": "232f20e112ac4a978c5aba52a0367195",
@@ -112,12 +115,11 @@
   "fallback_profile": "exact-cache-v1",
   "storage_inventory_report": "HPC3-storage-distribution-20261021.txt",
   "last_measured_queue": {
-    "epoch": 1792653828.3789012,
+    "epoch": 1792674007.6842923,
     "training_job": "747219",
     "training_state": "RUNNING",
     "retrieval_job": "745198",
-    "retrieval_state": "RUNNING",
-    "raw": null
+    "retrieval_state": "RUNNING"
   },
   "new_recovery_base_allocated_bytes": 62230528,
   "training_startup_is_not_completed_outer": true,
@@ -169,7 +171,7 @@
     "phase": "WAITING_CHECKPOINT50",
     "actual_checkpoint50_archived": false,
     "historical_checkpoint5_retained": true,
-    "epoch": 1792653472.8071618,
+    "epoch": 1792674012.261139,
     "current_actual_compact_observation": {
       "actual_process": {
         "actual": {
@@ -184,14 +186,15 @@
       },
       "progress": {
         "actual_job_state": "RUNNING",
-        "checked_unix": 1792653419.7408514,
+        "checked_unix": 1792673975.0033116,
         "completed_steps": [],
         "phase": "WAITING_CHECKPOINT",
         "source_job": "747219",
         "step": 50
       },
       "failure": null
-    }
+    },
+    "evidence_raw": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp49-hk-archive-observe-1792674011.json"
   },
   "actual_state_restore": {
     "source_job": "746125",
@@ -220,34 +223,34 @@
   "current_candidate_pools": [
     {
       "completed_questions": 2560,
-      "name": "8c87b690a0174052a37b06b854b79557-pool-0",
+      "name": "36a37f1e8e304c24b3ffad99d885c44b-pool-0",
       "progress_error": null,
       "progress_pending": false,
       "saved_chunk_files": 5,
-      "step": 38
+      "step": 48
     },
     {
       "completed_questions": 2560,
-      "name": "7eccad6593394b9cac1b00b33df6bf8a-pool-0",
+      "name": "c4421fe405a043febf6dea2cb6db508e-pool-0",
       "progress_error": null,
       "progress_pending": false,
       "saved_chunk_files": 5,
-      "step": 39
+      "step": 49
     },
     {
-      "completed_questions": 1024,
-      "name": "0b7545b2ff1242ec9743e69e68ed4539-pool-0",
+      "completed_questions": 2560,
+      "name": "12d4d2824a0a4f3b806e21b8ec8c7889-pool-0",
       "progress_error": null,
       "progress_pending": false,
-      "saved_chunk_files": 2,
-      "step": 40
+      "saved_chunk_files": 5,
+      "step": 50
     }
   ],
   "outer2_started_not_complete": false,
   "outer2_completed_candidate_questions": 2560,
   "outer2_first_chunk_mixed_questions": 181,
-  "current_base_durable_checkpoint_outer": 39,
-  "most_recent_recoverable_checkpoint": 39,
+  "current_base_durable_checkpoint_outer": 49,
+  "most_recent_recoverable_checkpoint": 49,
   "outer2_candidate_mixed_questions": 979,
   "outer2_candidate_mixed_fraction": 0.382421875,
   "outer2_selected_mixed_questions": 512,
@@ -313,15 +316,15 @@
   },
   "rolling_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_39",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_49",
     "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_39/full-manifest.json",
-    "manifest_sha256": "672063c93ea5b5ac25544e2954cbf4df09e41fbd0c1c4cdad734d5de41becd81",
-    "published_unix": 1792653335.0657241,
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_49/full-manifest.json",
+    "manifest_sha256": "cc3b0535f1a922d10d320a5148bdf07f7f8cffdb3da0dc466332cb10e552cc9c",
+    "published_unix": 1792672474.9071507,
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
     "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 39
+    "step": 49
   },
   "outer2_timings_seconds": {
     "timing_s/candidate_fill": 864.349,
@@ -1899,16 +1902,16 @@
     "continuation_requires_CP34_recovery": true
   },
   "active_local_watcher": {
-    "session_id": 56750,
-    "root": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp34-recovery-watch-1792653575261579000",
-    "local_checkout_commit_at_launch": "3468504cdfbfc325add8d8f897896257ddbe3735",
+    "session_id": 31501,
+    "root": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp34-recovery-watch-1792674004722406000",
+    "local_checkout_commit_at_launch": "329477e4f287c11631d3a8eff94e52af33e3dc74",
     "local_observer_file_sha256": "1f2792414b6cad48123d8b824e7026ed4959f28fca82886dad58d9eeac950f73",
     "remote_operator_commit": "43db68bf2219704206c827070bfe13ae2a1b11d9",
     "source_commit": "43db68bf2219704206c827070bfe13ae2a1b11d9",
     "runtime_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
     "job": "747219",
-    "completed_outer_horizon": 44,
-    "next_outer_horizon": 45,
+    "completed_outer_horizon": 50,
+    "next_outer_horizon": 51,
     "bounded_observations": 180,
     "interval_seconds": 60,
     "login_host": "10.120.48.32",
@@ -1921,13 +1924,14 @@
     "new_recovery_gate": false,
     "total_training_goal": 200,
     "current_recovery_followup_accepted": true,
-    "state": "LIVE_AFTER_ACCEPTED_FIVE_OUTERS_TO39_NEXT_READONLY_HORIZON44_45",
-    "epoch": 1792653828.3789012,
-    "previous_local_watcher_session": 33883,
+    "state": "LIVE_READONLY_WINDOW50_51_TRAINING49_COMPLETE",
+    "epoch": 1792674007.6842923,
+    "previous_local_watcher_session": 56750,
     "previous_local_watcher_exit": 0,
     "training_restarted_for_reader_handoff": false,
-    "handoff_evidence": "evidence/actual747219-readonly-window44-45-handoff-20261022.json",
-    "actual_following_outer40_progress_observed": true
+    "handoff_evidence": "evidence/actual747219-native4-through49-and50-advancing-20261022.json",
+    "actual_following_outer40_progress_observed": true,
+    "actual_following_outer50_progress_observed": true
   },
   "historical_cp1_actual_state_restore": {
     "model_tensors": 339,
@@ -2739,5 +2743,7 @@
     "previous_local_watcher_exit": 143,
     "training_restarted_for_reader_handoff": false,
     "exit_code": 0
-  }
+  },
+  "latest_actual_training_em_reward_history": "evidence/actual-training-em-reward-history1-to49-20261022.json",
+  "latest_progress_evidence": "evidence/actual747219-native4-through49-and50-advancing-20261022.json"
 }
