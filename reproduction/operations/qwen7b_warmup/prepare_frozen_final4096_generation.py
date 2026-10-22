@@ -36,7 +36,7 @@ def proof(path):
 
 def checked(ref):
     path = Path(ref['path'])
-    if proof(path) != ref:
+    if proof(path) != {key:ref[key] for key in ('path','bytes','sha256')}:
         raise ValueError('Changed prepared metadata/source: '+str(path))
     return path
 
