@@ -1,0 +1,5 @@
+Independent terminal-only CPU acceptance for the two full169028 L15/P80/MSE physical-source v3 runroots. No model/CP read or job is started by deployment.
+
+Every acceptance requires actual whole-task COMPLETED0:0 plus complete10epochs/13210updates, source/fixture/independent acceptance hashes, actual physical execution/seal/ownEM resolution, fullP20 prompt/prefix/ownEM alignment, identical fixed dev/trainB gates, ten169028-question ownG5 sampling plans, explicit seed/head identity, selected immutable raw/EMA/Adam/two-rank RNG, and explicit epoch-complete next-epoch data cursor. Existing shared8GiB CPU mutex serializes all model loaders. Geometry is officialblock15/P80/head2048. CPU restoration does not claim CUDA next-update equality.
+
+Default selected epoch10; --epoch1..10 is allowed only after the whole job has completed. All tensor/state files remain remote. Stage only now; no complete/accepted fixture or job currently required to compile/stage the entry, but every gate is mandatory when acceptance later runs.
