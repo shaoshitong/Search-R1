@@ -42,6 +42,12 @@ def main():
         if type(value) is not int or value < (0 if key == 'warmup' else 1):
             raise ValueError('Invalid diagnostic replay argument: ' + key)
         command.extend(['--' + key.replace('_', '-'), str(value)])
+    if 'sweep_batches' in request:
+        batches = request['sweep_batches']
+        if (type(batches) is not list or not batches or
+                any(type(n) is not int or not 1 <= n <= request.get('batch', 64) for n in batches)):
+            raise ValueError('Invalid diagnostic active batch sweep')
+        command.extend(['--sweep-batches', *map(str, batches)])
     argv = ['sbatch', '--parsable', '--partition=emergency_acd', '--qos=formal-user',
         '--account=jxu957', '--nodes=1', '--ntasks=1', '--gres=gpu:1',
         '--cpus-per-task=12', '--mem=128G', '--time=02:00:00',

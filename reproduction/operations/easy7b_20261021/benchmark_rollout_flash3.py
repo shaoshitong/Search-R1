@@ -109,29 +109,45 @@ def engine(args):
         start_index = len(original)
         forced_rows.append([float(result.prompt_logprobs[i][ids[i]].logprob)
                             for i in range(start_index, len(ids))])
-    timings = []
     params = SamplingParams(temperature=0., max_tokens=args.output_tokens,
                             logprobs=1, ignore_eos=True, detokenize=False)
-    for repeat in range(args.warmup + args.repeats):
-        torch.cuda.synchronize()
-        began = time.monotonic()
-        result = llm.generate(prompt_token_ids=payload['prompts'],
-                              sampling_params=params, use_tqdm=False)
-        torch.cuda.synchronize()
-        elapsed = time.monotonic() - began
-        generated = sum(len(row.outputs[0].token_ids) for row in result)
-        if len(result) != len(payload['prompts']) or generated != len(payload['prompts']) * args.output_tokens:
-            raise RuntimeError('Benchmark backends did not perform the same requested token work')
-        if repeat >= args.warmup:
-            timings.append(dict(seconds=elapsed, generated_tokens=generated,
-                                generated_tokens_per_second=generated / elapsed))
-        progress(root, 'WARMUP' if repeat < args.warmup else 'MEASURED_GENERATION',
-                 backend=backend, repeat=repeat, seconds=elapsed, generated_tokens=generated)
+    # Active batch changes independently of the resident engine's fixed sequence
+    # limit and KV capacity. Reuse the same saved prefix inputs across backends.
+    sweep = []
+    for active_batch in args.sweep_batches:
+        prompts = payload['prompts'][:active_batch]
+        timings = []
+        for repeat in range(args.warmup + args.repeats):
+            torch.cuda.synchronize()
+            began = time.monotonic()
+            result = llm.generate(prompt_token_ids=prompts,
+                                  sampling_params=params, use_tqdm=False)
+            torch.cuda.synchronize()
+            elapsed = time.monotonic() - began
+            generated = sum(len(row.outputs[0].token_ids) for row in result)
+            if len(result) != active_batch or generated != active_batch * args.output_tokens:
+                raise RuntimeError('Benchmark backends did not perform the same requested token work')
+            if repeat >= args.warmup:
+                timings.append(dict(seconds=elapsed, generated_tokens=generated,
+                                    generated_tokens_per_second=generated / elapsed))
+            progress(root, 'WARMUP' if repeat < args.warmup else 'MEASURED_GENERATION',
+                     backend=backend, active_batch=active_batch, engine_max_num_seqs=args.batch,
+                     repeat=repeat, seconds=elapsed, generated_tokens=generated)
+        lengths = [len(p) for p in prompts]
+        sweep.append(dict(active_batch=active_batch, engine_max_num_seqs=args.batch,
+            prompt_sha256=hashlib.sha256(json.dumps(prompts).encode()).hexdigest(),
+            prompt_tokens=sum(lengths), prompt_length_min=min(lengths),
+            prompt_length_max=max(lengths), prompt_length_mean=statistics.mean(lengths),
+            output_tokens_per_request=args.output_tokens, warmup=args.warmup,
+            repeats=args.repeats, timings=timings,
+            median_seconds=statistics.median(r['seconds'] for r in timings)))
+    primary = next(row for row in sweep if row['active_batch'] == args.batch)
     report = dict(backend=backend, checkpoint=args.checkpoint, init_seconds=init_seconds,
                   prompt_sha256=payload['prompt_sha256'], prompt_lengths=payload['prompt_lengths'],
                   block_size=block, kv_token_capacity=131072,
-                  warmup=args.warmup, repeats=args.repeats, timings=timings,
-                  median_seconds=statistics.median(r['seconds'] for r in timings),
+                  engine_max_num_seqs=args.batch, sweep=sweep,
+                  warmup=args.warmup, repeats=args.repeats, timings=primary['timings'],
+                  median_seconds=primary['median_seconds'],
                   greedy_check=check_rows, teacher_forced_logprobs=forced_rows,
                   numerical_prompt_lengths=[len(p) for p in check_inputs],
                   fa3=audit.report() if audit else None,
@@ -153,6 +169,7 @@ def controller(args):
               '--candidate-file', args.candidate_file, '--source-base', args.source_base,
               '--batch', str(args.batch), '--output-tokens', str(args.output_tokens),
               '--warmup', str(args.warmup), '--repeats', str(args.repeats)]
+    common.extend(['--sweep-batches', *map(str, args.sweep_batches)])
     for backend in ('xformers', 'fa2', 'fa3'):
         with (root / (backend + '.log')).open('w') as stream:
             result = subprocess.run(common + ['--backend', backend], stdout=stream,
@@ -193,6 +210,23 @@ def controller(args):
                   training_modified=False, full_outer_speedup_proven=False,
                   speed_scope='XFormers/page16 versus FA3/page256; FA2/page256 also measured',
                   actual_full_state_training_resume=False)
+    reports = dict(xformers=baseline, fa2=fa2, fa3=candidate)
+    result['engine_max_num_seqs'] = args.batch
+    result['backend_sweeps'] = {name: report['sweep'] for name, report in reports.items()}
+    result['sweep'] = []
+    for active_batch in args.sweep_batches:
+        rows = {name: next(row for row in report['sweep'] if row['active_batch'] == active_batch)
+                for name, report in reports.items()}
+        if len({row['prompt_sha256'] for row in rows.values()}) != 1:
+            raise RuntimeError('Backend sweep replay inputs differ')
+        result['sweep'].append(dict(active_batch=active_batch,
+            engine_max_num_seqs=args.batch, prompt_sha256=rows['xformers']['prompt_sha256'],
+            prompt_tokens=rows['xformers']['prompt_tokens'],
+            xformers_median_seconds=rows['xformers']['median_seconds'],
+            fa2_page256_median_seconds=rows['fa2']['median_seconds'],
+            fa3_median_seconds=rows['fa3']['median_seconds'],
+            xformers_over_fa3_speedup=rows['xformers']['median_seconds']/rows['fa3']['median_seconds'],
+            fa2_over_fa3_speedup=rows['fa2']['median_seconds']/rows['fa3']['median_seconds']))
     save(root / 'result.json', result)
     progress(root, 'ALL_BACKENDS_COMPLETE', **result)
 
@@ -205,10 +239,17 @@ def main():
     p.add_argument('--source-base', required=True)
     p.add_argument('--backend', choices=['xformers', 'fa2', 'fa3'])
     p.add_argument('--batch', type=int, default=64)
+    p.add_argument('--sweep-batches', type=int, nargs='+',
+                   help='Active request counts; resident engine remains --batch sequences')
     p.add_argument('--output-tokens', type=int, default=128)
     p.add_argument('--warmup', type=int, default=2)
     p.add_argument('--repeats', type=int, default=5)
     args = p.parse_args()
+    args.sweep_batches = list(dict.fromkeys(args.sweep_batches or [args.batch]))
+    if any(n < 1 or n > args.batch for n in args.sweep_batches):
+        p.error('Every active sweep batch must be in 1..--batch')
+    if args.batch not in args.sweep_batches:
+        args.sweep_batches.append(args.batch)
     engine(args) if args.backend else controller(args)
 
 
