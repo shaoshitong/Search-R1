@@ -88,7 +88,10 @@ def prepare(base,commit):
         external_retriever_service_job=external['service_job_id'],private_flash3_runtime=runtime,
         actor_micro_batch_per_rank=8,actor_logical_micro_batch_per_rank=4,training_world_size=4,
         authorization=AUTHORIZATION,historical_FA2_rejections_preserved=True,
-        actor_FA3_only=True,grounding_SDPA_unchanged=True,rollout_backend_unchanged=True,
+        actor_FA3_only=PROFILE!='fa3-lean-v1',grounding_SDPA_unchanged=True,
+        rollout_backend_unchanged=PROFILE!='fa3-lean-v1',
+        compact_gqa=PROFILE=='fa3-lean-v1',
+        performance_profile='lean_v1' if PROFILE=='fa3-lean-v1' else 'legacy',
         archive_consumer_plan=_consumers(base,commit),source_job_stopped_here=False,
         training_submitted=False,actual_cuda_restore_accepted=False,checked_unix=time.time())
     control.publish(ready,result)
