@@ -1,6 +1,6 @@
 {
-  "time": 1792683122.0479238,
-  "actual_validator_identity_live": true,
+  "time": 1792683186.1617897,
+  "actual_validator_identity_live": false,
   "controller": {
     "pid": 1650713,
     "source_sha": "9365d0a74e67eb24782f8af499e80a9b66bde9520824466922c74ce8556f90e4",
@@ -10,8 +10,8 @@
   "progress": {
     "stage": "VARIANT_CPU_ACCEPTANCE_FINISHED",
     "status": "COMPLETED_ONLINE_PILOT_CPU_SHA_MODEL_ADAM_TWO_RANK_RNG_ACCEPTED",
-    "time": 1792682174.6345553,
-    "variant": "layer18-prefix20"
+    "time": 1792683167.1325436,
+    "variant": "layer24-prefix20"
   },
   "run-complete": {
     "results": [
@@ -38,28 +38,9 @@
         "variant": "layer21-prefix20"
       },
       {
-        "status": "NOT_COMPLETE_NOT_TOUCHED",
-        "variant": "layer27-prefix80"
-      },
-      {
-        "status": "NOT_COMPLETE_NOT_TOUCHED",
-        "variant": "layer21-prefix80"
-      },
-      {
-        "accepted": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-pilot-CPU-acceptance-20261022-v1/layer15-prefix20/accepted.json",
-        "checkpoint": {
-          "bytes": 3770208838,
-          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix20/checkpoint-epoch-03.pt",
-          "sha256": "e7ad37b5e4058c97b0d8350289863de6adcaf49e4a16ebca173fb9d14a2f7da6"
-        },
-        "node_local_device_number_ignored": true,
-        "status": "EXISTING_ACTUAL_CPU_CHECKPOINT_ACCEPTANCE_REUSED",
-        "variant": "layer15-prefix20"
-      },
-      {
         "Adam": {
           "actual_steps": 192,
-          "finite_first_and_second_moment_elements": 471263234,
+          "finite_first_and_second_moment_elements": 471293954,
           "parameter_states": 46,
           "strict_actual_optimizer_state_load_passed": true
         },
@@ -67,43 +48,43 @@
         "actor_updates": 0,
         "actual_GPU_forward_or_next_update_restore_tested": false,
         "checkpoint": {
-          "bytes": 3770208838,
-          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix20/checkpoint-epoch-03.pt",
-          "sha256": "b997d0e7e7a978ad473e090fe7bbca44ea2045ced55822aeb2a2b33d0dc74a95"
+          "bytes": 3770454598,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer27-prefix80/checkpoint-epoch-03.pt",
+          "sha256": "07f884372aaff321a3b72478f45d12b852d4090db23d37ce5e6f1ea15f57911c"
         },
         "completed_epoch": 3,
         "cursor": 192,
         "file_stat": {
-          "bytes": 3770208838,
-          "ctime_ns": 1792682067529727000,
+          "bytes": 3770454598,
+          "ctime_ns": 1792682002345677000,
           "device": 50,
-          "inode": 11186085282,
-          "mtime_ns": 1792682067529727000
+          "inode": 11186194535,
+          "mtime_ns": 1792682002345677000
         },
         "full_trajectory_sampler_RNG_resume_not_claimed": true,
         "geometry": {
           "EMA": {
-            "independent_dtype_shape_tensor_SHA256": "1836e34fb5cf468b240c92d1bb715ebcf82dabb8aa69c4a2ca7ee770dcb6ce18",
-            "parameter_elements": 235631617,
+            "independent_dtype_shape_tensor_SHA256": "923ac791ac28f05971a21ec1b2827f4b54f2bef500d990f4277af3717c5052f0",
+            "parameter_elements": 235646977,
             "strict_load_state_dict_passed": true,
             "tensors": 46
           },
           "raw": {
-            "independent_dtype_shape_tensor_SHA256": "114d0f847ac33817cb473d1ccf5146fe952a5466695647df204394458a65fda0",
-            "parameter_elements": 235631617,
+            "independent_dtype_shape_tensor_SHA256": "c7911cad59ea2e2883b8b55d4457cc58c6e59615073a3fca206454281f3932da",
+            "parameter_elements": 235646977,
             "strict_load_state_dict_passed": true,
             "tensors": 46
           }
         },
-        "job_id": "749399",
-        "layer": 18,
+        "job_id": "749079",
+        "layer": 27,
         "one_checkpoint_at_a_time": true,
-        "peak_RSS_bytes": 4417466368,
-        "prefix": 20,
+        "peak_RSS_bytes": 4419489792,
+        "prefix": 80,
         "probe_optimizer_updates": 0,
         "raw_and_EMA_separate": true,
         "raw_or_EMA_finite": true,
-        "seconds": 15.788434505462646,
+        "seconds": 10.755985498428345,
         "source_RNG_by_rank": [
           {
             "CPU_torch_generator_state_accepted": true,
@@ -124,8 +105,115 @@
         ],
         "source_complete": {
           "bytes": 168,
-          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix20/complete.json",
-          "sha256": "256c87bd13d3d93d63a4147e7aaca1766cc7e6348a0e4f252e6d7c196dfa2b31"
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer27-prefix80/complete.json",
+          "sha256": "9f337650f2886c93f0e6b1ea4608be9bbbeaf25baf7dbffbe5ce5536d432a3ea"
+        },
+        "source_plan_sha256": "bb06f94c2ff00444542a5ff2f88244b6236dfc52a132c5c4edb57ce63fa56977",
+        "source_training_publication": {
+          "bytes": 1133,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/source-publication.json",
+          "sha256": "6b285b3aedc993d18caf26af240864381ba84d6f7502595df6a1192a193c6ff3"
+        },
+        "status": "COMPLETED_ONLINE_PILOT_CPU_SHA_MODEL_ADAM_TWO_RANK_RNG_ACCEPTED",
+        "time": 1792683143.790519,
+        "variant": "layer27-prefix80"
+      },
+      {
+        "status": "NOT_COMPLETE_NOT_TOUCHED",
+        "variant": "layer21-prefix80"
+      },
+      {
+        "accepted": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-pilot-CPU-acceptance-20261022-v1/layer15-prefix20/accepted.json",
+        "checkpoint": {
+          "bytes": 3770208838,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix20/checkpoint-epoch-03.pt",
+          "sha256": "e7ad37b5e4058c97b0d8350289863de6adcaf49e4a16ebca173fb9d14a2f7da6"
+        },
+        "node_local_device_number_ignored": true,
+        "status": "EXISTING_ACTUAL_CPU_CHECKPOINT_ACCEPTANCE_REUSED",
+        "variant": "layer15-prefix20"
+      },
+      {
+        "accepted": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-pilot-CPU-acceptance-20261022-v1/layer18-prefix20/accepted.json",
+        "checkpoint": {
+          "bytes": 3770208838,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix20/checkpoint-epoch-03.pt",
+          "sha256": "b997d0e7e7a978ad473e090fe7bbca44ea2045ced55822aeb2a2b33d0dc74a95"
+        },
+        "node_local_device_number_ignored": true,
+        "status": "EXISTING_ACTUAL_CPU_CHECKPOINT_ACCEPTANCE_REUSED",
+        "variant": "layer18-prefix20"
+      },
+      {
+        "Adam": {
+          "actual_steps": 192,
+          "finite_first_and_second_moment_elements": 471263234,
+          "parameter_states": 46,
+          "strict_actual_optimizer_state_load_passed": true
+        },
+        "CPU_mmap": true,
+        "actor_updates": 0,
+        "actual_GPU_forward_or_next_update_restore_tested": false,
+        "checkpoint": {
+          "bytes": 3770208838,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer24-prefix20/checkpoint-epoch-03.pt",
+          "sha256": "e5d9a524da55160ed4b555d2adb7a0fdee26795b6e8f5b2a91db4699ab80c84c"
+        },
+        "completed_epoch": 3,
+        "cursor": 192,
+        "file_stat": {
+          "bytes": 3770208838,
+          "ctime_ns": 1792682523059547000,
+          "device": 50,
+          "inode": 11186591009,
+          "mtime_ns": 1792682523059547000
+        },
+        "full_trajectory_sampler_RNG_resume_not_claimed": true,
+        "geometry": {
+          "EMA": {
+            "independent_dtype_shape_tensor_SHA256": "78d6526875377603739784c340e55c3f752c19f3952ccac1a785f8e7f47a5685",
+            "parameter_elements": 235631617,
+            "strict_load_state_dict_passed": true,
+            "tensors": 46
+          },
+          "raw": {
+            "independent_dtype_shape_tensor_SHA256": "4db08feb26dc84317379ddf88562920d745a891abc045409634b16e8badf1753",
+            "parameter_elements": 235631617,
+            "strict_load_state_dict_passed": true,
+            "tensors": 46
+          }
+        },
+        "job_id": "749400",
+        "layer": 24,
+        "one_checkpoint_at_a_time": true,
+        "peak_RSS_bytes": 4419489792,
+        "prefix": 20,
+        "probe_optimizer_updates": 0,
+        "raw_and_EMA_separate": true,
+        "raw_or_EMA_finite": true,
+        "seconds": 21.912899017333984,
+        "source_RNG_by_rank": [
+          {
+            "CPU_torch_generator_state_accepted": true,
+            "CUDA_RNG_serialized_bytes": 16,
+            "CUDA_runtime_restore_tested": false,
+            "numpy_state_accepted": true,
+            "python_state_accepted": true,
+            "rank": 0
+          },
+          {
+            "CPU_torch_generator_state_accepted": true,
+            "CUDA_RNG_serialized_bytes": 16,
+            "CUDA_runtime_restore_tested": false,
+            "numpy_state_accepted": true,
+            "python_state_accepted": true,
+            "rank": 1
+          }
+        ],
+        "source_complete": {
+          "bytes": 168,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer24-prefix20/complete.json",
+          "sha256": "a75edeeb4d06be8ca26d4fb1bcbf4bc7f8bd7b25aefeb1117d178dbd6c5c2316"
         },
         "source_plan_sha256": "bb06f94c2ff00444542a5ff2f88244b6236dfc52a132c5c4edb57ce63fa56977",
         "source_training_publication": {
@@ -134,16 +222,12 @@
           "sha256": "cc76d46721f9416b7c32a5c38b2e88a68b7e4eb2acbc608ec3bd71bb7e39a6cf"
         },
         "status": "COMPLETED_ONLINE_PILOT_CPU_SHA_MODEL_ADAM_TWO_RANK_RNG_ACCEPTED",
-        "time": 1792682174.4431474,
-        "variant": "layer18-prefix20"
-      },
-      {
-        "status": "NOT_COMPLETE_NOT_TOUCHED",
+        "time": 1792683166.4277055,
         "variant": "layer24-prefix20"
       }
     ],
     "status": "COMPLETED_PILOTS_SEQUENTIAL_CPU_PASS_FINISHED",
-    "time": 1792682174.6393182
+    "time": 1792683167.1390073
   },
   "launch-receipt": {
     "CPU_only": true,
@@ -413,6 +497,87 @@
       "actual_GPU_forward_or_next_update_restore_tested": false,
       "checkpoint": {
         "bytes": 3770208838,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer24-prefix20/checkpoint-epoch-03.pt",
+        "sha256": "e5d9a524da55160ed4b555d2adb7a0fdee26795b6e8f5b2a91db4699ab80c84c"
+      },
+      "completed_epoch": 3,
+      "cursor": 192,
+      "file_stat": {
+        "bytes": 3770208838,
+        "ctime_ns": 1792682523059547000,
+        "device": 50,
+        "inode": 11186591009,
+        "mtime_ns": 1792682523059547000
+      },
+      "full_trajectory_sampler_RNG_resume_not_claimed": true,
+      "geometry": {
+        "EMA": {
+          "independent_dtype_shape_tensor_SHA256": "78d6526875377603739784c340e55c3f752c19f3952ccac1a785f8e7f47a5685",
+          "parameter_elements": 235631617,
+          "strict_load_state_dict_passed": true,
+          "tensors": 46
+        },
+        "raw": {
+          "independent_dtype_shape_tensor_SHA256": "4db08feb26dc84317379ddf88562920d745a891abc045409634b16e8badf1753",
+          "parameter_elements": 235631617,
+          "strict_load_state_dict_passed": true,
+          "tensors": 46
+        }
+      },
+      "job_id": "749400",
+      "layer": 24,
+      "one_checkpoint_at_a_time": true,
+      "peak_RSS_bytes": 4419489792,
+      "prefix": 20,
+      "probe_optimizer_updates": 0,
+      "raw_and_EMA_separate": true,
+      "raw_or_EMA_finite": true,
+      "seconds": 21.912899017333984,
+      "source_RNG_by_rank": [
+        {
+          "CPU_torch_generator_state_accepted": true,
+          "CUDA_RNG_serialized_bytes": 16,
+          "CUDA_runtime_restore_tested": false,
+          "numpy_state_accepted": true,
+          "python_state_accepted": true,
+          "rank": 0
+        },
+        {
+          "CPU_torch_generator_state_accepted": true,
+          "CUDA_RNG_serialized_bytes": 16,
+          "CUDA_runtime_restore_tested": false,
+          "numpy_state_accepted": true,
+          "python_state_accepted": true,
+          "rank": 1
+        }
+      ],
+      "source_complete": {
+        "bytes": 168,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer24-prefix20/complete.json",
+        "sha256": "a75edeeb4d06be8ca26d4fb1bcbf4bc7f8bd7b25aefeb1117d178dbd6c5c2316"
+      },
+      "source_plan_sha256": "bb06f94c2ff00444542a5ff2f88244b6236dfc52a132c5c4edb57ce63fa56977",
+      "source_training_publication": {
+        "bytes": 1357,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/depth-expansion-source-publication.json",
+        "sha256": "cc76d46721f9416b7c32a5c38b2e88a68b7e4eb2acbc608ec3bd71bb7e39a6cf"
+      },
+      "status": "COMPLETED_ONLINE_PILOT_CPU_SHA_MODEL_ADAM_TWO_RANK_RNG_ACCEPTED",
+      "time": 1792683166.4277055,
+      "variant": "layer24-prefix20"
+    },
+    {
+      "Adam": {
+        "actual_steps": 192,
+        "finite_first_and_second_moment_elements": 471263234,
+        "parameter_states": 46,
+        "strict_actual_optimizer_state_load_passed": true
+      },
+      "CPU_mmap": true,
+      "actor_updates": 0,
+      "actual_GPU_forward_or_next_update_restore_tested": false,
+      "checkpoint": {
+        "bytes": 3770208838,
         "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer27-prefix20/checkpoint-epoch-03.pt",
         "sha256": "f28778eff8d5ad0bab4f0d82db7506b779f21439ee2b1606408708e6e32e236c"
       },
@@ -476,6 +641,87 @@
       "status": "COMPLETED_ONLINE_PILOT_CPU_SHA_MODEL_ADAM_TWO_RANK_RNG_ACCEPTED",
       "time": 1792678990.52287,
       "variant": "layer27-prefix20"
+    },
+    {
+      "Adam": {
+        "actual_steps": 192,
+        "finite_first_and_second_moment_elements": 471293954,
+        "parameter_states": 46,
+        "strict_actual_optimizer_state_load_passed": true
+      },
+      "CPU_mmap": true,
+      "actor_updates": 0,
+      "actual_GPU_forward_or_next_update_restore_tested": false,
+      "checkpoint": {
+        "bytes": 3770454598,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer27-prefix80/checkpoint-epoch-03.pt",
+        "sha256": "07f884372aaff321a3b72478f45d12b852d4090db23d37ce5e6f1ea15f57911c"
+      },
+      "completed_epoch": 3,
+      "cursor": 192,
+      "file_stat": {
+        "bytes": 3770454598,
+        "ctime_ns": 1792682002345677000,
+        "device": 50,
+        "inode": 11186194535,
+        "mtime_ns": 1792682002345677000
+      },
+      "full_trajectory_sampler_RNG_resume_not_claimed": true,
+      "geometry": {
+        "EMA": {
+          "independent_dtype_shape_tensor_SHA256": "923ac791ac28f05971a21ec1b2827f4b54f2bef500d990f4277af3717c5052f0",
+          "parameter_elements": 235646977,
+          "strict_load_state_dict_passed": true,
+          "tensors": 46
+        },
+        "raw": {
+          "independent_dtype_shape_tensor_SHA256": "c7911cad59ea2e2883b8b55d4457cc58c6e59615073a3fca206454281f3932da",
+          "parameter_elements": 235646977,
+          "strict_load_state_dict_passed": true,
+          "tensors": 46
+        }
+      },
+      "job_id": "749079",
+      "layer": 27,
+      "one_checkpoint_at_a_time": true,
+      "peak_RSS_bytes": 4419489792,
+      "prefix": 80,
+      "probe_optimizer_updates": 0,
+      "raw_and_EMA_separate": true,
+      "raw_or_EMA_finite": true,
+      "seconds": 10.755985498428345,
+      "source_RNG_by_rank": [
+        {
+          "CPU_torch_generator_state_accepted": true,
+          "CUDA_RNG_serialized_bytes": 16,
+          "CUDA_runtime_restore_tested": false,
+          "numpy_state_accepted": true,
+          "python_state_accepted": true,
+          "rank": 0
+        },
+        {
+          "CPU_torch_generator_state_accepted": true,
+          "CUDA_RNG_serialized_bytes": 16,
+          "CUDA_runtime_restore_tested": false,
+          "numpy_state_accepted": true,
+          "python_state_accepted": true,
+          "rank": 1
+        }
+      ],
+      "source_complete": {
+        "bytes": 168,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer27-prefix80/complete.json",
+        "sha256": "9f337650f2886c93f0e6b1ea4608be9bbbeaf25baf7dbffbe5ce5536d432a3ea"
+      },
+      "source_plan_sha256": "bb06f94c2ff00444542a5ff2f88244b6236dfc52a132c5c4edb57ce63fa56977",
+      "source_training_publication": {
+        "bytes": 1133,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/source-publication.json",
+        "sha256": "6b285b3aedc993d18caf26af240864381ba84d6f7502595df6a1192a193c6ff3"
+      },
+      "status": "COMPLETED_ONLINE_PILOT_CPU_SHA_MODEL_ADAM_TWO_RANK_RNG_ACCEPTED",
+      "time": 1792683143.790519,
+      "variant": "layer27-prefix80"
     }
   ],
   "log_tail": ""

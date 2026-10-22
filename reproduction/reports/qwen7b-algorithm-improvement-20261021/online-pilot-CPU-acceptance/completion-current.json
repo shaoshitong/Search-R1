@@ -1,5 +1,5 @@
 {
-  "time": 1792683088.5436263,
+  "time": 1792683278.6635802,
   "variants": [
     {
       "variant": "layer27-prefix20",
@@ -80,7 +80,7 @@
     {
       "variant": "layer27-prefix80",
       "complete_exists": true,
-      "accepted_exists": false,
+      "accepted_exists": true,
       "job_id": "749079",
       "complete.json": {
         "status": "MATCHED_ONLINE_MIXED_LAYER_PREFIX_PILOT_COMPLETE",
@@ -103,6 +103,9 @@
         "epoch_questions_seen": 4096,
         "time": 1792681999.8775094
       },
+      "accepted_checkpoint_metadata_unchanged": true,
+      "accepted_SHA": "07f884372aaff321a3b72478f45d12b852d4090db23d37ce5e6f1ea15f57911c",
+      "accepted_status": "COMPLETED_ONLINE_PILOT_CPU_SHA_MODEL_ADAM_TWO_RANK_RNG_ACCEPTED",
       "sacct": [
         "749079",
         "COMPLETED",
@@ -110,7 +113,7 @@
         "01:10:53",
         "ACD1-16"
       ],
-      "eligible_new_CPU_acceptance": true
+      "eligible_new_CPU_acceptance": false
     },
     {
       "variant": "layer21-prefix80",
@@ -120,24 +123,24 @@
       "progress-rank-0.json": {
         "stage": "ONLINE_PREFILL_REAL_MIXED_UPDATES",
         "epoch": 2,
-        "cursor": 112,
+        "cursor": 128,
         "rank": 0,
-        "epoch_questions_seen": 3072,
-        "time": 1792683082.9732525
+        "epoch_questions_seen": 4096,
+        "time": 1792683254.5893674
       },
       "progress-rank-1.json": {
         "stage": "ONLINE_PREFILL_REAL_MIXED_UPDATES",
         "epoch": 2,
-        "cursor": 112,
+        "cursor": 128,
         "rank": 1,
-        "epoch_questions_seen": 3072,
-        "time": 1792683082.9727821
+        "epoch_questions_seen": 4096,
+        "time": 1792683254.5897152
       },
       "sacct": [
         "749369",
         "RUNNING",
         "0:0",
-        "00:31:20",
+        "00:34:30",
         "ACD1-51"
       ],
       "eligible_new_CPU_acceptance": false
@@ -221,7 +224,7 @@
     {
       "variant": "layer24-prefix20",
       "complete_exists": true,
-      "accepted_exists": false,
+      "accepted_exists": true,
       "job_id": "749400",
       "complete.json": {
         "status": "MATCHED_ONLINE_MIXED_LAYER_PREFIX_PILOT_COMPLETE",
@@ -244,6 +247,9 @@
         "epoch_questions_seen": 4096,
         "time": 1792682520.5789578
       },
+      "accepted_checkpoint_metadata_unchanged": true,
+      "accepted_SHA": "e5d9a524da55160ed4b555d2adb7a0fdee26795b6e8f5b2a91db4699ab80c84c",
+      "accepted_status": "COMPLETED_ONLINE_PILOT_CPU_SHA_MODEL_ADAM_TWO_RANK_RNG_ACCEPTED",
       "sacct": [
         "749400",
         "COMPLETED",
@@ -251,7 +257,7 @@
         "00:11:35",
         "ACD1-56"
       ],
-      "eligible_new_CPU_acceptance": true
+      "eligible_new_CPU_acceptance": false
     }
   ],
   "final_read": false,
