@@ -118,6 +118,16 @@ PENDING(Resources)。空RSS不是0，无法据此证明512GB明显过大或是�
 因此没有盲目降低内存、重提或取消现有作业。见
 [调度与内存记录](evidence/clip-native4-resource-usage-1792691692195606000.json)。
 
+进一步读取具体排队限制发现：749812预计05:01才可在ACD1-8启动，而被排除的
+ACD1-13当前调度显示空余4GPU、67CPU及足够512G内存。旧749590失败是一次分配
+4GPU却只看见3GPU的真实异常，不能证明节点永久故障；actor-only同样需要真实
+四卡，若异常重现会在set_device／NCCL失败。仅对现有独立诊断749812清空
+ExcNodeList，命令返回0，随后回读为(null)。没有重提作业，没有改变4GPU／48CPU／
+512G／30分钟和CP50／selection51／20次真实更新；生产749598不受此变更影响。
+这次调度更新尚不证明CUDA四卡或数值验收，需继续读取实际测试输出。精确操作与
+回执见[调度更新](evidence/clip-native4-historical-node-update-1792693491575892000.json)。
+Slurm清空该字段的语法来自[官方scontrol说明](https://slurm.schedmd.com/scontrol.html#OPT_ExcNodeList)。
+
 ## 数值与证据范围
 
 前缀解码优化不改模型前向、loss、reward、采样和截断逻辑。紧凑GQA已有独立输出／
