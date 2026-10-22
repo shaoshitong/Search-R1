@@ -1,6 +1,6 @@
 {
-  "epoch": 1792649823.9845023,
-  "status": "ACTUAL747219_OUTERS35_TO37_COMPLETE_CP37_SEALED_38_POOL_CREATED_GOAL200_ACTIVE",
+  "epoch": 1792651564.8985596,
+  "status": "ACTUAL747219_OUTERS35_TO38_COMPLETE_CP38_SEALED_39_POOL_CREATED_GOAL200_ACTIVE",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "747219",
@@ -11,7 +11,7 @@
   "global_mini": 128,
   "logical_micro": 4,
   "accumulation": 4,
-  "actual_completed_outer": 37,
+  "actual_completed_outer": 38,
   "initialization_is_not_training_acceptance": true,
   "old3b": {
     "job": "734689",
@@ -54,8 +54,8 @@
     "enabled_scope": "Exact retrieval cache + original dense head + separate2H100 retrieval service + authorized actor-local FA3; vLLM rollout XFormers and grounding SDPA unchanged"
   },
   "previous_goal_turn_classification": "PROGRESS_ACTUAL_OUTERS27_TO30_COMPLETE_AND31_GENERATION",
-  "latest_turn_classification": "PROGRESS_ACTUAL_THREE_RECOVERED_OUTERS_COMPLETE_AND38_POOL_CREATED",
-  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp34-recovery-watch-1792644663200672000/observation-084.json",
+  "latest_turn_classification": "PROGRESS_ACTUAL_FOUR_RECOVERED_OUTERS_COMPLETE_AND39_POOL_CREATED",
+  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp34-recovery-watch-1792644663200672000/observation-112.json",
   "pipeline": {
     "execution_role": "production",
     "run_id": "232f20e112ac4a978c5aba52a0367195",
@@ -141,7 +141,8 @@
   "actual_new_completed_outers": [
     35,
     36,
-    37
+    37,
+    38
   ],
   "archive_controller_for_current7b_not_yet_started": false,
   "remaining_goal_requirements": [
@@ -194,14 +195,6 @@
   "current_candidate_pools": [
     {
       "completed_questions": 2560,
-      "name": "f691badea873419f90ba5e20aae0c0d5-pool-0",
-      "progress_error": null,
-      "progress_pending": false,
-      "saved_chunk_files": 5,
-      "step": 36
-    },
-    {
-      "completed_questions": 2560,
       "name": "9de8ac8a474d4f94bac6fae708888e6d-pool-0",
       "progress_error": null,
       "progress_pending": false,
@@ -209,8 +202,16 @@
       "step": 37
     },
     {
-      "completed_questions": null,
+      "completed_questions": 2560,
       "name": "8c87b690a0174052a37b06b854b79557-pool-0",
+      "progress_error": null,
+      "progress_pending": false,
+      "saved_chunk_files": 5,
+      "step": 38
+    },
+    {
+      "completed_questions": null,
+      "name": "7eccad6593394b9cac1b00b33df6bf8a-pool-0",
       "progress_error": null,
       "progress_pending": true,
       "saved_chunk_files": 0,
@@ -220,8 +221,8 @@
   "outer2_started_not_complete": false,
   "outer2_completed_candidate_questions": 2560,
   "outer2_first_chunk_mixed_questions": 181,
-  "current_base_durable_checkpoint_outer": 37,
-  "most_recent_recoverable_checkpoint": 37,
+  "current_base_durable_checkpoint_outer": 38,
+  "most_recent_recoverable_checkpoint": 38,
   "outer2_candidate_mixed_questions": 979,
   "outer2_candidate_mixed_fraction": 0.382421875,
   "outer2_selected_mixed_questions": 512,
@@ -287,15 +288,15 @@
   },
   "rolling_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_37",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_38",
     "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_37/full-manifest.json",
-    "manifest_sha256": "9fe62bd143896c3bd06cab021dda22dde57dfe33aae34df9aa2b3b45af1e4a47",
-    "published_unix": 1792649775.637102,
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_38/full-manifest.json",
+    "manifest_sha256": "7c2b58eac7c8cbb964040f45aa4241f6a6ab0f591b7ea997cc1b3a8a29e9ee01",
+    "published_unix": 1792651524.53289,
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
     "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 37
+    "step": 38
   },
   "outer2_timings_seconds": {
     "timing_s/candidate_fill": 864.349,
@@ -393,7 +394,7 @@
       "replacement_has_completed_milestone5_archive": true
     }
   ],
-  "current_outer": 38,
+  "current_outer": 39,
   "outer3_selection": {
     "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/eefd4da7a7b445a4862963b159cbdfdc.json",
     "bytes": 2750777,
@@ -855,7 +856,6 @@
     200
   ],
   "remaining_recovery_followup": [
-    38,
     39
   ],
   "archive_boundary_supplement_todo": "CP5 complete and independently verified. Preserve equivalent post-callback boundaries after actual core acceptance at50/100/150/200; CP200 boundary precedes final51713. Do not replay CP5 one-shot launcher.",
@@ -1150,30 +1150,32 @@
     "actual_reload_performed": false
   },
   "published_operator_source": {
-    "latest_source_commit": "db784a8c29c232d85953fd1c89a859e584166a4f",
     "formal_training_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
     "actual_readonly_operator_commit": "43db68bf2219704206c827070bfe13ae2a1b11d9",
     "HK_archive_operator_commit": "61af73641e86985bdec8635891605ea571d188f7",
     "fresh_remote_fetch_and_blob_sha_pass": true,
-    "publication_scope": "Latest previously published immutable sources; this pending state/evidence refresh will get its own publication receipt."
+    "publication_scope": "See per-commit source-publication receipts for exact fetched full source SHA. Current runtime and remote observer remain immutable B76/43db68b.",
+    "latest_non_document_operator_commit": "94220478514c5872abdf6fc4a9e88d18b1d21e49",
+    "latest_previously_fresh_verified_publication": "e20ffd9e5681a43c6f22add6f06d556004413d5d",
+    "historical_pre_RNG_operator_commit": "db784a8c29c232d85953fd1c89a859e584166a4f"
   },
   "all4_actual_optimizer_writes": {
-    "0": 740,
-    "1": 740,
-    "2": 740,
-    "3": 740
+    "0": 760,
+    "1": 760,
+    "2": 760,
+    "3": 760
   },
   "current_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_37",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_38",
     "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_37/full-manifest.json",
-    "manifest_sha256": "9fe62bd143896c3bd06cab021dda22dde57dfe33aae34df9aa2b3b45af1e4a47",
-    "published_unix": 1792649775.637102,
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_38/full-manifest.json",
+    "manifest_sha256": "7c2b58eac7c8cbb964040f45aa4241f6a6ab0f591b7ea997cc1b3a8a29e9ee01",
+    "published_unix": 1792651524.53289,
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
     "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 37
+    "step": 38
   },
   "current_candidate_pool": {
     "completed_questions": 1024,
@@ -1222,18 +1224,31 @@
       "selected_mixed_fraction": 1.0,
       "selected_all_correct_fallback": 0,
       "source": "actual saved pool completion log; mixed-first policy and completed512 budget"
+    },
+    {
+      "step": 38,
+      "attempt_id": "8c87b690a0174052a37b06b854b79557",
+      "candidate_questions": 2560,
+      "candidate_mixed_questions": 606,
+      "candidate_mixed_fraction": 0.23671875,
+      "raw_generated_trajectories": 12800,
+      "selected_questions": 512,
+      "selected_mixed": 512,
+      "selected_mixed_fraction": 1.0,
+      "selected_all_correct_fallback": 0,
+      "source": "actual saved pool completion log; mixed-first policy and completed512 budget"
     }
   ],
   "latest_completed_metrics": {
-    "attempt_index": 37,
-    "grad_norm": 2.359063370600958,
-    "optimizer_writes": 740,
-    "optimizer_writes_before": 720,
+    "attempt_index": 38,
+    "grad_norm": 2.577100806088338,
+    "optimizer_writes": 760,
+    "optimizer_writes_before": 740,
     "optimizer_writes_this_outer": 20,
-    "pg_loss": 0.0633698476101457,
-    "ppo_kl": 0.002242945823491027,
-    "reward": 0.6619030237197876,
-    "step": 37
+    "pg_loss": 0.022431336119787346,
+    "ppo_kl": 0.0028291628734223194,
+    "reward": 0.6700906157493591,
+    "step": 38
   },
   "archive5_grounding_dependency_closure": {
     "status": "EASY2560_POST_CALLBACK_DEPENDENCIES_SHA_FSYNC_PASS",
@@ -1292,7 +1307,7 @@
       "terminal": true
     }
   ],
-  "current_progress_evidence": "evidence/actual747219-outers35-37-sealed37-20261022.json",
+  "current_progress_evidence": "evidence/actual747219-outers35-38-sealed38-20261022.json",
   "published_progress_observer": {
     "commit": "b3f808a31d957799c82690cb6ddf97e2bdddd002",
     "source": "reproduction/operations/easy7b_20261021/watch_training_progress_local.py",
@@ -1384,7 +1399,7 @@
     "actual_backward_returns_per_rank": 11200,
     "first_actor_update_seconds": 264.853
   },
-  "latest_full_checkpoint_outer": 37,
+  "latest_full_checkpoint_outer": 38,
   "latest_phase_timing_evidence": "evidence/actual-fa3-outers31-to33-sealed-and34-saved-20261022.json",
   "frozen_grounding_batch_optimization": {
     "production_micro": 4,
@@ -1659,8 +1674,8 @@
     "read_only": true,
     "total_training_goal": 200,
     "current_recovery_followup_accepted": false,
-    "state": "LIVE_OUTERS35_TO37_COMPLETE_CP37_SEALED_38_POOL_CREATED",
-    "epoch": 1792649823.9845023,
+    "state": "LIVE_OUTERS35_TO38_COMPLETE_CP38_SEALED_39_POOL_CREATED",
+    "epoch": 1792651564.8985596,
     "previous_local_watcher_session": 89489,
     "previous_local_watcher_exit": 143,
     "training_restarted_for_reader_handoff": false
@@ -1711,7 +1726,7 @@
     "matched_input_FA3_speedup_established": false
   },
   "latest_collapse_review": {
-    "through_outer": 37,
+    "through_outer": 38,
     "clear_collapse_observed": false,
     "reward35": 0.6463346481323242,
     "ppo_kl35": 0.002154226534003101,
@@ -1723,7 +1738,10 @@
     "grad_norm36": 2.3366711215320604,
     "reward37": 0.6619030237197876,
     "ppo_kl37": 0.002242945823491027,
-    "grad_norm37": 2.359063370600958
+    "grad_norm37": 2.359063370600958,
+    "reward38": 0.6700906157493591,
+    "ppo_kl38": 0.0028291628734223194,
+    "grad_norm38": 2.577100806088338
   },
   "latest_fixed_QA_history_and_cadence_review": {
     "scope": "Static read-only identity/cadence review of current source; future milestone QA is not executed by this review",
@@ -1903,7 +1921,7 @@
     "new_job": "747219"
   },
   "source34_oom_recovery": {
-    "status": "ACTUAL_NATIVE4_SOURCE34_RESTORE_PASS_OUTERS35_TO37_COMPLETE_CP37_SEALED",
+    "status": "ACTUAL_NATIVE4_SOURCE34_RESTORE_PASS_OUTERS35_TO38_COMPLETE_CP38_SEALED",
     "epoch": 1792643644.9728544,
     "cpu_audit_job": "747190",
     "cpu_audit_accounting": {
@@ -2057,9 +2075,10 @@
     "actual_completed_recomputed_outers": [
       35,
       36,
-      37
+      37,
+      38
     ],
-    "latest_checkpoint_outer": 37,
+    "latest_checkpoint_outer": 38,
     "actual_restore_scope": "Global Python/NumPy/Torch CPU/CUDA; manager actor/rollout private CUDA; runner request generators. Exact saved-state readback does not guarantee future asynchronous stochastic request-by-request bitwise replay."
   },
   "historical_failed_readonly_watcher": {
@@ -2112,16 +2131,8 @@
     "actual_milestone50_archive_accepted": false
   },
   "latest_candidate_progress": {
-    "epoch": 1792649823.9845023,
+    "epoch": 1792651564.8985596,
     "pools": [
-      {
-        "completed_questions": 2560,
-        "name": "f691badea873419f90ba5e20aae0c0d5-pool-0",
-        "progress_error": null,
-        "progress_pending": false,
-        "saved_chunk_files": 5,
-        "step": 36
-      },
       {
         "completed_questions": 2560,
         "name": "9de8ac8a474d4f94bac6fae708888e6d-pool-0",
@@ -2131,15 +2142,23 @@
         "step": 37
       },
       {
-        "completed_questions": null,
+        "completed_questions": 2560,
         "name": "8c87b690a0174052a37b06b854b79557-pool-0",
+        "progress_error": null,
+        "progress_pending": false,
+        "saved_chunk_files": 5,
+        "step": 38
+      },
+      {
+        "completed_questions": null,
+        "name": "7eccad6593394b9cac1b00b33df6bf8a-pool-0",
         "progress_error": null,
         "progress_pending": true,
         "saved_chunk_files": 0,
         "step": null
       }
     ],
-    "scope": "38 pool created; no completed38 candidate chunk in this observation."
+    "scope": "39 pool created; no completed39 candidate chunk in this observation."
   },
   "historical_cp12_actual_state_restore": {
     "source_job": "745371",
