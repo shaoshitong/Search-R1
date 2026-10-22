@@ -84,6 +84,11 @@ def enforce_start_mode(base,start_mode):
  if start_mode=='fresh'and latest.exists():raise ValueError('Fresh MSE-M5 seed replica cannot resume an existing checkpoint')
  if start_mode=='resume'and not latest.exists():raise ValueError('Exact resume requires this replica checkpoint')
 
+def full_acceptance_alignment_ref(accepted):
+ if accepted.get('fresh_full_P20_prefix_prompt_and_own_EM_exact')is not True:
+  raise ValueError('Fresh full P20 prefix/prompt/ownEM alignment must pass before training')
+ return accepted['P20_alignment']
+
 def actual_local_batch_layout(local_questions,world_size=2,micro=8):
  if not 1<=local_questions<=64 or world_size!=2 or micro!=8:raise ValueError('Two matched ranks with actual local1..64 questions required')
  return dict(actual_global_batch=local_questions*world_size,local_batch=local_questions,micro=micro,gradient_accumulation=(local_questions+micro-1)//micro,micro_question_counts=[min(micro,local_questions-i)for i in range(0,local_questions,micro)])
@@ -112,7 +117,7 @@ def run(args):
  from transformers import AutoModel,AutoTokenizer
  from .packed_variance_probe import PackedVarianceProbe,PackedVarianceHead
  base=args.base;base.mkdir(exist_ok=True,parents=True);rank=int(os.environ['RANK']);world=int(os.environ['WORLD_SIZE']);assert world==2;device=torch.device('cuda',int(os.environ['LOCAL_RANK']));torch.cuda.set_device(device);dist.init_process_group('nccl');guard=(base/('writer-rank-%d.lock'%rank)).open('a+');fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB)
- fixture_base=args.fixture_base;fixture=read(fixture_base/'fixture-complete.json');assert fixture['status']==FIXTURE_STATUS and fixture['training_questions']==169028 and fixture['max_real_policy_prefix']==80;accepted=read(fixture_base/'accepted.json');assert str(accepted['status']).endswith('ACCEPTED')and accepted['fixture']==proof(fixture_base/'fixture-complete.json'),'Actual full fixture independent CPU acceptance required';assert fixture['validation_groups']['sha256']=='50f1e3a6927d02c0f8cadf1feb5b4229b075b5d099fe31fd0de5c2ae3b149292'and fixture['fixed_train_G5']['sha256']=='e6e74d92160efb0740ba5c0316c4ee7686f06a499c90cafd5a545f325b62209b','Original fixed devG5 and trainB identity must remain unchanged';groups=read(checked(fixture['train_groups']));validation=read(checked(fixture['validation_groups']));assert len(groups)==169028 and len(validation)==2048 and not(set(groups)&set(validation));assert all(len(g['trajectory_ids'])==len(g['labels'])==10 for g in groups.values())and all(len(g['trajectory_ids'])==len(g['labels'])==5 for g in validation.values());records={}
+ fixture_base=args.fixture_base;fixture=read(fixture_base/'fixture-complete.json');assert fixture['status']==FIXTURE_STATUS and fixture['training_questions']==169028 and fixture['max_real_policy_prefix']==80;accepted=read(fixture_base/'accepted.json');assert str(accepted['status']).endswith('ACCEPTED')and accepted['fixture']==proof(fixture_base/'fixture-complete.json'),'Actual full fixture independent CPU acceptance required';checked(full_acceptance_alignment_ref(accepted));assert fixture['validation_groups']['sha256']=='50f1e3a6927d02c0f8cadf1feb5b4229b075b5d099fe31fd0de5c2ae3b149292'and fixture['fixed_train_G5']['sha256']=='e6e74d92160efb0740ba5c0316c4ee7686f06a499c90cafd5a545f325b62209b','Original fixed devG5 and trainB identity must remain unchanged';groups=read(checked(fixture['train_groups']));validation=read(checked(fixture['validation_groups']));assert len(groups)==169028 and len(validation)==2048 and not(set(groups)&set(validation));assert all(len(g['trajectory_ids'])==len(g['labels'])==10 for g in groups.values())and all(len(g['trajectory_ids'])==len(g['labels'])==5 for g in validation.values());records={}
  for i,ref in enumerate(fixture['token_shards']):
   if i%world!=rank:continue
   with gzip.open(checked(ref),'rt')as f:

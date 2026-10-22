@@ -5,6 +5,11 @@ from torch import nn
 from . import online_packed_full169028_MSE_P80 as m
 
 def sampler_and_resume():
+ for rejected in({},dict(fresh_full_P20_prefix_prompt_and_own_EM_exact=False)):
+  try:m.full_acceptance_alignment_ref(rejected)
+  except ValueError:pass
+  else:raise AssertionError('Producer-only acceptance must not start training')
+ ref=dict(path='/remote/synthetic-alignment.json',bytes=1,sha256='a'*64);assert m.full_acceptance_alignment_ref(dict(fresh_full_P20_prefix_prompt_and_own_EM_exact=True,P20_alignment=ref))==ref
  groups={str(i):dict(qid=str(i),trajectory_ids=[str(i)+'t'+str(j)for j in range(10)],labels=[j%2 for j in range(10)])for i in range(169028)}
  plan=m.epoch_plan(groups,1,5,train_plan_seed=2026102227);rank={q:i%2 for i,q in enumerate(sorted(groups))};counts=[sum(rank[v['qid']]==r for v in plan)for r in(0,1)];assert counts==[84514,84514]and len({v['qid']for v in plan})==169028
  assert all(v['M']==5 and len(set(v['trajectory_ids']))==5 and set(v['trajectory_ids'])<=set(groups[v['qid']]['trajectory_ids'])for v in plan)
