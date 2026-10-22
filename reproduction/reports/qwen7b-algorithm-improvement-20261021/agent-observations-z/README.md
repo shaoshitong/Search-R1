@@ -47,3 +47,7 @@ The observer subsequently confirmed epoch4/cursor4714 at1792688671 with no new e
 ## Control-route recovery without training restart
 
 After direct-control connection failures, Root authorized the existingcampus-control.py HKUST3 route. Only this observer's own local watcher PID70323 was retired and restarted with the approved controller; no remote process, training lock or Slurm job was changed. Two actual campus observations at1792689701.855 and1792689746.854 showed both ranks advancing E5/cursor6025→6086, with consecutive curve updates6080–6087, nonzero block/head gradients and identical differentiable global loss statistics across ranks. Failure arrays remained empty and the current log error tail wasnull. The stale direct-control readings were never treated as current training measurements. See campus-route-restored-two-observations.json.
+
+## Second route recovery
+
+After HKUST1 campus handshakes timed out, Root freshly reverified the existing direct route at1792690727. Only this observer's local watcher process tree was retired; the original direct reader was restored. Actual reads1792690877.678→1792690922.730 show both ranks advancing E6/cursor7535→7596 with no new errors. See direct-route-recovered-again-two-observations.json. No remote process or Slurm state was modified.
