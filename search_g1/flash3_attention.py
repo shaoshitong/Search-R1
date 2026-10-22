@@ -208,13 +208,18 @@ def _compact_repeat(layer,function):
     gradient contributions into each KV head. All operations before/after the
     original repeat_kv calls, including RoPE and HF packing, remain unchanged.
     """
-    _need('repeat_kv' in function.__code__.co_names and
-          'get_ulysses_sequence_parallel_world_size' in function.__globals__,
-          'COMPACT_GQA_PINNED_VERL_FORWARD_REQUIRED')
+    _need('repeat_kv' in function.__code__.co_names,'COMPACT_GQA_REPEAT_BINDING_REQUIRED')
     groups=getattr(layer,'num_key_value_groups',None)
     _need(groups==7 and getattr(layer,'num_key_value_heads',None)==4 and
           getattr(layer,'num_heads',None)==28,'COMPACT_GQA_NATIVE28_QUERY4_KV_REQUIRED')
-    sequence_world=function.__globals__['get_ulysses_sequence_parallel_world_size']
+    sequence_world=function.__globals__.get('get_ulysses_sequence_parallel_world_size')
+    if sequence_world is None:
+        # Native SP1 uses the standard HF forward, whose namespace has no
+        # Ulysses functions. The worker already requires TP1/SP1 before this
+        # installation. Keep every byte of that HF forward and its RoPE path.
+        _need(function.__module__=='transformers.models.qwen2.modeling_qwen2',
+              'COMPACT_GQA_PINNED_HF_OR_VERL_FORWARD_REQUIRED')
+        sequence_world=lambda:1
     _need(callable(sequence_world) and sequence_world()==1,'COMPACT_GQA_SEQUENCE_PARALLEL_ONE_REQUIRED')
     def keep_native_kv(hidden_states,n_rep):
         _need(sequence_world()==1,'COMPACT_GQA_SEQUENCE_PARALLEL_CHANGED')

@@ -132,5 +132,17 @@ class CompactTests(unittest.TestCase):
             getter.return_value=2
             with self.assertRaisesRegex(ValueError,'PARALLEL_CHANGED'):dynamic(tensor,7)
 
+    def test_standard_hf_sp1_namespace_needs_no_ulysses_binding(self):
+        function=Qwen2FlashAttention2.forward
+        namespace=dict(function.__globals__)
+        namespace.pop('get_ulysses_sequence_parallel_world_size')
+        namespace['__name__']='transformers.models.qwen2.modeling_qwen2'
+        original=types.FunctionType(function.__code__,namespace,function.__name__,function.__defaults__)
+        model=Model()
+        for layer in model.layers:layer.forward=types.MethodType(original,layer)
+        b=backend();fa3.install_flash3_actor(model,run(),backend=b,require_cuda=False,compact_gqa=True)
+        model(torch.randn(1,4,8,dtype=torch.bfloat16),torch.tensor([[0,1,0,1]]))
+        self.assertEqual(b.module.flash_attn_varlen_func.call_args.args[1].shape[-2],4)
+
 
 if __name__=='__main__':unittest.main()

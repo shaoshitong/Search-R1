@@ -111,7 +111,8 @@ def read_console_form(base, run_id):
                             for x in selected_opportunities)
                         assert all(x['monitor_identity']==selected[0]['monitor_identity'] for x in selected)
                     else:
-                        assert run.get('finite_thresholds_diagnostic_only') is True
+                        from search_g1.actor_performance import lean_run
+                        assert run.get('finite_thresholds_diagnostic_only') is True or lean_run(run)
                         assert selected==[] and budget.get('extra_policy_monitor_forwards') is False
                         assert budget['actual_monitor_forward_count']==budget['reused_monitor_forward_count']==0
                     continue
