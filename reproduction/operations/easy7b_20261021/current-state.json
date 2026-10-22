@@ -2429,10 +2429,9 @@
     "continuation_requires_CP34_recovery": true
   },
   "active_local_watcher": {
-    "session_id": 89489,
-    "root": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp34-recovery-watch-1792643731167836000",
-    "read_only": true,
-    "source_commit": "90b1e948f7d0e55a00b82a2c1c091650b408f937",
+    "session_id": 33883,
+    "root": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp34-recovery-watch-1792644663200672000",
+    "source_commit": "43db68bf2219704206c827070bfe13ae2a1b11d9",
     "runtime_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
     "job": "747219",
     "completed_outer_horizon": 39,
@@ -2441,14 +2440,18 @@
     "interval_seconds": 60,
     "login_host": "10.120.48.32",
     "expected_host_identity": {
-      "hostname": "ACD-Login-2",
       "boot_id": "3c637b25-17cf-404c-971b-30bc4c4e9fbb",
+      "hostname": "ACD-Login-2",
       "pid_namespace": "pid:[4026531836]"
     },
+    "read_only": true,
     "total_training_goal": 200,
     "current_recovery_followup_accepted": false,
-    "state": "LIVE_RESTORED_NATIVE4_WAITING_NEW_OUTER35_COMPLETE",
-    "epoch": 1792643854.099651
+    "state": "LIVE_ACTUAL_NATIVE4_RESTORE_PASS_OUTER35_RAW_PROGRESS",
+    "epoch": 1792644742.146963,
+    "previous_local_watcher_session": 89489,
+    "previous_local_watcher_exit": 143,
+    "training_restarted_for_reader_handoff": false
   },
   "historical_cp1_actual_state_restore": {
     "model_tensors": 339,
@@ -3019,5 +3022,19 @@
     "actual_both_same_birth_live": true,
     "phase": "WAITING_FIXED50",
     "actual_milestone50_archive_accepted": false
+  },
+  "latest_candidate_progress": {
+    "epoch": 1792644727.855208,
+    "pools": [
+      {
+        "completed_questions": 1024,
+        "name": "ac512297cc994a62a6f77a76ebeb2994-pool-0",
+        "progress_error": null,
+        "progress_pending": false,
+        "saved_chunk_files": 2,
+        "step": 35
+      }
+    ],
+    "scope": "Completed candidate raw chunks only; PPO35 not yet complete"
   }
 }
