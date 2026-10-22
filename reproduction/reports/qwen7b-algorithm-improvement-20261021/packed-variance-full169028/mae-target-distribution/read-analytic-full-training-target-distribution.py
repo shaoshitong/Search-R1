@@ -3,7 +3,9 @@ from collections import Counter, defaultdict
 from fractions import Fraction as F
 import hashlib
 import json
-from math import comb
+from math import factorial
+def comb(n, k):
+    return factorial(n)//(factorial(k)*factorial(n-k))
 from pathlib import Path
 import time
 

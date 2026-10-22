@@ -1,0 +1,185 @@
+{
+  "time": 1792687537.3534005,
+  "experiments": {
+    "15": {
+      "prefix80-ready.json": {
+        "Slurm_submitted": false,
+        "entry": {
+          "bytes": 1354,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/training.sbatch",
+          "sha256": "327e486c0b29a206999527817ec0de52378743732c6da6dc3898c93869aa634c"
+        },
+        "final4096_read": false,
+        "job_name": "q7b-online2-L15P80",
+        "layer": 15,
+        "prefix": 80,
+        "rationale": "L15/L18 P20 improved BA; matched P80 isolates longer prefix against own P20 and L21P80.",
+        "resources": {
+          "CPUs": 12,
+          "GPUs": 2,
+          "memGiB": 128,
+          "partition": "acd_u",
+          "time": "00:30:00"
+        },
+        "runtime_commit": "c366ad4bf11c32f78b2622775c2a7bf83e1a5299",
+        "source_entry": {
+          "bytes": 1337,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/training.sbatch",
+          "sha256": "71bb3bc2cc92647282dcc7ae8fba669c1ec1c8412876c8d6505ea86138ac8f8c"
+        },
+        "source_publication": {
+          "bytes": 1357,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/depth-expansion-source-publication.json",
+          "sha256": "cc76d46721f9416b7c32a5c38b2e88a68b7e4eb2acbc608ec3bd71bb7e39a6cf"
+        },
+        "status": "PREFIX80_MATCHED_GEOMETRY_READY_NOT_SUBMITTED",
+        "training": {
+          "EMA_decay": 0.99,
+          "accumulation": 8,
+          "epochs": 3,
+          "global_batch": 128,
+          "hidden_features_persisted": false,
+          "lr": 5e-06,
+          "micro": 8,
+          "official_fresh_block_head_Adam": true,
+          "questions": 8192,
+          "same_frozen_own_G5_plans": true,
+          "updates": 192,
+          "world_size": 2
+        }
+      },
+      "root-submission.json": {
+        "entry": {
+          "bytes": 1354,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/training.sbatch",
+          "sha256": "327e486c0b29a206999527817ec0de52378743732c6da6dc3898c93869aa634c"
+        },
+        "exclude": "ACD1-13",
+        "job_id": "749691",
+        "name": "q7b-online2-L15P80",
+        "no_dependencies": true,
+        "optimizer_updates_lost": 0,
+        "previous_failed_attempt": "749684",
+        "replacement_not_optimizer_resume": true,
+        "resources": {
+          "CPUs": 12,
+          "GPUs": 2,
+          "memGiB": 128,
+          "partition": "acd_u",
+          "time": "00:30:00"
+        },
+        "runtime_commit": "c366ad4bf11c32f78b2622775c2a7bf83e1a5299",
+        "time": 1792687504.1163845
+      },
+      "accounting": {
+        "returncode": 0,
+        "stdout": "749691|PENDING|0:0|00:00:00|None assigned",
+        "stderr": ""
+      },
+      "queue": {
+        "returncode": 0,
+        "stdout": "749691|q7b-online2-L15P80|acd_u|PENDING|2026-10-23T00:47:52|(Priority)",
+        "stderr": ""
+      }
+    },
+    "18": {
+      "prefix80-ready.json": {
+        "Slurm_submitted": false,
+        "entry": {
+          "bytes": 1354,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/training.sbatch",
+          "sha256": "4c60f896f4c73c4641f9178f50b1cf7d8b2b3e027dfa781a42b410086f45d8ca"
+        },
+        "final4096_read": false,
+        "job_name": "q7b-online2-L18P80",
+        "layer": 18,
+        "prefix": 80,
+        "rationale": "L15/L18 P20 improved BA; matched P80 isolates longer prefix against own P20 and L21P80.",
+        "resources": {
+          "CPUs": 12,
+          "GPUs": 2,
+          "memGiB": 128,
+          "partition": "acd_u",
+          "time": "00:30:00"
+        },
+        "runtime_commit": "c366ad4bf11c32f78b2622775c2a7bf83e1a5299",
+        "source_entry": {
+          "bytes": 1337,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/training.sbatch",
+          "sha256": "71bb3bc2cc92647282dcc7ae8fba669c1ec1c8412876c8d6505ea86138ac8f8c"
+        },
+        "source_publication": {
+          "bytes": 1357,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/depth-expansion-source-publication.json",
+          "sha256": "cc76d46721f9416b7c32a5c38b2e88a68b7e4eb2acbc608ec3bd71bb7e39a6cf"
+        },
+        "status": "PREFIX80_MATCHED_GEOMETRY_READY_NOT_SUBMITTED",
+        "training": {
+          "EMA_decay": 0.99,
+          "accumulation": 8,
+          "epochs": 3,
+          "global_batch": 128,
+          "hidden_features_persisted": false,
+          "lr": 5e-06,
+          "micro": 8,
+          "official_fresh_block_head_Adam": true,
+          "questions": 8192,
+          "same_frozen_own_G5_plans": true,
+          "updates": 192,
+          "world_size": 2
+        }
+      },
+      "root-submission.json": {
+        "entry": {
+          "bytes": 1354,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/training.sbatch",
+          "sha256": "4c60f896f4c73c4641f9178f50b1cf7d8b2b3e027dfa781a42b410086f45d8ca"
+        },
+        "job_id": "749685",
+        "name": "q7b-online2-L18P80",
+        "no_dependencies": true,
+        "resources": {
+          "CPUs": 12,
+          "GPUs": 2,
+          "memGiB": 128,
+          "partition": "acd_u",
+          "time": "00:30:00"
+        },
+        "runtime_commit": "c366ad4bf11c32f78b2622775c2a7bf83e1a5299",
+        "time": 1792687387.549464
+      },
+      "controller.json": {
+        "EMA_decay": 0.99,
+        "capture_layer": 17,
+        "final4096_read": false,
+        "fixture_source": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-v1",
+        "fresh_official_block_and_head": true,
+        "gradient_accumulation_microbatches": 8,
+        "hidden_feature_cache": false,
+        "job_id": "749685",
+        "layer": 18,
+        "local_batch_questions": 64,
+        "not_E1_continuation": true,
+        "pid": 971313,
+        "prefix": 80,
+        "raw_gradient_updates_EMA": true,
+        "stage": "LOADING_FROZEN_OFFICIAL_ACTOR_FOR_ONLINE_PREFILL",
+        "time": 1792687528.5857928,
+        "training_G5_per_epoch": 8192,
+        "training_questions": 8192,
+        "validation_questions": 2048,
+        "world_size": 2
+      },
+      "accounting": {
+        "returncode": 0,
+        "stdout": "749685|RUNNING|0:0|00:00:42|ACD1-1",
+        "stderr": ""
+      },
+      "queue": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    }
+  }
+}
