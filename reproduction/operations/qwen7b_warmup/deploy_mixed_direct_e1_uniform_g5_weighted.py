@@ -62,7 +62,7 @@ ENTRY='''#!/usr/bin/env bash
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=128G
 #SBATCH --gres=gpu:1
-#SBATCH --time=1-00:00:00
+#SBATCH --time=04:00:00
 #SBATCH --signal=USR1@900
 #SBATCH --output=@@BASE@@/logs/train-%j.log
 #SBATCH --chdir=@@BASE@@
@@ -78,7 +78,7 @@ lock=(b/'training.lock').open('a+');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB
 if r.returncode or not re.fullmatch(r'[0-9]+(?:;[^ ]+)?',r.stdout.strip()):raise RuntimeError('Unknown/rejected submit; preserve intent and inspect same name: '+r.stdout[-200:]+r.stderr[-1000:])
 job=r.stdout.strip().split(';')[0];identity=command(['scontrol','show','job','-o',job])
 for item in('JobName='+v['job'],'Account=mou176','QOS=normal','Partition=acd_u','NumCPUs=8','MinMemoryNode=128G','Dependency=(null)','Command='+str(b/'training.sbatch'),'WorkDir='+str(b)):assert item in identity,item
-assert 'TimeLimit=1-00:00:00'in identity or'TimeLimit=24:00:00'in identity;assert'gres/gpu=1'in identity or'TresPerNode=gres/gpu:1'in identity;once(b/'submission-identity.json',dict(job_id=job,job=identity,config=ready['config']));command(['scontrol','release',job]);result=dict(status='E1_LABELBLIND_G5_CLASSWEIGHT_JOB_RELEASED_NOT_PROGRESS_VERIFIED',job_id=job,config=ready['config'],identity=proof(b/'submission-identity.json'));once(b/'submission-result.json',result);print(json.dumps(result))
+assert 'TimeLimit=04:00:00'in identity;assert'gres/gpu=1'in identity or'TresPerNode=gres/gpu:1'in identity;once(b/'submission-identity.json',dict(job_id=job,job=identity,config=ready['config']));command(['scontrol','release',job]);result=dict(status='E1_LABELBLIND_G5_CLASSWEIGHT_JOB_RELEASED_NOT_PROGRESS_VERIFIED',job_id=job,config=ready['config'],identity=proof(b/'submission-identity.json'));once(b/'submission-result.json',result);print(json.dumps(result))
 '''
 STATUS='''result=dict(epoch=time.time(),active_same_name_jobs=active())
 for name in('preparation.json','submission-result.json','controller.json','progress.json','latest.json','failure.json','complete.json'):
