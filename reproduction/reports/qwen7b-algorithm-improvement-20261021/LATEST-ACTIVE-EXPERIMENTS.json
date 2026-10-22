@@ -1,0 +1,96 @@
+{
+  "recorded_epoch": 1792682534.4358861,
+  "goal_status": "ACTIVE_NOT_ACHIEVED",
+  "network_permission": "REVOKED_REQUEST_RETURNED_NETWORK_NULL_NO_REMOTE_ACTIONS_AUTHORIZED_NOW",
+  "last_remote_observation_epoch": 1792682391.1124,
+  "last_remote_observation_CST": "2026-10-22 23:19:51.1124",
+  "observation_values_are_not_current": true,
+  "existing_remote_jobs_not_restarted": true,
+  "formal_main": {
+    "job_id": "749015",
+    "last_root_epoch": 1792681919.042614,
+    "last_root_cursor": 4756,
+    "last_root_native_steps": 3898,
+    "phase": "E3_head_only",
+    "complete_unproven": true
+  },
+  "formal_random_G5_control": {
+    "job_id": "749120",
+    "last_root_epoch": 1792681919.6711185,
+    "last_root_cursor": 3624,
+    "phase": "E2_joint_low_lr",
+    "complete_unproven": true
+  },
+  "matched_pilots": {
+    "749077": "L27P20_COMPLETE_CPU_ACCEPTED",
+    "749078": "L21P20_COMPLETE_CPU_ACCEPTED",
+    "749398": "L15P20_COMPLETE_CPU_ACCEPTED",
+    "749399": "L18P20_COMPLETE_CPU_ACCEPTED",
+    "749400": "L24P20_last_remote_cursor128_RUNNING_NO_COMPLETE",
+    "749079": "L27P80_last_remote_cursor192_RUNNING_TAIL_EVAL_NO_COMPLETE",
+    "749369": "L21P80_last_remote_cursor64_RUNNING_EVAL_NO_COMPLETE"
+  },
+  "natural_G5_paired_control": {
+    "jobs": {
+      "749459": "L21P20",
+      "749460": "L27P20"
+    },
+    "last_root_epoch": 1792682297.3203611,
+    "last_observed_state": "PENDING_acd_u_normal",
+    "source_commit": "1fdb1755c699994ec9d8f7f0a7527957c3f58796",
+    "new_difficult_G5_negatives_per_epoch": [
+      851,
+      780,
+      825
+    ],
+    "post_submit_two_progress_observations_not_yet_possible": true
+  },
+  "final_confirmation_data": {
+    "questions": 4096,
+    "G10_trajectories": 40960,
+    "production_status": "ALL_FROZEN_FINAL_G10_COLLECTION_SHARDS_COMPLETED_BLIND",
+    "manifest_SHA": "ffdbc91f0bd34a1e5f51dd1a764850099f4daa5ffe6fc416ee189e56d86bff6f",
+    "final_probe_scoring_started": false,
+    "candidate_frozen": false
+  },
+  "latest_new_user_experiment": {
+    "name": "one_question_variable_M_prefix20_variance_regression",
+    "status": "LOCAL_IMPLEMENTATION_IN_PROGRESS_NOT_DEPLOYED_NOT_SUBMITTED",
+    "M_uniform_integer_range": [
+      3,
+      10
+    ],
+    "group_input": "one question + M separately delimited genuine retained Prefix20 token sequences, one packed prefill row",
+    "source": "official Qwen2.5-7B-Instruct initial actor; authentic ownG10 rollout metadata",
+    "training_target": "selected-M strictEM population variance meanEM*(1-meanEM)",
+    "training_scale": "target4variance",
+    "prediction": "sigmoid(logit)/4 estimates variance",
+    "loss": "MSE_only_no_BCE_no_trajectory_prediction",
+    "selection_score": "predicted_population_EM_variance_descending",
+    "first_pilot": {
+      "distinct_training_questions": 8192,
+      "epochs": 3,
+      "updates": 192,
+      "GPUs": 2,
+      "global_batch": 128,
+      "gradient_accumulation": 8,
+      "block_index": 21,
+      "prefix": 20,
+      "fresh_official_block_and_head": true,
+      "raw_updates_EMA": true,
+      "EMA_decay": 0.99,
+      "lr": 5e-06
+    },
+    "full169028_target_not_shrunk_to_pilot": true,
+    "fixed_eval": "same2048 ownG5 selection, varianceMSE/MAE/rank correlation/Top512realMixed, predeclaredG5variance_threshold.08 diagnostic_only",
+    "final4096_read": false
+  },
+  "resume_after_network_permission_restored": [
+    "fresh poll SAME existing handles and reconcile terminal status; no restart from stale values",
+    "push local unpushed source branches and verify remoteSHA before deploying new code",
+    "stage/prepare packed variance and verify source/ownG10 identity coverage then submit once",
+    "follow new jobs through two actual update observations and complete epoch",
+    "evaluate all planned candidates on viewed2048; freeze candidate before final4096 scoring",
+    "do not call goal complete until independent confirmation and full objective evidence exist"
+  ]
+}
