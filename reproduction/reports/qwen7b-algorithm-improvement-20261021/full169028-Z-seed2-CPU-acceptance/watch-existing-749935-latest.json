@@ -1,53 +1,53 @@
 {
-  "time": 1792705391.4819887,
+  "time": 1792705491.4585798,
   "job_id": "749935",
   "Slurm_mutated": false,
   "CP_tensor_or_final_read": false,
-  "accounting": "749935|RUNNING|0:0|02:47:52|ACD1-16",
+  "accounting": "749935|RUNNING|0:0|02:49:32|ACD1-16",
   "training": {
     "progress-rank-0.json": {
-      "cursor": 12683,
+      "cursor": 12814,
       "epoch": 10,
-      "native_gradient_L2": 8.476255861312266,
-      "head_gradient_L2": 9.790447007695454,
+      "native_gradient_L2": 9.724990372213075,
+      "head_gradient_L2": 14.015247952615862,
       "alignment": {
-        "anchor4variance_MSE": 0.06678299605846405,
+        "anchor4variance_MSE": 0.07184313237667084,
         "anchor_weight": 1.0,
         "normalization_epsilon": 1e-06,
         "normalization_global_questions": 128,
         "normalization_population_std": true,
         "normalization_scope": "actual_global_optimizer_batch_autograd_all_gather",
-        "normalized_MSE": 0.4631445109844208,
-        "prediction_mean": 0.3450353741645813,
-        "prediction_std": 0.30512022972106934,
-        "target_mean": 0.29826849699020386,
-        "target_std": 0.3971598744392395,
-        "total_loss": 0.5299274921417236,
-        "z_MSE": 0.4631445109844208
+        "normalized_MSE": 0.5620442032814026,
+        "prediction_mean": 0.27644211053848267,
+        "prediction_std": 0.2872013747692108,
+        "target_mean": 0.30116701126098633,
+        "target_std": 0.38365209102630615,
+        "total_loss": 0.6338873505592346,
+        "z_MSE": 0.5620442032814026
       },
-      "time": 1792705390.8650517
+      "time": 1792705491.4709938
     },
     "progress-rank-1.json": {
-      "cursor": 12684,
+      "cursor": 12814,
       "epoch": 10,
-      "native_gradient_L2": 9.566149953220318,
-      "head_gradient_L2": 12.567035710041297,
+      "native_gradient_L2": 9.724990372213075,
+      "head_gradient_L2": 14.015247952615862,
       "alignment": {
-        "anchor4variance_MSE": 0.09664911776781082,
+        "anchor4variance_MSE": 0.07184313237667084,
         "anchor_weight": 1.0,
         "normalization_epsilon": 1e-06,
         "normalization_global_questions": 128,
         "normalization_population_std": true,
         "normalization_scope": "actual_global_optimizer_batch_autograd_all_gather",
-        "normalized_MSE": 0.692238450050354,
-        "prediction_mean": 0.36659136414527893,
-        "prediction_std": 0.3000200092792511,
-        "target_mean": 0.30486536026000977,
-        "target_std": 0.3994321823120117,
-        "total_loss": 0.7888875603675842,
-        "z_MSE": 0.692238450050354
+        "normalized_MSE": 0.5620442032814026,
+        "prediction_mean": 0.27644211053848267,
+        "prediction_std": 0.2872013747692108,
+        "target_mean": 0.30116701126098633,
+        "target_std": 0.38365209102630615,
+        "total_loss": 0.6338873505592346,
+        "z_MSE": 0.5620442032814026
       },
-      "time": 1792705391.5840955
+      "time": 1792705491.4708893
     }
   },
   "training_failures": {},
@@ -83,26 +83,26 @@
       "accounting": "749935|RUNNING|0:0",
       "actual_complete": null,
       "job_id": "749935",
-      "polls": 149,
+      "polls": 152,
       "rank_progress": {
         "0": {
-          "cursor": 12671,
+          "cursor": 12789,
           "epoch": 10,
-          "head_gradient_L2": 12.345428939387064,
-          "native_gradient_L2": 10.821160797046494,
-          "time": 1792705382.1711054
+          "head_gradient_L2": 14.08218257090465,
+          "native_gradient_L2": 11.718944723644817,
+          "time": 1792705472.5935133
         },
         "1": {
-          "cursor": 12671,
+          "cursor": 12789,
           "epoch": 10,
-          "head_gradient_L2": 12.345428939387064,
-          "native_gradient_L2": 10.821160797046494,
-          "time": 1792705382.1710076
+          "head_gradient_L2": 14.08218257090465,
+          "native_gradient_L2": 11.718944723644817,
+          "time": 1792705472.5933528
         }
       },
       "shared_CPU_mutex_held": false,
       "stage": "WAITING_ACTUAL_TERMINAL_NO_CP_OR_COMMON_LOCK_HELD",
-      "time": 1792705382.6885867
+      "time": 1792705473.1194918
     }
   },
   "coordinator_actual_identity_live": true
