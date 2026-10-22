@@ -1,0 +1,66 @@
+{
+  "status": "ROOT_STARTED_SEED2_V2_REAL_PID_LOCK_POLL_AND_SAME_JOB_PROGRESS_REPAIR_ACCEPTED",
+  "source_commit": "669427f37da01021756df18110cfb2b56fa1e632",
+  "worker_SHA256": "5304f9e9e290820fdde3123f0e34ab98b925f8ecd79a6cda011113ad56ca23ec",
+  "PID": 29786,
+  "start_ticks": "1771045",
+  "observation_times": [
+    1792707073.9198945,
+    1792707132.1301634
+  ],
+  "elapsed_seconds": 58.2102689743042,
+  "polls": [
+    4,
+    6
+  ],
+  "observation_errors": 0,
+  "training_job_id": "750190",
+  "first_training_progress": {
+    "0": {
+      "epoch": 5,
+      "cursor": 6605,
+      "actual_Adam_updates": 6605,
+      "time": 1792707055.801559
+    },
+    "1": {
+      "epoch": 5,
+      "cursor": 6605,
+      "actual_Adam_updates": 6605,
+      "time": 1792707055.8022134
+    }
+  },
+  "second_training_progress": {
+    "0": {
+      "epoch": 6,
+      "cursor": 6642,
+      "actual_Adam_updates": 6642,
+      "time": 1792707131.8366373
+    },
+    "1": {
+      "epoch": 6,
+      "cursor": 6642,
+      "actual_Adam_updates": 6642,
+      "time": 1792707131.836951
+    }
+  },
+  "actual_PID_and_own_FLOCK_both_observations": true,
+  "common_CPU_mutex_FD_open": false,
+  "CP_tensor_FD_open": false,
+  "CPU_child_launched": false,
+  "new_failure": false,
+  "healthy_seed1_v1": {
+    "PID": 3336295,
+    "start_ticks": "1408487",
+    "same_identity_live": true,
+    "no_failure": true,
+    "source_unchanged": true
+  },
+  "old_seed2_v1_failure_preserved": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/fullP80-MSE-terminal-CPU-coordinators-20261023-v1/job-750190/failure.json",
+    "bytes": 1462,
+    "sha256": "b10be9829e3355a6f31af022b8ae6be2d764920d6195c275e77c31686945d088"
+  },
+  "workers_started_or_code_changed_by_this_verification": false,
+  "CP_or_tensor_or_final_read": false,
+  "training_or_Slurm_changed": false
+}
