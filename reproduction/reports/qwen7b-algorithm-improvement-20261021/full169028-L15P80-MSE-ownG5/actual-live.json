@@ -1,0 +1,114 @@
+{
+  "time": 1792700747.4811447,
+  "replicas": {
+    "seed1": {
+      "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3",
+      "files": {
+        "root-submission.json": {
+          "GPUs": 2,
+          "QoS": "normal",
+          "entry": {
+            "bytes": 1829,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/training.sbatch",
+            "sha256": "d065167ea206cc2b894ab1a9becc4d2c7e283b5a81aa47c7092f42184d5e91c8"
+          },
+          "epochs": 10,
+          "final4096_read": false,
+          "fresh": true,
+          "global_batch": 128,
+          "init_seed": 9137,
+          "job_id": "750189",
+          "name": "q7b-fullP80-MSE5-s9137",
+          "no_dependencies": true,
+          "optimizer_update_budget": 13210,
+          "partition": "acd_u",
+          "pilot_resume": false,
+          "primary_metric": "development2048_ownG5_Top512_real_Mixed",
+          "questions": 169028,
+          "ready": {
+            "bytes": 2999,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/ready.json",
+            "sha256": "1772c005c7087ece78dd50966695dc1445abf7e1148ccd21614a1d187931207f"
+          },
+          "selection": "seed1_epoch_state_then_same_on_seed2",
+          "selection_rule": {
+            "bytes": 1182,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/predeclared-selection-rule.json",
+            "sha256": "17fc2ae23d8cfa5598eebf590ac01d2ed09b155a8453f68487052762a39483ee"
+          },
+          "source_commit": "7a8ff6ae8a33324846d85f77ffc28e9ab699c028",
+          "time": 1792700730.88981,
+          "train_plan_seed": 2026102227,
+          "updates_per_epoch": 1321
+        }
+      },
+      "squeue": {
+        "returncode": 0,
+        "stdout": "750189|PENDING|0:00|(Priority)",
+        "stderr": ""
+      },
+      "sacct": {
+        "returncode": 0,
+        "stdout": "750189|PENDING|0:0|00:00:00|None assigned",
+        "stderr": ""
+      },
+      "finished_evaluations": {}
+    },
+    "seed2": {
+      "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed19137-plan2026102302-20261023-v3",
+      "files": {
+        "root-submission.json": {
+          "GPUs": 2,
+          "QoS": "normal",
+          "entry": {
+            "bytes": 1835,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed19137-plan2026102302-20261023-v3/training.sbatch",
+            "sha256": "9d1f13c12ac1781000f99ac209295826ac30d90dff318b36608bcb9fd900d02e"
+          },
+          "epochs": 10,
+          "final4096_read": false,
+          "fresh": true,
+          "global_batch": 128,
+          "init_seed": 19137,
+          "job_id": "750190",
+          "name": "q7b-fullP80-MSE5-s19137",
+          "no_dependencies": true,
+          "optimizer_update_budget": 13210,
+          "partition": "acd_u",
+          "pilot_resume": false,
+          "primary_metric": "development2048_ownG5_Top512_real_Mixed",
+          "questions": 169028,
+          "ready": {
+            "bytes": 3002,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed19137-plan2026102302-20261023-v3/ready.json",
+            "sha256": "02354c91b16472f5582f7acf0bd646f0ad97a47cac2baf6b985845025c0e09a0"
+          },
+          "selection": "seed1_epoch_state_then_same_on_seed2",
+          "selection_rule": {
+            "bytes": 1182,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed19137-plan2026102302-20261023-v3/predeclared-selection-rule.json",
+            "sha256": "17fc2ae23d8cfa5598eebf590ac01d2ed09b155a8453f68487052762a39483ee"
+          },
+          "source_commit": "7a8ff6ae8a33324846d85f77ffc28e9ab699c028",
+          "time": 1792700732.446847,
+          "train_plan_seed": 2026102302,
+          "updates_per_epoch": 1321
+        }
+      },
+      "squeue": {
+        "returncode": 0,
+        "stdout": "750190|PENDING|0:00|(Priority)",
+        "stderr": ""
+      },
+      "sacct": {
+        "returncode": 0,
+        "stdout": "750190|PENDING|0:0|00:00:00|None assigned",
+        "stderr": ""
+      },
+      "finished_evaluations": {}
+    }
+  },
+  "read_only": true,
+  "checkpoint_tensors_loaded": false,
+  "final4096_read": false
+}

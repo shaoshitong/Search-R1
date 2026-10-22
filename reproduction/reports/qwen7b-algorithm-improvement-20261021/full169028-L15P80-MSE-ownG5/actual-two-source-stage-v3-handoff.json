@@ -1,5 +1,5 @@
 {
-  "status": "TWO_IMMUTABLE_FULL_V3_SOURCES_STAGED_AWAITING_PHYSICAL_FIXTURE_ACCEPTANCE",
+  "status": "TWO_IMMUTABLE_V3_FULL_MSE_SEED_INPUTS_QUALIFIED_ROOT_MAY_SUBMIT_ONCE",
   "source_commit": "7a8ff6ae8a33324846d85f77ffc28e9ab699c028",
   "branch": "codex/q7b-full169028-L15P80-MSE-ownG5-20261023",
   "remote_SHA_at_verification": "7a8ff6ae8a33324846d85f77ffc28e9ab699c028",
@@ -63,7 +63,11 @@
       "actual_status_time": 1792699455.104911,
       "fixture_complete_exists": false,
       "fixture_accepted_exists": false,
-      "ready": null,
+      "ready": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/ready.json",
+        "bytes": 2999,
+        "sha256": "1772c005c7087ece78dd50966695dc1445abf7e1148ccd21614a1d187931207f"
+      },
       "root_only_submit_after_actual_ready_proof": true
     },
     "seed2": {
@@ -124,7 +128,11 @@
       "actual_status_time": 1792699455.0956378,
       "fixture_complete_exists": false,
       "fixture_accepted_exists": false,
-      "ready": null,
+      "ready": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed19137-plan2026102302-20261023-v3/ready.json",
+        "bytes": 3002,
+        "sha256": "02354c91b16472f5582f7acf0bd646f0ad97a47cac2baf6b985845025c0e09a0"
+      },
       "root_only_submit_after_actual_ready_proof": true
     }
   },
@@ -132,5 +140,6 @@
   "physical_source_contract_required": true,
   "P20_exact_alignment_required": true,
   "Slurm_submitted": false,
-  "final4096_read": false
+  "final4096_read": false,
+  "actual_ready_proofs_time": 1792700671.89043
 }

@@ -1,0 +1,37 @@
+{
+  "time": 1792700732.446847,
+  "job_id": "750190",
+  "name": "q7b-fullP80-MSE5-s19137",
+  "entry": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed19137-plan2026102302-20261023-v3/training.sbatch",
+    "bytes": 1835,
+    "sha256": "9d1f13c12ac1781000f99ac209295826ac30d90dff318b36608bcb9fd900d02e"
+  },
+  "ready": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed19137-plan2026102302-20261023-v3/ready.json",
+    "bytes": 3002,
+    "sha256": "02354c91b16472f5582f7acf0bd646f0ad97a47cac2baf6b985845025c0e09a0"
+  },
+  "source_commit": "7a8ff6ae8a33324846d85f77ffc28e9ab699c028",
+  "init_seed": 19137,
+  "train_plan_seed": 2026102302,
+  "GPUs": 2,
+  "partition": "acd_u",
+  "QoS": "normal",
+  "epochs": 10,
+  "questions": 169028,
+  "global_batch": 128,
+  "updates_per_epoch": 1321,
+  "optimizer_update_budget": 13210,
+  "fresh": true,
+  "pilot_resume": false,
+  "primary_metric": "development2048_ownG5_Top512_real_Mixed",
+  "selection": "seed1_epoch_state_then_same_on_seed2",
+  "selection_rule": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed19137-plan2026102302-20261023-v3/predeclared-selection-rule.json",
+    "bytes": 1182,
+    "sha256": "17fc2ae23d8cfa5598eebf590ac01d2ed09b155a8453f68487052762a39483ee"
+  },
+  "no_dependencies": true,
+  "final4096_read": false
+}
