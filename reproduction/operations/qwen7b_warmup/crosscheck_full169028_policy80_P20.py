@@ -58,17 +58,24 @@ def run(base):
  while True:
   try:fcntl.flock(main_guard,fcntl.LOCK_EX|fcntl.LOCK_NB);break
   except BlockingIOError:time.sleep(2)
- fixture=base/'fixture';current=read(fixture/'fixture-complete.json');producer=read(fixture/'accepted.json');assert current['status']=='FULL169028_AUTHENTIC_POLICY80_OWN_G10_FIXED2048_READY'and producer['fixture']==proof(fixture/'fixture-complete.json');assert current['train_groups']==proof(new_groups_path);assert producer['all_train_labels_exact_canonical']and producer['all_RAW_derived_first80_and_prompt_readback_equal']
- seen=bytearray(len(lookup));new_count=0;new_refs=[];identity=hashlib.sha256()
+ fixture=base/'fixture';current=read(fixture/'fixture-complete.json');producer=read(fixture/'accepted.json');assert current['status']=='FULL169028_AUTHENTIC_POLICY80_OWN_G10_FIXED2048_READY'and producer['fixture']==proof(fixture/'fixture-complete.json');assert current['train_groups']==proof(new_groups_path);assert producer['all_train_labels_exact_canonical']and producer['all_RAW_derived_first80_and_prompt_readback_equal']and producer['actual_physical_execution_and_seal_source_exact']
+ seen=bytearray(len(lookup));new_count=0;new_refs=[];identity=hashlib.sha256();mismatch_count=0;mismatch_samples=[]
  for shard_index,ref in enumerate(current['token_shards']):
   with gzip.open(checked(ref),'rt')as stream:
    for line in stream:
     row=json.loads(line)
     if row['role']!='train':continue
-    tid=row['trajectory_id'];index=lookup[tid];assert not seen[index]and row['qid']==qids[index//10]and 0<len(row['policy_token_ids'])<=80;assert bytes(digests[32*index:32*(index+1)])==normalized_sha(row,row['policy_token_ids'][:20],labels[index]),'Fresh full P20 initial_prompt/policy[:20]/ownEM mismatch';seen[index]=1;new_count+=1;identity.update(canonical([row['qid'],tid,labels[index]])+b'\n')
+    tid=row['trajectory_id'];index=lookup[tid];assert not seen[index]and row['qid']==qids[index//10]and 0<len(row['policy_token_ids'])<=80;old_sha=bytes(digests[32*index:32*(index+1)]);new_sha=normalized_sha(row,row['policy_token_ids'][:20],labels[index])
+    if old_sha!=new_sha:
+     mismatch_count+=1
+     if len(mismatch_samples)<32:mismatch_samples.append(dict(qid=row['qid'],trajectory_id=tid,P20_normalized_sha256=old_sha.hex(),physical_P80_normalized_sha256=new_sha.hex()))
+    seen[index]=1;new_count+=1;identity.update(canonical([row['qid'],tid,labels[index]])+b'\n')
     if new_count%65536==0:progress('FRESH_FULL_P20_VS_P80_PREFIX_PROMPT_OWN_EM_ALIGNMENT',old_count,new_count)
   new_refs.append(ref)
  assert new_count==1690280 and all(seen)
+ if mismatch_count:
+  atomic(base/'P20-crosscheck-mismatch.json',dict(status='OLD_P20_DIFFERS_FROM_CORRECT_PHYSICAL_P80_NOT_ACCEPTED',compared_train_rows=new_count,mismatch_count=mismatch_count,samples=mismatch_samples,correct_physical_source_contract=producer['physical_source_contract'],canonical_labels_changed=False,final4096_read=False))
+  raise RuntimeError('Full old P20 versus correctly chosen physical P80 differences: %d; all rows compared, originals preserved'%mismatch_count)
  # Preserve producer-only receipts before adding this separate full comparison.
  producer_path=fixture/'accepted-producer-only.json'
  if producer_path.exists():assert producer_path.read_bytes()==(fixture/'accepted.json').read_bytes()
