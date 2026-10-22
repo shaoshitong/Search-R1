@@ -7,8 +7,8 @@
 唯一续训作业 `750029` 已于2026-10-23 03:33:27CST在ACD1-14分配四张H100、
 48CPU、512G；03:35实测为RUNNING，去除剩余梯度日志扫描的runtime
 `2d5183455551145c52d1783a38663e2fcf170ceb` 身份匹配。检索745198继续运行。
-四卡实际GPU恢复已通过，日志已进入epoch0 step61，但第61轮完整更新尚未完成；
-第61—65轮五轮跟进及第66轮开始仍待验证。目标仍为200轮，
+四卡实际GPU恢复已通过，第61轮已完整更新并封存，第62轮实际生成边界已出现。
+恢复后五轮跟进完成1／5，第62—65轮完整更新及第66轮开始仍待验证。目标仍为200轮，
 不允许update201。
 
 ## 为什么局部接近两倍，整轮没有接近两倍
@@ -27,7 +27,7 @@
 的独立测试中，active batch16时FA3比XFormers慢18.6%；batch32和64分别少用约6.3%
 和14.0%时间。这是限定形状测试，没有正式训练batch直方图，不能套用到全部rollout。
 
-## 旧作业完整轮次的实测
+## 已完成轮次的实测
 
 | 完整轮次 | 候选生成 | Actor更新 | 含完整断点写入／封存和轮间工作的整轮时间 |
 | --- | ---: | ---: | ---: |
@@ -38,6 +38,7 @@
 | 57，同上 | 944.780秒 | 144.034秒 | 1679.849秒（28分00秒） |
 | 58，同上 | 946.155秒 | 148.111秒 | 1691.419秒（28分11秒） |
 | 59，同上 | 1049.086秒 | 154.797秒 | 1805.860秒（30分06秒） |
+| 61，新2d版本去剩余梯度日志扫描 | 1029.825秒 | 165.098秒 | 1793.499秒（29分53.5秒） |
 
 第55轮比第53轮整轮少8.76%，比第52轮少11.78%。候选占第55轮整轮约56.9%，
 actor更新约9.0%；优势计算202.775秒、checkpoint写入162.291秒也仍在整轮里。
@@ -69,9 +70,22 @@ checkpoint为91,405,594,385字节，manifest SHA为
 `= 1741.910秒`，即29分02秒，较旧第52轮观测耗时少12.52%。这个口径包括完整
 断点写入、封存和轮间工作，不能用日志里的`candidate_fill + timing_s/step`替代；
 仍不将不同轮问题和policy下的差值当作同输入因果收益。这是旧749598在完成60轮
-后取消前的历史计时，不能当作750029新runtime的整轮速度结果；新作业已实际恢复，
-但第61轮完整迭代尚未完成。见
+后取消前的历史计时，不能当作750029新runtime的同输入速度对照。见
 [五轮完整计时与第59轮完整断点](evidence/native-prefix-five-complete-outers-summary.json)。
+
+新750029首个完整第61轮壁钟为
+`1792700013.084385 - 1792698219.585013 = 1793.499372秒`，即29分53.5秒；
+边界来自第61与第62轮实际`0-before-generation.pt`。候选1029.824673秒，
+actor165.098秒，adv206.271秒，checkpoint写入158.326秒。四卡各完成20次Adam，
+累计1220、scheduler61，额外monitor forward为0；post norm为null／measured=false。
+候选五阶段同步仍为`[1,0,0,0,0]`，实际FA3执行有记录。完整23个checkpoint文件
+加7个边界文件共91,405,595,915字节已封存，manifest SHA为
+`05272cf13d4a69ae4fababbfeb69143f5d0aaad6dd0c7db59bcf7fcd23739ef6`。
+选题混合464／512（90.625%），训练EM日志约56.3%、reward0.732，均不是固定
+验证集结果。恢复后五轮跟进完成1／5；第62轮已开始，62—65完整更新及66开始
+尚待验收。首轮不同数据和policy，不能证明同输入因果提速，更不能把最后约3秒
+clip组件补丁称为整轮倍增。见
+[新版本首个完整第61轮](evidence/leanmetrics-first-complete-outer61-summary.json)。
 
 发现的另一个CPU开销是反复经过Hugging Face层进行前缀解码。对同一1024条已有
 action交替运行三次，HF解码8.5425ms/action，native backend解码0.4803ms/action，
@@ -102,7 +116,7 @@ actor为Q28／KV4；每卡五个候选阶段的权重同步次数为 `[1,0,0,0,0
 273.788秒，节点和计时包装与原266.079秒实验不同，不能精确相减分摊其他检查
 的独立耗时。直接测得的119–123秒说明CPU快照确实是旧版更新阶段的大项。
 
-## 剩余梯度日志扫描：实际恢复已通过，五轮跟进待完成
+## 剩余梯度日志扫描：实际恢复已通过，五轮跟进完成1／5
 
 复核发现旧lean虽已关闭所有有限性检查，仍为日志计算max_abs并重扫裁剪后全部
 梯度范数。源码`c14bedd9e897e4bed51de9c693a1ef29302b436d`让lean跳过这些
@@ -152,8 +166,8 @@ clip body约2.40—2.50倍，但正式每outer只有20次clip，对应约3秒／
 随后实际native4恢复的combined结果已为true：四卡模型集体回读一致，Adam／
 scheduler／RNG逐卡回读全部一致，rank0逐个核对339个model tensor，观察到四个
 不同CUDA UUID。各卡恢复Adam1200／scheduler60，driver和重建数据流游标均为
-153600且dataequal。日志已进入epoch0 step61，但61完整更新尚未完成；61—65
-五轮跟进及66开始仍待验收。恢复通过不证明最终QA质量或新runtime整轮提速。见
+153600且dataequal。随后61已完整更新并封存，第62轮已开始；五轮跟进完成1／5，
+62—65完整更新及66开始仍待验收。恢复通过不证明最终QA质量或同输入整轮提速。见
 [实际CP60四卡恢复](evidence/leanmetrics-actual-cp60-native4-restore-summary.json)。
 检索745198保持运行；
 独立绑定750029的100／150／200归档pair，CPU core640634／companion640635
@@ -163,7 +177,7 @@ scheduler／RNG逐卡回读全部一致，rank0逐个核对339个model tensor，
 
 最后补丁只有约3秒／轮的组件收益，不值得为此失去已有allocation再排队；
 **这次切换时机判断错误**。完整状态已保留，但不能用局部clip的2.5倍掩盖实际
-排队代价，也没有新版本正式整轮提速结果。
+排队代价。新版本首轮实际完整耗时已测得，但没有同输入整轮因果提速结果。
 
 一次SSH观测通道超时／认证前断连已经保存原始小型错误回执；随后原固定路由恢复，
 当时749812仍为PENDING(Resources)，未观察到诊断或生产作业故障。没有据观测超时
@@ -236,6 +250,7 @@ model／forward／NCCL；此结果保留，不改变正式750029对该节点的�
 - [实际四卡全梯度配对与计时](evidence/clip-native4-paired-final-summary.json)
 - [完整60断点与续训排队状态](evidence/leanmetrics-transition-progress.json)
 - [实际CP60四卡恢复](evidence/leanmetrics-actual-cp60-native4-restore-summary.json)
+- [新版本首个完整第61轮](evidence/leanmetrics-first-complete-outer61-summary.json)
 - [节点13实际健康短测](evidence/node13-health-final-summary.json)
 - [此前候选实际工作量与内核形状测试](evidence/fa3-production-speed-cause-20261022.json)
 - [四卡20次回滚快照的独立计时](evidence/rollback-snapshot-measured-summary.json)

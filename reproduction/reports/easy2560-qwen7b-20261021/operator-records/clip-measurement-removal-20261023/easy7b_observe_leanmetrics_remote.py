@@ -12,6 +12,7 @@ for p in (base/'artifacts/mixed-candidate-pools').glob('*/progress.json'):
   v=json.loads(p.read_text());before=p.parent/'0-before-generation.pt'
   r['candidate_progress'].append({'step':v.get('step'),'complete_questions':len(v.get('complete_ordinals',[])),'source_consumed':v.get('source_consumed'),'first_before_generation':before.stat().st_mtime if before.exists() else None,'saved_chunks':[{'name':q.name,'bytes':q.stat().st_size,'mtime':q.stat().st_mtime} for q in p.parent.glob('*.pt') if q.stem.isdecimal()]})
  except json.JSONDecodeError:pass
+r['candidate_start_boundaries']=[{'pool':p.parent.name,'mtime':p.stat().st_mtime,'bytes':p.stat().st_size} for p in (base/'artifacts/mixed-candidate-pools').glob('*/0-before-generation.pt')]
 r['selection_summary']=[]
 for p in (base/'artifacts/mixed-selection').glob('*.json'):
  try:

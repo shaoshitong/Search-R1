@@ -1,6 +1,12 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
-**Current evidence, 2026-10-23:** job `749598`, immutable runtime
+**Current evidence, 2026-10-23:** continuation `750029` completed and sealed
+outer61, and outer62 has an actual before-generation boundary. All four ranks
+performed20 Adam writes, reaching1220/scheduler61, with zero extra monitor
+forwards. This completes1/5 of the required post-restore follow-up outers;
+complete62–65 and the start of66 remain pending.
+
+Previous job `749598`, immutable runtime
 `c7976da3afc863a1c20b99daa7cc99de3bb61f15`, completed and sealed CP60 on four
 H100 at `ACD1-14`: all four ranks reached Adam1200/scheduler60. Its complete
 checkpoint is91,405,595,410 bytes, manifest SHA
@@ -15,7 +21,7 @@ See [five complete outers](evidence/native-prefix-five-complete-outers-summary.j
 and the [speed attribution report](SPEED-DIAGNOSIS-20261023.md).
 
 The remaining gradient max/post-norm measurement pass is removed in immutable
-candidate runtime `2d5183455551145c52d1783a38663e2fcf170ceb`. Its independent
+runtime `2d5183455551145c52d1783a38663e2fcf170ceb`. Its independent
 actual-native4 probe749913 completed0:0: all20 paired clips on all4 ranks had
 bitwise-equal full gradients and preclip norms. Old/new20-clip bodies took about
 5.01/2.05 seconds per rank; the approximately3-second saving is a component
@@ -37,11 +43,23 @@ shows `RUNNING` and runtime identity matching
 passed: model collective readback and all four Adam/scheduler/RNG readbacks match,
 rank0 checked339 model tensors individually, and four distinct CUDA UUIDs were
 observed. Each rank restored Adam1200/scheduler60; driver and reconstructed stream
-both read back cursor153600 with data equality. The log has entered epoch0 step61,
-but no complete outer61 is yet established. The five follow-up outers61–65 and
-the start of66 remain pending; neither final quality nor new-runtime speed is
-proven by restore acceptance. Retriever745198 remains running. See
+both read back cursor153600 with data equality. Outer61 subsequently completed;
+complete62–65 and the start of66 remain pending. Restore acceptance does not prove
+final quality or a speed ratio. Retriever745198 remains running. See
 [actual CP60 native4 restoration](evidence/leanmetrics-actual-cp60-native4-restore-summary.json).
+
+The first complete2d-runtime outer61 took1793.499372 seconds (29m53.5s), measured
+from its actual before-generation mtime1792698219.585013 to outer62's
+1792700013.084385. Candidate generation took1029.824673s, actor165.098s,
+advantages206.271s and checkpoint write158.326s. Its sealed23 checkpoint plus7
+boundary files total91,405,595,915 bytes, manifest SHA
+`05272cf13d4a69ae4fababbfeb69143f5d0aaad6dd0c7db59bcf7fcd23739ef6`.
+Actual FA3 and five-phase sync `[1,0,0,0,0]` were observed; post-clip norm is
+`null/measured=false`, not falsely reported as measured. Selection chose464/512
+mixed questions (90.625%); training EM was approximately56.3% and reward0.732,
+not fixed-validation results. This one outer is not a same-input causal speed
+comparison, and the final approximately3-second clip patch is not a whole-outer
+multiplier. See [first complete outer61](evidence/leanmetrics-first-complete-outer61-summary.json).
 The independently bound archive pair for750029 milestones100/150/200 has CPU
 core640634/companion640635 live at the same recorded birth identities, with
 polling advancing and no errors. See
