@@ -1,0 +1,4 @@
+import io,json,runpy,sys
+request=json.loads("{\"base\":\"/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022\",\"commit\":\"bf15a8c048c8955a6c43ec6e0c44c5eecb96e049\",\"source_base\":\"/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023\",\"pin_base\":\"/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022/diagnostics/candidate-retrieval-pair-r1-20261023\",\"service_base\":\"/data/user/jxu957/experiments/easy2560-corollout-joint4-retrieval-batch-service-r1-20261023\",\"root\":\"/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022/diagnostics/candidate-retrieval-pair-r1-20261023/attempt-r4\"}")
+sys.stdin=io.StringIO(json.dumps(request))
+runpy.run_path(request['base']+'/source/'+request['commit']+'/reproduction/operations/easy7b_20261021/submit_candidate_retrieval_pair_hpc.py',run_name='__main__')

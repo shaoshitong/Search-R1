@@ -349,3 +349,22 @@ model／forward／NCCL；此结果保留，不改变正式750029对该节点的�
 - [原legacy与lean＋compact的样本差异](evidence/fastpath-native4-comparison-1792678397691460000.json)
 
 checkpoint、optimizer、完整rollout和模型始终保留远端，本地只保存代码与小型审计结果。
+
+
+## 私有完整候选对照的启动记录（2026-10-23）
+
+正式750029及检索745198持续运行。私有双卡服务750396在ACD1-4加载原始
+21,015,324条索引与文档后READY，保留逐题E5，仅将FAISS向量合批16。
+固定的HF权重为当时最新完整CP66，五个父题chunk也已hardlink固定；没有复制
+optimizer，也不在Mac存放权重或raw轨迹。独立四卡A/B使用相同policy和父题，
+顺序冷缓存运行旧串行proxy和新async proxy，最终各生成2560×5条真实轨迹。
+
+三个独立测试入口错误均保留了真实证据：750398的Ray空闲worker预启导致线程
+耗尽；750418的worker PYTHONPATH遗漏driver依赖overlay；750419已实际完成
+四卡引擎初始化，随后输入指纹记录中的NumPy数组无法JSON序列化。修复分别
+复用正式NPROC8192并减少空闲线程、完整继承driver导入路径、仅在记录时转换
+NumPy值。三次均未产生actor/optimizer更新，没有重启正式训练。
+
+源码bf15a8c的独立750423已分配ACD1-32四卡继续原对照。此记录不是候选完整
+阶段或正式整轮提速验收；需实际完成两组轨迹，并同时报告生成token、请求、
+检索动作与工作量差异。

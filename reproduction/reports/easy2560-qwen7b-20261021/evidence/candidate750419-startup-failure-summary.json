@@ -1,0 +1,47 @@
+{
+  "checked_unix": 1792710507.972734,
+  "classification": "OWN_DIAGNOSTIC_NUMPY_METADATA_JSON_FAILURE",
+  "job": "750419",
+  "actual_failure_evidence": "candidate750419-failure-preserved-1792710473479199000.json",
+  "actual_worker_count": 4,
+  "actual_gpu_ids": [
+    [
+      "1"
+    ],
+    [
+      "2"
+    ],
+    [
+      "3"
+    ],
+    [
+      "0"
+    ]
+  ],
+  "actual_engine_initialization_seconds": [
+    42.61429466307163,
+    42.78176308050752,
+    42.61335116997361,
+    42.61272897012532
+  ],
+  "native_nproc": {
+    "after": [
+      8192,
+      100000
+    ],
+    "before": [
+      2048,
+      100000
+    ],
+    "hard_unchanged": true,
+    "scope": "current process only; fork/exec descendants inherit",
+    "soft_raised": true
+  },
+  "candidate_engines_ready": true,
+  "candidate_phase_completed": false,
+  "optimizer_writes": 0,
+  "production_modified": false,
+  "actual_error": "Object of type ndarray is not JSON serializable",
+  "fix_commit": "bf15a8c048c8955a6c43ec6e0c44c5eecb96e049",
+  "original_remote_failure_retained": true
+}
