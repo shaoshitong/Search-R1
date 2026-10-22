@@ -1,10 +1,10 @@
 {
-  "recorded_epoch": 1792682534.4358861,
+  "recorded_epoch": 1792683365.816639,
   "goal_status": "ACTIVE_NOT_ACHIEVED",
-  "network_permission": "REVOKED_REQUEST_RETURNED_NETWORK_NULL_NO_REMOTE_ACTIONS_AUTHORIZED_NOW",
-  "last_remote_observation_epoch": 1792682391.1124,
+  "network_permission": "USER_REAUTHORIZED_FRESH_SSH_AND_GIT_SUCCESS",
+  "last_remote_observation_epoch": 1792683073.2444637,
   "last_remote_observation_CST": "2026-10-22 23:19:51.1124",
-  "observation_values_are_not_current": true,
+  "observation_values_are_not_current": false,
   "existing_remote_jobs_not_restarted": true,
   "formal_main": {
     "job_id": "749015",
@@ -55,7 +55,7 @@
   },
   "latest_new_user_experiment": {
     "name": "one_question_variable_M_prefix20_variance_regression",
-    "status": "LOCAL_CODE_TESTS_AND_IMMUTABLE_GIT_COMMIT_COMPLETE_NOT_PUSHED_NOT_DEPLOYED_NOT_SUBMITTED",
+    "status": "REAL_FIXTURE_COMPLETE_TWO_GPU_JOB_SUBMITTED_NOT_YET_TRAINING_VERIFIED",
     "M_uniform_integer_range": [
       3,
       10
@@ -105,7 +105,19 @@
       "reference": "peer_long_prefix_diagnostic.reconstruct(full,20)",
       "actual_prepare_loop_tested": true,
       "remote_schema_refreshed": false
-    }
+    },
+    "source_remote_sha": "6116e75c776be40cc919cb5e25324ab391643c06",
+    "source_pushed_verified": true,
+    "job_id": "749515",
+    "actual_submission_epoch": 1792683246.483583,
+    "actual_fixture_trajectories": 102400,
+    "actual_fixture_prepare_seconds": 24.64370822906494,
+    "actual_fixed_eval_pool_questions": 2048,
+    "partition_at_submit": "acd_u",
+    "QOS_at_submit": "normal",
+    "time_limit": "00:30:00",
+    "active_experiment_output": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-M3to10-P20-variance-8192-20261022-v1",
+    "training_progress_verified": false
   },
   "resume_after_network_permission_restored": [
     "fresh poll SAME existing handles and reconcile terminal status; no restart from stale values",
@@ -121,5 +133,10 @@
     "pushed": false,
     "remote_executed": false
   },
-  "network_permission_last_revalidated_epoch": 1792682780.998272
+  "network_permission_last_revalidated_epoch": 1792682780.998272,
+  "historical_network_interruption": {
+    "last_denied_epoch": 1792682816,
+    "restored_after_user_authorization_epoch": 1792683071,
+    "no_remote_job_cancelled_or_restarted": true
+  }
 }
