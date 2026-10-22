@@ -3,7 +3,7 @@ import argparse,base64,gzip,hashlib,importlib.util,io,json,shlex,subprocess,tarf
 from pathlib import Path
 R=Path(__file__).resolve().parents[3];CONTROL=R.parents[1];P='reproduction/operations/qwen7b_warmup/';BRANCH='codex/mixed-direct-e1-lr-headonly-20261022';A='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021';MAIN=A+'/joint-mixed-direct-official-169028-b128-v1';BASE=A+'/mixed-direct-e1-lr-headonly-20261022-v1';JOB='q7b-mixed-e1-lr-headonly'
 SOURCE_CONFIG=dict(path=MAIN+'/config.json',bytes=19415,sha256='e5f0027dfcff4b6db442b38e9b2452e86cc2c9adcabd97a194971dc4d8f8d837');SOURCE_PUBLICATION=dict(path=MAIN+'/source-publication.json',bytes=8208,sha256='1492aefafa3a5bce1b5fe9246ee90c97b24b093892c41b1d79377cf98bdf098a');SOURCE_E1=dict(path=MAIN+'/evaluations/epoch-01/complete.json',bytes=27129,sha256='3d832d00b2d40eaf5ffad4568c1785c84270b0a81e033c57e6c7030a93cd0de8')
-ORIGIN='PENDING_PUBLISHED_PHASED_WORKER';WORKER=P+'joint_mixed_direct_lrfreeze.py';NEW=[WORKER,P+'direct_update_lrfreeze.py',P+'mixed_group_phased_checkpoint.py'];OUT=R/'reproduction/reports/qwen7b-algorithm-improvement-20261021/mixed-direct-e1-lr-headonly'
+WORKER=P+'joint_mixed_direct_lrfreeze.py';ORIGINS={WORKER:'cdd7942f5727875a9fdc59f8d0f4af9419d689eb',P+'direct_update_phased.py':'cdd7942f5727875a9fdc59f8d0f4af9419d689eb',P+'mixed_group_phased_checkpoint.py':'d2acaf92f5d34e20eb05593cd1647e039a34ea73'};NEW=list(ORIGINS);OUT=R/'reproduction/reports/qwen7b-algorithm-improvement-20261021/mixed-direct-e1-lr-headonly'
 COMMON='''import pathlib,json,hashlib,os,fcntl,subprocess,time,re,base64,stat
 b=pathlib.Path(v['base']);b.mkdir(exist_ok=True);code=b/('code-'+v['archive_sha256'][:12]);code.mkdir(exist_ok=True)
 def read(p):return json.loads(pathlib.Path(p).read_bytes())
@@ -85,11 +85,11 @@ print(json.dumps(result))
 '''
 def git(c,n):return subprocess.check_output(['git','show',c+':'+n],cwd=R)
 def bundle():
- assert len(ORIGIN)==40,'Published worker/checkpoint/updater origin required';old=P+'deploy_mixed_direct_b128_continuation.py';ns=dict(__name__='accepted_b128_source_bundle',__file__=str(R/old));exec(compile(git('659848a0c820d797fe90fcf65e27f5057a28aa8e',old),old,'exec'),ns);raw,manifest=ns['bundle']();assert len(manifest['files'])==27;contents={}
+ assert all(len(origin)==40 for origin in ORIGINS.values()),'Published per-file worker/checkpoint/updater origins required';old=P+'deploy_mixed_direct_b128_continuation.py';ns=dict(__name__='accepted_b128_source_bundle',__file__=str(R/old));exec(compile(git('659848a0c820d797fe90fcf65e27f5057a28aa8e',old),old,'exec'),ns);raw,manifest=ns['bundle']();assert len(manifest['files'])==27;contents={}
  with tarfile.open(fileobj=io.BytesIO(raw),mode='r:gz')as tar:
   for item in tar:contents[item.name]=tar.extractfile(item).read()
  origins=dict(manifest['origins'])
- for name in NEW:contents[name]=git(ORIGIN,name);origins[name]=ORIGIN
+ for name in NEW:contents[name]=git(ORIGINS[name],name);origins[name]=ORIGINS[name]
  manifest=dict(files={n:dict(bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())for n,raw in contents.items()},origins=origins);buf=io.BytesIO()
  with gzip.GzipFile(fileobj=buf,mode='wb',mtime=0,filename='')as gz:
   with tarfile.open(fileobj=gz,mode='w')as tar:
