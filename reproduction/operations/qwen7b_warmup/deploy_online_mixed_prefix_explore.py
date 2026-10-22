@@ -46,12 +46,19 @@ SEAL='''for name,record in v['files'].items():
  if name.endswith('.py'):compile(raw,name,'exec')
  for x in parts:x.unlink()
 manifest=dict(commit=v['commit'],branch=v['branch'],code_root=str(code),files=v['files']);path=b/'source-publication.json'
-if path.exists():assert json.loads(path.read_text())==manifest
+replace_entries=False
+if path.exists()and json.loads(path.read_text())!=manifest:
+ old=json.loads(path.read_text());active=subprocess.check_output(['squeue','-h','-u','mou176','-o','%j'],universal_newlines=True);assert not any(n.startswith('q7b-online-L')for n in active.splitlines()),'Existing pilot GPU job active; never alter its entry'
+ assert not list(b.glob('layer*-prefix*/progress-rank-*.json')),'Existing training attempt must retain entry'
+ archive=b/('pre-submit-source-'+old['commit'][:12]+'.json');atomic(archive,old);atomic(path,manifest);replace_entries=True
+elif path.exists():assert json.loads(path.read_text())==manifest
 else:atomic(path,manifest)
 entries=[]
 for layer,prefix in v['variants']:
  dest=b/('layer%d-prefix%d'%(layer,prefix));dest.mkdir(exist_ok=True);script=v['sbatch'].replace('@@BASE@@',str(b)).replace('@@CODE@@',str(code)).replace('@@L@@',str(layer)).replace('@@P@@',str(prefix));entry=dest/'training.sbatch'
- if entry.exists():assert entry.read_text()==script
+ if entry.exists()and entry.read_text()!=script:
+  assert replace_entries;archive=entry.with_name('pre-submit-'+old['commit'][:12]+'.sbatch');archive.write_text(entry.read_text());entry.write_text(script)
+ elif entry.exists():assert entry.read_text()==script
  else:entry.write_text(script)
  subprocess.check_call(['bash','-n',str(entry)]);entries.append(dict(layer=layer,prefix=prefix,entry=proof(entry)))
 print(json.dumps(dict(status='ONLINE_LAYER_PREFIX_THREE_4GPU_ENTRIES_STAGED_NOT_SUBMITTED',publication=proof(path),entries=entries)))
