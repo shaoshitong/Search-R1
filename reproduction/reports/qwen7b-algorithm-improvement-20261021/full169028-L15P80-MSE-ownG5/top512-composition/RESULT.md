@@ -1,6 +1,6 @@
 # Full L15/P80 MSE: completed-epoch development Top512 composition
 
-Read-only snapshot `1792709521.5052435`; aggregation `0.372s`. The unchanged published reader uses only atomically published completed evaluation JSON and closed dev2048 saved predictions. E0 is initial untrained evaluation, not a completed training epoch.
+Read-only snapshot `1792710383.4778104`; aggregation `0.421s`. The unchanged published reader uses only atomically published completed evaluation JSON and closed dev2048 saved predictions. E0 is initial untrained evaluation, not a completed training epoch.
 
 | seed / job | epoch | state | all wrong | Mixed | all correct | Mixed fraction | all-wrong share of remaining errors |
 |---|---:|---|---:|---:|---:|---:|---:|
@@ -16,6 +16,8 @@ Read-only snapshot `1792709521.5052435`; aggregation `0.372s`. The unchanged pub
 | seed1 / 750189 | 4 | EMA | 190 | 313 | 9 | 61.13% | 95.48% |
 | seed1 / 750189 | 5 | raw | 193 | 314 | 5 | 61.33% | 97.47% |
 | seed1 / 750189 | 5 | EMA | 195 | 312 | 5 | 60.94% | 97.50% |
+| seed1 / 750189 | 6 | raw | 185 | 320 | 7 | 62.50% | 96.35% |
+| seed1 / 750189 | 6 | EMA | 193 | 315 | 4 | 61.52% | 97.97% |
 | seed2 / 750190 | 0 | raw | 232 | 155 | 125 | 30.27% | 64.99% |
 | seed2 / 750190 | 0 | EMA | 232 | 155 | 125 | 30.27% | 64.99% |
 | seed2 / 750190 | 1 | raw | 202 | 286 | 24 | 55.86% | 89.38% |
@@ -33,7 +35,7 @@ Read-only snapshot `1792709521.5052435`; aggregation `0.372s`. The unchanged pub
 | seed2 / 750190 | 7 | raw | 185 | 318 | 9 | 62.11% | 95.36% |
 | seed2 / 750190 | 7 | EMA | 180 | 328 | 4 | 64.06% | 97.83% |
 
-All28 raw/EMA rows exactly reproduce their evaluation Top512 Mixed counts. Both seeds and all epochs match the same2048 NQ question IDs, ordered own five trajectory IDs and strict EM; identity SHA `0520e04dd7fc6e8eb9f66865299d6345c013ca4222141f794255bc57d9954914`. The unchanged pool contains663 Mixed/1055 all-wrong/330 all-correct. Ranking uses saved scores only, with qid tie-break, never labels or a classification threshold.
+All30 raw/EMA rows exactly reproduce their evaluation Top512 Mixed counts. Both seeds and all epochs match the same2048 NQ question IDs, ordered own five trajectory IDs and strict EM; identity SHA `0520e04dd7fc6e8eb9f66865299d6345c013ca4222141f794255bc57d9954914`. The unchanged pool contains663 Mixed/1055 all-wrong/330 all-correct. Ranking uses saved scores only, with qid tie-break, never labels or a classification threshold.
 
 Seed1 E3→E4 raw changes from191 all-wrong /318 Mixed /3 all-correct to197 /312 /3. The net change is **+6 all-wrong, −6 Mixed, 0 all-correct**; Mixed@512 falls62.11%→60.94% (−1.171875 percentage points). This is a net class-composition change, not a claim that exactly six individual questions were swapped. The existing separate evaluation reports a higher fixed-threshold BA at E4; Top512 ranking and threshold classification measure different behavior.
 
@@ -44,6 +46,8 @@ Seed2 E6 raw/EMA both select325/512 Mixed (63.4765625%); their compositions are1
 Seed1 E5 raw selects314/512 Mixed (61.328125%), composition193/314/5; EMA selects312/512 (60.9375%), composition195/312/5 (all-wrong/Mixed/all-correct). These are copied existing fixed-development outputs, not a new selection or inference.
 
 Seed2 E7 Top512 compositions (all-wrong/Mixed/all-correct): raw 185/318/9, EMA 180/328/4. Saved evaluation counts and fixed ownG5 identities match. No epoch/state was selected.
+
+Seed1 E6 Top512 compositions (all-wrong/Mixed/all-correct): raw 185/320/7, EMA 193/315/4. Saved evaluation counts and fixed ownG5 identities match. No epoch/state was selected.
 
 This is repeatedly viewed NQ development, not final4096. No checkpoint/model tensor, final pool, new inference or Slurm command was used, no per-question predictions were exported to Mac, and no remote/training state was changed. The prospective full-budget seed1-only selection rule is unchanged; no epoch/state or best seed was selected. All K=0..5 histograms and source evaluation/prediction proof hashes remain in [actual-summary.json](actual-summary.json).
 
