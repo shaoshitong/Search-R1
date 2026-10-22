@@ -1,7 +1,7 @@
 """Independent four-GPU baseline/search-only-stop candidate comparison.
 
-Both fresh512-parent runs use the same legacy proxy, /retrieve-original route,
-cold cache, checkpoint and input parents. Only the second candidate child
+Both fresh512-parent runs use the same chosen proxy/retrieval mode (default
+legacy /retrieve-original), cold cache, checkpoint and input parents. Only the second candidate child
 enables the search-only StopChecker. No retrieval batching change is mixed in.
 This measures a candidate chunk, not an entire training outer or final quality.
 """
@@ -45,20 +45,21 @@ def run(args):
     job = os.environ.get('SLURM_JOB_ID')
     pair.publish(root / 'launch.json', dict(role='independent_search_action_stop_pair',
         arguments=vars(args), slurm_job_id=job, started_unix=time.time(),
-        order=['baseline', 'early-stop'], both_proxy_mode='legacy',
-        both_service_route='/retrieve-original', production_modified=False))
+        order=['baseline', 'early-stop'], both_proxy_mode=args.retrieval_mode,
+        both_service_route='/retrieve-original' if args.retrieval_mode == 'legacy' else '/retrieve',
+        production_modified=False))
     if not (job and job.isdecimal()):
         raise ValueError('Use this runner only in its independent four-GPU Slurm allocation')
     ready_path, ready, urls = pair.wait_service(args, root)
-    baseline = pair.one(args, root, ready_path, urls, mode='legacy', chunks=1,
+    baseline = pair.one(args, root, ready_path, urls, mode=args.retrieval_mode, chunks=1,
         name='baseline', search_only_early_stop=False)
-    early_stop = pair.one(args, root, ready_path, urls, mode='legacy', chunks=1,
+    early_stop = pair.one(args, root, ready_path, urls, mode=args.retrieval_mode, chunks=1,
         name='early-stop', search_only_early_stop=True)
     result = dict(status='SEARCH_ACTION_STOP_STARTUP_PAIR_COMPLETED', slurm_job_id=job,
         checkpoint=args.checkpoint, candidate_files=args.candidate_files,
         baseline=baseline['candidate_result_summary'], early_stop=early_stop['candidate_result_summary'],
-        comparison=compare(baseline, early_stop), both_proxy_mode='legacy',
-        service_endpoint=urls['legacy'], service_ready=str(ready_path),
+        comparison=compare(baseline, early_stop), both_proxy_mode=args.retrieval_mode,
+        service_endpoint=urls[args.retrieval_mode], service_ready=str(ready_path),
         retrieval_asset_versions={key: ready[key] for key in
             ('encoder_manifest_sha256', 'index_sha256', 'corpus_sha256')},
         optimizer_loaded=False, optimizer_writes=0, production_modified=False,
@@ -68,7 +69,10 @@ def run(args):
 
 
 def main():
-    parser = pair.parser(); parser.description = __doc__; args = parser.parse_args()
+    parser = pair.parser(); parser.description = __doc__
+    parser.add_argument('--retrieval-mode', choices=('legacy', 'async'), default='legacy',
+        help='Use this identical proxy/service mode in both baseline and early-stop arms')
+    args = parser.parse_args()
     root = Path(args.root).resolve()
     if root.is_relative_to('/Users') or root.is_relative_to('/private'):
         parser.error('Raw candidate output must remain remote')

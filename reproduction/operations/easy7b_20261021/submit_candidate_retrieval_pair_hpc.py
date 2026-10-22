@@ -36,6 +36,8 @@ def main():
         '--python', str(target / 'env/bin/python')]
     if request.get('startup_only', False):
         command.append('--startup-only')
+    if request.get('search_action_stop_pair', False) and 'search_stop_retrieval_mode' in request:
+        command.extend(['--retrieval-mode', request['search_stop_retrieval_mode']])
     argv = ['sbatch', '--parsable', '--partition=emergency_acd', '--qos=formal-user',
         '--account=jxu957', '--nodes=1', '--ntasks=1', '--gres=gpu:4',
         '--cpus-per-task=48', '--mem=256G', '--time=03:00:00', '--exclude=ACD1-13',
