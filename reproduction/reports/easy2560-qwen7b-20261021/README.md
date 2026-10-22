@@ -1,13 +1,13 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
-**Current evidence, 2026-10-23:** production750029 has completed and sealed
-outer67. All four ranks reached1340 actual Adam writes/scheduler67, with zero
-extra monitor forwards. Outer68 has saved1024 actual candidate questions.
-The required five-outer post-restore follow-up61–65 is accepted; the overall
-200-outer experiment and final acceptance remain incomplete. CP67's23 checkpoint
-plus7 boundary files total91,406,225,806 bytes; its manifest SHA is
-`d77c09e2a5c5bd8d59305faeca5e01447e56eea3118e7ae1f08095faad52d123`.
-See [CP67 seal and actual68 progress](evidence/leanmetrics-outer67-sealed68-progress-summary.json).
+**Current evidence, 2026-10-23:** production750029 completed and sealed
+outer68; all four ranks reached1360 Adam writes/scheduler68. Outer69 has saved
+512 actual candidate questions. CP68 contains23 checkpoint plus7 boundary files,
+total91,406,225,038 bytes, manifest SHA
+`fa693236b17c05d7ccaffdcf69bcd5c8b2e1b684c3f43b57f5c56bafce494cec`.
+The five-outer post-restore follow-up61–65 is accepted; overall200 and final
+acceptance remain incomplete. See
+[CP68 seal and actual69 progress](evidence/leanmetrics-outer68-sealed69-progress-summary.json).
 
 The real native4 candidate startup comparison completed both512-question cases:
 legacy generation179.024s versus private asynchronous2ms batching165.799s,
@@ -280,3 +280,24 @@ weight syncs, not80% faster training. Current offload replaces GPU weight storag
 with CPU placeholders, so simply skipping sync would be incorrect. This change
 is not implemented or enabled. Removing idle reference initialization and
 requesting only reward-required grounding features remain additional candidates.
+
+
+### Search-only action stopping: experimental, production unchanged
+
+Saved-token CPU replay completed15,832 actual generation calls. In10,722 search
+calls the new optional checker could stop at the original retained boundary;
+591,019 retained logprobs and all compared token/text/boundary content were exact,
+with no mismatches or missing eligible stops. It could avoid1,455,969 of2,128,927
+raw tokens (68.39%) on these saved streams. No model or CUDA was loaded, and
+this does not establish live RNG equality or a speed ratio. Actual step750432.0
+completed0:0. The optional checker is installed only by the independent benchmark
+flag; production750029 has not been changed. The old parser prioritizes search
+over any earlier answer, so answer early stopping is deliberately excluded.
+
+Independent4GPU pair750449 has been submitted using source7bbc459. Both512-parent
+cases use the same asynchronous2ms private retrieval route and a fresh cold LRU;
+only the search-stop flag differs. Dependency afterany750423 prevents overlapping
+its shared private retriever with the existing full candidate A/B. Actual GPU
+performance remains pending. See
+[real saved-token replay](evidence/search-action-stop-saved-cpu-replay-summary.json)
+and [raw versus retained accounting](evidence/candidate-raw-retained-token-accounting.json).
