@@ -1,0 +1,50 @@
+{
+  "status": "LOCAL_SOURCE_READY_NOT_STAGED_OR_SUBMITTED",
+  "objective": [
+    "mse",
+    "mixed_bce"
+  ],
+  "fixed_m": [
+    0,
+    5
+  ],
+  "layers": [
+    15,
+    21
+  ],
+  "prefixes": [
+    20,
+    80
+  ],
+  "training_questions": 8192,
+  "epochs": 3,
+  "optimizer_updates": 192,
+  "learning_rate": 5e-06,
+  "EMA_decay": 0.9995,
+  "global_batch": 128,
+  "local_batch": 64,
+  "micro": 8,
+  "gradient_accumulation": 8,
+  "files": {
+    "reproduction/operations/qwen7b_warmup/packed_variance_probe.py": {
+      "bytes": 3770,
+      "sha256": "91dfe479abb080ce20f0da9450c3b47bde1d04a9abec73186fe072ff790c4439",
+      "reused_exact_commit": "7ac274ac8ff5dea0a12dfd44cfb03fe57491458f"
+    },
+    "reproduction/operations/qwen7b_warmup/online_packed_variance_scaling.py": {
+      "bytes": 22608,
+      "sha256": "d786c2ca99a564adec82180321c86dd94aa2dab04e984ad4363b1f09a130d1d1",
+      "reused_exact_commit": "7ac274ac8ff5dea0a12dfd44cfb03fe57491458f"
+    },
+    "reproduction/operations/qwen7b_warmup/online_packed_matched_objective.py": {
+      "bytes": 18047,
+      "sha256": "f5f95c5310a7f5b649a5543bfbca505a790dcc7147d9f7eae74842185395587a"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/matched-packed-objective/READY-NOT-STAGED.md": {
+      "bytes": 3281,
+      "sha256": "da82f4c6932f8c7fa2770af273590fea56fabd799cb1d04b8159e1155a5ff334"
+    }
+  },
+  "final4096_read": false,
+  "GPU_validation_performed": false
+}
