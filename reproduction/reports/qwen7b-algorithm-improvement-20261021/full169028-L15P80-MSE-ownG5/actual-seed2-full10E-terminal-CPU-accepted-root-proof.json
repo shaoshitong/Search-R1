@@ -1,0 +1,102 @@
+{
+  "time": 1792713276.639596,
+  "classification": "progress",
+  "previous_goal_turn_classification": "progress",
+  "event": "Seed2 full10E13210 trainingCOMPLETED0:0 and actual independent CPU SHA/raw/EMA/Adam/RNG/all10plans/physical input gates accepted; unique child and coordinator naturally exited. Seed1E9 still advances. No final candidate selection or final4096 access.",
+  "seed2": {
+    "job_id": "750190",
+    "sacct": {
+      "returncode": 0,
+      "stdout": "750190|COMPLETED|0:0|03:18:39|ACD1-8",
+      "stderr": ""
+    },
+    "actual_complete": {
+      "EMA_updates": 13210,
+      "actual_Adam_updates": 13210,
+      "batch_attempts": 13210,
+      "binding": {
+        "EMA_decay": 0.9995,
+        "architecture": "one_question_packed_matched_objective_v1",
+        "capture_layer": 14,
+        "class_weighting": false,
+        "configured_accumulation": 8,
+        "configured_local_batch": 64,
+        "configured_micro": 8,
+        "diagnostic_seed": 2026102228,
+        "fixed_m": 5,
+        "fixture": {
+          "bytes": 41653,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/fixture/fixture-complete.json",
+          "sha256": "745bdef27a1098603142a3e9f5506b4bd2777f8b699933923dbc1a208f44f1f8"
+        },
+        "global_batch": 128,
+        "head_max_positions": 2048,
+        "init_seed": 19137,
+        "initial_head_sha256": "10684fda52c0f9f7b670b0472ccd8b7e581346e4d01572bc078a143cc782b41e",
+        "layer": 15,
+        "lr": 5e-06,
+        "objective": "mse",
+        "official_actor_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+        "physical_source_contract": {
+          "bytes": 3529468,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/physical-source-contract.json",
+          "sha256": "8b6c59c2151cd27350e6c0e5763cdfbd0a8c36f3382662c48d6f9289834ca5b4"
+        },
+        "prefix": 80,
+        "question_prompt_occurrences_per_group": 1,
+        "sampling_independent_of_EM": true,
+        "seed": 2026102302,
+        "seed_source": "explicit_CLI",
+        "tail_global_batch": 68,
+        "tail_local_batch": 34,
+        "topk_margin": null,
+        "topk_scope": null,
+        "train_plan_seed": 2026102302,
+        "training_questions": 169028,
+        "training_scope": "full169028_fresh_official_actor_not_pilot_resume",
+        "updates_per_epoch": 1321,
+        "zero_ramp_loss_skips_Adam_and_EMA": true
+      },
+      "cursor": 13210,
+      "epochs": 10,
+      "final4096_scored": false,
+      "margin_satisfied_batches": 0,
+      "status": "FULL169028_P80_OWNG5_MSE_TRAINING_COMPLETE",
+      "training_questions": 169028
+    },
+    "checkpoint": {
+      "bytes": 3777401684,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed19137-plan2026102302-20261023-v3/checkpoint-epoch-10.pt",
+      "sha256": "d4b668b7ab6525284a7867d3d25afab3f6bb98ca8380911b137dff4ab2943ff3"
+    },
+    "accepted_remote_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-terminal-CPU-acceptance-20261023-v1/full169028-L15P80-MSE-ownG5-physical-seed19137-plan2026102302-20261023-v3/epoch-10/accepted.json",
+    "accepted_local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/full169028-L15P80-MSE-CPU-acceptance/seed2-actual-E10-terminal-accepted.json",
+    "accepted_bytes": 58709,
+    "accepted_sha256": "bdf7f863a5f9e93abade669a83473de988349b83524404e861cf14fe914f317d",
+    "CPU_only": true,
+    "GPU_next_update_restore_tested": false
+  },
+  "seed1": {
+    "job_id": "750189",
+    "sacct": {
+      "returncode": 0,
+      "stdout": "750189|RUNNING|0:0|02:46:50|ACD1-20",
+      "stderr": ""
+    },
+    "cursors": [
+      11105,
+      11105
+    ],
+    "epochs": [
+      9,
+      9
+    ],
+    "actual_Adam_EMA_match": true
+  },
+  "training_changed": false,
+  "Slurm_submitted": false,
+  "new_CPU_loader_started": false,
+  "checkpoint_tensors_loaded_by_root": false,
+  "final4096_read": false,
+  "goal_complete": false
+}

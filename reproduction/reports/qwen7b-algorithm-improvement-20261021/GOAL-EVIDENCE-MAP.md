@@ -45,3 +45,9 @@
 ## Required execution helpers now actually ready
 
 The [selected fullP80 root controller](fullP80-selected-root-control/README.md) is source-staged and its real early bind correctly returns WAITING for the missing completed family selection. It fills the previously missing audit/freeze/submit execution bridge; it is not an actual selection or freeze. The seed2 terminal metadata follower was independently found dead on a transient progress-file read, repaired separately, and [verified in two actual runtime polls](fullP80-MSE-terminal-CPU-coordinator-retry-v2/ACTUAL-V2-RUNTIME-REPAIR-ACCEPTANCE.json), without changing training or the healthy seed1 follower. Current completed epochs and non-monotonic BA are preserved in the [latest full table](full169028-L15P80-MSE-ownG5/LATEST-COMPLETED-EPOCHS.md). Final access remains pending.
+
+## 2026-10-23 07:53 CST 实际收尾进展
+
+第二seed的750190现已实际`COMPLETED0:0`，完成10epoch和13210次Adam/EMA更新；随后原v2协调器自动启动的唯一CPU child已通过[完整E10验收](full169028-L15P80-MSE-CPU-acceptance/seed2-actual-E10-terminal-accepted.json)，两进程自然退出无failure。[根独立核对](full169028-L15P80-MSE-ownG5/actual-seed2-full10E-terminal-CPU-accepted-root-proof.json)确认远端原始receipt与本地字节SHA一致、CP SHA与训练实际latest一致，raw/EMA45张量、Adam45状态、两rank RNG、10轮实际计划及physical/P20链均通过。此项是CPU验收，不宣称GPU下一步恢复已测试。
+
+第一seed的750189仍在第9轮真实推进，尚未完成全预算。剩余事项仍是第一seed全10epoch及终态验收、按原seed1-only规则确定同一epoch/state、两seed实际selected CP验收、当前P80换序审计、actual freeze、两个盲2048最终确认与收尾。第二seed的E10接受不等于提前选择E10或最终候选冻结；最终4096仍未读取。

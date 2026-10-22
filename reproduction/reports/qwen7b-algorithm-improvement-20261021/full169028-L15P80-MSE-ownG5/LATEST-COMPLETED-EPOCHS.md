@@ -38,6 +38,8 @@ Same fixed trainB2048 and viewed development2048 ownG5. Both raw/EMA and all com
 | seed2 | 8 | EMA | 75.49% | 421/512 (82.23%) | 71.14% | 328/512 (64.06%) | 0.00647231 |
 | seed2 | 9 | raw | 76.96% | 438/512 (85.55%) | 71.33% | 321/512 (62.70%) | 0.00658942 |
 | seed2 | 9 | EMA | 76.39% | 427/512 (83.40%) | 71.46% | 332/512 (64.84%) | 0.00647050 |
+| seed2 | 10 | raw | 77.61% | 444/512 (86.72%) | 70.21% | 317/512 (61.91%) | 0.00675887 |
+| seed2 | 10 | EMA | 77.40% | 436/512 (85.16%) | 72.46% | 331/512 (64.65%) | 0.00649855 |
 
 Seed1 E3→E4/raw: Top512 **318→312**, while BA **69.0950%→70.1886%**. The saved Top512 composition check reports all-wrong191→197 (net+6), Mixed318→312 (net−6), all-correct3→3; these are net class-count changes, not six identified question swaps. Ranking and the fixed-threshold BA need not move together. No epoch/state is selected from this partial-run change.
 
@@ -72,7 +74,7 @@ Copied from local `actual-live.json`, snapshot `1792707990.0928564`, epoch4/curs
 | Viewed dev | raw | 452 | 211 | 385 | 1000 | 0.4118943362 | 0.2522608355 | 0.0950272345 | 452 / 366 / 19 |
 | Viewed dev | EMA | 399 | 264 | 330 | 1055 | 0.3658838251 | 0.2402586589 | 0.1194097771 | 399 / 303 / 27 |
 
-All values are copied from already completed fixed diagnostics, not online training batches. Existing E1–E8 seed1 and E1–E9 seed2 rows above are preserved. Final4096 remains blind and the seed1-only full-budget checkpoint selection rule is unchanged.
+All values are copied from already completed fixed diagnostics, not online training batches. Existing E1–E8 seed1 and E1–E10 seed2 rows above are preserved. Final4096 remains blind and the seed1-only full-budget checkpoint selection rule is unchanged.
 
 ## Seed1 E5: fixed trainB/development diagnostics
 
@@ -162,5 +164,22 @@ Local snapshot `1792712682.6048205`; epoch8/cursor10568. Same ownG5 pools, varia
 | TrainB | EMA | 75.274930% | 69.256757% | 18.706897% | 21.894737% | 4.285714% | 421/512 (82.226562%) | 0.8445703246 | 0.0059647027 | 0.0595427930 | 0.5790425799 |
 | Viewed dev | raw | 71.135306% | 71.945701% | 29.675090% | 36.303318% | 8.484848% | 318/512 (62.109375%) | 0.7956319323 | 0.0068754109 | 0.0631236336 | 0.4806114739 |
 | Viewed dev | EMA | 71.282759% | 65.309201% | 22.743682% | 28.056872% | 5.757576% | 320/512 (62.500000%) | 0.7998328351 | 0.0065317136 | 0.0622345210 | 0.4859612574 |
+
+Completed fixed diagnostics only. All earlier completed rows remain; no epoch/state selection or final4096 access.
+
+## Seed2 E10: completed training and fixed diagnostics
+
+Local snapshot `1792713009.4289548`: actual Slurm job750190 is `COMPLETED0:0`, elapsed `03:18:39`; all10 epochs and13210 actual Adam/EMA updates have completed, with E10 fixed evaluations present. This terminal fact does not substitute for independent CPU checkpoint acceptance or final confirmation. Seed1 is not declared complete here.
+
+The independent seed2 E10 CPU acceptance subsequently passed at `1792713113.0499165`: raw/EMA each45 tensors strictly reload, Adam45 states at13210, two-rank RNG, all10 actual sampling-plan SHAs, explicit epoch completion/next11 position0, and fixture/physical/P20 input gates. The [original accepted receipt](../full169028-L15P80-MSE-CPU-acceptance/seed2-actual-E10-terminal-accepted.json) is58709 bytes, SHA256 `bdf7f863a5f9e93abade669a83473de988349b83524404e861cf14fe914f317d`, matching remote bytes. CP10 is3777401684 bytes, SHA256 `d4b668b7ab6525284a7867d3d25afab3f6bb98ca8380911b137dff4ab2943ff3`. The sole existing CPU child and seed2 coordinator exited naturally without failure. This is CPU validation; GPU next-update restoration was not tested. Actual family selection still waits for seed1's full budget; an eventual selected epoch other than10 needs its own acceptance. See [root terminal proof](actual-seed2-full10E-terminal-CPU-accepted-root-proof.json).
+
+Same ownG5 pools, variance threshold0.08 (4v score0.32), no fitted threshold.
+
+| Pool | State | BA | Mixed recall | nonMixed FPR | all-wrong FPR | all-correct FPR | Mixed@512 | AUC | Variance MSE(v) | Variance MAE(v) | Variance Spearman |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| TrainB | raw | 77.606011% | 68.918919% | 13.706897% | 16.421053% | 1.428571% | 444/512 (86.718750%) | 0.8739500815 | 0.0053395086 | 0.0534587137 | 0.6326998344 |
+| TrainB | EMA | 77.399425% | 70.833333% | 16.034483% | 18.631579% | 4.285714% | 436/512 (85.156250%) | 0.8642649115 | 0.0055606500 | 0.0556283833 | 0.6110445549 |
+| Viewed dev | raw | 70.207677% | 62.292609% | 21.877256% | 27.109005% | 5.151515% | 317/512 (61.914062%) | 0.7982630097 | 0.0067588697 | 0.0601773471 | 0.4797109642 |
+| Viewed dev | EMA | 72.460482% | 66.365008% | 21.444043% | 26.255924% | 6.060606% | 331/512 (64.648438%) | 0.8058975993 | 0.0064985547 | 0.0602777428 | 0.4937710362 |
 
 Completed fixed diagnostics only. All earlier completed rows remain; no epoch/state selection or final4096 access.

@@ -1,6 +1,6 @@
 # Full L15/P80 MSE: completed-epoch development Top512 composition
 
-Read-only snapshot `1792712733.0062218`; aggregation `0.551s`. The unchanged published reader uses only atomically published completed evaluation JSON and closed dev2048 saved predictions. E0 is initial untrained evaluation, not a completed training epoch.
+Read-only snapshot `1792713056.7554488`; aggregation `0.412s`. The unchanged published reader uses only atomically published completed evaluation JSON and closed dev2048 saved predictions. E0 is initial untrained evaluation, not a completed training epoch.
 
 | seed / job | epoch | state | all wrong | Mixed | all correct | Mixed fraction | all-wrong share of remaining errors |
 |---|---:|---|---:|---:|---:|---:|---:|
@@ -42,8 +42,10 @@ Read-only snapshot `1792712733.0062218`; aggregation `0.551s`. The unchanged pub
 | seed2 / 750190 | 8 | EMA | 179 | 328 | 5 | 64.06% | 97.28% |
 | seed2 / 750190 | 9 | raw | 185 | 321 | 6 | 62.70% | 96.86% |
 | seed2 / 750190 | 9 | EMA | 175 | 332 | 5 | 64.84% | 97.22% |
+| seed2 / 750190 | 10 | raw | 187 | 317 | 8 | 61.91% | 95.90% |
+| seed2 / 750190 | 10 | EMA | 172 | 331 | 9 | 64.65% | 95.03% |
 
-All38 raw/EMA rows exactly reproduce their evaluation Top512 Mixed counts. Both seeds and all epochs match the same2048 NQ question IDs, ordered own five trajectory IDs and strict EM; identity SHA `0520e04dd7fc6e8eb9f66865299d6345c013ca4222141f794255bc57d9954914`. The unchanged pool contains663 Mixed/1055 all-wrong/330 all-correct. Ranking uses saved scores only, with qid tie-break, never labels or a classification threshold.
+All40 raw/EMA rows exactly reproduce their evaluation Top512 Mixed counts. Both seeds and all epochs match the same2048 NQ question IDs, ordered own five trajectory IDs and strict EM; identity SHA `0520e04dd7fc6e8eb9f66865299d6345c013ca4222141f794255bc57d9954914`. The unchanged pool contains663 Mixed/1055 all-wrong/330 all-correct. Ranking uses saved scores only, with qid tie-break, never labels or a classification threshold.
 
 Seed1 E3→E4 raw changes from191 all-wrong /318 Mixed /3 all-correct to197 /312 /3. The net change is **+6 all-wrong, −6 Mixed, 0 all-correct**; Mixed@512 falls62.11%→60.94% (−1.171875 percentage points). This is a net class-composition change, not a claim that exactly six individual questions were swapped. The existing separate evaluation reports a higher fixed-threshold BA at E4; Top512 ranking and threshold classification measure different behavior.
 
@@ -64,6 +66,8 @@ Seed1 E7 Top512 compositions (all-wrong/Mixed/all-correct): raw 184/320/8, EMA 1
 Seed2 E9 Top512 compositions (all-wrong/Mixed/all-correct): raw 185/321/6, EMA 175/332/5. Saved evaluation counts and fixed ownG5 identities match. No epoch/state was selected.
 
 Seed1 E8 Top512 compositions (all-wrong/Mixed/all-correct): raw 187/318/7, EMA 188/320/4. Saved evaluation counts and fixed ownG5 identities match. No epoch/state was selected.
+
+Seed2 E10 Top512 compositions (all-wrong/Mixed/all-correct): raw 187/317/8, EMA 172/331/9. Saved evaluation counts and fixed ownG5 identities match. Actual750190 terminal COMPLETED0:0/all10E13210 is separately recorded in the latest diagnostics table; independent CP acceptance is not implied by this metadata aggregation. No epoch/state was selected.
 
 This is repeatedly viewed NQ development, not final4096. No checkpoint/model tensor, final pool, new inference or Slurm command was used, no per-question predictions were exported to Mac, and no remote/training state was changed. The prospective full-budget seed1-only selection rule is unchanged; no epoch/state or best seed was selected. All K=0..5 histograms and source evaluation/prediction proof hashes remain in [actual-summary.json](actual-summary.json).
 
