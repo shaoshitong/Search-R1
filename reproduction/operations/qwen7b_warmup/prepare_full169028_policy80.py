@@ -45,7 +45,7 @@ def policy80(row):
  assert 0<len(result)==min(retained,80)<=80
  return result,retained
 def compact_raw(row):
- tokens,total=policy80(row);prompt=row['initial_prompt_token_ids'];assert prompt and all(type(t)is int and t>=0 for t in prompt+tokens)
+ tokens,total=policy80(row);prompt=row['initial_prompt_token_ids'];assert prompt and len(prompt)+5*(4+80)<=2048 and all(type(t)is int and t>=0 for t in prompt+tokens)
  return dict(qid=row['qid'],trajectory_id=row['trajectory_id'],role='train',prompt=prompt,policy_token_ids=tokens),total
 def writer(path):
  path=Path(path);raw=path.open('wb');packed=gzip.GzipFile(filename='',mode='wb',fileobj=raw,compresslevel=1,mtime=0)
@@ -141,7 +141,7 @@ def run(base,chunk_sources=64):
      for line in stream:
       row=json.loads(line);tid=row['trajectory_id']
       if tid not in lookup:continue
-      index=lookup[tid];assert row['qid']==qids[index//10]and row['actor_version']=='official7b-'+REVISION and row['strict_em']==labels[index],'RAW question/actor/own strictEM differs from canonical'
+      index=lookup[tid];assert row['qid']==qids[index//10]and row['question_hash']==groups[row['qid']]['question_hash']and row['actor_version']=='official7b-'+REVISION and row['strict_em']==labels[index],'RAW question/hash/actor/own strictEM differs from canonical'
       compact,total=compact_raw(row)
       if not accept_row(compact):continue
       rank=qrank[compact['qid']];encoded=canonical(compact)+b'\n';streams[rank].write(encoded.decode());hashers[rank].update(encoded);counts[rank]+=1;key=str(len(compact['policy_token_ids']));chunk_lengths[key]=chunk_lengths.get(key,0)+1;chunk_bins['shorter_than80'if total<80 else'at_least80']+=1
