@@ -20,6 +20,8 @@ def main():
     source = Path(request['base']) / 'source' / request['commit']
     target = Path(request['source_base'])
     pin = Path(request['pin_base'])
+    runner = ('run_search_action_stop_pair.py' if request.get('search_action_stop_pair', False)
+        else 'run_candidate_retrieval_pair.py')
     command = ['env', 'LD_PRELOAD=' + str(target / 'preparation/flash3-runtime/libcudart.so.12'),
         'PYTHONDONTWRITEBYTECODE=1', 'PYTHONUNBUFFERED=1', 'OMP_NUM_THREADS=8',
         'OPENBLAS_NUM_THREADS=1', 'MKL_NUM_THREADS=1', 'NUMEXPR_NUM_THREADS=1',
@@ -27,7 +29,7 @@ def main():
         'PYTHONPATH=' + str(source), 'RAY_DEDUP_LOGS=0',
         'TRITON_CACHE_DIR=' + str(root / 'cache/triton'), 'XDG_CACHE_HOME=' + str(root / 'cache'),
         str(target / 'env/bin/python'), '-B',
-        str(source / 'reproduction/operations/easy7b_20261021/run_candidate_retrieval_pair.py'),
+        str(source / 'reproduction/operations/easy7b_20261021' / runner),
         '--source-base', str(target), '--checkpoint', str(pin / 'policy-step-66'),
         '--candidate-files', *[str(pin / 'inputs' / (str(offset) + '.pt')) for offset in range(0, 2560, 512)],
         '--service-base', request['service_base'], '--root', str(root / 'runs'),

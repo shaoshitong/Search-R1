@@ -121,7 +121,7 @@ def numeric_delta(before, after):
         if type(left[key]) in (int, float) and type(right[key]) in (int, float)}
 
 
-def one(args, root, ready_path, urls, *, mode, chunks, name):
+def one(args, root, ready_path, urls, *, mode, chunks, name, search_only_early_stop=False):
     directory = root / name
     directory.mkdir()
     port = 18011 if mode == 'legacy' else 18012
@@ -137,11 +137,14 @@ def one(args, root, ready_path, urls, *, mode, chunks, name):
         '--seed', str(args.seed), '--worker-cpus', str(args.worker_cpus),
         '--gpu-memory-utilization', str(args.gpu_memory_utilization),
         '--kv-tokens', str(args.kv_tokens)]
+    if search_only_early_stop:
+        candidate_command.append('--search-only-early-stop')
     proxy_environment = dict(os.environ, CUDA_VISIBLE_DEVICES='', PYTHONDONTWRITEBYTECODE='1',
         PYTHONUNBUFFERED='1', OMP_NUM_THREADS='1', PYTHONPATH=str(REPO))
     candidate_environment = dict(os.environ, PYTHONDONTWRITEBYTECODE='1', PYTHONUNBUFFERED='1',
         TOKENIZERS_PARALLELISM='false', PYTHONPATH=str(REPO))
-    record = dict(name=name, mode=mode, chunks=chunks, proxy_command=proxy_command,
+    record = dict(name=name, mode=mode, chunks=chunks, search_only_early_stop=search_only_early_stop,
+        proxy_command=proxy_command,
         candidate_command=candidate_command, started_unix=time.time(),
         service_health_before=health_observation(urls['health']),
         cold_proxy_cache=True, fresh_driver_and_engines=True, production_modified=False)
