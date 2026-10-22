@@ -1,0 +1,72 @@
+{
+  "time": 1792694703.8348954,
+  "expected_job": "749929",
+  "checkpoint_contents_opened": false,
+  "Slurm_mutated": false,
+  "final4096_read": false,
+  "root-submission.json": {
+    "GPUs": 2,
+    "checkpoint_sha256": "2d81f15cd4af00fe192963cba6f6db86aba22bf47523bd3e10982b86f7178483",
+    "config": {
+      "bytes": 2869,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/packed-Z-E8-trajectory-permutation-audit-20261023-v1/audit-config.json",
+      "sha256": "41fbd8e36070501a257fd068f41615f05d09f0ee50d3ebfc8736b64daabced16"
+    },
+    "entry": {
+      "bytes": 1510,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/packed-Z-E8-trajectory-permutation-audit-20261023-v1/audit.sbatch",
+      "sha256": "f028372b9c94b43f425a246a72bb8e153529eace685f861baeb32d9c62813e78"
+    },
+    "final4096_read": false,
+    "fixed_development_G5": true,
+    "job_id": "749929",
+    "name": "q7b-ZE8-order-audit",
+    "no_dependencies": true,
+    "partition": "acd_u",
+    "source_commit": "58a6cf770ed99fd6326fc45d3fcd68099cd239b0",
+    "time": 1792694089.8299985,
+    "time_limit": "00:25:00"
+  },
+  "controller.json": {
+    "M": 5,
+    "actor_rows_per_group": 1,
+    "actor_updates": 0,
+    "checkpoint": {
+      "bytes": 3773206036,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/checkpoint-epoch-08.pt",
+      "sha256": "2d81f15cd4af00fe192963cba6f6db86aba22bf47523bd3e10982b86f7178483"
+    },
+    "classification_variance_threshold": 0.08,
+    "cursor": 10568,
+    "epochs": 8,
+    "final4096_read": false,
+    "fixed_questions": 2048,
+    "job_id": "749929",
+    "layer": 21,
+    "optimizer_created": false,
+    "orders": [
+      "original",
+      "reverse",
+      "cyclic1"
+    ],
+    "prefix": 20,
+    "probe_updates": 0,
+    "question_prompt_occurrences_per_group": 1,
+    "raw_and_EMA": true,
+    "selection_score": "predicted_population_EM_variance",
+    "time": 1792694678.7506845,
+    "world_size": 2
+  },
+  "accounting": {
+    "returncode": 0,
+    "stdout": "749929|RUNNING|0:0|00:00:46|ACD1-23",
+    "stderr": ""
+  },
+  "queue": {
+    "returncode": 0,
+    "stdout": "749929|q7b-ZE8-order-audit|RUNNING|0:46|ACD1-23",
+    "stderr": ""
+  },
+  "failures": {},
+  "error_tail": null
+}
