@@ -2,7 +2,7 @@
 
 Never submits Slurm, starts training, regenerates data or reads checkpoints.
 """
-import argparse,base64,hashlib,importlib.util,json,shlex,subprocess,zlib
+import argparse,base64,hashlib,importlib.util,json,os,shlex,signal,subprocess,zlib
 from pathlib import Path
 R=Path(__file__).resolve().parents[3];ROOT=R.parents[1];P='reproduction/operations/qwen7b_warmup/'
 BRANCH='codex/q7b-full169028-Z-secondseed-20261023'
@@ -81,14 +81,23 @@ print(json.dumps(out))
 
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--action',choices=('stage','status'),required=True);p.add_argument('--commit',required=True);a=p.parse_args();remote=subprocess.check_output(['git','ls-remote','origin','refs/heads/'+BRANCH],cwd=R,text=True).split()[0];subprocess.check_call(['git','merge-base','--is-ancestor',a.commit,remote],cwd=R)
+ p=argparse.ArgumentParser();p.add_argument('--action',choices=('stage','status'),required=True);p.add_argument('--commit',required=True);p.add_argument('--route',choices=('direct','campus'),default='direct');a=p.parse_args();remote=subprocess.check_output(['git','ls-remote','origin','refs/heads/'+BRANCH],cwd=R,text=True).split()[0];subprocess.check_call(['git','merge-base','--is-ancestor',a.commit,remote],cwd=R)
  payload={};origins={};files={}
  for name,origin in [('online_packed_variance_seeded.py',a.commit),('packed_variance_probe.py',ORIGINAL),('runtime.sh',ORIGINAL)]:
   rel=P+name;raw=subprocess.check_output(['git','show',origin+':'+rel],cwd=R);payload[rel]=raw;files[rel]=dict(bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest());origins[rel]=origin
  spec=importlib.util.spec_from_file_location('seeded_full_private',ROOT/'work/prefix-schedule-cp50-20261018/reproduction/hpc3_prefix5/direct_control.py');ctl=importlib.util.module_from_spec(spec);spec.loader.exec_module(ctl);ip=subprocess.check_output(['/usr/sbin/ipconfig','getifaddr','en0'],text=True).strip()
  def call(body,**extra):
-  values=dict(base=BASE,fixture=FIXTURE,commit=a.commit,original=ORIGINAL,branch=BRANCH,files=files,origins=origins,entry=ENTRY,**extra);script='v='+repr(values)+'\n'+COMMON+body;packed=base64.b64encode(zlib.compress(script.encode())).decode();command='python3 -c '+shlex.quote('import base64,zlib;exec(zlib.decompress(base64.b64decode('+repr(packed)+')))');assert len(command.encode())<16000;res=ctl.run(command,account='mou176',source_address=ip,timeout=45)
-  if res.returncode:raise RuntimeError('Stage/control did not complete: '+res.stdout[-1500:]+res.stderr[-1500:])
+  values=dict(base=BASE,fixture=FIXTURE,commit=a.commit,original=ORIGINAL,branch=BRANCH,files=files,origins=origins,entry=ENTRY,**extra);script='v='+repr(values)+'\n'+COMMON+body;packed=base64.b64encode(zlib.compress(script.encode())).decode();command='python3 -c '+shlex.quote('import base64,zlib;exec(zlib.decompress(base64.b64decode('+repr(packed)+')))');assert len(command.encode())<16000
+  if a.route=='direct':res=ctl.run(command,account='mou176',source_address=ip,timeout=45)
+  else:
+   child=subprocess.Popen(['python3',str(ROOT/'work/hpc3_private_control.py')],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True)
+   try:stdout,stderr=child.communicate(command.encode(),timeout=50)
+   except subprocess.TimeoutExpired:
+    os.killpg(child.pid,signal.SIGKILL);stdout,stderr=child.communicate();raise RuntimeError('Explicit campus stage route timed out; remote outcome unknown; inspect before resuming')
+   res=subprocess.CompletedProcess(child.args,child.returncode,stdout,stderr)
+  if res.returncode:
+   decode=lambda value:value.decode(errors='replace')if isinstance(value,bytes)else value
+   raise RuntimeError('Stage/control did not complete: '+decode(res.stdout)[-1500:]+decode(res.stderr)[-1500:])
   return json.loads(res.stdout)
  if a.action=='stage':
   for name,raw in payload.items():
