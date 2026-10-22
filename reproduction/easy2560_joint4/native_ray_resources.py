@@ -29,6 +29,12 @@ def options(run):
     return dict(num_cpus=16, object_store_memory=8 * 1024**3)
 
 
+def allocator_env_vars():
+    """Carry the launcher's actual allocator setting into new Ray processes."""
+    value = os.environ.get('PYTORCH_CUDA_ALLOC_CONF')
+    return {'PYTORCH_CUDA_ALLOC_CONF': value} if value else {}
+
+
 def configure(base, run, *, phase, role='train'):
     base = own_base(base); kwargs = options(run)
     if role != 'train' or phase not in ('entry', 'ray'):
@@ -38,6 +44,7 @@ def configure(base, run, *, phase, role='train'):
         raise ValueError('EASY2560_NATIVE4_SLURM_OWNER_REQUIRED')
     proof = dict(run_id=run['run_id'], source_commit=run['source_commit'], slurm_job_id=job,
                  phase=phase, role=role, pid=os.getpid(), public_ray_init_kwargs=kwargs,
+                 torch_allocator_env=allocator_env_vars(),
                  checked_unix=time.time(), **raise_self_soft())
     publish(base / 'logs' / ('native-ray-resources-train-' + phase + '-' + str(os.getpid()) + '.json'), proof)
     print('EASY2560_NATIVE_RAY_RESOURCES=' + json.dumps(proof), flush=True)

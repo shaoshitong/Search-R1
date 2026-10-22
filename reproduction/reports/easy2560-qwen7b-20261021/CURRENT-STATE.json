@@ -1,6 +1,6 @@
 {
-  "epoch": 1792639574.4357862,
-  "status": "ACTUAL_NATIVE4_FA3_OUTER33_SEALED_AND34_SAVED_GOAL200_ACTIVE",
+  "epoch": 1792642996.337929,
+  "status": "ACTUAL_JOB746125_FAILED_OUTER35_SOURCE34_PRESERVED_RECOVERY_IN_PROGRESS_GOAL200_ACTIVE",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "746125",
@@ -11,7 +11,7 @@
   "global_mini": 128,
   "logical_micro": 4,
   "accumulation": 4,
-  "actual_completed_outer": 33,
+  "actual_completed_outer": 34,
   "initialization_is_not_training_acceptance": true,
   "old3b": {
     "job": "734689",
@@ -2420,10 +2420,13 @@
       30,
       31,
       32,
-      33
+      33,
+      34
     ],
-    "next_outer_saved": 34,
-    "latest_target_full_checkpoint_sealed": 33
+    "next_outer_saved": 35,
+    "latest_target_full_checkpoint_sealed": 34,
+    "target_job_state": "FAILED1:0_OUTER35",
+    "continuation_requires_CP34_recovery": true
   },
   "active_local_watcher": {
     "session_id": 51482,
@@ -2455,6 +2458,13 @@
         "bytes": 139,
         "sha256": "7f409bd93f9fc9067416d299b98c9d2a8f14fcefcb3c0db0da197fc33566ccc8"
       }
+    },
+    "state": "EXITED2_ACTUAL_TRAINING_FAILURE",
+    "not_live": true,
+    "failure_observation": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792639571933631000/observation-045.json",
+      "bytes": 502392,
+      "sha256": "f5b8f10312414c8068df1710d133cb809c20af4321311fce135e04fa18105459"
     }
   },
   "historical_cp1_actual_state_restore": {
@@ -2645,7 +2655,8 @@
     ],
     "clear_collapse_observed": false,
     "recovery_triggered": false,
-    "scope": "Changing pre-update training pools; fixed512 only QA5 currently available. This does not prove fixed-validation improvement or causal FA3 superiority."
+    "scope": "Changing pre-update training pools; fixed512 only QA5 currently available. This does not prove fixed-validation improvement or causal FA3 superiority.",
+    "infra_oom_recovery_triggered": true
   },
   "latest_fixed_QA_history_and_cadence_review": {
     "scope": "Static read-only identity/cadence review of current source; future milestone QA is not executed by this review",
@@ -2797,5 +2808,19 @@
     "login_host": "10.120.48.32",
     "same_training_job_running": true,
     "training_restarted": false
+  },
+  "latest_actual_failure": {
+    "evidence": "evidence/failed746125-outer35-oom-source34-20261022.json",
+    "job": "746125",
+    "state": "FAILED",
+    "exit_code": "1:0",
+    "completed_outer": 34,
+    "failed_outer": 35,
+    "recover_from_outer": 34,
+    "recompute_from_outer": 35,
+    "source_writes_per_rank": 680,
+    "source_cursor": 87040,
+    "new_job_submitted": false,
+    "actual_new_restore_accepted": false
   }
 }

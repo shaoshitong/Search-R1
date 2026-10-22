@@ -9,6 +9,9 @@ import shlex
 import subprocess
 import time
 
+from reproduction.operations.easy7b_20261021.watch_fa3_transition_local import (
+    DEFAULT_LOGIN_HOST, resolve_login_route)
+
 REMOTE = r'''
 import base64,hashlib,io,json,os,sys,tarfile,time
 from pathlib import Path
@@ -36,11 +39,18 @@ print(json.dumps(dict(source_commit=p['commit'],source_root=str(root),verified_f
 '''
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('--base', required=True)
     parser.add_argument('--output', required=True)
-    args = parser.parse_args()
+    parser.add_argument('--login-host', default=DEFAULT_LOGIN_HOST)
+    parser.add_argument('--login-identity-json',
+                        help='Explicit hostname/boot_id/pid_namespace JSON; required for a different login host')
+    args = parser.parse_args(argv)
+    try:
+        login_host, login_identity = resolve_login_route(args.login_host, args.login_identity_json)
+    except ValueError as error:
+        parser.error(str(error))
     repo = Path(__file__).resolve().parents[3]
     def git(*command):
         return subprocess.check_output(['git', '-C', str(repo), *command])
@@ -62,10 +72,10 @@ def main():
     bridge = importlib.util.module_from_spec(spec); spec.loader.exec_module(bridge)
     command = shlex.join(['/data/user/jxu957/experiments/topd-20261008/runtime/env/bin/python', '-B', '-c', REMOTE])
     observed = bridge.run('jxu957', command, payload, str(cwd/'work'),
-        login_host='10.120.48.31', observation_timeout=55,
-        expected_host_identity=dict(hostname='ACD-Login-1', boot_id='a27512a3-24a0-4ca3-aa92-98d2a5256d9a', pid_namespace='pid:[4026531836]'))
+        login_host=login_host, observation_timeout=55, expected_host_identity=login_identity)
     result = dict(returncode=observed.returncode, stdout=observed.stdout,
-                  stderr=observed.stderr, checked_unix=time.time())
+                  stderr=observed.stderr, checked_unix=time.time(),
+                  login_host=login_host, login_identity=login_identity)
     Path(args.output).write_text(json.dumps(result, indent=2)+'\n')
     print(json.dumps(result))
     raise SystemExit(bool(observed.returncode))

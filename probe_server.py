@@ -139,6 +139,23 @@ class ProbeRequest(BaseModel):
     items: List[Item]
 
 
+def _release_judge_cuda_cache(version):
+    """Called under both judge locks, after all returned features are on CPU."""
+    torch.cuda.synchronize()
+    def memory():
+        free, total = torch.cuda.mem_get_info()
+        return dict(allocated_bytes=torch.cuda.memory_allocated(), reserved_bytes=torch.cuda.memory_reserved(),
+                    device_free_bytes=free, device_total_bytes=total)
+    before = memory()
+    torch.cuda.empty_cache()
+    after = memory()
+    record = dict(role='probe_post_judge_cuda_cache_release', pid=os.getpid(), version=version,
+        cuda_device=torch.cuda.current_device(), checked_unix=time.time(), before=before, after=after,
+        released_reserved_bytes=before['reserved_bytes']-after['reserved_bytes'],
+        cuda_synchronized=True, scope='current probe process unused cache only; encoder weights remain resident')
+    print('SEARCH_G1_PROBE_CACHE_RELEASE='+json.dumps(record, sort_keys=True, allow_nan=False), flush=True)
+
+
 @torch.no_grad()
 def _last_hidden(texts, layer, model, tok, micro=4, max_len=4096):
     base = model.model
@@ -186,8 +203,10 @@ def judge_probe(req: ProbeRequest):
         bnd = boundary['clf'].predict_proba(Hb)[:, 1]
         assert np.isfinite(flip).all() and np.isfinite(bnd).all()
         assert ((0 <= flip) & (flip <= 1)).all() and ((0 <= bnd) & (bnd <= 1)).all()
-        return {'version': version, 'results': [dict(id=it.id, version=version,
-                flip=float(flip[i]), boundary=float(bnd[i])) for i, it in enumerate(req.items)]}
+        result = {'version': version, 'results': [dict(id=it.id, version=version,
+                  flip=float(flip[i]), boundary=float(bnd[i])) for i, it in enumerate(req.items)]}
+        _release_judge_cuda_cache(version)
+        return result
 
 
 @app.get("/health")

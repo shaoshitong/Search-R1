@@ -1,0 +1,133 @@
+{
+  "status": "ACTUAL_JOB746125_FAILED1_0_OUTER35_DENSE_LOGPROB_BACKWARD_CUDA_OOM",
+  "observed_unix": 1792642402.5855052,
+  "created_unix": 1792642996.3338938,
+  "source_job": "746125",
+  "source_base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+  "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+  "run_id": "232f20e112ac4a978c5aba52a0367195",
+  "terminal_accounting": {
+    "rc": 0,
+    "stderr": "",
+    "stdout": "745198|RUNNING|0:0|17:33:32|ACD1-26\n745198.batch|RUNNING|0:0|17:33:32|ACD1-26\n745198.extern|RUNNING|0:0|17:33:32|ACD1-26\n745198.0|COMPLETED|0:0|00:00:22|ACD1-26\n745198.1|COMPLETED|0:0|00:05:32|ACD1-26\n745198.2|COMPLETED|0:0|00:00:01|ACD1-26\n745198.3|COMPLETED|0:0|00:00:01|ACD1-26\n745198.4|COMPLETED|0:0|00:00:01|ACD1-26\n745371|CANCELLED by 14090|0:0|05:13:14|ACD1-55\n745371.batch|CANCELLED|0:9|05:13:49|ACD1-55\n745371.extern|COMPLETED|0:0|05:13:14|ACD1-55\n745371.0|COMPLETED|0:0|00:00:01|ACD1-55\n745371.1|COMPLETED|0:0|00:00:01|ACD1-55\n745371.2|COMPLETED|0:0|00:00:01|ACD1-55\n745371.3|COMPLETED|0:0|00:00:01|ACD1-55\n745371.4|COMPLETED|0:0|00:00:02|ACD1-55\n745371.5|COMPLETED|0:0|00:00:02|ACD1-55\n746114|COMPLETED|0:0|00:00:23|ACD1-7\n746114.batch|COMPLETED|0:0|00:00:23|ACD1-7\n746114.extern|COMPLETED|0:0|00:00:23|ACD1-7\n746117|COMPLETED|0:0|00:03:00|ACD1-21\n746117.batch|COMPLETED|0:0|00:03:00|ACD1-21\n746117.extern|COMPLETED|0:0|00:03:00|ACD1-21\n746117.0|COMPLETED|0:0|00:00:00|ACD1-21\n746125|FAILED|1:0|11:14:30|ACD1-32\n746125.batch|FAILED|1:0|11:14:30|ACD1-32\n746125.extern|COMPLETED|0:0|11:14:30|ACD1-32\n"
+  },
+  "last_completed_metrics": {
+    "attempt_index": 34,
+    "grad_norm": 2.375832234427077,
+    "optimizer_writes": 680,
+    "optimizer_writes_before": 660,
+    "optimizer_writes_this_outer": 20,
+    "pg_loss": 0.08507157417154503,
+    "ppo_kl": 0.0017382160687702708,
+    "reward": 0.679192841053009,
+    "step": 34
+  },
+  "last_completed_selection": {
+    "attempt_id": "8c4a51aa1afa4b499f4fb65adc092a1a",
+    "candidate_correct_count_histogram": {
+      "0": 1036,
+      "1": 182,
+      "2": 123,
+      "3": 134,
+      "4": 194,
+      "5": 891
+    },
+    "candidate_em_scope": "successful fixed2560 pool only; discarded pools excluded; pre-update selection policy",
+    "candidate_mixed_fraction": 0.247265625,
+    "candidate_mixed_questions": 633,
+    "candidate_questions": 2560,
+    "candidate_trajectories": 12800,
+    "candidate_trajectory_em": 0.473515625,
+    "discarded_insufficient_pool_count": 0,
+    "policy_snapshot_id": "232f20e112ac4a978c5aba52a0367195:34:policy-8c4a51aa1afa4b499f4fb65adc092a1a",
+    "pool_retry": 0,
+    "raw_generated_trajectories": 12800,
+    "selected_all_correct_fallback": 0,
+    "selected_all_correct_fallback_fraction": 0.0,
+    "selected_correct_count_histogram": {
+      "0": 0,
+      "1": 148,
+      "2": 96,
+      "3": 105,
+      "4": 163,
+      "5": 0
+    },
+    "selected_mixed": 512,
+    "selected_mixed_fraction": 1.0,
+    "selected_questions": 512,
+    "selected_trajectories": 2560,
+    "selected_trajectory_em": 0.510546875,
+    "selection_basis": "actual five strict terminal EM labels; first mixed ordinals, then K5 fallback",
+    "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/artifacts/mixed-selection/8c4a51aa1afa4b499f4fb65adc092a1a.json",
+    "status": "MEASURED_COMPLETED_SELECTION",
+    "step": 34
+  },
+  "last_sealed_checkpoint": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_34",
+    "manager": "easy2560_per_outer_full_state_v1",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_34/full-manifest.json",
+    "manifest_sha256": "7bac5481cc729466f9feb8d35986461039a0fde8785ae3943566a7a42705d1d4",
+    "published_unix": 1792640971.9351397,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+    "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+    "step": 34
+  },
+  "failed_candidate_pool": {
+    "completed_questions": 2560,
+    "name": "18ace454753b415287eeb23f4e9e1077-pool-0",
+    "progress_error": null,
+    "reserved_questions": 2560,
+    "saved_chunk_files": 15,
+    "source_consumed": 89600,
+    "step": 35
+  },
+  "failed_outer": 35,
+  "failed_suffix_partial_adam_writes_observed": {
+    "rank": 3,
+    "writes_after": 682,
+    "committed_source_writes": 680,
+    "not_an_all_rank_count": true
+  },
+  "source34_small_readback": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-cp34-small-sha-metadata-readback-1792642535.json",
+    "bytes": 9985,
+    "sha256": "ba4e5497b49c82b4c1abf9fa984aa018bad02140d8e9086c8400c53c760f363c"
+  },
+  "source34_large_payload_fresh_sha_not_performed_by_metadata_readback": true,
+  "independent_cpu_full_state_audit_pending": true,
+  "actual_native4_cuda_restore_pending": true,
+  "recompute_from_outer": 35,
+  "all_failed_logs_raw_rollouts_and_source34_retained": true,
+  "raw_observation": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792639571933631000/observation-045.json",
+    "bytes": 502392,
+    "sha256": "f5b8f10312414c8068df1710d133cb809c20af4321311fce135e04fa18105459"
+  },
+  "failure_site": "search_g1/logprob_memory.py:69 torch.empty_like(logits) full FP32 dense gradient",
+  "allocation_requested_GiB": 6.82,
+  "free_GiB": 6.03,
+  "actor_process_total_GiB": 49.14,
+  "actor_allocated_GiB": 40.28,
+  "actor_reserved_unused_GiB": 6.91,
+  "other_process": {
+    "pid": 2321981,
+    "total_GiB": 23.88,
+    "identity_not_conclusively_mapped": true
+  },
+  "fa3_kernel_error_observed": false,
+  "memory_fix": {
+    "release_probe_unused_cuda_cache_after_CPU_result_under_original_locks": true,
+    "allocator_expandable_segments_before_Python_and_explicit_Ray_env": true,
+    "dense_head_forward_backward_math_unchanged": true,
+    "physical_micro": 8,
+    "logical_micro": 4,
+    "global_mini": 128,
+    "accumulation": 4,
+    "writes_per_outer": 20,
+    "actual_memory_recovery_unverified": true
+  },
+  "total_goal": 200,
+  "no201": true
+}

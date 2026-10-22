@@ -693,15 +693,17 @@ def main(config):
     elif run is not None and 'ray_tmp_dir_identity' in run:
         from reproduction.common8.native_ray import verify as verify_native_ray
         ray_tmp_dir = verify_native_ray(run, ray_tmp_dir)
+    ray_env_vars = {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}
     if run is not None and run.get('easy2560_selection'):
-        from reproduction.easy2560_joint4.native_ray_resources import configure
+        from reproduction.easy2560_joint4.native_ray_resources import configure, allocator_env_vars
         local_resources=configure(Path(os.environ['SEARCH_G1_BASE']),run,role='train',phase='ray')
+        ray_env_vars.update(allocator_env_vars())
     elif (run is not None and run.get('data_selection_mode')=='prefix20_probe' and
             run.get('execution_backend','slurm')=='slurm'):
         from reproduction.prefix20_joint4.native_ray_resources import configure
         local_resources=configure(Path(os.environ['SEARCH_G1_BASE']),run,role='train',phase='ray')
     ray.init(address='local', num_gpus=config.trainer.n_gpus_per_node, _temp_dir=ray_tmp_dir,
-             runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}},
+             runtime_env={'env_vars': ray_env_vars},
              **local_resources)
     try:
         ray.get(main_task.remote(config))
