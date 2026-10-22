@@ -1,0 +1,35 @@
+{
+  "observed_unix": 1792712408.1388698,
+  "source_evidence": "candidate-retrieval-pair-r4-live-1792712408602170000.json",
+  "actual_rows": [
+    {
+      "variant": "startup-legacy",
+      "completed_chunks": 1,
+      "actual_raw_tokens": 1056148,
+      "retained_model_tokens": 333199,
+      "raw_over_retained": 3.1697213977232823,
+      "unretained_fraction": 0.6845148596598204
+    },
+    {
+      "variant": "startup-async",
+      "completed_chunks": 1,
+      "actual_raw_tokens": 1072779,
+      "retained_model_tokens": 334217,
+      "raw_over_retained": 3.2098277466436476,
+      "unretained_fraction": 0.688456802379614
+    },
+    {
+      "variant": "full-legacy",
+      "completed_chunks": 5,
+      "actual_raw_tokens": 5343550,
+      "retained_model_tokens": 1673669,
+      "raw_over_retained": 3.192716122483,
+      "unretained_fraction": 0.6867870610362026
+    }
+  ],
+  "formal_field": "search_g1/mixed_runtime.py raw_generated_policy_tokens actually sums final output.sampling_mask (retained model tokens)",
+  "benchmark_fields": "actual_raw_generated_tokens sums raw RequestOutput token counts; chunk retained_model_tokens is comparable with formal field",
+  "config_difference_explaining_threefold_gap": false,
+  "whole_training_speedup_from_this_fraction": null,
+  "next_experimental_scope": "Search-only action-boundary early stop. Existing full-output parser gives any search precedence over answer, so answer-only early stop is not equivalent. Preserve entire boundary token and actual LP; report real stop reason. Production unchanged."
+}

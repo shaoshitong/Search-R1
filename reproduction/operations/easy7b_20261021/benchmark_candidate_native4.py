@@ -45,6 +45,7 @@ NATIVE_SOURCES = (
     'reproduction/common8/generation_behavior.py',
     'reproduction/common8/sampling_capture.py', 'search_g1/mixed_runtime.py',
     'search_g1/mixed_selection.py', 'search_g1/vllm_flash3.py',
+    'search_g1/search_action_stop.py',
     'verl/workers/rollout/vllm_rollout/vllm_rollout.py',
     'reproduction/easy2560_joint4/native_ray_resources.py',
     'reproduction/operations/easy7b_20261021/benchmark_candidate_native4.py',
@@ -163,6 +164,10 @@ class CandidateWorker:
             enable_prefix_caching=False, disable_log_stats=True,
             seed=options['seed'] + self.rank)
         bind_generation_capture(llm.llm_engine, tokenizer, options['checkpoint'], options['run'])
+        self.search_action_stop = None
+        if options.get('search_only_early_stop', False):
+            from search_g1.search_action_stop import install_search_action_stop
+            self.search_action_stop = install_search_action_stop(llm.llm_engine, tokenizer)
         # Reuse all actual phase request/capture/token transport methods. Only
         # constructor ownership differs: no FSDP module or hybrid sharding manager.
         rollout = vLLMRollout.__new__(vLLMRollout)
@@ -187,6 +192,7 @@ class CandidateWorker:
             actual_block_size=llm.llm_engine.cache_config.block_size,
             actual_num_gpu_blocks=llm.llm_engine.cache_config.num_gpu_blocks,
             actual_engine_dtype=str(llm.llm_engine.model_config.dtype),
+            search_only_early_stop=options.get('search_only_early_stop', False),
             generation_config=llm.llm_engine._common8_generation_provenance,
             actor_model_loaded=False, optimizer_loaded=False, training_modified=False)
         return self.ready_receipt
@@ -206,8 +212,11 @@ class CandidateWorker:
         return result
 
     def end_generation_phase(self, handle, abort=False):
-        return dict(self.rollout.end_generation_phase(handle, abort=abort), rank=self.rank,
+        result = dict(self.rollout.end_generation_phase(handle, abort=abort), rank=self.rank,
             weight_syncs=0, immutable_hf_snapshot_loaded_once=True, actual_work=dict(self.actual_work))
+        if self.search_action_stop is not None:
+            result['search_action_stop'] = self.search_action_stop.report()
+        return result
 
 
 class CandidateWorkerGroup:
@@ -303,7 +312,8 @@ def run(args):
     snapshot = run_binding['run_id'] + ':immutable-hf-' + digest(str(checkpoint))
     options = dict(source_base=str(source_base), checkpoint=str(checkpoint), run=run_binding,
         worker_cpus=args.worker_cpus, seed=args.seed, kv_tokens=args.kv_tokens,
-        gpu_memory_utilization=args.gpu_memory_utilization)
+        gpu_memory_utilization=args.gpu_memory_utilization,
+        search_only_early_stop=args.search_only_early_stop)
     launch = dict(role='independent_native4_real_candidate_pipeline',
         label=args.label, options=options, candidate_files=args.candidate_files,
         requested_chunks=args.chunks, retrieval_url=args.retrieval_url,
@@ -471,6 +481,8 @@ def parser():
     p.add_argument('--worker-cpus', type=int, default=8)
     p.add_argument('--gpu-memory-utilization', type=float, default=.65)
     p.add_argument('--kv-tokens', type=int, default=131072)
+    p.add_argument('--search-only-early-stop', action='store_true',
+        help='Independent probe only: stop at confirmed search token boundary; never on answer')
     return p
 
 

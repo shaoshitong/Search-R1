@@ -397,3 +397,24 @@ async组实际生成token为1,072,779，对照为1,056,148，增加1.57%；promp
 完成四卡引擎初始化，full-async尚无完成结果。16ms等待窗口的独立startup对照已
 准备；本文未核验其实际排队、运行或完成状态，不作推断。正式750029与检索
 745198没有因本次证据整理而改动。
+
+
+### Actual generated tokens versus retained policy tokens
+
+The formal `raw_generated_policy_tokens` label is misleading: `mixed_runtime.py`
+sums the final sampling mask, which contains only retained model prefixes. The
+private benchmark separately counts original RequestOutput tokens and retained
+model tokens. Startup legacy generated1,056,148 raw and retained333,199; async
+generated1,072,779 and retained334,217. This is a statistics-definition difference
+between reports, not evidence that the benchmark uses a larger max_tokens or
+a different rollout budget. Both run the original500-token turn requests and
+4096 total budget; the parent sampling configuration and parser are shared.
+
+The unused tail remains real GPU work in both pipelines. A private optional
+search-boundary stopping experiment is being implemented, not deployed to formal
+training. It must preserve the complete boundary token and original logprobs.
+The original parser prefers any later `</search>` over `</answer>`, so the first
+version may stop only at a confirmed search boundary; stopping on an early answer
+would change that rule. EOS/generation-config provenance must remain truthful.
+The generated/retained ratio does not imply the same training-outer speed ratio.
+See [actual token counters](evidence/candidate-raw-retained-token-accounting.json).
