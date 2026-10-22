@@ -1,0 +1,51 @@
+{
+  "status": "SELECTED_STATE_FIXED_TRAIN_B2048_SOURCE_STAGED_ONLY_NOT_AUTHORIZED_NOT_SUBMITTED",
+  "source_publication": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v2/source-publication.json",
+    "bytes": 2642,
+    "sha256": "61eaa510f24f6830304ddcd81aed8090e75de7b9e7683404d0ee276f44dc067c"
+  },
+  "entry": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v2/scoring.sbatch",
+    "bytes": 1375,
+    "sha256": "07be86fa0369e79187d0193b42df12c616bf1febb309468611a6a29443b1b498"
+  },
+  "invalid_future_template": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v2/future-unbound-trainB-template.json",
+    "bytes": 5423,
+    "sha256": "318619ed80f0025bbd0793fb4ac2ac4319919f0e921c06bf48f9e200047cd71b"
+  },
+  "CPU_tests_passed": 5,
+  "source_import_and_entry_syntax_passed": true,
+  "protocol": {
+    "fixed_train_G5_SHA256": "e6e74d92160efb0740ba5c0316c4ee7686f06a499c90cafd5a545f325b62209b",
+    "train_questions": 2048,
+    "M": 5,
+    "required_models": [
+      "E1_EMA",
+      "Z_seed1_E10_raw",
+      "Z_seed2_E10_raw"
+    ],
+    "Z_exact_saved_trainB_predictions_reused": true,
+    "selected_P80_exact_saved_predictions_optional": true,
+    "legacy_native_actual_causal_segments_preserved": true,
+    "E1_fixed32_existing_dev_adapter_replay": true,
+    "replay_absolute_probability_tolerance": 0.001,
+    "epoch_or_threshold_selection_on_trainB": false,
+    "old_trainA_history_preserved": true
+  },
+  "resources": {
+    "GPUs": 2,
+    "CPUs": 12,
+    "memory_GiB": 128,
+    "partition": "acd_u",
+    "qos": "normal",
+    "time": "01:00:00"
+  },
+  "checkpoint_files_statted_hashed_or_opened": false,
+  "real_prediction_or_EM_aggregate_read": false,
+  "GPU_started": false,
+  "Slurm_submitted": false,
+  "final4096_read": false,
+  "existing_jobs_changed": false
+}
