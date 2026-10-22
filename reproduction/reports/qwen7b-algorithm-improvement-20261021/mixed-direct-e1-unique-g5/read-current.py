@@ -22,4 +22,6 @@ for epoch in (1,2,3):
   p=b/folder/('epoch-%02d'%epoch)/'complete.json'
   if p.exists():
    d=json.loads(p.read_bytes());x[label+str(epoch)]=dict(cursor=d['cursor'],metrics=d['metrics'])
+if 'job_id'in x:
+ r=subprocess.run(['sstat','-j',x['job_id']+'.0','-n','-P','--format=JobID,AveCPU,MaxRSS,MaxDiskRead'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=10);x['sstat']=r.stdout.strip()
 print(json.dumps(x))

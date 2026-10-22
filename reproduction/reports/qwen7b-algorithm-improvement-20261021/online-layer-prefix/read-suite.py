@@ -16,4 +16,5 @@ for layer,prefix in ((27,20),(21,20),(27,80)):
  for pattern in ('controller.json','progress-rank-*.json','failure-rank-*.json','latest.json','complete.json','evaluation-epoch-*.json'):
   for p in d.glob(pattern):v[p.name]=json.loads(p.read_bytes())
  x['variants'].append(v)
+r=subprocess.run(['squeue','-h','-j','749049,749050,749051','-o','%i|%T|%r|%S'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=10);x['queue_reasons']=r.stdout.strip()
 print(json.dumps(x))
