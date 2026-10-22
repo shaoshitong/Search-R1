@@ -77,9 +77,10 @@ def run(base):
             reader.prepare(sampler);u.atomic(base/'update-intent.json',dict(cursor=cursor+1,phase=ps['training_phase'],state='started',time=time.time()))
             metrics,batch=direct_update_phased(model,ema,native,head,reader,lookup,sampler,device,c['ema_decay'],micro_questions=micro,phase=ps['training_phase'])
             cursor+=1;micro=metrics['micro_questions'];seen.update(batch['source_qids'])
-            row=dict(cursor=cursor,budget=5219,source_cursor=2577,new_updates=cursor-2577,
+            row=dict(metrics)
+            row.update(cursor=cursor,budget=5219,source_cursor=2577,new_updates=cursor-2577,
                      question_visits_since_E1=(cursor-2577)*128,seen_questions=len(seen),time=time.time(),
-                     training_phase=ps['training_phase'],prefetch=dict(getattr(reader,'prefetch_statistics',{})),**metrics)
+                     training_phase=ps['training_phase'],prefetch=dict(getattr(reader,'prefetch_statistics',{})))
             u.atomic(base/'update-intent.json',dict(cursor=cursor,phase=ps['training_phase'],state='accepted_update_complete'))
             u.atomic(base/'progress.json',row)
             with(base/'curve.jsonl').open('a')as f:f.write(json.dumps(row)+'\n');f.flush()
