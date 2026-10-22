@@ -1,0 +1,46 @@
+{
+  "status": "PREDECLARED_RULE_NOT_A_SELECTED_CHECKPOINT",
+  "created_at": 1792700129.353921,
+  "family": "full169028_L15_P80_MSE_ownG5",
+  "primary_metric": "development2048_fixed_ownG5_Top512_true_Mixed_count",
+  "eligible_epochs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "eligible_states": [
+    "raw",
+    "EMA"
+  ],
+  "checkpoint_selection_data": "seed1_development_only",
+  "rule": "Highest seed1 Top512 trueMixed count; ties choose earliest epoch, then EMA. Apply the exact selected epoch/state to seed2 without reselection.",
+  "seed2_used_for_epoch_or_state_selection": false,
+  "seeds": [
+    {
+      "init_seed": 9137,
+      "train_plan_seed": 2026102227
+    },
+    {
+      "init_seed": 19137,
+      "train_plan_seed": 2026102302
+    }
+  ],
+  "replicas_have_same_geometry_optimizer_budget_and_accepted_fixture": true,
+  "training_questions": 169028,
+  "fixed_m": 5,
+  "training_epochs": 10,
+  "updates_per_epoch": 1321,
+  "total_update_budget": 13210,
+  "EMA_decay": 0.9995,
+  "main_sampling": "all_unique_questions_once_per_epoch_random_ownG5_no_label_forcing",
+  "final_confirmation": "No final4096 scoring or tuning before actual candidate/epoch/state/primary-metric freeze and both checkpoint acceptances",
+  "final4096_read": false,
+  "Slurm_submitted_by_this_rule": false
+}
