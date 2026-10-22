@@ -3,7 +3,7 @@
 No GPU, Slurm, parameter or final-holdout actions. Uses the already published
 private control/poller and terminal-only shared locked CPU acceptor.
 """
-import fcntl,json,os,pathlib,subprocess,sys,tempfile,time
+import argparse,fcntl,json,os,pathlib,subprocess,sys,tempfile,time
 B=pathlib.Path(__file__).resolve().parent;REPO=B.parents[3]
 BRANCH='codex/q7b-full169028-mse-observer-20261023'
 ACCEPT_COMMIT='799e75f3'
@@ -36,23 +36,23 @@ def report(x):
   c=x[key];rows.append('| %d | %d | %d | %d | `%s` |'%(c['epoch'],c['questions'],c['unique_questions'],c['trajectory_visits'],c['plan_sha256']))
  rows+=['', 'Latest actual sample epoch%.6f. Each metric is copied from the completed epoch evaluation receipt; an epoch absent from the table is not claimed complete. Terminal model/Adam/RNG acceptance is separate.'%x['time']]
  (B/'MSE-EPOCHS.md').write_text('\n'.join(rows)+'\n')
-def run():
+def run(control):
  guard=(B/'agent-mse-watch.lock').open('a+');fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB);seen=set();start=time.time();heartbeat=0;connection_failures=0
  while time.time()-start<8*3600:
-  p=subprocess.run([sys.executable,str(B/'poll-mse-agent.py')],cwd=REPO,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+  p=subprocess.run([sys.executable,str(B/'poll-mse-agent.py'),'--control',control],cwd=REPO,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
   if p.returncode:
    message=(p.stdout+p.stderr)[-2400:]
    if any(t in message for t in('Operation not permitted','Permission denied','network access is disabled','permission profile')):raise RuntimeError(message)
    if not any(t in message.lower()for t in('connection closed','connection reset','connection timed out','connect to host','broken pipe')):raise RuntimeError(message)
    connection_failures+=1
-   interruption=dict(time=time.time(),status='CURRENT_REMOTE_STATE_UNREADABLE_LAST_VALUES_STALE',same_original_private_route_only=True,no_Slurm_mutation=True,consecutive_failures=connection_failures,error=message,remote_training_failure_not_inferred=True)
+   interruption=dict(time=time.time(),status='CURRENT_REMOTE_STATE_UNREADABLE_LAST_VALUES_STALE',explicit_private_route=control,no_route_fallback=True,no_Slurm_mutation=True,consecutive_failures=connection_failures,error=message,remote_training_failure_not_inferred=True)
    atomic(B/'agent-mse-control-interruption-latest.json',interruption)
-   if connection_failures==1 or connection_failures%10==0:print(json.dumps(dict(event='ORIGINAL_SSH_CONNECTION_INTERRUPTED_RETRYING_SAME_ROUTE',**interruption)),flush=True)
+   if connection_failures==1 or connection_failures%10==0:print(json.dumps(dict(event='SELECTED_SSH_CONNECTION_INTERRUPTED_RETRYING_SAME_ROUTE',**interruption)),flush=True)
    time.sleep(55);continue
   summary=json.loads(p.stdout.splitlines()[-1]);x=json.loads((B/'agent-observations-mse-latest.json').read_text());epochs={k for k in x if k.startswith('evaluation-epoch-')};report(x)
-  current=dict(time=x['time'],job='749568',observer_pid=os.getpid(),latest_rank_cursors=[x.get('progress-rank-%d.json'%r,{}).get('cursor')for r in(0,1)],latest_rank_epochs=[x.get('progress-rank-%d.json'%r,{}).get('epoch')for r in(0,1)],completed_evaluation_epochs=sorted(epochs),failures=x['failures'],Slurm=x['accounting']['stdout'],final_read=False)
+  current=dict(control_route=control,time=x['time'],job='749568',observer_pid=os.getpid(),latest_rank_cursors=[x.get('progress-rank-%d.json'%r,{}).get('cursor')for r in(0,1)],latest_rank_epochs=[x.get('progress-rank-%d.json'%r,{}).get('epoch')for r in(0,1)],completed_evaluation_epochs=sorted(epochs),failures=x['failures'],Slurm=x['accounting']['stdout'],final_read=False)
   if connection_failures:
-   atomic(B/'agent-mse-control-restored.json',dict(status='ORIGINAL_PRIVATE_ROUTE_FRESH_STATE_RESTORED',prior_consecutive_failures=connection_failures,**current));print(json.dumps(dict(event='ORIGINAL_ROUTE_FRESHLY_RESTORED',**current)),flush=True);connection_failures=0
+   atomic(B/'agent-mse-control-restored.json',dict(status='EXPLICIT_PRIVATE_ROUTE_FRESH_STATE_RESTORED',prior_consecutive_failures=connection_failures,**current));print(json.dumps(dict(event='SELECTED_ROUTE_FRESHLY_RESTORED',**current)),flush=True);connection_failures=0
   atomic(B/'agent-mse-watch-latest.json',current)
   if epochs!=seen:
    c=publish('Record MSE actual fixed-pool evaluations '+','.join(sorted(epochs)));seen=epochs;print(json.dumps(dict(event='NEW_ACTUAL_EPOCH_METRICS_PUBLISHED',commit=c,**current)),flush=True)
@@ -62,12 +62,12 @@ def run():
   if x.get('complete.json')and any(row[1:3]==['COMPLETED','0:0']for row in terminal):
    # Existing sequential validator has its own identity+CPU locks and checks
    # complete/COMPLETED0:0 again. It does not open any still-running loss arm.
-   script=REPO/'reproduction/operations/qwen7b_warmup/deploy_full169028_packed_CPU_acceptance.py';p=subprocess.run([sys.executable,str(script),'--action','start','--commit',ACCEPT_COMMIT],cwd=REPO,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+   script=B/'terminal-cpu-mse-agent.py';p=subprocess.run([sys.executable,str(script),'--action','start','--commit',ACCEPT_COMMIT,'--control',control],cwd=REPO,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
    if p.returncode:raise RuntimeError((p.stdout+p.stderr)[-2400:])
    launch=json.loads(p.stdout.splitlines()[-1]);atomic(B/'agent-mse-terminal-CPU-launch.json',launch);c=publish('Record MSE all10epochs terminal completion and locked CPU acceptance launch');print(json.dumps(dict(event='MSE_TERMINAL_CPU_VALIDATOR_LAUNCHED_NOT_YET_ACCEPTED',commit=c,**current)),flush=True)
    for attempt in range(40):
     time.sleep(15)
-    status=subprocess.run([sys.executable,str(script),'--action','status','--commit',ACCEPT_COMMIT],cwd=REPO,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+    status=subprocess.run([sys.executable,str(script),'--action','status','--commit',ACCEPT_COMMIT,'--control',control],cwd=REPO,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
     if status.returncode:raise RuntimeError((status.stdout+status.stderr)[-2400:])
     accepted=json.loads(status.stdout.splitlines()[-1]);atomic(B/'agent-mse-terminal-CPU-status.json',accepted)
     if'mse'in accepted['accepted']:
@@ -79,6 +79,7 @@ def run():
   time.sleep(55)
  raise RuntimeError('Bounded8hour observer expired; remote job was not modified')
 if __name__=='__main__':
- try:run()
+ parser=argparse.ArgumentParser();parser.add_argument('--control',choices=('balanced','campus'),default='balanced');args=parser.parse_args()
+ try:run(args.control)
  except BaseException as e:
   atomic(B/'agent-mse-watch-failure.json',dict(time=time.time(),observer_only=True,error=type(e).__name__,message=str(e),remote_job_unmodified=True));raise
