@@ -45,7 +45,6 @@ if receipt.exists():
     print(json.dumps(read(receipt)))
 else:
     name = re.search(r'^#SBATCH --job-name=(.+)$', entry.read_text(), re.M).group(1)
-    assert name == 'q7b-L15P80-w2018-s19137'
     rows = run(['squeue', '-h', '-u', 'mou176', '-n', name, '-o', '%i']).splitlines()
     if rows:
         assert len(rows) == 1
