@@ -1,22 +1,22 @@
-"""Stage immutable online layer/prefix pilot; never submits Slurm jobs."""
+"""Stage immutable two-GPU online layer/prefix pilot; never submits Slurm jobs."""
 import argparse,base64,hashlib,importlib.util,json,shlex,subprocess,zlib
 from pathlib import Path
 R=Path(__file__).resolve().parents[3];CONTROL=R.parents[1];P='reproduction/operations/qwen7b_warmup/'
-BRANCH='codex/q7b-online-mixed-layer-prefix-20261022'
+BRANCH='codex/q7b-online-mixed-layer-prefix-2gpu-20261022'
 FILES=['online_mixed_prefix_explore.py','deploy_online_mixed_prefix_explore.py','peer_long_prefix_diagnostic.py','native_mixed_group_classifier.py','runtime.sh']
-BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-v1'
+BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1'
 VARIANTS=[(27,20),(21,20),(27,80)]
 SBATCH='''#!/usr/bin/env bash
-#SBATCH --job-name=q7b-online-L@@L@@P@@P@@
-#SBATCH --partition=acd_u
+#SBATCH --job-name=q7b-online2-L@@L@@P@@P@@
+#SBATCH --partition=acd_ue
 #SBATCH --qos=normal
 #SBATCH --account=mou176
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=24
-#SBATCH --mem=256G
-#SBATCH --gres=gpu:4
-#SBATCH --time=08:00:00
+#SBATCH --cpus-per-task=12
+#SBATCH --mem=128G
+#SBATCH --gres=gpu:2
+#SBATCH --time=03:00:00
 #SBATCH --output=@@BASE@@/layer@@L@@-prefix@@P@@/train-%j.log
 set -euo pipefail
 export QWEN7B_CODE_ROOT=@@CODE@@
@@ -25,7 +25,7 @@ export PYTHONDONTWRITEBYTECODE=1 PYTHONFAULTHANDLER=1
 export NCCL_ASYNC_ERROR_HANDLING=1 TORCH_NCCL_ASYNC_ERROR_HANDLING=1
 exec 9>@@BASE@@/layer@@L@@-prefix@@P@@/training.lock
 flock -n 9
-srun --kill-on-bad-exit=1 bash "${QWEN7B_CODE_ROOT}/reproduction/operations/qwen7b_warmup/runtime.sh" -u -m torch.distributed.run --standalone --nnodes=1 --nproc-per-node=4 -m reproduction.operations.qwen7b_warmup.online_mixed_prefix_explore --action train --layer @@L@@ --prefix @@P@@ --epochs 3 --lr 0.000005
+srun --kill-on-bad-exit=1 bash "${QWEN7B_CODE_ROOT}/reproduction/operations/qwen7b_warmup/runtime.sh" -u -m torch.distributed.run --standalone --nnodes=1 --nproc-per-node=2 -m reproduction.operations.qwen7b_warmup.online_mixed_prefix_explore --action train --layer @@L@@ --prefix @@P@@ --epochs 3 --lr 0.000005
 '''
 COMMON='''import pathlib,json,hashlib,base64,zlib,subprocess,os,time,fcntl
 b=pathlib.Path(v['base']);b.mkdir(parents=True,exist_ok=True);code=b/('code-'+v['commit'][:12]);code.mkdir(exist_ok=True)
@@ -48,7 +48,7 @@ SEAL='''for name,record in v['files'].items():
 manifest=dict(commit=v['commit'],branch=v['branch'],code_root=str(code),files=v['files']);path=b/'source-publication.json'
 replace_entries=False
 if path.exists()and json.loads(path.read_text())!=manifest:
- old=json.loads(path.read_text());active=subprocess.check_output(['squeue','-h','-u','mou176','-o','%j'],universal_newlines=True);assert not any(n.startswith('q7b-online-L')for n in active.splitlines()),'Existing pilot GPU job active; never alter its entry'
+ old=json.loads(path.read_text());active=subprocess.check_output(['squeue','-h','-u','mou176','-o','%j'],universal_newlines=True);assert not any(n.startswith('q7b-online2-L')for n in active.splitlines()),'Existing pilot GPU job active; never alter its entry'
  assert not list(b.glob('layer*-prefix*/progress-rank-*.json')),'Existing training attempt must retain entry'
  archive=b/('pre-submit-source-'+old['commit'][:12]+'.json');atomic(archive,old);atomic(path,manifest);replace_entries=True
 elif path.exists():assert json.loads(path.read_text())==manifest
@@ -61,18 +61,14 @@ for layer,prefix in v['variants']:
  elif entry.exists():assert entry.read_text()==script
  else:entry.write_text(script)
  subprocess.check_call(['bash','-n',str(entry)]);entries.append(dict(layer=layer,prefix=prefix,entry=proof(entry)))
-print(json.dumps(dict(status='ONLINE_LAYER_PREFIX_THREE_4GPU_ENTRIES_STAGED_NOT_SUBMITTED',publication=proof(path),entries=entries)))
+print(json.dumps(dict(status='ONLINE_LAYER_PREFIX_THREE_2GPU_ENTRIES_STAGED_NOT_SUBMITTED',publication=proof(path),entries=entries)))
 '''
 PREPARE='''pub=json.loads((b/'source-publication.json').read_text());assert pub['commit']==v['commit']
-if(b/'fixture-complete.json').exists():print(json.dumps(dict(status='FIXTURE_ALREADY_COMPLETE',receipt=proof(b/'fixture-complete.json'))))
-else:
- lock=(b/'prepare-start.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
- if(b/'prepare-process.json').exists():
-  old=json.loads((b/'prepare-process.json').read_text());p=pathlib.Path('/proc/%d/cmdline'%old['pid']);assert not p.exists()or b'online_mixed_prefix_explore'not in p.read_bytes(),'Existing owned CPU preparer active; poll it'
- env=dict(os.environ,QWEN7B_CODE_ROOT=str(code),CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2');log=(b/'prepare.log').open('ab');p=subprocess.Popen(['bash',str(code/'reproduction/operations/qwen7b_warmup/runtime.sh'),'-u','-m','reproduction.operations.qwen7b_warmup.online_mixed_prefix_explore','--action','prepare'],env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True);log.close();atomic(b/'prepare-process.json',dict(pid=p.pid,commit=v['commit'],time=time.time()));print(json.dumps(dict(status='REAL_CPU_TOKEN_FIXTURE_PREPARER_STARTED',pid=p.pid)))
+f=pathlib.Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-v1');fixture=json.loads((f/'fixture-complete.json').read_text());assert fixture['status']=='ONLINE_MIXED_MATCHED8192_G10_FIXED2048_TOKENS_READY'and fixture['training_questions']==8192 and fixture['validation_questions']==2048 and len(fixture['token_shards'])==4
+receipt=dict(status='EXISTING_CAUSAL_TOKEN_FIXTURE_REUSED_NO_REEXTRACTION',fixture=proof(f/'fixture-complete.json'),source_inputs=str(f/'inputs'),training_questions=8192,validation_questions=2048,new_trajectory_or_feature_generation=False);atomic(b/'fixture-reuse.json',receipt);print(json.dumps(receipt))
 '''
 STATUS='''result=dict(time=time.time())
-for name in('prepare-process.json','prepare-progress.json','fixture-complete.json'):
+for name in('fixture-reuse.json',):
  if(b/name).exists():result[name]=json.loads((b/name).read_text())
 if'prepare-process.json'in result:
  pid=result['prepare-process.json']['pid'];p=pathlib.Path('/proc/%d/cmdline'%pid);result['actual_prepare_identity_live']=p.exists()and b'online_mixed_prefix_explore'in p.read_bytes()
@@ -81,7 +77,7 @@ print(json.dumps(result))
 '''
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--action',choices=['stage','prepare','status'],required=True);p.add_argument('--commit',required=True);a=p.parse_args();remote=subprocess.check_output(['git','ls-remote','origin','refs/heads/'+BRANCH],cwd=R,text=True).split()[0];assert remote==a.commit
+ p=argparse.ArgumentParser();p.add_argument('--action',choices=['stage','prepare','status'],required=True);p.add_argument('--commit',required=True);a=p.parse_args();remote=subprocess.check_output(['git','ls-remote','origin','refs/heads/'+BRANCH],cwd=R,text=True).split()[0]if a.action=='stage'else a.commit;assert remote==a.commit
  files={};payload={}
  for name in FILES:
   rel=P+name;raw=subprocess.check_output(['git','show',a.commit+':'+rel],cwd=R);payload[rel]=raw;files[rel]=dict(bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
@@ -96,5 +92,5 @@ def main():
     z=raw[start:start+3072];call(PART,name=name,index=i,data=base64.b64encode(z).decode(),sha256=hashlib.sha256(z).hexdigest())
   result=call(SEAL)
  else:result=call(PREPARE if a.action=='prepare'else STATUS)
- out=R/'reproduction/reports/qwen7b-algorithm-improvement-20261021/online-layer-prefix';out.mkdir(exist_ok=True,parents=True);(out/('actual-'+a.action+'.json')).write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
+ out=R/'reproduction/reports/qwen7b-algorithm-improvement-20261021/online-layer-prefix-2gpu';out.mkdir(exist_ok=True,parents=True);(out/('actual-'+a.action+'.json')).write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
 if __name__=='__main__':main()

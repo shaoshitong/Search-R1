@@ -1,4 +1,4 @@
-"""Four-GPU matched direct-Mixed layer/prefix pilot, authentic online causal prefill.
+"""Two-GPU matched direct-Mixed layer/prefix pilot, authentic online causal prefill.
 
 Independent from formal full169028 E1 continuation. Every pilot epoch visits8192
 questions once, one class-feasible authentic G5 from own G10; no hard replay.
@@ -9,7 +9,8 @@ All variants use the identical group seed, fixed training2048 and validation2048
 import argparse,copy,fcntl,gzip,hashlib,inspect,itertools,json,math,os,random,time,traceback
 from pathlib import Path
 B=Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019')
-A=B/'algorithm-improvement-20261021';SUITE=A/'online-mixed-layer-prefix-20261022-v1'
+A=B/'algorithm-improvement-20261021';SUITE=A/'online-mixed-layer-prefix-20261022-2gpu-v1'
+FIXTURE_SUITE=A/'online-mixed-layer-prefix-20261022-v1'
 REVISION='a09a35458c702b33eeacc393d103063234e8bc28';QMAX=273
 
 def read(p):return json.loads(Path(p).read_text())
@@ -50,6 +51,9 @@ def epoch_plan(groups,epoch,seed=20261022):
 
 def prepare():
  """CPU token-only fixture. Reuse8192 existing real G10 and exact fixed2048 G5."""
+ if FIXTURE_SUITE!=SUITE:
+  fixture=read(FIXTURE_SUITE/'fixture-complete.json');assert fixture['status']=='ONLINE_MIXED_MATCHED8192_G10_FIXED2048_TOKENS_READY'and fixture['training_questions']==8192 and fixture['validation_questions']==2048 and len(fixture['token_shards'])==4
+  SUITE.mkdir(parents=True,exist_ok=True);receipt=dict(status='EXISTING_CAUSAL_TOKEN_FIXTURE_REUSED_NO_REEXTRACTION',fixture=fp(FIXTURE_SUITE/'fixture-complete.json'),source_inputs=str(FIXTURE_SUITE/'inputs'),training_questions=8192,validation_questions=2048,new_trajectory_or_feature_generation=False);atomic(SUITE/'fixture-reuse.json',receipt);return receipt
  from .peer_long_prefix_diagnostic import reconstruct
  SUITE.mkdir(parents=True,exist_ok=True)
  if(SUITE/'fixture-complete.json').exists():return read(SUITE/'fixture-complete.json')
@@ -102,13 +106,16 @@ def run(args):
  from torch.nn.parallel import DistributedDataParallel as DDP
  from transformers import AutoModel
  from .native_mixed_group_classifier import MixedTokenHead,NativeMixedGroupProbe
- rank=int(os.environ['RANK']);world=int(os.environ['WORLD_SIZE']);device=torch.device('cuda',int(os.environ['LOCAL_RANK']));torch.cuda.set_device(device);dist.init_process_group('nccl');assert world==4
+ rank=int(os.environ['RANK']);world=int(os.environ['WORLD_SIZE']);device=torch.device('cuda',int(os.environ['LOCAL_RANK']));torch.cuda.set_device(device);dist.init_process_group('nccl');assert world==2;local_batch=128//world;micro_questions=8
  base=SUITE/('layer%d-prefix%d'%(args.layer,args.prefix));base.mkdir(parents=True,exist_ok=True);lock=(base/('writer-rank-%d.lock'%rank)).open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
- fixture=read(SUITE/'fixture-complete.json');assert fixture['fixed_G5_sha256']=='c55de2b4f66f45dcd94a8e246bfca97e53bdedc4ca85180c75e60c574dfc04b7';checked(fixture['token_shards'][rank]);records={}
- with gzip.open(fixture['token_shards'][rank]['path'],'rt')as f:
-  for line in f:r=json.loads(line);records[r['trajectory_id']]=cut(r,args.prefix)
- groups=read(SUITE/'inputs/train-groups.json');validation=read(SUITE/'inputs/validation-groups.json');fixed_train=read(SUITE/'inputs/fixed-train2048.json');torch.manual_seed(9137);np.random.seed(9137);random.seed(9137)
- if rank==0:atomic(base/'controller.json',dict(pid=os.getpid(),job_id=os.environ['SLURM_JOB_ID'],stage='LOADING_FROZEN_OFFICIAL_ACTOR_FOR_ONLINE_PREFILL',layer=args.layer,capture_layer=args.layer-1,prefix=args.prefix,world_size=4,training_questions=8192,training_G5_per_epoch=8192,validation_questions=2048,raw_gradient_updates_EMA=True,EMA_decay=.99,fresh_official_block_and_head=True,not_E1_continuation=True,hidden_feature_cache=False,final4096_read=False,time=time.time()))
+ fixture=read(FIXTURE_SUITE/'fixture-complete.json');assert fixture['fixed_G5_sha256']=='c55de2b4f66f45dcd94a8e246bfca97e53bdedc4ca85180c75e60c574dfc04b7';records={}
+ for shard_index,ref in enumerate(fixture['token_shards']):
+  if shard_index%world!=rank:continue
+  checked(ref)
+  with gzip.open(ref['path'],'rt')as f:
+   for line in f:r=json.loads(line);records[r['trajectory_id']]=cut(r,args.prefix)
+ groups=read(FIXTURE_SUITE/'inputs/train-groups.json');validation=read(FIXTURE_SUITE/'inputs/validation-groups.json');fixed_train=read(FIXTURE_SUITE/'inputs/fixed-train2048.json');torch.manual_seed(9137);np.random.seed(9137);random.seed(9137)
+ if rank==0:atomic(base/'controller.json',dict(pid=os.getpid(),job_id=os.environ['SLURM_JOB_ID'],stage='LOADING_FROZEN_OFFICIAL_ACTOR_FOR_ONLINE_PREFILL',layer=args.layer,capture_layer=args.layer-1,prefix=args.prefix,world_size=world,local_batch_questions=local_batch,gradient_accumulation_microbatches=local_batch//micro_questions,fixture_source=str(FIXTURE_SUITE),training_questions=8192,training_G5_per_epoch=8192,validation_questions=2048,raw_gradient_updates_EMA=True,EMA_decay=.99,fresh_official_block_and_head=True,not_E1_continuation=True,hidden_feature_cache=False,final4096_read=False,time=time.time()))
  model_dir=B/'assets/qwen25-7b-instruct-a09a35458c70';actor=AutoModel.from_pretrained(str(model_dir),local_files_only=True,torch_dtype=torch.bfloat16,attn_implementation='flash_attention_2').to(device).eval().requires_grad_(False)
  block=copy.deepcopy(actor.layers[args.layer]).float().requires_grad_(True);rotary=copy.deepcopy(actor.rotary_emb).float();actor.layers=nn.ModuleList(list(actor.layers[:args.layer]));actor.norm=nn.Identity();torch.cuda.empty_cache()
  head=MixedTokenHead();
@@ -122,7 +129,7 @@ def run(args):
    for k,v in state.items():
     if torch.is_tensor(v)and k!='step':state[k]=v.to(device)
   rng=blob['RNG_by_rank'][rank];random.setstate(rng['python']);np.random.set_state(rng['numpy']);torch.set_rng_state(rng['torch']);torch.cuda.set_rng_state(rng['cuda'],device)
- qrank={q:i%4 for role,gs in(('train',groups),('validation',validation))for i,q in enumerate(sorted(gs))}
+ qrank={q:i%world for role,gs in(('train',groups),('validation',validation))for i,q in enumerate(sorted(gs))}
  # Every rank retains only its own questions; all ranks see equal train/eval counts.
  def capture(views):
   started=time.monotonic();own=[records[t]for v in views for t in v['trajectory_ids']];width=QMAX+args.prefix;features=torch.zeros((len(own),width,3584),dtype=torch.bfloat16,device=device);mask=torch.zeros((len(own),width),dtype=torch.bool,device=device);positions=torch.zeros((len(own),width),dtype=torch.long,device=device);segments=[]
@@ -158,9 +165,9 @@ def run(args):
   dist.barrier();probe.train()
  if start_epoch==1:evaluate(0)
  for epoch in range(start_epoch,args.epochs+1):
-  plan=read(SUITE/'inputs'/('epoch-%02d-plan.json'%epoch));mine=[v for v in plan if qrank[v['qid']]==rank];assert len(mine)==2048 and len({v['qid']for v in mine})==2048;counts={True:sum(v['true_mixed']for v in plan),False:sum(not v['true_mixed']for v in plan)};begin=time.time();cumulative=0.
-  for offset in range(0,len(mine),32):
-   batch=mine[offset:offset+32];optim.zero_grad(set_to_none=True);data,prefill=capture(batch);train_start=time.monotonic();lossnum=0.
+  plan=read(FIXTURE_SUITE/'inputs'/('epoch-%02d-plan.json'%epoch));mine=[v for v in plan if qrank[v['qid']]==rank];assert len(mine)==8192//world and len({v['qid']for v in mine})==8192//world;counts={True:sum(v['true_mixed']for v in plan),False:sum(not v['true_mixed']for v in plan)};begin=time.time();cumulative=0.
+  for offset in range(0,len(mine),local_batch):
+   batch=mine[offset:offset+local_batch];optim.zero_grad(set_to_none=True);data,prefill=capture(batch);train_start=time.monotonic();lossnum=0.
    for lo in range(0,len(batch),8):
     sub=batch[lo:lo+8];sl={k:v[lo*5:(lo+len(sub))*5]for k,v in data.items()};target=torch.tensor([v['true_mixed']for v in sub],device=device,dtype=torch.float32);weights=torch.tensor([len(plan)/(2*counts[v['true_mixed']])for v in sub],device=device)
     with torch.autocast('cuda',dtype=torch.bfloat16):logits=ddp(sl);loss=(torch.nn.functional.binary_cross_entropy_with_logits(logits,target,reduction='none')*weights).sum()/len(batch)
@@ -169,7 +176,7 @@ def run(args):
    torch.nn.utils.clip_grad_norm_(probe.parameters(),1.);optim.step()
    with torch.no_grad():
     for p,e in zip(probe.parameters(),ema.parameters()):e.mul_(.99).add_(p,alpha=.01)
-   cursor+=1;cumulative+=lossnum;progress=dict(stage='ONLINE_PREFILL_REAL_MIXED_UPDATES',epoch=epoch,cursor=cursor,rank=rank,epoch_questions_seen=offset+len(batch),epoch_unique_questions=8192,prefill_seconds=prefill,train_seconds=time.monotonic()-train_start,loss=lossnum,native_gradient_L2=native_grad_norm,head_gradient_L2=head_grad_norm,global_batch_questions=128,trajectory_rows_per_rank=len(batch)*5,layer=args.layer,prefix=args.prefix,time=time.time());atomic(base/('progress-rank-%d.json'%rank),progress)
+   cursor+=1;cumulative+=lossnum;progress=dict(stage='ONLINE_PREFILL_REAL_MIXED_UPDATES',epoch=epoch,cursor=cursor,rank=rank,epoch_questions_seen=offset+len(batch),epoch_unique_questions=8192,prefill_seconds=prefill,train_seconds=time.monotonic()-train_start,loss=lossnum,native_gradient_L2=native_grad_norm,head_gradient_L2=head_grad_norm,global_batch_questions=128,world_size=world,local_batch_questions=local_batch,micro_questions=micro_questions,gradient_accumulation_microbatches=local_batch//micro_questions,trajectory_rows_per_rank=len(batch)*5,layer=args.layer,prefix=args.prefix,time=time.time());atomic(base/('progress-rank-%d.json'%rank),progress)
    if rank==0:
     print(json.dumps(progress),flush=True)
     with(base/'curve.jsonl').open('a')as f:f.write(json.dumps(progress)+'\n')
