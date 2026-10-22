@@ -3,7 +3,7 @@ import argparse,base64,hashlib,importlib.util,json,shlex,subprocess,zlib
 from pathlib import Path
 R=Path(__file__).resolve().parents[3]; CONTROL=R.parents[1]; P='reproduction/operations/qwen7b_warmup/'
 BRANCH='codex/q7b-frozen-final4096-scoring-20261022'
-BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozen-final4096-scoring-20261022-v1'
+BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozen-final4096-scoring-20261022-v2'
 FILES=['score_frozen_final4096.py','deploy_frozen_final4096_scoring.py','online_mixed_prefix_explore.py','peer_long_prefix_diagnostic.py','native_mixed_group_classifier.py','runtime.sh']
 SBATCH='''#!/usr/bin/env bash
 #SBATCH --job-name=q7b-final4096-paired
@@ -52,7 +52,7 @@ entry=b/'scoring.sbatch';text=v['sbatch'].replace('@@BASE@@',str(b)).replace('@@
 if entry.exists():assert entry.read_text()==text
 else:entry.write_text(text)
 subprocess.check_call(['bash','-n',str(entry)])
-schema=dict(status='TEMPLATE_ONLY_NOT_CANDIDATE_FREEZE',required_status='CANDIDATE_FROZEN_BEFORE_FINAL_SCORES',freeze_epoch='ROOT_ACTUAL_FREEZE_TIME',final_labels_or_scores_used_for_selection=False,further_candidate_selection_on_final_allowed=False,primary_validation_questions=2048,baseline=v['baseline'],candidate=dict(checkpoint=dict(path='REMOTE_ACCEPTED_CHECKPOINT',bytes='EXACT_BYTES',sha256='EXACT_SHA256'),state_key='EMA',layer=27,prefix=80),viewed_validation_evaluation=dict(path='REMOTE_VIEWED_VALIDATION_EVALUATION',bytes='EXACT_BYTES',sha256='EXACT_SHA256'),scorer_publication=proof(b/'source-publication.json'))
+schema=dict(status='TEMPLATE_ONLY_NOT_CANDIDATE_FREEZE',required_status='CANDIDATE_FROZEN_BEFORE_FINAL_SCORES',freeze_epoch='ROOT_ACTUAL_FREEZE_TIME',final_labels_or_scores_used_for_selection=False,further_candidate_selection_on_final_allowed=False,primary_validation_questions=2048,baseline=v['baseline'],candidate=dict(checkpoint=dict(path='REMOTE_ACCEPTED_CHECKPOINT',bytes='EXACT_BYTES',sha256='EXACT_SHA256'),state_key='EMA',layer=21,prefix=80),viewed_validation_evaluation=dict(path='REMOTE_VIEWED_VALIDATION_EVALUATION',bytes='EXACT_BYTES',sha256='EXACT_SHA256'),scorer_publication=proof(b/'source-publication.json'))
 once(b/'candidate-freeze-TEMPLATE.json',schema)
 env=dict(os.environ,QWEN7B_CODE_ROOT=str(code),CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',PYTHONDONTWRITEBYTECODE='1');script='import reproduction.operations.qwen7b_warmup.score_frozen_final4096 as s; assert s.E1 == '+repr(v['baseline']['checkpoint'])+'; print("FINAL_SCORER_CPU_IMPORT_WITHOUT_FINAL_READ_PASS")';r=subprocess.run(['bash',str(code/'reproduction/operations/qwen7b_warmup/runtime.sh'),'-c',script],env=env,stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=35);assert r.returncode==0 and'FINAL_SCORER_CPU_IMPORT_WITHOUT_FINAL_READ_PASS'in r.stdout,r.stderr[-1000:]
 receipt=dict(status='FINAL4096_SCORER_STAGED_NOT_SUBMITTED_NOT_SCORED',publication=proof(b/'source-publication.json'),entry=proof(entry),template=proof(b/'candidate-freeze-TEMPLATE.json'),CPU_import_passed=True,bash_syntax_passed=True,final_journals_or_labels_read=False,model_or_checkpoint_tensors_read=False,Slurm_submitted=False,candidate_frozen=False,expected_GPUs=2,root_submission_requires=['exact_candidate_freeze_JSON','freeze_SHA256','same_name_and_lock_check'])
@@ -62,7 +62,8 @@ once(b/'staged.json',receipt);print(json.dumps(receipt))
 
 def main():
  p=argparse.ArgumentParser();p.add_argument('--commit',required=True);a=p.parse_args()
- assert subprocess.check_output(['git','ls-remote','origin','refs/heads/'+BRANCH],cwd=R,text=True).split()[0]==a.commit
+ remote_commit=subprocess.check_output(['git','ls-remote','origin','refs/heads/'+BRANCH],cwd=R,text=True).split()[0]
+ subprocess.check_call(['git','merge-base','--is-ancestor',a.commit,remote_commit],cwd=R)
  payload={P+n:subprocess.check_output(['git','show',a.commit+':'+P+n],cwd=R)for n in FILES};files={n:dict(bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())for n,raw in payload.items()}
  spec=importlib.util.spec_from_file_location('final_private_control',CONTROL/'work/prefix-schedule-cp50-20261018/reproduction/hpc3_prefix5/direct_control.py');ctl=importlib.util.module_from_spec(spec);spec.loader.exec_module(ctl);ip=subprocess.check_output(['/usr/sbin/ipconfig','getifaddr','en0'],text=True).strip()
  baseline=dict(checkpoint=dict(path='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/checkpoints/cursor-002577.pt',bytes=3781073882,sha256='c0a1c7dc3663d4216966a3440c2103348bcc52db3cd04c2f5c59a784a2792917'),state_key='ema',layer=27,prefix=20)

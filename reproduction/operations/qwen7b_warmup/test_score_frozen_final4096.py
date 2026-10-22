@@ -10,7 +10,7 @@ class FinalFreezeTests(unittest.TestCase):
         return dict(status='CANDIDATE_FROZEN_BEFORE_FINAL_SCORES',freeze_epoch=1.,
             final_labels_or_scores_used_for_selection=False,further_candidate_selection_on_final_allowed=False,
             primary_validation_questions=2048,baseline=dict(checkpoint=s.E1,state_key='ema',layer=27,prefix=20),
-            candidate=dict(checkpoint=ref,state_key='EMA',layer=27,prefix=80),
+            candidate=dict(checkpoint=ref,state_key='EMA',layer=21,prefix=80),
             viewed_validation_evaluation=ref,scorer_publication=ref)
 
     def test_freeze_required_before_final_read(self):
