@@ -100,6 +100,13 @@ post norm记录为null和measured=false，CPU证据reader也不再冒称它是�
 749812仍为PENDING(Resources)，未观察到诊断或生产作业故障。没有据观测超时
 取消、重启或重复提交作业，也未修改全局SSH配置和凭据。
 
+为避免仅因排队重复提交，又读取旧四卡诊断749089／749739的Slurm资源记录。
+两者实际成功完成，elapsed分别6分38秒／6分49秒，均申请4GPU／48CPU／512GB；
+主job、batch、extern的MaxRSS字段全部为空。当前749812也申请该资源，仍为
+PENDING(Resources)。空RSS不是0，无法据此证明512GB明显过大或是唯一排队原因，
+因此没有盲目降低内存、重提或取消现有作业。见
+[调度与内存记录](evidence/clip-native4-resource-usage-1792691692195606000.json)。
+
 ## 数值与证据范围
 
 前缀解码优化不改模型前向、loss、reward、采样和截断逻辑。紧凑GQA已有独立输出／
