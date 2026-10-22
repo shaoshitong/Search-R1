@@ -7,7 +7,8 @@ Slurm service, not an actor/trainer process.  Cache is disabled.
 
 Large source assets are opened read-only.  The TAR's original JSONL member and
 Arrow cache live only in a newly owned remote cache directory (default tmpfs).
-There is no download, training, rebatching, or background FAISS thread.
+The default has no rebatching. An explicitly enabled private app batches only
+FAISS vectors after unchanged singleton E5 calls; no background FAISS thread.
 """
 import argparse
 import gc
@@ -104,6 +105,77 @@ def track_batch_search(backend, statistics, owner_thread):
         finally:
             statistics['backend_seconds'] += time.monotonic() - start
     return search
+
+
+def singleton_faiss_app(upstream, retriever, identity, statistics, owner_thread,
+                        batch_size=16, max_wait_ms=2):
+    """Optional private app; preserve singleton E5 math and original fallback."""
+    from contextlib import asynccontextmanager
+    from fastapi import FastAPI
+    from search_g1.singleton_faiss_batcher import SingletonFaissBatcher
+
+    identity.update(request_rebatching_enabled=True, singleton_e5=True,
+        faiss_batch_size=batch_size, faiss_max_wait_ms=max_wait_ms,
+        backend_seconds_scope='singleton batches: owner-thread encoder plus FAISS, excluding queue/documents; fallback: original batch_search wall time')
+    statistics.update(batch_attempts=0, batch_input_queries=0, max_batch_input_queries=0)
+
+    class TimedBatcher(SingletonFaissBatcher):
+        def _execute(self, batch):
+            active = sum(not future.cancelled() for _, future in batch)
+            if not active:
+                return
+            began = time.monotonic()
+            statistics['batch_attempts'] += 1
+            statistics['batch_input_queries'] += active
+            statistics['max_batch_input_queries'] = max(statistics['max_batch_input_queries'], active)
+            try:
+                return super()._execute(batch)
+            finally:
+                statistics['backend_seconds'] += time.monotonic() - began
+
+    @asynccontextmanager
+    async def lifespan(app):
+        if threading.get_ident() != owner_thread:
+            raise RuntimeError('Private FAISS batching app moved off its initialization thread')
+        app.state.batcher = TimedBatcher(retriever.encoder, retriever.index,
+            max_batch_size=batch_size, max_wait_ms=max_wait_ms)
+        try:
+            yield
+        finally:
+            await app.state.batcher.close()
+
+    app = FastAPI(lifespan=lifespan)
+
+    @app.post('/retrieve-original')
+    async def retrieve_original(request: upstream.QueryRequest):
+        return await upstream.retrieve_endpoint(request)
+
+    @app.post('/retrieve')
+    async def retrieve(request: upstream.QueryRequest):
+        topk = request.topk or upstream.config.retrieval_topk
+        if len(request.queries) != 1 or topk != 3:
+            return await upstream.retrieve_endpoint(request)
+        statistics['logical_requests'] += 1
+        statistics['logical_queries'] += 1
+        try:
+            scores, ids = await app.state.batcher.submit(request.queries[0])
+            documents = upstream.load_docs(retriever.corpus, ids.tolist())
+            result = ([dict(document=doc, score=score) for doc, score in
+                       zip(documents, scores.tolist())] if request.return_scores else documents)
+        except BaseException:
+            statistics['failed_requests'] += 1
+            raise
+        statistics['completed_requests'] += 1
+        statistics['completed_queries'] += 1
+        statistics['last_completed_unix'] = time.time()
+        return dict(result=[result])
+
+    @app.get('/health')
+    async def health():
+        return dict(identity, ok=True, statistics=dict(statistics), rss_bytes=rss_bytes(),
+                    observed_unix=time.time())
+
+    return app
 
 
 def extract_original_member(archive, target, status):
@@ -286,6 +358,12 @@ def serve(args):
         identity.update(ntotal=int(retriever.index.ntotal), dimension=int(retriever.index.d),
                         metric_type=int(retriever.index.metric_type))
         retriever.batch_search = track_batch_search(retriever.batch_search, statistics, initialized_thread)
+        app = upstream.app
+        if args.faiss_batch_size > 0:
+            app = singleton_faiss_app(upstream, retriever, identity, statistics,
+                initialized_thread, args.faiss_batch_size, args.faiss_max_wait_ms)
+            identity['source_code_sha256']['search_g1/singleton_faiss_batcher.py'] = digest(
+                REPO / 'search_g1/singleton_faiss_batcher.py')
         proof = stage64(retriever, args.stage_parquet, identity,
                         base / 'logs/stage64-admission.json') if args.stage_parquet else None
         identity['optional_stage64_proof'] = proof
@@ -293,14 +371,15 @@ def serve(args):
         status('READY', numerical_comparison_with_four_physical_gpus_pending=True)
         atomic(base / 'logs/service-ready.json', dict(identity, ready=True, ready_unix=time.time()))
 
-        @upstream.app.get('/health')
-        async def health():
-            return dict(identity, ok=True, statistics=dict(statistics), rss_bytes=rss_bytes(),
-                        observed_unix=time.time())
+        if args.faiss_batch_size == 0:
+            @upstream.app.get('/health')
+            async def health():
+                return dict(identity, ok=True, statistics=dict(statistics), rss_bytes=rss_bytes(),
+                            observed_unix=time.time())
 
         # The original async handler performs encoder/FAISS work directly on
         # this very same main event-loop thread.  Do not add worker processes.
-        uvicorn.run(upstream.app, host=args.host, port=args.port, workers=1)
+        uvicorn.run(app, host=args.host, port=args.port, workers=1)
         status('STOPPED', statistics=dict(statistics))
     except BaseException as error:
         status('FAILED', error_type=type(error).__name__, error=str(error))
@@ -326,10 +405,15 @@ def main():
     parser.add_argument('--host', default='0.0.0.0')
     parser.add_argument('--port', type=int, default=18020)
     parser.add_argument('--logical-shards', type=int, choices=(4,), default=4)
+    parser.add_argument('--faiss-batch-size', type=int, default=0,
+                        help='Private singleton-E5/batched-FAISS app; 0 preserves the original service')
+    parser.add_argument('--faiss-max-wait-ms', type=float, default=2)
     args = parser.parse_args()
     if (not args.base.is_absolute() or not re.fullmatch('[0-9a-f]{32}', args.run_id) or
             not re.fullmatch('[0-9a-f]{40}', args.source_commit) or not 1 <= args.port <= 65535):
         parser.error('Require an absolute service base, run UUID hex, exact source commit, and valid port')
+    if args.faiss_batch_size < 0:
+        parser.error('--faiss-batch-size must be nonnegative')
     serve(args)
 
 
