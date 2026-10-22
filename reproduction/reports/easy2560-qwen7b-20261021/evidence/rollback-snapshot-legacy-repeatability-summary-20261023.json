@@ -1,0 +1,791 @@
+{
+  "remote_summary_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022/diagnostics/native4-rollback-snapshot-r1-20261023/legacy-repeatability-vs-old.json",
+  "summary": {
+    "actual_write_growth": {
+      "0": {
+        "actual_calls": 20,
+        "actual_writes": 20,
+        "after": 1020,
+        "before": 1000
+      },
+      "1": {
+        "actual_calls": 20,
+        "actual_writes": 20,
+        "after": 1020,
+        "before": 1000
+      },
+      "2": {
+        "actual_calls": 20,
+        "actual_writes": 20,
+        "after": 1020,
+        "before": 1000
+      },
+      "3": {
+        "actual_calls": 20,
+        "actual_writes": 20,
+        "after": 1020,
+        "before": 1000
+      }
+    },
+    "epoch": 1792689215.4742303,
+    "fixed_work_wall_seconds": {
+      "new_legacy_slowest_rank": 273.7875532209873,
+      "old_legacy_slowest_rank": 266.0791017039446
+    },
+    "format": "native4_same_legacy_repeatability_samples_v1",
+    "full_optimizer_numerical_equivalence_proven": false,
+    "full_parameter_numerical_equivalence_proven": false,
+    "matching_twenty_update_work_proven_by_reports": true,
+    "model_or_tensor_loaded": false,
+    "new_gpu_work_started": false,
+    "new_hosts": [
+      "ACD1-25"
+    ],
+    "new_jobs": [
+      "749739"
+    ],
+    "new_legacy_root": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022/diagnostics/native4-rollback-snapshot-r1-20261023",
+    "new_only_instrumentation": "Original snapshot constructor wrapped with separately timed prior CUDA sync; original clone/forward/loss/Adam unchanged.",
+    "new_over_old_wall_change_fraction": 0.0289705259363795,
+    "old_hosts": [
+      "ACD1-19"
+    ],
+    "old_jobs": [
+      "749089"
+    ],
+    "old_legacy_root": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022/diagnostics/native4-legacy-r1",
+    "old_over_new_wall_ratio": 0.9718451353016007,
+    "production_modified": false,
+    "production_reward_equivalence_proven": false,
+    "ranks": [
+      {
+        "actual_monitor_forwards": {
+          "new_legacy": 21,
+          "old_legacy": 21
+        },
+        "clip_fraction": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.012657643471175106,
+          "max_abs": 0.008240070194005966,
+          "mean_abs": 0.0022615194582613187,
+          "reference_count": 80,
+          "reference_mean": 0.012683722537622089,
+          "relative_l2": 0.21474450521855298,
+          "same_count": true
+        },
+        "final_adam_samples": {
+          "numerical_moment_difference_available": false,
+          "numerical_moment_samples": null,
+          "same_state_indices": true,
+          "same_state_keys": true,
+          "sampled_state_hashes": {
+            "compared": 87,
+            "different": 58,
+            "equal": 29
+          },
+          "scope": "reported Adam step counters and64-element sample hashes per state tensor; hash mismatch supplies no numerical error magnitude; not full Adam equality",
+          "step_counters": {
+            "all_finite": true,
+            "candidate_count": 29,
+            "candidate_mean": 1020.0,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 29,
+            "reference_mean": 1020.0,
+            "relative_l2": 0.0,
+            "same_count": true
+          }
+        },
+        "final_parameter_samples": {
+          "matched_local_shards": 29,
+          "numerical_samples": {
+            "all_finite": true,
+            "candidate_count": 1856,
+            "candidate_mean": -0.0004596345448043127,
+            "max_abs": 2.286955714225769e-05,
+            "mean_abs": 7.144749343881123e-07,
+            "reference_count": 1856,
+            "reference_mean": -0.000459597355628436,
+            "relative_l2": 6.737700058875064e-05,
+            "same_count": true
+          },
+          "same_layout": true,
+          "same_parameter_names": true,
+          "sampled_hashes_equal": 0,
+          "scope": "at most64 reported elements per local parameter shard; not full parameters"
+        },
+        "global_cpu_rng_equal": true,
+        "global_cuda_rng_equal": true,
+        "gradient_norm": {
+          "all_finite": true,
+          "candidate_count": 20,
+          "candidate_mean": 2.066785300861281,
+          "max_abs": 0.28904659544547795,
+          "mean_abs": 0.07482875399062097,
+          "reference_count": 20,
+          "reference_mean": 2.045155579910951,
+          "relative_l2": 0.05118553450072414,
+          "same_count": true
+        },
+        "initial_adam_samples": {
+          "numerical_moment_difference_available": false,
+          "numerical_moment_samples": null,
+          "same_state_indices": true,
+          "same_state_keys": true,
+          "sampled_state_hashes": {
+            "compared": 87,
+            "different": 0,
+            "equal": 87
+          },
+          "scope": "reported Adam step counters and64-element sample hashes per state tensor; hash mismatch supplies no numerical error magnitude; not full Adam equality",
+          "step_counters": {
+            "all_finite": true,
+            "candidate_count": 29,
+            "candidate_mean": 1000.0,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 29,
+            "reference_mean": 1000.0,
+            "relative_l2": 0.0,
+            "same_count": true
+          }
+        },
+        "initial_parameter_samples": {
+          "matched_local_shards": 29,
+          "numerical_samples": {
+            "all_finite": true,
+            "candidate_count": 1856,
+            "candidate_mean": -0.00045950091092095136,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 1856,
+            "reference_mean": -0.00045950091092095136,
+            "relative_l2": 0.0,
+            "same_count": true
+          },
+          "same_layout": true,
+          "same_parameter_names": true,
+          "sampled_hashes_equal": 29,
+          "scope": "at most64 reported elements per local parameter shard; not full parameters"
+        },
+        "lp_means": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": -0.31620800100244667,
+          "max_abs": 0.00482009177984194,
+          "mean_abs": 0.0013278086169627677,
+          "reference_count": 80,
+          "reference_mean": -0.3157969568259603,
+          "relative_l2": 0.005210864659704938,
+          "same_count": true
+        },
+        "lp_samples": {
+          "all_finite": true,
+          "candidate_count": 2560,
+          "candidate_mean": -0.29606626741588116,
+          "max_abs": 0.9929828643798828,
+          "mean_abs": 0.013886271789669991,
+          "reference_count": 2560,
+          "reference_mean": -0.2957349129021168,
+          "relative_l2": 0.05198752286001,
+          "same_count": true
+        },
+        "new_legacy_work": {
+          "eighty_training_forwards": true,
+          "original_local640_rows": true,
+          "twenty_adam_calls": true,
+          "twenty_adam_writes": true,
+          "twenty_minibatches": true
+        },
+        "old_legacy_work": {
+          "eighty_training_forwards": true,
+          "original_local640_rows": true,
+          "twenty_adam_calls": true,
+          "twenty_adam_writes": true,
+          "twenty_minibatches": true
+        },
+        "policy_loss": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.04904875770153985,
+          "max_abs": 0.002920318676726333,
+          "mean_abs": 0.0009042971297208511,
+          "reference_count": 80,
+          "reference_mean": 0.04896413873661122,
+          "relative_l2": 0.003907983879083237,
+          "same_count": true
+        },
+        "ppo_kl": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.003378475273348158,
+          "max_abs": 0.0057969726622104645,
+          "mean_abs": 0.0014288407541243942,
+          "reference_count": 80,
+          "reference_mean": 0.0029433152862111457,
+          "relative_l2": 0.4692343882949288,
+          "same_count": true
+        },
+        "rank": 0,
+        "same_checkpoint": true,
+        "same_forward_authored_token_counts": true,
+        "same_original_data_identity": true,
+        "scheduler_after_equal": true,
+        "scheduler_before_equal": true,
+        "wall_seconds": {
+          "new_legacy": 273.7874943371862,
+          "old_legacy": 266.0790948009817,
+          "old_over_new": 0.9718453191046369
+        }
+      },
+      {
+        "actual_monitor_forwards": {
+          "new_legacy": 21,
+          "old_legacy": 21
+        },
+        "clip_fraction": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.01225996955690789,
+          "max_abs": 0.008879709988832474,
+          "mean_abs": 0.00247408062859904,
+          "reference_count": 80,
+          "reference_mean": 0.012186526532605057,
+          "relative_l2": 0.23882692120007246,
+          "same_count": true
+        },
+        "final_adam_samples": {
+          "numerical_moment_difference_available": false,
+          "numerical_moment_samples": null,
+          "same_state_indices": true,
+          "same_state_keys": true,
+          "sampled_state_hashes": {
+            "compared": 87,
+            "different": 58,
+            "equal": 29
+          },
+          "scope": "reported Adam step counters and64-element sample hashes per state tensor; hash mismatch supplies no numerical error magnitude; not full Adam equality",
+          "step_counters": {
+            "all_finite": true,
+            "candidate_count": 29,
+            "candidate_mean": 1020.0,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 29,
+            "reference_mean": 1020.0,
+            "relative_l2": 0.0,
+            "same_count": true
+          }
+        },
+        "final_parameter_samples": {
+          "matched_local_shards": 29,
+          "numerical_samples": {
+            "all_finite": true,
+            "candidate_count": 1856,
+            "candidate_mean": 0.0019067173504957189,
+            "max_abs": 4.785135388374329e-06,
+            "mean_abs": 6.547504424919884e-07,
+            "reference_count": 1856,
+            "reference_mean": 0.0019067002443436379,
+            "relative_l2": 1.0242637054630619e-05,
+            "same_count": true
+          },
+          "same_layout": true,
+          "same_parameter_names": true,
+          "sampled_hashes_equal": 0,
+          "scope": "at most64 reported elements per local parameter shard; not full parameters"
+        },
+        "global_cpu_rng_equal": true,
+        "global_cuda_rng_equal": true,
+        "gradient_norm": {
+          "all_finite": true,
+          "candidate_count": 20,
+          "candidate_mean": 2.066785300861281,
+          "max_abs": 0.28904659544547795,
+          "mean_abs": 0.07482875399062097,
+          "reference_count": 20,
+          "reference_mean": 2.045155579910951,
+          "relative_l2": 0.05118553450072414,
+          "same_count": true
+        },
+        "initial_adam_samples": {
+          "numerical_moment_difference_available": false,
+          "numerical_moment_samples": null,
+          "same_state_indices": true,
+          "same_state_keys": true,
+          "sampled_state_hashes": {
+            "compared": 87,
+            "different": 0,
+            "equal": 87
+          },
+          "scope": "reported Adam step counters and64-element sample hashes per state tensor; hash mismatch supplies no numerical error magnitude; not full Adam equality",
+          "step_counters": {
+            "all_finite": true,
+            "candidate_count": 29,
+            "candidate_mean": 1000.0,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 29,
+            "reference_mean": 1000.0,
+            "relative_l2": 0.0,
+            "same_count": true
+          }
+        },
+        "initial_parameter_samples": {
+          "matched_local_shards": 29,
+          "numerical_samples": {
+            "all_finite": true,
+            "candidate_count": 1856,
+            "candidate_mean": 0.001906770072134536,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 1856,
+            "reference_mean": 0.001906770072134536,
+            "relative_l2": 0.0,
+            "same_count": true
+          },
+          "same_layout": true,
+          "same_parameter_names": true,
+          "sampled_hashes_equal": 29,
+          "scope": "at most64 reported elements per local parameter shard; not full parameters"
+        },
+        "lp_means": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": -0.3132215586629827,
+          "max_abs": 0.004552589900909898,
+          "mean_abs": 0.0010499280099823486,
+          "reference_count": 80,
+          "reference_mean": -0.31305904591882605,
+          "relative_l2": 0.0045071338822815716,
+          "same_count": true
+        },
+        "lp_samples": {
+          "all_finite": true,
+          "candidate_count": 2560,
+          "candidate_mean": -0.3070822410285473,
+          "max_abs": 0.9812965393066406,
+          "mean_abs": 0.015163498371839524,
+          "reference_count": 2560,
+          "reference_mean": -0.30674095898866655,
+          "relative_l2": 0.06154376024407098,
+          "same_count": true
+        },
+        "new_legacy_work": {
+          "eighty_training_forwards": true,
+          "original_local640_rows": true,
+          "twenty_adam_calls": true,
+          "twenty_adam_writes": true,
+          "twenty_minibatches": true
+        },
+        "old_legacy_work": {
+          "eighty_training_forwards": true,
+          "original_local640_rows": true,
+          "twenty_adam_calls": true,
+          "twenty_adam_writes": true,
+          "twenty_minibatches": true
+        },
+        "policy_loss": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": -0.0017908769681238385,
+          "max_abs": 0.002608850654068684,
+          "mean_abs": 0.0008309634730319328,
+          "reference_count": 80,
+          "reference_mean": -0.0018874553567495376,
+          "relative_l2": 0.003232727000215933,
+          "same_count": true
+        },
+        "ppo_kl": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.0029469329143466893,
+          "max_abs": 0.005430493853054941,
+          "mean_abs": 0.0011466969284811058,
+          "reference_count": 80,
+          "reference_mean": 0.0026692607854784,
+          "relative_l2": 0.4126795354398923,
+          "same_count": true
+        },
+        "rank": 1,
+        "same_checkpoint": true,
+        "same_forward_authored_token_counts": true,
+        "same_original_data_identity": true,
+        "scheduler_after_equal": true,
+        "scheduler_before_equal": true,
+        "wall_seconds": {
+          "new_legacy": 273.7875532209873,
+          "old_legacy": 266.0790836109081,
+          "old_over_new": 0.9718450692173822
+        }
+      },
+      {
+        "actual_monitor_forwards": {
+          "new_legacy": 21,
+          "old_legacy": 21
+        },
+        "clip_fraction": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.012535316505818628,
+          "max_abs": 0.009289750829339027,
+          "mean_abs": 0.0026394072396215052,
+          "reference_count": 80,
+          "reference_mean": 0.012185517445323058,
+          "relative_l2": 0.25046421349152337,
+          "same_count": true
+        },
+        "final_adam_samples": {
+          "numerical_moment_difference_available": false,
+          "numerical_moment_samples": null,
+          "same_state_indices": true,
+          "same_state_keys": true,
+          "sampled_state_hashes": {
+            "compared": 87,
+            "different": 58,
+            "equal": 29
+          },
+          "scope": "reported Adam step counters and64-element sample hashes per state tensor; hash mismatch supplies no numerical error magnitude; not full Adam equality",
+          "step_counters": {
+            "all_finite": true,
+            "candidate_count": 29,
+            "candidate_mean": 1020.0,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 29,
+            "reference_mean": 1020.0,
+            "relative_l2": 0.0,
+            "same_count": true
+          }
+        },
+        "final_parameter_samples": {
+          "matched_local_shards": 29,
+          "numerical_samples": {
+            "all_finite": true,
+            "candidate_count": 1856,
+            "candidate_mean": 0.0023015477669900974,
+            "max_abs": 6.164424121379852e-06,
+            "mean_abs": 6.842716211277266e-07,
+            "reference_count": 1856,
+            "reference_mean": 0.002301563572158153,
+            "relative_l2": 1.0754205715848276e-05,
+            "same_count": true
+          },
+          "same_layout": true,
+          "same_parameter_names": true,
+          "sampled_hashes_equal": 0,
+          "scope": "at most64 reported elements per local parameter shard; not full parameters"
+        },
+        "global_cpu_rng_equal": true,
+        "global_cuda_rng_equal": true,
+        "gradient_norm": {
+          "all_finite": true,
+          "candidate_count": 20,
+          "candidate_mean": 2.066785300861281,
+          "max_abs": 0.28904659544547795,
+          "mean_abs": 0.07482875399062097,
+          "reference_count": 20,
+          "reference_mean": 2.045155579910951,
+          "relative_l2": 0.05118553450072414,
+          "same_count": true
+        },
+        "initial_adam_samples": {
+          "numerical_moment_difference_available": false,
+          "numerical_moment_samples": null,
+          "same_state_indices": true,
+          "same_state_keys": true,
+          "sampled_state_hashes": {
+            "compared": 87,
+            "different": 0,
+            "equal": 87
+          },
+          "scope": "reported Adam step counters and64-element sample hashes per state tensor; hash mismatch supplies no numerical error magnitude; not full Adam equality",
+          "step_counters": {
+            "all_finite": true,
+            "candidate_count": 29,
+            "candidate_mean": 1000.0,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 29,
+            "reference_mean": 1000.0,
+            "relative_l2": 0.0,
+            "same_count": true
+          }
+        },
+        "initial_parameter_samples": {
+          "matched_local_shards": 29,
+          "numerical_samples": {
+            "all_finite": true,
+            "candidate_count": 1856,
+            "candidate_mean": 0.002301622623932321,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 1856,
+            "reference_mean": 0.002301622623932321,
+            "relative_l2": 0.0,
+            "same_count": true
+          },
+          "same_layout": true,
+          "same_parameter_names": true,
+          "sampled_hashes_equal": 29,
+          "scope": "at most64 reported elements per local parameter shard; not full parameters"
+        },
+        "lp_means": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": -0.3100037931096827,
+          "max_abs": 0.0055825972365310395,
+          "mean_abs": 0.0012474174504270644,
+          "reference_count": 80,
+          "reference_mean": -0.3100388944337386,
+          "relative_l2": 0.0053587687924213905,
+          "same_count": true
+        },
+        "lp_samples": {
+          "all_finite": true,
+          "candidate_count": 2560,
+          "candidate_mean": -0.26849244236946107,
+          "max_abs": 1.5451240539550781,
+          "mean_abs": 0.013813160732388497,
+          "reference_count": 2560,
+          "reference_mean": -0.26686501763761045,
+          "relative_l2": 0.08124444563731412,
+          "same_count": true
+        },
+        "new_legacy_work": {
+          "eighty_training_forwards": true,
+          "original_local640_rows": true,
+          "twenty_adam_calls": true,
+          "twenty_adam_writes": true,
+          "twenty_minibatches": true
+        },
+        "old_legacy_work": {
+          "eighty_training_forwards": true,
+          "original_local640_rows": true,
+          "twenty_adam_calls": true,
+          "twenty_adam_writes": true,
+          "twenty_minibatches": true
+        },
+        "policy_loss": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.0280283602875386,
+          "max_abs": 0.004698442304827272,
+          "mean_abs": 0.0011133313171503693,
+          "reference_count": 80,
+          "reference_mean": 0.028016119723667837,
+          "relative_l2": 0.004592919372645475,
+          "same_count": true
+        },
+        "ppo_kl": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.002658597125628148,
+          "max_abs": 0.0055582490167580545,
+          "mean_abs": 0.001247737103039981,
+          "reference_count": 80,
+          "reference_mean": 0.0026382253505289554,
+          "relative_l2": 0.4113094564230454,
+          "same_count": true
+        },
+        "rank": 2,
+        "same_checkpoint": true,
+        "same_forward_authored_token_counts": true,
+        "same_original_data_identity": true,
+        "scheduler_after_equal": true,
+        "scheduler_before_equal": true,
+        "wall_seconds": {
+          "new_legacy": 273.78751158341765,
+          "old_legacy": 266.0791006019572,
+          "old_over_new": 0.971845279074711
+        }
+      },
+      {
+        "actual_monitor_forwards": {
+          "new_legacy": 21,
+          "old_legacy": 21
+        },
+        "clip_fraction": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.012616775679634883,
+          "max_abs": 0.008324064314365387,
+          "mean_abs": 0.0020744551948155276,
+          "reference_count": 80,
+          "reference_mean": 0.01290307115559699,
+          "relative_l2": 0.20252824187857207,
+          "same_count": true
+        },
+        "final_adam_samples": {
+          "numerical_moment_difference_available": false,
+          "numerical_moment_samples": null,
+          "same_state_indices": true,
+          "same_state_keys": true,
+          "sampled_state_hashes": {
+            "compared": 87,
+            "different": 58,
+            "equal": 29
+          },
+          "scope": "reported Adam step counters and64-element sample hashes per state tensor; hash mismatch supplies no numerical error magnitude; not full Adam equality",
+          "step_counters": {
+            "all_finite": true,
+            "candidate_count": 29,
+            "candidate_mean": 1020.0,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 29,
+            "reference_mean": 1020.0,
+            "relative_l2": 0.0,
+            "same_count": true
+          }
+        },
+        "final_parameter_samples": {
+          "matched_local_shards": 29,
+          "numerical_samples": {
+            "all_finite": true,
+            "candidate_count": 1856,
+            "candidate_mean": 0.01856268222521239,
+            "max_abs": 4.179077222943306e-06,
+            "mean_abs": 6.495207500734068e-07,
+            "reference_count": 1856,
+            "reference_mean": 0.018562717009342235,
+            "relative_l2": 5.415218779507525e-06,
+            "same_count": true
+          },
+          "same_layout": true,
+          "same_parameter_names": true,
+          "sampled_hashes_equal": 0,
+          "scope": "at most64 reported elements per local parameter shard; not full parameters"
+        },
+        "global_cpu_rng_equal": true,
+        "global_cuda_rng_equal": true,
+        "gradient_norm": {
+          "all_finite": true,
+          "candidate_count": 20,
+          "candidate_mean": 2.066785300861281,
+          "max_abs": 0.28904659544547795,
+          "mean_abs": 0.07482875399062097,
+          "reference_count": 20,
+          "reference_mean": 2.045155579910951,
+          "relative_l2": 0.05118553450072414,
+          "same_count": true
+        },
+        "initial_adam_samples": {
+          "numerical_moment_difference_available": false,
+          "numerical_moment_samples": null,
+          "same_state_indices": true,
+          "same_state_keys": true,
+          "sampled_state_hashes": {
+            "compared": 87,
+            "different": 0,
+            "equal": 87
+          },
+          "scope": "reported Adam step counters and64-element sample hashes per state tensor; hash mismatch supplies no numerical error magnitude; not full Adam equality",
+          "step_counters": {
+            "all_finite": true,
+            "candidate_count": 29,
+            "candidate_mean": 1000.0,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 29,
+            "reference_mean": 1000.0,
+            "relative_l2": 0.0,
+            "same_count": true
+          }
+        },
+        "initial_parameter_samples": {
+          "matched_local_shards": 29,
+          "numerical_samples": {
+            "all_finite": true,
+            "candidate_count": 1856,
+            "candidate_mean": 0.018562713160715193,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 1856,
+            "reference_mean": 0.018562713160715193,
+            "relative_l2": 0.0,
+            "same_count": true
+          },
+          "same_layout": true,
+          "same_parameter_names": true,
+          "sampled_hashes_equal": 29,
+          "scope": "at most64 reported elements per local parameter shard; not full parameters"
+        },
+        "lp_means": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": -0.31854446515697593,
+          "max_abs": 0.0071226848111607816,
+          "mean_abs": 0.0013220120871034308,
+          "reference_count": 80,
+          "reference_mean": -0.3183174828861596,
+          "relative_l2": 0.005865056618419727,
+          "same_count": true
+        },
+        "lp_samples": {
+          "all_finite": true,
+          "candidate_count": 2560,
+          "candidate_mean": -0.3189953427761793,
+          "max_abs": 1.409646987915039,
+          "mean_abs": 0.015265612676739693,
+          "reference_count": 2560,
+          "reference_mean": -0.31870885416865347,
+          "relative_l2": 0.058227707196772616,
+          "same_count": true
+        },
+        "new_legacy_work": {
+          "eighty_training_forwards": true,
+          "original_local640_rows": true,
+          "twenty_adam_calls": true,
+          "twenty_adam_writes": true,
+          "twenty_minibatches": true
+        },
+        "old_legacy_work": {
+          "eighty_training_forwards": true,
+          "original_local640_rows": true,
+          "twenty_adam_calls": true,
+          "twenty_adam_writes": true,
+          "twenty_minibatches": true
+        },
+        "policy_loss": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.019311549706162504,
+          "max_abs": 0.003493959703039229,
+          "mean_abs": 0.0009713008380675824,
+          "reference_count": 80,
+          "reference_mean": 0.018963756330869573,
+          "relative_l2": 0.004847190781029206,
+          "same_count": true
+        },
+        "ppo_kl": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.002675665521019255,
+          "max_abs": 0.008150456007570028,
+          "mean_abs": 0.001381661111372523,
+          "reference_count": 80,
+          "reference_mean": 0.002346817279976676,
+          "relative_l2": 0.6335300143878596,
+          "same_count": true
+        },
+        "rank": 3,
+        "same_checkpoint": true,
+        "same_forward_authored_token_counts": true,
+        "same_original_data_identity": true,
+        "scheduler_after_equal": true,
+        "scheduler_before_equal": true,
+        "wall_seconds": {
+          "new_legacy": 273.7875093109906,
+          "old_legacy": 266.0791017039446,
+          "old_over_new": 0.9718452911659673
+        }
+      }
+    ],
+    "same_four_ranks": true,
+    "scope": "Two independent legacy native4 CP50/selection51 fixed-work runs, one with constructor timing instrumentation. Numerical reported samples only; node/instrumentation variability is not a full-state or causal hardware comparison.",
+    "source_reports_modified": false,
+    "whole_outer_speedup_proven": false
+  }
+}

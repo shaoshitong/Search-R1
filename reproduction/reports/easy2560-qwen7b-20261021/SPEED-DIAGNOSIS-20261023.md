@@ -69,10 +69,28 @@ actor为Q28／KV4；每卡五个候选阶段的权重同步次数为 `[1,0,0,0,0
 小型采样比较，不能扩充为全部参数／Adam或最终reward完全相等。实际恢复验证与
 跨内核训练数值比较是两个不同证据范围。
 
+为量化重复运行本身的差异，复用了本次legacy测量与原legacy的小型rank报告，
+没有新跑GPU：四卡初始参数／Adam样本、RNG、数据及80次前向token数一致，
+20步后比较如下。两种比较都只覆盖报告样本。
+
+| 20步后样本指标 | 旧legacy→lean＋compact | 旧legacy→同legacy重复 |
+| --- | ---: | ---: |
+| LP样本相对L2，四rank范围 | 0.04864–0.06627 | 0.05199–0.08124 |
+| Policy loss相对L2，四rank范围 | 0.00325–0.00509 | 0.00323–0.00485 |
+| Gradient norm相对L2 | 0.07924 | 0.05119 |
+| 最终参数样本最大绝对差 | 2.4984e-5 | 2.2870e-5 |
+
+这说明跨作业／节点和计时包装下，同旧实现重复20步也不是逐位复现；不能把之前
+所有差异单独归因compact。但这不是完整梯度、完整Adam或最终QA等价的证明，
+也不能用小型参数样本误差替代完整张量误差。原始Adam报告只有样本hash，无法
+从hash不同计算moment的数值误差大小。
+
 原始小型证据：
 
 - [正式第55轮完整状态与计时](evidence/native-prefix-deployment-and-first-outer-evidence.json)
 - [此前候选实际工作量与内核形状测试](evidence/fa3-production-speed-cause-20261022.json)
 - [四卡20次回滚快照的独立计时](evidence/rollback-snapshot-measured-summary.json)
+- [同legacy重复20步的样本差异](evidence/rollback-snapshot-legacy-repeatability-summary-20261023.json)
+- [原legacy与lean＋compact的样本差异](evidence/fastpath-native4-comparison-1792678397691460000.json)
 
 checkpoint、optimizer、完整rollout和模型始终保留远端，本地只保存代码与小型审计结果。
