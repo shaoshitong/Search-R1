@@ -1,6 +1,6 @@
 {
-  "epoch": 1792647962.6689656,
-  "status": "ACTUAL747219_OUTERS35_36_COMPLETE_CP36_SEALED_37_POOL_CREATED_GOAL200_ACTIVE",
+  "epoch": 1792649823.9845023,
+  "status": "ACTUAL747219_OUTERS35_TO37_COMPLETE_CP37_SEALED_38_POOL_CREATED_GOAL200_ACTIVE",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "747219",
@@ -11,7 +11,7 @@
   "global_mini": 128,
   "logical_micro": 4,
   "accumulation": 4,
-  "actual_completed_outer": 36,
+  "actual_completed_outer": 37,
   "initialization_is_not_training_acceptance": true,
   "old3b": {
     "job": "734689",
@@ -54,8 +54,8 @@
     "enabled_scope": "Exact retrieval cache + original dense head + separate2H100 retrieval service + authorized actor-local FA3; vLLM rollout XFormers and grounding SDPA unchanged"
   },
   "previous_goal_turn_classification": "PROGRESS_ACTUAL_OUTERS27_TO30_COMPLETE_AND31_GENERATION",
-  "latest_turn_classification": "PROGRESS_ACTUAL_TWO_RECOVERED_OUTERS_COMPLETE_AND37_POOL_CREATED",
-  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp34-recovery-watch-1792644663200672000/observation-054.json",
+  "latest_turn_classification": "PROGRESS_ACTUAL_THREE_RECOVERED_OUTERS_COMPLETE_AND38_POOL_CREATED",
+  "last_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp34-recovery-watch-1792644663200672000/observation-084.json",
   "pipeline": {
     "execution_role": "production",
     "run_id": "232f20e112ac4a978c5aba52a0367195",
@@ -140,7 +140,8 @@
   "recovery_followup_required_next_outer_started": 40,
   "actual_new_completed_outers": [
     35,
-    36
+    36,
+    37
   ],
   "archive_controller_for_current7b_not_yet_started": false,
   "remaining_goal_requirements": [
@@ -193,14 +194,6 @@
   "current_candidate_pools": [
     {
       "completed_questions": 2560,
-      "name": "ac512297cc994a62a6f77a76ebeb2994-pool-0",
-      "progress_error": null,
-      "progress_pending": false,
-      "saved_chunk_files": 5,
-      "step": 35
-    },
-    {
-      "completed_questions": 2560,
       "name": "f691badea873419f90ba5e20aae0c0d5-pool-0",
       "progress_error": null,
       "progress_pending": false,
@@ -208,8 +201,16 @@
       "step": 36
     },
     {
-      "completed_questions": null,
+      "completed_questions": 2560,
       "name": "9de8ac8a474d4f94bac6fae708888e6d-pool-0",
+      "progress_error": null,
+      "progress_pending": false,
+      "saved_chunk_files": 5,
+      "step": 37
+    },
+    {
+      "completed_questions": null,
+      "name": "8c87b690a0174052a37b06b854b79557-pool-0",
       "progress_error": null,
       "progress_pending": true,
       "saved_chunk_files": 0,
@@ -219,8 +220,8 @@
   "outer2_started_not_complete": false,
   "outer2_completed_candidate_questions": 2560,
   "outer2_first_chunk_mixed_questions": 181,
-  "current_base_durable_checkpoint_outer": 36,
-  "most_recent_recoverable_checkpoint": 36,
+  "current_base_durable_checkpoint_outer": 37,
+  "most_recent_recoverable_checkpoint": 37,
   "outer2_candidate_mixed_questions": 979,
   "outer2_candidate_mixed_fraction": 0.382421875,
   "outer2_selected_mixed_questions": 512,
@@ -286,15 +287,15 @@
   },
   "rolling_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_36",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_37",
     "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_36/full-manifest.json",
-    "manifest_sha256": "7b83b994c21ed1c65bad6c43c41a1ba02a10dc589e237ba7b880aef599c324af",
-    "published_unix": 1792647957.7689335,
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_37/full-manifest.json",
+    "manifest_sha256": "9fe62bd143896c3bd06cab021dda22dde57dfe33aae34df9aa2b3b45af1e4a47",
+    "published_unix": 1792649775.637102,
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
     "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 36
+    "step": 37
   },
   "outer2_timings_seconds": {
     "timing_s/candidate_fill": 864.349,
@@ -392,7 +393,7 @@
       "replacement_has_completed_milestone5_archive": true
     }
   ],
-  "current_outer": 37,
+  "current_outer": 38,
   "outer3_selection": {
     "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-exact-cp1-r2-20261021/artifacts/mixed-selection/eefd4da7a7b445a4862963b159cbdfdc.json",
     "bytes": 2750777,
@@ -854,7 +855,6 @@
     200
   ],
   "remaining_recovery_followup": [
-    37,
     38,
     39
   ],
@@ -1158,22 +1158,22 @@
     "publication_scope": "Latest previously published immutable sources; this pending state/evidence refresh will get its own publication receipt."
   },
   "all4_actual_optimizer_writes": {
-    "0": 720,
-    "1": 720,
-    "2": 720,
-    "3": 720
+    "0": 740,
+    "1": 740,
+    "2": 740,
+    "3": 740
   },
   "current_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_36",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_37",
     "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_36/full-manifest.json",
-    "manifest_sha256": "7b83b994c21ed1c65bad6c43c41a1ba02a10dc589e237ba7b880aef599c324af",
-    "published_unix": 1792647957.7689335,
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_37/full-manifest.json",
+    "manifest_sha256": "9fe62bd143896c3bd06cab021dda22dde57dfe33aae34df9aa2b3b45af1e4a47",
+    "published_unix": 1792649775.637102,
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
     "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 36
+    "step": 37
   },
   "current_candidate_pool": {
     "completed_questions": 1024,
@@ -1209,18 +1209,31 @@
       "selected_mixed_fraction": 1.0,
       "selected_all_correct_fallback": 0,
       "source": "actual saved pool completion log; mixed-first policy and completed512 budget"
+    },
+    {
+      "step": 37,
+      "attempt_id": "9de8ac8a474d4f94bac6fae708888e6d",
+      "candidate_questions": 2560,
+      "candidate_mixed_questions": 567,
+      "candidate_mixed_fraction": 0.221484375,
+      "raw_generated_trajectories": 12800,
+      "selected_questions": 512,
+      "selected_mixed": 512,
+      "selected_mixed_fraction": 1.0,
+      "selected_all_correct_fallback": 0,
+      "source": "actual saved pool completion log; mixed-first policy and completed512 budget"
     }
   ],
   "latest_completed_metrics": {
-    "attempt_index": 36,
-    "grad_norm": 2.3366711215320604,
-    "optimizer_writes": 720,
-    "optimizer_writes_before": 700,
+    "attempt_index": 37,
+    "grad_norm": 2.359063370600958,
+    "optimizer_writes": 740,
+    "optimizer_writes_before": 720,
     "optimizer_writes_this_outer": 20,
-    "pg_loss": 0.027541853153449154,
-    "ppo_kl": 0.002628083067611442,
-    "reward": 0.669889509677887,
-    "step": 36
+    "pg_loss": 0.0633698476101457,
+    "ppo_kl": 0.002242945823491027,
+    "reward": 0.6619030237197876,
+    "step": 37
   },
   "archive5_grounding_dependency_closure": {
     "status": "EASY2560_POST_CALLBACK_DEPENDENCIES_SHA_FSYNC_PASS",
@@ -1279,7 +1292,7 @@
       "terminal": true
     }
   ],
-  "current_progress_evidence": "evidence/actual747219-outers35-36-sealed36-20261022.json",
+  "current_progress_evidence": "evidence/actual747219-outers35-37-sealed37-20261022.json",
   "published_progress_observer": {
     "commit": "b3f808a31d957799c82690cb6ddf97e2bdddd002",
     "source": "reproduction/operations/easy7b_20261021/watch_training_progress_local.py",
@@ -1371,7 +1384,7 @@
     "actual_backward_returns_per_rank": 11200,
     "first_actor_update_seconds": 264.853
   },
-  "latest_full_checkpoint_outer": 36,
+  "latest_full_checkpoint_outer": 37,
   "latest_phase_timing_evidence": "evidence/actual-fa3-outers31-to33-sealed-and34-saved-20261022.json",
   "frozen_grounding_batch_optimization": {
     "production_micro": 4,
@@ -1646,8 +1659,8 @@
     "read_only": true,
     "total_training_goal": 200,
     "current_recovery_followup_accepted": false,
-    "state": "LIVE_OUTERS35_36_COMPLETE_CP36_SEALED_37_POOL_CREATED",
-    "epoch": 1792647962.6689656,
+    "state": "LIVE_OUTERS35_TO37_COMPLETE_CP37_SEALED_38_POOL_CREATED",
+    "epoch": 1792649823.9845023,
     "previous_local_watcher_session": 89489,
     "previous_local_watcher_exit": 143,
     "training_restarted_for_reader_handoff": false
@@ -1698,7 +1711,7 @@
     "matched_input_FA3_speedup_established": false
   },
   "latest_collapse_review": {
-    "through_outer": 36,
+    "through_outer": 37,
     "clear_collapse_observed": false,
     "reward35": 0.6463346481323242,
     "ppo_kl35": 0.002154226534003101,
@@ -1707,7 +1720,10 @@
     "interpretation": "Varying pre-update training pools are not fixed evaluation; no rollback requested for ordinary variation.",
     "reward36": 0.669889509677887,
     "ppo_kl36": 0.002628083067611442,
-    "grad_norm36": 2.3366711215320604
+    "grad_norm36": 2.3366711215320604,
+    "reward37": 0.6619030237197876,
+    "ppo_kl37": 0.002242945823491027,
+    "grad_norm37": 2.359063370600958
   },
   "latest_fixed_QA_history_and_cadence_review": {
     "scope": "Static read-only identity/cadence review of current source; future milestone QA is not executed by this review",
@@ -1887,7 +1903,7 @@
     "new_job": "747219"
   },
   "source34_oom_recovery": {
-    "status": "ACTUAL_NATIVE4_SOURCE34_RESTORE_PASS_OUTERS35_36_COMPLETE_CP36_SEALED",
+    "status": "ACTUAL_NATIVE4_SOURCE34_RESTORE_PASS_OUTERS35_TO37_COMPLETE_CP37_SEALED",
     "epoch": 1792643644.9728544,
     "cpu_audit_job": "747190",
     "cpu_audit_accounting": {
@@ -2040,9 +2056,10 @@
     "first_new_outer_complete": false,
     "actual_completed_recomputed_outers": [
       35,
-      36
+      36,
+      37
     ],
-    "latest_checkpoint_outer": 36,
+    "latest_checkpoint_outer": 37,
     "actual_restore_scope": "Global Python/NumPy/Torch CPU/CUDA; manager actor/rollout private CUDA; runner request generators. Exact saved-state readback does not guarantee future asynchronous stochastic request-by-request bitwise replay."
   },
   "historical_failed_readonly_watcher": {
@@ -2095,16 +2112,8 @@
     "actual_milestone50_archive_accepted": false
   },
   "latest_candidate_progress": {
-    "epoch": 1792647962.6689656,
+    "epoch": 1792649823.9845023,
     "pools": [
-      {
-        "completed_questions": 2560,
-        "name": "ac512297cc994a62a6f77a76ebeb2994-pool-0",
-        "progress_error": null,
-        "progress_pending": false,
-        "saved_chunk_files": 5,
-        "step": 35
-      },
       {
         "completed_questions": 2560,
         "name": "f691badea873419f90ba5e20aae0c0d5-pool-0",
@@ -2114,15 +2123,23 @@
         "step": 36
       },
       {
-        "completed_questions": null,
+        "completed_questions": 2560,
         "name": "9de8ac8a474d4f94bac6fae708888e6d-pool-0",
+        "progress_error": null,
+        "progress_pending": false,
+        "saved_chunk_files": 5,
+        "step": 37
+      },
+      {
+        "completed_questions": null,
+        "name": "8c87b690a0174052a37b06b854b79557-pool-0",
         "progress_error": null,
         "progress_pending": true,
         "saved_chunk_files": 0,
         "step": null
       }
     ],
-    "scope": "37 pool created; no completed37 candidate chunk in this observation."
+    "scope": "38 pool created; no completed38 candidate chunk in this observation."
   },
   "historical_cp12_actual_state_restore": {
     "source_job": "745371",
