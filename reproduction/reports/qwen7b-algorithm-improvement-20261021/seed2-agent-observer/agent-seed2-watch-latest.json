@@ -1,41 +1,41 @@
 {
-  "time": 1792696391.403976,
+  "time": 1792696454.7735274,
   "observer_pid": 42819,
   "queue": {
     "returncode": 0,
-    "stdout": "749965|q7b-L15P80-c64-s19137|acd_u|RUNNING|8:21|ACD1-51\n749935|q7b-full-Z-s19137|acd_u|RUNNING|17:52|ACD1-16",
+    "stdout": "749965|q7b-L15P80-c64-s19137|acd_u|RUNNING|9:24|ACD1-51\n749935|q7b-full-Z-s19137|acd_u|RUNNING|18:55|ACD1-16",
     "stderr": ""
   },
   "accounting": {
     "returncode": 0,
-    "stdout": "749935|RUNNING|0:0|00:17:52|ACD1-16\n749965|RUNNING|0:0|00:08:21|ACD1-51",
+    "stdout": "749935|RUNNING|0:0|00:18:55|ACD1-16\n749965|RUNNING|0:0|00:09:24|ACD1-51",
     "stderr": ""
   },
   "cells": {
     "current64": {
       "job_id": "749965",
       "actual_rank_epochs": [
-        5,
-        5
+        6,
+        6
       ],
       "actual_rank_cursors": [
-        640,
-        640
+        768,
+        768
       ],
       "actual_Adam_updates": [
-        640,
-        640
+        768,
+        768
       ],
       "real_six_update_sequence": [
-        635,
-        636,
-        637,
-        638,
-        639,
-        640
+        763,
+        764,
+        765,
+        766,
+        767,
+        768
       ],
       "real_six_updates_continuous": true,
-      "verified_two_samples_plus_six_updates": false,
+      "verified_two_samples_plus_six_updates": true,
       "initial_head_sha256": "10684fda52c0f9f7b670b0472ccd8b7e581346e4d01572bc078a143cc782b41e",
       "init_seed": 19137,
       "train_plan_seed": 2026102302,
@@ -45,7 +45,8 @@
         "evaluation-epoch-01.json",
         "evaluation-epoch-02.json",
         "evaluation-epoch-03.json",
-        "evaluation-epoch-04.json"
+        "evaluation-epoch-04.json",
+        "evaluation-epoch-05.json"
       ],
       "failures": {},
       "checkpoint": {
@@ -62,23 +63,23 @@
         1
       ],
       "actual_rank_cursors": [
-        1256,
-        1256
+        1321,
+        1321
       ],
       "actual_Adam_updates": [
-        1256,
-        1256
+        1321,
+        1321
       ],
       "real_six_update_sequence": [
-        1251,
-        1252,
-        1253,
-        1254,
-        1255,
-        1256
+        1316,
+        1317,
+        1318,
+        1319,
+        1320,
+        1321
       ],
       "real_six_updates_continuous": true,
-      "verified_two_samples_plus_six_updates": false,
+      "verified_two_samples_plus_six_updates": true,
       "initial_head_sha256": "d535b972ce10b74110b9c58264e5a1dced114b889896140b33484b31267e0acd",
       "init_seed": 19137,
       "train_plan_seed": 2026102302,
@@ -87,7 +88,11 @@
         "evaluation-epoch-00.json"
       ],
       "failures": {},
-      "checkpoint": null,
+      "checkpoint": {
+        "bytes": 3773206164,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-Z-seed19137-plan2026102302-P20-20261023-v1/checkpoint-epoch-01.pt",
+        "sha256": "90aec95f4c088d543bb5f20611bcb7e37a9adbd8917c5f74052fff7643f2713b"
+      },
       "complete": null
     }
   },
