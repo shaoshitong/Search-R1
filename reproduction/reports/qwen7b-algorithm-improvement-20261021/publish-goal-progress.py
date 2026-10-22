@@ -5,9 +5,9 @@ ref='refs/heads/'+branch
 def git(*args,env=None):
  return subprocess.check_output(['git',*args],cwd=repo,env=env,text=True).strip()
 parent=git('rev-parse',ref)
-files=[pathlib.Path('reproduction/operations/qwen7b_warmup')/n for n in ('joint_mixed_direct_labelblind.py','direct_update_labelblind.py','labelblind_question_g5_sampler.py','deploy_mixed_direct_e1_uniform_g5_weighted.py','prepare_frozen_final4096_generation.py','deploy_frozen_final4096_scoring.py','score_frozen_final4096.py','test_score_frozen_final4096.py')]
+files=[pathlib.Path('reproduction/operations/qwen7b_warmup')/n for n in ('joint_mixed_direct_labelblind.py','direct_update_labelblind.py','labelblind_question_g5_sampler.py','deploy_mixed_direct_e1_uniform_g5_weighted.py','prepare_frozen_final4096_generation.py','deploy_frozen_final4096_scoring.py','score_frozen_final4096.py','test_score_frozen_final4096.py','accept_online_mixed_pilot_checkpoints.py','deploy_online_pilot_CPU_acceptance.py')]
 report=pathlib.Path(__file__).resolve().parent
-for folder in ('mixed-direct-e1-unique-g5','online-layer-prefix','uniform-g5-control','unique-vs-labelblind-g5','frozen-final4096-preparation','frozen-final4096-scoring','live-observations'):
+for folder in ('mixed-direct-e1-unique-g5','online-layer-prefix','online-pilot-CPU-acceptance','uniform-g5-control','unique-vs-labelblind-g5','frozen-final4096-preparation','frozen-final4096-scoring','live-observations'):
  for p in (report/folder).rglob('*'):
   if p.is_file() and p.suffix in ('.py','.md','.json','.jsonl','.txt') and p.stat().st_size<600000:files.append(p.relative_to(repo))
 files.extend(pathlib.Path(__file__).resolve().parent.relative_to(repo)/n for n in ('observe-live.py','publish-goal-progress.py','read-current-queue-forecast.py','raise-waiting-current-jobs-medium.py','raise-waiting-current-jobs-third-tier.py'))
