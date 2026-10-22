@@ -64,7 +64,10 @@ def run(control):
    # complete/COMPLETED0:0 again. It does not open any still-running loss arm.
    script=B/'terminal-cpu-mse-agent.py';p=subprocess.run([sys.executable,str(script),'--action','start','--commit',ACCEPT_COMMIT,'--control',control],cwd=REPO,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
    if p.returncode:raise RuntimeError((p.stdout+p.stderr)[-2400:])
-   launch=json.loads(p.stdout.splitlines()[-1]);atomic(B/'agent-mse-terminal-CPU-launch.json',launch);c=publish('Record MSE all10epochs terminal completion and locked CPU acceptance launch');print(json.dumps(dict(event='MSE_TERMINAL_CPU_VALIDATOR_LAUNCHED_NOT_YET_ACCEPTED',commit=c,**current)),flush=True)
+   launch=json.loads(p.stdout.splitlines()[-1])
+   if launch.get('status')=='WAITING_SHARED_CPU_MUTEX_NOT_STARTED':
+    atomic(B/'agent-mse-terminal-CPU-waiting.json',launch);time.sleep(55);continue
+   atomic(B/'agent-mse-terminal-CPU-launch.json',launch);c=publish('Record MSE all10epochs terminal completion and locked CPU acceptance launch');print(json.dumps(dict(event='MSE_TERMINAL_CPU_VALIDATOR_LAUNCHED_NOT_YET_ACCEPTED',commit=c,**current)),flush=True)
    for attempt in range(40):
     time.sleep(15)
     status=subprocess.run([sys.executable,str(script),'--action','status','--commit',ACCEPT_COMMIT,'--control',control],cwd=REPO,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)

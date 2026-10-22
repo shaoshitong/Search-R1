@@ -27,6 +27,9 @@ def tensor_mapping_sha(mapping,torch):
   h.update(name.encode());h.update(str(t.dtype).encode());h.update(repr(tuple(t.shape)).encode());raw=t.detach().contiguous().reshape(-1).view(torch.uint8)
   for i in range(0,raw.numel(),1048576):h.update(raw[i:i+1048576].numpy().tobytes())
  return h.hexdigest()
+def serialized_cuda_rng_bytes(t,torch):
+ if not(torch.is_tensor(t)and t.device.type=='cpu'and t.dtype==torch.uint8 and t.ndim==1 and t.numel()>=16):raise ValueError('Expected serialized CUDA RNG state: CPU uint8 vector with at least16bytes')
+ return t.numel()
 def validate(base,epoch,out):
  import numpy as np
  import torch
@@ -77,7 +80,7 @@ def validate(base,epoch,out):
  assert all(g['lr']==5e-6 for g in opt.param_groups)
  rngs=[];assert len(blob['RNG_by_rank'])==2
  for rank,rng in enumerate(blob['RNG_by_rank']):
-  assert set(rng)=={'python','numpy','torch','cuda'};random.Random().setstate(rng['python']);np.random.RandomState().set_state(rng['numpy']);torch.Generator(device='cpu').set_state(rng['torch']);assert rng['cuda'].device.type=='cpu'and rng['cuda'].dtype==torch.uint8 and rng['cuda'].numel()>16;rngs.append(dict(rank=rank,CPU_states_restored=True,CUDA_serialized_bytes=rng['cuda'].numel(),CUDA_runtime_restore_tested=False))
+  assert set(rng)=={'python','numpy','torch','cuda'};random.Random().setstate(rng['python']);np.random.RandomState().set_state(rng['numpy']);torch.Generator(device='cpu').set_state(rng['torch']);rngs.append(dict(rank=rank,CPU_states_restored=True,CUDA_serialized_bytes=serialized_cuda_rng_bytes(rng['cuda'],torch),CUDA_runtime_restore_tested=False))
  queue=None
  if window:
   from detached_score_window import DetachedScoreWindow
