@@ -126,7 +126,17 @@ ExcNodeList，命令返回0，随后回读为(null)。没有重提作业，没�
 512G／30分钟和CP50／selection51／20次真实更新；生产749598不受此变更影响。
 这次调度更新尚不证明CUDA四卡或数值验收，需继续读取实际测试输出。精确操作与
 回执见[调度更新](evidence/clip-native4-historical-node-update-1792693491575892000.json)。
-Slurm清空该字段的语法来自[官方scontrol说明](https://slurm.schedmd.com/scontrol.html#OPT_ExcNodeList)。
+Slurm清空该字段的语法来自[官方scontrol说明](https://slurm.schedmd.com/scontrol.html)。
+
+解除排除后，749812确实调度到ACD1-13，但25秒后FAILED／1:0。四rank均在
+CUDA初始化报unknown error，available devices变为zero，actual_clipping_calls=0，
+未执行任何Adam／配对裁剪。这不能冒称裁剪数值失败，也不能认定本次仍是旧的
+三卡可见模式；只证明该次allocation无法初始化CUDA。完整失败root与小型报告
+保留。随后只恢复这个真实失败的独立诊断，新job749913、新root paired-r2；
+恢复默认排除ACD1-13，复用相同2d51834源码、CP50、selection51、四卡和20次实际
+更新，首次实际回读为PENDING(Resources)。没有重启或热改生产749598／检索745198。
+见[真实失败与唯一恢复记录](evidence/clip-native4-node-failure-and-recovery-summary.json)。
+当前待验收的clip配对任务是749913，749812仅作历史失败证据。
 
 ## 数值与证据范围
 

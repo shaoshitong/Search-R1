@@ -12,7 +12,9 @@ actual worker reports. The evidence is
 The [speed attribution report](SPEED-DIAGNOSIS-20261023.md) includes the completed
 independent native4 measurement of 20 CPU rollback snapshots per rank.
 The remaining gradient max/post-norm measurement pass is removed in published
-candidate code; its independent actual-native4 paired probe is job749812.
+candidate code; its independent actual-native4 paired probe is job749913.
+Prior job749812 failed before any update in CUDA initialization on ACD1-13;
+its evidence is retained and the replacement restores that node exclusion.
 That candidate is not hot-applied to the healthy producer.
 The remaining sections below retain the original Oct21 preparation history;
 their descriptions of optimizations as unimplemented are historical. The

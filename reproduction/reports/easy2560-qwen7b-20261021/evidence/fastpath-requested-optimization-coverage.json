@@ -1,6 +1,6 @@
 {
   "schema": "easy7b_requested_fastpath_coverage_v1",
-  "checked_unix": 1792693157.0067675,
+  "checked_unix": 1792693780.9813929,
   "active_runtime": "c7976da3afc863a1c20b99daa7cc99de3bb61f15",
   "active_job": "749598",
   "candidate_fa3": {
@@ -30,10 +30,13 @@
     "active_extra_forward_count_each_rank": 0,
     "remaining_measurement_scan": "Current c7976da still measures max_abs and postclip norm for logs",
     "remaining_scan_code_fixed": "c14bedd9e897e4bed51de9c693a1ef29302b436d",
-    "candidate_native4_probe_job": "749812",
+    "candidate_native4_probe_job": "749913",
     "candidate_native4_probe_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
     "candidate_native4_paired_actual_gradient_timing_pending": true,
-    "candidate_active_in_production": false
+    "candidate_active_in_production": false,
+    "prior_probe_job": "749812",
+    "prior_probe_state": "FAILED1:0 CUDA initialization before clipping/Adam on ACD1-13",
+    "failure_recovery_evidence": "clip-native4-node-failure-and-recovery-summary.json"
   },
   "compact_gqa": {
     "active_Q_heads": 28,

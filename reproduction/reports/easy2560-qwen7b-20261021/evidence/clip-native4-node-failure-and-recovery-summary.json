@@ -1,0 +1,30 @@
+{
+  "schema": "easy7b_independent_clip_probe_node_failure_recovery_v1",
+  "failed_job": "749812",
+  "failed_node": "ACD1-13",
+  "actual_accounting": {
+    "returncode": 0,
+    "stdout": "749812|jxu957|FAILED|1:0|00:00:25|ACD1-13\n",
+    "stderr": ""
+  },
+  "failed_epoch": 1792693635.795164,
+  "actual_clipping_calls_all4": 0,
+  "all4_failure_type": "RuntimeError during CUDA initialization; available devices set to zero",
+  "not_proven": "This new failure does not prove the old three-visible-GPU pattern or establish a hardware root cause; it does not test clipping math.",
+  "failed_root_retained": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022/diagnostics/native4-clip-native4-paired-r1-20261023",
+  "failed_source_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+  "recovery_job": "749913",
+  "recovery_root": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022/diagnostics/native4-clip-native4-paired-r2-20261023",
+  "recovery_source_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+  "same_workload": "CP50/selection51/fourH100/20 real Adam and20 clipping A/B per rank",
+  "recovery_excludes": "ACD1-13",
+  "recovery_actual_result_pending": true,
+  "production749598_modified": false,
+  "retriever745198_modified": false,
+  "evidence": [
+    "clip-native4-paired-live-1792693635907657000.json",
+    "clip-native4-failed-recovery-submit-1792693701077758000.json",
+    "clip-native4-paired-r2-live-1792693725003036000.json"
+  ],
+  "goal_complete": false
+}
