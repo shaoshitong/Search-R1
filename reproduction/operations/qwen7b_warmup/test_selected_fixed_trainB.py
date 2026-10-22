@@ -33,6 +33,13 @@ class TrainBTest(unittest.TestCase):
   s['policy_token_ids'][-1]=99
   with self.assertRaises(ValueError):m.compare_causal_compact({'t':r},{'t':s},{'t':1})
  def test_fixed32_adapter_replay_same_identity_and_probability(self):
-  rows=[dict(v,logit=.25)for v in self.views(32)];saved=[dict(v,predicted_mixed=1/(1+math.exp(-.25)))for v in self.views(32)];self.assertTrue(m.replay_alignment(rows,saved)['passed']);saved[0]['predicted_mixed']+=.01;self.assertFalse(m.replay_alignment(rows,saved)['passed']);saved[0]['trajectory_ids'].reverse()
+  rows=[dict(v,logit=.25)for v in self.views(32)]
+  # Actual old E1_DEV schema has strict_em rather than labels (the root failure).
+  saved=[dict(predicted_mixed=1/(1+math.exp(-.25)),qid=v['qid'],strict_em=v['labels'],trajectory_ids=v['trajectory_ids'],true_mixed=v['true_mixed'])for v in self.views(32)]
+  self.assertEqual(set(saved[0]),{'predicted_mixed','qid','strict_em','trajectory_ids','true_mixed'});self.assertEqual(m.identity(rows),m.identity(saved));self.assertTrue(m.replay_alignment(rows,saved)['passed'])
+  both=copy.deepcopy(saved);both[0]['labels']=list(both[0]['strict_em']);self.assertTrue(m.replay_alignment(rows,both)['passed']);both[0]['labels'][0]=1-both[0]['labels'][0]
+  with self.assertRaises(ValueError):m.identity(both)
+  with self.assertRaises(ValueError):m.replay_alignment(rows,both)
+  saved[0]['predicted_mixed']+=.01;self.assertFalse(m.replay_alignment(rows,saved)['passed']);saved[0]['trajectory_ids'].reverse()
   with self.assertRaises(ValueError):m.replay_alignment(rows,saved)
 if __name__=='__main__':unittest.main()
