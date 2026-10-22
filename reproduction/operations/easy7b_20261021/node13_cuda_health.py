@@ -24,12 +24,13 @@ def main():
                       actual_cuda_uuid=str(getattr(props, 'uuid', 'unavailable')))
         assert props.major == 9
         dist.init_process_group('nccl')
-        x = torch.ones((128, 128), device=rank, dtype=torch.bfloat16, requires_grad=True)
+        device = torch.device('cuda', rank)
+        x = torch.ones((128, 128), device=device, dtype=torch.bfloat16, requires_grad=True)
         y = x @ torch.ones_like(x)
         y.float().mean().backward()
         assert torch.equal(y, torch.full_like(y, 128))
         assert torch.equal(x.grad, torch.full_like(x, 1 / 128))
-        value = torch.tensor([rank + 1.0], device=rank)
+        value = torch.tensor([rank + 1.0], device=device)
         dist.all_reduce(value)
         torch.cuda.synchronize(rank)
         assert value.item() == 10.0
