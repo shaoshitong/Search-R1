@@ -19,7 +19,7 @@ sys.dont_write_bytecode = True
 REPO = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO))
 BATCHES = (1, 2, 4, 8, 16, 32)
-QUERY_COUNT = 128
+DEFAULT_CASES = 128
 
 
 def schedule():
@@ -80,14 +80,24 @@ def synchronize(torch):
         torch.cuda.synchronize(device)
 
 
-def measure(torch, encoder, index, queries, batch_size, *, capture_embeddings=False):
+def encode_queries(encoder, queries, singleton_encoder=False):
+    if not singleton_encoder:
+        return encoder.encode(queries)
+    import numpy as np
+    # Preserve each original E5 encode([query]) caller, including its padding,
+    # normalization and FP16 math; only the resulting CPU vectors are joined.
+    return np.concatenate([encoder.encode([query]) for query in queries], axis=0)
+
+
+def measure(torch, encoder, index, queries, batch_size, *, capture_embeddings=False,
+            singleton_encoder=False):
     ids, scores = [], []
     embeddings = []
     encoder_seconds = faiss_seconds = cleanup_seconds = 0.0
     synchronize(torch); started = time.perf_counter()
     for offset in range(0, len(queries), batch_size):
         synchronize(torch); began = time.perf_counter()
-        vectors = encoder.encode(queries[offset:offset + batch_size])
+        vectors = encode_queries(encoder, queries[offset:offset + batch_size], singleton_encoder)
         synchronize(torch); encoder_seconds += time.perf_counter() - began
         began = time.perf_counter()
         current_scores, current_ids = index.search(vectors, 3)
@@ -100,7 +110,7 @@ def measure(torch, encoder, index, queries, batch_size, *, capture_embeddings=Fa
         began = time.perf_counter(); torch.cuda.empty_cache()
         synchronize(torch); cleanup_seconds += time.perf_counter() - began
     synchronize(torch); seconds = time.perf_counter() - started
-    return dict(query_count=len(queries), batch_size=batch_size,
+    return dict(query_count=len(queries), batch_size=batch_size, singleton_encoder=singleton_encoder,
         seconds=seconds, queries_per_second=len(queries) / seconds,
         encoder_seconds=encoder_seconds, faiss_seconds=faiss_seconds,
         post_search_cleanup_seconds=cleanup_seconds,
@@ -141,11 +151,12 @@ def run(args, report):
 
     event(args.output, report, 'READING_SAVED_CPU_CANDIDATES')
     saved = torch.load(args.raw_pool_file, map_location='cpu', weights_only=False)
-    cases, selection = choose_cases(saved['output'], QUERY_COUNT)
+    cases, selection = choose_cases(saved['output'], args.cases)
     queries = [case['query'] for case in cases]
-    if len(queries) != QUERY_COUNT or len(set(queries)) != QUERY_COUNT:
-        raise ValueError('Need128 distinct actual saved queries')
-    report.update(query_count=len(queries), ordered_queries_sha256=digest(queries),
+    if len(queries) != args.cases or len(set(queries)) != args.cases:
+        raise ValueError('Need%d distinct actual saved queries' % args.cases)
+    report.update(query_count=len(queries), singleton_encoder=args.singleton_encoder,
+        ordered_queries_sha256=digest(queries),
         selection=selection, selected_case_identity_sha256=digest([
             {key: case[key] for key in ('trajectory_id_sha256', 'turn_index', 'row_index')}
             for case in cases]))
@@ -177,12 +188,12 @@ def run(args, report):
         max_length=config.retrieval_query_max_length, use_fp16=config.retrieval_use_fp16)
     for size in BATCHES:
         event(args.output, report, 'WARMUP', batch_size=size)
-        measure(torch, encoder, index, queries[:size], size)
+        measure(torch, encoder, index, queries[:size], size, singleton_encoder=args.singleton_encoder)
     reference_ids = reference_scores = singleton_embeddings = None
     for round_index, size in schedule():
         event(args.output, report, 'MEASURING', round=round_index, batch_size=size)
         row, ids, scores, embedding_parts = measure(torch, encoder, index, queries, size,
-            capture_embeddings=reference_ids is None)
+            capture_embeddings=reference_ids is None, singleton_encoder=args.singleton_encoder)
         if reference_ids is None:
             reference_ids, reference_scores = ids, scores
             singleton_embeddings = np.concatenate(embedding_parts, axis=0)
@@ -231,10 +242,14 @@ def main():
     parser.add_argument('--index', type=Path, required=True)
     parser.add_argument('--encoder', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--cases', type=int, choices=(128, 512), default=DEFAULT_CASES)
+    parser.add_argument('--singleton-encoder', action='store_true',
+        help='Keep original encode([query]) calls; batch only their RAM vectors for FAISS')
     args = parser.parse_args()
     report = dict(schema='saved_query_e5_four_shard_batching_diagnostic_v1',
         slurm_job_id=os.environ.get('SLURM_JOB_ID'), hostname=os.uname().nodename,
         raw_pool_file=str(args.raw_pool_file), index_path=str(args.index), encoder_path=str(args.encoder),
+        requested_cases=args.cases, singleton_encoder=args.singleton_encoder,
         corpus_loaded=False, actor_loaded=False, production_service_called=False,
         production_modified=False, query_text_written=False, tensor_results_saved=False,
         numerical_acceptance_decided=False, production_batching_qualified=False, runs=[])

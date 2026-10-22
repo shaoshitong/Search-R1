@@ -152,6 +152,20 @@ miss增量均为961；两个子窗口分别约72.8%和32.5%，说明随生成交
 健康训练与原检索服务保持运行。见
 [自然训练计数差值](evidence/leanmetrics-natural-retrieval-window-summary.json)。
 
+独立作业750360在ACD1-20两张H100完成，Slurm `COMPLETED / 0:0`，用时2分07秒。
+使用同一128条已保存查询、原E5和21,015,324条Flat索引、原四逻辑shard映射
+`[0,1,0,1]`；两轮按batch大小正反顺序计时。没有调用正式检索服务、加载actor
+或修改训练。128条完整编码＋FAISS的中位耗时分别为：batch1 5.257秒、batch8
+0.760秒、batch16 0.533秒、batch32 0.259秒。全部12组的384个top3文档ID与顺序
+一致；批量编码后的最大score差约0.000499。
+
+其中单条基线的encoder均值约1.031秒、FAISS约4.221秒，说明此组件实测的大项是
+FAISS逐条扫描。复用单条encoder向量的FAISS-only对照中，batch16相对单条为
+8.65倍，最大score差1.79e-7；batch32为14.67倍、最大差1.07e-6，文档顺序均相同。
+这仍是128条查询的组件实验，不是全量数值保证，也不是整轮20倍。下一次扩大至
+512条，并实际测“E5逐条编码＋仅FAISS合批”，避免批量E5自身的数值变化。正式服务
+保持原样。见[独立检索分段结果](evidence/retrieval-batching-r1-final-summary.json)。
+
 ## CPU回滚快照的独立实际耗时
 
 作业 `749739` 在独立的 `ACD1-25` 四卡节点完成，Slurm `COMPLETED / 0:0`。

@@ -12,7 +12,7 @@ def main():
     request = json.load(sys.stdin)
     base = Path(request['base'])
     source = base/'source'/request['commit']
-    root = base/'diagnostics/retrieval-batching-r1-20261023'
+    root = base/'diagnostics'/request.get('diagnostic_name', 'retrieval-batching-r1-20261023')
     root.mkdir(parents=True, exist_ok=True)
     claim = root/'submit-claim.json'
     if claim.exists():
@@ -33,6 +33,10 @@ def main():
         '-B', str(source/'reproduction/operations/easy7b_20261021/benchmark_retrieval_batching.py'),
         '--raw-pool-file', request['raw_pool_file'], '--index', request['index'],
         '--encoder', request['encoder'], '--output', str(root/'result.json')]
+    if request.get('singleton_encoder', False):
+        command.append('--singleton-encoder')
+    if request.get('cases') is not None:
+        command.extend(['--cases', str(request['cases'])])
     argv = ['sbatch','--parsable','--partition=emergency_acd','--qos=formal-user',
         '--account=jxu957','--nodes=1','--ntasks=1','--gres=gpu:2','--exclude=ACD1-13',
         '--cpus-per-task=16','--mem=128G','--time=00:20:00',

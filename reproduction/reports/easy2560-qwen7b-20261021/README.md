@@ -1,11 +1,31 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
 **Current evidence, 2026-10-23:** continuation `750029` completed and sealed
-all five consecutive outers61–65; outer66 has actually generated and saved512
+all five consecutive outers61–65; outer66 has actually generated and saved2560
 questions. All four ranks performed100 new Adam writes, reaching1300/scheduler65,
 with zero extra monitor forwards. The required post-restore five-outer follow-up
 is accepted. The overall200-outer experiment and final acceptance remain incomplete.
 See [five complete post-restore outers](evidence/leanmetrics-five-complete-outers-summary.json).
+
+Natural candidate-generation counters identify a concrete remaining serial path:
+the local proxy and external retriever synchronously handle single-query calls.
+In an85.95-second window,961 backend calls consumed39.796 seconds;473 of1434
+logical calls were exact cache hits. This is46.3% serial backend occupancy in
+that window, not a whole-outer critical-path fraction or GPU utilization.
+Independent2GPU probe750360 onACD1-20 now replays the same128 saved queries at
+batch1/2/4/8/16/32, including fixed-singleton-embedding FAISS-only comparisons.
+It does not call or modify production retriever745198 or training750029.
+Numerical and speed acceptance are pending. See
+[natural counter windows](evidence/leanmetrics-natural-retrieval-window-summary.json)
+and [complete phase breakdown](evidence/leanmetrics-phase-breakdown61-65.json).
+
+The current native4 async final path retains exactly51713 ordered occurrences;
+it does not produce the legacy native8 fixed seven-row tail padding. Do not
+delete seven rows from current final output. After real outer200, internal
+`global_steps=201` enters final validation and returns; it is not an additional
+training update. Final actual native4 restore-only is a separate required future
+action, not something the archive controllers automatically execute. See
+[current final entry bindings and remaining execution](evidence/native4-final-entry-readiness750029-20261023.json).
 
 Previous job `749598`, immutable runtime
 `c7976da3afc863a1c20b99daa7cc99de3bb61f15`, completed and sealed CP60 on four
