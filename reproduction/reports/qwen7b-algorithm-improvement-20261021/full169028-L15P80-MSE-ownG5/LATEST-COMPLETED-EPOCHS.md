@@ -10,6 +10,8 @@ Same fixed trainB2048 and viewed development2048 ownG5. Both raw/EMA and all com
 | seed1 | 2 | EMA | 62.65% | 353/512 (68.95%) | 61.93% | 274/512 (53.52%) | 0.00764121 |
 | seed1 | 3 | raw | 71.42% | 389/512 (75.98%) | 69.09% | 318/512 (62.11%) | 0.00681917 |
 | seed1 | 3 | EMA | 67.63% | 373/512 (72.85%) | 66.07% | 298/512 (58.20%) | 0.00705294 |
+| seed1 | 4 | raw | 72.15% | 394/512 (76.95%) | 70.19% | 312/512 (60.94%) | 0.00679006 |
+| seed1 | 4 | EMA | 70.39% | 389/512 (75.98%) | 68.18% | 313/512 (61.13%) | 0.00680714 |
 | seed2 | 1 | raw | 66.67% | 367/512 (71.68%) | 66.04% | 286/512 (55.86%) | 0.00714388 |
 | seed2 | 1 | EMA | 62.27% | 316/512 (61.72%) | 60.52% | 249/512 (48.63%) | 0.00850443 |
 | seed2 | 2 | raw | 71.56% | 383/512 (74.80%) | 68.89% | 310/512 (60.55%) | 0.00685546 |
@@ -21,6 +23,35 @@ Same fixed trainB2048 and viewed development2048 ownG5. Both raw/EMA and all com
 | seed2 | 5 | raw | 71.46% | 408/512 (79.69%) | 67.99% | 320/512 (62.50%) | 0.00666226 |
 | seed2 | 5 | EMA | 72.78% | 405/512 (79.10%) | 69.37% | 319/512 (62.30%) | 0.00662849 |
 
+Seed1 E3→E4/raw: Top512 **318→312**, while BA **69.0950%→70.1886%**. The saved Top512 composition check reports all-wrong191→197 (net+6), Mixed318→312 (net−6), all-correct3→3; these are net class-count changes, not six identified question swaps. Ranking and the fixed-threshold BA need not move together. No epoch/state is selected from this partial-run change.
+
 Seed2 E4→E5/raw: Top512318→320, BA70.3088%→67.9876%, Mixed recall63.6501%→51.2821%, nonMixed FPR23.0325%→15.3069%. Thresholded predictions became more conservative while the ranking count slightly improved. The primary selection rule remains seed1 development Top512 over all20 completed epoch/state choices, then the same epoch/state on seed2. No early selection or optimization change uses seed2.
 
 Population-variance diagnostic threshold0.08 corresponds to raw4v score0.32 and is not a calibrated Mixed probability. Full10E/13210 budget per seed, selected CP acceptance, order audit, actual freeze and independent final confirmation remain required.
+
+## Seed1 E4: complete fixed trainB/development diagnostics
+
+Copied from local `actual-live.json`, snapshot `1792707990.0928564`, epoch4/cursor5284. Both pools contain2048 fixed ownG5 groups. TrainB has888 Mixed/950 all-wrong/210 all-correct (43.359375% Mixed); viewed dev has663/1055/330 (32.373046875% Mixed). The objective is MSE on population variance; all saved mean scores below are4v, threshold0.32 (=v0.08), never fitted.
+
+| Pool | State | BA | Mixed recall | nonMixed FPR | all-wrong FPR | all-correct FPR | Mixed@512 | AUC |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| TrainB | raw | 72.152066% | 68.355856% | 24.051724% | 28.315789% | 4.761905% | 394/512 (76.953125%) | 0.807832887 |
+| TrainB | EMA | 70.392203% | 60.698198% | 19.913793% | 23.263158% | 4.761905% | 389/512 (75.976562%) | 0.792711731 |
+| Viewed dev | raw | 70.188564% | 68.174962% | 27.797834% | 34.691943% | 5.757576% | 312/512 (60.937500%) | 0.784244028 |
+| Viewed dev | EMA | 68.177140% | 60.180995% | 23.826715% | 28.720379% | 8.181818% | 313/512 (61.132812%) | 0.771347284 |
+
+| Pool | State | Variance MSE(v) | Target4variance MSE | Variance MAE(v) | Variance Spearman |
+|---|---|---:|---:|---:|---:|
+| TrainB | raw | 0.0065113148 | 0.1041810360 | 0.0642594023 | 0.5238045774 |
+| TrainB | EMA | 0.0068991914 | 0.1103870623 | 0.0694178609 | 0.5052556779 |
+| Viewed dev | raw | 0.0067900645 | 0.1086410322 | 0.0655387409 | 0.4636316966 |
+| Viewed dev | EMA | 0.0068071363 | 0.1089141804 | 0.0684271777 | 0.4474582979 |
+
+| Pool | State | TP | FN | FP | TN | Mean4v: Mixed | Mean4v: all-wrong | Mean4v: all-correct | Predicted Mixed: Mixed/AW/AC |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| TrainB | raw | 607 | 281 | 279 | 881 | 0.4137928386 | 0.2253443700 | 0.0910411215 | 607 / 269 / 10 |
+| TrainB | EMA | 539 | 349 | 231 | 929 | 0.3632223563 | 0.2194801946 | 0.1163413344 | 539 / 221 / 10 |
+| Viewed dev | raw | 452 | 211 | 385 | 1000 | 0.4118943362 | 0.2522608355 | 0.0950272345 | 452 / 366 / 19 |
+| Viewed dev | EMA | 399 | 264 | 330 | 1055 | 0.3658838251 | 0.2402586589 | 0.1194097771 | 399 / 303 / 27 |
+
+All values are copied from already completed fixed diagnostics, not online training batches. Existing E1–E3 seed1 and E1–E5 seed2 rows above are preserved. Final4096 remains blind and the seed1-only full-budget checkpoint selection rule is unchanged.
