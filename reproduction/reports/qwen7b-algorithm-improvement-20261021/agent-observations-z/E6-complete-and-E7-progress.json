@@ -1,0 +1,852 @@
+{
+  "status": "E6_COMPLETE_SAVED_EVALUATED_AND_E7_REAL_UPDATES_OBSERVED",
+  "checkpoint": {
+    "bytes": 3773206036,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/checkpoint-epoch-06.pt",
+    "sha256": "9eac57cf436915052eaeb20a37e9c42454c5ca4a9d9dbd11b2fd2237b8c442f1"
+  },
+  "coverage": {
+    "M_counts": {
+      "10": 21170,
+      "3": 21217,
+      "4": 20976,
+      "5": 21234,
+      "6": 21060,
+      "7": 21200,
+      "8": 21034,
+      "9": 21137
+    },
+    "epoch": 6,
+    "plan_sha256": "518a1fc166be10c693ad2c8f19e23bba1f5f82305b3de0d304057dc0110ea557",
+    "questions": 169028,
+    "sampling_independent_of_EM": true,
+    "seconds": 981.967533826828,
+    "trajectory_visits": 1098690,
+    "unique_questions": 169028
+  },
+  "evaluation": {
+    "cursor": 7926,
+    "epoch": 6,
+    "metrics": {
+      "fixed_train2048_G5": {
+        "EMA": {
+          "Top512": {
+            "Mixed": 400,
+            "Mixed_fraction": 0.78125,
+            "questions": 512
+          },
+          "classwise": {
+            "Mixed": {
+              "mean_predicted_variance": 0.0768350326945913,
+              "questions": 888,
+              "variance_MSE": 0.013632779695508296
+            },
+            "all_correct": {
+              "diagnostic_false_positive_rate": 0.15714285714285714,
+              "mean_predicted_variance": 0.056516681957457744,
+              "questions": 210,
+              "variance_MSE": 0.003718687696550145
+            },
+            "all_wrong": {
+              "diagnostic_false_positive_rate": 0.07789473684210527,
+              "mean_predicted_variance": 0.04429688528082088,
+              "questions": 950,
+              "variance_MSE": 0.00253139700871725
+            }
+          },
+          "predeclared_G5_classification_diagnostic": {
+            "Mixed_recall": 0.4391891891891892,
+            "balanced_accuracy": 0.6734739049394222,
+            "confusion": {
+              "fn": 498,
+              "fp": 107,
+              "tn": 1053,
+              "tp": 390
+            },
+            "nonMixed_false_positive_rate": 0.09224137931034482,
+            "threshold_fitted": false,
+            "variance_threshold": 0.08
+          },
+          "variance_MAE": 0.07337941171633247,
+          "variance_MSE": 0.007466630832113421,
+          "variance_Pearson": 0.5047581163954264,
+          "variance_Spearman": 0.4829360656418754
+        },
+        "raw": {
+          "Top512": {
+            "Mixed": 426,
+            "Mixed_fraction": 0.83203125,
+            "questions": 512
+          },
+          "classwise": {
+            "Mixed": {
+              "mean_predicted_variance": 0.07863122266864085,
+              "questions": 888,
+              "variance_MSE": 0.014090708697245982
+            },
+            "all_correct": {
+              "diagnostic_false_positive_rate": 0.09523809523809523,
+              "mean_predicted_variance": 0.04156861966919331,
+              "questions": 210,
+              "variance_MSE": 0.002383441801383968
+            },
+            "all_wrong": {
+              "diagnostic_false_positive_rate": 0.049473684210526316,
+              "mean_predicted_variance": 0.03115746138703176,
+              "questions": 950,
+              "variance_MSE": 0.0015654921931480285
+            }
+          },
+          "predeclared_G5_classification_diagnostic": {
+            "Mixed_recall": 0.42117117117117114,
+            "balanced_accuracy": 0.681706275240758,
+            "confusion": {
+              "fn": 514,
+              "fp": 67,
+              "tn": 1093,
+              "tp": 374
+            },
+            "nonMixed_false_positive_rate": 0.057758620689655205,
+            "threshold_fitted": false,
+            "variance_threshold": 0.08
+          },
+          "variance_MAE": 0.06531994933797022,
+          "variance_MSE": 0.007080219572722505,
+          "variance_Pearson": 0.5613992150958733,
+          "variance_Spearman": 0.5439037572598513
+        }
+      },
+      "fixed_validation2048_G5": {
+        "EMA": {
+          "Top512": {
+            "Mixed": 229,
+            "Mixed_fraction": 0.447265625,
+            "questions": 512
+          },
+          "classwise": {
+            "Mixed": {
+              "mean_predicted_variance": 0.06851849169997136,
+              "questions": 663,
+              "variance_MSE": 0.017468852368478116
+            },
+            "all_correct": {
+              "diagnostic_false_positive_rate": 0.23939393939393938,
+              "mean_predicted_variance": 0.06218881145345442,
+              "questions": 330,
+              "variance_MSE": 0.004616897658064514
+            },
+            "all_wrong": {
+              "diagnostic_false_positive_rate": 0.15829383886255924,
+              "mean_predicted_variance": 0.05176580307124651,
+              "questions": 1055,
+              "variance_MSE": 0.003520208955018107
+            }
+          },
+          "predeclared_G5_classification_diagnostic": {
+            "Mixed_recall": 0.3092006033182504,
+            "balanced_accuracy": 0.5657916373991974,
+            "confusion": {
+              "fn": 458,
+              "fp": 246,
+              "tn": 1139,
+              "tp": 205
+            },
+            "nonMixed_false_positive_rate": 0.17761732851985557,
+            "threshold_fitted": false,
+            "variance_threshold": 0.08
+          },
+          "variance_MAE": 0.0767809983542179,
+          "variance_MSE": 0.008212522360842961,
+          "variance_Pearson": 0.2317228208604633,
+          "variance_Spearman": 0.2396322852052755
+        },
+        "raw": {
+          "Top512": {
+            "Mixed": 225,
+            "Mixed_fraction": 0.439453125,
+            "questions": 512
+          },
+          "classwise": {
+            "Mixed": {
+              "mean_predicted_variance": 0.06158337665919838,
+              "questions": 663,
+              "variance_MSE": 0.019964037000388846
+            },
+            "all_correct": {
+              "diagnostic_false_positive_rate": 0.19393939393939394,
+              "mean_predicted_variance": 0.05197314088035262,
+              "questions": 330,
+              "variance_MSE": 0.003990747134392441
+            },
+            "all_wrong": {
+              "diagnostic_false_positive_rate": 0.13744075829383887,
+              "mean_predicted_variance": 0.04319008741344621,
+              "questions": 1055,
+              "variance_MSE": 0.0031981573922231147
+            }
+          },
+          "predeclared_G5_classification_diagnostic": {
+            "Mixed_recall": 0.24434389140271492,
+            "balanced_accuracy": 0.5467206821634513,
+            "confusion": {
+              "fn": 501,
+              "fp": 209,
+              "tn": 1176,
+              "tp": 162
+            },
+            "nonMixed_false_positive_rate": 0.1509025270758123,
+            "threshold_fitted": false,
+            "variance_threshold": 0.08
+          },
+          "variance_MAE": 0.07307917498478445,
+          "variance_MSE": 0.008753495671095065,
+          "variance_Pearson": 0.2040990674788758,
+          "variance_Spearman": 0.22620289319228262
+        }
+      },
+      "fixed_validation2048_M10": {
+        "EMA": {
+          "Top512": {
+            "Mixed": 300,
+            "Mixed_fraction": 0.5859375,
+            "questions": 512
+          },
+          "classwise": {
+            "Mixed": {
+              "mean_predicted_variance": 0.07558498852135531,
+              "questions": 887,
+              "variance_MSE": 0.01229524911290081
+            },
+            "all_correct": {
+              "mean_predicted_variance": 0.06393553679764413,
+              "questions": 209,
+              "variance_MSE": 0.0048418544543063595
+            },
+            "all_wrong": {
+              "mean_predicted_variance": 0.05551118537355136,
+              "questions": 952,
+              "variance_MSE": 0.004141076299853645
+            }
+          },
+          "variance_MAE": 0.07218921438726283,
+          "variance_MSE": 0.007744208096461775,
+          "variance_Pearson": 0.27143278705726887,
+          "variance_Spearman": 0.2773265744055906
+        },
+        "raw": {
+          "Top512": {
+            "Mixed": 301,
+            "Mixed_fraction": 0.587890625,
+            "questions": 512
+          },
+          "classwise": {
+            "Mixed": {
+              "mean_predicted_variance": 0.06830660381255695,
+              "questions": 887,
+              "variance_MSE": 0.014356644587204013
+            },
+            "all_correct": {
+              "mean_predicted_variance": 0.05302140954213493,
+              "questions": 209,
+              "variance_MSE": 0.004182762189987609
+            },
+            "all_wrong": {
+              "mean_predicted_variance": 0.04650482659310322,
+              "questions": 952,
+              "variance_MSE": 0.0037428640892828223
+            }
+          },
+          "variance_MAE": 0.07101232919453196,
+          "variance_MSE": 0.008384642411891902,
+          "variance_Pearson": 0.24572343939995808,
+          "variance_Spearman": 0.2616258962666511
+        }
+      },
+      "fixed_validation2048_M3": {
+        "EMA": {
+          "Top512": {
+            "Mixed": 176,
+            "Mixed_fraction": 0.34375,
+            "questions": 512
+          },
+          "classwise": {
+            "Mixed": {
+              "mean_predicted_variance": 0.058033742626437554,
+              "questions": 493,
+              "variance_MSE": 0.027608854377650295
+            },
+            "all_correct": {
+              "mean_predicted_variance": 0.05301273083843962,
+              "questions": 422,
+              "variance_MSE": 0.003321203274400025
+            },
+            "all_wrong": {
+              "mean_predicted_variance": 0.044379188016937375,
+              "questions": 1133,
+              "variance_MSE": 0.002557551669395987
+            }
+          },
+          "variance_MAE": 0.07499898089733076,
+          "variance_MSE": 0.008745321792677764,
+          "variance_Pearson": 0.19392434360434732,
+          "variance_Spearman": 0.19410978010101157
+        },
+        "raw": {
+          "Top512": {
+            "Mixed": 168,
+            "Mixed_fraction": 0.328125,
+            "questions": 512
+          },
+          "classwise": {
+            "Mixed": {
+              "mean_predicted_variance": 0.052449534824269145,
+              "questions": 493,
+              "variance_MSE": 0.03008740729977951
+            },
+            "all_correct": {
+              "mean_predicted_variance": 0.04534880174279778,
+              "questions": 422,
+              "variance_MSE": 0.0029677333178737566
+            },
+            "all_wrong": {
+              "mean_predicted_variance": 0.037587186405151615,
+              "questions": 1133,
+              "variance_MSE": 0.0023870153077500344
+            }
+          },
+          "variance_MAE": 0.07100654854476968,
+          "variance_MSE": 0.009174786915339263,
+          "variance_Pearson": 0.1667224665700683,
+          "variance_Spearman": 0.17844878048821328
+        }
+      },
+      "fixed_validation2048_M5": {
+        "EMA": {
+          "Top512": {
+            "Mixed": 242,
+            "Mixed_fraction": 0.47265625,
+            "questions": 512
+          },
+          "classwise": {
+            "Mixed": {
+              "mean_predicted_variance": 0.06937167467139771,
+              "questions": 682,
+              "variance_MSE": 0.017713976309408973
+            },
+            "all_correct": {
+              "mean_predicted_variance": 0.060998440682068,
+              "questions": 318,
+              "variance_MSE": 0.004377906702948987
+            },
+            "all_wrong": {
+              "mean_predicted_variance": 0.051437303316019624,
+              "questions": 1048,
+              "variance_MSE": 0.00345478200805922
+            }
+          },
+          "variance_MAE": 0.07695536427324667,
+          "variance_MSE": 0.008346541854980839,
+          "variance_Pearson": 0.24223016975585007,
+          "variance_Spearman": 0.24331058531204633
+        },
+        "raw": {
+          "Top512": {
+            "Mixed": 237,
+            "Mixed_fraction": 0.462890625,
+            "questions": 512
+          },
+          "classwise": {
+            "Mixed": {
+              "mean_predicted_variance": 0.06256909886971826,
+              "questions": 682,
+              "variance_MSE": 0.02020061836204007
+            },
+            "all_correct": {
+              "mean_predicted_variance": 0.051102186206130766,
+              "questions": 318,
+              "variance_MSE": 0.0038354670297361575
+            },
+            "all_wrong": {
+              "mean_predicted_variance": 0.04282202927508118,
+              "questions": 1048,
+              "variance_MSE": 0.003117228139723423
+            }
+          },
+          "variance_MAE": 0.07340554238276809,
+          "variance_MSE": 0.00891765396913944,
+          "variance_Pearson": 0.21257444633394196,
+          "variance_Spearman": 0.22938026583499097
+        }
+      }
+    },
+    "seconds": 42.19578456878662
+  },
+  "score_spread": {
+    "epoch": 6,
+    "roles": {
+      "fixed_train2048_G5": {
+        "EMA": {
+          "maximum": 0.17964859306812286,
+          "mean": 0.05965822913117336,
+          "median": 0.05635414645075798,
+          "minimum": 0.0016220674151554704,
+          "p05": 0.012397256679832935,
+          "p95": 0.11373910307884216,
+          "std": 0.03048605807202437
+        },
+        "oracle_constant_mean_MSE": 0.00903425140380834,
+        "questions": 2048,
+        "raw": {
+          "maximum": 0.2072347104549408,
+          "mean": 0.05280933797752141,
+          "median": 0.040595006197690964,
+          "minimum": 0.0016732127405703068,
+          "p05": 0.006199540104717016,
+          "p95": 0.14210395514965057,
+          "std": 0.04175375873475978
+        },
+        "target_mean": 0.08035156249999931,
+        "target_std": 0.09504867912711013
+      },
+      "fixed_validation2048_G5": {
+        "EMA": {
+          "maximum": 0.17357566952705383,
+          "mean": 0.05886864746918263,
+          "median": 0.05533766746520996,
+          "minimum": 0.0016220674151554704,
+          "p05": 0.015468996949493885,
+          "p95": 0.11349698901176453,
+          "std": 0.029527983216198758
+        },
+        "oracle_constant_mean_MSE": 0.008597991943359515,
+        "questions": 2048,
+        "raw": {
+          "maximum": 0.2114856094121933,
+          "mean": 0.0505597936702884,
+          "median": 0.03980435058474541,
+          "minimum": 0.0014777671312913299,
+          "p05": 0.007553645875304937,
+          "p95": 0.12945368885993958,
+          "std": 0.03833234543356141
+        },
+        "target_mean": 0.06226562499999923,
+        "target_std": 0.09272535760707269,
+        "training_mean_constant_MSE": 0.008925093078613423
+      }
+    }
+  },
+  "next_epoch_actual_observations": [
+    {
+      "actual_log_error_tail": null,
+      "complete": null,
+      "consecutive_updates": [
+        8003,
+        8004,
+        8005,
+        8006,
+        8007,
+        8008,
+        8009,
+        8010
+      ],
+      "control_route": "approved_original_direct_recovered_1792690727",
+      "coverage": {
+        "coverage-epoch-01.json": {
+          "M_counts": {
+            "10": 21121,
+            "3": 21217,
+            "4": 21061,
+            "5": 21081,
+            "6": 21050,
+            "7": 21393,
+            "8": 20926,
+            "9": 21179
+          },
+          "epoch": 1,
+          "plan_sha256": "1b54acb15a9e90a55d7339ee082565deb02ce734773ac822a94ea209b70c4143",
+          "questions": 169028,
+          "sampling_independent_of_EM": true,
+          "seconds": 986.9617373943329,
+          "trajectory_visits": 1098580,
+          "unique_questions": 169028
+        },
+        "coverage-epoch-02.json": {
+          "M_counts": {
+            "10": 21470,
+            "3": 20909,
+            "4": 21141,
+            "5": 21044,
+            "6": 20947,
+            "7": 21247,
+            "8": 21119,
+            "9": 21151
+          },
+          "epoch": 2,
+          "plan_sha256": "28c5fecd05219f79b0b3f2bdad708ed4b517497705d4b015dd48c7776e009bd2",
+          "questions": 169028,
+          "sampling_independent_of_EM": true,
+          "seconds": 994.0935242176056,
+          "trajectory_visits": 1100933,
+          "unique_questions": 169028
+        },
+        "coverage-epoch-03.json": {
+          "M_counts": {
+            "10": 21044,
+            "3": 21114,
+            "4": 21180,
+            "5": 21305,
+            "6": 20964,
+            "7": 21169,
+            "8": 21247,
+            "9": 21005
+          },
+          "epoch": 3,
+          "plan_sha256": "d69d31e109e93823a81a8cb1976c8a6493e349ed448ad004f6679a64c7485e26",
+          "questions": 169028,
+          "sampling_independent_of_EM": true,
+          "seconds": 985.5197672843933,
+          "trajectory_visits": 1098015,
+          "unique_questions": 169028
+        },
+        "coverage-epoch-04.json": {
+          "M_counts": {
+            "10": 21177,
+            "3": 21204,
+            "4": 21193,
+            "5": 21201,
+            "6": 20899,
+            "7": 21006,
+            "8": 21207,
+            "9": 21141
+          },
+          "epoch": 4,
+          "plan_sha256": "18888e5d157aaeb10b5cd7c015e311bd579121fac6661276ec6880aeb70adc89",
+          "questions": 169028,
+          "sampling_independent_of_EM": true,
+          "seconds": 988.3544163703918,
+          "trajectory_visits": 1098520,
+          "unique_questions": 169028
+        },
+        "coverage-epoch-05.json": {
+          "M_counts": {
+            "10": 21060,
+            "3": 21047,
+            "4": 21176,
+            "5": 21034,
+            "6": 21126,
+            "7": 21187,
+            "8": 21291,
+            "9": 21107
+          },
+          "epoch": 5,
+          "plan_sha256": "5856a7b190e12950b48a3d6f348ff87ab8c4a857848149ae42600a1c9b3697ad",
+          "questions": 169028,
+          "sampling_independent_of_EM": true,
+          "seconds": 985.9696655273438,
+          "trajectory_visits": 1098971,
+          "unique_questions": 169028
+        },
+        "coverage-epoch-06.json": {
+          "M_counts": {
+            "10": 21170,
+            "3": 21217,
+            "4": 20976,
+            "5": 21234,
+            "6": 21060,
+            "7": 21200,
+            "8": 21034,
+            "9": 21137
+          },
+          "epoch": 6,
+          "plan_sha256": "518a1fc166be10c693ad2c8f19e23bba1f5f82305b3de0d304057dc0110ea557",
+          "questions": 169028,
+          "sampling_independent_of_EM": true,
+          "seconds": 981.967533826828,
+          "trajectory_visits": 1098690,
+          "unique_questions": 169028
+        }
+      },
+      "evaluated_epochs": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "latest": {
+        "bytes": 3773206036,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/checkpoint-epoch-06.pt",
+        "sha256": "9eac57cf436915052eaeb20a37e9c42454c5ca4a9d9dbd11b2fd2237b8c442f1"
+      },
+      "new_writer_failures": [],
+      "queue": "749577|RUNNING|ACD1-16|2026-10-23T00:00:46|acd_ue|normal",
+      "ranks": [
+        {
+          "actual_global_batch": 128,
+          "alignment": {
+            "anchor4variance_MSE": 0.10116998851299286,
+            "anchor_weight": 1.0,
+            "normalization_epsilon": 1e-06,
+            "normalization_global_questions": 128,
+            "normalization_population_std": true,
+            "normalization_scope": "actual_global_optimizer_batch_autograd_all_gather",
+            "normalized_MSE": 0.778186023235321,
+            "prediction_mean": 0.29404783248901367,
+            "prediction_std": 0.21998290717601776,
+            "target_mean": 0.26585522294044495,
+            "target_std": 0.3990456759929657,
+            "total_loss": 0.8793560266494751,
+            "z_MSE": 0.778186023235321
+          },
+          "cursor": 8009,
+          "epoch": 7,
+          "epoch_questions_seen": 5312,
+          "head_gradient_L2": 10.529832973851956,
+          "native_gradient_L2": 7.848522088207805,
+          "training_loss": 0.8793560266494751,
+          "variance_MAE": 0.062119241803884506,
+          "variance_MSE": 0.006323124282062054
+        },
+        {
+          "actual_global_batch": 128,
+          "alignment": {
+            "anchor4variance_MSE": 0.10116998851299286,
+            "anchor_weight": 1.0,
+            "normalization_epsilon": 1e-06,
+            "normalization_global_questions": 128,
+            "normalization_population_std": true,
+            "normalization_scope": "actual_global_optimizer_batch_autograd_all_gather",
+            "normalized_MSE": 0.778186023235321,
+            "prediction_mean": 0.29404783248901367,
+            "prediction_std": 0.21998290717601776,
+            "target_mean": 0.26585522294044495,
+            "target_std": 0.3990456759929657,
+            "total_loss": 0.8793560266494751,
+            "z_MSE": 0.778186023235321
+          },
+          "cursor": 8009,
+          "epoch": 7,
+          "epoch_questions_seen": 5312,
+          "head_gradient_L2": 10.529832973851956,
+          "native_gradient_L2": 7.848522088207805,
+          "training_loss": 0.8793560266494751,
+          "variance_MAE": 0.062119241803884506,
+          "variance_MSE": 0.006323124282062054
+        }
+      ],
+      "sacct": "749577|RUNNING|0:0|01:47:16|ACD1-16",
+      "stage": "ACTUAL_READ_ONLY_METADATA",
+      "time": 1792691282.7146466
+    },
+    {
+      "actual_log_error_tail": null,
+      "complete": null,
+      "consecutive_updates": [
+        8435,
+        8436,
+        8437,
+        8438,
+        8439,
+        8440,
+        8441,
+        8442
+      ],
+      "control_route": "approved_original_direct_recovered_1792690727",
+      "coverage": {
+        "coverage-epoch-01.json": {
+          "M_counts": {
+            "10": 21121,
+            "3": 21217,
+            "4": 21061,
+            "5": 21081,
+            "6": 21050,
+            "7": 21393,
+            "8": 20926,
+            "9": 21179
+          },
+          "epoch": 1,
+          "plan_sha256": "1b54acb15a9e90a55d7339ee082565deb02ce734773ac822a94ea209b70c4143",
+          "questions": 169028,
+          "sampling_independent_of_EM": true,
+          "seconds": 986.9617373943329,
+          "trajectory_visits": 1098580,
+          "unique_questions": 169028
+        },
+        "coverage-epoch-02.json": {
+          "M_counts": {
+            "10": 21470,
+            "3": 20909,
+            "4": 21141,
+            "5": 21044,
+            "6": 20947,
+            "7": 21247,
+            "8": 21119,
+            "9": 21151
+          },
+          "epoch": 2,
+          "plan_sha256": "28c5fecd05219f79b0b3f2bdad708ed4b517497705d4b015dd48c7776e009bd2",
+          "questions": 169028,
+          "sampling_independent_of_EM": true,
+          "seconds": 994.0935242176056,
+          "trajectory_visits": 1100933,
+          "unique_questions": 169028
+        },
+        "coverage-epoch-03.json": {
+          "M_counts": {
+            "10": 21044,
+            "3": 21114,
+            "4": 21180,
+            "5": 21305,
+            "6": 20964,
+            "7": 21169,
+            "8": 21247,
+            "9": 21005
+          },
+          "epoch": 3,
+          "plan_sha256": "d69d31e109e93823a81a8cb1976c8a6493e349ed448ad004f6679a64c7485e26",
+          "questions": 169028,
+          "sampling_independent_of_EM": true,
+          "seconds": 985.5197672843933,
+          "trajectory_visits": 1098015,
+          "unique_questions": 169028
+        },
+        "coverage-epoch-04.json": {
+          "M_counts": {
+            "10": 21177,
+            "3": 21204,
+            "4": 21193,
+            "5": 21201,
+            "6": 20899,
+            "7": 21006,
+            "8": 21207,
+            "9": 21141
+          },
+          "epoch": 4,
+          "plan_sha256": "18888e5d157aaeb10b5cd7c015e311bd579121fac6661276ec6880aeb70adc89",
+          "questions": 169028,
+          "sampling_independent_of_EM": true,
+          "seconds": 988.3544163703918,
+          "trajectory_visits": 1098520,
+          "unique_questions": 169028
+        },
+        "coverage-epoch-05.json": {
+          "M_counts": {
+            "10": 21060,
+            "3": 21047,
+            "4": 21176,
+            "5": 21034,
+            "6": 21126,
+            "7": 21187,
+            "8": 21291,
+            "9": 21107
+          },
+          "epoch": 5,
+          "plan_sha256": "5856a7b190e12950b48a3d6f348ff87ab8c4a857848149ae42600a1c9b3697ad",
+          "questions": 169028,
+          "sampling_independent_of_EM": true,
+          "seconds": 985.9696655273438,
+          "trajectory_visits": 1098971,
+          "unique_questions": 169028
+        },
+        "coverage-epoch-06.json": {
+          "M_counts": {
+            "10": 21170,
+            "3": 21217,
+            "4": 20976,
+            "5": 21234,
+            "6": 21060,
+            "7": 21200,
+            "8": 21034,
+            "9": 21137
+          },
+          "epoch": 6,
+          "plan_sha256": "518a1fc166be10c693ad2c8f19e23bba1f5f82305b3de0d304057dc0110ea557",
+          "questions": 169028,
+          "sampling_independent_of_EM": true,
+          "seconds": 981.967533826828,
+          "trajectory_visits": 1098690,
+          "unique_questions": 169028
+        }
+      },
+      "evaluated_epochs": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "latest": {
+        "bytes": 3773206036,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/checkpoint-epoch-06.pt",
+        "sha256": "9eac57cf436915052eaeb20a37e9c42454c5ca4a9d9dbd11b2fd2237b8c442f1"
+      },
+      "new_writer_failures": [],
+      "queue": "749577|RUNNING|ACD1-16|2026-10-23T00:00:46|acd_ue|normal",
+      "ranks": [
+        {
+          "actual_global_batch": 128,
+          "alignment": {
+            "anchor4variance_MSE": 0.11014702916145325,
+            "anchor_weight": 1.0,
+            "normalization_epsilon": 1e-06,
+            "normalization_global_questions": 128,
+            "normalization_population_std": true,
+            "normalization_scope": "actual_global_optimizer_batch_autograd_all_gather",
+            "normalized_MSE": 1.1285455226898193,
+            "prediction_mean": 0.28846293687820435,
+            "prediction_std": 0.20188738405704498,
+            "target_mean": 0.2742356061935425,
+            "target_std": 0.3653203845024109,
+            "total_loss": 1.2386925220489502,
+            "z_MSE": 1.1285455226898193
+          },
+          "cursor": 8441,
+          "epoch": 7,
+          "epoch_questions_seen": 32960,
+          "head_gradient_L2": 14.196239933318834,
+          "native_gradient_L2": 10.354558781844277,
+          "training_loss": 1.2386925220489502,
+          "variance_MAE": 0.06707637757062912,
+          "variance_MSE": 0.006884189322590828
+        },
+        {
+          "actual_global_batch": 128,
+          "alignment": {
+            "anchor4variance_MSE": 0.11014702916145325,
+            "anchor_weight": 1.0,
+            "normalization_epsilon": 1e-06,
+            "normalization_global_questions": 128,
+            "normalization_population_std": true,
+            "normalization_scope": "actual_global_optimizer_batch_autograd_all_gather",
+            "normalized_MSE": 1.1285455226898193,
+            "prediction_mean": 0.28846293687820435,
+            "prediction_std": 0.20188738405704498,
+            "target_mean": 0.2742356061935425,
+            "target_std": 0.3653203845024109,
+            "total_loss": 1.2386925220489502,
+            "z_MSE": 1.1285455226898193
+          },
+          "cursor": 8441,
+          "epoch": 7,
+          "epoch_questions_seen": 32960,
+          "head_gradient_L2": 14.196239933318834,
+          "native_gradient_L2": 10.354558781844277,
+          "training_loss": 1.2386925220489502,
+          "variance_MAE": 0.06707637757062912,
+          "variance_MSE": 0.006884189322590828
+        }
+      ],
+      "sacct": "749577|RUNNING|0:0|01:52:31|ACD1-16",
+      "stage": "ACTUAL_READ_ONLY_METADATA",
+      "time": 1792691597.7489269
+    }
+  ],
+  "observed_time": 1792691600.558976,
+  "checkpoint_contents_opened": false,
+  "final4096_read": false,
+  "Slurm_mutated": false
+}

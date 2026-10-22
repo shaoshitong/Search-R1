@@ -30,3 +30,31 @@ Thus a strictly lower pure variance MSE can produce a worse binary-Mixed TopK se
 ## Scope
 
 The hinge bound is an exact deterministic statement about one fixed finite labeled pool. It does not prove unseen-question generalization, convergence of SGD, feasibility under ambiguous Prefix features, a monotonic increase at each update, or correctness under labels changed by a future student snapshot. Training-batch pairwise loss only supplies the same bound for that batch's ranking; it is not automatically the complete future candidate-pool loss. No new training recipe, margin value, threshold or final candidate is selected by this note.
+
+## K-specific cost-augmented loss
+
+For the same finite pool and1≤K≤N, let b=min(K,M). Define
+
+C* = sum of the b largest positive scores + sum of the K−b largest negative scores,
+
+A = sum of the K largest values of(s_i−gamma*y_i),
+
+L_K = [gamma*b + A − C*]/(gamma*K).
+
+Empty sums are0. Let T* be a label-optimal K-set achieving C*, and S the original score-TopK set with t true positives. By the two maximization definitions,
+
+A ≥ sum_S s − gamma*t, and sum_S s ≥ C*.
+
+Therefore gamma*b+A−C*≥gamma*(b−t)=gamma*r, hence L_K≥r/K. Substituting T* into the maximization defining A also proves that the numerator is always nonnegative. This proof covers M<K and deterministic score ties. The loss is generally nonconvex and piecewise linear, with convex or identically-zero special cases.
+
+The exact zero-margin condition is: for every K-set T,
+
+C*−sum_T s ≥ gamma*[b−sum_T y].
+
+When this structure margin holds, L_K=0 and the finite-pool yield is optimal. With strict relevant margins and consistent active sets, its local gradient is zero. Away from ties the score gradient is the indicator of the cost-augmented topK set minus the indicator of the constrained label-optimal set, divided by gamma*K. C* must retain its gradient through the selected score values; detaching it destroys this cancellation and continued-score-stop behavior.
+
+At topK/margin ties, an automatic differentiation implementation may select unequal internal active sets even when the final value is0. Applying ReLU to the mathematically nonnegative numerator leaves the real-valued objective/bound unchanged and selects zero ReLU gradient at exact0. Introducing an additional epsilon-insensitive band changes the bound: for L_epsilon=max(0,L_K−epsilon), r/K≤L_epsilon+epsilon. A no-slack bound must not be claimed for that modified objective.
+
+This K-specific statement remains empirical to the scored labeled pool. It neither proves generalization to new questions nor makes a training optimizer batch128 equivalent to the actual2048-candidate/512-selection pool. No literature attribution is asserted or checked by this independent algebraic verification.
+
+The displayed L_K is not generally bounded or clipped: for N=2,M=1,K=1,gamma=1 it reduces to max(0,1+s_negative−s_positive), which is unbounded. Its flat region for sufficiently good scores does not imply a flat region for extremely wrong scores. The cost-augmentation label y here must remain binary trueMixed; substituting continuous4v changes the utility being optimized and does not preserve the TP@K count-regret interpretation.
