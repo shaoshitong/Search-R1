@@ -35,6 +35,25 @@ def _left_pad(rows, pad):
     return dict(input_ids=ids, attention_mask=attention, position_ids=positions)
 
 
+def prefix_text_decoders(tokenizer):
+    """Keep Qwen fast-tokenizer text while avoiding repeated list conversion.
+
+    Prefix tokens have already been validated as Python integer lists. With
+    cleanup disabled, the pinned Qwen2TokenizerFast implementation returns its
+    native decoder text directly. Other tokenizers retain their existing API.
+    """
+    if (type(tokenizer).__name__ == 'Qwen2TokenizerFast' and
+            type(tokenizer).__module__ == 'transformers.models.qwen2.tokenization_qwen2_fast' and
+            getattr(tokenizer, 'is_fast', False)):
+        decode = tokenizer.backend_tokenizer.decode
+        return (lambda tokens: decode(tokens, skip_special_tokens=False),
+                lambda tokens: decode(tokens, skip_special_tokens=True))
+    return (lambda tokens: tokenizer.decode(tokens, skip_special_tokens=False,
+                                            clean_up_tokenization_spaces=False),
+            lambda tokens: tokenizer.decode(tokens, skip_special_tokens=True,
+                                            clean_up_tokenization_spaces=False))
+
+
 def generate_padded(manager, active, captured_records=None):
     """Pad tensor and row identity together, and trim both after real generation."""
     size, world = len(active), manager.config.num_gpus
@@ -104,12 +123,10 @@ def validated_raw_turn(manager, output, local, record, *, request_tokens, row_id
              config_proof['slurm_job_id'] == identity['slurm_job_id'] and
              config_proof['source_map_sha256'] == document_sha256(identity['source_sha256']),
              'actual_group_stop_identity_changed')
-    cut = raw_prefix_to_first_closing_tag(record['raw_generated_token_ids'],
-        lambda tokens: tokenizer.decode(tokens, skip_special_tokens=False,
-                                        clean_up_tokenization_spaces=False),
+    visible_decode, executor_decode = prefix_text_decoders(tokenizer)
+    cut = raw_prefix_to_first_closing_tag(record['raw_generated_token_ids'], visible_decode,
         eos_token_id=eos, pad_token_id=pad, special_token_ids=special,
-        executor_decode=lambda tokens: tokenizer.decode(tokens, skip_special_tokens=True,
-                                        clean_up_tokenization_spaces=False),
+        executor_decode=executor_decode,
         effective_stop_token_ids=sorted(stop_ids))
     # Keep primary EOS termination semantics. An alternate configured
     # terminal requires a matching native reason, or actual sequence EOS.
