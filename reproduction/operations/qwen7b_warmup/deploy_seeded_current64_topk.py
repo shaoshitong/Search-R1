@@ -100,6 +100,6 @@ def main():
     chunk=raw[start:start+6144];call(PART,name=name,index=i,data=base64.b64encode(chunk).decode(),sha256=hashlib.sha256(chunk).hexdigest())
   result=call(SEAL)
  else:result=call(STATUS)
- dest=R/'reproduction/reports/qwen7b-algorithm-improvement-20261021/global64-window-topk';dest.mkdir(exist_ok=True,parents=True);(dest/('actual-'+a.action+'.json')).write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
+ dest=R/'reproduction/reports/qwen7b-algorithm-improvement-20261021/seeded-current64-topk';dest.mkdir(exist_ok=True,parents=True);(dest/('actual-'+a.action+'.json')).write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
 for body in(PART,SEAL,STATUS):compile(COMMON+body,'window_topk_deploy_static','exec')
 if __name__=='__main__':main()
