@@ -60,6 +60,18 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def worker_import_paths(paths=None):
+    """Keep fresh source first and the driver's actual dependency overlays.
+
+    This environment's Python launcher augments sys.path at startup. Passing
+    only REPO as Ray PYTHONPATH discards those locations when default_worker.py
+    execs the real interpreter. Preserve their current order, without importing
+    or probing anything else.
+    """
+    return list(dict.fromkeys(value for value in
+        [str(REPO), *(sys.path if paths is None else paths)] if isinstance(value, str) and value))
+
+
 def publish(path, value):
     path = Path(path)
     temporary = path.with_name(path.name + '.partial')
@@ -262,6 +274,11 @@ def run(args):
     from reproduction.common8.behavior_runtime import attach_generation_identity
     from search_g1.mixed_runtime import strict_vectors
     from search_g1.mixed_selection import MixedFirstSelector
+    import_paths = worker_import_paths()
+    worker_pythonpath = os.pathsep.join(import_paths)
+    # Ray system subprocesses and the four explicit actor runtime environments
+    # must both inherit the same already-working dependency search paths.
+    os.environ['PYTHONPATH'] = worker_pythonpath
     source_base, checkpoint, root = map(lambda value: Path(value).resolve(),
         (args.source_base, args.checkpoint, args.root))
     root.mkdir(parents=True, exist_ok=False)
@@ -284,6 +301,9 @@ def run(args):
         runtime_source_sha256=source_map, benchmark_source_commit_is_source_base_parent=True,
         ray_system_config=RAY_SYSTEM_CONFIG, ray_process_thread_env=PROCESS_THREAD_ENV,
         native_nproc=nproc,
+        import_path_receipt=dict(driver_executable=sys.executable, driver_prefix=sys.prefix,
+            driver_ray_module=ray.__file__, driver_torch_module=torch.__file__,
+            worker_pythonpath=import_paths),
         training_modified=False, optimizer_loaded=False, optimizer_writes=0,
         full_training_outer_speedup_proven=False,
         timing_scope='Real async multi-turn generation, HTTP retrieval, original strict-EM and Easy selection; '
@@ -298,7 +318,7 @@ def run(args):
         VLLM_NO_USAGE_STATS='1', TOKENIZERS_PARALLELISM='false',
         HF_HUB_OFFLINE='1', TRANSFORMERS_OFFLINE='1',
         PYTHONDONTWRITEBYTECODE='1', OMP_NUM_THREADS=str(args.worker_cpus),
-        PYTHONPATH=str(REPO), RAY_DEDUP_LOGS='0', **PROCESS_THREAD_ENV)
+        PYTHONPATH=worker_pythonpath, RAY_DEDUP_LOGS='0', **PROCESS_THREAD_ENV)
     # Ray's UNIX sockets have a short platform path limit. This new per-job
     # remote /tmp directory is ephemeral; every durable report/raw tensor stays
     # under the explicit experiment root. Do not use a long root as socket path.
