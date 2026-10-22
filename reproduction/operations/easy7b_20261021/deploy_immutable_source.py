@@ -1,12 +1,14 @@
-"""Deploy committed code only; re-read every source file without touching training."""
+"""Deploy one pushed Git archive snapshot; working-tree drafts are never read."""
 import argparse
 import base64
 import hashlib
 import importlib.util
+import io
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import shlex
 import subprocess
+import tarfile
 import time
 
 from reproduction.operations.easy7b_20261021.watch_fa3_transition_local import (
@@ -39,6 +41,23 @@ print(json.dumps(dict(source_commit=p['commit'],source_root=str(root),verified_f
 '''
 
 
+def archive_manifest(archive):
+    """Hash the exact regular-file bytes that REMOTE will extract with tar modes."""
+    manifest = {}
+    with tarfile.open(fileobj=io.BytesIO(archive), mode='r:gz') as bundle:
+        for member in bundle:
+            if member.isdir(): continue
+            relative = PurePosixPath(member.name)
+            if (not member.isfile() or relative.is_absolute() or '..' in relative.parts or
+                    not relative.parts or str(relative) != member.name or member.name in manifest):
+                raise ValueError('Git archive contains an unsafe, duplicate or nonregular member')
+            data = bundle.extractfile(member).read()
+            if len(data) != member.size:
+                raise ValueError('Git archive member is incomplete')
+            manifest[member.name] = dict(bytes=len(data), sha256=hashlib.sha256(data).hexdigest())
+    return manifest
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('--base', required=True)
@@ -54,18 +73,17 @@ def main(argv=None):
     repo = Path(__file__).resolve().parents[3]
     def git(*command):
         return subprocess.check_output(['git', '-C', str(repo), *command])
-    assert not git('status', '--porcelain').strip(), 'Commit and push before deployment'
     commit = git('rev-parse', 'HEAD').decode().strip()
     branch = 'codex/easy2560-qwen7b-20261021'
     assert git('ls-remote', 'origin', 'refs/heads/'+branch).decode().split()[0] == commit
     from reproduction.easy2560_joint4.control import own_base
     base = own_base(args.base)
-    names = [name for name in git('ls-files', '-z').decode().split('\0') if name]
-    assert all(not (repo/name).is_symlink() for name in names)
-    manifest = {name:dict(bytes=(repo/name).stat().st_size,
-                         sha256=hashlib.sha256((repo/name).read_bytes()).hexdigest()) for name in names}
+    # Pin the observed HEAD SHA rather than resolving HEAD a second time while
+    # another agent may commit. This one archive supplies both bytes and modes.
+    archive = git('archive', '--format=tar.gz', commit)
+    manifest = archive_manifest(archive)
     payload = json.dumps(dict(base=str(base), commit=commit, manifest=manifest,
-                              tar_gz=base64.b64encode(git('archive', '--format=tar.gz', 'HEAD')).decode()))
+                              tar_gz=base64.b64encode(archive).decode()))
     cwd = repo.parents[1]
     bridge_path = cwd/'work/qprobe-sigma3-loss-20261015/reproduction/hpc3_qprobe/local_account_bridge.py'
     spec = importlib.util.spec_from_file_location('bound_bridge', bridge_path)

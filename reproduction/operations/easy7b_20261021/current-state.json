@@ -1,5 +1,5 @@
 {
-  "epoch": 1792642996.335407,
+  "epoch": 1792643271.752129,
   "status": "ACTUAL_JOB746125_FAILED_OUTER35_SOURCE34_PRESERVED_RECOVERY_IN_PROGRESS_GOAL200_ACTIVE",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
@@ -2821,6 +2821,36 @@
     "source_writes_per_rank": 680,
     "source_cursor": 87040,
     "new_job_submitted": false,
-    "actual_new_restore_accepted": false
+    "actual_new_restore_accepted": false,
+    "remote_preserved_evidence": {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/failed-job-746125/failure-evidence.json",
+      "files": 194,
+      "bytes": 149859608
+    },
+    "source34_cpu_audit": {
+      "status": "CPU_AUDIT_SUBMISSION_REJECTED_NO_JOB_TRAINING_NOT_SUBMITTED",
+      "checked_unix": 1792643194.63254,
+      "raw_local": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp34-source-audit-submit-readback-1792643193.json",
+      "actual_submission_result": {
+        "actual_full_state_audit_complete": false,
+        "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
+        "checked_unix": 1792643177.6425264,
+        "job": null,
+        "operator_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+        "returncode": 1,
+        "source_step": 34,
+        "stderr": "sbatch: error: can not get user jxu957 default account: timeout: context deadline exceeded (Client.Timeout exceeded while awaiting headers)\nsbatch: error: Batch job submission failed: Access/permission denied\n",
+        "stdout": "",
+        "training_submitted": false
+      },
+      "live_queue": "745198|easy7b-retrieval2|RUNNING|ACD1-26|ACD1-26\n",
+      "failure_preservation": {
+        "status": "FAILED746125_OUTER35_CUDA_OOM_EVIDENCE_PRESERVED",
+        "files": 194,
+        "bytes": 149859608
+      },
+      "recovery_action": "Explicit account/qos/partition allocation flags in sbatch argv; retained original failed claim/result; separate r2 claim after queue excludes source34 audit",
+      "no_training_restart_occurred": true
+    }
   }
 }
