@@ -250,5 +250,17 @@
     "no_BCE": true
   },
   "selection": "predicted_population_EM_variance descending, Top512 from independent2048 fixed own G5, strict EM labels never used for ranking",
-  "BA_threshold_v": 0.08
+  "BA_threshold_v": 0.08,
+  "EMA_timescale": {
+    "decay": 0.9995,
+    "updates_per_epoch": 1321,
+    "half_life_updates": 1385.947758641408,
+    "half_life_epochs": 1.0491656007883483,
+    "initial_weight_remaining": {
+      "1": 0.5165076496076905,
+      "2": 0.2667801521032607,
+      "3": 0.13779398932483733,
+      "4": 0.07117164955623892
+    }
+  }
 }

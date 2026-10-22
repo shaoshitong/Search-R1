@@ -24,3 +24,5 @@ Training fit keeps improving more than independent selection. Independent EMA MS
 E4 independent predicted-v std is.02860raw/.02001EMA versus true-v std.09273. Scores remain compressed. EMA MSE.00817209 is below the validation-oracle constant-mean baseline.00859799 by about4.96%; that oracle constant baseline uses the validation mean and is diagnostic only. Raw E4MSE worsens slightly from E3 while correlation improves, so calibrated MSE and ranking quality must be read separately.
 
 Source commit 7ac274ac8ff5dea0a12dfd44cfb03fe57491458f; actual source SHA d786c2ca99a564adec82180321c86dd94aa2dab04e984ad4363b1f09a130d1d1. Exact metrics and source provenance are in E1-E4-raw-EMA-convergence.json; immutable evaluation metadata are in observed-through-evaluation-epoch-04.json.
+
+With1321updates/epoch, EMA.9995 has a1385.95-update half-life (1.049epochs). The original EMA initialization contributes51.65%/26.68%/13.78%/7.12% at epochs1/2/3/4. This explains the averaging timescale and early lag; it does not establish that later selection yield will improve.
