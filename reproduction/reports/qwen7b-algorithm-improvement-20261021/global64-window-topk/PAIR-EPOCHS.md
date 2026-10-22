@@ -84,5 +84,9 @@ Root-owned jobs current64=749889, window2018=749890. No final4096 read. Primary 
 | window2018 | 8 | fixed_train2048_G5 | raw | 60.45 | 74.35 | 383/512 (74.80%) | 70.43 | 0.4445 |
 | window2018 | 8 | fixed_validation2048_G5 | EMA | 50.00 | 63.14 | 232/512 (45.31%) | 0.00 | 0.2158 |
 | window2018 | 8 | fixed_validation2048_G5 | raw | 59.18 | 67.67 | 252/512 (49.22%) | 71.84 | 0.3093 |
+| window2018 | 9 | fixed_train2048_G5 | EMA | 50.00 | 68.30 | 331/512 (64.65%) | 0.00 | 0.3156 |
+| window2018 | 9 | fixed_train2048_G5 | raw | 52.92 | 77.48 | 395/512 (77.15%) | 93.71 | 0.4882 |
+| window2018 | 9 | fixed_validation2048_G5 | EMA | 50.00 | 64.26 | 240/512 (46.88%) | 0.00 | 0.2347 |
+| window2018 | 9 | fixed_validation2048_G5 | raw | 53.06 | 68.14 | 261/512 (50.98%) | 93.29 | 0.3124 |
 
 Only actual epoch receipts appear above; process start and queue status are not training acceptance. Each epoch audit is preserved in the small latest JSON and covers only its exact training-cache window, not a future or final pool.
