@@ -42,6 +42,8 @@ def main():
         '--job-name=easy7b-candidate-retrieval-pair', '--export=NONE', '--chdir=' + str(source),
         '--output=' + str(root / 'slurm-%j.log'), '--error=' + str(root / 'slurm-%j.log'),
         '--wrap=exec ' + shlex.join(command)]
+    if request.get('dependency_afterany'):
+        argv.insert(2, '--dependency=afterany:' + ':'.join(map(str, request['dependency_afterany'])))
     with claim.open('x') as stream:
         json.dump(dict(request, command=argv, created_unix=time.time(),
             production_training_job_untouched='750029', production_retrieval_job_untouched='745198',
