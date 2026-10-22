@@ -1,0 +1,467 @@
+{
+  "status": "ACTUAL_NATIVE4_RESTORE_PASS_FULL55_SEALED_AND56_STARTED",
+  "current_job": "749598",
+  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-nativeprefix-r2-20261023",
+  "runtime_commit": "c7976da3afc863a1c20b99daa7cc99de3bb61f15",
+  "recovery_operator_commit": "063942e9009a023a6e1b179e10d422a56db2c77f",
+  "latest_published_backup_commit": "72318698b7cb86ea0bd2fd0ff5a8290c31285a8f",
+  "source_step": 54,
+  "next_outer": 55,
+  "actual_restore": {
+    "all4_worker_model_adam_scheduler_rng_readback_equal": true,
+    "driver_readback_equal": true,
+    "reconstructed_stream_readback_equal": true,
+    "combined_actual_restore_observed": true,
+    "actual_worker_cuda_uuids": [
+      "GPU-833670ad-82a4-f70d-f953-3648630f79af",
+      "GPU-962b1f8b-613f-cb23-9c1a-0a23054859b5",
+      "GPU-8966351c-c07a-a08b-bae4-c89ffb4e97cd",
+      "GPU-9dc7b482-7801-b413-0802-a403ffd8ff07"
+    ],
+    "rank0_model_tensor_readback_count": 339,
+    "expected_source_writes_per_rank": 1080,
+    "actual_driver_cursor": 138240,
+    "actual_stream_cursor": 138240
+  },
+  "restore_evidence": "fastpath-native-prefix-r2-live-1792686191330634000.json",
+  "qualification": {
+    "saved_actions": 37907,
+    "cut_and_kept_token_mismatches": 0,
+    "behavior_tests_passed": 48,
+    "decoder_cpu_component_speedup": 17.787318236156125,
+    "model_forward_loss_reward_sampling_changed": false,
+    "qualified_runtime_commit": "c7976da3afc863a1c20b99daa7cc99de3bb61f15"
+  },
+  "historical_actual_full_outer_wall": {
+    "original52_seconds": 1991.1247618198395,
+    "lean53_seconds": 1925.3887040615082,
+    "evidence": "fastpath-real-iteration-wall-1792684472091196000.json"
+  },
+  "first_new_outer": {
+    "outer": 55,
+    "first_before_generation_mtime": 1792686184.63795,
+    "candidate_questions_saved_observed": 2560,
+    "candidate_questions_total": 2560,
+    "complete": true,
+    "full_checkpoint_sealed": true,
+    "whole_outer_seconds": 1756.6647560596466,
+    "candidate_trajectories": 12800,
+    "candidate_fill_seconds": 998.8699187,
+    "selected_mixed": 464,
+    "selected_questions": 512,
+    "candidate_evidence": "fastpath-native-prefix-r2-live-1792687222948251000.json",
+    "all4_cumulative_optimizer_writes": 1100,
+    "actual_optimizer_ranks": {
+      "0": {
+        "latest_actual_write": {
+          "kind": "OPTIMIZER_WRITE",
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "rank": 0,
+          "context": {
+            "logical_update": 55,
+            "minibatch_index": 19,
+            "prior_optimizer_writes": 1099,
+            "attempt_id": "70d8d25ff62c47fe94b06c2b26b99e86",
+            "attempt_index": 55,
+            "behavior_probability_gate_sha256": "0231e892816777eb84f289011e9241e76ddd2828da3250b7d5ffc4244dda06fa"
+          },
+          "write_count": 1100,
+          "optimizer_call_count": 1100,
+          "gradient_norm_before": 1.9607498578797924,
+          "gradient_norm_after": 0.9999994899634573,
+          "learning_rates": [
+            9.473684210526315e-07
+          ]
+        },
+        "completed_outer_budgets": [
+          {
+            "rank": 0,
+            "logical_update": 55,
+            "optimizer_writes": 20,
+            "cumulative_writes": 1100,
+            "full_budget_complete": true,
+            "opportunities_processed": 20,
+            "local_micro": 8,
+            "local_logical_micro": 4,
+            "local_mini": 32,
+            "gradient_accumulation": 4,
+            "actual_monitor_forward_count": 0,
+            "reused_monitor_forward_count": 0,
+            "extra_policy_monitor_forwards": false,
+            "actual_write_counts": [
+              1081,
+              1082,
+              1083,
+              1084,
+              1085,
+              1086,
+              1087,
+              1088,
+              1089,
+              1090,
+              1091,
+              1092,
+              1093,
+              1094,
+              1095,
+              1096,
+              1097,
+              1098,
+              1099,
+              1100
+            ],
+            "observed_twenty_writes": true,
+            "monitor_counter_evidence_available": true,
+            "observed_zero_extra_monitor_forwards": true
+          }
+        ]
+      },
+      "1": {
+        "latest_actual_write": {
+          "kind": "OPTIMIZER_WRITE",
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "rank": 1,
+          "context": {
+            "logical_update": 55,
+            "minibatch_index": 19,
+            "prior_optimizer_writes": 1099,
+            "attempt_id": "70d8d25ff62c47fe94b06c2b26b99e86",
+            "attempt_index": 55,
+            "behavior_probability_gate_sha256": "0231e892816777eb84f289011e9241e76ddd2828da3250b7d5ffc4244dda06fa"
+          },
+          "write_count": 1100,
+          "optimizer_call_count": 1100,
+          "gradient_norm_before": 1.9607498578797924,
+          "gradient_norm_after": 0.9999994899634573,
+          "learning_rates": [
+            9.473684210526315e-07
+          ]
+        },
+        "completed_outer_budgets": [
+          {
+            "rank": 1,
+            "logical_update": 55,
+            "optimizer_writes": 20,
+            "cumulative_writes": 1100,
+            "full_budget_complete": true,
+            "opportunities_processed": 20,
+            "local_micro": 8,
+            "local_logical_micro": 4,
+            "local_mini": 32,
+            "gradient_accumulation": 4,
+            "actual_monitor_forward_count": 0,
+            "reused_monitor_forward_count": 0,
+            "extra_policy_monitor_forwards": false,
+            "actual_write_counts": [
+              1081,
+              1082,
+              1083,
+              1084,
+              1085,
+              1086,
+              1087,
+              1088,
+              1089,
+              1090,
+              1091,
+              1092,
+              1093,
+              1094,
+              1095,
+              1096,
+              1097,
+              1098,
+              1099,
+              1100
+            ],
+            "observed_twenty_writes": true,
+            "monitor_counter_evidence_available": true,
+            "observed_zero_extra_monitor_forwards": true
+          }
+        ]
+      },
+      "2": {
+        "latest_actual_write": {
+          "kind": "OPTIMIZER_WRITE",
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "rank": 2,
+          "context": {
+            "logical_update": 55,
+            "minibatch_index": 19,
+            "prior_optimizer_writes": 1099,
+            "attempt_id": "70d8d25ff62c47fe94b06c2b26b99e86",
+            "attempt_index": 55,
+            "behavior_probability_gate_sha256": "0231e892816777eb84f289011e9241e76ddd2828da3250b7d5ffc4244dda06fa"
+          },
+          "write_count": 1100,
+          "optimizer_call_count": 1100,
+          "gradient_norm_before": 1.9607498578797924,
+          "gradient_norm_after": 0.9999994899634573,
+          "learning_rates": [
+            9.473684210526315e-07
+          ]
+        },
+        "completed_outer_budgets": [
+          {
+            "rank": 2,
+            "logical_update": 55,
+            "optimizer_writes": 20,
+            "cumulative_writes": 1100,
+            "full_budget_complete": true,
+            "opportunities_processed": 20,
+            "local_micro": 8,
+            "local_logical_micro": 4,
+            "local_mini": 32,
+            "gradient_accumulation": 4,
+            "actual_monitor_forward_count": 0,
+            "reused_monitor_forward_count": 0,
+            "extra_policy_monitor_forwards": false,
+            "actual_write_counts": [
+              1081,
+              1082,
+              1083,
+              1084,
+              1085,
+              1086,
+              1087,
+              1088,
+              1089,
+              1090,
+              1091,
+              1092,
+              1093,
+              1094,
+              1095,
+              1096,
+              1097,
+              1098,
+              1099,
+              1100
+            ],
+            "observed_twenty_writes": true,
+            "monitor_counter_evidence_available": true,
+            "observed_zero_extra_monitor_forwards": true
+          }
+        ]
+      },
+      "3": {
+        "latest_actual_write": {
+          "kind": "OPTIMIZER_WRITE",
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "rank": 3,
+          "context": {
+            "logical_update": 55,
+            "minibatch_index": 19,
+            "prior_optimizer_writes": 1099,
+            "attempt_id": "70d8d25ff62c47fe94b06c2b26b99e86",
+            "attempt_index": 55,
+            "behavior_probability_gate_sha256": "0231e892816777eb84f289011e9241e76ddd2828da3250b7d5ffc4244dda06fa"
+          },
+          "write_count": 1100,
+          "optimizer_call_count": 1100,
+          "gradient_norm_before": 1.9607498578797924,
+          "gradient_norm_after": 0.9999994899634573,
+          "learning_rates": [
+            9.473684210526315e-07
+          ]
+        },
+        "completed_outer_budgets": [
+          {
+            "rank": 3,
+            "logical_update": 55,
+            "optimizer_writes": 20,
+            "cumulative_writes": 1100,
+            "full_budget_complete": true,
+            "opportunities_processed": 20,
+            "local_micro": 8,
+            "local_logical_micro": 4,
+            "local_mini": 32,
+            "gradient_accumulation": 4,
+            "actual_monitor_forward_count": 0,
+            "reused_monitor_forward_count": 0,
+            "extra_policy_monitor_forwards": false,
+            "actual_write_counts": [
+              1081,
+              1082,
+              1083,
+              1084,
+              1085,
+              1086,
+              1087,
+              1088,
+              1089,
+              1090,
+              1091,
+              1092,
+              1093,
+              1094,
+              1095,
+              1096,
+              1097,
+              1098,
+              1099,
+              1100
+            ],
+            "observed_twenty_writes": true,
+            "monitor_counter_evidence_available": true,
+            "observed_zero_extra_monitor_forwards": true
+          }
+        ]
+      }
+    },
+    "candidate_phase": {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-nativeprefix-r2-20261023/artifacts/mixed-selection/70d8d25ff62c47fe94b06c2b26b99e86.json",
+      "step": 55,
+      "pool_retry": 0,
+      "phase_count": 5,
+      "rank_order": "phase_metrics list order from native worker group",
+      "ranks": {
+        "0": {
+          "phase_weight_syncs": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "total_weight_syncs": 1,
+          "five_phases_one_sync_observed": true,
+          "latest_cumulative_rollout_fa3_calls": {
+            "prefill": 161084,
+            "paged_prefill": 0,
+            "decode": 763560
+          },
+          "rollout_counter_scope": "cumulative actual adapter successful returns; not summed across phases",
+          "rollout_counter_location": "candidate_generation_phases[].phase_metrics[].flash3_execution.calls"
+        },
+        "1": {
+          "phase_weight_syncs": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "total_weight_syncs": 1,
+          "five_phases_one_sync_observed": true,
+          "latest_cumulative_rollout_fa3_calls": {
+            "prefill": 159376,
+            "paged_prefill": 0,
+            "decode": 748132
+          },
+          "rollout_counter_scope": "cumulative actual adapter successful returns; not summed across phases",
+          "rollout_counter_location": "candidate_generation_phases[].phase_metrics[].flash3_execution.calls"
+        },
+        "2": {
+          "phase_weight_syncs": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "total_weight_syncs": 1,
+          "five_phases_one_sync_observed": true,
+          "latest_cumulative_rollout_fa3_calls": {
+            "prefill": 177744,
+            "paged_prefill": 0,
+            "decode": 704368
+          },
+          "rollout_counter_scope": "cumulative actual adapter successful returns; not summed across phases",
+          "rollout_counter_location": "candidate_generation_phases[].phase_metrics[].flash3_execution.calls"
+        },
+        "3": {
+          "phase_weight_syncs": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "total_weight_syncs": 1,
+          "five_phases_one_sync_observed": true,
+          "latest_cumulative_rollout_fa3_calls": {
+            "prefill": 161028,
+            "paged_prefill": 0,
+            "decode": 740264
+          },
+          "rollout_counter_scope": "cumulative actual adapter successful returns; not summed across phases",
+          "rollout_counter_location": "candidate_generation_phases[].phase_metrics[].flash3_execution.calls"
+        }
+      },
+      "rollout_fa3_counter_available": true
+    },
+    "update_evidence": "fastpath-native-prefix-r2-live-1792687721751210000.json",
+    "next_outer_started": 56,
+    "next_outer_before_generation_mtime": 1792687941.302706,
+    "whole_outer_minutes": 29.277745934327445,
+    "actor_update_seconds": 157.305,
+    "adv_seconds": 202.775,
+    "checkpoint_write_seconds": 162.291,
+    "logged_step_excluding_candidates_seconds": 690.278,
+    "full_checkpoint": {
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-nativeprefix-r2-20261023",
+      "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-nativeprefix-r2-20261023/checkpoints/search-g1-common8/actor/global_step_55",
+      "manager": "easy2560_per_outer_full_state_v1",
+      "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-nativeprefix-r2-20261023/preparation/rolling-checkpoints/global_step_55/full-manifest.json",
+      "manifest_sha256": "cfeafdc0164908d87115d43a24c0e07a7e1081637536565412d1c2feb18f403f",
+      "published_unix": 1792687937.2518015,
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "source_commit": "c7976da3afc863a1c20b99daa7cc99de3bb61f15",
+      "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+      "step": 55
+    },
+    "full_checkpoint_total_bytes": 91405593874,
+    "checkpoint_file_count": 23,
+    "boundary_file_count": 7,
+    "retention_errors": [],
+    "timing_evidence": "fastpath-native-prefix-r2-before55-56-1792688027972517000.json",
+    "complete_evidence": "fastpath-native-prefix-r2-live-1792688015596184000.json",
+    "selected_all_correct_fallback": 48,
+    "selected_em_rounded": 0.565,
+    "reward_mean_rounded": 0.727
+  },
+  "failed_admission": {
+    "job": "749590",
+    "node": "ACD1-13",
+    "allocated_gpu_count": 4,
+    "saved_actual_inventory_gpu_count": 3,
+    "actual_optimizer_writes": 0,
+    "state": "FAILED",
+    "exit": "1:0",
+    "evidence": "fastpath-native-prefix-failed749590-evidence-1792685466750451000.json",
+    "original_evidence_retained": true,
+    "recovery_excluded_node": "ACD1-13",
+    "existing_cpu_receipt_reused_without_new_full_source_audit": true
+  },
+  "future_archives": {
+    "source_job": "749598",
+    "steps": [
+      100,
+      150,
+      200
+    ],
+    "core_pid": 4092067,
+    "companion_pid": 4092068,
+    "actual_waiting_state_observed": true
+  },
+  "goal": {
+    "target_outer": 200,
+    "update201_allowed": false,
+    "final_native_questions": 51713,
+    "seven_source_metrics_required": true,
+    "full_state_archive_and_actual_native4_restore_required": true,
+    "complete": false
+  },
+  "measurement_limit": "One new outer must finish before an overall speed conclusion; decoder CPU component speedup is not whole-training speedup. Policy work and node may differ across formal outers.",
+  "checked_unix": 1792688101.790304,
+  "observed_speed_comparison": {
+    "comparison_type": "one formal new outer55 versus measured formal prior lean53 and original52; different questions/policy/node may affect timing",
+    "whole_elapsed_reduction_vs_prior_lean_fraction": 0.08763110931623685,
+    "whole_elapsed_reduction_vs_original_fraction": 0.11775254381644173,
+    "candidate_elapsed_reduction_vs_prior_lean53_fraction": 0.12498818825293168,
+    "all_whole_outer_times_include_checkpoint_save_seal_and_interouter_work": true,
+    "startup_and_full_restore_excluded": true,
+    "decoder_cpu_component_17_787x_not_whole_training_speedup": true
+  }
+}
