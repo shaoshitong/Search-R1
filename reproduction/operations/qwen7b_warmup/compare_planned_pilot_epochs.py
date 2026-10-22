@@ -82,7 +82,9 @@ def run(helper):
  pairs=[(name,baseline)for name in names if name.startswith('L')for baseline in('E1_raw','E1_EMA')]
  for layer,prefix in CELLS:
   if layer!=27:pairs.extend(('L%dP%d_E3_%s'%(layer,prefix,state),'L27P%d_E3_%s'%(prefix,state))for state in('raw','EMA'))
- pairs.extend([('L18P20_E3_raw','L21P20_E3_raw'),('L18P20_E3_raw','L15P20_E3_raw')])
+ pairs.extend([('L18P20_E3_raw','L21P20_E3_raw'),('L18P20_E3_raw','L15P20_E3_raw'),
+  ('L21P80_E3_raw','L18P20_E3_raw'),('L21P80_E3_raw','L21P20_E3_raw'),
+  ('L21P80_E3_raw','L21P80_E2_raw'),('L21P80_E3_raw','L21P80_E3_EMA')])
  for candidate,baseline in pairs:
   a,b=index[candidate],index[baseline];c0=summary[candidate];b0=summary[baseline]
   comparisons[candidate+'_minus_'+baseline]=dict(candidate=candidate,baseline=baseline,
