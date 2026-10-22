@@ -1,0 +1,3 @@
+from pathlib import Path
+import json,hashlib
+b=Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1');pub=json.loads((b/'source-publication.json').read_bytes());f=json.loads((b/'fixture/fixture-complete.json').read_bytes());print(json.dumps(dict(pub_commit=pub['commit'],runtime_refs={k:v for k,v in pub['files'].items()if k.endswith(('runtime.sh','packed_variance_probe.py'))},fixture_status=f['status'],training_questions=f['training_questions'],validation_questions=f['validation_questions'],train_groups=f['train_groups'],actual_train_bytes=Path(f['train_groups']['path']).stat().st_size)))
