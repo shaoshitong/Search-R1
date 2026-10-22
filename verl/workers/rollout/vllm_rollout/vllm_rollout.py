@@ -110,7 +110,6 @@ class vLLMRollout(BaseRollout):
 
         if kwargs.get('train_tp', None) is not None:
             # deployed with megatron
-            import os
             os.environ['CUDA_TIMER_STREAM_KAFKA_ENABLE'] = '0'
             os.environ['MEGATRON_IMPORT_TIMERS'] = '0'
             train_tp = kwargs.get('train_tp', None)
@@ -122,6 +121,19 @@ class vLLMRollout(BaseRollout):
         assert model_hf_config.max_position_embeddings >= config.prompt_length + config.response_length, \
             "model context length should be greater than total sequence length"
         scheduler_options = {}
+        self._search_g1_flash3_functions = None
+        if config.get('flash_attention_3', False):
+            import json
+            from pathlib import Path
+            from search_g1.easy7b_infra import flags
+            from search_g1.vllm_flash3 import install_vllm_flash3
+            run = json.loads((Path(os.environ['SEARCH_G1_BASE']) / 'logs/run-manifest.json').read_text())
+            if (flags(run).get('flash_attention_3_rollout') is not True or tensor_parallel_size != 1
+                    or config.get('block_size') != 256):
+                raise ValueError('FA3 rollout requires its bound TP1, block256 lean profile')
+            os.environ['VLLM_ATTENTION_BACKEND'] = 'FLASH_ATTN'
+            self._search_g1_flash3_functions = install_vllm_flash3(run)
+            scheduler_options['block_size'] = 256
         for source, target in (('generation_max_num_seqs', 'max_num_seqs'),
                                ('generation_max_batched_tokens', 'max_num_batched_tokens')):
             value = config.get(source, None)
@@ -142,6 +154,10 @@ class vLLMRollout(BaseRollout):
                                     **scheduler_options)
         scheduler = self.inference_engine.llm_engine.scheduler_config
         for field, value in scheduler_options.items():
+            if field == 'block_size':
+                if self.inference_engine.llm_engine.cache_config.block_size != value:
+                    raise ValueError('Actual FA3 cache block size differs')
+                continue
             if getattr(scheduler, field) != value:
                 raise ValueError('Actual vLLM scheduler differs from declared phase bound')
         self.generation_scheduler_limits = {field: getattr(scheduler, field)
@@ -266,6 +282,8 @@ class vLLMRollout(BaseRollout):
         result = (phase['service'].close(abort=abort) if phase is not None
                   else dict(completed_requests=0, engine_steps=0, partial_setup_aborted=True))
         result['scheduler_limits'] = copy.deepcopy(self.generation_scheduler_limits)
+        if getattr(self, '_search_g1_flash3_functions', None) is not None:
+            result['flash3_execution'] = self._search_g1_flash3_functions.report()
         self.inference_engine.llm_engine._common8_stop_capture = None
         if self._generation_cache_setup_started:
             self.inference_engine.free_cache_engine()

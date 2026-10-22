@@ -91,7 +91,7 @@ def engine(args):
                         sampling_params=SamplingParams(temperature=0., max_tokens=32,
                                                        logprobs=1, ignore_eos=True),
                         use_tqdm=False)
-    check_rows = [dict(token_ids=r.outputs[0].token_ids,
+    check_rows = [dict(token_ids=list(r.outputs[0].token_ids),
                        token_logprobs=[float(step[token].logprob) for step, token in
                                        zip(r.outputs[0].logprobs, r.outputs[0].token_ids)])
                   for r in check]

@@ -166,7 +166,7 @@ def compute_rewards(token_level_scores, old_log_prob, ref_log_prob, kl_ratio):
     return token_level_scores - kl * kl_ratio
 
 
-def compute_policy_loss(old_log_prob, log_prob, advantages, eos_mask, cliprange, dual_clip=None):
+def compute_policy_loss(old_log_prob, log_prob, advantages, eos_mask, cliprange, dual_clip=None, *, check_finite=True):
     """Adapted from https://github.com/huggingface/trl/blob/main/trl/trainer/ppo_trainer.py#L1122
 
     Args:
@@ -198,7 +198,8 @@ def compute_policy_loss(old_log_prob, log_prob, advantages, eos_mask, cliprange,
     if dual_clip is not None:
         from search_g1.policy_safety import dual_clip_terms
         import math
-        terms = dual_clip_terms(negative_approx_kl, advantages, eos_mask, cliprange, dual_clip)
+        terms = dual_clip_terms(negative_approx_kl, advantages, eos_mask, cliprange, dual_clip,
+                                check_finite=check_finite)
         pg_loss = verl_F.masked_mean(terms, eos_mask)
         clipped = ((advantages > 0) & (negative_approx_kl > math.log1p(cliprange))) | ((advantages < 0) & (negative_approx_kl < math.log1p(-cliprange)))
         return pg_loss, verl_F.masked_mean(clipped.float(), eos_mask), verl_F.masked_mean(-negative_approx_kl, eos_mask)

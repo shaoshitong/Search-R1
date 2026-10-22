@@ -16,7 +16,7 @@ def main():
     sys.path.insert(0, str(base / 'source' / commit))
     from reproduction.easy2560_joint4.control import own_base, publish
     own_base(base)
-    root = base / 'diagnostics/rollout-flash3'
+    root = base / 'diagnostics' / request.get('diagnostic_name', 'rollout-flash3')
     root.mkdir(parents=True, exist_ok=True)
     claim = root / 'submit-claim.json'
     if claim.exists():

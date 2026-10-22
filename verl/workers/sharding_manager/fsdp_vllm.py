@@ -38,7 +38,10 @@ class FSDPVLLMShardingManager(BaseShardingManager):
                  inference_engine: LLM,
                  model_config,
                  full_params: bool = False,
-                 device_mesh: DeviceMesh = None):
+                 device_mesh: DeviceMesh = None,
+                 reuse_snapshot_weights: bool = False):
+        if type(reuse_snapshot_weights) is not bool:
+            raise ValueError('Snapshot weight reuse must be an explicit bool')
         self.module = module
         self.inference_engine = inference_engine
         self.model_config = model_config
@@ -47,6 +50,9 @@ class FSDPVLLMShardingManager(BaseShardingManager):
         self._phase_setup_snapshot = None
         self._rng_swapped = False
         self.phase_weight_sync_count = 0
+        self.reuse_snapshot_weights = reuse_snapshot_weights
+        self._resident_weight_snapshot = None
+        self._retain_phase_weights = False
 
         # Full params
         self.full_params = full_params
@@ -71,20 +77,28 @@ class FSDPVLLMShardingManager(BaseShardingManager):
             self.gen_random_states = None
 
     def __enter__(self):
+        # The legacy context manager never trusts a previous sampling snapshot.
+        self.release_snapshot_weights()
+        return self._enter(sync_weights=True)
+
+    def _enter(self, *, sync_weights, own_weights=False):
         if self._phase_snapshot is not None:
             raise RuntimeError('Per-request FSDP synchronization inside resident rollout phase')
         self._rng_swapped = False
-        log_gpu_memory_usage('Before state_dict() in sharding manager memory', logger=logger)
-        params = self.module.state_dict()
-        log_gpu_memory_usage('After state_dict() in sharding manager memory', logger=logger)
-        # Copy, not share memory
-        load_format = 'hf' if self.full_params else 'dtensor'
-        self.inference_engine.sync_model_weights(params, load_format=load_format)
-        log_gpu_memory_usage('After sync model weights in sharding manager', logger=logger)
-
-        del params
-        torch.cuda.empty_cache()
-        log_gpu_memory_usage('After del state_dict and empty_cache in sharding manager', logger=logger)
+        if sync_weights:
+            log_gpu_memory_usage('Before state_dict() in sharding manager memory', logger=logger)
+            params = self.module.state_dict()
+            log_gpu_memory_usage('After state_dict() in sharding manager memory', logger=logger)
+            # The normal loader copies into vLLM-owned storage. Never retain
+            # the actor state dict or the uninitialized offload CPU buffers.
+            load_format = 'hf' if self.full_params else 'dtensor'
+            self.inference_engine.sync_model_weights(params, load_format=load_format)
+            if own_weights:
+                self._own_sampling_weights()
+            log_gpu_memory_usage('After sync model weights in sharding manager', logger=logger)
+            del params
+            torch.cuda.empty_cache()
+            log_gpu_memory_usage('After del state_dict and empty_cache in sharding manager', logger=logger)
 
         # TODO: offload FSDP model weights
         # self.module.cpu()
@@ -98,10 +112,38 @@ class FSDPVLLMShardingManager(BaseShardingManager):
             torch.cuda.set_rng_state(self.gen_random_states)
             self._rng_swapped = True
 
+    def _own_sampling_weights(self):
+        """Retain only storage owned by the local vLLM model, never actor aliases.
+
+        The native TP1 SPMD executor has one local model. Checking storage
+        identity does not read tensor contents or copy non-aliased weights.
+        Some legacy loaders alias sources; detach only those exact aliases.
+        """
+        model = self.inference_engine.llm_engine.model_executor.worker.model_runner.model
+        if model is self.module:
+            raise RuntimeError('Sampling snapshot cannot be the actor module')
+        sources = list(self.module.parameters()) + list(self.module.buffers())
+        def storage(value):
+            local = value.to_local() if hasattr(value, 'to_local') else value
+            return (str(local.device), local.untyped_storage().data_ptr()) if local.numel() else None
+        actor_storage = {storage(value) for value in sources} - {None}
+        checked = detached = 0
+        for value in list(model.parameters()) + list(model.buffers()):
+            checked += 1
+            if storage(value) in actor_storage:
+                value.data = value.detach().clone()
+                detached += 1
+            if storage(value) in actor_storage:
+                raise RuntimeError('Sampling weight still aliases actor storage')
+        self._last_weight_storage_proof = dict(checked_tensors=checked, detached_actor_aliases=detached,
+                                               actor_storage_aliases_after=0)
+
     def __exit__(self, exc_type, exc_value, traceback):
-        log_gpu_memory_usage('Before vllm offload in sharding manager', logger=logger)
-        self.inference_engine.offload_model_weights()
-        log_gpu_memory_usage('After vllm offload in sharding manager', logger=logger)
+        if not self._retain_phase_weights or exc_type is not None:
+            log_gpu_memory_usage('Before vllm offload in sharding manager', logger=logger)
+            self.inference_engine.offload_model_weights()
+            self._resident_weight_snapshot = None
+            log_gpu_memory_usage('After vllm offload in sharding manager', logger=logger)
 
         # self.module.to('cuda')
         # if torch.distributed.get_rank() == 0:
@@ -118,23 +160,54 @@ class FSDPVLLMShardingManager(BaseShardingManager):
             torch.cuda.set_rng_state(self.torch_random_states)
             self._rng_swapped = False
 
-    def begin_phase(self, policy_snapshot_id):
+    def phase_needs_weight_sync(self, policy_snapshot_id, reuse=False):
+        """Called before actor shards are loaded, identically on all ranks."""
+        if type(reuse) is not bool or (reuse and not self.reuse_snapshot_weights):
+            raise ValueError('Undeclared snapshot weight reuse')
+        if self._phase_snapshot is not None or self._phase_setup_snapshot is not None:
+            raise RuntimeError('Cannot inspect weights inside an active generation phase')
+        hit = reuse and self._resident_weight_snapshot == policy_snapshot_id
+        if not hit:
+            self.release_snapshot_weights()
+        return not hit
+
+    def release_snapshot_weights(self):
+        """Invalidate before actor work/restore, or after the last candidate chunk."""
+        if self._phase_snapshot is not None:
+            raise RuntimeError('Cannot release an active generation snapshot')
+        if self._resident_weight_snapshot is not None:
+            self.inference_engine.offload_model_weights()
+            self._resident_weight_snapshot = None
+            torch.cuda.empty_cache()
+
+    def begin_phase(self, policy_snapshot_id, *, reuse=False, retain_weights=False):
         if (type(policy_snapshot_id) is not str or not policy_snapshot_id or
                 self._phase_snapshot is not None or self._phase_setup_snapshot is not None):
             raise ValueError('Missing snapshot or overlapping resident rollout phase')
+        if type(retain_weights) is not bool or (retain_weights and not reuse):
+            raise ValueError('Retained weights require explicit snapshot reuse')
+        sync_weights = self.phase_needs_weight_sync(policy_snapshot_id, reuse=True) if reuse else True
         self._phase_setup_snapshot = policy_snapshot_id
-        self.__enter__()
+        self._retain_phase_weights = retain_weights
+        if reuse:
+            self._enter(sync_weights=sync_weights, own_weights=True)
+            self._resident_weight_snapshot = policy_snapshot_id
+        else:
+            self.__enter__()
         self._phase_snapshot = policy_snapshot_id
-        self.phase_weight_sync_count += 1
+        self.phase_weight_sync_count += int(sync_weights)
 
-    def end_phase(self, policy_snapshot_id):
+    def end_phase(self, policy_snapshot_id, abort=False):
         if self._phase_setup_snapshot != policy_snapshot_id:
             raise ValueError('Closing a different resident actor snapshot')
         try:
+            if abort:
+                self._retain_phase_weights = False
             self.__exit__(None, None, None)
         finally:
             self._phase_snapshot = None
             self._phase_setup_snapshot = None
+            self._retain_phase_weights = False
 
     def preprocess_data(self, data: DataProto) -> DataProto:
         # TODO: Current impl doesn't consider FSDP with torch micro-dp

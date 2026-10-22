@@ -62,6 +62,7 @@ def agree_attempt_result(result, *, group=None):
                   'opportunity_statuses', 'guard_stage', 'guard_reasons',
                   'complete_outer', 'full_budget_complete', 'recovery_protocol_version',
                   'optimizer_calls_this_attempt', 'optimizer_rollbacks_this_attempt',
+                  'no_automatic_rollback', 'current_step_rollback',
                   'actual_monitor_forward_count', 'reused_monitor_forward_count', 'extra_policy_monitor_forwards')
         if any(any(peer.get(name) != result.get(name) for name in shared) for peer in results):
             raise RuntimeError('Collective attempt dispositions or actual Adam counts differ')
@@ -75,13 +76,13 @@ def enforcement_for_role(role):
                 old_policy_kl='enforced', numerical_finite='enforced', dual_clip='enforced')
 
 
-def dual_clip_terms(delta, advantages, mask, epsilon, c):
+def dual_clip_terms(delta, advantages, mask, epsilon, c, *, check_finite=True):
     if not 0 < epsilon < 1 or not math.isfinite(c) or c <= 1 + epsilon:
         raise ValueError('Invalid Dual-Clip parameters')
     valid = mask.bool()
     d = torch.where(valid, delta, 0.).double()
     a = torch.where(valid, advantages, 0.).double()
-    if not torch.isfinite(d).all() or not torch.isfinite(a).all():
+    if check_finite and (not torch.isfinite(d).all() or not torch.isfinite(a).all()):
         raise ValueError('Nonfinite effective Dual-Clip input')
     bounded = torch.where(a > 0, d.clamp_max(math.log1p(epsilon)),
                           torch.where(a < 0, d.clamp(math.log1p(-epsilon), math.log(c)),
@@ -227,10 +228,13 @@ def bind_actual_config(actor_config, group=None):
         document=OmegaConf.to_container(actor_config,resolve=True)
         serialized=json.dumps(document,sort_keys=True,allow_nan=False).encode()
         s=document.get('policy_safety')
+        from search_g1.actor_performance import lean_actor, validate_lean_binding
+        lean = lean_actor(document)
         if s is not None and not isinstance(s.get('enabled'),bool):
             ok=False
         if os.environ.get('SEARCH_G1_PROFILE')=='common8':
             run=json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
+            validate_lean_binding(document, run)
             monitor_count=monitor_trajectories_per_rank(run)
             if run.get('easy2560_selection') is True:
                 from reproduction.common8.precision_contract import easy2560_native4
@@ -249,10 +253,12 @@ def bind_actual_config(actor_config, group=None):
             configured_extra = s.get('extra_policy_monitor_forwards',True) if s else True
             if type(extra) is not bool or configured_extra is not extra:
                 ok=False
-            if not extra and not diagnostic:
+            if not extra and not diagnostic and not lean:
                 ok=False
             if run.get('policy_safety_required') is True and (s is None or s.get('enabled') is not True):
                 ok=False
+        if lean and os.environ.get('SEARCH_G1_PROFILE')!='common8':
+            ok=False
         if s and s.get('extra_policy_monitor_forwards',True) is False and os.environ.get('SEARCH_G1_PROFILE')!='common8':
             ok=False
         if s and type(s.get('extra_policy_monitor_forwards',True)) is not bool:

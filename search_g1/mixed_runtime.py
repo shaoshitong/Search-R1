@@ -189,6 +189,18 @@ def _collect_once(trainer, manager, stream, attempt_identity, pool_retry=0, disc
         repeated = parent.repeat(repeat_times=5,interleave=True)
         gen = repeated.pop(batch_keys=['input_ids','attention_mask','position_ids'])
         attach_generation_identity(gen, identity, do_sample=True)
+        actor_rollout = getattr(trainer.config, 'actor_rollout_ref', None)
+        reuse_weights = actor_rollout.rollout.get('reuse_snapshot_weights', False) if actor_rollout is not None else False
+        if type(reuse_weights) is not bool:
+            raise ValueError('Snapshot weight reuse must be an explicit bool')
+        if reuse_weights:
+            # Only a complete fixed candidate pool has a known final chunk.
+            # Keep all five independent phase/RNG/KV-cache boundaries; retain
+            # only the immutable vLLM-owned weights between those boundaries.
+            if not fixed:
+                raise ValueError('Snapshot weight reuse requires a fixed candidate pool')
+            gen.meta_info.update(snapshot_weight_reuse=True,
+                retain_snapshot_weights=len(selector.reserved) < limit)
         worker_proofs = trainer.actor_rollout_wg.capture_mixed_state(
             str(pool/(str(ordinals[0])+'-worker-rng')))
         torch.save({'stream':stream.state(),'reserved':selector.reserved,

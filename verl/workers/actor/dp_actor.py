@@ -207,15 +207,20 @@ class DataParallelPPOActor(BasePPOActor):
     def _optimizer_step(self):
         assert self.config.grad_clip is not None
 
+        from search_g1.actor_performance import lean_actor
+        lean = lean_actor(self.config)
         group = self.actor_module.process_group if isinstance(self.actor_module, FSDP) else None
-        gradients = {f'gradient_{i}':p.grad for i,p in enumerate(self.actor_module.parameters()) if p.grad is not None}
         recoverable = getattr(self, '_recoverable_guard_mode', False)
-        require_finite(gradients,stage='before_gradient_clipping',process_group=group,recoverable=recoverable)
+        if not lean:
+            gradients = {f'gradient_{i}':p.grad for i,p in enumerate(self.actor_module.parameters()) if p.grad is not None}
+            require_finite(gradients,stage='before_gradient_clipping',process_group=group,recoverable=recoverable)
         from search_g1.gradient_clipping import clip_global_l2
         grad_norm = clip_global_l2(self.actor_module,self.config.grad_clip,
-            context=getattr(self,"_gradient_diagnostic_context",None),recoverable=recoverable)
-        require_finite({"grad_norm":grad_norm},stage="before_optimizer_step",process_group=group,recoverable=recoverable)
-        if recoverable:
+            context=getattr(self,"_gradient_diagnostic_context",None),recoverable=recoverable,
+            check_finite=not lean)
+        if not lean:
+            require_finite({"grad_norm":grad_norm},stage="before_optimizer_step",process_group=group,recoverable=recoverable)
+        if recoverable and not lean:
             from search_g1.optimizer_transaction import LocalOptimizerTransaction
             self._pending_optimizer_transaction = LocalOptimizerTransaction(self.actor_module, self.actor_optimizer)
         # Even a provisional write invalidates every earlier monitor result.
@@ -230,7 +235,7 @@ class DataParallelPPOActor(BasePPOActor):
             gradient_norm_before=float(grad_norm),
             gradient_norm_after=float(self.actor_module._last_clipped_global_l2),
             learning_rates=[float(part['lr']) for part in self.actor_optimizer.param_groups])
-        if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+        if os.environ.get('SEARCH_G1_PROFILE') == 'common8' and not lean:
             post = {f'parameter_{i}': p.detach() for i,p in enumerate(self.actor_module.parameters())}
             for i,state in enumerate(self.actor_optimizer.state.values()):
                 for name,value in state.items():
@@ -437,6 +442,8 @@ class DataParallelPPOActor(BasePPOActor):
 
     def update_policy(self, data: DataProto):
         """Finish each formal attempt with a typed all-rank disposition."""
+        from search_g1.actor_performance import lean_actor, rollback_metadata
+        lean = lean_actor(self.config)
         from search_g1.policy_safety import (RecoverableGuard, recoverable_mode,
             bind_actual_config, agree_attempt_result, _phase_agreement)
         group = self.actor_module.process_group if isinstance(self.actor_module,FSDP) else None
@@ -484,7 +491,7 @@ class DataParallelPPOActor(BasePPOActor):
             # complete_outer retains its scheduler/rollout-boundary meaning.
             # full_budget_complete is the separate twenty-write budget fact.
             complete_outer=progressed,retained_partial_adam_writes=progressed and not full_budget,
-            no_automatic_rollback=False, current_step_rollback=True)
+            **rollback_metadata(lean=lean))
         result.update(extra_policy_monitor_forwards=bool((self.config.get('policy_safety') or {}).get('extra_policy_monitor_forwards',True)),
                       actual_monitor_forward_count=getattr(self,'_actual_monitor_forward_count',0),
                       reused_monitor_forward_count=getattr(self,'_reused_monitor_forward_count',0))
@@ -507,8 +514,7 @@ class DataParallelPPOActor(BasePPOActor):
                 guard_stage=result['guard_stage'],guard_reasons=result['guard_reasons'],
                 opportunities_processed=processed,
                 recoverable_guard=True,complete_outer=False,scheduler_advances=0,
-                retained_partial_adam_writes=False,no_automatic_rollback=False,
-                current_step_rollback=True,recovery_protocol_version=2,
+                retained_partial_adam_writes=False,**rollback_metadata(lean=lean),recovery_protocol_version=2,
                 extra_policy_monitor_forwards=result['extra_policy_monitor_forwards'],
                 actual_monitor_forward_count=result['actual_monitor_forward_count'],
                 reused_monitor_forward_count=result['reused_monitor_forward_count']),collective=True,group=group)
@@ -516,6 +522,8 @@ class DataParallelPPOActor(BasePPOActor):
         return metrics
 
     def _update_policy_attempt(self, data: DataProto):
+        from search_g1.actor_performance import lean_actor
+        lean = lean_actor(self.config)
         from search_g1.policy_safety import bind_actual_config, RecoverableGuard
         self._invalidate_monitor_forward_cache()
         self._actual_monitor_forward_count = self._reused_monitor_forward_count = 0
@@ -561,7 +569,7 @@ class DataParallelPPOActor(BasePPOActor):
 
         safety = self.config.get('policy_safety', None)
         safety_enabled = safety is not None and safety.enabled
-        extra_monitor_forwards = safety_enabled and safety.get('extra_policy_monitor_forwards',True)
+        extra_monitor_forwards = safety_enabled and not lean and safety.get('extra_policy_monitor_forwards',True)
         frozen = None
         if safety_enabled:
             from search_g1.policy_safety import bind_policy_phase
@@ -698,12 +706,14 @@ class DataParallelPPOActor(BasePPOActor):
 
     def _run_minibatch(self, mini_batch, *, temperature, safety_enabled, safety, frozen, tail_limit, metrics):
         """One update opportunity; caller records its disposition on every rank."""
+        from search_g1.actor_performance import lean_actor
+        lean = lean_actor(self.config)
         from search_g1.logical_micro_loss import logical_policy_loss, logical_masked_mean, logical_slices
         group = self.actor_module.process_group if isinstance(self.actor_module,FSDP) else None
         logical_micro = int(getattr(self.config, 'ppo_logical_micro_batch_size', None)
                             or self.config.ppo_micro_batch_size)
         recoverable = getattr(self,'_recoverable_guard_mode',False)
-        extra_monitor_forwards = safety_enabled and safety.get('extra_policy_monitor_forwards',True)
+        extra_monitor_forwards = safety_enabled and not lean and safety.get('extra_policy_monitor_forwards',True)
         if extra_monitor_forwards:
             self._monitor_old_policy(frozen,safety,tail_limit,'before_minibatch')
         if self.config.use_dynamic_bsz:
@@ -722,25 +732,27 @@ class DataParallelPPOActor(BasePPOActor):
             entropy,new=self._forward_micro_batch(micro_batch=micro,temperature=temperature,
                                                    compute_entropy=compute_entropy)
             authored=mask.bool()
-            if safety_enabled:
+            if safety_enabled and not lean:
                 require_finite(dict(new=torch.where(authored,new,0.),old=torch.where(authored,old,0.),
                     advantage=torch.where(authored,advantages,0.),mass=mask.sum()),
                     stage='before_dual_clip_exp',process_group=group,positive=('mass',),recoverable=recoverable)
             pg_loss,clipfrac,ppo_kl=logical_policy_loss(core_algos.compute_policy_loss,
                 logical_micro_batch_size=logical_micro,old_log_prob=old,log_prob=new,
                 advantages=advantages,eos_mask=mask,cliprange=self.config.clip_ratio,
-                dual_clip=float(safety.dual_clip) if safety_enabled else None)
+                dual_clip=float(safety.dual_clip) if safety_enabled else None,
+                **({'check_finite': False} if lean else {}))
             if 'selection_fallback' in micro:
                 from search_g1.source_loss_audit import contributions
                 source_rows=[contributions(old[part],new[part],advantages[part],mask[part],
                     micro['selection_fallback'][part],self.config.clip_ratio,
-                    float(safety.dual_clip) if safety_enabled else None)
+                    float(safety.dual_clip) if safety_enabled else None,
+                    **({'check_finite': False} if lean else {}))
                     for part in logical_slices(new.shape[0],logical_micro)]
                 append_to_dict(metrics,{key:sum(row[key] for row in source_rows)/len(source_rows)
                                         for key in source_rows[0]})
             entropy_loss=logical_masked_mean(entropy,mask,logical_micro) if compute_entropy else new.new_zeros(())
             policy_loss=pg_loss-entropy_loss*self.config.entropy_coeff
-            numerical_fields=dict(pg_loss=pg_loss,entropy_loss=entropy_loss,ppo_kl=ppo_kl,
+            numerical_fields={} if lean else dict(pg_loss=pg_loss,entropy_loss=entropy_loss,ppo_kl=ppo_kl,
                 response_tokens=mask.sum(),authored_log_prob=torch.where(authored,new,0.),
                 authored_old_log_prob=torch.where(authored,old,0.),
                 authored_advantages=torch.where(authored,advantages,0.))
@@ -761,8 +773,9 @@ class DataParallelPPOActor(BasePPOActor):
                 metrics['actor/kl_coef']=self.config.kl_loss_coef
             loss=policy_loss/self.gradient_accumulation
             numerical_fields['loss']=loss
-            require_finite(numerical_fields,stage='before_backward',process_group=group,
-                           positive=('response_tokens',),recoverable=recoverable)
+            if not lean:
+                require_finite(numerical_fields,stage='before_backward',process_group=group,
+                               positive=('response_tokens',),recoverable=recoverable)
             loss.backward()
             append_to_dict(metrics,{'actor/entropy_loss':entropy_loss.detach().item(),
                 'actor/pg_loss':pg_loss.detach().item(),'actor/pg_clipfrac':clipfrac.detach().item(),

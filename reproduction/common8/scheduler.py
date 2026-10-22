@@ -176,6 +176,8 @@ class OuterSchedulerEvidence:
     def __init__(self, base, optimizer, scheduler, *, rank, world_size, job_id):
         self.base = Path(base).resolve()
         run = json.loads((self.base / 'logs/run-manifest.json').read_text())
+        from search_g1.actor_performance import lean_run
+        self.lean_performance_profile = lean_run(run)
         _need(type(rank) is int and rank in ranks(run) and world_size == training_world_size(run),
               'Wrong real scheduler rank topology')
         self.identity = _identity(self.base, job_id=job_id)
@@ -384,6 +386,7 @@ class OuterSchedulerEvidence:
 
     def abort_attempt(self, *, optimizer_writes, opportunities_processed, guard_stage, guard_reasons):
         """Recover only a wholly skipped or abandoned attempt; retain real Adam."""
+        from search_g1.actor_performance import rollback_metadata
         _need(self.recoverable and self.pending is not None and self.prepared is None and not self.rejected,
               'No explicitly recoverable active attempt')
         before=self.pending['writes_before']
@@ -396,8 +399,8 @@ class OuterSchedulerEvidence:
         row.update(kind='ABORTED_ATTEMPT',writes_after=optimizer_writes,
             actual_optimizer_writes=optimizer_writes-before,opportunities_processed=opportunities_processed,
             guard_stage=guard_stage,guard_reasons=list(guard_reasons),recoverable_guard=True,
-            retained_partial_adam_writes=optimizer_writes>before,no_automatic_rollback=False,
-            current_step_rollback=True,recovery_protocol_version=2,
+            retained_partial_adam_writes=optimizer_writes>before,
+            **rollback_metadata(lean=getattr(self,'lean_performance_profile',False)),recovery_protocol_version=2,
             next_learning_rates=_learning_rates(self.optimizer),scheduler_advances=0,
             scheduler_unchanged_on_rejection=True)
         self._append(row)

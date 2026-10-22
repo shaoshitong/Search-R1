@@ -7,7 +7,7 @@ ACTOR_MICRO="${3:-8}"
 RESTORE_RECEIPT="${4:-}"
 INFRA_PROFILE="${5:-baseline}"
 EXTERNAL_RETRIEVER_RECEIPT="${6:-}"
-if [[ "$INFRA_PROFILE" == fa3-exact-cache-v1 ]]; then
+if [[ "$INFRA_PROFILE" == fa3-exact-cache-v1 || "$INFRA_PROFILE" == fa3-lean-v1 ]]; then
   export LD_PRELOAD="$BASE/preparation/flash3-runtime/libcudart.so.12"
   if [[ -n "$RESTORE_RECEIPT" ]]; then
     export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True

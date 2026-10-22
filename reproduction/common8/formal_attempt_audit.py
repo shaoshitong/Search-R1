@@ -158,10 +158,12 @@ def _monitor_statistics(row, diagnostic_only=False):
 
 def _audit_transaction_rows(rows_by_rank, binding, attempt, rejection_before, *, run):
     """Audit only actual executed opportunities; rolled-back calls are not writes."""
+    from search_g1.actor_performance import lean_run
+    lean = lean_run(run)
     observations = {}; final_rejections = []; decisions_by_rank = []; executions = []
     extra_monitors = run.get('extra_policy_monitor_forwards',True)
-    _require(type(extra_monitors) is bool and (extra_monitors or run.get('finite_thresholds_diagnostic_only') is True),
-             'Omitted monitor forwards require explicit diagnostic-only run binding')
+    _require(type(extra_monitors) is bool and (extra_monitors or run.get('finite_thresholds_diagnostic_only') is True or lean),
+             'Omitted monitor forwards require explicit diagnostic-only or native4 lean run binding')
     for rank in ranks(run):
         rows = rows_by_rank[rank]
         decisions = [row for row in rows if row['kind']=='OPPORTUNITY']
@@ -183,6 +185,8 @@ def _audit_transaction_rows(rows_by_rank, binding, attempt, rejection_before, *,
                      'Transaction opportunity identity differs')
             success = decision['status']=='written'
             rollback = decision['status']=='rolled_back_guard'
+            _require(not lean or (not rollback and decision['optimizer_write_rolled_back'] is False),
+                     'Lean execution has no per-write rollback transaction')
             _require(decision['status'] in ('written','rolled_back_guard','skipped_guard') and
                      decision['optimizer_write_succeeded'] is success and
                      decision['optimizer_write_rolled_back'] is rollback and
@@ -421,6 +425,8 @@ def verify_attempt_history(base, run, complete_records, scheduler_receipts, *, l
 
 
 def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, last, plan_sha256):
+    from search_g1.actor_performance import lean_run
+    lean = lean_run(run)
     from reproduction.common8.behavior_runtime import read_gate_receipt
     base = Path(base).resolve(); _integer(last, 'last', minimum=1); _hash(plan_sha256, 'prospective plan')
     _require(last <= 200 and run['policy_safety_mode'] == 'inline_first_five', 'Invalid formal attempt scope')
@@ -481,7 +487,8 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
                  'Actual driver opportunity returns differ')
         if version==2:
             _require(attempt['full_budget_complete'] is full_budget and attempt['opportunities_unattempted']==20-processed and
-                     attempt['current_step_rollback'] is True and attempt['no_automatic_rollback'] is False,
+                     attempt['current_step_rollback'] is (not lean) and attempt['no_automatic_rollback'] is lean and
+                     (not lean or attempt.get('optimizer_rollbacks_this_attempt',0)==0),
                      'Transaction driver full budget/rollback semantics differ')
         else:
             _require(processed==20 and attempt['guard_stage'] == (None if complete else 'all_update_opportunities_skipped') and

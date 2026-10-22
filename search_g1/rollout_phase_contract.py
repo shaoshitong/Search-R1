@@ -95,9 +95,24 @@ def scalar_metrics(output):
         if not phases or len({p['phase_id'] for p in phases})!=len(phases):
             raise ValueError('Fixed pool requires distinct completed native sampling phases')
         receipts=[r for p in phases for r in p['phase_metrics']]
-        if any(type(r.get('weight_syncs')) is not int or r['weight_syncs']!=1 for r in receipts):
-            raise ValueError('Each full candidate phase must synchronize once per worker')
-        result['infra/rollout/weight_syncs_per_rank']=len(phases)
+        sync_total = 0
+        for index, event in enumerate(phases):
+            previous = phases[index - 1] if index else {}
+            reuse = event.get('snapshot_weight_reuse', False)
+            if type(reuse) is not bool:
+                raise ValueError('Invalid fixed-pool snapshot reuse receipt')
+            retained = reuse and previous.get('retain_snapshot_weights') is True
+            expected = 0 if (retained and previous.get('policy_snapshot_id') == event.get('policy_snapshot_id')) else 1
+            if reuse and (type(event.get('retain_snapshot_weights')) is not bool or
+                          not event.get('policy_snapshot_id')):
+                raise ValueError('Incomplete fixed-pool snapshot reuse boundary')
+            if any(type(r.get('weight_syncs')) is not int or r['weight_syncs'] != expected
+                   for r in event['phase_metrics']):
+                raise ValueError('Candidate phase weight sync differs from its actual snapshot boundary')
+            sync_total += expected
+        if phases[-1].get('retain_snapshot_weights', False):
+            raise ValueError('Final candidate phase did not release retained sampling weights')
+        result['infra/rollout/weight_syncs_per_rank']=sync_total
         result['infra/rollout/selected_trajectories']=phase['selected_trajectories']
         for key in ('engine_steps','completed_requests'):
             if all(type(r.get(key)) is int for r in receipts):

@@ -193,7 +193,8 @@ class ActorRolloutRefWorker(Worker):
                     if not use_remove_padding or self.ulysses_sequence_parallel_size != 1:
                         raise ValueError('FA3 actor requires native remove-padding TP1/SP1 execution')
                     from search_g1.flash3_attention import install_flash3_actor
-                    install_flash3_actor(actor_module)
+                    install_flash3_actor(actor_module,
+                        compact_gqa=infra_flags().get('flash_attention_3_compact_gqa', False))
                 if infra_flags()['selected_policy_logits']:
                     if not use_remove_padding or self.ulysses_sequence_parallel_size != 1:
                         raise ValueError('Selected policy projection requires native packed TP1/SP1 actor')
@@ -309,7 +310,8 @@ class ActorRolloutRefWorker(Worker):
                                                                inference_engine=rollout.inference_engine,
                                                                model_config=self.actor_model_config,
                                                                full_params='hf' in self.config.rollout.load_format,
-                                                               device_mesh=rollout_device_mesh)
+                                                               device_mesh=rollout_device_mesh,
+                                                               reuse_snapshot_weights=self.config.rollout.get('reuse_snapshot_weights', False))
             log_gpu_memory_usage('After building sharding manager', logger=None)
 
         return rollout, rollout_sharding_manager
@@ -585,10 +587,15 @@ class ActorRolloutRefWorker(Worker):
         log_gpu_memory_usage('After recompute log prob', logger=logger)
         return output
 
-    def _assert_generation_phase_inactive(self):
+    def _assert_generation_phase_inactive(self, *, release_snapshot_weights=True):
         if (getattr(self, '_resident_generation_phase', None) is not None or
                 getattr(self, '_generation_phase_setup_pending', False)):
             raise RuntimeError('Actor computation cannot overlap a frozen generation phase')
+        # No cached sampling copy may survive an actor forward/update/restore.
+        # RNG-only chunk boundary captures explicitly retain it.
+        manager = getattr(self, 'rollout_sharding_manager', None)
+        if release_snapshot_weights and getattr(manager, 'reuse_snapshot_weights', False):
+            manager.release_snapshot_weights()
 
     def _generation_boundary_agreement(self, value):
         gathered = [None] * torch.distributed.get_world_size()
@@ -617,13 +624,17 @@ class ActorRolloutRefWorker(Worker):
                 self._generation_phase_sync_before = self.rollout_sharding_manager.phase_weight_sync_count
                 self._generation_phase_actor_offloaded = False
         try:
-            self._assert_generation_phase_inactive()
+            self._assert_generation_phase_inactive(release_snapshot_weights=False)
             assert self._is_rollout and os.environ.get('SEARCH_G1_PROFILE') == 'common8'
             assert self.config.rollout.name == 'vllm' and self.config.rollout.tensor_model_parallel_size == 1
             assert type(snapshot_meta) is dict
             for key in ('phase_id', 'policy_snapshot_id'):
                 assert type(snapshot_meta[key]) is str and snapshot_meta[key]
             identity = snapshot_meta['behavior_identity']
+            reuse = snapshot_meta.get('snapshot_weight_reuse', False)
+            retain = snapshot_meta.get('retain_snapshot_weights', False)
+            assert type(reuse) is bool and type(retain) is bool and (not retain or reuse)
+            assert not reuse or self.config.rollout.get('reuse_snapshot_weights', False) is True
             assert identity['policy_snapshot_id'] == snapshot_meta['policy_snapshot_id']
             provenance = self.rollout.inference_engine.llm_engine._common8_generation_provenance
             assert identity['run_id'] == provenance['run_id'] and identity['slurm_job_id'] == provenance['slurm_job_id']
@@ -634,10 +645,19 @@ class ActorRolloutRefWorker(Worker):
             error = type(failure).__name__
             identity_sha = None
         self._generation_boundary_agreement(dict(identity_sha256=identity_sha, error=error))
+        needs_weight_sync = True
+        if getattr(self.rollout_sharding_manager, 'reuse_snapshot_weights', False):
+            cache_error = None
+            try:
+                needs_weight_sync = self.rollout_sharding_manager.phase_needs_weight_sync(
+                    snapshot_meta['policy_snapshot_id'], reuse=reuse)
+            except Exception as failure:
+                cache_error = type(failure).__name__
+            self._generation_boundary_agreement(dict(weight_sync_required=needs_weight_sync, error=cache_error))
         self._generation_phase_setup_pending = True
         preload_error = None
         try:
-            if self._is_offload_param:
+            if self._is_offload_param and needs_weight_sync:
                 self._generation_phase_params_loaded = True
                 load_fsdp_param_and_grad(module=self.actor_module_fsdp, device_id=torch.cuda.current_device(), load_grad=self._is_offload_grad)
         except Exception as failure:
@@ -645,18 +665,24 @@ class ActorRolloutRefWorker(Worker):
         self._generation_setup_agreement(preload_error, 'actor_preload')
         sync_error = None
         try:
-            self.rollout_sharding_manager.begin_phase(snapshot_meta['policy_snapshot_id'])
+            if reuse:
+                self.rollout_sharding_manager.begin_phase(snapshot_meta['policy_snapshot_id'],
+                    reuse=True, retain_weights=retain)
+            else:
+                self.rollout_sharding_manager.begin_phase(snapshot_meta['policy_snapshot_id'])
         except Exception as failure:
             sync_error = type(failure).__name__
         self._generation_setup_agreement(sync_error, 'weight_sync')
         begin_error = None
         try:
-            if self._is_offload_param:
+            if self._is_offload_param and needs_weight_sync:
                 # The vLLM loader owns its sampling parameters after sync. Move
                 # training shards once, before KV-cache initialization; no
                 # actor parameter transitions occur in rank-local requests.
                 offload_fsdp_param_and_grad(module=self.actor_module_fsdp, offload_grad=self._is_offload_grad)
                 self._generation_phase_params_loaded = False
+                self._generation_phase_actor_offloaded = True
+            elif self._is_offload_param:
                 self._generation_phase_actor_offloaded = True
             self.rollout.begin_generation_phase(snapshot_meta)
         except Exception as failure:
@@ -696,7 +722,10 @@ class ActorRolloutRefWorker(Worker):
                   if self.rollout._generation_phase is not None or self.rollout._generation_phase_setup_handle is not None
                   else dict(completed_requests=0, engine_steps=0, already_closed=True))
         if self.rollout_sharding_manager._phase_setup_snapshot is not None:
-            self.rollout_sharding_manager.end_phase(handle['policy_snapshot_id'])
+            if getattr(self.rollout_sharding_manager, 'reuse_snapshot_weights', False):
+                self.rollout_sharding_manager.end_phase(handle['policy_snapshot_id'], abort=abort)
+            else:
+                self.rollout_sharding_manager.end_phase(handle['policy_snapshot_id'])
         if self._is_offload_param and getattr(self, '_generation_phase_params_loaded', False):
             offload_fsdp_param_and_grad(module=self.actor_module_fsdp, offload_grad=self._is_offload_grad)
             self._generation_phase_params_loaded = False
@@ -799,7 +828,7 @@ class ActorRolloutRefWorker(Worker):
     def capture_mixed_state(self, directory, checkpoint=False):
         from search_g1.prefix20_restore_only import deny_training
         deny_training()
-        self._assert_generation_phase_inactive()
+        self._assert_generation_phase_inactive(release_snapshot_weights=checkpoint)
         assert self._is_actor and self._is_rollout
         from search_g1.training_state import capture_worker
         return capture_worker(self,directory,checkpoint=checkpoint)
@@ -819,6 +848,7 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def restore_mixed_full_state(self, receipt_path):
+        self._assert_generation_phase_inactive()
         assert self._is_actor and self._is_rollout
         from search_g1.full_state_restore import restore_worker
         from search_g1.prefix20_restore_only import active, assert_target_receipt

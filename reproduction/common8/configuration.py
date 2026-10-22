@@ -66,9 +66,18 @@ def arguments(base):
         raise ValueError('Diagnostic-only finite thresholds require explicitly bound binary run')
     overrides.append('actor_rollout_ref.actor.policy_safety.finite_thresholds_diagnostic_only='+str(diagnostic).lower())
     extra = run.get('extra_policy_monitor_forwards',True)
-    if type(extra) is not bool or (not extra and not diagnostic):
-        raise ValueError('No-extra-monitor mode requires explicit binary diagnostic-only binding')
+    from search_g1.actor_performance import lean_run
+    lean = lean_run(run)
+    if type(extra) is not bool or (not extra and not diagnostic and not lean):
+        raise ValueError('No-extra-monitor mode requires explicit binary diagnostic-only or native4 lean binding')
     overrides.append('actor_rollout_ref.actor.policy_safety.extra_policy_monitor_forwards='+str(extra).lower())
+    if lean:
+        from search_g1.easy7b_infra import flags
+        infra = flags(run)
+        overrides += ['+actor_rollout_ref.actor.performance_profile=lean_v1',
+                      '+actor_rollout_ref.rollout.reuse_snapshot_weights='+str(infra['reuse_snapshot_weights']).lower(),
+                      '+actor_rollout_ref.rollout.flash_attention_3='+str(infra['flash_attention_3_rollout']).lower(),
+                      '+actor_rollout_ref.rollout.block_size=256']
     if run.get('easy2560_selection'):
         from reproduction.common8.precision_contract import easy2560_native4
         assert easy2560_native4(run)
@@ -112,6 +121,8 @@ def resolved(base):
     verify_formal_config(OmegaConf.to_container(config, resolve=True), run, base)
     assert config.actor_rollout_ref.actor.policy_safety.finite_thresholds_diagnostic_only is run.get('finite_thresholds_diagnostic_only',False)
     assert config.actor_rollout_ref.actor.policy_safety.extra_policy_monitor_forwards is run.get('extra_policy_monitor_forwards',True)
+    from search_g1.actor_performance import validate_lean_binding
+    validate_lean_binding(config.actor_rollout_ref.actor, run)
     from reproduction.common8.qprobe_configuration import validate as validate_qprobe
     validate_qprobe(config, run, base)
     return run, config, overrides

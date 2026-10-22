@@ -240,6 +240,12 @@ def _run(manager, gen_batch, initial_input_ids, captured, *, service=None, tool_
     phase_id = uuid.uuid4().hex
     snapshot = dict(phase_id=phase_id, policy_snapshot_id=identity['policy_snapshot_id'],
                     behavior_identity=copy.deepcopy(identity), expected_trajectory_count=len(states))
+    reuse_weights = gen_batch.meta_info.get('snapshot_weight_reuse', False)
+    _require(type(reuse_weights) is bool, 'invalid_snapshot_weight_reuse')
+    if reuse_weights:
+        retain = gen_batch.meta_info.get('retain_snapshot_weights')
+        _require(type(retain) is bool, 'invalid_snapshot_weight_retention')
+        snapshot.update(snapshot_weight_reuse=True, retain_snapshot_weights=retain)
     pending, tools = {}, {}
     ready, unstarted = deque(), deque(states)
     active_limit = min(options.agent_workers, options.max_inflight_trajectories)
@@ -364,6 +370,8 @@ def _run(manager, gen_batch, initial_input_ids, captured, *, service=None, tool_
         pool.shutdown(wait=False, cancel_futures=True)
     final_meta.update(async_rollout=dict(role='independent_native_trajectory_state_machine',
         phase_id=phase_id, completed_trajectories=len(states), generation_requests=generation_calls,
+        policy_snapshot_id=identity['policy_snapshot_id'], snapshot_weight_reuse=reuse_weights,
+        retain_snapshot_weights=snapshot.get('retain_snapshot_weights', False),
         environment_actions=tool_calls, peak_inflight_trajectories=active_peak,
         retrieval_concurrency=options.retrieval_concurrency,
         tool_timeout=options.tool_timeout, tool_retries=options.tool_retries,
