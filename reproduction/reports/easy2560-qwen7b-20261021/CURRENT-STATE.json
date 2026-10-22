@@ -1,6 +1,6 @@
 {
-  "epoch": 1792643711.4254222,
-  "status": "SOURCE34_CPU_PASS_JOB747219_NATIVE4_RECOVERY_SUBMITTED_ACTUAL_CUDA_PENDING_GOAL200_ACTIVE",
+  "epoch": 1792644581.188857,
+  "status": "ACTUAL747219_NATIVE4_CP34_RESTORE_DATAEQUAL_PASS_OUTER35_GENERATING_GOAL200_ACTIVE",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "747219",
@@ -2447,7 +2447,7 @@
     },
     "total_training_goal": 200,
     "current_recovery_followup_accepted": false,
-    "state": "LIVE_OBSERVER_ACTUAL_RESTORE_PENDING",
+    "state": "LIVE_RESTORED_NATIVE4_WAITING_NEW_OUTER35_COMPLETE",
     "epoch": 1792643854.099651
   },
   "historical_cp1_actual_state_restore": {
@@ -2804,7 +2804,7 @@
     "source_writes_per_rank": 680,
     "source_cursor": 87040,
     "new_job_submitted": true,
-    "actual_new_restore_accepted": false,
+    "actual_new_restore_accepted": true,
     "remote_preserved_evidence": {
       "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/failed-job-746125/failure-evidence.json",
       "files": 194,
@@ -2948,7 +2948,7 @@
     "recompute_from_outer": 35,
     "new_base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
     "run_id": "232f20e112ac4a978c5aba52a0367195",
-    "actual_cuda_restore_accepted": false,
+    "actual_cuda_restore_accepted": true,
     "required_followup": {
       "complete_outers": [
         35,
@@ -2966,7 +2966,10 @@
       "bytes": 40190,
       "sha256": "16310579e3cd0bdfa400b2567003e4872247d0e6f286fba180b08bb7184c1744"
     },
-    "evidence": "evidence/source34-cpu-pass-and747219-submitted-20261022.json"
+    "evidence": "evidence/source34-cpu-pass-and747219-submitted-20261022.json",
+    "actual_restore_evidence": "evidence/actual-cp34-native4-restore-dataequal-job747219-20261022.json",
+    "actual_allocator_all4_evidence": "evidence/actual747219-four-worker-allocator-preload-env-20261022.json",
+    "first_new_outer_complete": false
   },
   "historical_failed_readonly_watcher": {
     "session_id": 51482,
@@ -3006,5 +3009,15 @@
       "bytes": 502392,
       "sha256": "f5b8f10312414c8068df1710d133cb809c20af4321311fce135e04fa18105459"
     }
+  },
+  "new_archive_consumers": {
+    "evidence": "evidence/actual747219-archive-consumers-login2-live-waiting50-20261022.json",
+    "controller_commit": "61af73641e86985bdec8635891605ea571d188f7",
+    "source_job": "747219",
+    "core_pid": 2071348,
+    "companion_pid": 2071349,
+    "actual_both_same_birth_live": true,
+    "phase": "WAITING_FIXED50",
+    "actual_milestone50_archive_accepted": false
   }
 }

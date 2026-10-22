@@ -104,6 +104,8 @@ class CP34ObserverTests(unittest.TestCase):
             pool=base/'artifacts/mixed-candidate-pools/pool40';pool.mkdir(parents=True)
             (pool/'progress.json').write_text(json.dumps(dict(step=40,complete_ordinals=[0],reserved=[])))
             (pool/'0.pt').write_bytes(b'synthetic payload must never be opened by observer')
+            (pool/'0-before-generation.pt').write_bytes(b'RNG sidecar is not a raw candidate chunk')
+            (pool/'0-after-generation.pt').write_bytes(b'RNG sidecar is not a raw candidate chunk')
             reader=remote.existing.private_progress_reader()
             original_open=Path.open
             def guarded(path,*args,**kwargs):
@@ -116,7 +118,36 @@ class CP34ObserverTests(unittest.TestCase):
             self.assertNotIn('source_sha256',compact)
             self.assertEqual(compact['full_state_restore']['source_checkpoint'],run['full_state_restore']['source_checkpoint'])
             self.assertEqual(value['new_training_progress']['candidate_pools'][0]['saved_chunk_files'],1)
+            self.assertEqual(value['new_training_progress']['candidate_pools'][0]['completed_questions'],1)
+            self.assertFalse(value['new_training_progress']['candidate_pools'][0]['progress_pending'])
             self.assertTrue(value['new_job_record']['matches_requested_job'])
+
+    def test_rng_sidecars_without_progress_are_pending_not_completed_candidates(self):
+        with tempfile.TemporaryDirectory() as td:
+            base=Path(td);(base/'logs').mkdir();(base/'job.id').write_text(JOB)
+            pool=base/'artifacts/mixed-candidate-pools/attempt-pool-0';pool.mkdir(parents=True)
+            for name in ('0-before-generation.pt','0-after-generation.pt'):
+                (pool/name).write_bytes(b'boundary sidecar, not candidate output')
+            # A different manifest must never be used to guess step/completion.
+            (pool/'manifest.json').write_text(json.dumps(dict(step=40,complete_ordinals=list(range(512)))))
+            reader=remote.existing.private_progress_reader();original_open=Path.open
+            def guarded(path,*args,**kwargs):
+                if path.suffix=='.pt':raise AssertionError('Observer read tensor payload')
+                return original_open(path,*args,**kwargs)
+            def observation():
+                with patch.object(remote,'BASE',base),patch.object(remote.existing,'private_progress_reader',return_value=reader), \
+                     patch.object(reader,'command',return_value=dict(rc=0,stdout='',stderr='')),patch.object(Path,'open',guarded):
+                    return remote.observe(JOB,RUNTIME,OPERATOR)['new_training_progress']['candidate_pools'][0]
+            pending=observation()
+            self.assertTrue(pending['progress_pending']);self.assertIsNone(pending['step'])
+            self.assertIsNone(pending['completed_questions']);self.assertEqual(pending['saved_chunk_files'],0)
+            self.assertIsNone(pending['progress_error'])
+            (pool/'0.pt').write_bytes(b'actual synthetic complete raw candidate chunk')
+            (pool/'progress.json').write_text(json.dumps(dict(step=35,complete_ordinals=list(range(512)),
+                reserved=list(range(512)),policy_snapshot_id='saved-policy',source_consumed=89600)))
+            complete=observation()
+            self.assertFalse(complete['progress_pending']);self.assertEqual(complete['step'],35)
+            self.assertEqual(complete['completed_questions'],512);self.assertEqual(complete['saved_chunk_files'],1)
 
     def test_actual_cp34_restoration_matches_all4_workers_driver_and_stream_without_mutation(self):
         value=fixture(); before=copy.deepcopy(value)

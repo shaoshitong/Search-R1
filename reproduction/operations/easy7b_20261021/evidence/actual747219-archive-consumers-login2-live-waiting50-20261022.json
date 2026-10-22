@@ -1,0 +1,393 @@
+{
+  "status": "NEW_OWN_ARCHIVE_PAIR_ACTUAL_SAME_BIRTH_LIVE_WAITING50_TWO_OBSERVATIONS",
+  "source_job": "747219",
+  "producer_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+  "controller_commit": "61af73641e86985bdec8635891605ea571d188f7",
+  "core_pid": 2071348,
+  "companion_pid": 2071349,
+  "observations": [
+    {
+      "epoch": 1792644265.8772445,
+      "roles": {
+        "core": {
+          "actual_process": {
+            "actual": {
+              "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+              "pid": 2071348,
+              "start_ticks": 1043583363,
+              "state": "S",
+              "uid": 1002
+            },
+            "same_birth": true,
+            "state": "LIVE"
+          },
+          "progress": {
+            "actual_job_state": "RUNNING",
+            "checked_unix": 1792644229.8453677,
+            "completed_steps": [],
+            "phase": "WAITING_CHECKPOINT",
+            "source_job": "747219",
+            "step": 50
+          },
+          "claim": {
+            "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
+            "birth": {
+              "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+              "pid": 2071348,
+              "start_ticks": 1043583363,
+              "uid": 1002
+            },
+            "checked_unix": 1792644106.4059966,
+            "controller_suffix": null,
+            "credentials_persisted": false,
+            "recovery_parent": null,
+            "requested_steps": [
+              50,
+              100,
+              150,
+              200
+            ],
+            "source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+            "source_job": "747219",
+            "source_ssh_route": {
+              "automatic_fallback": false,
+              "host_key_alias": "hpc3login.hpc.hkust-gz.edu.cn",
+              "hpc_identity": {
+                "boot_id": "3c637b25-17cf-404c-971b-30bc4c4e9fbb",
+                "hostname": "ACD-Login-2",
+                "pid_namespace": "pid:[4026531836]"
+              },
+              "known_hosts": "/backup/shaoshitong/topd-hf-migration-20261009/hpc3-known-hosts",
+              "ssh_peer": "jxu957@10.120.48.32"
+            }
+          }
+        },
+        "companion": {
+          "actual_process": {
+            "actual": {
+              "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+              "pid": 2071349,
+              "start_ticks": 1043583367,
+              "state": "S",
+              "uid": 1002
+            },
+            "same_birth": true,
+            "state": "LIVE"
+          },
+          "progress": {
+            "checked_unix": 1792644226.8916035,
+            "completed_steps": [],
+            "core_controller": {
+              "birth": {
+                "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+                "pid": 2071348,
+                "start_ticks": 1043583363,
+                "uid": 1002
+              },
+              "process": {
+                "actual": {
+                  "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+                  "pid": 2071348,
+                  "start_ticks": 1043583363,
+                  "state": "S",
+                  "uid": 1002
+                },
+                "same_birth": true,
+                "state": "LIVE"
+              },
+              "records": {
+                "claim.json": {
+                  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
+                  "birth": {
+                    "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+                    "pid": 2071348,
+                    "start_ticks": 1043583363,
+                    "uid": 1002
+                  },
+                  "checked_unix": 1792644106.4059966,
+                  "controller_suffix": null,
+                  "credentials_persisted": false,
+                  "recovery_parent": null,
+                  "requested_steps": [
+                    50,
+                    100,
+                    150,
+                    200
+                  ],
+                  "source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+                  "source_job": "747219",
+                  "source_ssh_route": {
+                    "automatic_fallback": false,
+                    "host_key_alias": "hpc3login.hpc.hkust-gz.edu.cn",
+                    "hpc_identity": {
+                      "boot_id": "3c637b25-17cf-404c-971b-30bc4c4e9fbb",
+                      "hostname": "ACD-Login-2",
+                      "pid_namespace": "pid:[4026531836]"
+                    },
+                    "known_hosts": "/backup/shaoshitong/topd-hf-migration-20261009/hpc3-known-hosts",
+                    "ssh_peer": "jxu957@10.120.48.32"
+                  }
+                },
+                "progress.json": {
+                  "actual_job_state": "RUNNING",
+                  "checked_unix": 1792644168.822291,
+                  "completed_steps": [],
+                  "phase": "WAITING_CHECKPOINT",
+                  "source_job": "747219",
+                  "step": 50
+                }
+              },
+              "state": "LIVE"
+            },
+            "healthy_controller_modified": false,
+            "jobs_submitted": 0,
+            "phase": "WAITING_CORE_ACTUAL_ACK",
+            "run_id": "232f20e112ac4a978c5aba52a0367195",
+            "source_job": "747219",
+            "source_ssh_called": false,
+            "step": 50,
+            "training_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+            "training_modified": false
+          },
+          "claim": {
+            "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
+            "birth": {
+              "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+              "hostname": "xielab3",
+              "pid": 2071349,
+              "start_ticks": 1043583367,
+              "state": "R",
+              "uid": 1002
+            },
+            "checked_unix": 1792644106.5689862,
+            "controller_commit": "61af73641e86985bdec8635891605ea571d188f7",
+            "credentials_persisted": false,
+            "historical_CP5_replayed": false,
+            "jobs_submitted": 0,
+            "old_controllers_modified": false,
+            "requested_steps": [
+              50,
+              100,
+              150,
+              200
+            ],
+            "run_id": "232f20e112ac4a978c5aba52a0367195",
+            "source_job": "747219",
+            "source_ssh_route": {
+              "automatic_fallback": false,
+              "host_key_alias": "hpc3login.hpc.hkust-gz.edu.cn",
+              "hpc_identity": {
+                "boot_id": "3c637b25-17cf-404c-971b-30bc4c4e9fbb",
+                "hostname": "ACD-Login-2",
+                "pid_namespace": "pid:[4026531836]"
+              },
+              "known_hosts": "/backup/shaoshitong/topd-hf-migration-20261009/hpc3-known-hosts",
+              "ssh_peer": "jxu957@10.120.48.32"
+            },
+            "training_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+            "training_modified": false
+          }
+        }
+      },
+      "raw": {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp34-hk-archive-observe-1792644264.json",
+        "bytes": 22776,
+        "sha256": "1b1795047dd68d361153b9a9c5a9a8138f3cb3c727f196e5a83a6c5cfd2fe15c"
+      }
+    },
+    {
+      "epoch": 1792644495.6370602,
+      "roles": {
+        "core": {
+          "actual_process": {
+            "actual": {
+              "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+              "pid": 2071348,
+              "start_ticks": 1043583363,
+              "state": "S",
+              "uid": 1002
+            },
+            "same_birth": true,
+            "state": "LIVE"
+          },
+          "progress": {
+            "actual_job_state": "RUNNING",
+            "checked_unix": 1792644473.7355368,
+            "completed_steps": [],
+            "phase": "WAITING_CHECKPOINT",
+            "source_job": "747219",
+            "step": 50
+          },
+          "claim": {
+            "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
+            "birth": {
+              "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+              "pid": 2071348,
+              "start_ticks": 1043583363,
+              "uid": 1002
+            },
+            "checked_unix": 1792644106.4059966,
+            "controller_suffix": null,
+            "credentials_persisted": false,
+            "recovery_parent": null,
+            "requested_steps": [
+              50,
+              100,
+              150,
+              200
+            ],
+            "source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+            "source_job": "747219",
+            "source_ssh_route": {
+              "automatic_fallback": false,
+              "host_key_alias": "hpc3login.hpc.hkust-gz.edu.cn",
+              "hpc_identity": {
+                "boot_id": "3c637b25-17cf-404c-971b-30bc4c4e9fbb",
+                "hostname": "ACD-Login-2",
+                "pid_namespace": "pid:[4026531836]"
+              },
+              "known_hosts": "/backup/shaoshitong/topd-hf-migration-20261009/hpc3-known-hosts",
+              "ssh_peer": "jxu957@10.120.48.32"
+            }
+          }
+        },
+        "companion": {
+          "actual_process": {
+            "actual": {
+              "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+              "pid": 2071349,
+              "start_ticks": 1043583367,
+              "state": "S",
+              "uid": 1002
+            },
+            "same_birth": true,
+            "state": "LIVE"
+          },
+          "progress": {
+            "checked_unix": 1792644467.28151,
+            "completed_steps": [],
+            "core_controller": {
+              "birth": {
+                "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+                "pid": 2071348,
+                "start_ticks": 1043583363,
+                "uid": 1002
+              },
+              "process": {
+                "actual": {
+                  "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+                  "pid": 2071348,
+                  "start_ticks": 1043583363,
+                  "state": "S",
+                  "uid": 1002
+                },
+                "same_birth": true,
+                "state": "LIVE"
+              },
+              "records": {
+                "claim.json": {
+                  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
+                  "birth": {
+                    "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+                    "pid": 2071348,
+                    "start_ticks": 1043583363,
+                    "uid": 1002
+                  },
+                  "checked_unix": 1792644106.4059966,
+                  "controller_suffix": null,
+                  "credentials_persisted": false,
+                  "recovery_parent": null,
+                  "requested_steps": [
+                    50,
+                    100,
+                    150,
+                    200
+                  ],
+                  "source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+                  "source_job": "747219",
+                  "source_ssh_route": {
+                    "automatic_fallback": false,
+                    "host_key_alias": "hpc3login.hpc.hkust-gz.edu.cn",
+                    "hpc_identity": {
+                      "boot_id": "3c637b25-17cf-404c-971b-30bc4c4e9fbb",
+                      "hostname": "ACD-Login-2",
+                      "pid_namespace": "pid:[4026531836]"
+                    },
+                    "known_hosts": "/backup/shaoshitong/topd-hf-migration-20261009/hpc3-known-hosts",
+                    "ssh_peer": "jxu957@10.120.48.32"
+                  }
+                },
+                "progress.json": {
+                  "actual_job_state": "RUNNING",
+                  "checked_unix": 1792644412.6802607,
+                  "completed_steps": [],
+                  "phase": "WAITING_CHECKPOINT",
+                  "source_job": "747219",
+                  "step": 50
+                }
+              },
+              "state": "LIVE"
+            },
+            "healthy_controller_modified": false,
+            "jobs_submitted": 0,
+            "phase": "WAITING_CORE_ACTUAL_ACK",
+            "run_id": "232f20e112ac4a978c5aba52a0367195",
+            "source_job": "747219",
+            "source_ssh_called": false,
+            "step": 50,
+            "training_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+            "training_modified": false
+          },
+          "claim": {
+            "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
+            "birth": {
+              "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+              "hostname": "xielab3",
+              "pid": 2071349,
+              "start_ticks": 1043583367,
+              "state": "R",
+              "uid": 1002
+            },
+            "checked_unix": 1792644106.5689862,
+            "controller_commit": "61af73641e86985bdec8635891605ea571d188f7",
+            "credentials_persisted": false,
+            "historical_CP5_replayed": false,
+            "jobs_submitted": 0,
+            "old_controllers_modified": false,
+            "requested_steps": [
+              50,
+              100,
+              150,
+              200
+            ],
+            "run_id": "232f20e112ac4a978c5aba52a0367195",
+            "source_job": "747219",
+            "source_ssh_route": {
+              "automatic_fallback": false,
+              "host_key_alias": "hpc3login.hpc.hkust-gz.edu.cn",
+              "hpc_identity": {
+                "boot_id": "3c637b25-17cf-404c-971b-30bc4c4e9fbb",
+                "hostname": "ACD-Login-2",
+                "pid_namespace": "pid:[4026531836]"
+              },
+              "known_hosts": "/backup/shaoshitong/topd-hf-migration-20261009/hpc3-known-hosts",
+              "ssh_peer": "jxu957@10.120.48.32"
+            },
+            "training_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+            "training_modified": false
+          }
+        }
+      },
+      "raw": {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp34-hk-archive-observe-1792644494.json",
+        "bytes": 22775,
+        "sha256": "5f109eb1eb72c1b0f907edc9bcd647cdce4e53a9003702321725f4f2c9d85e0e"
+      }
+    }
+  ],
+  "historical_CP5_preserved": true,
+  "milestones50_to200_archived": false,
+  "old_failed746125_consumers_modified": false,
+  "new_training_jobs_submitted": 0,
+  "training_modified": false
+}

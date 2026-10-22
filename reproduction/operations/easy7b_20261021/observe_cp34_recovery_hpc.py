@@ -103,10 +103,13 @@ def observe(job, runtime_commit, operator_commit):
     pools = BASE/'artifacts/mixed-candidate-pools'
     if pools.is_dir():
         for path in sorted(pools.iterdir(), key=lambda p:p.stat().st_mtime)[-3:]:
-            item = reader.read_json(path/'progress.json')
+            metadata = path/'progress.json'
+            item = reader.read_json(metadata) if metadata.is_file() else {}
+            ordinals = item.get('complete_ordinals')
             progress['candidate_pools'].append(dict(name=path.name,step=item.get('step'),
-                completed_questions=len(item.get('complete_ordinals',[])),
-                saved_chunk_files=len(list(path.glob('[0-9]*.pt'))),
+                completed_questions=len(ordinals) if isinstance(ordinals,list) else None,
+                saved_chunk_files=sum(1 for file in path.glob('*.pt') if file.stem.isdigit() and file.is_file()),
+                progress_pending=not metadata.is_file(),
                 progress_error=item.get('observation_error')))
     value['new_training_progress'] = progress
     value['new_training_slurm_log'] = reader.tail(BASE/('logs/training-%s.log' % job),18000)
