@@ -1,0 +1,109 @@
+{
+  "time": 1792693658.702218,
+  "cells": {
+    "current64": {
+      "root-submission.json": {
+        "CPUs": 12,
+        "EMA_decay": 0.9995,
+        "GPUs": 2,
+        "batch_attempt_budget": 1280,
+        "cache_window_capacity": 0,
+        "cell": "current64",
+        "entry": {
+          "bytes": 1727,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/current64/training.sbatch",
+          "sha256": "2781288ae1a55da956c749073ebfa9c47788a3beb6cfde98be25fdf41e58ee28"
+        },
+        "epochs": 10,
+        "exclude": "ACD1-13",
+        "final4096_read": false,
+        "fixture_reuse": {
+          "bytes": 1267,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/fixture-reuse.json",
+          "sha256": "c6b5403f356b53f40bec21a024ecaf393d7dd5fc943cae59948bb76eefb9106c"
+        },
+        "global_batch": 64,
+        "historical_groups_at_capacity": 0,
+        "job_id": "749889",
+        "layer": 15,
+        "memory_GiB": 128,
+        "name": "q7b-L15P80-current64",
+        "no_dependencies": true,
+        "partition": "acd_u",
+        "prefix": 80,
+        "ready": {
+          "bytes": 2217,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/current64/ready.json",
+          "sha256": "33920169fccc37a5b4f53d1e5b24ac247e9b71f4c08e7e760230a6ee03eca69a"
+        },
+        "reference_population": 2018,
+        "source_commit": "237968e8acb8ffd8b5ebcc1c8197247878926ce0",
+        "target_top_k": 500,
+        "time": 1792693186.0148463,
+        "time_limit": "02:00:00"
+      },
+      "failures": {},
+      "evaluation_files": [],
+      "audit_files": [],
+      "epoch_metrics": {},
+      "epoch_audits": {}
+    },
+    "window2018": {
+      "root-submission.json": {
+        "CPUs": 12,
+        "EMA_decay": 0.9995,
+        "GPUs": 2,
+        "batch_attempt_budget": 1280,
+        "cache_window_capacity": 2018,
+        "cell": "window2018",
+        "entry": {
+          "bytes": 1734,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/window2018/training.sbatch",
+          "sha256": "7b825f80c398b1735122d18a55c1eb64929719a3cbd852d4e18ccd9bac9d4340"
+        },
+        "epochs": 10,
+        "exclude": "ACD1-13",
+        "final4096_read": false,
+        "fixture_reuse": {
+          "bytes": 1267,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/fixture-reuse.json",
+          "sha256": "c6b5403f356b53f40bec21a024ecaf393d7dd5fc943cae59948bb76eefb9106c"
+        },
+        "global_batch": 64,
+        "historical_groups_at_capacity": 1954,
+        "job_id": "749890",
+        "layer": 15,
+        "memory_GiB": 128,
+        "name": "q7b-L15P80-window2018",
+        "no_dependencies": true,
+        "partition": "acd_u",
+        "prefix": 80,
+        "ready": {
+          "bytes": 2225,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/window2018/ready.json",
+          "sha256": "5614a44de9ea68469d37d1e88fb59f1f00322b8d2866ff3074f0644ba8de1754"
+        },
+        "reference_population": 2018,
+        "source_commit": "237968e8acb8ffd8b5ebcc1c8197247878926ce0",
+        "target_top_k": 500,
+        "time": 1792693187.3208065,
+        "time_limit": "02:00:00"
+      },
+      "failures": {},
+      "evaluation_files": [],
+      "audit_files": [],
+      "epoch_metrics": {},
+      "epoch_audits": {}
+    }
+  },
+  "accounting": {
+    "returncode": 0,
+    "stdout": "749889|PENDING|0:0|00:00:00|None assigned\n749890|PENDING|0:0|00:00:00|None assigned",
+    "stderr": ""
+  },
+  "queue": {
+    "returncode": 0,
+    "stdout": "749889|q7b-L15P80-current64|acd_u|PENDING|2026-10-23T03:14:12|(Priority)\n749890|q7b-L15P80-window2018|acd_u|PENDING|2026-10-23T03:54:08|(Priority)",
+    "stderr": ""
+  }
+}

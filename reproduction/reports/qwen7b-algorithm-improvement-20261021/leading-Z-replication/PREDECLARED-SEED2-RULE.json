@@ -1,0 +1,73 @@
+{
+  "status": "SECOND_SEED_REPLICATION_RULE_DECLARED_FINAL_SELECTION_NOT_FROZEN",
+  "time": 1792693624.610234,
+  "family": "full169028_packed_L21_Prefix20_z_mse_anchor",
+  "reason": "Leading variance-route development signal; still single-seed and viewed-development-only.",
+  "seed1": {
+    "job_id": "749577",
+    "runtime_commit": "7ac274ac8ff5dea0a12dfd44cfb03fe57491458f",
+    "initialization_seed": 9137,
+    "train_plan_seed": 2026102227
+  },
+  "seed2": {
+    "stage": "source_preparing_not_submitted",
+    "initialization_seed": 19137,
+    "train_plan_seed": 2026102302,
+    "fresh_official_block_and_head": true,
+    "resume_checkpoint": null
+  },
+  "common": {
+    "training_questions": 169028,
+    "trajectories_per_question": 10,
+    "train_M": "independently random3..10 own trajectories per question per epoch",
+    "train_label": "variance of actual selected own-M strictEM",
+    "each_epoch_unique_questions": 169028,
+    "actor_frozen": true,
+    "layer": 21,
+    "prefix": 20,
+    "architecture": "one_question_multiple_prefix_packed_block_plus_group_head",
+    "epochs": 10,
+    "global_batch": 128,
+    "LR": 5e-06,
+    "EMA_decay": 0.9995,
+    "diagnostic_seed": 2026102228,
+    "fixed_development_G5_unchanged": true,
+    "fixed_train_G5_unchanged": true,
+    "loss_anchor_weight": "exact seed1 value from source/config",
+    "loss_normalization_epsilon": "exact seed1 value from source/config"
+  },
+  "selection_rule": {
+    "primary_metric": "development Top512 realMixed count",
+    "candidate_epoch_range": [
+      1,
+      10
+    ],
+    "candidate_states": [
+      "raw",
+      "EMA"
+    ],
+    "rank": "highest count, then earliest epoch, then EMA for exact tie",
+    "use_only_seed1_development_to_choose_epoch_and_state": true,
+    "replicate_evaluation": "both seeds at same chosen epoch and chosen raw-or-EMA state; never select best seed",
+    "fixed_secondary_variance_BA_threshold": 0.08,
+    "do_not_choose_threshold_or_model_from_final4096": true,
+    "seed2_development_scores_may_be_read_after_epoch_state_rule_frozen": true
+  },
+  "confirmation": {
+    "final_pools": 2,
+    "questions_per_pool": 2048,
+    "selected_per_pool": 512,
+    "score_both_training_seeds": true,
+    "same_final_own_G5_and_strictEM": true,
+    "paired_question_intervals_and_across_seed_results_required": true,
+    "historical_E1_raw_EMA_are_reference_not_new_seed_replicates": true,
+    "candidate_source_CP_SHA_CPUacceptance_and_rule_must_be_frozen_before_unblind": true
+  },
+  "not_claimed": {
+    "stable_gain": false,
+    "unseen_generalization": false,
+    "final_candidate_configuration_frozen": false
+  },
+  "final4096_read": false,
+  "Slurm_submitted": false
+}
