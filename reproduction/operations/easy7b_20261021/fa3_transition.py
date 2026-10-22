@@ -59,7 +59,7 @@ def _consumers(base,commit,job=None):
 
 def prepare(base,commit):
     """All small assets/runtime are ready before the parent stops the source."""
-    base=_target(base);_source();ready=base/'preparation/fa3-transition-prepared.json'
+    base=_target(base);source_run=_source();ready=base/'preparation/fa3-transition-prepared.json'
     if ready.exists():
         result=_json(ready)
         _need(result.get('status')=='READY_FOR_AUTHORIZED_BOUNDARY_TRANSITION' and result.get('commit')==commit and
@@ -70,7 +70,8 @@ def prepare(base,commit):
           'preparation/training-submit-claim.json')),'TARGET_ALREADY_SUBMITTED')
     bootstrap=control.bootstrap(base,commit,predecessor=str(SOURCE_BASE))
     from reproduction.easy2560_joint4.retrieval_proxy import external_binding
-    original=SOURCE_BASE/'preparation/external-retriever-receipt.json'
+    original=Path(source_run.get('external_retriever',{}).get('receipt_path') or
+                  SOURCE_BASE/'preparation/external-retriever-receipt.json')
     original_binding=external_binding(original)
     _need(original_binding['service_job_id']=='745198','EXISTING_RETRIEVER745198_REQUIRED')
     external_path=base/'preparation/external-retriever-receipt.json';document=_json(original)

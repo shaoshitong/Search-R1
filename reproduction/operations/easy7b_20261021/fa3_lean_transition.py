@@ -16,7 +16,7 @@ from reproduction.operations.easy7b_20261021 import fa3_transition as transition
 SOURCE_BASE = '/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022'
 SOURCE_JOB = '747219'
 SOURCE_COMMIT = 'b76d7a05245a5eb7adc75385e2db803c67acce43'
-TARGET_BASE = '/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-lean-20261022'
+TARGET_BASE = '/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-lean-r1-20261022'
 
 
 @contextmanager
