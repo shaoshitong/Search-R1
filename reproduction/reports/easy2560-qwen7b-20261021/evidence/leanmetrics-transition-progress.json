@@ -1,6 +1,6 @@
 {
   "schema": "easy7b_qualified_leanmetrics_transition_v1",
-  "checked_unix": 1792700011.0053473,
+  "checked_unix": 1792707392.6504574,
   "source_job": "749598",
   "source_completed_outer": 60,
   "source_latest": {
@@ -68,7 +68,9 @@
     "leanmetrics-job750029-resource-observe-1792697742306001000.json",
     "fastpath-leanmetrics-r1-hk-archive-observe-1792697761696394000.json",
     "leanmetrics-actual-cp60-native4-restore-summary.json",
-    "leanmetrics-first-complete-outer61-summary.json"
+    "leanmetrics-first-complete-outer61-summary.json",
+    "leanmetrics-transition-live-1792707393055973000.json",
+    "leanmetrics-five-complete-outers-summary.json"
   ],
   "goal_complete": false,
   "job": "750029",
@@ -1532,7 +1534,7 @@
     "actual_driver_cursor": 153600,
     "actual_stream_cursor": 153600
   },
-  "actual_complete_new_outer": 61,
+  "actual_complete_new_outer": 65,
   "latest_actual_errors": {
     "training": [],
     "trainer": [],
@@ -1720,18 +1722,21 @@
     "Complete61..65 and start66",
     "Original200/native51713/sevenmetrics/fullarchive/finalactualnative4restore/no201"
   ],
-  "actual_next_outer_started": 62,
+  "actual_next_outer_started": 66,
   "latest_rolling_checkpoint": {
     "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
-    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/checkpoints/search-g1-common8/actor/global_step_61",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/checkpoints/search-g1-common8/actor/global_step_65",
     "manager": "easy2560_per_outer_full_state_v1",
-    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/preparation/rolling-checkpoints/global_step_61/full-manifest.json",
-    "manifest_sha256": "05272cf13d4a69ae4fababbfeb69143f5d0aaad6dd0c7db59bcf7fcd23739ef6",
-    "published_unix": 1792700010.3922513,
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/preparation/rolling-checkpoints/global_step_65/full-manifest.json",
+    "manifest_sha256": "1bb578ccd19217265e6046656920a30dac972d668b5f7bc5574e02a025a5501c",
+    "published_unix": 1792707164.588694,
     "run_id": "232f20e112ac4a978c5aba52a0367195",
     "source_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
     "status": "EASY2560_ROLLING_CHECKPOINT_READY",
-    "step": 61
+    "step": 65
   },
-  "first_complete_outer_evidence": "leanmetrics-first-complete-outer61-summary.json"
+  "first_complete_outer_evidence": "leanmetrics-first-complete-outer61-summary.json",
+  "post_restore_five_outers_accepted": true,
+  "next66_saved_questions": 512,
+  "five_outers_evidence": "leanmetrics-five-complete-outers-summary.json"
 }

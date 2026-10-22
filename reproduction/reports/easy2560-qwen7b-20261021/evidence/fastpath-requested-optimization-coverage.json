@@ -1,11 +1,11 @@
 {
   "schema": "easy7b_requested_fastpath_coverage_v1",
-  "checked_unix": 1792697615.610698,
-  "active_runtime": null,
-  "active_job": null,
+  "checked_unix": 1792707392.6504574,
+  "active_runtime": "2d5183455551145c52d1783a38663e2fcf170ceb",
+  "active_job": "750029",
   "candidate_fa3": {
     "proven": true,
-    "evidence": "native-prefix-deployment-and-first-outer-evidence.json",
+    "evidence": "leanmetrics-five-complete-outers-summary.json",
     "scope": "Actual positive native4 candidate prefill/decode counters"
   },
   "rollback_snapshots": {
@@ -16,7 +16,7 @@
   },
   "weight_sync": {
     "proven": true,
-    "evidence": "native-prefix-deployment-and-first-outer-evidence.json",
+    "evidence": "leanmetrics-five-complete-outers-summary.json",
     "actual_phase_sync_counts_each_rank": [
       1,
       0,
@@ -28,19 +28,20 @@
   "gradient_monitoring": {
     "active_finite_scans_removed": true,
     "active_extra_forward_count_each_rank": 0,
-    "remaining_measurement_scan": "Current c7976da still measures max_abs and postclip norm for logs",
+    "remaining_measurement_scan": "max_abs/MAX and postclip_norm/SUM removed; unchanged FP64 preclip norm retained for mathematical clipping",
     "remaining_scan_code_fixed": "c14bedd9e897e4bed51de9c693a1ef29302b436d",
     "candidate_native4_probe_job": "749913",
     "candidate_native4_probe_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
     "candidate_native4_paired_actual_gradient_timing_pending": false,
-    "candidate_active_in_production": false,
+    "candidate_active_in_production": true,
     "prior_probe_job": "749812",
     "prior_probe_state": "FAILED1:0 CUDA initialization before clipping/Adam on ACD1-13",
     "failure_recovery_evidence": "clip-native4-node-failure-and-recovery-summary.json",
     "candidate_native4_paired_complete": true,
     "candidate_native4_all_gradient_tensors_and_preclip_norm_bitwise_equal": true,
     "candidate_native4_final_evidence": "clip-native4-paired-final-summary.json",
-    "prior_source_job_stopped_at_complete60": true
+    "prior_source_job_stopped_at_complete60": true,
+    "active_execution_evidence": "leanmetrics-five-complete-outers-summary.json"
   },
   "compact_gqa": {
     "active_Q_heads": 28,
@@ -49,9 +50,46 @@
     "sdpa_reference": "FP32 SDPBackend.MATH, causal dropout0 TF32 off",
     "kernel_result": "fastpath-numerical-kernel-1792677643791054000.json",
     "kernel_output_gradient_test_passed": true,
-    "scope": "packed lengths31..4096 and random attention block Q/K/V/O + RoPE gradients; not complete pretrained actor/Adam/QA equivalence"
+    "scope": "packed lengths31..4096 and random attention block Q/K/V/O + RoPE gradients; not complete pretrained actor/Adam/QA equivalence",
+    "active_execution_evidence": "leanmetrics-five-complete-outers-summary.json"
   },
   "speed": {
+    "actual_full_completed_outers": [
+      61,
+      62,
+      63,
+      64,
+      65
+    ],
+    "whole_mean_seconds": 1789.9721710205079,
+    "actor_mean_seconds": 152.3142,
+    "candidate_mean_seconds": 1032.846189049771,
+    "source": "leanmetrics-five-complete-outers-summary.json",
+    "cross_policy_question_node_causal_claim": false
+  },
+  "goal_complete": false,
+  "remaining_work": "Keep existing healthy750029 running to200; fixed milestones/native51713/sevenmetrics/fullarchive/final actual native4 restore/no201. Do not stop/hot-edit/resubmit or replay failed node13 probe.",
+  "production_modified_for_new_diagnostic": false,
+  "last_verified_production": {
+    "job": "750029",
+    "runtime": "2d5183455551145c52d1783a38663e2fcf170ceb",
+    "completed_outer": 65,
+    "current_state": "RUNNING next66 actual512 candidate questions saved",
+    "actual_final_sealed_manifest_sha256": "1bb578ccd19217265e6046656920a30dac972d668b5f7bc5574e02a025a5501c"
+  },
+  "requested_job": "750029",
+  "requested_runtime": "2d5183455551145c52d1783a38663e2fcf170ceb",
+  "current_state": "NATIVE4_RESTORED60_COMPLETED61_TO65_NEXT66_GENERATED512",
+  "historical_execution_scope": "Pre-leanmetrics source history retained separately; current execution proofs describe actual750029.",
+  "current_job_state": "RUNNING",
+  "current_actual_runtime_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+  "current_runtime_commit_matches": true,
+  "current_actual_restore_accepted": true,
+  "current_actual_complete_new_outer": 65,
+  "latest_observation_evidence": "leanmetrics-transition-live-1792707393055973000.json",
+  "current_actual_restore_evidence": "leanmetrics-actual-cp60-native4-restore-summary.json",
+  "current_next_outer_started": 66,
+  "historical_nativeprefix_speed": {
     "actual_full_completed_outers": [
       55,
       56,
@@ -63,26 +101,12 @@
     "source": "native-prefix-five-complete-outers-summary.json",
     "cross_policy_question_node_causal_claim": false
   },
-  "goal_complete": false,
-  "remaining_work": "Wait on existing live750029; predicted04:10:11CST at last query, not guaranteed. KeepACD1-13 excluded after actual4-allocated/3-visible failure. Observe actual all4 restore1200/scheduler60/data153600, then complete61..65 and66start; do not replay CPU launch, formal submit, or health probe. Original200/no201, native51713/seven metrics/full archives and final actual native4 restore remain required.",
-  "production_modified_for_new_diagnostic": false,
-  "last_verified_production": {
+  "pre_leanmetrics_source_production": {
     "job": "749598",
     "runtime": "c7976da3afc863a1c20b99daa7cc99de3bb61f15",
     "completed_outer": 60,
     "current_state": "CANCELLED by own14090 for already-authorized infrastructure transition",
     "actual_final_sealed_manifest_sha256": "b1dbae539f4a1e1513293b930009bac19f84a83358c90d3d427958860ee31ed5"
   },
-  "requested_job": "750029",
-  "requested_runtime": "2d5183455551145c52d1783a38663e2fcf170ceb",
-  "current_state": "PENDING_RESOURCES_NO_ACTUAL_GPU_RESTORE_YET",
-  "historical_execution_scope": "The proven execution fields below refer to last verified749598; they do not claim new750029 has run.",
-  "current_job_state": "RUNNING actual native4 restored, step61 started",
-  "current_actual_runtime_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
-  "current_runtime_commit_matches": true,
-  "current_actual_restore_accepted": true,
-  "current_actual_complete_new_outer": null,
-  "latest_observation_evidence": "leanmetrics-transition-live-1792697742621198000.json",
-  "current_actual_restore_evidence": "leanmetrics-actual-cp60-native4-restore-summary.json",
-  "current_next_outer_started": 61
+  "post_restore_five_outers_accepted": true
 }

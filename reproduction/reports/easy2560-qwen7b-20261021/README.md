@@ -1,10 +1,11 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
 **Current evidence, 2026-10-23:** continuation `750029` completed and sealed
-outer61, and outer62 has an actual before-generation boundary. All four ranks
-performed20 Adam writes, reaching1220/scheduler61, with zero extra monitor
-forwards. This completes1/5 of the required post-restore follow-up outers;
-complete62–65 and the start of66 remain pending.
+all five consecutive outers61–65; outer66 has actually generated and saved512
+questions. All four ranks performed100 new Adam writes, reaching1300/scheduler65,
+with zero extra monitor forwards. The required post-restore five-outer follow-up
+is accepted. The overall200-outer experiment and final acceptance remain incomplete.
+See [five complete post-restore outers](evidence/leanmetrics-five-complete-outers-summary.json).
 
 Previous job `749598`, immutable runtime
 `c7976da3afc863a1c20b99daa7cc99de3bb61f15`, completed and sealed CP60 on four
@@ -43,23 +44,30 @@ shows `RUNNING` and runtime identity matching
 passed: model collective readback and all four Adam/scheduler/RNG readbacks match,
 rank0 checked339 model tensors individually, and four distinct CUDA UUIDs were
 observed. Each rank restored Adam1200/scheduler60; driver and reconstructed stream
-both read back cursor153600 with data equality. Outer61 subsequently completed;
-complete62–65 and the start of66 remain pending. Restore acceptance does not prove
-final quality or a speed ratio. Retriever745198 remains running. See
+both read back cursor153600 with data equality. All five subsequent outers61–65
+completed and sealed, and actual generated data from66 is saved. Restore and
+follow-up acceptance do not prove final quality or a causal speed ratio.
+Retriever745198 remains running. See
 [actual CP60 native4 restoration](evidence/leanmetrics-actual-cp60-native4-restore-summary.json).
 
-The first complete2d-runtime outer61 took1793.499372 seconds (29m53.5s), measured
-from its actual before-generation mtime1792698219.585013 to outer62's
-1792700013.084385. Candidate generation took1029.824673s, actor165.098s,
-advantages206.271s and checkpoint write158.326s. Its sealed23 checkpoint plus7
-boundary files total91,405,595,915 bytes, manifest SHA
-`05272cf13d4a69ae4fababbfeb69143f5d0aaad6dd0c7db59bcf7fcd23739ef6`.
-Actual FA3 and five-phase sync `[1,0,0,0,0]` were observed; post-clip norm is
-`null/measured=false`, not falsely reported as measured. Selection chose464/512
-mixed questions (90.625%); training EM was approximately56.3% and reward0.732,
-not fixed-validation results. This one outer is not a same-input causal speed
-comparison, and the final approximately3-second clip patch is not a whole-outer
-multiplier. See [first complete outer61](evidence/leanmetrics-first-complete-outer61-summary.json).
+The complete2d-runtime outers61–65 averaged1789.972171 seconds (**29m49.97s**),
+measured between actual before-generation boundaries. Candidate generation
+averaged1032.846189s (17m12.85s,57.7% of the whole), actor152.3142s
+(2m32.31s,8.51%). These five outers are about48 seconds slower on average than
+the historical55–59 mean29m02s; policy and data differ, so this is not a causal
+comparison of the final approximately3-second clip patch.
+
+Actual candidate/actor FA3 with Q28/KV4, five-phase sync `[1,0,0,0,0]`, zero
+extra monitor forwards and latest-write post-clip norm `null/measured=false`
+were confirmed in every completed outer. CP65's sealed23 checkpoint plus7
+boundary files total91,405,597,196 bytes, manifest SHA
+`1bb578ccd19217265e6046656920a30dac972d668b5f7bc5574e02a025a5501c`.
+Mixed selection counts were464/472/467/469/487 out of512, weighted92.1484%.
+Training EM logs were56.3/55.3/57.1/56.7/54.3%, rewards0.732/0.731/0.747/0.751/0.712;
+these are training data, not fixed-validation results. No whole-outer multiplier
+is established by the clip patch. See
+[five complete post-restore outers](evidence/leanmetrics-five-complete-outers-summary.json)
+and the historical [first complete outer61](evidence/leanmetrics-first-complete-outer61-summary.json).
 The independently bound archive pair for750029 milestones100/150/200 has CPU
 core640634/companion640635 live at the same recorded birth identities, with
 polling advancing and no errors. See
@@ -68,8 +76,9 @@ polling advancing and no errors. See
 Node-health probe750051 independently failed1:0 after8 seconds onACD1-13:
 all four ranks saw `cudaDeviceCount=3` despite `CUDA_VISIBLE_DEVICES=0,1,2,3`;
 no model, forward or NCCL step ran. Formal750029 keeps its node exclusion.
-No healthy node currently supplies four idle GPUs (the maximum observed is
-three), so lowering CPU/RAM requests would not resolve the measured GPU shortage.
+At the earlier scheduling observation, no healthy node supplied four idle GPUs
+(the maximum observed was three), so lowering CPU/RAM requests would not resolve
+that measured GPU shortage.
 See [node13 health result](evidence/node13-health-final-summary.json).
 
 The last patch saves only about3 seconds per outer at the measured component
@@ -80,7 +89,7 @@ calling the clip component2.5x faster.
 
 The remaining sections below retain the original Oct21 preparation history;
 their descriptions of optimizations as unimplemented are historical. The
-200/no201, native51713, seven-source metrics, full archive and actual final
+200/no201, fixed-validation milestones, native51713, seven-source metrics, full archive and actual final
 native4 recovery requirements are still pending.
 
 This is a fresh 7B actor experiment, adapted from the 3B Easy implementation at
