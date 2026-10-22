@@ -54,6 +54,16 @@ Existing MSE job749568 only. Each epoch uses the full169028-question pool, per-e
 | 4 | fixed_validation2048_M5 | EMA | 0.008322 | 0.080677 | 0.2294 | — | — | 235/512 (45.90%) |
 | 4 | fixed_validation2048_M10 | raw | 0.007889 | 0.077245 | 0.2688 | — | — | 295/512 (57.62%) |
 | 4 | fixed_validation2048_M10 | EMA | 0.007677 | 0.075273 | 0.2663 | — | — | 297/512 (58.01%) |
+| 5 | fixed_train2048_G5 | raw | 0.007942 | 0.075079 | 0.4453 | 63.44 | 8.36 | 376/512 (73.44%) |
+| 5 | fixed_train2048_G5 | EMA | 0.008050 | 0.079080 | 0.3795 | 63.90 | 13.19 | 361/512 (70.51%) |
+| 5 | fixed_validation2048_G5 | raw | 0.008375 | 0.076619 | 0.2110 | 54.56 | 15.31 | 213/512 (41.60%) |
+| 5 | fixed_validation2048_G5 | EMA | 0.008166 | 0.079562 | 0.2257 | 55.77 | 20.43 | 219/512 (42.77%) |
+| 5 | fixed_validation2048_M3 | raw | 0.008830 | 0.074060 | 0.1799 | — | — | 168/512 (32.81%) |
+| 5 | fixed_validation2048_M3 | EMA | 0.008704 | 0.077729 | 0.1925 | — | — | 163/512 (31.84%) |
+| 5 | fixed_validation2048_M5 | raw | 0.008468 | 0.076695 | 0.2283 | — | — | 237/512 (46.29%) |
+| 5 | fixed_validation2048_M5 | EMA | 0.008290 | 0.079815 | 0.2371 | — | — | 236/512 (46.09%) |
+| 5 | fixed_validation2048_M10 | raw | 0.007901 | 0.072744 | 0.2548 | — | — | 292/512 (57.03%) |
+| 5 | fixed_validation2048_M10 | EMA | 0.007652 | 0.074438 | 0.2733 | — | — | 294/512 (57.42%) |
 
 ## Actual epoch coverage
 
@@ -63,5 +73,6 @@ Existing MSE job749568 only. Each epoch uses the full169028-question pool, per-e
 | 2 | 169028 | 169028 | 1100933 | `28c5fecd05219f79b0b3f2bdad708ed4b517497705d4b015dd48c7776e009bd2` |
 | 3 | 169028 | 169028 | 1098015 | `d69d31e109e93823a81a8cb1976c8a6493e349ed448ad004f6679a64c7485e26` |
 | 4 | 169028 | 169028 | 1098520 | `18888e5d157aaeb10b5cd7c015e311bd579121fac6661276ec6880aeb70adc89` |
+| 5 | 169028 | 169028 | 1098971 | `5856a7b190e12950b48a3d6f348ff87ab8c4a857848149ae42600a1c9b3697ad` |
 
-Latest actual sample epoch1792689757.202519. Each metric is copied from the completed epoch evaluation receipt; an epoch absent from the table is not claimed complete. Terminal model/Adam/RNG acceptance is separate.
+Latest actual sample epoch1792690385.251828. Each metric is copied from the completed epoch evaluation receipt; an epoch absent from the table is not claimed complete. Terminal model/Adam/RNG acceptance is separate.
