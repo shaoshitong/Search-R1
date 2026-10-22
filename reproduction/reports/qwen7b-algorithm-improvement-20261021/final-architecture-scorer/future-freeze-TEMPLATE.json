@@ -1,0 +1,121 @@
+{
+  "status": "FUTURE_ONLY_NOT_FROZEN",
+  "required_status": "TWO_TRAINING_SEEDS_SAME_CONFIGURATION_FROZEN_BEFORE_FINAL_SCORES",
+  "freeze_epoch": null,
+  "final_labels_or_scores_used_for_selection": false,
+  "further_candidate_selection_on_final_allowed": false,
+  "two_original_2048_G5_plans_unchanged": true,
+  "primary_validation_questions": 2048,
+  "baseline": {
+    "checkpoint": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/checkpoints/cursor-002577.pt",
+      "bytes": 3781073882,
+      "sha256": "c0a1c7dc3663d4216966a3440c2103348bcc52db3cd04c2f5c59a784a2792917"
+    },
+    "state_key": "ema",
+    "layer": 27,
+    "prefix": 20
+  },
+  "configuration": {
+    "family": "packed_topk",
+    "architecture": "one_question_packed_global64_detached_window_topk_v1",
+    "objective": "topk_ramp",
+    "layer": 15,
+    "prefix": 80,
+    "head_max_positions": 2048,
+    "fixed_M": 5,
+    "epoch": null,
+    "training_budget_epochs": null,
+    "primary_state": null,
+    "secondary_states": [],
+    "primary_metric": "Top512_true_Mixed_fraction",
+    "threshold": 0.5,
+    "threshold_fitted": false
+  },
+  "replications": [
+    {
+      "seed_id": "seed1",
+      "init_seed": null,
+      "train_plan_seed": null,
+      "train_plan_sha256": null,
+      "checkpoint_binding": null,
+      "training_runtime_relative": "reproduction/operations/qwen7b_warmup/ACTUAL_PUBLISHED_TRAINING_RUNTIME.py",
+      "checkpoint": {
+        "path": "REMOTE_ACTUAL_PROOF_REQUIRED",
+        "bytes": null,
+        "sha256": null
+      },
+      "source_publication": {
+        "path": "REMOTE_ACTUAL_PROOF_REQUIRED",
+        "bytes": null,
+        "sha256": null
+      },
+      "training_complete": {
+        "path": "REMOTE_ACTUAL_PROOF_REQUIRED",
+        "bytes": null,
+        "sha256": null
+      },
+      "CPU_acceptance": {
+        "path": "REMOTE_ACTUAL_PROOF_REQUIRED",
+        "bytes": null,
+        "sha256": null
+      },
+      "viewed_validation_evaluation": {
+        "path": "REMOTE_ACTUAL_PROOF_REQUIRED",
+        "bytes": null,
+        "sha256": null
+      },
+      "viewed_G5_identity_proof": {
+        "path": "REMOTE_ACTUAL_PROOF_REQUIRED",
+        "bytes": null,
+        "sha256": null
+      }
+    },
+    {
+      "seed_id": "seed2",
+      "init_seed": null,
+      "train_plan_seed": null,
+      "train_plan_sha256": null,
+      "checkpoint_binding": null,
+      "training_runtime_relative": "reproduction/operations/qwen7b_warmup/ACTUAL_PUBLISHED_TRAINING_RUNTIME.py",
+      "checkpoint": {
+        "path": "REMOTE_ACTUAL_PROOF_REQUIRED",
+        "bytes": null,
+        "sha256": null
+      },
+      "source_publication": {
+        "path": "REMOTE_ACTUAL_PROOF_REQUIRED",
+        "bytes": null,
+        "sha256": null
+      },
+      "training_complete": {
+        "path": "REMOTE_ACTUAL_PROOF_REQUIRED",
+        "bytes": null,
+        "sha256": null
+      },
+      "CPU_acceptance": {
+        "path": "REMOTE_ACTUAL_PROOF_REQUIRED",
+        "bytes": null,
+        "sha256": null
+      },
+      "viewed_validation_evaluation": {
+        "path": "REMOTE_ACTUAL_PROOF_REQUIRED",
+        "bytes": null,
+        "sha256": null
+      },
+      "viewed_G5_identity_proof": {
+        "path": "REMOTE_ACTUAL_PROOF_REQUIRED",
+        "bytes": null,
+        "sha256": null
+      }
+    }
+  ],
+  "epoch_state_selection_rule": "seed1_viewed_Top512_then_same_epoch_state_for_both_seeds",
+  "selection_seed_id": "seed1",
+  "scorer_publication": {
+    "path": "REMOTE_ACTUAL_PROOF_REQUIRED",
+    "bytes": null,
+    "sha256": null
+  },
+  "final_scoring_started": false
+}
