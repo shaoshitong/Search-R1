@@ -29,7 +29,7 @@ STAGE='''def stage():
  if entry.exists():assert entry.read_text()==text
  else:entry.write_text(text)
  subprocess.check_call(['bash','-n',str(entry)])
- ready=dict(status='FOUR_VARIANT_SEQUENTIAL_CPU_ACCEPTOR_STAGED_NOT_STARTED',source=proof(path),entry=proof(entry),commit=v['commit'],source_publication=proof(suite/'source-publication.json'),variants=[[27,20],[21,20],[27,80],[21,80]],CPU_only=True,no_Slurm_mutation=True)
+ ready=dict(status='SEVEN_VARIANT_SEQUENTIAL_CPU_ACCEPTOR_STAGED_NOT_STARTED',source=proof(path),entry=proof(entry),commit=v['commit'],source_publication=proof(suite/'source-publication.json'),variants=[[27,20],[21,20],[27,80],[21,80],[15,20],[18,20],[24,20]],CPU_only=True,no_Slurm_mutation=True)
  publication=code/'staged.json'
  if publication.exists():assert read(publication)==ready
  else:atomic(publication,ready)
