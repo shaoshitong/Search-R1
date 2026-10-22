@@ -4,7 +4,7 @@ for name in ('submission-result.json','controller.json','progress.json','latest.
  p=b/name
  if p.exists():
   value=json.loads(p.read_bytes())
-  if name=='latest.json':value={k:value.get(k)for k in ('path','bytes','sha256','cursor','native_steps','head_steps','phase','stage','learning_rates','raw_native_frozen') if k in value}
+  if name=='latest.json':value={k:value.get(k)for k in ('path','bytes','sha256','cursor','native_steps','head_steps','phase','stage','training_phase','phase_state','native_learning_rate','head_learning_rate','native_frozen','learning_rates','raw_native_frozen') if k in value}
   out[name[:-5]]=value
 job=out.get('submission-result',{}).get('job_id')or out.get('controller',{}).get('job_id')
 if job:

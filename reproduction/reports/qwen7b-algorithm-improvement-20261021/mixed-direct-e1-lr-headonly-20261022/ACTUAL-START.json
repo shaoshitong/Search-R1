@@ -1,0 +1,94 @@
+{
+  "observed_epoch": 1792652693.0547976,
+  "job_id": "747723",
+  "sacct": "747723|RUNNING|0:0|00:11:15|ACD1-6",
+  "source_epoch": 1,
+  "source_cursor": 2577,
+  "accepted_cursor": 2598,
+  "new_complete_updates": 21,
+  "two_real_Adam_clocks": [
+    2598,
+    2598
+  ],
+  "native_lr": 5e-07,
+  "head_lr": 5e-07,
+  "phase": "phase2_joint_low_lr",
+  "current_raw_native_frozen": false,
+  "latest_full_checkpoint": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-e1-lr-headonly-20261022-v1/checkpoints/.rolling-accepted-cursor-002578-0550f2418a01466e8879b8c07ea4daf0.pt",
+    "bytes": 3781071962,
+    "sha256": "63bd2048490b260a46f8483ef55a8aecd01afba6ada2ac96b1b457d3236f8d67",
+    "cursor": 2578,
+    "native_steps": 2578,
+    "head_steps": 2578,
+    "stage": "training",
+    "training_phase": "phase2_joint_low_lr",
+    "phase_state": {
+      "training_phase": "phase2_joint_low_lr",
+      "native_freeze_cursor": 3898,
+      "native_frozen_boundary_sha256": null,
+      "source_epoch1_checkpoint": {
+        "accepted_hashes": {
+          "ema": "30717cbccac35f98f6a3502b149b85c27a9339ae50e6838f6b9d44492700f456",
+          "ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+          "head_adam": "3def95c27223ea5cc84ae9d59a9c99299d68f49a16ccf3cadc18d661c2fa7ad5",
+          "native_adam": "6449bac5f93ba569a46baabb3dcd77d234a29c8252fc1c014933d61737bd16de",
+          "official_source": "f56f31ea08617395aafcb67a1c1fb8a25d7a2552f0ae23f435ba1d9c4a8d95ee",
+          "raw": "19768254b2b2d790fc512d1d55a744d33bb5241d76e75ed08a5dfc7a6f29e675",
+          "raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+          "rng": "2994b0b3702db59ba952402cab67a80637702621362a22f1201845fbc37b31b0",
+          "sampler": "62fab5913ad1cbb7da9301885b181089792554539038fc7ce801fd277787024d"
+        },
+        "allocation_job_id": "746266",
+        "bytes": 3781073882,
+        "config_sha256": "e5f0027dfcff4b6db442b38e9b2452e86cc2c9adcabd97a194971dc4d8f8d837",
+        "cursor": 2577,
+        "data_cursor": {
+          "cursor": 2577,
+          "sampler_binding": "a0056a458758d1bf168d64729222fa0d865654937f82842318f142df98d5bb11",
+          "sampler_state_sha256": "62fab5913ad1cbb7da9301885b181089792554539038fc7ce801fd277787024d"
+        },
+        "epoch_time": 1792611569.9492016,
+        "full_CPU_native_head_two_Adam_RNG_sampler_source_reload_passed": true,
+        "head_steps": 2577,
+        "matched_binding_sha256": "545686d14f8df2ab2490cbfc8948c983dbcc06a65a37db55842156776b1fb7e1",
+        "native_steps": 2577,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/checkpoints/cursor-002577.pt",
+        "pinned": true,
+        "sampler_state_sha256": "62fab5913ad1cbb7da9301885b181089792554539038fc7ce801fd277787024d",
+        "sha256": "c0a1c7dc3663d4216966a3440c2103348bcc52db3cd04c2f5c59a784a2792917",
+        "stage": "evaluation_due"
+      }
+    },
+    "native_learning_rate": 5e-07,
+    "head_learning_rate": 5e-07,
+    "native_frozen": false
+  },
+  "new_failure": null,
+  "source_E1_unique_questions": 126780,
+  "full_pool_questions": 169028,
+  "source_E1_unique_fraction": 0.750053245616111,
+  "G10_trajectory_count": 1690280,
+  "each_epoch_all_unique_questions_guaranteed": false,
+  "old_four_epoch_unique_seen": 169028,
+  "future_phase3": {
+    "starts_after_cursor": 3898,
+    "native_Adam_freeze_clock": 3898,
+    "head_lr": 5e-05,
+    "head_only_real_progress_not_yet_claimed": true
+  },
+  "current_normal_window": {
+    "first": 2589,
+    "last": 2598,
+    "wall_seconds": 43.19909596443176,
+    "seconds_per_update": 4.799899551603529,
+    "question_visits_per_minute": 1600.0334834995244
+  },
+  "source_commits": {
+    "worker_updater": "cdd7942f5727875a9fdc59f8d0f4af9419d689eb",
+    "phased_checkpoint": "d2acaf92f5d34e20eb05593cd1647e039a34ea73",
+    "controller": "8cf67d463421c889e8c89b01ee335c08bb1ce4de"
+  },
+  "entire_experiment_finished": false,
+  "scientific_goal_complete": false
+}
