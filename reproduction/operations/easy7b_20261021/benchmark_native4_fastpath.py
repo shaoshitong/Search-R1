@@ -1,4 +1,4 @@
-"""Independent native4 CP50 actor/Adam benchmark: legacy versus lean+KV4.
+"""Independent native4 CP50 actor/Adam benchmarks: legacy, lean-KV28, lean-KV4.
 
 Run each mode in a separate torchrun4 Slurm job. The production job is never
 changed. Both modes restore the same CP50 HF weights, rank-local Adam moments,
@@ -266,9 +266,13 @@ def run(args):
         source_sha256_scope='four direct benchmark/actor entry files; published operator commit binds remaining source')
     manifest['diagnostic_role']='native4_fixed_work_actor_benchmark_NOT_production'
     manifest['benchmark_mode']=args.mode
-    if args.mode=='leancompact':
+    lean=args.mode in ('leancompact','leanexpanded')
+    if lean:
         manifest['performance_profile']='lean_v1';manifest['extra_policy_monitor_forwards']=False
-        manifest['infra_optimizations']=profile_flags('fa3-lean-v1')
+        # Both lean modes remove the same actor checks, CPU snapshots and
+        # monitor forwards. The actor-only expanded control retains the exact
+        # original expanded FA3 dispatch; it initializes no rollout service.
+        manifest['infra_optimizations']=profile_flags('fa3-lean-v1' if args.mode=='leancompact' else 'fa3-exact-cache-v1')
     else:
         manifest.pop('performance_profile',None);manifest['extra_policy_monitor_forwards']=True
         manifest['infra_optimizations']=profile_flags('fa3-exact-cache-v1')
@@ -280,7 +284,7 @@ def run(args):
     config=OmegaConf.create(document.get('resolved_config',document))
     with open_dict(config.actor_rollout_ref.model):config.actor_rollout_ref.model.actor_checkpoint_path=str(checkpoint)
     with open_dict(config.actor_rollout_ref.actor):
-        config.actor_rollout_ref.actor.performance_profile='lean_v1' if args.mode=='leancompact' else 'legacy'
+        config.actor_rollout_ref.actor.performance_profile='lean_v1' if lean else 'legacy'
         config.actor_rollout_ref.actor.policy_safety.extra_policy_monitor_forwards=args.mode=='legacy'
         config.actor_rollout_ref.actor.optim.completed_updates=0
         config.actor_rollout_ref.actor.optim.total_training_steps=201
@@ -376,7 +380,7 @@ def run(args):
 def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source-base',required=True);parser.add_argument('--checkpoint',required=True)
-    parser.add_argument('--mode',choices=('legacy','leancompact'),required=True);parser.add_argument('--output',required=True)
+    parser.add_argument('--mode',choices=('legacy','leanexpanded','leancompact'),required=True);parser.add_argument('--output',required=True)
     parser.add_argument('--steps',type=int,default=20)
     parser.add_argument('--selection-step',type=int,default=51,
                         help='Saved policy50 selection51 by default;50 is an explicit one-update-stale fallback')

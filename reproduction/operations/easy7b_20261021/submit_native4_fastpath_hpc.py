@@ -19,7 +19,7 @@ def main():
     own_base(base)
     results = []
     for mode in request.get('modes', ['legacy', 'leancompact', 'compact-kernel']):
-        if mode not in ('legacy', 'leancompact', 'compact-kernel'):
+        if mode not in ('legacy', 'leanexpanded', 'leancompact', 'compact-kernel'):
             raise ValueError('Unknown independent experiment mode')
         label = request.get('suffix', 'r1')
         root = base/'diagnostics'/('native4-'+mode+'-'+label)
@@ -51,7 +51,7 @@ def main():
                 '--nproc_per_node=4', str(code), '--source-base', str(source),
                 '--checkpoint', request['checkpoint'], '--mode', mode,
                 '--output', str(root), '--steps', '20']
-            gpus, cpus, memory, duration = 4, 48, '512G', '02:00:00'
+            gpus, cpus, memory, duration = 4, 48, '512G', '00:30:00'
         argv = ['sbatch', '--parsable', '--partition=emergency_acd', '--qos=formal-user',
             '--account=jxu957', '--nodes=1', '--ntasks=1', '--gres=gpu:'+str(gpus),
             '--cpus-per-task='+str(cpus), '--mem='+memory, '--time='+duration,
