@@ -59,6 +59,14 @@ def main():
         assert config['run_id'] == entry['run_id'] and config['model_revision'] == REVISION
         assert config['fitting_authorized'] is False and config['actor_optimizer_updates'] == 0
         inputs = {item['path']:item for item in read(event/'inputs/manifest.json')['batches']}
+        plan_path = event.parent/'planned-g10-and-fixed-g5.json'
+        plan_ref = next(ref for ref in config['immutable_preparation_sources'] if ref['path'] == str(plan_path))
+        checked(plan_ref); plan = read(plan_path)
+        assert plan['labels_observed'] is False and plan['actual_responses_generated'] == 0
+        expected_ids = {tid:str(group['qid']) for group in plan['planned_G10']
+                        for tid in group['event_trajectory_ids'][config['event_index']]}
+        assert len(expected_ids) == 10240 and len(plan['planned_G10']) == 2048
+        seen_ids = set()
         shards = []
         for index in range(4):
             root = event/'sampling'/('shard-%02d' % index); generic = read(root/'complete.json')
@@ -76,26 +84,44 @@ def main():
                 assert batch['actor_optimizer_updates'] == 0
                 prefix, full = batch['prefix'], batch['full']
                 assert prefix['trajectories'] == full['trajectories'] == 640
+                assert prefix['run_id'] == full['run_id'] == entry['run_id']
+                assert prefix['actor_version'] == full['actor_version'] == 'official7b-'+REVISION
                 assert prefix['sampling_attempt_id'] == full['sampling_attempt_id'] == config['sampling_attempt_id']
                 # Hash byte streams only: strict_em values and answer text are never decoded.
                 journals = {key:checked(full[key]) for key in ('full', 'own_em')}
                 assert all(full[key]['count'] == 640 for key in journals)
                 native = checked(prefix['actor_hidden'])
+                native_index = checked(read(native['path'])['files']['index.jsonl'])
+                batch_ids = set()
+                with Path(native_index['path']).open() as stream:
+                    for line in stream:
+                        row = json.loads(line); tid = row['trajectory_id']
+                        assert tid not in seen_ids and tid not in batch_ids
+                        assert expected_ids.get(tid) == str(row['qid'])
+                        batch_ids.add(tid)
+                assert len(batch_ids) == 640
+                seen_ids.update(batch_ids)
                 batches.append(dict(complete=proof(path), questions=128, trajectories=640,
-                    full_and_own_EM_byte_SHA_verified=journals, native_feature_manifest=native))
+                    full_and_own_EM_byte_SHA_verified=journals, native_feature_manifest=native,
+                    native_index=native_index, exact_precommitted_native_trajectory_ids=640))
             with (root/'job.lock').open('r+') as lock:
                 fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
                 fcntl.flock(lock, fcntl.LOCK_UN)
             shards.append(dict(shard=index, complete=proof(root/'complete.json'),
                 own_job_lock_free=True, questions=512, trajectories=2560, batches=batches))
-        events.append(dict(event=entry['key'], run_id=entry['run_id'], config=entry['config'], shards=shards))
+        assert seen_ids == set(expected_ids)
+        events.append(dict(event=entry['key'], run_id=entry['run_id'], config=entry['config'],
+            precommitted_plan=plan_ref, exact_native_ID_and_qid_coverage=True,
+            missing_or_extra_native_trajectories=0, shards=shards))
     result = dict(status='ALL_FROZEN_FINAL_G10_COLLECTION_SHARDS_COMPLETED_BLIND',
         prepared=proof(BASE/'prepared.json'), source_publication=prepared['source_publication'],
         collector_commit=prepared['collector_commit'], allocations=allocations, events=events,
         frozen_distinct_questions=4096, question_events=8192, real_full_trajectories=40960,
         precommitted_fixed_G5_trajectories=20480, completed_shards=16, completed_batches=64,
         complete_manifest_and_full_journal_and_own_EM_byte_SHA_freshly_verified=True,
-        native_feature_manifests_SHA_freshly_verified=True, native_feature_tensor_payloads_rehashed=False,
+        native_feature_manifests_and_indexes_SHA_freshly_verified=True,
+        precommitted_native_trajectory_IDs_and_qids_fully_covered=True,
+        native_feature_tensor_payloads_rehashed=False,
         final_EM_values_or_class_histogram_or_probe_scores_read=False,
         candidate_confirmation_scoring_performed=False, actor_optimizer_updates=0,
         source=proof(__file__), completed_epoch=time.time())
