@@ -2,8 +2,8 @@
 import argparse,base64,hashlib,importlib.util,json,shlex,subprocess,zlib
 from pathlib import Path
 R=Path(__file__).resolve().parents[3];CONTROL=R.parents[1];P='reproduction/operations/qwen7b_warmup/'
-BRANCH='codex/q7b-selected-state-fixed-trainB-20261023'
-BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v1'
+BRANCH='codex/q7b-selected-state-fixed-trainB-v2-20261023'
+BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v2'
 TRAINING='7a8ff6ae8a33324846d85f77ffc28e9ab699c028';PROTOCOL='9332b8639260151014b0291f12b1a12522163413'
 FILES=['score_selected_fixed_trainB.py','test_selected_fixed_trainB.py','deploy_selected_fixed_trainB.py','score_frozen_final4096.py','online_mixed_prefix_explore.py','native_mixed_group_classifier.py','online_packed_full169028_MSE_P80.py','runtime.sh']
 ENTRY='''#!/usr/bin/env bash
@@ -80,6 +80,6 @@ def main():
     chunk=raw[start:start+6144];call(PART,name=name,index=index,data=base64.b64encode(chunk).decode(),sha256=hashlib.sha256(chunk).hexdigest())
   result=call(STAGE)
  else:result=call(STATUS)
- dest=R/'reproduction/reports/qwen7b-algorithm-improvement-20261021/selected-state-fixed-trainB';dest.mkdir(exist_ok=True,parents=True);(dest/('actual-'+a.action+'.json')).write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
+ dest=R/'reproduction/reports/qwen7b-algorithm-improvement-20261021/selected-state-fixed-trainB-v2';dest.mkdir(exist_ok=True,parents=True);(dest/('actual-'+a.action+'.json')).write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
 for body in(PART,STAGE,STATUS):compile(COMMON+body,'full_permutation_stage_static','exec')
 if __name__=='__main__':main()

@@ -1,0 +1,63 @@
+{
+  "time": 1792706281.8131866,
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v2",
+  "files": {
+    "root-submission.json": {
+      "CPUs": 12,
+      "GPUs": 2,
+      "Z_saved_trainB_predictions_reused": true,
+      "comment": "q7b-trainB-fdac450a935f336d95ae",
+      "config": {
+        "bytes": 7940,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v2/root-bound-trainB.json",
+        "sha256": "fdac450a935f336d95ae000c57ccbff3002ea258422844decee0448dbde02dcc"
+      },
+      "entry": {
+        "bytes": 1375,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v2/scoring.sbatch",
+        "sha256": "07be86fa0369e79187d0193b42df12c616bf1febb309468611a6a29443b1b498"
+      },
+      "exclude": "ACD1-13",
+      "final4096_read": false,
+      "job_id": "750334",
+      "memory_GiB": 128,
+      "models": [
+        "E1_EMA",
+        "Z_seed1_E10_raw",
+        "Z_seed2_E10_raw"
+      ],
+      "name": "q7b-fixed-trainB-unified",
+      "new_rollouts": 0,
+      "no_dependencies": true,
+      "partition": "acd_u",
+      "qos": "normal",
+      "questions": 2048,
+      "role": "fixed_trainB_only_plus_E1_fixed32_adapter_replay",
+      "source_commit": "ab8060368cc49c1313493463642350dd5912dc0e",
+      "source_publication": {
+        "bytes": 2642,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v2/source-publication.json",
+        "sha256": "61eaa510f24f6830304ddcd81aed8090e75de7b9e7683404d0ee276f44dc067c"
+      },
+      "status": "FIXED_TRAIN_B_ROOT_OWNED_JOB_SUBMISSION_RECORDED",
+      "submitted_now": true,
+      "time": 1792706260.9352386,
+      "time_limit": "01:00:00",
+      "training_changed": false
+    }
+  },
+  "read_only": true,
+  "checkpoint_or_tensor_loaded": false,
+  "final4096_read": false,
+  "queue": {
+    "returncode": 0,
+    "stdout": "750334|RUNNING|0:17|ACD1-20",
+    "stderr": ""
+  },
+  "accounting": {
+    "returncode": 0,
+    "stdout": "750334|RUNNING|0:0|00:00:17|ACD1-20",
+    "stderr": ""
+  },
+  "log_tail": ""
+}

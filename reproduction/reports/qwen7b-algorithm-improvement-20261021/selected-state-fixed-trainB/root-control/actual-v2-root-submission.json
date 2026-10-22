@@ -1,0 +1,43 @@
+{
+  "status": "FIXED_TRAIN_B_ROOT_OWNED_JOB_SUBMISSION_RECORDED",
+  "time": 1792706260.9352386,
+  "job_id": "750334",
+  "name": "q7b-fixed-trainB-unified",
+  "comment": "q7b-trainB-fdac450a935f336d95ae",
+  "entry": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v2/scoring.sbatch",
+    "bytes": 1375,
+    "sha256": "07be86fa0369e79187d0193b42df12c616bf1febb309468611a6a29443b1b498"
+  },
+  "source_publication": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v2/source-publication.json",
+    "bytes": 2642,
+    "sha256": "61eaa510f24f6830304ddcd81aed8090e75de7b9e7683404d0ee276f44dc067c"
+  },
+  "source_commit": "ab8060368cc49c1313493463642350dd5912dc0e",
+  "config": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v2/root-bound-trainB.json",
+    "bytes": 7940,
+    "sha256": "fdac450a935f336d95ae000c57ccbff3002ea258422844decee0448dbde02dcc"
+  },
+  "submitted_now": true,
+  "no_dependencies": true,
+  "exclude": "ACD1-13",
+  "partition": "acd_u",
+  "qos": "normal",
+  "GPUs": 2,
+  "CPUs": 12,
+  "memory_GiB": 128,
+  "time_limit": "01:00:00",
+  "questions": 2048,
+  "role": "fixed_trainB_only_plus_E1_fixed32_adapter_replay",
+  "models": [
+    "E1_EMA",
+    "Z_seed1_E10_raw",
+    "Z_seed2_E10_raw"
+  ],
+  "Z_saved_trainB_predictions_reused": true,
+  "new_rollouts": 0,
+  "training_changed": false,
+  "final4096_read": false
+}

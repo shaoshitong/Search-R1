@@ -16,3 +16,9 @@ bash ROOT_CONTROL_CODE/root-bind-and-submit-once.sh --action submit
 ```
 
 The stage task invokes neither command. Root owns actual execution, later progress verification and any resolution of an unknown submit outcome. The job uses the original normal/acd_u2H100/12CPU/128GiB/1hour entry, without dependencies, excluding the previously failed ACD1-13 host.
+
+## Actual legacy-schema correction (2026-10-23)
+
+The first v1 binding attempt reached the actual original E1 prediction file and failed before descriptor/intent/job creation: the original saved ordered binary labels are named `strict_em`, whereas new packed predictions use `labels`. This was a reader compatibility error, not a changed dataset or failed SSH connection. The v1 staged source and failure evidence are retained. No Slurm job was created by that attempt.
+
+The v2 scorer source `ab8060368cc49c1313493463642350dd5912dc0e` normalizes exactly these two label schemas, requires agreement when both exist, and preserves ordered ownG5 identity. Its existing replay test now reproduces the actual legacy five-key row, including `strict_em`. The independent v2 shared directory is `selected-state-fixed-trainB2048-unified-20261023-v2`; the fixed32 replay tolerance0.001, native causal segments, E1 CP and Z saved-trainB reuse remain unchanged. Root control source `1612ecb47f2efb9ba625eaa82916d79a95956dda` binds the new immutable source/publication/entry proofs.

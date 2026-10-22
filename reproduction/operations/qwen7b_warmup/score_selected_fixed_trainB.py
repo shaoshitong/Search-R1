@@ -9,7 +9,7 @@ from pathlib import Path
 from . import score_frozen_final4096 as native
 from . import online_packed_full169028_MSE_P80 as packing
 B,A=packing.B,packing.A
-BASE=A/'selected-state-fixed-trainB2048-unified-20261023-v1'
+BASE=A/'selected-state-fixed-trainB2048-unified-20261023-v2'
 FULL=A/'full169028-policy80-physical-ownG10-20261023-v2/fixture'
 CAUSAL=A/'online-mixed-layer-prefix-20261022-v1/fixture-complete.json'
 TRAIN_SHA='e6e74d92160efb0740ba5c0316c4ee7686f06a499c90cafd5a545f325b62209b'
@@ -65,14 +65,23 @@ def explicit(group):
  return dict(group,M=5,true_mixed=0<sum(labels)<5,target_variance=mean*(1-mean))
 
 
+def row_labels(row):
+ """Normalize actual legacy E1 strict_em and newer labels without changing data."""
+ if 'labels'not in row and 'strict_em'not in row:raise ValueError('Actual own-G5 EM labels are missing')
+ labels=row['labels']if 'labels'in row else row['strict_em']
+ if 'labels'in row and 'strict_em'in row and row['labels']!=row['strict_em']:raise ValueError('labels and legacy strict_em disagree')
+ if not isinstance(labels,list)or len(labels)!=5 or any(type(y)is not int or y not in(0,1)for y in labels):raise ValueError('Five actual binary strict EM labels required')
+ return list(labels)
+
+
 def identity(rows):
- return [dict(qid=r['qid'],trajectory_ids=r['trajectory_ids'],labels=r['labels'])for r in sorted(rows,key=lambda r:r['qid'])]
+ return [dict(qid=r['qid'],trajectory_ids=r['trajectory_ids'],labels=row_labels(r))for r in sorted(rows,key=lambda r:r['qid'])]
 
 
 def match_saved(rows,views):
  if len(rows)!=2048 or len({r['qid']for r in rows})!=2048 or identity(rows)!=identity(views):raise ValueError('Saved fixed trainA/other pool cannot substitute exact trainB ownG5')
  for r in rows:
-  if r['true_mixed']!=(0<sum(r['labels'])<5):raise ValueError('Saved Mixed label differs from actual ownG5')
+  if r['true_mixed']!=(0<sum(row_labels(r))<5):raise ValueError('Saved Mixed label differs from actual ownG5')
  return sorted(rows,key=lambda r:r['qid'])
 
 

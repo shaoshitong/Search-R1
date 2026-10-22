@@ -3,7 +3,7 @@ import argparse,base64,hashlib,importlib.util,json,shlex,subprocess,zlib
 from pathlib import Path
 R=Path(__file__).resolve().parents[3];ROOT=R.parents[1];P='reproduction/operations/qwen7b_warmup/'
 BRANCH='codex/q7b-selected-trainB-root-control-20261023'
-BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v1'
+BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v2'
 FILES=['bind_submit_selected_trainB_once.py','test_bind_submit_selected_trainB_once.py','deploy_selected_trainB_root_control.py']
 COMMON='''import pathlib,json,hashlib,base64,subprocess,os,fcntl,time
 b=pathlib.Path(v['base']);assert(b/'staged.json').is_file();code=b/('root-control-code-'+v['commit'][:12]);code.mkdir(exist_ok=True)
@@ -20,7 +20,7 @@ if p.exists():assert p.read_bytes()==raw
 else:p.write_bytes(raw)
 print(json.dumps(dict(stored=True)))
 '''
-STAGE=r'''guard=(b/'root-control-stage.lock').open('a+');fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB);scorer=b/'code-5899b5043b1e';assert proof(b/'source-publication.json')['sha256']=='ca7e33504db357e327f167e942409be8668ca463ffe252ff03c602304b31fe94'and proof(b/'scoring.sbatch')['sha256']=='bf891e86a6c59a4c5df554cd343e5165a557e5d154eb10578b08e4d30fb372d0'
+STAGE=r'''guard=(b/'root-control-stage.lock').open('a+');fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB);scorer=b/'code-ab8060368cc4';assert proof(b/'source-publication.json')['sha256']=='61eaa510f24f6830304ddcd81aed8090e75de7b9e7683404d0ee276f44dc067c'and proof(b/'scoring.sbatch')['sha256']=='07be86fa0369e79187d0193b42df12c616bf1febb309468611a6a29443b1b498'
 for name,ref in v['files'].items():
  p=code/name;p.parent.mkdir(exist_ok=True,parents=True);parts=sorted(code.glob(name+'.part-*'));raw=b''.join(q.read_bytes()for q in parts)if parts else p.read_bytes();assert len(raw)==ref['bytes']and hashlib.sha256(raw).hexdigest()==ref['sha256']
  if p.exists():assert p.read_bytes()==raw

@@ -1,7 +1,7 @@
 """Bounded metadata/progress read of the one existing root-owned scorer."""
 import json,pathlib,subprocess,time
 
-base=pathlib.Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v1')
+base=pathlib.Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v2')
 out=dict(time=time.time(),base=str(base),files={},read_only=True,checkpoint_or_tensor_loaded=False,final4096_read=False)
 for name in ('root-submission.json','controller.json','progress-rank-0.json','progress-rank-1.json','failure-rank-0.json','failure-rank-1.json','complete.json'):
  if(base/name).is_file():out['files'][name]=json.loads((base/name).read_bytes())

@@ -7,11 +7,11 @@ final data, training changes or blind retry of an uncertain submission.
 import argparse,datetime,fcntl,hashlib,importlib,json,os,re,subprocess,sys,time
 from pathlib import Path
 A=Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021')
-BASE=A/'selected-state-fixed-trainB2048-unified-20261023-v1'
-SCORER_CODE=BASE/'code-5899b5043b1e'
-SCORER_SOURCE='5899b5043b1e5a6e1023dd02015b939252e86819'
-EXPECTED_PUBLICATION=dict(path=str(BASE/'source-publication.json'),bytes=2639,sha256='ca7e33504db357e327f167e942409be8668ca463ffe252ff03c602304b31fe94')
-EXPECTED_ENTRY=dict(path=str(BASE/'scoring.sbatch'),bytes=1375,sha256='bf891e86a6c59a4c5df554cd343e5165a557e5d154eb10578b08e4d30fb372d0')
+BASE=A/'selected-state-fixed-trainB2048-unified-20261023-v2'
+SCORER_CODE=BASE/'code-ab8060368cc4'
+SCORER_SOURCE='ab8060368cc49c1313493463642350dd5912dc0e'
+EXPECTED_PUBLICATION=dict(path=str(BASE/'source-publication.json'),bytes=2642,sha256='61eaa510f24f6830304ddcd81aed8090e75de7b9e7683404d0ee276f44dc067c')
+EXPECTED_ENTRY=dict(path=str(BASE/'scoring.sbatch'),bytes=1375,sha256='07be86fa0369e79187d0193b42df12c616bf1febb309468611a6a29443b1b498')
 COORDINATOR=A/'fullZ-seed2-749935-terminal-CPU-coordinator-20261023-v1'
 ACCEPTED={
  'Z_seed1':A/'packed-full169028-variance-CPU-acceptance-20261022-v1/z_mse_anchor/accepted.json',
