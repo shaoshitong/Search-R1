@@ -71,7 +71,10 @@ def run(helper):
  rng=np.random.default_rng(SEED);ba=[];top=[];auc=[]
  for i in range(REPEATS):
   ids=rng.integers(0,2048,size=2048);yy=y[ids];zz=scores[ids];pred=zz>=0
-  ba.append(.5*(pred[yy].mean(0)+(~pred[~yy]).mean(0)));ranks=np.argsort(-zz,axis=0,kind='stable')[:512]
+  ba.append(.5*(pred[yy].mean(0)+(~pred[~yy]).mean(0)))
+  # Original rows are lexicographic qid order. Preserve the same exact tie rule
+  # after bootstrap duplication rather than letting random draw order break ties.
+  ranks=np.lexsort((np.broadcast_to(ids[:,None],zz.shape),-zz),axis=0)[:512]
   top.append(np.take_along_axis(np.broadcast_to(yy[:,None],zz.shape),ranks,axis=0).mean(0));counts=np.bincount(ids,minlength=2048)
   auc.append([u.weighted_auc(layout,counts)for layout in layouts])
   if i%100==0:atomic(OUT/'progress.json',dict(stage='PAIRED_BOOTSTRAP_EXISTING_VIEWED_PREDICTIONS',replicate=i,replicates=REPEATS,methods=len(names),time=time.time()))
