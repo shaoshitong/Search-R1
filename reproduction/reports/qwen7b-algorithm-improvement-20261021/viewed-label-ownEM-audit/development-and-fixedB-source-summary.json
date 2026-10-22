@@ -1,0 +1,74 @@
+{
+  "status": "VIEWED_NQ_DEV_AND_FIXEDB_SELECTED_OWN_G5_SOURCE_LABELS_VERIFIED",
+  "dev": {
+    "questions": 2048,
+    "trajectories": 10240,
+    "source_events_read": 32,
+    "full_files_fresh_SHA_verified": 32,
+    "seal_bindings_verified": 32,
+    "own_em_rows_read": 20480,
+    "missing": 0,
+    "duplicate_source_identity": 0,
+    "label_mismatches": 0,
+    "wrong_question": 0,
+    "wrong_actor": 0,
+    "examples": [],
+    "execution_run_ids": [
+      [
+        "run_id",
+        "7276b1c76cfc4d639b2e7c7ed03c4271"
+      ],
+      [
+        "run_id",
+        "b5a4ca3fb459439fb35b47556a080460"
+      ]
+    ],
+    "unique_selected_own_EM_rows": 10240,
+    "all_selected_labels_equal_authoritative_own_EM": true,
+    "observed_selected_identity_and_labels_SHA256": "38cc1478a1aa9d3c16e32edcd3d74da43b7caeecb5eefb7b4b6a7c8eefff6651",
+    "status": "ALL_10240_SELECTED_LABELS_OWN_EM_AND_ACTUAL_FULL_SEAL_VERIFIED"
+  },
+  "fixedB": {
+    "questions": 2048,
+    "trajectories": 10240,
+    "source_events_read": 492,
+    "full_files_fresh_SHA_verified": 0,
+    "seal_bindings_verified": 492,
+    "own_em_rows_read": 314880,
+    "missing": 0,
+    "duplicate_source_identity": 0,
+    "label_mismatches": 0,
+    "wrong_question": 0,
+    "wrong_actor": 0,
+    "examples": [],
+    "execution_run_ids": [
+      [
+        "run_id",
+        "bdbb550fd9324cefab979728acb0f5e1"
+      ],
+      [
+        "run_id",
+        "70188b8e50fd4b45bc420ce58014f46e"
+      ]
+    ],
+    "full_files_size_verified_against_sealed_SHA_ref": 492,
+    "unique_selected_own_EM_rows": 10240,
+    "all_selected_labels_equal_authoritative_own_EM": true,
+    "observed_selected_identity_and_labels_SHA256": "d30153ac090d9920a752a894cb26df8960a6fd67c09695c1d070647dff66deda",
+    "status": "ALL_10240_SELECTED_LABELS_OWN_EM_AND_ACTUAL_FULL_SEAL_VERIFIED"
+  },
+  "NQ_only": true,
+  "HPC3_first9344_pool_intersection": {
+    "pilot_train8192": 0,
+    "viewed_dev2048": 0,
+    "fixed_trainB2048": 0
+  },
+  "scope_note": "Dev32 actual FULL files freshly SHA-verified. FixedB own_EM and seals fresh SHA; its FULL size/SHA ref matched actual causal fixture+seal, not rehashed yet. All81920 pilot P80 comparison will be an additional independent durable CPU audit. No claim about full169028.",
+  "source_reports": [
+    "actual-dev-labels-ownEM.json",
+    "actual-fixedB-labels-ownEM.json",
+    "actual-pilot-HPC3-intersection.json"
+  ],
+  "final4096_read": false,
+  "Slurm_mutated": false
+}
