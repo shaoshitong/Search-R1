@@ -1,23 +1,30 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
-**Current evidence, 2026-10-23:** continuation `750029` completed and sealed
-all five consecutive outers61–65; outer66 has actually generated and saved2560
-questions. All four ranks performed100 new Adam writes, reaching1300/scheduler65,
-with zero extra monitor forwards. The required post-restore five-outer follow-up
-is accepted. The overall200-outer experiment and final acceptance remain incomplete.
-See [five complete post-restore outers](evidence/leanmetrics-five-complete-outers-summary.json).
+**Current evidence, 2026-10-23:** production750029 has completed and sealed
+outer67. All four ranks reached1340 actual Adam writes/scheduler67, with zero
+extra monitor forwards. Outer68 has saved1024 actual candidate questions.
+The required five-outer post-restore follow-up61–65 is accepted; the overall
+200-outer experiment and final acceptance remain incomplete. CP67's23 checkpoint
+plus7 boundary files total91,406,225,806 bytes; its manifest SHA is
+`d77c09e2a5c5bd8d59305faeca5e01447e56eea3118e7ae1f08095faad52d123`.
+See [CP67 seal and actual68 progress](evidence/leanmetrics-outer67-sealed68-progress-summary.json).
 
-Outer66 subsequently completed all20 real Adam updates on each of four ranks,
-reaching1320 writes, and its full checkpoint is sealed. Manifest SHA is
-`16f35596a5b89354e89d6ded00a1d036434d1e0cffe9f1f3708e7a22b1b3a64a`.
-At the next actual observation, outer67 has saved1024 candidate questions.
-See [CP66 seal and actual67 progress](evidence/leanmetrics-outer66-sealed67-progress-summary.json).
+The real native4 candidate startup comparison completed both512-question cases:
+legacy generation179.024s versus private asynchronous2ms batching165.799s,
+a7.39% reduction. The asynchronous case generated1.57% more tokens. Its actual
+FAISS batch averaged1.510 queries despite the configured upper limit16; this
+explains why the4.59x fixed-query component result does not translate into an
+identical candidate-phase multiplier. Full five-chunk A/B750423 continues.
+A separate16ms service750432 is actually READY onACD1-7; its startup-only
+four-GPU comparison750433 has been submitted once. No production cutover has
+been made from this startup result.
 
-The private batching service is now submitted once as750396 on2H100, using
-immutable source0f48a49. The real native4 candidate A/B uses hardlinked HF policy66
-and all five fixed parent chunks. It regenerates trajectories with that policy;
-the saved parent artifacts came from outer66 under the earlier pre-update policy65.
-This is an inference-only diagnostic; production750029 and retriever745198 continue.
+Both probes use hardlinked frozen HF policy66 and fixed parent chunks. They
+regenerate trajectories; saved parents came from outer66 under pre-update
+policy65. They load no actor optimizer and perform no training updates.
+Production750029 and retriever745198 continue unchanged. Private2ms service
+750396 uses immutable source0f48a49; full candidate probe750423 usesbf15a8c;
+private16ms service/candidate use2303dd4.
 
 Natural candidate-generation counters identify a concrete remaining serial path:
 the local proxy and external retriever synchronously handle single-query calls.

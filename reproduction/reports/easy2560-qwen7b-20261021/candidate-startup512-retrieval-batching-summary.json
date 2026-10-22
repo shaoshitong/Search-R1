@@ -1,0 +1,74 @@
+{
+  "schema": "easy7b_private_candidate_startup512_retrieval_batching_v1",
+  "status": "STARTUP512_BOTH_COMPLETE_FULL5_PENDING_AT_SNAPSHOT",
+  "source_evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/candidate-pair-r4-results-1792711113512629000.json",
+  "source_evidence_epoch": 1792711113.4979742,
+  "pair_job": "750423",
+  "service_endpoint": "http://ACD1-4:18022",
+  "comparison": {
+    "completed_questions_each": 512,
+    "completed_trajectories_each": 2560,
+    "candidate_exit_codes": [0, 0],
+    "same_input_fingerprint": true,
+    "input_fingerprints_sha256": "b89824e7e032010732f4875f97d5aba59f2b11823c45bb42bcb2b3068145aab6",
+    "same_generated_trajectories_or_token_work": false,
+    "cold_cache_each": true,
+    "cache_capacity_each": 4096,
+    "inflight_requests_merged": false,
+    "generation_phase_seconds": {
+      "legacy": 179.02358225733042,
+      "async": 165.79906124062836,
+      "seconds_saved": 13.224521016702056,
+      "elapsed_reduction_fraction": 0.07387027368100019,
+      "legacy_over_async_speedup": 1.0797623395316394
+    },
+    "pipeline_seconds_including_input_io_score_and_output_save": {
+      "legacy": 205.8878437243402,
+      "async": 193.01720654498786,
+      "seconds_saved": 12.870637179352343,
+      "elapsed_reduction_fraction": 0.0625128562548094
+    }
+  },
+  "actual_work": {
+    "raw_generated_tokens": {"legacy": 1056148, "async": 1072779, "change_fraction": 0.015746846085965327},
+    "prompt_tokens": {"legacy": 6159170, "async": 6263992, "change_fraction": 0.017018851566038995},
+    "generation_requests": {"legacy": 7890, "async": 7942, "change_fraction": 0.006590621039290312},
+    "logical_retrieval_calls": {"legacy": 5330, "async": 5381, "change_fraction": 0.009568480300187643},
+    "selection_performed": false,
+    "selection_scope": "one512-question chunk, not complete2560-question Top512 selection"
+  },
+  "async_actual_faiss_batching": {
+    "batch_input_queries_delta": 3688,
+    "batch_attempts_delta": 2442,
+    "mean_batch": 1.5102375102375103,
+    "service_cumulative_highwater_after": 11,
+    "maximum_scope": "max_batch_input_queries is a global highwater, not a per-variant additive counter; do not interpret its delta as a later variant maximum"
+  },
+  "proxy_cache": {
+    "hits": {"legacy": 1753, "async": 1693},
+    "hit_rate": {"legacy": 0.32889305816135084, "async": 0.3146255342873072, "change_percentage_points": -1.426752387404362},
+    "backend_requests": {"legacy": 3577, "async": 3688, "change_fraction": 0.031031590718479274},
+    "completed_entries": {"legacy": 3577, "async": 3615},
+    "async_backend_requests_beyond_completed_unique_entries": 73,
+    "failed_requests_each": 0,
+    "evictions_each": 0
+  },
+  "backend_timer_scope": {
+    "legacy_seconds_delta": 154.52252819482237,
+    "async_seconds_delta": 113.78973136749119,
+    "direct_speed_ratio_valid": false,
+    "reason": "original fallback batch_search timing includes document lookup; the new batch execution timer excludes document formatting/lookup and request queueing"
+  },
+  "remaining_scope": {
+    "full_five_chunks_both_complete_at_snapshot": false,
+    "full_legacy_stage_at_snapshot": "FOUR_TP1_FA3_ENGINES_READY",
+    "full_async_result_present_at_snapshot": false,
+    "whole_training_outer_speedup_measured": false,
+    "final_model_performance_measured": false,
+    "wait16ms_control_prepared": true,
+    "wait16ms_actual_state_inspected_for_this_summary": false,
+    "interpretation": "measured startup generation elapsed reduction only; do not substitute it for complete five-chunk selection or formal training-outer speedup"
+  },
+  "production_modified_by_this_summary": false,
+  "goal_complete": false
+}
