@@ -55,6 +55,8 @@ def main():
         '--chdir='+str(base/'source'/commit),
         '--output='+str(root/'slurm-%j.log'), '--error='+str(root/'slurm-%j.log'),
         '--wrap='+shlex.join(command)]
+    if request.get('nodelist'):
+        argv.insert(2, '--nodelist=' + request['nodelist'])
     publish(claim, dict(source_commit=commit, source_checkpoint=str(checkpoint), command=argv,
                         production_modified=False, created_unix=time.time()))
     result = subprocess.run(argv, capture_output=True, text=True, timeout=30)
