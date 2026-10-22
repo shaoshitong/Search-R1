@@ -2357,6 +2357,8 @@
     "numerical_error_magnitude_measured": false,
     "bitwise_stochastic_replay_claimed": false,
     "training_failure_inferred": false,
-    "diagnostic": "Source supports asynchronous Ray/HTTP continuous batching and request seed=None; actual generation-start RNG content comparison still pending. Do not infer missed RNG namespace or FA3 numerical failure from these differing sampled trajectories."
+    "diagnostic": "Actual CP34 boundary, old35 start and new35 start all4 saved RNG fields have equal typed-content SHA. Thus the listed RNG start states were not mismatched. Async continuous request/batch scheduling is not fixed; unique cause of stochastic trajectory differences is unproven. This is not a FA3 numerical A/B or a request to restart healthy training.",
+    "generation_start_all4_all_listed_rng_three_way_equal": true,
+    "actual_small_rng_evidence": "evidence/actual747219-cp34-old35-new35-rng-equal-20261022.json"
   }
 }

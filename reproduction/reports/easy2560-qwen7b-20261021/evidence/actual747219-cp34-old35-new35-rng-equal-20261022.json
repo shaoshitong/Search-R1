@@ -1,0 +1,2251 @@
+{
+  "actual": {
+    "checked_unix": 1792646721.8186152,
+    "checkpoint_outer": 34,
+    "chunk_offset": 0,
+    "compared_next_outer": 35,
+    "cpu_only": true,
+    "cuda_operations": false,
+    "model_or_adam_files_read": false,
+    "namespace_notes": {
+      "actor_cuda_saved": "previous actor state, overwritten from active CUDA on next __enter__",
+      "capture_scope": "idle engine outside generation phase",
+      "next_sampling_state": "rollout_cuda_saved; sharding-manager __enter__ loads it into CUDA",
+      "replay_limit": "Equal RNG state does not prove equal asynchronous request/batch order or equal sampled output",
+      "request_generators": "saved engine request-local generators; equality is a separate comparison",
+      "torch_cuda": "currently active idle/actor CUDA state; not interchangeable with rollout_cuda_saved"
+    },
+    "new_attempt": "ac512297cc994a62a6f77a76ebeb2994",
+    "old_attempt": "18ace454753b415287eeb23f4e9e1077",
+    "operator_commit": "94220478514c5872abdf6fc4a9e88d18b1d21e49",
+    "pool_retry": 0,
+    "ranks": [
+      {
+        "files": {
+          "checkpoint34_boundary": {
+            "bytes": 18000,
+            "fields": {
+              "actor_cuda_saved": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "boundary": {
+                "is_none": false,
+                "sha256": "a7cf4d7e21cdb972759d1890b76bb35a28491aaeb0fc8356f69294049c5e9bcf",
+                "structure": {
+                  "type": "str"
+                }
+              },
+              "cuda_device": {
+                "is_none": false,
+                "sha256": "33de7d8d1be7b32ee839cfdccff1e5d62bbeff53c3c580f2e84bee58f69b53f1",
+                "structure": {
+                  "type": "int"
+                }
+              },
+              "numpy": {
+                "is_none": false,
+                "sha256": "8623dd04ffbcf039b8a8648ba5ab8fa24f4795818278537b2f86cec422f67532",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "str"
+                    },
+                    {
+                      "bytes": 2496,
+                      "dtype": "<u4",
+                      "shape": [
+                        624
+                      ],
+                      "type": "numpy.ndarray"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "float"
+                    }
+                  ],
+                  "length": 5,
+                  "type": "tuple"
+                }
+              },
+              "python": {
+                "is_none": false,
+                "sha256": "fbca70298855c8a0408aed43f8e672a953ea5fdc3311ce3a421702d86413906d",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "element_types": {
+                        "int": 625
+                      },
+                      "length": 625,
+                      "type": "tuple"
+                    },
+                    {
+                      "type": "NoneType"
+                    }
+                  ],
+                  "length": 3,
+                  "type": "tuple"
+                }
+              },
+              "request_generators": {
+                "is_none": false,
+                "sha256": "f982d4ec9ae7bd15c6949806b789d2482e8881516ece0ed80277606afc7afc92",
+                "structure": {
+                  "entries": {},
+                  "length": 0,
+                  "type": "dict"
+                }
+              },
+              "rollout_cuda_saved": {
+                "is_none": false,
+                "sha256": "7851f46d45265c717ada8c720faec6611f2ee09e847ffe98575d731bdbfa476f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cpu": {
+                "is_none": false,
+                "sha256": "b37dbfa5af163b1c7abdd0a4e2d2885e632108726c847f0a74a4b888d0638e43",
+                "structure": {
+                  "bytes": 5056,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    5056
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cuda": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "vllm_version": {
+                "is_none": false,
+                "sha256": "8926637d8ea53f350c545809da0e0a0aeb29ec4518d8d2cdebd2191bfe5949c7",
+                "structure": {
+                  "type": "str"
+                }
+              }
+            },
+            "identity": {
+              "actual_optimizer_writes": 680,
+              "completed_outer": 34,
+              "rank": 0,
+              "run_id": "232f20e112ac4a978c5aba52a0367195",
+              "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+              "world_size": 4
+            },
+            "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_34/boundary/rank-0.pt",
+            "sha256": "c2307338e042f5a90e32cb6b0630f942e7d00e38eb1eeb4270ccfc362830ae90",
+            "status": "LOADED"
+          },
+          "new35_before_generation": {
+            "bytes": 18000,
+            "fields": {
+              "actor_cuda_saved": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "boundary": {
+                "is_none": false,
+                "sha256": "a7cf4d7e21cdb972759d1890b76bb35a28491aaeb0fc8356f69294049c5e9bcf",
+                "structure": {
+                  "type": "str"
+                }
+              },
+              "cuda_device": {
+                "is_none": false,
+                "sha256": "33de7d8d1be7b32ee839cfdccff1e5d62bbeff53c3c580f2e84bee58f69b53f1",
+                "structure": {
+                  "type": "int"
+                }
+              },
+              "numpy": {
+                "is_none": false,
+                "sha256": "8623dd04ffbcf039b8a8648ba5ab8fa24f4795818278537b2f86cec422f67532",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "str"
+                    },
+                    {
+                      "bytes": 2496,
+                      "dtype": "<u4",
+                      "shape": [
+                        624
+                      ],
+                      "type": "numpy.ndarray"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "float"
+                    }
+                  ],
+                  "length": 5,
+                  "type": "tuple"
+                }
+              },
+              "python": {
+                "is_none": false,
+                "sha256": "fbca70298855c8a0408aed43f8e672a953ea5fdc3311ce3a421702d86413906d",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "element_types": {
+                        "int": 625
+                      },
+                      "length": 625,
+                      "type": "tuple"
+                    },
+                    {
+                      "type": "NoneType"
+                    }
+                  ],
+                  "length": 3,
+                  "type": "tuple"
+                }
+              },
+              "request_generators": {
+                "is_none": false,
+                "sha256": "f982d4ec9ae7bd15c6949806b789d2482e8881516ece0ed80277606afc7afc92",
+                "structure": {
+                  "entries": {},
+                  "length": 0,
+                  "type": "dict"
+                }
+              },
+              "rollout_cuda_saved": {
+                "is_none": false,
+                "sha256": "7851f46d45265c717ada8c720faec6611f2ee09e847ffe98575d731bdbfa476f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cpu": {
+                "is_none": false,
+                "sha256": "b37dbfa5af163b1c7abdd0a4e2d2885e632108726c847f0a74a4b888d0638e43",
+                "structure": {
+                  "bytes": 5056,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    5056
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cuda": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "vllm_version": {
+                "is_none": false,
+                "sha256": "8926637d8ea53f350c545809da0e0a0aeb29ec4518d8d2cdebd2191bfe5949c7",
+                "structure": {
+                  "type": "str"
+                }
+              }
+            },
+            "identity": {
+              "actual_optimizer_writes": 680,
+              "completed_outer": 34,
+              "rank": 0,
+              "run_id": "232f20e112ac4a978c5aba52a0367195",
+              "source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+              "world_size": 4
+            },
+            "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/artifacts/mixed-candidate-pools/ac512297cc994a62a6f77a76ebeb2994-pool-0/0-worker-rng/rank-0.pt",
+            "sha256": "c47ed915b4222aa7cad8c73c9c58bd77caaef89807afdbd7e611625fa1a89803",
+            "status": "LOADED"
+          },
+          "old35_before_generation": {
+            "bytes": 18000,
+            "fields": {
+              "actor_cuda_saved": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "boundary": {
+                "is_none": false,
+                "sha256": "a7cf4d7e21cdb972759d1890b76bb35a28491aaeb0fc8356f69294049c5e9bcf",
+                "structure": {
+                  "type": "str"
+                }
+              },
+              "cuda_device": {
+                "is_none": false,
+                "sha256": "33de7d8d1be7b32ee839cfdccff1e5d62bbeff53c3c580f2e84bee58f69b53f1",
+                "structure": {
+                  "type": "int"
+                }
+              },
+              "numpy": {
+                "is_none": false,
+                "sha256": "8623dd04ffbcf039b8a8648ba5ab8fa24f4795818278537b2f86cec422f67532",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "str"
+                    },
+                    {
+                      "bytes": 2496,
+                      "dtype": "<u4",
+                      "shape": [
+                        624
+                      ],
+                      "type": "numpy.ndarray"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "float"
+                    }
+                  ],
+                  "length": 5,
+                  "type": "tuple"
+                }
+              },
+              "python": {
+                "is_none": false,
+                "sha256": "fbca70298855c8a0408aed43f8e672a953ea5fdc3311ce3a421702d86413906d",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "element_types": {
+                        "int": 625
+                      },
+                      "length": 625,
+                      "type": "tuple"
+                    },
+                    {
+                      "type": "NoneType"
+                    }
+                  ],
+                  "length": 3,
+                  "type": "tuple"
+                }
+              },
+              "request_generators": {
+                "is_none": false,
+                "sha256": "f982d4ec9ae7bd15c6949806b789d2482e8881516ece0ed80277606afc7afc92",
+                "structure": {
+                  "entries": {},
+                  "length": 0,
+                  "type": "dict"
+                }
+              },
+              "rollout_cuda_saved": {
+                "is_none": false,
+                "sha256": "7851f46d45265c717ada8c720faec6611f2ee09e847ffe98575d731bdbfa476f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cpu": {
+                "is_none": false,
+                "sha256": "b37dbfa5af163b1c7abdd0a4e2d2885e632108726c847f0a74a4b888d0638e43",
+                "structure": {
+                  "bytes": 5056,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    5056
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cuda": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "vllm_version": {
+                "is_none": false,
+                "sha256": "8926637d8ea53f350c545809da0e0a0aeb29ec4518d8d2cdebd2191bfe5949c7",
+                "structure": {
+                  "type": "str"
+                }
+              }
+            },
+            "identity": {
+              "actual_optimizer_writes": 680,
+              "completed_outer": 34,
+              "rank": 0,
+              "run_id": "232f20e112ac4a978c5aba52a0367195",
+              "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+              "world_size": 4
+            },
+            "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/artifacts/mixed-candidate-pools/18ace454753b415287eeb23f4e9e1077-pool-0/0-worker-rng/rank-0.pt",
+            "sha256": "c2307338e042f5a90e32cb6b0630f942e7d00e38eb1eeb4270ccfc362830ae90",
+            "status": "LOADED"
+          }
+        },
+        "next_rollout_private_rng": {
+          "all_three": "EQUAL",
+          "pairs": {
+            "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+            "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+            "old35_before_generation__vs__new35_before_generation": "EQUAL"
+          }
+        },
+        "rank": 0,
+        "same_field_comparisons": {
+          "actor_cuda_saved": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "boundary": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "cuda_device": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "numpy": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "python": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "request_generators": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "rollout_cuda_saved": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "torch_cpu": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "torch_cuda": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "vllm_version": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          }
+        }
+      },
+      {
+        "files": {
+          "checkpoint34_boundary": {
+            "bytes": 18000,
+            "fields": {
+              "actor_cuda_saved": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "boundary": {
+                "is_none": false,
+                "sha256": "a7cf4d7e21cdb972759d1890b76bb35a28491aaeb0fc8356f69294049c5e9bcf",
+                "structure": {
+                  "type": "str"
+                }
+              },
+              "cuda_device": {
+                "is_none": false,
+                "sha256": "33de7d8d1be7b32ee839cfdccff1e5d62bbeff53c3c580f2e84bee58f69b53f1",
+                "structure": {
+                  "type": "int"
+                }
+              },
+              "numpy": {
+                "is_none": false,
+                "sha256": "8623dd04ffbcf039b8a8648ba5ab8fa24f4795818278537b2f86cec422f67532",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "str"
+                    },
+                    {
+                      "bytes": 2496,
+                      "dtype": "<u4",
+                      "shape": [
+                        624
+                      ],
+                      "type": "numpy.ndarray"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "float"
+                    }
+                  ],
+                  "length": 5,
+                  "type": "tuple"
+                }
+              },
+              "python": {
+                "is_none": false,
+                "sha256": "fbca70298855c8a0408aed43f8e672a953ea5fdc3311ce3a421702d86413906d",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "element_types": {
+                        "int": 625
+                      },
+                      "length": 625,
+                      "type": "tuple"
+                    },
+                    {
+                      "type": "NoneType"
+                    }
+                  ],
+                  "length": 3,
+                  "type": "tuple"
+                }
+              },
+              "request_generators": {
+                "is_none": false,
+                "sha256": "f982d4ec9ae7bd15c6949806b789d2482e8881516ece0ed80277606afc7afc92",
+                "structure": {
+                  "entries": {},
+                  "length": 0,
+                  "type": "dict"
+                }
+              },
+              "rollout_cuda_saved": {
+                "is_none": false,
+                "sha256": "8437753ddd999df88538330722bf179d651e5f69759bc83001326830857566b6",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cpu": {
+                "is_none": false,
+                "sha256": "e6588f02ef636f3d995fe57f8bd47f02a9f8b765b2d33e6e0e914b9f5f402bfa",
+                "structure": {
+                  "bytes": 5056,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    5056
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cuda": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "vllm_version": {
+                "is_none": false,
+                "sha256": "8926637d8ea53f350c545809da0e0a0aeb29ec4518d8d2cdebd2191bfe5949c7",
+                "structure": {
+                  "type": "str"
+                }
+              }
+            },
+            "identity": {
+              "actual_optimizer_writes": 680,
+              "completed_outer": 34,
+              "rank": 1,
+              "run_id": "232f20e112ac4a978c5aba52a0367195",
+              "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+              "world_size": 4
+            },
+            "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_34/boundary/rank-1.pt",
+            "sha256": "7cd64272455165d5844e5e897c008701a6d0329088b15f9caadffc51a1f5eda2",
+            "status": "LOADED"
+          },
+          "new35_before_generation": {
+            "bytes": 18000,
+            "fields": {
+              "actor_cuda_saved": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "boundary": {
+                "is_none": false,
+                "sha256": "a7cf4d7e21cdb972759d1890b76bb35a28491aaeb0fc8356f69294049c5e9bcf",
+                "structure": {
+                  "type": "str"
+                }
+              },
+              "cuda_device": {
+                "is_none": false,
+                "sha256": "33de7d8d1be7b32ee839cfdccff1e5d62bbeff53c3c580f2e84bee58f69b53f1",
+                "structure": {
+                  "type": "int"
+                }
+              },
+              "numpy": {
+                "is_none": false,
+                "sha256": "8623dd04ffbcf039b8a8648ba5ab8fa24f4795818278537b2f86cec422f67532",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "str"
+                    },
+                    {
+                      "bytes": 2496,
+                      "dtype": "<u4",
+                      "shape": [
+                        624
+                      ],
+                      "type": "numpy.ndarray"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "float"
+                    }
+                  ],
+                  "length": 5,
+                  "type": "tuple"
+                }
+              },
+              "python": {
+                "is_none": false,
+                "sha256": "fbca70298855c8a0408aed43f8e672a953ea5fdc3311ce3a421702d86413906d",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "element_types": {
+                        "int": 625
+                      },
+                      "length": 625,
+                      "type": "tuple"
+                    },
+                    {
+                      "type": "NoneType"
+                    }
+                  ],
+                  "length": 3,
+                  "type": "tuple"
+                }
+              },
+              "request_generators": {
+                "is_none": false,
+                "sha256": "f982d4ec9ae7bd15c6949806b789d2482e8881516ece0ed80277606afc7afc92",
+                "structure": {
+                  "entries": {},
+                  "length": 0,
+                  "type": "dict"
+                }
+              },
+              "rollout_cuda_saved": {
+                "is_none": false,
+                "sha256": "8437753ddd999df88538330722bf179d651e5f69759bc83001326830857566b6",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cpu": {
+                "is_none": false,
+                "sha256": "e6588f02ef636f3d995fe57f8bd47f02a9f8b765b2d33e6e0e914b9f5f402bfa",
+                "structure": {
+                  "bytes": 5056,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    5056
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cuda": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "vllm_version": {
+                "is_none": false,
+                "sha256": "8926637d8ea53f350c545809da0e0a0aeb29ec4518d8d2cdebd2191bfe5949c7",
+                "structure": {
+                  "type": "str"
+                }
+              }
+            },
+            "identity": {
+              "actual_optimizer_writes": 680,
+              "completed_outer": 34,
+              "rank": 1,
+              "run_id": "232f20e112ac4a978c5aba52a0367195",
+              "source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+              "world_size": 4
+            },
+            "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/artifacts/mixed-candidate-pools/ac512297cc994a62a6f77a76ebeb2994-pool-0/0-worker-rng/rank-1.pt",
+            "sha256": "b6d4a8cd6ecd558cb76277128a6e2506c9ab0339971258a99d028fdbf432fb75",
+            "status": "LOADED"
+          },
+          "old35_before_generation": {
+            "bytes": 18000,
+            "fields": {
+              "actor_cuda_saved": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "boundary": {
+                "is_none": false,
+                "sha256": "a7cf4d7e21cdb972759d1890b76bb35a28491aaeb0fc8356f69294049c5e9bcf",
+                "structure": {
+                  "type": "str"
+                }
+              },
+              "cuda_device": {
+                "is_none": false,
+                "sha256": "33de7d8d1be7b32ee839cfdccff1e5d62bbeff53c3c580f2e84bee58f69b53f1",
+                "structure": {
+                  "type": "int"
+                }
+              },
+              "numpy": {
+                "is_none": false,
+                "sha256": "8623dd04ffbcf039b8a8648ba5ab8fa24f4795818278537b2f86cec422f67532",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "str"
+                    },
+                    {
+                      "bytes": 2496,
+                      "dtype": "<u4",
+                      "shape": [
+                        624
+                      ],
+                      "type": "numpy.ndarray"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "float"
+                    }
+                  ],
+                  "length": 5,
+                  "type": "tuple"
+                }
+              },
+              "python": {
+                "is_none": false,
+                "sha256": "fbca70298855c8a0408aed43f8e672a953ea5fdc3311ce3a421702d86413906d",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "element_types": {
+                        "int": 625
+                      },
+                      "length": 625,
+                      "type": "tuple"
+                    },
+                    {
+                      "type": "NoneType"
+                    }
+                  ],
+                  "length": 3,
+                  "type": "tuple"
+                }
+              },
+              "request_generators": {
+                "is_none": false,
+                "sha256": "f982d4ec9ae7bd15c6949806b789d2482e8881516ece0ed80277606afc7afc92",
+                "structure": {
+                  "entries": {},
+                  "length": 0,
+                  "type": "dict"
+                }
+              },
+              "rollout_cuda_saved": {
+                "is_none": false,
+                "sha256": "8437753ddd999df88538330722bf179d651e5f69759bc83001326830857566b6",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cpu": {
+                "is_none": false,
+                "sha256": "e6588f02ef636f3d995fe57f8bd47f02a9f8b765b2d33e6e0e914b9f5f402bfa",
+                "structure": {
+                  "bytes": 5056,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    5056
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cuda": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "vllm_version": {
+                "is_none": false,
+                "sha256": "8926637d8ea53f350c545809da0e0a0aeb29ec4518d8d2cdebd2191bfe5949c7",
+                "structure": {
+                  "type": "str"
+                }
+              }
+            },
+            "identity": {
+              "actual_optimizer_writes": 680,
+              "completed_outer": 34,
+              "rank": 1,
+              "run_id": "232f20e112ac4a978c5aba52a0367195",
+              "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+              "world_size": 4
+            },
+            "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/artifacts/mixed-candidate-pools/18ace454753b415287eeb23f4e9e1077-pool-0/0-worker-rng/rank-1.pt",
+            "sha256": "7cd64272455165d5844e5e897c008701a6d0329088b15f9caadffc51a1f5eda2",
+            "status": "LOADED"
+          }
+        },
+        "next_rollout_private_rng": {
+          "all_three": "EQUAL",
+          "pairs": {
+            "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+            "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+            "old35_before_generation__vs__new35_before_generation": "EQUAL"
+          }
+        },
+        "rank": 1,
+        "same_field_comparisons": {
+          "actor_cuda_saved": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "boundary": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "cuda_device": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "numpy": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "python": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "request_generators": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "rollout_cuda_saved": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "torch_cpu": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "torch_cuda": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "vllm_version": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          }
+        }
+      },
+      {
+        "files": {
+          "checkpoint34_boundary": {
+            "bytes": 18000,
+            "fields": {
+              "actor_cuda_saved": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "boundary": {
+                "is_none": false,
+                "sha256": "a7cf4d7e21cdb972759d1890b76bb35a28491aaeb0fc8356f69294049c5e9bcf",
+                "structure": {
+                  "type": "str"
+                }
+              },
+              "cuda_device": {
+                "is_none": false,
+                "sha256": "33de7d8d1be7b32ee839cfdccff1e5d62bbeff53c3c580f2e84bee58f69b53f1",
+                "structure": {
+                  "type": "int"
+                }
+              },
+              "numpy": {
+                "is_none": false,
+                "sha256": "8623dd04ffbcf039b8a8648ba5ab8fa24f4795818278537b2f86cec422f67532",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "str"
+                    },
+                    {
+                      "bytes": 2496,
+                      "dtype": "<u4",
+                      "shape": [
+                        624
+                      ],
+                      "type": "numpy.ndarray"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "float"
+                    }
+                  ],
+                  "length": 5,
+                  "type": "tuple"
+                }
+              },
+              "python": {
+                "is_none": false,
+                "sha256": "fbca70298855c8a0408aed43f8e672a953ea5fdc3311ce3a421702d86413906d",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "element_types": {
+                        "int": 625
+                      },
+                      "length": 625,
+                      "type": "tuple"
+                    },
+                    {
+                      "type": "NoneType"
+                    }
+                  ],
+                  "length": 3,
+                  "type": "tuple"
+                }
+              },
+              "request_generators": {
+                "is_none": false,
+                "sha256": "f982d4ec9ae7bd15c6949806b789d2482e8881516ece0ed80277606afc7afc92",
+                "structure": {
+                  "entries": {},
+                  "length": 0,
+                  "type": "dict"
+                }
+              },
+              "rollout_cuda_saved": {
+                "is_none": false,
+                "sha256": "21caeb89c8c1e5160a365cde1e478b7d735ea750b728f045249cfbb113d42342",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cpu": {
+                "is_none": false,
+                "sha256": "cdb277d8dd4ed9e46dcf65cdf12577af03a3aca28e4fbd9fbc6e824a0839e0f8",
+                "structure": {
+                  "bytes": 5056,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    5056
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cuda": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "vllm_version": {
+                "is_none": false,
+                "sha256": "8926637d8ea53f350c545809da0e0a0aeb29ec4518d8d2cdebd2191bfe5949c7",
+                "structure": {
+                  "type": "str"
+                }
+              }
+            },
+            "identity": {
+              "actual_optimizer_writes": 680,
+              "completed_outer": 34,
+              "rank": 2,
+              "run_id": "232f20e112ac4a978c5aba52a0367195",
+              "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+              "world_size": 4
+            },
+            "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_34/boundary/rank-2.pt",
+            "sha256": "9b79eb2944fcb8601ae9cedfb9de194a3c3dd22f1701c0b4aa6d9ffd6f1b2502",
+            "status": "LOADED"
+          },
+          "new35_before_generation": {
+            "bytes": 18000,
+            "fields": {
+              "actor_cuda_saved": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "boundary": {
+                "is_none": false,
+                "sha256": "a7cf4d7e21cdb972759d1890b76bb35a28491aaeb0fc8356f69294049c5e9bcf",
+                "structure": {
+                  "type": "str"
+                }
+              },
+              "cuda_device": {
+                "is_none": false,
+                "sha256": "33de7d8d1be7b32ee839cfdccff1e5d62bbeff53c3c580f2e84bee58f69b53f1",
+                "structure": {
+                  "type": "int"
+                }
+              },
+              "numpy": {
+                "is_none": false,
+                "sha256": "8623dd04ffbcf039b8a8648ba5ab8fa24f4795818278537b2f86cec422f67532",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "str"
+                    },
+                    {
+                      "bytes": 2496,
+                      "dtype": "<u4",
+                      "shape": [
+                        624
+                      ],
+                      "type": "numpy.ndarray"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "float"
+                    }
+                  ],
+                  "length": 5,
+                  "type": "tuple"
+                }
+              },
+              "python": {
+                "is_none": false,
+                "sha256": "fbca70298855c8a0408aed43f8e672a953ea5fdc3311ce3a421702d86413906d",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "element_types": {
+                        "int": 625
+                      },
+                      "length": 625,
+                      "type": "tuple"
+                    },
+                    {
+                      "type": "NoneType"
+                    }
+                  ],
+                  "length": 3,
+                  "type": "tuple"
+                }
+              },
+              "request_generators": {
+                "is_none": false,
+                "sha256": "f982d4ec9ae7bd15c6949806b789d2482e8881516ece0ed80277606afc7afc92",
+                "structure": {
+                  "entries": {},
+                  "length": 0,
+                  "type": "dict"
+                }
+              },
+              "rollout_cuda_saved": {
+                "is_none": false,
+                "sha256": "21caeb89c8c1e5160a365cde1e478b7d735ea750b728f045249cfbb113d42342",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cpu": {
+                "is_none": false,
+                "sha256": "cdb277d8dd4ed9e46dcf65cdf12577af03a3aca28e4fbd9fbc6e824a0839e0f8",
+                "structure": {
+                  "bytes": 5056,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    5056
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cuda": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "vllm_version": {
+                "is_none": false,
+                "sha256": "8926637d8ea53f350c545809da0e0a0aeb29ec4518d8d2cdebd2191bfe5949c7",
+                "structure": {
+                  "type": "str"
+                }
+              }
+            },
+            "identity": {
+              "actual_optimizer_writes": 680,
+              "completed_outer": 34,
+              "rank": 2,
+              "run_id": "232f20e112ac4a978c5aba52a0367195",
+              "source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+              "world_size": 4
+            },
+            "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/artifacts/mixed-candidate-pools/ac512297cc994a62a6f77a76ebeb2994-pool-0/0-worker-rng/rank-2.pt",
+            "sha256": "81b38018e5e33e1328440d237b7c23bf1777b4291e17ab18e796a147f227a473",
+            "status": "LOADED"
+          },
+          "old35_before_generation": {
+            "bytes": 18000,
+            "fields": {
+              "actor_cuda_saved": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "boundary": {
+                "is_none": false,
+                "sha256": "a7cf4d7e21cdb972759d1890b76bb35a28491aaeb0fc8356f69294049c5e9bcf",
+                "structure": {
+                  "type": "str"
+                }
+              },
+              "cuda_device": {
+                "is_none": false,
+                "sha256": "33de7d8d1be7b32ee839cfdccff1e5d62bbeff53c3c580f2e84bee58f69b53f1",
+                "structure": {
+                  "type": "int"
+                }
+              },
+              "numpy": {
+                "is_none": false,
+                "sha256": "8623dd04ffbcf039b8a8648ba5ab8fa24f4795818278537b2f86cec422f67532",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "str"
+                    },
+                    {
+                      "bytes": 2496,
+                      "dtype": "<u4",
+                      "shape": [
+                        624
+                      ],
+                      "type": "numpy.ndarray"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "float"
+                    }
+                  ],
+                  "length": 5,
+                  "type": "tuple"
+                }
+              },
+              "python": {
+                "is_none": false,
+                "sha256": "fbca70298855c8a0408aed43f8e672a953ea5fdc3311ce3a421702d86413906d",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "element_types": {
+                        "int": 625
+                      },
+                      "length": 625,
+                      "type": "tuple"
+                    },
+                    {
+                      "type": "NoneType"
+                    }
+                  ],
+                  "length": 3,
+                  "type": "tuple"
+                }
+              },
+              "request_generators": {
+                "is_none": false,
+                "sha256": "f982d4ec9ae7bd15c6949806b789d2482e8881516ece0ed80277606afc7afc92",
+                "structure": {
+                  "entries": {},
+                  "length": 0,
+                  "type": "dict"
+                }
+              },
+              "rollout_cuda_saved": {
+                "is_none": false,
+                "sha256": "21caeb89c8c1e5160a365cde1e478b7d735ea750b728f045249cfbb113d42342",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cpu": {
+                "is_none": false,
+                "sha256": "cdb277d8dd4ed9e46dcf65cdf12577af03a3aca28e4fbd9fbc6e824a0839e0f8",
+                "structure": {
+                  "bytes": 5056,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    5056
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cuda": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "vllm_version": {
+                "is_none": false,
+                "sha256": "8926637d8ea53f350c545809da0e0a0aeb29ec4518d8d2cdebd2191bfe5949c7",
+                "structure": {
+                  "type": "str"
+                }
+              }
+            },
+            "identity": {
+              "actual_optimizer_writes": 680,
+              "completed_outer": 34,
+              "rank": 2,
+              "run_id": "232f20e112ac4a978c5aba52a0367195",
+              "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+              "world_size": 4
+            },
+            "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/artifacts/mixed-candidate-pools/18ace454753b415287eeb23f4e9e1077-pool-0/0-worker-rng/rank-2.pt",
+            "sha256": "9b79eb2944fcb8601ae9cedfb9de194a3c3dd22f1701c0b4aa6d9ffd6f1b2502",
+            "status": "LOADED"
+          }
+        },
+        "next_rollout_private_rng": {
+          "all_three": "EQUAL",
+          "pairs": {
+            "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+            "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+            "old35_before_generation__vs__new35_before_generation": "EQUAL"
+          }
+        },
+        "rank": 2,
+        "same_field_comparisons": {
+          "actor_cuda_saved": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "boundary": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "cuda_device": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "numpy": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "python": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "request_generators": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "rollout_cuda_saved": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "torch_cpu": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "torch_cuda": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "vllm_version": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          }
+        }
+      },
+      {
+        "files": {
+          "checkpoint34_boundary": {
+            "bytes": 18000,
+            "fields": {
+              "actor_cuda_saved": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "boundary": {
+                "is_none": false,
+                "sha256": "a7cf4d7e21cdb972759d1890b76bb35a28491aaeb0fc8356f69294049c5e9bcf",
+                "structure": {
+                  "type": "str"
+                }
+              },
+              "cuda_device": {
+                "is_none": false,
+                "sha256": "33de7d8d1be7b32ee839cfdccff1e5d62bbeff53c3c580f2e84bee58f69b53f1",
+                "structure": {
+                  "type": "int"
+                }
+              },
+              "numpy": {
+                "is_none": false,
+                "sha256": "8623dd04ffbcf039b8a8648ba5ab8fa24f4795818278537b2f86cec422f67532",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "str"
+                    },
+                    {
+                      "bytes": 2496,
+                      "dtype": "<u4",
+                      "shape": [
+                        624
+                      ],
+                      "type": "numpy.ndarray"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "float"
+                    }
+                  ],
+                  "length": 5,
+                  "type": "tuple"
+                }
+              },
+              "python": {
+                "is_none": false,
+                "sha256": "fbca70298855c8a0408aed43f8e672a953ea5fdc3311ce3a421702d86413906d",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "element_types": {
+                        "int": 625
+                      },
+                      "length": 625,
+                      "type": "tuple"
+                    },
+                    {
+                      "type": "NoneType"
+                    }
+                  ],
+                  "length": 3,
+                  "type": "tuple"
+                }
+              },
+              "request_generators": {
+                "is_none": false,
+                "sha256": "f982d4ec9ae7bd15c6949806b789d2482e8881516ece0ed80277606afc7afc92",
+                "structure": {
+                  "entries": {},
+                  "length": 0,
+                  "type": "dict"
+                }
+              },
+              "rollout_cuda_saved": {
+                "is_none": false,
+                "sha256": "f69806c0ee01d6ea55a8e4065ecd7bcbbec24d6d392554ad3f2b1a7fe70eda38",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cpu": {
+                "is_none": false,
+                "sha256": "30388babb3052567c3a07eb14a3b899d9f00c0b2d58ae814a3b68deee891c948",
+                "structure": {
+                  "bytes": 5056,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    5056
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cuda": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "vllm_version": {
+                "is_none": false,
+                "sha256": "8926637d8ea53f350c545809da0e0a0aeb29ec4518d8d2cdebd2191bfe5949c7",
+                "structure": {
+                  "type": "str"
+                }
+              }
+            },
+            "identity": {
+              "actual_optimizer_writes": 680,
+              "completed_outer": 34,
+              "rank": 3,
+              "run_id": "232f20e112ac4a978c5aba52a0367195",
+              "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+              "world_size": 4
+            },
+            "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_34/boundary/rank-3.pt",
+            "sha256": "47713254daa4f3eb98a82e66dc9c7a5f2670d82172e849e83593a04a15a5a52e",
+            "status": "LOADED"
+          },
+          "new35_before_generation": {
+            "bytes": 18000,
+            "fields": {
+              "actor_cuda_saved": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "boundary": {
+                "is_none": false,
+                "sha256": "a7cf4d7e21cdb972759d1890b76bb35a28491aaeb0fc8356f69294049c5e9bcf",
+                "structure": {
+                  "type": "str"
+                }
+              },
+              "cuda_device": {
+                "is_none": false,
+                "sha256": "33de7d8d1be7b32ee839cfdccff1e5d62bbeff53c3c580f2e84bee58f69b53f1",
+                "structure": {
+                  "type": "int"
+                }
+              },
+              "numpy": {
+                "is_none": false,
+                "sha256": "8623dd04ffbcf039b8a8648ba5ab8fa24f4795818278537b2f86cec422f67532",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "str"
+                    },
+                    {
+                      "bytes": 2496,
+                      "dtype": "<u4",
+                      "shape": [
+                        624
+                      ],
+                      "type": "numpy.ndarray"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "float"
+                    }
+                  ],
+                  "length": 5,
+                  "type": "tuple"
+                }
+              },
+              "python": {
+                "is_none": false,
+                "sha256": "fbca70298855c8a0408aed43f8e672a953ea5fdc3311ce3a421702d86413906d",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "element_types": {
+                        "int": 625
+                      },
+                      "length": 625,
+                      "type": "tuple"
+                    },
+                    {
+                      "type": "NoneType"
+                    }
+                  ],
+                  "length": 3,
+                  "type": "tuple"
+                }
+              },
+              "request_generators": {
+                "is_none": false,
+                "sha256": "f982d4ec9ae7bd15c6949806b789d2482e8881516ece0ed80277606afc7afc92",
+                "structure": {
+                  "entries": {},
+                  "length": 0,
+                  "type": "dict"
+                }
+              },
+              "rollout_cuda_saved": {
+                "is_none": false,
+                "sha256": "f69806c0ee01d6ea55a8e4065ecd7bcbbec24d6d392554ad3f2b1a7fe70eda38",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cpu": {
+                "is_none": false,
+                "sha256": "30388babb3052567c3a07eb14a3b899d9f00c0b2d58ae814a3b68deee891c948",
+                "structure": {
+                  "bytes": 5056,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    5056
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cuda": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "vllm_version": {
+                "is_none": false,
+                "sha256": "8926637d8ea53f350c545809da0e0a0aeb29ec4518d8d2cdebd2191bfe5949c7",
+                "structure": {
+                  "type": "str"
+                }
+              }
+            },
+            "identity": {
+              "actual_optimizer_writes": 680,
+              "completed_outer": 34,
+              "rank": 3,
+              "run_id": "232f20e112ac4a978c5aba52a0367195",
+              "source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+              "world_size": 4
+            },
+            "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/artifacts/mixed-candidate-pools/ac512297cc994a62a6f77a76ebeb2994-pool-0/0-worker-rng/rank-3.pt",
+            "sha256": "c96cae78be04b7a956123726c08ace798eec342d6a58ff4b10bbe0631bc68d1f",
+            "status": "LOADED"
+          },
+          "old35_before_generation": {
+            "bytes": 18000,
+            "fields": {
+              "actor_cuda_saved": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "boundary": {
+                "is_none": false,
+                "sha256": "a7cf4d7e21cdb972759d1890b76bb35a28491aaeb0fc8356f69294049c5e9bcf",
+                "structure": {
+                  "type": "str"
+                }
+              },
+              "cuda_device": {
+                "is_none": false,
+                "sha256": "33de7d8d1be7b32ee839cfdccff1e5d62bbeff53c3c580f2e84bee58f69b53f1",
+                "structure": {
+                  "type": "int"
+                }
+              },
+              "numpy": {
+                "is_none": false,
+                "sha256": "8623dd04ffbcf039b8a8648ba5ab8fa24f4795818278537b2f86cec422f67532",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "str"
+                    },
+                    {
+                      "bytes": 2496,
+                      "dtype": "<u4",
+                      "shape": [
+                        624
+                      ],
+                      "type": "numpy.ndarray"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "type": "float"
+                    }
+                  ],
+                  "length": 5,
+                  "type": "tuple"
+                }
+              },
+              "python": {
+                "is_none": false,
+                "sha256": "fbca70298855c8a0408aed43f8e672a953ea5fdc3311ce3a421702d86413906d",
+                "structure": {
+                  "items": [
+                    {
+                      "type": "int"
+                    },
+                    {
+                      "element_types": {
+                        "int": 625
+                      },
+                      "length": 625,
+                      "type": "tuple"
+                    },
+                    {
+                      "type": "NoneType"
+                    }
+                  ],
+                  "length": 3,
+                  "type": "tuple"
+                }
+              },
+              "request_generators": {
+                "is_none": false,
+                "sha256": "f982d4ec9ae7bd15c6949806b789d2482e8881516ece0ed80277606afc7afc92",
+                "structure": {
+                  "entries": {},
+                  "length": 0,
+                  "type": "dict"
+                }
+              },
+              "rollout_cuda_saved": {
+                "is_none": false,
+                "sha256": "f69806c0ee01d6ea55a8e4065ecd7bcbbec24d6d392554ad3f2b1a7fe70eda38",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cpu": {
+                "is_none": false,
+                "sha256": "30388babb3052567c3a07eb14a3b899d9f00c0b2d58ae814a3b68deee891c948",
+                "structure": {
+                  "bytes": 5056,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    5056
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "torch_cuda": {
+                "is_none": false,
+                "sha256": "035e20860ff068339bc3f1c46bcf023f406e55606d84f6462490942a45ed6b0f",
+                "structure": {
+                  "bytes": 16,
+                  "device": "cpu",
+                  "dtype": "torch.uint8",
+                  "shape": [
+                    16
+                  ],
+                  "type": "torch.Tensor"
+                }
+              },
+              "vllm_version": {
+                "is_none": false,
+                "sha256": "8926637d8ea53f350c545809da0e0a0aeb29ec4518d8d2cdebd2191bfe5949c7",
+                "structure": {
+                  "type": "str"
+                }
+              }
+            },
+            "identity": {
+              "actual_optimizer_writes": 680,
+              "completed_outer": 34,
+              "rank": 3,
+              "run_id": "232f20e112ac4a978c5aba52a0367195",
+              "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+              "world_size": 4
+            },
+            "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/artifacts/mixed-candidate-pools/18ace454753b415287eeb23f4e9e1077-pool-0/0-worker-rng/rank-3.pt",
+            "sha256": "47713254daa4f3eb98a82e66dc9c7a5f2670d82172e849e83593a04a15a5a52e",
+            "status": "LOADED"
+          }
+        },
+        "next_rollout_private_rng": {
+          "all_three": "EQUAL",
+          "pairs": {
+            "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+            "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+            "old35_before_generation__vs__new35_before_generation": "EQUAL"
+          }
+        },
+        "rank": 3,
+        "same_field_comparisons": {
+          "actor_cuda_saved": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "boundary": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "cuda_device": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "numpy": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "python": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "request_generators": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "rollout_cuda_saved": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "torch_cpu": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "torch_cuda": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          },
+          "vllm_version": {
+            "all_three": "EQUAL",
+            "pairs": {
+              "checkpoint34_boundary__vs__new35_before_generation": "EQUAL",
+              "checkpoint34_boundary__vs__old35_before_generation": "EQUAL",
+              "old35_before_generation__vs__new35_before_generation": "EQUAL"
+            }
+          }
+        }
+      }
+    ],
+    "raw_rollout_files_read": false,
+    "restart_or_rollback_requested": false,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "status": "RNG_BOUNDARY_COMPARISON_COMPLETE",
+    "training_failure_inferred": false,
+    "training_gate": false,
+    "training_modified": false,
+    "world_size": 4
+  },
+  "checked_unix": 1792646721.8186152,
+  "limits": {
+    "GPU_used": false,
+    "asynchronous_scheduling_source_supported": {
+      "HTTP_future_completion_order": "search_g1/async_rollout_runtime.py:310-352",
+      "Ray_wait_any": "search_g1/async_rollout_runtime.py:145-168",
+      "continuous_engine_step": "search_g1/sampling_capture.py:398-413",
+      "sampling_request_seed_not_explicitly_set": "verl/workers/rollout/vllm_rollout/vllm_rollout.py:221-232"
+    },
+    "future_stochastic_token_bitwise_replay_proven": false,
+    "interpretation": "Exact all4 generation-start RNG comparisons exclude a mismatched saved RNG starting state in the listed namespaces. Non-fixed async request/batch order can still assign random draws differently; this comparison does not measure attention numerical error.",
+    "model_or_adam_reloaded": false,
+    "new_training_gate": false,
+    "unique_cause_of_sampled_trajectory_difference_proven": false
+  },
+  "operator_commit": "94220478514c5872abdf6fc4a9e88d18b1d21e49",
+  "overall_goal_complete": false,
+  "raw": {
+    "bytes": 49040,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp34-actual-small-rng-comparison-1792646700.json",
+    "sha256": "9dc8363d3158f891afe7a7e578021fb40015d9390ac52fe8a92edfaa91ebe67e"
+  },
+  "restart_requested": false,
+  "role": "actual_CPU_content_hash_comparison_of_saved_CP34_and_both_outer35_generation_start_RNG",
+  "status": "ALL4_ALL_LISTED_RNG_FIELDS_THREE_WAY_EQUAL",
+  "training_modified": false
+}
