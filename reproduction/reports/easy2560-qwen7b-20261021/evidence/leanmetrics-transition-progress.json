@@ -1,6 +1,6 @@
 {
   "schema": "easy7b_qualified_leanmetrics_transition_v1",
-  "checked_unix": 1792697742.4071813,
+  "checked_unix": 1792698243.5224228,
   "source_job": "749598",
   "source_completed_outer": 60,
   "source_latest": {
@@ -54,7 +54,7 @@
     "epoch": 1792696778.8411849
   },
   "training_submitted": true,
-  "actual_cuda_restore_accepted": false,
+  "actual_cuda_restore_accepted": true,
   "no_update201": true,
   "retrieval_job_untouched": "745198",
   "evidence": [
@@ -66,7 +66,8 @@
     "leanmetrics-cpu-audit-actual-io-1792696778882098000.json",
     "leanmetrics-transition-live-1792697742621198000.json",
     "leanmetrics-job750029-resource-observe-1792697742306001000.json",
-    "fastpath-leanmetrics-r1-hk-archive-observe-1792697761696394000.json"
+    "fastpath-leanmetrics-r1-hk-archive-observe-1792697761696394000.json",
+    "leanmetrics-actual-cp60-native4-restore-summary.json"
   ],
   "goal_complete": false,
   "job": "750029",
@@ -1515,20 +1516,20 @@
   "actual_runtime_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
   "runtime_commit_matches": true,
   "actual_restore": {
-    "all4_worker_model_adam_scheduler_rng_readback_equal": false,
-    "driver_readback_equal": false,
-    "reconstructed_stream_readback_equal": false,
-    "combined_actual_restore_observed": false,
+    "all4_worker_model_adam_scheduler_rng_readback_equal": true,
+    "driver_readback_equal": true,
+    "reconstructed_stream_readback_equal": true,
+    "combined_actual_restore_observed": true,
     "actual_worker_cuda_uuids": [
-      null,
-      null,
-      null,
-      null
+      "GPU-833670ad-82a4-f70d-f953-3648630f79af",
+      "GPU-962b1f8b-613f-cb23-9c1a-0a23054859b5",
+      "GPU-826c1f8f-d970-11ef-256e-a7ebcf64423c",
+      "GPU-9dc7b482-7801-b413-0802-a403ffd8ff07"
     ],
-    "rank0_model_tensor_readback_count": null,
+    "rank0_model_tensor_readback_count": 339,
     "expected_source_writes_per_rank": 1200,
-    "actual_driver_cursor": null,
-    "actual_stream_cursor": null
+    "actual_driver_cursor": 153600,
+    "actual_stream_cursor": 153600
   },
   "actual_complete_new_outer": null,
   "latest_actual_errors": {
@@ -1717,5 +1718,6 @@
     "Actual four-GPU restore of source60 all model/Adam/scheduler/RNG/driver/data states",
     "Complete61..65 and start66",
     "Original200/native51713/sevenmetrics/fullarchive/finalactualnative4restore/no201"
-  ]
+  ],
+  "actual_next_outer_started": 61
 }

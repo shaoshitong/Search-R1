@@ -7,7 +7,8 @@
 唯一续训作业 `750029` 已于2026-10-23 03:33:27CST在ACD1-14分配四张H100、
 48CPU、512G；03:35实测为RUNNING，去除剩余梯度日志扫描的runtime
 `2d5183455551145c52d1783a38663e2fcf170ceb` 身份匹配。检索745198继续运行。
-四卡实际GPU恢复和第61轮完整更新尚未通过，第61—65轮及第66轮开始仍待验证；目标仍为200轮，
+四卡实际GPU恢复已通过，日志已进入epoch0 step61，但第61轮完整更新尚未完成；
+第61—65轮五轮跟进及第66轮开始仍待验证。目标仍为200轮，
 不允许update201。
 
 ## 为什么局部接近两倍，整轮没有接近两倍
@@ -68,7 +69,8 @@ checkpoint为91,405,594,385字节，manifest SHA为
 `= 1741.910秒`，即29分02秒，较旧第52轮观测耗时少12.52%。这个口径包括完整
 断点写入、封存和轮间工作，不能用日志里的`candidate_fill + timing_s/step`替代；
 仍不将不同轮问题和policy下的差值当作同输入因果收益。这是旧749598在完成60轮
-后取消前的历史计时，不代表已RUNNING的750029已经通过实际GPU恢复和完整迭代。见
+后取消前的历史计时，不能当作750029新runtime的整轮速度结果；新作业已实际恢复，
+但第61轮完整迭代尚未完成。见
 [五轮完整计时与第59轮完整断点](evidence/native-prefix-five-complete-outers-summary.json)。
 
 发现的另一个CPU开销是反复经过Hugging Face层进行前缀解码。对同一1024条已有
@@ -100,7 +102,7 @@ actor为Q28／KV4；每卡五个候选阶段的权重同步次数为 `[1,0,0,0,0
 273.788秒，节点和计时包装与原266.079秒实验不同，不能精确相减分摊其他检查
 的独立耗时。直接测得的119–123秒说明CPU快照确实是旧版更新阶段的大项。
 
-## 剩余梯度日志扫描：实际四卡配对通过，新续训GPU恢复待验证
+## 剩余梯度日志扫描：实际恢复已通过，五轮跟进待完成
 
 复核发现旧lean虽已关闭所有有限性检查，仍为日志计算max_abs并重扫裁剪后全部
 梯度范数。源码`c14bedd9e897e4bed51de9c693a1ef29302b436d`让lean跳过这些
@@ -147,8 +149,13 @@ clip body约2.40—2.50倍，但正式每outer只有20次clip，对应约3秒／
 
 唯一新作业750029已于2026-10-23 03:33:27CST在ACD1-14分配四张H100、
 48CPU、512G，分区emergency_acd、7天。03:35实测RUNNING且runtime2d身份匹配，
-实际四卡GPU恢复与第61轮完整迭代尚未通过，61—65完整更新及66开始仍待验收；
-不能把RUNNING或源码身份匹配当作恢复／训练验收。检索745198保持运行；
+随后实际native4恢复的combined结果已为true：四卡模型集体回读一致，Adam／
+scheduler／RNG逐卡回读全部一致，rank0逐个核对339个model tensor，观察到四个
+不同CUDA UUID。各卡恢复Adam1200／scheduler60，driver和重建数据流游标均为
+153600且dataequal。日志已进入epoch0 step61，但61完整更新尚未完成；61—65
+五轮跟进及66开始仍待验收。恢复通过不证明最终QA质量或新runtime整轮提速。见
+[实际CP60四卡恢复](evidence/leanmetrics-actual-cp60-native4-restore-summary.json)。
+检索745198保持运行；
 独立绑定750029的100／150／200归档pair，CPU core640634／companion640635
 同birth身份实际live且轮询推进，无错误。见
 [完整断点切换进展](evidence/leanmetrics-transition-progress.json)与
@@ -228,6 +235,7 @@ model／forward／NCCL；此结果保留，不改变正式750029对该节点的�
 - [五轮完整计时与第59轮完整断点](evidence/native-prefix-five-complete-outers-summary.json)
 - [实际四卡全梯度配对与计时](evidence/clip-native4-paired-final-summary.json)
 - [完整60断点与续训排队状态](evidence/leanmetrics-transition-progress.json)
+- [实际CP60四卡恢复](evidence/leanmetrics-actual-cp60-native4-restore-summary.json)
 - [节点13实际健康短测](evidence/node13-health-final-summary.json)
 - [此前候选实际工作量与内核形状测试](evidence/fa3-production-speed-cause-20261022.json)
 - [四卡20次回滚快照的独立计时](evidence/rollback-snapshot-measured-summary.json)

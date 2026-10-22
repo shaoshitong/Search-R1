@@ -33,9 +33,15 @@ zero or reset Adam. CPU readback is not actual GPU restoration acceptance.
 The unique continuation750029 was allocated four H100/48CPU/512G onACD1-14 at
 2026-10-23 03:33:27CST, in `emergency_acd` for seven days. The03:35 observation
 shows `RUNNING` and runtime identity matching
-`2d5183455551145c52d1783a38663e2fcf170ceb`. Allocation and matching runtime do
-**not** establish actual GPU restoration or a completed outer61: both remain
-unverified, as do complete61–65 and the start of66. Retriever745198 remains running.
+`2d5183455551145c52d1783a38663e2fcf170ceb`. The later actual native4 CP60 restore
+passed: model collective readback and all four Adam/scheduler/RNG readbacks match,
+rank0 checked339 model tensors individually, and four distinct CUDA UUIDs were
+observed. Each rank restored Adam1200/scheduler60; driver and reconstructed stream
+both read back cursor153600 with data equality. The log has entered epoch0 step61,
+but no complete outer61 is yet established. The five follow-up outers61–65 and
+the start of66 remain pending; neither final quality nor new-runtime speed is
+proven by restore acceptance. Retriever745198 remains running. See
+[actual CP60 native4 restoration](evidence/leanmetrics-actual-cp60-native4-restore-summary.json).
 The independently bound archive pair for750029 milestones100/150/200 has CPU
 core640634/companion640635 live at the same recorded birth identities, with
 polling advancing and no errors. See
