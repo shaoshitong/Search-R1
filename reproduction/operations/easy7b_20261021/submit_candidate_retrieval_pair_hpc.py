@@ -32,6 +32,8 @@ def main():
         '--candidate-files', *[str(pin / 'inputs' / (str(offset) + '.pt')) for offset in range(0, 2560, 512)],
         '--service-base', request['service_base'], '--root', str(root / 'runs'),
         '--python', str(target / 'env/bin/python')]
+    if request.get('startup_only', False):
+        command.append('--startup-only')
     argv = ['sbatch', '--parsable', '--partition=emergency_acd', '--qos=formal-user',
         '--account=jxu957', '--nodes=1', '--ntasks=1', '--gres=gpu:4',
         '--cpus-per-task=48', '--mem=256G', '--time=03:00:00', '--exclude=ACD1-13',

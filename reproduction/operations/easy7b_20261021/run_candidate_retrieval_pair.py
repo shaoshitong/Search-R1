@@ -4,6 +4,7 @@ Each item gets a new CPU proxy, cold completed-payload LRU and new candidate
 driver/engines. Order: legacy one chunk, async one chunk, legacy five chunks,
 async five chunks. This controller never starts/stops a training or GPU service
 job; cleanup is confined to the proxy/benchmark children it creates itself.
+With --startup-only, stop after the two512-parent startup runs and leave full=None.
 """
 import argparse
 import json
@@ -225,21 +226,24 @@ def run(args):
     root = Path(args.root).resolve()
     root.mkdir(parents=True, exist_ok=False)
     job = os.environ.get('SLURM_JOB_ID')
+    schedule = [(1, 'legacy', 'startup-legacy'), (1, 'async', 'startup-async')]
+    if not args.startup_only:
+        schedule += [(5, 'legacy', 'full-legacy'), (5, 'async', 'full-async')]
     publish(root / 'launch.json', dict(arguments=vars(args), slurm_job_id=job,
         slurm_gpus_on_node=os.environ.get('SLURM_GPUS_ON_NODE'),
         slurm_cpus_per_task=os.environ.get('SLURM_CPUS_PER_TASK'),
         started_unix=time.time(), production_modified=False,
-        order=['startup-legacy', 'startup-async', 'full-legacy', 'full-async']))
+        startup_only=args.startup_only, order=[name for _, _, name in schedule]))
     if not (job and job.isdecimal()):
         raise ValueError('Use this runner only inside its independent four-GPU Slurm allocation')
     ready_path, ready, urls = wait_service(args, root)
     completed = []
-    for chunks, mode, name in ((1, 'legacy', 'startup-legacy'), (1, 'async', 'startup-async'),
-                              (5, 'legacy', 'full-legacy'), (5, 'async', 'full-async')):
+    for chunks, mode, name in schedule:
         completed.append(one(args, root, ready_path, urls, mode=mode, chunks=chunks, name=name))
         publish(root / 'completed.json', dict(completed=[row['name'] for row in completed],
             checked_unix=time.time()))
-    result = dict(status='NATIVE4_REAL_CANDIDATE_RETRIEVAL_PAIR_COMPLETED',
+    result = dict(status=('STARTUP_PAIR_COMPLETED' if args.startup_only else
+        'NATIVE4_REAL_CANDIDATE_RETRIEVAL_PAIR_COMPLETED'), startup_only=args.startup_only,
         slurm_job_id=job, checkpoint=args.checkpoint, candidate_files=args.candidate_files,
         service_ready=str(ready_path), service_endpoint=ready['endpoint'],
         retrieval_asset_versions={key: ready[key] for key in
@@ -247,11 +251,15 @@ def run(args):
         completed_native_ray_workers=4, slurm_gpus_on_node=os.environ.get('SLURM_GPUS_ON_NODE'),
         optimizer_loaded=False, optimizer_writes=0,
         production_modified=False, startup=comparison(completed[0], completed[1]),
-        full=comparison(completed[2], completed[3]), finished_unix=time.time())
+        full=(None if args.startup_only else comparison(completed[2], completed[3])),
+        finished_unix=time.time())
     publish(root / 'result.json', result)
-    event(root, result['status'], completed_children=4,
-        full_observed_generation_wall_ratio=result['full']['observed_generation_wall_ratio'],
-        full_actual_work_counts_equal=result['full']['actual_work_counts_equal'])
+    measured = result['startup'] if args.startup_only else result['full']
+    prefix = 'startup_' if args.startup_only else 'full_'
+    event(root, result['status'], completed_children=len(completed), startup_only=args.startup_only,
+        comparison_scope='startup_512_questions' if args.startup_only else 'full_2560_questions',
+        **{prefix + 'observed_generation_wall_ratio': measured['observed_generation_wall_ratio'],
+           prefix + 'actual_work_counts_equal': measured['actual_work_counts_equal']})
 
 
 def parser():
@@ -262,6 +270,8 @@ def parser():
     p.add_argument('--service-base', required=True)
     p.add_argument('--root', required=True)
     p.add_argument('--python', required=True)
+    p.add_argument('--startup-only', action='store_true',
+        help='Only fresh legacy/async 512-parent startup runs; no full2560 comparison')
     p.add_argument('--service-ready-timeout', type=float, default=300)
     p.add_argument('--seed', type=int, default=317)
     p.add_argument('--worker-cpus', type=int, default=8)

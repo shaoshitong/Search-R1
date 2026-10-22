@@ -40,7 +40,8 @@ def main():
         '--run-id', run_id, '--source-commit', request['commit'],
         '--index', request['index'], '--corpus', request['corpus'],
         '--encoder', str(service / 'assets/e5-base-v2'),
-        '--port', '18022', '--faiss-batch-size', '16', '--faiss-max-wait-ms', '2']
+        '--port', str(request.get('port', 18022)), '--faiss-batch-size', '16',
+        '--faiss-max-wait-ms', str(request.get('faiss_max_wait_ms', 2))]
     argv = ['sbatch', '--parsable', '--partition=emergency_acd', '--qos=formal-user',
         '--account=jxu957', '--nodes=1', '--ntasks=1', '--gres=gpu:2',
         '--cpus-per-task=24', '--mem=384G', '--time=04:00:00', '--exclude=ACD1-13',
@@ -54,6 +55,7 @@ def main():
         stream.flush(); os.fsync(stream.fileno())
     result = subprocess.run(argv, capture_output=True, text=True, timeout=30)
     receipt = dict(base=str(base), source_commit=request['commit'], service_run_id=run_id,
+        port=request.get('port', 18022), faiss_max_wait_ms=request.get('faiss_max_wait_ms', 2),
         returncode=result.returncode, stdout=result.stdout, stderr=result.stderr,
         checked_unix=time.time(), production_modified=False)
     if result.returncode == 0:
