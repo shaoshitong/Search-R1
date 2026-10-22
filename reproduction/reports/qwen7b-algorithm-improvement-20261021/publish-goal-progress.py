@@ -17,11 +17,11 @@ files.extend(pathlib.Path('reproduction/operations/qwen7b_warmup')/n for n in ('
 files.extend(pathlib.Path('reproduction/operations/qwen7b_warmup')/n for n in ('compare_viewed2048_expanded_depth.py','deploy_compare_viewed2048_expanded_depth.py'))
 files.extend(pathlib.Path('reproduction/operations/qwen7b_warmup')/n for n in ('natural_g5_online_control.py','deploy_natural_g5_online_control.py','packed_variance_probe.py','online_packed_variance.py','deploy_online_packed_variance.py','test_packed_variance_probe.py'))
 files.append(pathlib.Path('reproduction/operations/qwen7b_warmup/test_packed_variance_full_schema.py'))
-files.extend(pathlib.Path('reproduction/operations/qwen7b_warmup')/n for n in ('audit_natural_g5_online_checkpoint.py','compare_natural_g5_online_matched.py','stage_natural_g5_postrun_audits.py'))
+files.extend(pathlib.Path('reproduction/operations/qwen7b_warmup')/n for n in ('audit_natural_g5_online_checkpoint.py','compare_natural_g5_online_matched.py','stage_natural_g5_postrun_audits.py','accept_packed_variance_checkpoint.py','deploy_packed_variance_CPU_acceptance.py'))
 files.extend(p.relative_to(repo) for p in (report/'viewed2048-pilot-depth-comparison').rglob('*') if p.is_file() and p.suffix in ('.py','.md','.json','.txt') and p.stat().st_size<600000)
 files.extend(p.relative_to(repo) for p in (report/'online-matched-depth-expansion').rglob('*') if p.is_file() and p.suffix in ('.py','.md','.json','.txt') and p.stat().st_size<600000)
 files.extend(p.relative_to(repo) for p in (report/'viewed2048-expanded-depth-comparison').rglob('*') if p.is_file() and p.suffix in ('.py','.md','.json','.txt') and p.stat().st_size<600000)
-for folder in ('natural-g5-online-8192','packed-variance','packed-variance-M3to10-8192'):
+for folder in ('natural-g5-online-8192','packed-variance','packed-variance-M3to10-8192','packed-variance-CPU-acceptance'):
  files.extend(p.relative_to(repo) for p in (report/folder).rglob('*') if p.is_file() and p.suffix in ('.py','.md','.json','.txt') and p.stat().st_size<600000)
 files=sorted(set(p for p in files if (repo/p).is_file()))
 fd,index=tempfile.mkstemp(prefix='q7b-root-publish-');os.close(fd);os.unlink(index)
