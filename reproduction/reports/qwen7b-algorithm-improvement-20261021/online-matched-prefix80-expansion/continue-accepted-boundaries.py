@@ -14,7 +14,13 @@ for layer in(18,15):
  accepted=b/'walltime-boundary-CPU-accepted.json'
  if not accepted.exists():out['jobs'][str(layer)]={'status':'WAIT_CPU_ACCEPTANCE'};continue
  transaction=b/'walltime-handoff-transaction.json'
- if transaction.exists():tx=read(transaction)
+ if transaction.exists():
+  tx=read(transaction);fresh_held=read(b/'walltime-boundary-held.json');fresh_cp=read(accepted)
+  if tx['held']['epoch']!=fresh_held['epoch']:
+   assert not tx.get('old_writer_cancel_requested') and not tx.get('root_identity_moved')
+   assert fresh_cp['checkpoint']==fresh_held['checkpoint']and fresh_cp['cursor']==fresh_held['cursor']and fresh_held['epoch']==2
+   shutil.copy2(str(transaction),str(b/'walltime-handoff-transaction-epoch1-historical.json'))
+   tx.update(held=fresh_held,CPU_acceptance=proof(accepted),boundary_upgrade_time=time.time());atomic(transaction,tx)
  else:
   held=read(b/'walltime-boundary-held.json');cp=read(accepted);old=read(b/'root-submission.json');assert cp['checkpoint']==held['checkpoint']and cp['cursor']==held['cursor']and cp['job_id']==old['job_id']==held['job_id']
   assert cp['status']=='PUBLISHED_EPOCH_BOUNDARY_CPU_SHA_RAW_EMA_ADAM_TWO_RANK_RNG_ACCEPTED'
@@ -36,7 +42,10 @@ for layer in(18,15):
  if not tx.get('old_writer_cancel_requested'):
   assert not ev.exists()and read(b/'latest.json')==held['checkpoint']
   assert all(read(b/('progress-rank-%d.json'%rank))['cursor']==cursor for rank in(0,1))
-  tx['old_writer_cancel_requested']=time.time();atomic(transaction,tx);run(['scancel','--signal=KILL','--full',oldjob])
+  prior=run(['sacct','-X','-n','-P','-j',oldjob,'--format=JobIDRaw,State,ExitCode'])
+  terminal=any(row.split('|')[0]==oldjob and row.split('|')[1].startswith(('CANCELLED','TIMEOUT'))for row in prior.splitlines())
+  tx['old_writer_cancel_requested']=time.time();tx['old_already_terminal_before_handoff']=terminal;atomic(transaction,tx)
+  if not terminal:run(['scancel','--signal=KILL','--full',oldjob])
  state=run(['sacct','-X','-n','-P','-j',oldjob,'--format=JobIDRaw,State,ExitCode'])
  if not any(row.split('|')[0]==oldjob and row.split('|')[1].startswith(('CANCELLED','TIMEOUT'))for row in state.splitlines()):out['jobs'][str(layer)]={'status':'WAIT_OLD_JOB_TERMINATION','job_id':oldjob,'successor':job,'accounting':state};continue
  locks=[]
