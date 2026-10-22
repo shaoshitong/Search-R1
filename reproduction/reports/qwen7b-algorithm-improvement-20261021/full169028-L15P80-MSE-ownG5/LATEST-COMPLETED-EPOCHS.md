@@ -22,10 +22,14 @@ Same fixed trainB2048 and viewed development2048 ownG5. Both raw/EMA and all com
 | seed2 | 4 | EMA | 71.43% | 396/512 (77.34%) | 68.42% | 317/512 (61.91%) | 0.00675485 |
 | seed2 | 5 | raw | 71.46% | 408/512 (79.69%) | 67.99% | 320/512 (62.50%) | 0.00666226 |
 | seed2 | 5 | EMA | 72.78% | 405/512 (79.10%) | 69.37% | 319/512 (62.30%) | 0.00662849 |
+| seed2 | 6 | raw | 74.64% | 408/512 (79.69%) | 70.95% | 325/512 (63.48%) | 0.00658111 |
+| seed2 | 6 | EMA | 73.78% | 410/512 (80.08%) | 70.53% | 325/512 (63.48%) | 0.00654615 |
 
 Seed1 E3→E4/raw: Top512 **318→312**, while BA **69.0950%→70.1886%**. The saved Top512 composition check reports all-wrong191→197 (net+6), Mixed318→312 (net−6), all-correct3→3; these are net class-count changes, not six identified question swaps. Ranking and the fixed-threshold BA need not move together. No epoch/state is selected from this partial-run change.
 
 Seed2 E4→E5/raw: Top512318→320, BA70.3088%→67.9876%, Mixed recall63.6501%→51.2821%, nonMixed FPR23.0325%→15.3069%. Thresholded predictions became more conservative while the ranking count slightly improved. The primary selection rule remains seed1 development Top512 over all20 completed epoch/state choices, then the same epoch/state on seed2. No early selection or optimization change uses seed2.
+
+Seed2 E6/raw and EMA both select325/512 (63.4765625%) Mixed. Their fixed-dev BA values are70.9539% and70.5254%. These are already completed development diagnostics; no seed2-based epoch/state selection is made. Local live snapshot `1792708398.986121`.
 
 Population-variance diagnostic threshold0.08 corresponds to raw4v score0.32 and is not a calibrated Mixed probability. Full10E/13210 budget per seed, selected CP acceptance, order audit, actual freeze and independent final confirmation remain required.
 
@@ -54,4 +58,4 @@ Copied from local `actual-live.json`, snapshot `1792707990.0928564`, epoch4/curs
 | Viewed dev | raw | 452 | 211 | 385 | 1000 | 0.4118943362 | 0.2522608355 | 0.0950272345 | 452 / 366 / 19 |
 | Viewed dev | EMA | 399 | 264 | 330 | 1055 | 0.3658838251 | 0.2402586589 | 0.1194097771 | 399 / 303 / 27 |
 
-All values are copied from already completed fixed diagnostics, not online training batches. Existing E1–E3 seed1 and E1–E5 seed2 rows above are preserved. Final4096 remains blind and the seed1-only full-budget checkpoint selection rule is unchanged.
+All values are copied from already completed fixed diagnostics, not online training batches. Existing E1–E4 seed1 and E1–E6 seed2 rows above are preserved. Final4096 remains blind and the seed1-only full-budget checkpoint selection rule is unchanged.
