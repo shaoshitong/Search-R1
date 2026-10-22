@@ -1,0 +1,9 @@
+# Full169028 three-arm terminal-only CPU acceptance
+
+Independent CPU validator; noGPU allocation or Slurm changes. It waits for each arm's own complete.json and Slurm COMPLETED0:0 before opening checkpoint-epoch-10.pt, then checks the fresh fullSHA, realPackedBlock21/head45tensor geometry, raw/EMA, allAdam13210 clocks/moments, two-rank RNGs, all10epochs deterministic169028unique ownM3..10 plans and actualEM variance targets/coverage. Data cursor is an explicit complete-epoch boundary: completed10/13210updates, next_epoch11 and position0; source seed2026102227 reconstructs plans rather than a separate serialized iterator object.
+
+Actual source/controller/ready must bind EMA0.9995, LR5e-6, freshofficial block/head/Adam, MSE orMAE orz_mse_anchor, onlypredvar selection. Zarm additionally requires13210actual curve records, global128 and each10epoch tail68 normalization, finite normalizedMSE/anchor/total/predstd/targetstd, and exactlymatching finalrank0/rank1 globalstatistics. Same-batch differentiablemean/populationSTD and autogradallgather are proven by exact publishedsource, not by CPU nextGPUupdate.
+
+Reads one3.77GB mmap-backed finalCP at a time. Existing packedpilot validator passed with4.45GBpeakRSS; fullG10 group/oneepoch plan adds metadata memory, still bounded below shared128GB job memory but loginactualcgroup should be respected. Completeall10plan checking is before CPload and each plan discarded before next. No final4096 or feature/modeltraining inputs are used beyond acceptedfullG10 metadata and checkpoint, no optimization occurs. CPUload is not actualGPUforward/nextupdate recovery.
+
+Stage only now. `deploy_full169028_packed_CPU_acceptance.py --action start --commit SOURCE_COMMIT` later processes only actuallycompleted arms, preserving activeCP. Source staticcompile passes; full13210 state has not yet existed or been accepted.
