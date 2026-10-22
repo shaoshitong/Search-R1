@@ -1,0 +1,153 @@
+{
+  "status": "QUALIFIED_FASTPATH_NATIVE4_SUBMITTED_WAITING_ACTUAL_RESTORE",
+  "observed_unix": 1792680390.296355,
+  "human_authorization": {
+    "user_message_id": "01a163d2-2b6c-7913-b548-c71fc308bbd3",
+    "original_utc": "2026-10-22T13:34:40.492000+00:00",
+    "timestamp_source": "UUIDv7 user message identifier from current Codex thread",
+    "thread_id": "01a163ab-97c3-7831-9d1d-41be25280063",
+    "user_text": "对的，核心就是你测试完了之后速度变快了,然后那么我们就可以就是替换到原来的一个训练。",
+    "scope": "After actual fixed-work speed improvement and small numerical errors, replace own original training747219 at latest complete checkpoint with optimized native4 continuation, preserving full state and total200; no stop during experiments",
+    "qualification_status": "ACCEPTED_ACTUAL_NATIVE4_SPEED_AND_SMALL_DIRECT_NUMERICAL_ERRORS",
+    "source_job": "747219",
+    "source_base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
+    "recorded_unix": 1792677663.0426419,
+    "production_stop_allowed_now": true,
+    "source_run_id": "232f20e112ac4a978c5aba52a0367195",
+    "source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+    "transition_boundary_minimum_outer": 52,
+    "qualification_decision": {
+      "qualification_status": "ACCEPTED_FOR_LATEST_FULL_STATE_CONTINUATION",
+      "production_stop_allowed_now": true,
+      "user_message_id": "01a163d2-2b6c-7913-b548-c71fc308bbd3",
+      "original_utc": "2026-10-22T13:34:40.492Z",
+      "actor_speedup": 1.9822277905739667,
+      "lean_only_speedup": 1.889892405542534,
+      "compact_increment_speedup": 1.0488574824474868,
+      "candidate_generation_speedup_vs_installed_xformers": 1.1627554901592587,
+      "grounds": [
+        "Same fixed work: native4 CP50 model/Adam/scheduler/RNG, same saved selection51,20 actual Adam writes and80 training forwards per rank.",
+        "Compact attention forward and dQ bitwise equal to expanded for tested packed shapes; direct gradients versus FP32 SDPA under0.72% relative L2; causal and cross-sequence isolation unchanged.",
+        "Same initial model first minibatch teacher-forced LP samples bitwise equal; first gradient norm differs0.04665%.",
+        "Twenty-update policy-loss relative L2 below0.75%, final parameter sample maximum absolute difference below2.5e-5 and relative L2 below7.8e-5.",
+        "Even original expanded KV with lean guard removal has twenty-step gradient-norm trajectory difference6.67%, versus7.92% legacy-to-compact. Control demonstrates this trajectory difference cannot be attributed solely to compact KV layout.",
+        "Candidate fixed-token FP32 SDPA comparison: FA3 mean/max/RMS LP error lower than installed XFormers in this sample.",
+        "Loss formula, clipping, Adam geometry, selection, reward, total outer budget remain unchanged by implementation."
+      ],
+      "limits": [
+        "Full-gradient and full-Adam-moment numeric equivalence after20 updates is not proven; moment hashes differ.",
+        "Post-update sampled token LP outliers differ. BF16 training trajectories are not bitwise identical; cause of full trajectory drift has not been conclusively isolated.",
+        "No downstream accuracy equality or entire-outer speedup is claimed before actual continuation measurements.",
+        "Diagnostic advantages use fixed five-EM sample normalization, not production grounding reward. Production retains original reward logic."
+      ],
+      "execution": "Replace only747219 from latest sealed full checkpoint after real terminal state; retain745198 retrieval; prove actual native4 worker/driver/data restoration and continued full outers."
+    },
+    "evidence_file": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/work/easy7b-fa3-fastpath-20261022/reproduction/reports/easy2560-qwen7b-20261021/evidence/fa3-fastpath-h100-tests-20261022.json",
+    "evidence_sha256": "fbd6f0ed795f11f28740e24ff51df21cf918aa46bab46081578f8a5c7141471d",
+    "qualified_unix": 1792679701.8648949
+  },
+  "source": {
+    "job": "747219",
+    "actual_state": "CANCELLED by14090 after authorized transition",
+    "complete_outer": 52,
+    "sealed_checkpoint_sha256": "d2940956b1f1e98c9a291a9a39232ecb242fefb8e635250dbcfbd4ba80dfe608"
+  },
+  "target": {
+    "job": "749255",
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-lean-r1-20261022",
+    "runtime_commit": "48b87a7399a25f78b4fcf077e946a5a2b75ecace",
+    "state": "PENDING",
+    "reason": "Resources",
+    "partition": "emergency_acd",
+    "gpus": 4,
+    "gpu_type": "H100",
+    "cpu_source_audit": "PASS",
+    "source_receipt_sha256": "1e07e1debf9bbb89796578331b4ff6ac30654cca13bd5c4c8f15cb17756ed1c8",
+    "restore_outer": 52,
+    "next_outer": 53,
+    "source_adam_writes_per_rank": 1040,
+    "candidate_cursor": 133120,
+    "actual_cuda_restore_accepted": false,
+    "total_outer_budget": 200,
+    "update201_allowed": false
+  },
+  "external_retrieval": {
+    "job": "745198",
+    "state": "RUNNING",
+    "restarted": false
+  },
+  "archive_consumers": {
+    "controller_commit": "b8df9cc12904ae6729768107ff4aa529cff666af",
+    "core_pid": 3783773,
+    "companion_pid": 3783834,
+    "both_actual_same_birth_live": true,
+    "remaining_steps": [
+      100,
+      150,
+      200
+    ],
+    "ancestor_5_and50_untouched": true
+  },
+  "public_source": {
+    "branch": "codex/easy7b-fa3-rollout-fastpath-20261022",
+    "fresh_pushed_fetched_sha": "b8df9cc12904ae6729768107ff4aa529cff666af",
+    "HPC_allfile_SHA_verified": true,
+    "HK_allfile_SHA_verified": true
+  },
+  "failure_evidence": {
+    "earlier_probe749048_preserved": true,
+    "login2_connection_timeout_observed": true,
+    "partial_source_0d49109_preserved": true,
+    "current_operations_use_observed_pinned_Login1": true
+  },
+  "followup_required": [
+    "Native4 actual model/Adam/scheduler/RNG collective readback equality plus driver and candidate stream equality from CP52.",
+    "First full outer53 complete with all4 ranks20writes, scheduler53, checkpoint53.",
+    "Five full new outers53..57 plus58 saved; actual FA3 candidate prefill/decode and actor compactKV4; monitors0; fivecandidatephases1sync.",
+    "Actual whole-outer speed measurement and latest error/state inspection.",
+    "Original200 fixed100/150/200 validation, finalnative51713 metrics and core/post-callback/dependency archives/native4 final recovery/no201 retained."
+  ],
+  "goal_complete": false,
+  "raw_evidence": {
+    "fastpath-authorized-stop-login1-1792679848135404000.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fastpath-authorized-stop-login1-1792679848135404000.json",
+      "bytes": 1104,
+      "sha256": "9e8c8ea3880b37a088ba05057a48029939c58e55a22fa622a4113109da3f34ca"
+    },
+    "fastpath-cpu-audit-live-1792679948818858000.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fastpath-cpu-audit-live-1792679948818858000.json",
+      "bytes": 753,
+      "sha256": "cf4b9fd0b62dcfeb9cbbcb2346c32a56fe8baa323b810de305d4a6b83c902d0b"
+    },
+    "fastpath-new-job-progress-1792680202104575000.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fastpath-new-job-progress-1792680202104575000.json",
+      "bytes": 9642,
+      "sha256": "59ab96805df521917ca117fa1bef90c221ae5d824dac2105fa60cabf4082846c"
+    },
+    "fastpath-749255-queue-1792680271516656000.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fastpath-749255-queue-1792680271516656000.json",
+      "bytes": 1785,
+      "sha256": "a9ace940093c36b491ff4d35491819523a48f6617f54d12a9616756ca856285c"
+    },
+    "fastpath-749255-hk-archive-launch-1792680237088822000.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fastpath-749255-hk-archive-launch-1792680237088822000.json",
+      "bytes": 8741,
+      "sha256": "fe74afb3dad0c54d16c2ef9d4c14f4019ac236d1b24703c0e75aee0da010550a"
+    },
+    "fastpath-749255-hk-archive-observed-1792680270823053000.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fastpath-749255-hk-archive-observed-1792680270823053000.json",
+      "bytes": 22597,
+      "sha256": "956b89062bc54eed681975de94990f99cde740b18556e1650b029e0a7afb01aa"
+    },
+    "fastpath-probe-operator-deploy-b8df9cc-login1.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fastpath-probe-operator-deploy-b8df9cc-login1.json",
+      "bytes": 639,
+      "sha256": "2ba67544456e4b3c6c9fc3c59d52f20ea983977bbd4eec3224f0bbc10fb2e412"
+    },
+    "fastpath-hk-operator-deploy-b8df9cc.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fastpath-hk-operator-deploy-b8df9cc.json",
+      "bytes": 390,
+      "sha256": "4746814a95359639bf81e4734bbca794aacf48eb7507e5c1282db1baff0e4fb7"
+    }
+  }
+}
