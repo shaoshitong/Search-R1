@@ -1,0 +1,3 @@
+749935 remains RUNNING; two fresh actual reads100.77seconds apart show both ranks5164→5284 updates, finishing epoch4 optimizer steps. The last six are5279..5284 with nonzero native-block/head gradients. No failure receipt. The epoch4 final batch has global68 questions with differentiable global population normalization68 and34actor rows perrank; prefill equals question groups.
+
+The latest published CP metadata points to checkpoint-epoch-04.pt, SHA4eb786b99461813f9c2eb3ff71345efa49574237cd42ff1c171be17a93211696. Its model/optimizer bytes were not opened because training remains active. No new job, restore, CPU checkpoint loader, GPU or final4096 operation was started.
