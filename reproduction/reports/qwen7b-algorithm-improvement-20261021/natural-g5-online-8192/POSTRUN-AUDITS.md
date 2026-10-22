@@ -31,3 +31,5 @@ python <postrun-audit-code>/compare_natural_g5_online_matched.py --layers 21 27 
 ```
 
 Local checks completed:all three scripts compile; in-memory2048-row paired metric cases match exact counts; BCE remains finite at logits±2000. No production checkpoint or prediction was loaded locally. Actual remote acceptance and result comparison remain pending.
+
+Network access was subsequently reauthorized. Commit `c91222bd3215440b061dc58ae1f61a23a9adcf7e` was pushed and the exact remote branch SHA verified. The two audit sources were separately staged in `postrun-audit-code-c91222bd3215`; actual receipt and file SHAs are in `actual-postrun-audits-stage.json`. A real partial comparison correctly reported missing natural-G5 evaluations while both original jobs were still pending; no substitute scores were used.
