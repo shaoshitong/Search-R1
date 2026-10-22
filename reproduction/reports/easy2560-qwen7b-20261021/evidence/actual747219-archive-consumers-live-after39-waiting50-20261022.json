@@ -1,0 +1,72 @@
+{
+  "actual": {
+    "companion": {
+      "actual_process": {
+        "actual": {
+          "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+          "pid": 2071349,
+          "start_ticks": 1043583367,
+          "state": "S",
+          "uid": 1002
+        },
+        "same_birth": true,
+        "state": "LIVE"
+      },
+      "failure": null,
+      "progress": {
+        "checked_unix": 1792653420.7654257,
+        "completed_steps": [],
+        "healthy_controller_modified": false,
+        "jobs_submitted": 0,
+        "phase": "WAITING_CORE_ACTUAL_ACK",
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "source_job": "747219",
+        "source_ssh_called": false,
+        "step": 50,
+        "training_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+        "training_modified": false
+      }
+    },
+    "core": {
+      "actual_process": {
+        "actual": {
+          "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+          "pid": 2071348,
+          "start_ticks": 1043583363,
+          "state": "S",
+          "uid": 1002
+        },
+        "same_birth": true,
+        "state": "LIVE"
+      },
+      "failure": null,
+      "progress": {
+        "actual_job_state": "RUNNING",
+        "checked_unix": 1792653419.7408514,
+        "completed_steps": [],
+        "phase": "WAITING_CHECKPOINT",
+        "source_job": "747219",
+        "step": 50
+      }
+    }
+  },
+  "checkpoint50_archive_complete": false,
+  "controller_commit": "61af73641e86985bdec8635891605ea571d188f7",
+  "epoch": 1792653472.8071618,
+  "identity": {
+    "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+    "hostname": "xielab3",
+    "uid": 1002
+  },
+  "raw": {
+    "bytes": 29246,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp39-hk-archive-observe-1792653471.json",
+    "sha256": "53e34903fe9d9e8a8730f9d2567ed48d91b20689423b06fc64f5cbe79a6d8e33"
+  },
+  "read_only": true,
+  "role": "actual_same_birth_HK_archive_consumers_after_checkpoint39",
+  "runtime_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+  "source_job": "747219",
+  "status": "BOTH_LIVE_WAITING50",
+  "training_modified": false
+}
