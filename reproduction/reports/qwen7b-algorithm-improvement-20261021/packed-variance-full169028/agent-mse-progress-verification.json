@@ -16,7 +16,37 @@
   "last5_actual_updates_continuous": true,
   "native_and_head_gradients_nonzero": true,
   "failures": {},
-  "epoch1_completed": false,
-  "epoch1_to_epoch2_verified": false,
-  "final_read": false
+  "epoch1_completed": true,
+  "epoch1_to_epoch2_verified": true,
+  "final_read": false,
+  "epoch1_checkpoint_metadata_from_runtime": {
+    "bytes": 3773205972,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mse/checkpoint-epoch-01.pt",
+    "sha256": "7b2fd17e2545992433224f684cfed3eee2342ef406ac29bf1c63a0e093450045"
+  },
+  "epoch1_coverage": {
+    "M_counts": {
+      "3": 21217,
+      "4": 21061,
+      "5": 21081,
+      "6": 21050,
+      "7": 21393,
+      "8": 20926,
+      "9": 21179,
+      "10": 21121
+    },
+    "epoch": 1,
+    "plan_sha256": "1b54acb15a9e90a55d7339ee082565deb02ce734773ac822a94ea209b70c4143",
+    "questions": 169028,
+    "sampling_independent_of_EM": true,
+    "seconds": 1065.219262599945,
+    "trajectory_visits": 1098580,
+    "unique_questions": 169028
+  },
+  "latest_phase_verification_time": 1792686128.4027586,
+  "latest_rank_cursors": [
+    1619,
+    1619
+  ],
+  "final_checkpoint_CPU_acceptance_still_pending": true
 }
