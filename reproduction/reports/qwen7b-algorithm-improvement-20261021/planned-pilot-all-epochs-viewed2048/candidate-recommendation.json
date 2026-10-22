@@ -1,0 +1,267 @@
+{
+  "candidate": "L21P80_E3_raw",
+  "recommendation_only": true,
+  "candidate_frozen": false,
+  "final4096_read": false,
+  "basis": "Highest viewed2048 BA and AUC among all58 planned entries; independent epoch3 checkpoint CPU accepted",
+  "metrics": {
+    "questions": 2048,
+    "Mixed_questions": 663,
+    "nonMixed_questions": 1385,
+    "BCE": 0.6867617116009535,
+    "Mixed_balanced_accuracy": 0.5993585659756822,
+    "Mixed_ROC_AUC": 0.622123484217347,
+    "Mixed_recall": 0.6817496229260935,
+    "nonMixed_false_positive_rate": 0.4830324909747292,
+    "confusion": {
+      "tp": 452,
+      "tn": 716,
+      "fp": 669,
+      "fn": 211
+    },
+    "classwise": {
+      "all_wrong": {
+        "questions": 1055,
+        "predicted_Mixed": 490,
+        "predicted_nonMixed": 565,
+        "predicted_Mixed_fraction": 0.46445497630331756,
+        "BCE": 0.6996270689134697,
+        "false_positive_rate": 0.46445497630331756,
+        "false_negative_rate": null,
+        "mean_predicted_Mixed_probability": 0.4810655924887017,
+        "probability_quantiles_10_25_50_75_90": [
+          0.27590944429596825,
+          0.37822943014944627,
+          0.4825510339918858,
+          0.5912513068255869,
+          0.6711256520156076
+        ]
+      },
+      "Mixed": {
+        "questions": 663,
+        "predicted_Mixed": 452,
+        "predicted_nonMixed": 211,
+        "predicted_Mixed_fraction": 0.6817496229260935,
+        "BCE": 0.6291236018244324,
+        "false_positive_rate": null,
+        "false_negative_rate": 0.31825037707390647,
+        "mean_predicted_Mixed_probability": 0.5491586599645317,
+        "probability_quantiles_10_25_50_75_90": [
+          0.37680663426127303,
+          0.4705541327277574,
+          0.5607337875196438,
+          0.6406358548398979,
+          0.7023666614789326
+        ]
+      },
+      "all_correct": {
+        "questions": 330,
+        "predicted_Mixed": 179,
+        "predicted_nonMixed": 151,
+        "predicted_Mixed_fraction": 0.5424242424242425,
+        "BCE": 0.7614317565013433,
+        "false_positive_rate": 0.5424242424242425,
+        "false_negative_rate": null,
+        "mean_predicted_Mixed_probability": 0.5148441356237349,
+        "probability_quantiles_10_25_50_75_90": [
+          0.3458120783091809,
+          0.4226237907355388,
+          0.5176318143822559,
+          0.6081284195427136,
+          0.6887192096325857
+        ]
+      }
+    },
+    "Top512": {
+      "questions": 512,
+      "Mixed": 215,
+      "Mixed_fraction": 0.419921875,
+      "selected_qid_sha256": "dafe9f3aea31c803dbbbd2b56d032ec05d6659786b110bdec702192c46874070"
+    },
+    "threshold": 0.5,
+    "labels_used_for_ranking": false,
+    "score_and_calibration": {
+      "observed_Mixed_prevalence": 0.32373046875,
+      "mean_predicted_Mixed_probability": 0.5085522247987779,
+      "mean_logit": 0.032036046497523785,
+      "probability_quantiles_10_25_50_75_90": [
+        0.31827322335346725,
+        0.408276759468118,
+        0.5181804568923718,
+        0.6118459231083436,
+        0.689305616785446
+      ],
+      "Brier_score": 0.24653259287584167,
+      "ECE10_equal_width": 0.18482175604877796,
+      "calibration_fitted": false,
+      "threshold_tuned": false
+    },
+    "stored_actual_GPU_BCE": 0.6867617116009535,
+    "model": {
+      "kind": "planned_matched8192_pilot",
+      "state": "raw",
+      "layer": 21,
+      "prefix": 80,
+      "epoch": 3,
+      "cursor": 192
+    }
+  },
+  "comparison_keys": [
+    "L21P80_E3_raw_minus_E1_EMA",
+    "L21P80_E3_raw_minus_E1_raw",
+    "L21P80_E3_raw_minus_L27P80_E3_raw",
+    "L21P80_E3_raw_minus_L21P20_E3_raw",
+    "L21P80_E3_raw_minus_L18P20_E3_raw",
+    "L21P80_E3_raw_minus_L21P80_E2_raw",
+    "L21P80_E3_raw_minus_L21P80_E3_EMA"
+  ],
+  "comparisons": {
+    "L21P80_E3_raw_minus_E1_EMA": {
+      "candidate": "L21P80_E3_raw",
+      "baseline": "E1_EMA",
+      "BA_difference": 0.07051254825729236,
+      "BA_percentile95": [
+        0.044185863862228586,
+        0.09545899763940088
+      ],
+      "AUC_difference": 0.02711120549302748,
+      "AUC_percentile95": [
+        0.005232403982273268,
+        0.0517818463287588
+      ],
+      "Top512_fraction_difference": 0.01953125,
+      "Top512_fraction_percentile95": [
+        -0.017578125,
+        0.064453125
+      ],
+      "BCE_difference": 0.033745959195160324
+    },
+    "L21P80_E3_raw_minus_E1_raw": {
+      "candidate": "L21P80_E3_raw",
+      "baseline": "E1_raw",
+      "BA_difference": 0.07654736429423203,
+      "BA_percentile95": [
+        0.05136749503760433,
+        0.10171139652138829
+      ],
+      "AUC_difference": 0.02935132397863338,
+      "AUC_percentile95": [
+        0.006166577621458347,
+        0.052556077141291874
+      ],
+      "Top512_fraction_difference": 0.02734375,
+      "Top512_fraction_percentile95": [
+        -0.013671875,
+        0.07231445312499996
+      ],
+      "BCE_difference": 0.042954454208605
+    },
+    "L21P80_E3_raw_minus_L27P80_E3_raw": {
+      "candidate": "L21P80_E3_raw",
+      "baseline": "L27P80_E3_raw",
+      "BA_difference": 0.02053786802141022,
+      "BA_percentile95": [
+        -0.0004129165675065715,
+        0.0393426890318271
+      ],
+      "AUC_difference": 0.028400063163282474,
+      "AUC_percentile95": [
+        0.01181896273992461,
+        0.045544550390736925
+      ],
+      "Top512_fraction_difference": 0.03515625,
+      "Top512_fraction_percentile95": [
+        0.001953125,
+        0.076171875
+      ],
+      "BCE_difference": -0.011790539627523744
+    },
+    "L21P80_E3_raw_minus_L21P20_E3_raw": {
+      "candidate": "L21P80_E3_raw",
+      "baseline": "L21P20_E3_raw",
+      "BA_difference": 0.027083435429156477,
+      "BA_percentile95": [
+        0.008763031480375974,
+        0.045403568585423056
+      ],
+      "AUC_difference": 0.0333044742473495,
+      "AUC_percentile95": [
+        0.018773143305492138,
+        0.04761832526741819
+      ],
+      "Top512_fraction_difference": 0.033203125,
+      "Top512_fraction_percentile95": [
+        0.009765625,
+        0.07036132812499996
+      ],
+      "BCE_difference": -0.025153398784981462
+    },
+    "L21P80_E3_raw_minus_L18P20_E3_raw": {
+      "candidate": "L21P80_E3_raw",
+      "baseline": "L18P20_E3_raw",
+      "BA_difference": 0.012809622599386894,
+      "BA_percentile95": [
+        -0.00824303992638427,
+        0.03216934238281062
+      ],
+      "AUC_difference": 0.012834670107976454,
+      "AUC_percentile95": [
+        -0.0034106195166395755,
+        0.02877126584848979
+      ],
+      "Top512_fraction_difference": 0.017578125,
+      "Top512_fraction_percentile95": [
+        -0.015625,
+        0.05078125
+      ],
+      "BCE_difference": -0.04110008627583239
+    },
+    "L21P80_E3_raw_minus_L21P80_E2_raw": {
+      "candidate": "L21P80_E3_raw",
+      "baseline": "L21P80_E2_raw",
+      "BA_difference": 0.01831190682326811,
+      "BA_percentile95": [
+        0.0005340734229376868,
+        0.03667731226153578
+      ],
+      "AUC_difference": 0.007925358424402784,
+      "AUC_percentile95": [
+        -0.004993134604062218,
+        0.02120388325111889
+      ],
+      "Top512_fraction_difference": -0.0078125,
+      "Top512_fraction_percentile95": [
+        -0.03125,
+        0.02734375
+      ],
+      "BCE_difference": -0.049692582173491484
+    },
+    "L21P80_E3_raw_minus_L21P80_E3_EMA": {
+      "candidate": "L21P80_E3_raw",
+      "baseline": "L21P80_E3_EMA",
+      "BA_difference": 0.011856728250867143,
+      "BA_percentile95": [
+        -0.00634967099974914,
+        0.029243725661141553
+      ],
+      "AUC_difference": 0.00983659223200517,
+      "AUC_percentile95": [
+        -0.003757051389052346,
+        0.02366296412152276
+      ],
+      "Top512_fraction_difference": 0.001953125,
+      "Top512_fraction_percentile95": [
+        -0.02734375,
+        0.033203125
+      ],
+      "BCE_difference": -0.003392251201589369
+    }
+  },
+  "limitations": [
+    "Viewed validation model selection; exploratory multiple comparisons",
+    "Top512 improvement over E1 not resolved by paired interval",
+    "BCE and nonMixed FPR remain worse than E1",
+    "No training-seed uncertainty",
+    "No final4096 scoring or freeze"
+  ]
+}
