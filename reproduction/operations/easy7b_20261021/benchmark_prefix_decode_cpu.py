@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Independent remote CPU comparison of scalar versus chunked prefix decoding.
+"""Independent remote CPU comparison of HF scalar, native scalar and batch decoding.
 
 A diagnostic copy of _dual_raw_prefix changes only its prefix decoding loop.
 The real Qwen2TokenizerFast backend decodes blocks of 16 original prefixes.
@@ -86,19 +86,23 @@ def batch_dual_raw_prefix(raw_generated_token_ids, decode, executor_decode,
     return cut
 
 
-def sample(turn, tokenizer, *, chunk_size=None):
+def sample(turn, tokenizer, *, chunk_size=None, native_scalar=False):
     from reproduction.common8.behavior_trace import raw_prefix_to_first_closing_tag
     from reproduction.operations.easy7b_20261021.profile_saved_rollout_cpu import digest
-    stats = dict(scalar_decode_calls=0, batch_decode_calls=0, prefixes_in_batches=0,
+    stats = dict(scalar_decode_calls=0, native_scalar_decode_calls=0,
+                 batch_decode_calls=0, prefixes_in_batches=0,
                  decoded_token_work=0, decoder_cpu_seconds=0.)
     def decoder(skip):
         def run(tokens):
             began = time.perf_counter()
             try:
+                if native_scalar:
+                    return tokenizer.backend_tokenizer.decode(tokens, skip_special_tokens=skip)
                 return tokenizer.decode(tokens, skip_special_tokens=skip,
                                         clean_up_tokenization_spaces=False)
             finally:
                 stats['scalar_decode_calls'] += 1
+                stats['native_scalar_decode_calls'] += int(native_scalar)
                 stats['decoded_token_work'] += len(tokens)
                 stats['decoder_cpu_seconds'] += time.perf_counter() - began
         return run
@@ -136,6 +140,7 @@ def aggregate(rows):
     return dict(actions=len(rows), total_cpu_seconds=sum(r['seconds'] for r in rows),
         per_action_ms=statistics.mean(r['seconds'] for r in rows)*1000,
         scalar_decode_calls=sum(r['scalar_decode_calls'] for r in rows),
+        native_scalar_decode_calls=sum(r['native_scalar_decode_calls'] for r in rows),
         batch_decode_calls=sum(r['batch_decode_calls'] for r in rows),
         prefixes_in_batches=sum(r['prefixes_in_batches'] for r in rows),
         decoded_token_work=sum(r['decoded_token_work'] for r in rows),
@@ -179,20 +184,27 @@ def main():
         raise RuntimeError('This independent experiment qualifies Qwen2TokenizerFast backend decode_batch only')
     # Warm both exact APIs before timing, without importing/initializing a model.
     sample(turns[indices[0]], tokenizer)
+    sample(turns[indices[0]], tokenizer, native_scalar=True)
     sample(turns[indices[0]], tokenizer, chunk_size=args.chunk_size)
     runs = []
     for repeat in range(args.repeats):
         measured = {}
-        # Alternate the measured order to reduce systematic warm/cache bias.
-        order = ('scalar', 'batch') if repeat % 2 == 0 else ('batch', 'scalar')
+        # Rotate first position across all three modes to reduce order bias.
+        modes = ('scalar', 'native_scalar', 'batch')
+        offset = repeat % len(modes)
+        order = modes[offset:] + modes[:offset]
         for name in order:
             measured[name] = aggregate([sample(turns[i], tokenizer,
-                chunk_size=None if name == 'scalar' else args.chunk_size) for i in indices])
+                chunk_size=args.chunk_size if name == 'batch' else None,
+                native_scalar=name == 'native_scalar') for i in indices])
         measured['equal_scalar_and_batch_cut_hashes'] = measured['scalar']['cut_hashes_sha256'] == measured['batch']['cut_hashes_sha256']
+        measured['equal_all_mode_cut_hashes'] = len({measured[name]['cut_hashes_sha256'] for name in modes}) == 1
         measured['speedup'] = measured['scalar']['total_cpu_seconds']/measured['batch']['total_cpu_seconds']
+        measured['native_scalar_speedup'] = measured['scalar']['total_cpu_seconds']/measured['native_scalar']['total_cpu_seconds']
         measured['order'] = list(order)
         runs.append(measured)
     scalar_ms = statistics.median(r['scalar']['per_action_ms'] for r in runs)
+    native_ms = statistics.median(r['native_scalar']['per_action_ms'] for r in runs)
     batch_ms = statistics.median(r['batch']['per_action_ms'] for r in runs)
     result = dict(format='independent_qwen2_prefix_decode_batch_cpu_v1', epoch=time.time(),
         host=platform.node(), repo=str(repo), candidate_file=str(args.candidate_file.resolve()),
@@ -204,16 +216,20 @@ def main():
         sample_raw_tokens=summary([turns[i]['raw_generated_token_count'] for i in indices]),
         sample_kept_tokens=summary([turns[i]['kept_token_count'] for i in indices]),
         chunk_size=args.chunk_size, runs=runs, scalar_median_per_action_ms=scalar_ms,
+        native_scalar_median_per_action_ms=native_ms,
+        native_scalar_median_cpu_speedup=scalar_ms/native_ms,
         batch_median_per_action_ms=batch_ms, median_cpu_speedup=scalar_ms/batch_ms,
-        all_sampled_full_cuts_identical=all(r['equal_scalar_and_batch_cut_hashes'] and
-            r['scalar']['all_exact_cut_equal'] and r['batch']['all_exact_cut_equal'] and
-            r['batch']['all_kept_count_equal'] and r['batch']['all_kept_ids_equal'] for r in runs),
+        all_sampled_full_cuts_identical=all(r['equal_all_mode_cut_hashes'] and
+            all(r[name]['all_exact_cut_equal'] and r[name]['all_kept_count_equal'] and
+                r[name]['all_kept_ids_equal'] for name in ('scalar', 'native_scalar', 'batch')) for r in runs),
         projected_single_driver_cpu_seconds=dict(actions=args.outer_actions,
-            scalar=scalar_ms*args.outer_actions/1000, batch=batch_ms*args.outer_actions/1000,
+            scalar=scalar_ms*args.outer_actions/1000, native_scalar=native_ms*args.outer_actions/1000,
+            batch=batch_ms*args.outer_actions/1000,
             scope='sample arithmetic only, not production wall time or a measured upper bound'),
         production_runtime_modified=False, model_loaded=False, cuda_allocated=False,
         network_called=False, scalar_or_hash_outputs_only=True,
         limitations=['Sampled saved CPU actions only; no end-to-end training speedup proof.',
+                    'Native scalar uses the unchanged production prefix function with direct backend decode callbacks.',
                     'Diagnostic copied loop; original production runtime remains unchanged.',
                     'Backend decode_batch may decode up to chunk_size-1 unused future prefixes.',
                     'No Unicode monotonicity assumption: every original prefix is inspected in increasing order.'])
