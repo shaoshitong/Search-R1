@@ -1,0 +1,909 @@
+{
+  "time": 1792695772.8231378,
+  "files": {
+    "common-lock-final-Z-receipt.json": {
+      "proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/packed-full169028-variance-CPU-acceptance-20261022-v1/common-lock-final-Z-receipt.json",
+        "bytes": 7135,
+        "sha256": "e3327c07148ec42b871d44e7387807bd17a3f0edbd1537b6acca8ec61258916a"
+      },
+      "value": {
+        "GPU_used": false,
+        "Slurm_mutated": false,
+        "accepted": {
+          "Adam": {
+            "actual_optimizer_state_CPU_load_passed": true,
+            "actual_steps": 13210,
+            "finite_moment_elements": 471638018,
+            "parameter_states": 45
+          },
+          "CPU_restore_only": true,
+          "EMA_decay": 0.9995,
+          "M_range": [
+            3,
+            10
+          ],
+          "RNG_by_rank": [
+            {
+              "CPU_generator_state_accepted": true,
+              "CUDA_RNG_serialized_bytes": 16,
+              "CUDA_runtime_restore_tested": false,
+              "numpy_state_accepted": true,
+              "python_state_accepted": true,
+              "rank": 0
+            },
+            {
+              "CPU_generator_state_accepted": true,
+              "CUDA_RNG_serialized_bytes": 16,
+              "CUDA_runtime_restore_tested": false,
+              "numpy_state_accepted": true,
+              "python_state_accepted": true,
+              "rank": 1
+            }
+          ],
+          "actor_updates": 0,
+          "actual_GPU_forward_or_next_update_restore_tested": false,
+          "checkpoint": {
+            "bytes": 3773206036,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/checkpoint-epoch-10.pt",
+            "sha256": "08e71e56a667ab99b1e48895e8934d3bc699d5a7adc321b9277fe1faf52c82f1"
+          },
+          "cursor": 13210,
+          "data_cursor": {
+            "completed_epoch": 10,
+            "completed_optimizer_updates": 13210,
+            "next_epoch": 11,
+            "restoration": "deterministic_own_M_plan_from_seed2026102227_and_epoch_boundary",
+            "within_next_epoch_question_position": 0
+          },
+          "epoch_coverage": {
+            "1": {
+              "M_counts": {
+                "10": 21121,
+                "3": 21217,
+                "4": 21061,
+                "5": 21081,
+                "6": 21050,
+                "7": 21393,
+                "8": 20926,
+                "9": 21179
+              },
+              "plan_sha256": "1b54acb15a9e90a55d7339ee082565deb02ce734773ac822a94ea209b70c4143",
+              "questions": 169028,
+              "trajectory_visits": 1098580,
+              "unique_questions": 169028
+            },
+            "10": {
+              "M_counts": {
+                "10": 21046,
+                "3": 21364,
+                "4": 20937,
+                "5": 21164,
+                "6": 21270,
+                "7": 21085,
+                "8": 21082,
+                "9": 21080
+              },
+              "plan_sha256": "594844b6e637bfe20341d15b2b4324a5da4477fdb42c20ade536133221aba8a1",
+              "questions": 169028,
+              "trajectory_visits": 1097711,
+              "unique_questions": 169028
+            },
+            "2": {
+              "M_counts": {
+                "10": 21470,
+                "3": 20909,
+                "4": 21141,
+                "5": 21044,
+                "6": 20947,
+                "7": 21247,
+                "8": 21119,
+                "9": 21151
+              },
+              "plan_sha256": "28c5fecd05219f79b0b3f2bdad708ed4b517497705d4b015dd48c7776e009bd2",
+              "questions": 169028,
+              "trajectory_visits": 1100933,
+              "unique_questions": 169028
+            },
+            "3": {
+              "M_counts": {
+                "10": 21044,
+                "3": 21114,
+                "4": 21180,
+                "5": 21305,
+                "6": 20964,
+                "7": 21169,
+                "8": 21247,
+                "9": 21005
+              },
+              "plan_sha256": "d69d31e109e93823a81a8cb1976c8a6493e349ed448ad004f6679a64c7485e26",
+              "questions": 169028,
+              "trajectory_visits": 1098015,
+              "unique_questions": 169028
+            },
+            "4": {
+              "M_counts": {
+                "10": 21177,
+                "3": 21204,
+                "4": 21193,
+                "5": 21201,
+                "6": 20899,
+                "7": 21006,
+                "8": 21207,
+                "9": 21141
+              },
+              "plan_sha256": "18888e5d157aaeb10b5cd7c015e311bd579121fac6661276ec6880aeb70adc89",
+              "questions": 169028,
+              "trajectory_visits": 1098520,
+              "unique_questions": 169028
+            },
+            "5": {
+              "M_counts": {
+                "10": 21060,
+                "3": 21047,
+                "4": 21176,
+                "5": 21034,
+                "6": 21126,
+                "7": 21187,
+                "8": 21291,
+                "9": 21107
+              },
+              "plan_sha256": "5856a7b190e12950b48a3d6f348ff87ab8c4a857848149ae42600a1c9b3697ad",
+              "questions": 169028,
+              "trajectory_visits": 1098971,
+              "unique_questions": 169028
+            },
+            "6": {
+              "M_counts": {
+                "10": 21170,
+                "3": 21217,
+                "4": 20976,
+                "5": 21234,
+                "6": 21060,
+                "7": 21200,
+                "8": 21034,
+                "9": 21137
+              },
+              "plan_sha256": "518a1fc166be10c693ad2c8f19e23bba1f5f82305b3de0d304057dc0110ea557",
+              "questions": 169028,
+              "trajectory_visits": 1098690,
+              "unique_questions": 169028
+            },
+            "7": {
+              "M_counts": {
+                "10": 21367,
+                "3": 21114,
+                "4": 21230,
+                "5": 20999,
+                "6": 21087,
+                "7": 20954,
+                "8": 21150,
+                "9": 21127
+              },
+              "plan_sha256": "977f8646346c2a0a7a96eb3d97066e60804c0d018ee5a016588b34d389a3813e",
+              "questions": 169028,
+              "trajectory_visits": 1099470,
+              "unique_questions": 169028
+            },
+            "8": {
+              "M_counts": {
+                "10": 21148,
+                "3": 21060,
+                "4": 20997,
+                "5": 21191,
+                "6": 21260,
+                "7": 21182,
+                "8": 21093,
+                "9": 21097
+              },
+              "plan_sha256": "bf72aec8e678b2f451e0577060ce0c00e309f26bf3cc6e7cc86658e41643edb8",
+              "questions": 169028,
+              "trajectory_visits": 1099054,
+              "unique_questions": 169028
+            },
+            "9": {
+              "M_counts": {
+                "10": 20936,
+                "3": 21403,
+                "4": 21082,
+                "5": 20947,
+                "6": 21260,
+                "7": 21170,
+                "8": 21151,
+                "9": 21079
+              },
+              "plan_sha256": "68355e68b2d782dbace3dc72503466516b646e8cd46d6c3b949ab7aa41474306",
+              "questions": 169028,
+              "trajectory_visits": 1097301,
+              "unique_questions": 169028
+            }
+          },
+          "epochs": 10,
+          "file_stat": {
+            "bytes": 3773206036,
+            "ctime_ns": 1792695251819948000,
+            "device": 48,
+            "inode": 11190032013,
+            "mtime_ns": 1792695251819948000
+          },
+          "geometry": {
+            "EMA": {
+              "independent_dtype_shape_tensor_SHA256": "805d80ba4090ffe3a10918c52255d59d32e95ba9eba98495fca3be230ad6039b",
+              "parameter_elements": 235819009,
+              "strict_load_state_dict_passed": true,
+              "tensors": 45
+            },
+            "raw": {
+              "independent_dtype_shape_tensor_SHA256": "4ce1a25bc4c989061e7ec2c4c783561314a422efdd9f9d2fae50d591bb9d6731",
+              "parameter_elements": 235819009,
+              "strict_load_state_dict_passed": true,
+              "tensors": 45
+            }
+          },
+          "job_id": "749577",
+          "layer": 21,
+          "loss": "z_mse_anchor",
+          "no_final4096_read": true,
+          "normalization": {
+            "STD_epsilon_floor": 1e-06,
+            "actual_updates": 13210,
+            "anchor_weight": 1.0,
+            "final_rank_statistics_exactly_equal": true,
+            "full_batch": 128,
+            "mean_and_population_std_gradient_path": "autograd_all_gather_in_published_source",
+            "scope": "actual_global_optimizer_batch",
+            "tail_batch": 68,
+            "tail_epochs": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ]
+          },
+          "peak_RSS_bytes": 4647604224,
+          "prefix": 20,
+          "probe_updates": 0,
+          "raw_and_EMA_separate": true,
+          "seconds": 11.172873973846436,
+          "selection_score": "predicted_population_EM_variance",
+          "single_question_and_one_prefill_row_per_group_controller_verified": true,
+          "source_complete": {
+            "bytes": 158,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/complete.json",
+            "sha256": "dc841b3b11ff0eaa1e9ac5c5a44fafc55279f06204d55733effa6642cf397292"
+          },
+          "source_controller": {
+            "bytes": 776,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/controller.json",
+            "sha256": "e4088a5cfff8b79344eaee01844f0698838fd4568c22c7dda50988cf336c7126"
+          },
+          "source_fixture": {
+            "bytes": 861230,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/fixture/fixture-complete.json",
+            "sha256": "06af00b5265ef15aa8d1a2c0ee1e9047d36e982f7488aaf1952835773ed512d4"
+          },
+          "source_training_publication": {
+            "bytes": 765,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/source-publication.json",
+            "sha256": "dd9455fdf2159615e6cb41392ce2aab45a7f2607932e84d5b8327a1331d15f51"
+          },
+          "status": "TERMINAL_FULL169028_PACKED_VARIANCE_CPU_SHA_MODEL_ADAM_RNG_PLAN_ACCEPTED",
+          "time": 1792695463.1957648,
+          "variant": "full169028-z_mse_anchor-one-question-M3to10-P20-variance"
+        },
+        "lock_held_for_entire_foreground_verifier": true,
+        "seconds": 88.23610377311707,
+        "shared_global_CPU_lock": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-P80-handoff-CPU-acceptance-20261023-v1/acceptance.lock",
+        "status": "FULL_Z_TERMINAL_CPU_VERIFIER_FINISHED_UNDER_COMMON_MUTEX",
+        "time": 1792695463.937305
+      }
+    },
+    "z_mse_anchor/accepted.json": {
+      "proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/packed-full169028-variance-CPU-acceptance-20261022-v1/z_mse_anchor/accepted.json",
+        "bytes": 6704,
+        "sha256": "863601d5eae2b629231c1286ddf4b372266058bc5d29bec10b931b149e3d4ff7"
+      },
+      "value": {
+        "Adam": {
+          "actual_optimizer_state_CPU_load_passed": true,
+          "actual_steps": 13210,
+          "finite_moment_elements": 471638018,
+          "parameter_states": 45
+        },
+        "CPU_restore_only": true,
+        "EMA_decay": 0.9995,
+        "M_range": [
+          3,
+          10
+        ],
+        "RNG_by_rank": [
+          {
+            "CPU_generator_state_accepted": true,
+            "CUDA_RNG_serialized_bytes": 16,
+            "CUDA_runtime_restore_tested": false,
+            "numpy_state_accepted": true,
+            "python_state_accepted": true,
+            "rank": 0
+          },
+          {
+            "CPU_generator_state_accepted": true,
+            "CUDA_RNG_serialized_bytes": 16,
+            "CUDA_runtime_restore_tested": false,
+            "numpy_state_accepted": true,
+            "python_state_accepted": true,
+            "rank": 1
+          }
+        ],
+        "actor_updates": 0,
+        "actual_GPU_forward_or_next_update_restore_tested": false,
+        "checkpoint": {
+          "bytes": 3773206036,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/checkpoint-epoch-10.pt",
+          "sha256": "08e71e56a667ab99b1e48895e8934d3bc699d5a7adc321b9277fe1faf52c82f1"
+        },
+        "cursor": 13210,
+        "data_cursor": {
+          "completed_epoch": 10,
+          "completed_optimizer_updates": 13210,
+          "next_epoch": 11,
+          "restoration": "deterministic_own_M_plan_from_seed2026102227_and_epoch_boundary",
+          "within_next_epoch_question_position": 0
+        },
+        "epoch_coverage": {
+          "1": {
+            "M_counts": {
+              "10": 21121,
+              "3": 21217,
+              "4": 21061,
+              "5": 21081,
+              "6": 21050,
+              "7": 21393,
+              "8": 20926,
+              "9": 21179
+            },
+            "plan_sha256": "1b54acb15a9e90a55d7339ee082565deb02ce734773ac822a94ea209b70c4143",
+            "questions": 169028,
+            "trajectory_visits": 1098580,
+            "unique_questions": 169028
+          },
+          "10": {
+            "M_counts": {
+              "10": 21046,
+              "3": 21364,
+              "4": 20937,
+              "5": 21164,
+              "6": 21270,
+              "7": 21085,
+              "8": 21082,
+              "9": 21080
+            },
+            "plan_sha256": "594844b6e637bfe20341d15b2b4324a5da4477fdb42c20ade536133221aba8a1",
+            "questions": 169028,
+            "trajectory_visits": 1097711,
+            "unique_questions": 169028
+          },
+          "2": {
+            "M_counts": {
+              "10": 21470,
+              "3": 20909,
+              "4": 21141,
+              "5": 21044,
+              "6": 20947,
+              "7": 21247,
+              "8": 21119,
+              "9": 21151
+            },
+            "plan_sha256": "28c5fecd05219f79b0b3f2bdad708ed4b517497705d4b015dd48c7776e009bd2",
+            "questions": 169028,
+            "trajectory_visits": 1100933,
+            "unique_questions": 169028
+          },
+          "3": {
+            "M_counts": {
+              "10": 21044,
+              "3": 21114,
+              "4": 21180,
+              "5": 21305,
+              "6": 20964,
+              "7": 21169,
+              "8": 21247,
+              "9": 21005
+            },
+            "plan_sha256": "d69d31e109e93823a81a8cb1976c8a6493e349ed448ad004f6679a64c7485e26",
+            "questions": 169028,
+            "trajectory_visits": 1098015,
+            "unique_questions": 169028
+          },
+          "4": {
+            "M_counts": {
+              "10": 21177,
+              "3": 21204,
+              "4": 21193,
+              "5": 21201,
+              "6": 20899,
+              "7": 21006,
+              "8": 21207,
+              "9": 21141
+            },
+            "plan_sha256": "18888e5d157aaeb10b5cd7c015e311bd579121fac6661276ec6880aeb70adc89",
+            "questions": 169028,
+            "trajectory_visits": 1098520,
+            "unique_questions": 169028
+          },
+          "5": {
+            "M_counts": {
+              "10": 21060,
+              "3": 21047,
+              "4": 21176,
+              "5": 21034,
+              "6": 21126,
+              "7": 21187,
+              "8": 21291,
+              "9": 21107
+            },
+            "plan_sha256": "5856a7b190e12950b48a3d6f348ff87ab8c4a857848149ae42600a1c9b3697ad",
+            "questions": 169028,
+            "trajectory_visits": 1098971,
+            "unique_questions": 169028
+          },
+          "6": {
+            "M_counts": {
+              "10": 21170,
+              "3": 21217,
+              "4": 20976,
+              "5": 21234,
+              "6": 21060,
+              "7": 21200,
+              "8": 21034,
+              "9": 21137
+            },
+            "plan_sha256": "518a1fc166be10c693ad2c8f19e23bba1f5f82305b3de0d304057dc0110ea557",
+            "questions": 169028,
+            "trajectory_visits": 1098690,
+            "unique_questions": 169028
+          },
+          "7": {
+            "M_counts": {
+              "10": 21367,
+              "3": 21114,
+              "4": 21230,
+              "5": 20999,
+              "6": 21087,
+              "7": 20954,
+              "8": 21150,
+              "9": 21127
+            },
+            "plan_sha256": "977f8646346c2a0a7a96eb3d97066e60804c0d018ee5a016588b34d389a3813e",
+            "questions": 169028,
+            "trajectory_visits": 1099470,
+            "unique_questions": 169028
+          },
+          "8": {
+            "M_counts": {
+              "10": 21148,
+              "3": 21060,
+              "4": 20997,
+              "5": 21191,
+              "6": 21260,
+              "7": 21182,
+              "8": 21093,
+              "9": 21097
+            },
+            "plan_sha256": "bf72aec8e678b2f451e0577060ce0c00e309f26bf3cc6e7cc86658e41643edb8",
+            "questions": 169028,
+            "trajectory_visits": 1099054,
+            "unique_questions": 169028
+          },
+          "9": {
+            "M_counts": {
+              "10": 20936,
+              "3": 21403,
+              "4": 21082,
+              "5": 20947,
+              "6": 21260,
+              "7": 21170,
+              "8": 21151,
+              "9": 21079
+            },
+            "plan_sha256": "68355e68b2d782dbace3dc72503466516b646e8cd46d6c3b949ab7aa41474306",
+            "questions": 169028,
+            "trajectory_visits": 1097301,
+            "unique_questions": 169028
+          }
+        },
+        "epochs": 10,
+        "file_stat": {
+          "bytes": 3773206036,
+          "ctime_ns": 1792695251819948000,
+          "device": 48,
+          "inode": 11190032013,
+          "mtime_ns": 1792695251819948000
+        },
+        "geometry": {
+          "EMA": {
+            "independent_dtype_shape_tensor_SHA256": "805d80ba4090ffe3a10918c52255d59d32e95ba9eba98495fca3be230ad6039b",
+            "parameter_elements": 235819009,
+            "strict_load_state_dict_passed": true,
+            "tensors": 45
+          },
+          "raw": {
+            "independent_dtype_shape_tensor_SHA256": "4ce1a25bc4c989061e7ec2c4c783561314a422efdd9f9d2fae50d591bb9d6731",
+            "parameter_elements": 235819009,
+            "strict_load_state_dict_passed": true,
+            "tensors": 45
+          }
+        },
+        "job_id": "749577",
+        "layer": 21,
+        "loss": "z_mse_anchor",
+        "no_final4096_read": true,
+        "normalization": {
+          "STD_epsilon_floor": 1e-06,
+          "actual_updates": 13210,
+          "anchor_weight": 1.0,
+          "final_rank_statistics_exactly_equal": true,
+          "full_batch": 128,
+          "mean_and_population_std_gradient_path": "autograd_all_gather_in_published_source",
+          "scope": "actual_global_optimizer_batch",
+          "tail_batch": 68,
+          "tail_epochs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ]
+        },
+        "peak_RSS_bytes": 4647604224,
+        "prefix": 20,
+        "probe_updates": 0,
+        "raw_and_EMA_separate": true,
+        "seconds": 11.172873973846436,
+        "selection_score": "predicted_population_EM_variance",
+        "single_question_and_one_prefill_row_per_group_controller_verified": true,
+        "source_complete": {
+          "bytes": 158,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/complete.json",
+          "sha256": "dc841b3b11ff0eaa1e9ac5c5a44fafc55279f06204d55733effa6642cf397292"
+        },
+        "source_controller": {
+          "bytes": 776,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/controller.json",
+          "sha256": "e4088a5cfff8b79344eaee01844f0698838fd4568c22c7dda50988cf336c7126"
+        },
+        "source_fixture": {
+          "bytes": 861230,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/fixture/fixture-complete.json",
+          "sha256": "06af00b5265ef15aa8d1a2c0ee1e9047d36e982f7488aaf1952835773ed512d4"
+        },
+        "source_training_publication": {
+          "bytes": 765,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/source-publication.json",
+          "sha256": "dd9455fdf2159615e6cb41392ce2aab45a7f2607932e84d5b8327a1331d15f51"
+        },
+        "status": "TERMINAL_FULL169028_PACKED_VARIANCE_CPU_SHA_MODEL_ADAM_RNG_PLAN_ACCEPTED",
+        "time": 1792695463.1957648,
+        "variant": "full169028-z_mse_anchor-one-question-M3to10-P20-variance"
+      }
+    },
+    "run-complete.json": {
+      "proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/packed-full169028-variance-CPU-acceptance-20261022-v1/run-complete.json",
+        "bytes": 7008,
+        "sha256": "f2cd51d41ad83fb89397f97bcbdddc3cb0a5dc8c0c9e06b32f1b7f2f2253e213"
+      },
+      "value": {
+        "results": [
+          {
+            "status": "WAITING_FOR_PUBLISHED_COMPLETE_NOT_OPENING_CHECKPOINT",
+            "variant": "full169028-mse-one-question-M3to10-P20-variance"
+          },
+          {
+            "status": "WAITING_FOR_PUBLISHED_COMPLETE_NOT_OPENING_CHECKPOINT",
+            "variant": "full169028-mae-one-question-M3to10-P20-variance"
+          },
+          {
+            "Adam": {
+              "actual_optimizer_state_CPU_load_passed": true,
+              "actual_steps": 13210,
+              "finite_moment_elements": 471638018,
+              "parameter_states": 45
+            },
+            "CPU_restore_only": true,
+            "EMA_decay": 0.9995,
+            "M_range": [
+              3,
+              10
+            ],
+            "RNG_by_rank": [
+              {
+                "CPU_generator_state_accepted": true,
+                "CUDA_RNG_serialized_bytes": 16,
+                "CUDA_runtime_restore_tested": false,
+                "numpy_state_accepted": true,
+                "python_state_accepted": true,
+                "rank": 0
+              },
+              {
+                "CPU_generator_state_accepted": true,
+                "CUDA_RNG_serialized_bytes": 16,
+                "CUDA_runtime_restore_tested": false,
+                "numpy_state_accepted": true,
+                "python_state_accepted": true,
+                "rank": 1
+              }
+            ],
+            "actor_updates": 0,
+            "actual_GPU_forward_or_next_update_restore_tested": false,
+            "checkpoint": {
+              "bytes": 3773206036,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/checkpoint-epoch-10.pt",
+              "sha256": "08e71e56a667ab99b1e48895e8934d3bc699d5a7adc321b9277fe1faf52c82f1"
+            },
+            "cursor": 13210,
+            "data_cursor": {
+              "completed_epoch": 10,
+              "completed_optimizer_updates": 13210,
+              "next_epoch": 11,
+              "restoration": "deterministic_own_M_plan_from_seed2026102227_and_epoch_boundary",
+              "within_next_epoch_question_position": 0
+            },
+            "epoch_coverage": {
+              "1": {
+                "M_counts": {
+                  "10": 21121,
+                  "3": 21217,
+                  "4": 21061,
+                  "5": 21081,
+                  "6": 21050,
+                  "7": 21393,
+                  "8": 20926,
+                  "9": 21179
+                },
+                "plan_sha256": "1b54acb15a9e90a55d7339ee082565deb02ce734773ac822a94ea209b70c4143",
+                "questions": 169028,
+                "trajectory_visits": 1098580,
+                "unique_questions": 169028
+              },
+              "10": {
+                "M_counts": {
+                  "10": 21046,
+                  "3": 21364,
+                  "4": 20937,
+                  "5": 21164,
+                  "6": 21270,
+                  "7": 21085,
+                  "8": 21082,
+                  "9": 21080
+                },
+                "plan_sha256": "594844b6e637bfe20341d15b2b4324a5da4477fdb42c20ade536133221aba8a1",
+                "questions": 169028,
+                "trajectory_visits": 1097711,
+                "unique_questions": 169028
+              },
+              "2": {
+                "M_counts": {
+                  "10": 21470,
+                  "3": 20909,
+                  "4": 21141,
+                  "5": 21044,
+                  "6": 20947,
+                  "7": 21247,
+                  "8": 21119,
+                  "9": 21151
+                },
+                "plan_sha256": "28c5fecd05219f79b0b3f2bdad708ed4b517497705d4b015dd48c7776e009bd2",
+                "questions": 169028,
+                "trajectory_visits": 1100933,
+                "unique_questions": 169028
+              },
+              "3": {
+                "M_counts": {
+                  "10": 21044,
+                  "3": 21114,
+                  "4": 21180,
+                  "5": 21305,
+                  "6": 20964,
+                  "7": 21169,
+                  "8": 21247,
+                  "9": 21005
+                },
+                "plan_sha256": "d69d31e109e93823a81a8cb1976c8a6493e349ed448ad004f6679a64c7485e26",
+                "questions": 169028,
+                "trajectory_visits": 1098015,
+                "unique_questions": 169028
+              },
+              "4": {
+                "M_counts": {
+                  "10": 21177,
+                  "3": 21204,
+                  "4": 21193,
+                  "5": 21201,
+                  "6": 20899,
+                  "7": 21006,
+                  "8": 21207,
+                  "9": 21141
+                },
+                "plan_sha256": "18888e5d157aaeb10b5cd7c015e311bd579121fac6661276ec6880aeb70adc89",
+                "questions": 169028,
+                "trajectory_visits": 1098520,
+                "unique_questions": 169028
+              },
+              "5": {
+                "M_counts": {
+                  "10": 21060,
+                  "3": 21047,
+                  "4": 21176,
+                  "5": 21034,
+                  "6": 21126,
+                  "7": 21187,
+                  "8": 21291,
+                  "9": 21107
+                },
+                "plan_sha256": "5856a7b190e12950b48a3d6f348ff87ab8c4a857848149ae42600a1c9b3697ad",
+                "questions": 169028,
+                "trajectory_visits": 1098971,
+                "unique_questions": 169028
+              },
+              "6": {
+                "M_counts": {
+                  "10": 21170,
+                  "3": 21217,
+                  "4": 20976,
+                  "5": 21234,
+                  "6": 21060,
+                  "7": 21200,
+                  "8": 21034,
+                  "9": 21137
+                },
+                "plan_sha256": "518a1fc166be10c693ad2c8f19e23bba1f5f82305b3de0d304057dc0110ea557",
+                "questions": 169028,
+                "trajectory_visits": 1098690,
+                "unique_questions": 169028
+              },
+              "7": {
+                "M_counts": {
+                  "10": 21367,
+                  "3": 21114,
+                  "4": 21230,
+                  "5": 20999,
+                  "6": 21087,
+                  "7": 20954,
+                  "8": 21150,
+                  "9": 21127
+                },
+                "plan_sha256": "977f8646346c2a0a7a96eb3d97066e60804c0d018ee5a016588b34d389a3813e",
+                "questions": 169028,
+                "trajectory_visits": 1099470,
+                "unique_questions": 169028
+              },
+              "8": {
+                "M_counts": {
+                  "10": 21148,
+                  "3": 21060,
+                  "4": 20997,
+                  "5": 21191,
+                  "6": 21260,
+                  "7": 21182,
+                  "8": 21093,
+                  "9": 21097
+                },
+                "plan_sha256": "bf72aec8e678b2f451e0577060ce0c00e309f26bf3cc6e7cc86658e41643edb8",
+                "questions": 169028,
+                "trajectory_visits": 1099054,
+                "unique_questions": 169028
+              },
+              "9": {
+                "M_counts": {
+                  "10": 20936,
+                  "3": 21403,
+                  "4": 21082,
+                  "5": 20947,
+                  "6": 21260,
+                  "7": 21170,
+                  "8": 21151,
+                  "9": 21079
+                },
+                "plan_sha256": "68355e68b2d782dbace3dc72503466516b646e8cd46d6c3b949ab7aa41474306",
+                "questions": 169028,
+                "trajectory_visits": 1097301,
+                "unique_questions": 169028
+              }
+            },
+            "epochs": 10,
+            "file_stat": {
+              "bytes": 3773206036,
+              "ctime_ns": 1792695251819948000,
+              "device": 48,
+              "inode": 11190032013,
+              "mtime_ns": 1792695251819948000
+            },
+            "geometry": {
+              "EMA": {
+                "independent_dtype_shape_tensor_SHA256": "805d80ba4090ffe3a10918c52255d59d32e95ba9eba98495fca3be230ad6039b",
+                "parameter_elements": 235819009,
+                "strict_load_state_dict_passed": true,
+                "tensors": 45
+              },
+              "raw": {
+                "independent_dtype_shape_tensor_SHA256": "4ce1a25bc4c989061e7ec2c4c783561314a422efdd9f9d2fae50d591bb9d6731",
+                "parameter_elements": 235819009,
+                "strict_load_state_dict_passed": true,
+                "tensors": 45
+              }
+            },
+            "job_id": "749577",
+            "layer": 21,
+            "loss": "z_mse_anchor",
+            "no_final4096_read": true,
+            "normalization": {
+              "STD_epsilon_floor": 1e-06,
+              "actual_updates": 13210,
+              "anchor_weight": 1.0,
+              "final_rank_statistics_exactly_equal": true,
+              "full_batch": 128,
+              "mean_and_population_std_gradient_path": "autograd_all_gather_in_published_source",
+              "scope": "actual_global_optimizer_batch",
+              "tail_batch": 68,
+              "tail_epochs": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+              ]
+            },
+            "peak_RSS_bytes": 4647604224,
+            "prefix": 20,
+            "probe_updates": 0,
+            "raw_and_EMA_separate": true,
+            "seconds": 11.172873973846436,
+            "selection_score": "predicted_population_EM_variance",
+            "single_question_and_one_prefill_row_per_group_controller_verified": true,
+            "source_complete": {
+              "bytes": 158,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/complete.json",
+              "sha256": "dc841b3b11ff0eaa1e9ac5c5a44fafc55279f06204d55733effa6642cf397292"
+            },
+            "source_controller": {
+              "bytes": 776,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/controller.json",
+              "sha256": "e4088a5cfff8b79344eaee01844f0698838fd4568c22c7dda50988cf336c7126"
+            },
+            "source_fixture": {
+              "bytes": 861230,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/fixture/fixture-complete.json",
+              "sha256": "06af00b5265ef15aa8d1a2c0ee1e9047d36e982f7488aaf1952835773ed512d4"
+            },
+            "source_training_publication": {
+              "bytes": 765,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/source-publication.json",
+              "sha256": "dd9455fdf2159615e6cb41392ce2aab45a7f2607932e84d5b8327a1331d15f51"
+            },
+            "status": "TERMINAL_FULL169028_PACKED_VARIANCE_CPU_SHA_MODEL_ADAM_RNG_PLAN_ACCEPTED",
+            "time": 1792695463.1957648,
+            "variant": "full169028-z_mse_anchor-one-question-M3to10-P20-variance"
+          }
+        ],
+        "time": 1792695463.501224
+      }
+    }
+  }
+}

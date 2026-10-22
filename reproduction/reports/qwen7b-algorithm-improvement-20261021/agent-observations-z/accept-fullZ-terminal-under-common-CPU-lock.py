@@ -1,9 +1,12 @@
-"""Run only the already-staged verifier, with a mutex for its entire lifetime.
+"""Launch only the staged verifier, holding a mutex for its entire lifetime.
 
 No checkpoint is opened by this control wrapper and no GPU/Slurm is changed.
 """
 from pathlib import Path
+import fcntl
+import hashlib
 import json
+import os
 import subprocess
 import time
 
@@ -20,13 +23,36 @@ assert (complete['epochs'],complete['cursor'],complete['training_questions'])==(
 assert str(read(base/'root-submission.json')['job_id'])==str(read(base/'controller.json')['job_id'])=='749577'
 accounting=subprocess.check_output(['sacct','-X','-n','-P','-j','749577','--format=JobIDRaw,State,ExitCode'],universal_newlines=True)
 assert any(row.split('|')[:3]==['749577','COMPLETED','0:0'] for row in accounting.splitlines())
-started=time.time(); log=out/'common-lock-final-Z-acceptance.log'
-with log.open('ab') as stream:
-    result=subprocess.run(['flock','-n',str(common),'bash',str(entry)],stdout=stream,stderr=stream,timeout=120)
-if result.returncode:
-    print(json.dumps(dict(status='CPU_VERIFIER_NOT_ACCEPTED_CHECK_SHARED_LOCK_OR_LOG',returncode=result.returncode,log=str(log),shared_global_CPU_lock=str(common),checkpoint_opened_by_control=False,time=time.time())))
+guard=(out/'launch.lock').open('a+')
+fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB)
+def live(value):
+    p=Path('/proc/%d'%value['pid'])
+    if not p.exists():return False
+    stat=(p/'stat').read_text().rsplit(')',1)[1].split()
+    return stat[0]!='Z' and stat[19]==value['start_ticks'] and any(token in(p/'cmdline').read_bytes()for token in(b'accept_full169028_packed_variance.py',b'acceptance.sh',b'runtime.sh'))
+
+previous=[]
+for name in('controller.json','common-lock-launch-receipt.json'):
+    if(out/name).exists():previous.append(read(out/name))
+active=next((value for value in previous if live(value)),None)
+if active:
+    print(json.dumps(dict(status='EXISTING_ACTUAL_CPU_VALIDATOR_REUSED',controller=active,new_CPU_process_started=False,time=time.time())))
 else:
-    accepted=read(out/'z_mse_anchor/accepted.json')
-    value=dict(status='FULL_Z_TERMINAL_CPU_VERIFIER_FINISHED_UNDER_COMMON_MUTEX',accepted=accepted,shared_global_CPU_lock=str(common),lock_held_for_entire_foreground_verifier=True,seconds=time.time()-started,Slurm_mutated=False,GPU_used=False,time=time.time())
-    (out/'common-lock-final-Z-receipt.json').write_text(json.dumps(value,sort_keys=True)+'\n')
-    print(json.dumps(value))
+    # Inherit this same open-file-description lock through bash/runtime exec.
+    # The verifier retains the descriptor, so disconnecting the short SSH
+    # control call cannot release the mutex or terminate a long plan audit.
+    shared=common.open('a+')
+    try:fcntl.flock(shared,fcntl.LOCK_EX|fcntl.LOCK_NB)
+    except BlockingIOError:
+        print(json.dumps(dict(status='WAIT_SHARED_CPU_MUTEX_NO_READER_STARTED',shared_global_CPU_lock=str(common),checkpoint_opened=False,time=time.time())))
+    else:
+        log=out/'common-lock-final-Z-acceptance.log'
+        if(out/'run-complete.json').exists():
+            old=(out/'run-complete.json').read_bytes(); archive=out/('prior-run-complete-'+hashlib.sha256(old).hexdigest()[:12]+'.json')
+            if not archive.exists():archive.write_bytes(old)
+        with log.open('ab')as stream:
+            child=subprocess.Popen(['bash',str(entry)],stdout=stream,stderr=stream,stdin=subprocess.DEVNULL,start_new_session=True,pass_fds=(shared.fileno(),))
+        value=dict(status='COMMON_MUTEX_DURABLE_CPU_VERIFIER_STARTED_NOT_YET_ACCEPTED',pid=child.pid,start_ticks=(Path('/proc/%d/stat'%child.pid)).read_text().rsplit(')',1)[1].split()[19],entry=str(entry),shared_global_CPU_lock=str(common),inherited_lock_fd=shared.fileno(),lock_lifetime='entire_verifier_process',Slurm_mutated=False,GPU_used=False,time=time.time())
+        (out/'common-lock-launch-receipt.json').write_text(json.dumps(value,sort_keys=True)+'\n')
+        print(json.dumps(value))
+    finally:shared.close()
