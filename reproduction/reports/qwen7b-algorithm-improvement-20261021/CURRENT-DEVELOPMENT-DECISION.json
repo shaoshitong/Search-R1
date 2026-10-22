@@ -1,0 +1,1854 @@
+{
+  "status": "CURRENT_VIEWED_NQ_DEVELOPMENT_DECISION_FROM_EXISTING_FIXED_METRICS",
+  "generated_at": 1792700594.3118238,
+  "rows": [
+    {
+      "experiment": "E1 baseline",
+      "seed": null,
+      "reference_only": true,
+      "epoch": 1,
+      "state": "EMA",
+      "actual_training_objective": "direct Mixed BCE",
+      "budget": {
+        "training_questions": 169028,
+        "cursor": 2577,
+        "earlier_micro_batch_updates_and_hard_replay": true
+      },
+      "trainA": {
+        "questions": 2048,
+        "true_Mixed_questions": 1082,
+        "fixed_diagnostic_loss": {
+          "kind": "Mixed BCE",
+          "value": 0.6717978491215035,
+          "missing_reason": null
+        },
+        "Mixed_BA": 0.5899281676827285,
+        "Mixed_recall": 0.6229205175600739,
+        "all_wrong_FPR": 0.4,
+        "all_correct_FPR": 0.5691056910569106,
+        "Top512_Mixed": 344,
+        "Top512_fraction": 0.671875,
+        "Mixed_AUC": 0.6270871363895554,
+        "threshold": 0.5,
+        "variance_MSE": null,
+        "variance_MAE": null
+      },
+      "trainB": null,
+      "trainB_missing_reason": "Original E1 was not scored on fixed trainB in these saved fixed diagnostics.",
+      "development": {
+        "questions": 2048,
+        "true_Mixed_questions": 663,
+        "fixed_diagnostic_loss": {
+          "kind": "Mixed BCE",
+          "value": 0.6530157524057931,
+          "missing_reason": null
+        },
+        "Mixed_BA": 0.5288460177183898,
+        "Mixed_recall": 0.2187028657616893,
+        "all_wrong_FPR": 0.13933649289099526,
+        "all_correct_FPR": 0.23030303030303031,
+        "Top512_Mixed": 205,
+        "Top512_fraction": 0.400390625,
+        "Mixed_AUC": 0.5950122787243195,
+        "threshold": 0.5,
+        "variance_MSE": null,
+        "variance_MAE": null
+      },
+      "source": {
+        "trainA": "mixed-direct-e1-unique-g5/E1-matched-training-independent-baseline.json#/fixed_training/metrics/EMA/fixed_train2048",
+        "development": "viewed2048-two-seed-P80-paired-comparison/actual-latest.json#/result/independent_summaries/E1_EMA"
+      }
+    },
+    {
+      "experiment": "CURRENT64",
+      "seed": 1,
+      "epoch": 5,
+      "state": "raw",
+      "actual_training_objective": "TopK-ramp",
+      "budget": {
+        "training_questions": 8192,
+        "checkpoint_batch_attempts": 640,
+        "global_batch": 64
+      },
+      "trainA": null,
+      "trainB": {
+        "questions": 2048,
+        "true_Mixed_questions": 888,
+        "fixed_diagnostic_loss": {
+          "kind": "fixed-pool TopK-ramp loss",
+          "value": null,
+          "missing_reason": "Not computed/saved on fixed diagnostic pools; online optimizer-batch loss is deliberately not substituted."
+        },
+        "Mixed_BA": 0.5635484622553588,
+        "Mixed_recall": 0.14864864864864866,
+        "all_wrong_FPR": 0.024210526315789474,
+        "all_correct_FPR": 0.009523809523809525,
+        "Top512_Mixed": 384,
+        "Top512_fraction": 0.75,
+        "Mixed_AUC": 0.7579586051568811,
+        "threshold": 0.5,
+        "variance_MSE": null,
+        "variance_MAE": null
+      },
+      "development": {
+        "questions": 2048,
+        "true_Mixed_questions": 663,
+        "fixed_diagnostic_loss": {
+          "kind": "fixed-pool TopK-ramp loss",
+          "value": null,
+          "missing_reason": "Not computed/saved on fixed diagnostic pools; online optimizer-batch loss is deliberately not substituted."
+        },
+        "Mixed_BA": 0.537098627287627,
+        "Mixed_recall": 0.11463046757164404,
+        "all_wrong_FPR": 0.05118483412322275,
+        "all_correct_FPR": 0.006060606060606061,
+        "Top512_Mixed": 266,
+        "Top512_fraction": 0.51953125,
+        "Mixed_AUC": 0.6796946381996286,
+        "threshold": 0.5,
+        "variance_MSE": null,
+        "variance_MAE": null
+      },
+      "source": {
+        "summary": "viewed2048-two-seed-P80-paired-comparison/actual-latest.json",
+        "key": "CURRENT64_seed1",
+        "remote": {
+          "epoch": 5,
+          "state": "raw",
+          "prediction_proofs": {
+            "fixed_validation2048_G5": {
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/current64/epoch-05-fixed_validation2048_G5-predictions.jsonl.gz",
+              "bytes": 73873,
+              "sha256": "43b0b7aa37dbaebb5874e6afeb74a84e18deb5eec130a2c295e03b6eb433b9cc"
+            },
+            "fixed_train2048_G5": {
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/current64/epoch-05-fixed_train2048_G5-predictions.jsonl.gz",
+              "bytes": 75037,
+              "sha256": "b9be3ee2f585d615d4adb7533f742b72aaa13a9aaa6270d0b3b0e9fbcd25ba8e"
+            }
+          },
+          "evaluation": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/current64/evaluation-epoch-05.json",
+            "bytes": 4949,
+            "sha256": "b2f1ffbcd29475135e76be6e681da528634c622e36fa589c32b80ede867512c9"
+          },
+          "source_publication": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/source-publication.json",
+            "bytes": 1567,
+            "sha256": "db6a7c7cc8b7376ac42dc65fba21086a378079611cc906260c77d7ff6aff8868"
+          },
+          "root_submission": {
+            "CPUs": 12,
+            "EMA_decay": 0.9995,
+            "GPUs": 2,
+            "batch_attempt_budget": 1280,
+            "cache_window_capacity": 0,
+            "cell": "current64",
+            "entry": {
+              "bytes": 1727,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/current64/training.sbatch",
+              "sha256": "2781288ae1a55da956c749073ebfa9c47788a3beb6cfde98be25fdf41e58ee28"
+            },
+            "epochs": 10,
+            "exclude": "ACD1-13",
+            "final4096_read": false,
+            "fixture_reuse": {
+              "bytes": 1267,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/fixture-reuse.json",
+              "sha256": "c6b5403f356b53f40bec21a024ecaf393d7dd5fc943cae59948bb76eefb9106c"
+            },
+            "global_batch": 64,
+            "historical_groups_at_capacity": 0,
+            "job_id": "749889",
+            "layer": 15,
+            "memory_GiB": 128,
+            "name": "q7b-L15P80-current64",
+            "no_dependencies": true,
+            "partition": "acd_u",
+            "prefix": 80,
+            "ready": {
+              "bytes": 2217,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/current64/ready.json",
+              "sha256": "33920169fccc37a5b4f53d1e5b24ac247e9b71f4c08e7e760230a6ee03eca69a"
+            },
+            "reference_population": 2018,
+            "source_commit": "237968e8acb8ffd8b5ebcc1c8197247878926ce0",
+            "target_top_k": 500,
+            "time": 1792693186.0148463,
+            "time_limit": "02:00:00"
+          },
+          "selected_after_viewing_dev": true
+        }
+      }
+    },
+    {
+      "experiment": "CURRENT64",
+      "seed": 2,
+      "epoch": 5,
+      "state": "raw",
+      "actual_training_objective": "TopK-ramp",
+      "budget": {
+        "training_questions": 8192,
+        "checkpoint_batch_attempts": 640,
+        "global_batch": 64
+      },
+      "trainA": null,
+      "trainB": {
+        "questions": 2048,
+        "true_Mixed_questions": 888,
+        "fixed_diagnostic_loss": {
+          "kind": "fixed-pool TopK-ramp loss",
+          "value": null,
+          "missing_reason": "Not computed/saved on fixed diagnostic pools; online optimizer-batch loss is deliberately not substituted."
+        },
+        "Mixed_BA": 0.6478448275862069,
+        "Mixed_recall": 0.375,
+        "all_wrong_FPR": 0.08947368421052632,
+        "all_correct_FPR": 0.03333333333333333,
+        "Top512_Mixed": 397,
+        "Top512_fraction": 0.775390625,
+        "Mixed_AUC": 0.777297879776328,
+        "threshold": 0.5,
+        "variance_MSE": null,
+        "variance_MAE": null
+      },
+      "development": {
+        "questions": 2048,
+        "true_Mixed_questions": 663,
+        "fixed_diagnostic_loss": {
+          "kind": "fixed-pool TopK-ramp loss",
+          "value": null,
+          "missing_reason": "Not computed/saved on fixed diagnostic pools; online optimizer-batch loss is deliberately not substituted."
+        },
+        "Mixed_BA": 0.5967024410430654,
+        "Mixed_recall": 0.31975867269984914,
+        "all_wrong_FPR": 0.14976303317535544,
+        "all_correct_FPR": 0.051515151515151514,
+        "Top512_Mixed": 267,
+        "Top512_fraction": 0.521484375,
+        "Mixed_AUC": 0.688994342530125,
+        "threshold": 0.5,
+        "variance_MSE": null,
+        "variance_MAE": null
+      },
+      "source": {
+        "summary": "viewed2048-two-seed-P80-paired-comparison/actual-latest.json",
+        "key": "CURRENT64_seed2",
+        "remote": {
+          "epoch": 5,
+          "state": "raw",
+          "prediction_proofs": {
+            "fixed_validation2048_G5": {
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-current64-seed19137-plan2026102302-L15P80-8192-20261023-v1/current64/epoch-05-fixed_validation2048_G5-predictions.jsonl.gz",
+              "bytes": 82589,
+              "sha256": "cba014ee043bd343b0a295d5f679178456336e23311e66f3f68663d93f4e0e16"
+            },
+            "fixed_train2048_G5": {
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-current64-seed19137-plan2026102302-L15P80-8192-20261023-v1/current64/epoch-05-fixed_train2048_G5-predictions.jsonl.gz",
+              "bytes": 84255,
+              "sha256": "b3383c9c8b63bcba9809ca77e059249bfd5a9a3e7b27e53da6e6e567d3e199c5"
+            }
+          },
+          "evaluation": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-current64-seed19137-plan2026102302-L15P80-8192-20261023-v1/current64/evaluation-epoch-05.json",
+            "bytes": 5193,
+            "sha256": "817cc00d6e897dffd4699d81b79bc94d352c454a19804fb44f4299bc29eef955"
+          },
+          "source_publication": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-current64-seed19137-plan2026102302-L15P80-8192-20261023-v1/source-publication.json",
+            "bytes": 2840,
+            "sha256": "f01a5a4111ac0c4c21637658b07936893fb23b65bacfaf5ebdebb5904495b7a6"
+          },
+          "root_submission": {
+            "GPUs": 2,
+            "batch_attempt_budget": 1280,
+            "entry": {
+              "bytes": 1861,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-current64-seed19137-plan2026102302-L15P80-8192-20261023-v1/current64/training.sbatch",
+              "sha256": "bfed2ae69a56f4f3550da8858036d7248c3faa9aa59d9ebe8e09cb0fd096c825"
+            },
+            "epochs": 10,
+            "final4096_read": false,
+            "fresh": true,
+            "global_batch": 64,
+            "init_seed": 19137,
+            "job_id": "749965",
+            "name": "q7b-L15P80-c64-s19137",
+            "no_dependencies": true,
+            "partition": "acd_u",
+            "primary_metric": "Top512_real_Mixed",
+            "ready": {
+              "bytes": 2733,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-current64-seed19137-plan2026102302-L15P80-8192-20261023-v1/current64/ready.json",
+              "sha256": "7b1713cf1d2fbd1a76f62e16e67946c0eacdb3a719cbe8cc8511aa1cffa64c2a"
+            },
+            "replication_epoch": 5,
+            "replication_state": "raw",
+            "resume_checkpoint": null,
+            "source_commit": "34579cbfb9729afb21c88b540b7ded7d3db823f4",
+            "time": 1792695673.9502823,
+            "train_plan_seed": 2026102302
+          },
+          "selected_after_viewing_dev": true
+        }
+      }
+    },
+    {
+      "experiment": "MSE-M5",
+      "seed": 1,
+      "epoch": 7,
+      "state": "raw",
+      "actual_training_objective": "MSE(4v)",
+      "budget": {
+        "training_questions": 8192,
+        "checkpoint_batch_attempts": 448,
+        "global_batch": 128
+      },
+      "trainA": null,
+      "trainB": {
+        "questions": 2048,
+        "true_Mixed_questions": 888,
+        "fixed_diagnostic_loss": {
+          "kind": "variance MSE(v)",
+          "value": 0.007022394230901192,
+          "missing_reason": null
+        },
+        "Mixed_BA": 0.6989437713575645,
+        "Mixed_recall": 0.615990990990991,
+        "all_wrong_FPR": 0.2294736842105263,
+        "all_correct_FPR": 0.16666666666666666,
+        "Top512_Mixed": 379,
+        "Top512_fraction": 0.740234375,
+        "Mixed_AUC": 0.7785924394221808,
+        "threshold": 0.08,
+        "variance_MSE": 0.007022394230901192,
+        "variance_MAE": 0.07227243229545821
+      },
+      "development": {
+        "questions": 2048,
+        "true_Mixed_questions": 663,
+        "fixed_diagnostic_loss": {
+          "kind": "variance MSE(v)",
+          "value": 0.007594469149320287,
+          "missing_reason": null
+        },
+        "Mixed_BA": 0.6350632449591889,
+        "Mixed_recall": 0.5444947209653092,
+        "all_wrong_FPR": 0.3042654028436019,
+        "all_correct_FPR": 0.1787878787878788,
+        "Top512_Mixed": 278,
+        "Top512_fraction": 0.54296875,
+        "Mixed_AUC": 0.711130350501767,
+        "threshold": 0.08,
+        "variance_MSE": 0.007594469149320287,
+        "variance_MAE": 0.07513236682746081
+      },
+      "source": {
+        "summary": "viewed2048-two-seed-P80-paired-comparison/actual-latest.json",
+        "key": "MSE_M5_seed1",
+        "remote": {
+          "epoch": 7,
+          "state": "raw",
+          "prediction_proofs": {
+            "fixed_validation2048_G5": {
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/mse-M5/epoch-07-fixed_validation2048_G5-predictions.jsonl.gz",
+              "bytes": 76830,
+              "sha256": "9c12f68019809d720908b1de3358bda8df4ad29fadc6896e12b7b2317203dd10"
+            },
+            "fixed_train2048_G5": {
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/mse-M5/epoch-07-fixed_train2048_G5-predictions.jsonl.gz",
+              "bytes": 78021,
+              "sha256": "26efbbf596f2ce7496ea3fe83a6dbe482fe71c8f19577e88fe20aa458f1241f4"
+            }
+          },
+          "evaluation": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/mse-M5/evaluation-epoch-07.json",
+            "bytes": 5104,
+            "sha256": "e9efe4fcd4ac64068054ae8ea5962cc82f9d24e9d38026a63c853d9620d42e29"
+          },
+          "source_publication": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/source-publication.json",
+            "bytes": 1086,
+            "sha256": "6a5ce9f514aa78d21535800c49fda853e10448824977644649950a3dc15d38ba"
+          },
+          "root_submission": {
+            "CPUs": 12,
+            "EMA_decay": 0.9995,
+            "GPUs": 2,
+            "cell": "mse-M5",
+            "entry": {
+              "bytes": 1684,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/mse-M5/training.sbatch",
+              "sha256": "a50e95e65081c5a5c5136235bcf6add632d8b55bf27109150ce78c86c091b6e4"
+            },
+            "epochs": 10,
+            "exclude": "ACD1-13",
+            "final4096_read": false,
+            "fixture_acceptance": {
+              "bytes": 1175,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/fixture/accepted.json",
+              "sha256": "b3574a10480ca154ad8b979f9e2613c80894a76834691d26d6422a6979939484"
+            },
+            "global_batch": 128,
+            "job_id": "749857",
+            "layer": 15,
+            "max_batch_attempts": 640,
+            "memory_GiB": 128,
+            "name": "q7b-L15P80-mse-M5",
+            "no_dependencies": true,
+            "partition": "acd_u",
+            "prefix": 80,
+            "primary_metric": "developmentTop512_then_frozen_unseen_confirmation",
+            "source_commit": "0436c2c1e3c1b38a2abcbc252bf3524eff0e6deb",
+            "time": 1792692519.423486,
+            "time_limit": "02:00:00"
+          },
+          "selected_after_viewing_dev": true
+        }
+      }
+    },
+    {
+      "experiment": "MSE-M5",
+      "seed": 2,
+      "epoch": 7,
+      "state": "raw",
+      "actual_training_objective": "MSE(4v)",
+      "budget": {
+        "training_questions": 8192,
+        "checkpoint_batch_attempts": 448,
+        "global_batch": 128
+      },
+      "trainA": null,
+      "trainB": {
+        "questions": 2048,
+        "true_Mixed_questions": 888,
+        "fixed_diagnostic_loss": {
+          "kind": "variance MSE(v)",
+          "value": 0.006931918036542336,
+          "missing_reason": null
+        },
+        "Mixed_BA": 0.7148803976390183,
+        "Mixed_recall": 0.7004504504504504,
+        "all_wrong_FPR": 0.29578947368421055,
+        "all_correct_FPR": 0.15714285714285714,
+        "Top512_Mixed": 371,
+        "Top512_fraction": 0.724609375,
+        "Mixed_AUC": 0.7771343002485244,
+        "threshold": 0.08,
+        "variance_MSE": 0.006931918036542336,
+        "variance_MAE": 0.07229578311383193
+      },
+      "development": {
+        "questions": 2048,
+        "true_Mixed_questions": 663,
+        "fixed_diagnostic_loss": {
+          "kind": "variance MSE(v)",
+          "value": 0.0076597506417184855,
+          "missing_reason": null
+        },
+        "Mixed_BA": 0.6537579430550338,
+        "Mixed_recall": 0.6425339366515838,
+        "all_wrong_FPR": 0.3744075829383886,
+        "all_correct_FPR": 0.20909090909090908,
+        "Top512_Mixed": 277,
+        "Top512_fraction": 0.541015625,
+        "Mixed_AUC": 0.7117625278381278,
+        "threshold": 0.08,
+        "variance_MSE": 0.0076597506417184855,
+        "variance_MAE": 0.07628828956215783
+      },
+      "source": {
+        "summary": "viewed2048-two-seed-P80-paired-comparison/actual-latest.json",
+        "key": "MSE_M5_seed2",
+        "remote": {
+          "epoch": 7,
+          "state": "raw",
+          "prediction_proofs": {
+            "fixed_validation2048_G5": {
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-MSE-M5-seed19137-plan2026102302-L15P80-8192-20261023-v1/mse-M5/epoch-07-fixed_validation2048_G5-predictions.jsonl.gz",
+              "bytes": 81203,
+              "sha256": "f29ec8ca3d2eb543e9350ff854dadd2fe60fa2cbc4b348503885b4bf8d14c5c1"
+            },
+            "fixed_train2048_G5": {
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-MSE-M5-seed19137-plan2026102302-L15P80-8192-20261023-v1/mse-M5/epoch-07-fixed_train2048_G5-predictions.jsonl.gz",
+              "bytes": 82217,
+              "sha256": "5f136916a3e711883446af4b62dfdb268078f02bfe7f61e225edd26f0d07adb6"
+            }
+          },
+          "evaluation": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-MSE-M5-seed19137-plan2026102302-L15P80-8192-20261023-v1/mse-M5/evaluation-epoch-07.json",
+            "bytes": 5157,
+            "sha256": "f71cb60453523946fa80d1f658302b6ff699d370065cda05c532c4afc3eb1859"
+          },
+          "source_publication": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-MSE-M5-seed19137-plan2026102302-L15P80-8192-20261023-v1/source-publication.json",
+            "bytes": 2347,
+            "sha256": "476997defab74d10c3aa6288425130cd8932bbc540470a18c8e3a13d78dd23b2"
+          },
+          "root_submission": {
+            "GPUs": 2,
+            "entry": {
+              "bytes": 1890,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-MSE-M5-seed19137-plan2026102302-L15P80-8192-20261023-v1/mse-M5/training.sbatch",
+              "sha256": "f96807fbeb52904ccba4f2421a5e12910a94e53b1db03ce409ef751ccf65b18a"
+            },
+            "epochs": 10,
+            "final4096_read": false,
+            "fresh": true,
+            "global_batch": 128,
+            "init_seed": 19137,
+            "job_id": "750001",
+            "name": "q7b-L15P80-mse5-s19137",
+            "no_dependencies": true,
+            "optimizer_update_budget": 640,
+            "partition": "acd_u",
+            "primary_metric": "Top512_real_Mixed",
+            "ready": {
+              "bytes": 2393,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-MSE-M5-seed19137-plan2026102302-L15P80-8192-20261023-v1/mse-M5/ready.json",
+              "sha256": "d6bd1e9d0e4b6d2ec77d5b1963be93a4a25240845beb4800b18aaffbdc2b89b6"
+            },
+            "replication_epoch": 7,
+            "replication_state": "raw",
+            "resume_checkpoint": null,
+            "source_commit": "92ec87b0c1a02a068517c8ed84aa4b8f5727599c",
+            "time": 1792696312.7670772,
+            "train_plan_seed": 2026102302
+          },
+          "selected_after_viewing_dev": true
+        }
+      }
+    },
+    {
+      "experiment": "CURRENT64",
+      "seed": 1,
+      "epoch": 10,
+      "state": "raw",
+      "actual_training_objective": "TopK-ramp",
+      "budget": {
+        "training_questions": 8192,
+        "checkpoint_batch_attempts": 1280,
+        "global_batch": 64,
+        "actual_metadata": {
+          "epoch": 10,
+          "state": "raw",
+          "batch_attempts": 1280,
+          "actual_Adam_updates": 1280,
+          "EMA_updates": 1280,
+          "binding": {
+            "EMA_decay": 0.9995,
+            "architecture": "one_question_packed_global64_detached_window_topk_v1",
+            "cache_window_capacity": 0,
+            "capture_layer": 14,
+            "class_weighting": false,
+            "fixed_m": 5,
+            "fixture": {
+              "bytes": 3880,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/fixture/fixture-complete.json",
+              "sha256": "a269f9d4bf22bef0e30afc7cbc0e9a708fb83cb73230fefa95106b56ec54d936"
+            },
+            "global_batch": 64,
+            "gradient_accumulation": 4,
+            "head_max_positions": 2048,
+            "initial_head_sha256": "777b9a7c77d0402084fcb99929b05c975011e8bf17fe44e4cfe1db016bb02327",
+            "layer": 15,
+            "local_batch": 32,
+            "loss_gradient_scale": "N_eff/current_global_batch",
+            "lr": 5e-06,
+            "micro": 8,
+            "objective": "topk_ramp",
+            "official_actor_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+            "prefix": 80,
+            "question_prompt_occurrences_per_group": 1,
+            "reference_population": 2018,
+            "sampling_independent_of_EM": true,
+            "scaling_unbiased_claimed": false,
+            "seed": 2026102227,
+            "target_top_k": 500,
+            "topk_margin": 1.0,
+            "topk_scope": "current_global64_autograd_plus_detached_historical_scores",
+            "training_questions": 8192,
+            "zero_current_gradient_skips_Adam_and_EMA": true,
+            "zero_ramp_loss_skips_Adam_and_EMA": true
+          },
+          "run_body_AST_SHA256": "8ce0fa36ea08c929ae4b3b486af59f0197a116ddd0f8a390e2ba8dd8313eb2ef",
+          "training_plan_SHAs": {
+            "1": "e4ba49d05892d06c7419dca118bb2d177f414b321456629b8699973ea146e6a8",
+            "2": "c8b2c3c5d10c3860c78810403de3d25a64c03f3fd0c3c9f2c619c83b5646e9ba",
+            "3": "d31030436540ce54ec5702f71159ebecc713c45f0cd60f225965e305e900efdd",
+            "4": "471b39d4271da7684fe05709f97093123efb6a5605bdebdceb29f7655c2f5461",
+            "5": "fef66a07e0f397b4dd8c07b0fad54c42bd7d1d924cdc6d5c8a3f8b33df9f73b7",
+            "6": "4c17f0d6f524fdf0a4eeec6684f40823738adac784785f84461c50ce4e16c5e3",
+            "7": "3714e82f9091fd22b1fdf889d2223ea48e001798aa8140ebdf7a7a0d1615f25d",
+            "8": "e10c43fadf3da9ad18a90205460ac33e4d6c9667d9d26984d5dc756242456611",
+            "9": "211d2d5fd2c0bb6700c449acdb426e37de78453676e670a5885b6df10eb90085",
+            "10": "b45fe305bb77f68b85eb39375bf7083fda084c45ececf3966c2e0978829b58e0"
+          }
+        }
+      },
+      "trainA": null,
+      "trainB": {
+        "questions": 2048,
+        "true_Mixed_questions": 888,
+        "fixed_diagnostic_loss": {
+          "kind": "fixed-pool TopK-ramp loss",
+          "value": null,
+          "missing_reason": "Not computed/saved on fixed diagnostic pools; online optimizer-batch loss is deliberately not substituted."
+        },
+        "Mixed_BA": 0.6764950295122709,
+        "Mixed_recall": 0.36936936936936937,
+        "all_wrong_FPR": 0.018947368421052633,
+        "all_correct_FPR": 0.004761904761904762,
+        "Top512_Mixed": 449,
+        "Top512_fraction": 0.876953125,
+        "Mixed_AUC": 0.8405851972662317,
+        "threshold": 0.5,
+        "variance_MSE": null,
+        "variance_MAE": null
+      },
+      "development": {
+        "questions": 2048,
+        "true_Mixed_questions": 663,
+        "fixed_diagnostic_loss": {
+          "kind": "fixed-pool TopK-ramp loss",
+          "value": null,
+          "missing_reason": "Not computed/saved on fixed diagnostic pools; online optimizer-batch loss is deliberately not substituted."
+        },
+        "Mixed_BA": 0.5766524549280972,
+        "Mixed_recall": 0.24283559577677225,
+        "all_wrong_FPR": 0.09573459715639811,
+        "all_correct_FPR": 0.0696969696969697,
+        "Top512_Mixed": 257,
+        "Top512_fraction": 0.501953125,
+        "Mixed_AUC": 0.670856679244872,
+        "threshold": 0.5,
+        "variance_MSE": null,
+        "variance_MAE": null
+      },
+      "source": {
+        "summary": "viewed2048-current64-window2018-sameE10-comparison/actual-latest.json",
+        "key": "CURRENT64_seed1",
+        "remote": {
+          "predictions": {
+            "fixed_validation2048_G5": {
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/current64/epoch-10-fixed_validation2048_G5-predictions.jsonl.gz",
+              "bytes": 78337,
+              "sha256": "7f7c679a1ae48446172446ebb0516f3be7257f1899d83d40068b2e0acc465f73"
+            },
+            "fixed_train2048_G5": {
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/current64/epoch-10-fixed_train2048_G5-predictions.jsonl.gz",
+              "bytes": 79902,
+              "sha256": "5799c0b7ab5b9e3ef34a1cfeab2a2699c5a5430d4d40e89fda13a8bc4dd781dd"
+            }
+          },
+          "evaluation": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/current64/evaluation-epoch-10.json",
+            "bytes": 4966,
+            "sha256": "1b63708692ff66865b4f68816f68cb21a154cc364930341d7fdcdd83d74671b0"
+          },
+          "source_publication": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/source-publication.json",
+            "bytes": 1567,
+            "sha256": "db6a7c7cc8b7376ac42dc65fba21086a378079611cc906260c77d7ff6aff8868"
+          },
+          "root_submission": {
+            "CPUs": 12,
+            "EMA_decay": 0.9995,
+            "GPUs": 2,
+            "batch_attempt_budget": 1280,
+            "cache_window_capacity": 0,
+            "cell": "current64",
+            "entry": {
+              "bytes": 1727,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/current64/training.sbatch",
+              "sha256": "2781288ae1a55da956c749073ebfa9c47788a3beb6cfde98be25fdf41e58ee28"
+            },
+            "epochs": 10,
+            "exclude": "ACD1-13",
+            "final4096_read": false,
+            "fixture_reuse": {
+              "bytes": 1267,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/fixture-reuse.json",
+              "sha256": "c6b5403f356b53f40bec21a024ecaf393d7dd5fc943cae59948bb76eefb9106c"
+            },
+            "global_batch": 64,
+            "historical_groups_at_capacity": 0,
+            "job_id": "749889",
+            "layer": 15,
+            "memory_GiB": 128,
+            "name": "q7b-L15P80-current64",
+            "no_dependencies": true,
+            "partition": "acd_u",
+            "prefix": 80,
+            "ready": {
+              "bytes": 2217,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/current64/ready.json",
+              "sha256": "33920169fccc37a5b4f53d1e5b24ac247e9b71f4c08e7e760230a6ee03eca69a"
+            },
+            "reference_population": 2018,
+            "source_commit": "237968e8acb8ffd8b5ebcc1c8197247878926ce0",
+            "target_top_k": 500,
+            "time": 1792693186.0148463,
+            "time_limit": "02:00:00"
+          },
+          "module_source": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/code-237968e8acb8/reproduction/operations/qwen7b_warmup/online_packed_window_topk.py",
+            "bytes": 17771,
+            "sha256": "32299ef79467d7d5eb45c7e0c2f7348e8e5efe5f2160d03ad829a74035ad44a5"
+          }
+        }
+      }
+    },
+    {
+      "experiment": "CURRENT64",
+      "seed": 2,
+      "epoch": 10,
+      "state": "raw",
+      "actual_training_objective": "TopK-ramp",
+      "budget": {
+        "training_questions": 8192,
+        "checkpoint_batch_attempts": 1280,
+        "global_batch": 64,
+        "actual_metadata": {
+          "epoch": 10,
+          "state": "raw",
+          "batch_attempts": 1280,
+          "actual_Adam_updates": 1280,
+          "EMA_updates": 1280,
+          "binding": {
+            "EMA_decay": 0.9995,
+            "architecture": "one_question_packed_global64_detached_window_topk_v1",
+            "cache_window_capacity": 0,
+            "capture_layer": 14,
+            "class_weighting": false,
+            "diagnostic_seed": 2026102228,
+            "fixed_m": 5,
+            "fixture": {
+              "bytes": 3880,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/fixture/fixture-complete.json",
+              "sha256": "a269f9d4bf22bef0e30afc7cbc0e9a708fb83cb73230fefa95106b56ec54d936"
+            },
+            "global_batch": 64,
+            "gradient_accumulation": 4,
+            "head_max_positions": 2048,
+            "init_seed": 19137,
+            "initial_head_sha256": "10684fda52c0f9f7b670b0472ccd8b7e581346e4d01572bc078a143cc782b41e",
+            "layer": 15,
+            "local_batch": 32,
+            "loss_gradient_scale": "N_eff/current_global_batch",
+            "lr": 5e-06,
+            "micro": 8,
+            "objective": "topk_ramp",
+            "official_actor_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+            "prefix": 80,
+            "question_prompt_occurrences_per_group": 1,
+            "reference_population": 2018,
+            "sampling_independent_of_EM": true,
+            "scaling_unbiased_claimed": false,
+            "seed": 2026102302,
+            "seed_source": "explicit_CLI",
+            "target_top_k": 500,
+            "topk_margin": 1.0,
+            "topk_scope": "current_global64_autograd_plus_detached_historical_scores",
+            "train_plan_seed": 2026102302,
+            "training_questions": 8192,
+            "zero_current_gradient_skips_Adam_and_EMA": true,
+            "zero_ramp_loss_skips_Adam_and_EMA": true
+          },
+          "run_body_AST_SHA256": "5bf019ea7a6f79356d87e987528ceea99def1cff89d708e29fad77caaa644a3d",
+          "training_plan_SHAs": {
+            "1": "afaddd2f808c46ae606ae4f056af37c606bc6eb08bfbd1ffaa5e31f13a1f18d6",
+            "2": "71fb93b06211528e9b7b644342d6975ee85244080560d45943e55dc0de0814fa",
+            "3": "fd9f53e0c79999a255358adea66b63261f50bd22f5f1bce903a11233f9034c5f",
+            "4": "e3aad370c9dcc41ac034f6911296035d9167191a261e1b574f39550cbe14ced8",
+            "5": "11ef56e4113246e1dd4e421481183f5f0d0aaefbb8ee8806321f8b8fde32884c",
+            "6": "314681f47c0f1d92461fd4d4c32528e5d6bb5d499f1c7506b844eb23b61d5a68",
+            "7": "b74769b23f055dbd62fa38bf7f690fa139c01b075c5667306fdd8dab8b5888cd",
+            "8": "1f7de1567bf0d4065fb68e4a1fe2459ba97da3b867fa206cb27f95b22b7c0899",
+            "9": "f33da1c118a2cedd41c0e07d2826a8bf93e80336e85db633c567e8b50545be87",
+            "10": "d66352022e0fcc2ebf96be7ee01a21e4b6a116a074b266fd5df5948324ea44f6"
+          }
+        }
+      },
+      "trainA": null,
+      "trainB": {
+        "questions": 2048,
+        "true_Mixed_questions": 888,
+        "fixed_diagnostic_loss": {
+          "kind": "fixed-pool TopK-ramp loss",
+          "value": null,
+          "missing_reason": "Not computed/saved on fixed diagnostic pools; online optimizer-batch loss is deliberately not substituted."
+        },
+        "Mixed_BA": 0.7593817955886921,
+        "Mixed_recall": 0.6903153153153153,
+        "all_wrong_FPR": 0.17894736842105263,
+        "all_correct_FPR": 0.1380952380952381,
+        "Top512_Mixed": 449,
+        "Top512_fraction": 0.876953125,
+        "Mixed_AUC": 0.8403158007145076,
+        "threshold": 0.5,
+        "variance_MSE": null,
+        "variance_MAE": null
+      },
+      "development": {
+        "questions": 2048,
+        "true_Mixed_questions": 663,
+        "fixed_diagnostic_loss": {
+          "kind": "fixed-pool TopK-ramp loss",
+          "value": null,
+          "missing_reason": "Not computed/saved on fixed diagnostic pools; online optimizer-batch loss is deliberately not substituted."
+        },
+        "Mixed_BA": 0.6248188139460171,
+        "Mixed_recall": 0.555052790346908,
+        "all_wrong_FPR": 0.32701421800947866,
+        "all_correct_FPR": 0.23636363636363636,
+        "Top512_Mixed": 262,
+        "Top512_fraction": 0.51171875,
+        "Mixed_AUC": 0.6747880490713364,
+        "threshold": 0.5,
+        "variance_MSE": null,
+        "variance_MAE": null
+      },
+      "source": {
+        "summary": "viewed2048-current64-window2018-sameE10-comparison/actual-latest.json",
+        "key": "CURRENT64_seed2",
+        "remote": {
+          "predictions": {
+            "fixed_validation2048_G5": {
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-current64-seed19137-plan2026102302-L15P80-8192-20261023-v1/current64/epoch-10-fixed_validation2048_G5-predictions.jsonl.gz",
+              "bytes": 83682,
+              "sha256": "d9a7e42978914aecca9b1a5c1fc52eb0f7d221f11595881bce5e324c6907f1f6"
+            },
+            "fixed_train2048_G5": {
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-current64-seed19137-plan2026102302-L15P80-8192-20261023-v1/current64/epoch-10-fixed_train2048_G5-predictions.jsonl.gz",
+              "bytes": 84971,
+              "sha256": "40e8a1879755e8e15bd2bbe47189ec523fa454b59ea4b60259a3c28c2dcb161a"
+            }
+          },
+          "evaluation": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-current64-seed19137-plan2026102302-L15P80-8192-20261023-v1/current64/evaluation-epoch-10.json",
+            "bytes": 5159,
+            "sha256": "c5c050d09dcccf6b4fb0662dcfd8d16df7fc653b15f81a50359c491ff78028d3"
+          },
+          "source_publication": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-current64-seed19137-plan2026102302-L15P80-8192-20261023-v1/source-publication.json",
+            "bytes": 2840,
+            "sha256": "f01a5a4111ac0c4c21637658b07936893fb23b65bacfaf5ebdebb5904495b7a6"
+          },
+          "root_submission": {
+            "GPUs": 2,
+            "batch_attempt_budget": 1280,
+            "entry": {
+              "bytes": 1861,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-current64-seed19137-plan2026102302-L15P80-8192-20261023-v1/current64/training.sbatch",
+              "sha256": "bfed2ae69a56f4f3550da8858036d7248c3faa9aa59d9ebe8e09cb0fd096c825"
+            },
+            "epochs": 10,
+            "final4096_read": false,
+            "fresh": true,
+            "global_batch": 64,
+            "init_seed": 19137,
+            "job_id": "749965",
+            "name": "q7b-L15P80-c64-s19137",
+            "no_dependencies": true,
+            "partition": "acd_u",
+            "primary_metric": "Top512_real_Mixed",
+            "ready": {
+              "bytes": 2733,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-current64-seed19137-plan2026102302-L15P80-8192-20261023-v1/current64/ready.json",
+              "sha256": "7b1713cf1d2fbd1a76f62e16e67946c0eacdb3a719cbe8cc8511aa1cffa64c2a"
+            },
+            "replication_epoch": 5,
+            "replication_state": "raw",
+            "resume_checkpoint": null,
+            "source_commit": "34579cbfb9729afb21c88b540b7ded7d3db823f4",
+            "time": 1792695673.9502823,
+            "train_plan_seed": 2026102302
+          },
+          "module_source": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-current64-seed19137-plan2026102302-L15P80-8192-20261023-v1/code-34579cbfb972/reproduction/operations/qwen7b_warmup/online_packed_window_topk_seeded.py",
+            "bytes": 19774,
+            "sha256": "a2dd6286efeb6b8d9aa24068acd1f51581ead24393add716c1458f0013b7c057"
+          }
+        }
+      }
+    },
+    {
+      "experiment": "WINDOW2018",
+      "seed": 1,
+      "epoch": 10,
+      "state": "raw",
+      "actual_training_objective": "TopK-ramp",
+      "budget": {
+        "training_questions": 8192,
+        "checkpoint_batch_attempts": 1280,
+        "global_batch": 64,
+        "actual_metadata": {
+          "epoch": 10,
+          "state": "raw",
+          "batch_attempts": 1280,
+          "actual_Adam_updates": 1278,
+          "EMA_updates": 1278,
+          "binding": {
+            "EMA_decay": 0.9995,
+            "architecture": "one_question_packed_global64_detached_window_topk_v1",
+            "cache_window_capacity": 2018,
+            "capture_layer": 14,
+            "class_weighting": false,
+            "fixed_m": 5,
+            "fixture": {
+              "bytes": 3880,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/fixture/fixture-complete.json",
+              "sha256": "a269f9d4bf22bef0e30afc7cbc0e9a708fb83cb73230fefa95106b56ec54d936"
+            },
+            "global_batch": 64,
+            "gradient_accumulation": 4,
+            "head_max_positions": 2048,
+            "initial_head_sha256": "777b9a7c77d0402084fcb99929b05c975011e8bf17fe44e4cfe1db016bb02327",
+            "layer": 15,
+            "local_batch": 32,
+            "loss_gradient_scale": "N_eff/current_global_batch",
+            "lr": 5e-06,
+            "micro": 8,
+            "objective": "topk_ramp",
+            "official_actor_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+            "prefix": 80,
+            "question_prompt_occurrences_per_group": 1,
+            "reference_population": 2018,
+            "sampling_independent_of_EM": true,
+            "scaling_unbiased_claimed": false,
+            "seed": 2026102227,
+            "target_top_k": 500,
+            "topk_margin": 1.0,
+            "topk_scope": "current_global64_autograd_plus_detached_historical_scores",
+            "training_questions": 8192,
+            "zero_current_gradient_skips_Adam_and_EMA": true,
+            "zero_ramp_loss_skips_Adam_and_EMA": true
+          },
+          "run_body_AST_SHA256": "8ce0fa36ea08c929ae4b3b486af59f0197a116ddd0f8a390e2ba8dd8313eb2ef",
+          "training_plan_SHAs": {
+            "1": "e4ba49d05892d06c7419dca118bb2d177f414b321456629b8699973ea146e6a8",
+            "2": "c8b2c3c5d10c3860c78810403de3d25a64c03f3fd0c3c9f2c619c83b5646e9ba",
+            "3": "d31030436540ce54ec5702f71159ebecc713c45f0cd60f225965e305e900efdd",
+            "4": "471b39d4271da7684fe05709f97093123efb6a5605bdebdceb29f7655c2f5461",
+            "5": "fef66a07e0f397b4dd8c07b0fad54c42bd7d1d924cdc6d5c8a3f8b33df9f73b7",
+            "6": "4c17f0d6f524fdf0a4eeec6684f40823738adac784785f84461c50ce4e16c5e3",
+            "7": "3714e82f9091fd22b1fdf889d2223ea48e001798aa8140ebdf7a7a0d1615f25d",
+            "8": "e10c43fadf3da9ad18a90205460ac33e4d6c9667d9d26984d5dc756242456611",
+            "9": "211d2d5fd2c0bb6700c449acdb426e37de78453676e670a5885b6df10eb90085",
+            "10": "b45fe305bb77f68b85eb39375bf7083fda084c45ececf3966c2e0978829b58e0"
+          }
+        }
+      },
+      "trainA": null,
+      "trainB": {
+        "questions": 2048,
+        "true_Mixed_questions": 888,
+        "fixed_diagnostic_loss": {
+          "kind": "fixed-pool TopK-ramp loss",
+          "value": null,
+          "missing_reason": "Not computed/saved on fixed diagnostic pools; online optimizer-batch loss is deliberately not substituted."
+        },
+        "Mixed_BA": 0.5525318421870146,
+        "Mixed_recall": 0.9774774774774775,
+        "all_wrong_FPR": 0.9042105263157895,
+        "all_correct_FPR": 0.7285714285714285,
+        "Top512_Mixed": 415,
+        "Top512_fraction": 0.810546875,
+        "Mixed_AUC": 0.7849764095992544,
+        "threshold": 0.5,
+        "variance_MSE": null,
+        "variance_MAE": null
+      },
+      "development": {
+        "questions": 2048,
+        "true_Mixed_questions": 663,
+        "fixed_diagnostic_loss": {
+          "kind": "fixed-pool TopK-ramp loss",
+          "value": null,
+          "missing_reason": "Not computed/saved on fixed diagnostic pools; online optimizer-batch loss is deliberately not substituted."
+        },
+        "Mixed_BA": 0.5484228237254357,
+        "Mixed_recall": 0.9683257918552036,
+        "all_wrong_FPR": 0.919431279620853,
+        "all_correct_FPR": 0.7181818181818181,
+        "Top512_Mixed": 269,
+        "Top512_fraction": 0.525390625,
+        "Mixed_AUC": 0.6861264027966087,
+        "threshold": 0.5,
+        "variance_MSE": null,
+        "variance_MAE": null
+      },
+      "source": {
+        "summary": "viewed2048-current64-window2018-sameE10-comparison/actual-latest.json",
+        "key": "WINDOW2018_seed1",
+        "remote": {
+          "predictions": {
+            "fixed_validation2048_G5": {
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/window2018/epoch-10-fixed_validation2048_G5-predictions.jsonl.gz",
+              "bytes": 81525,
+              "sha256": "627fd4118a11cc19713447894227c523a8e0316d65131ef69ff97c668cfa3321"
+            },
+            "fixed_train2048_G5": {
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/window2018/epoch-10-fixed_train2048_G5-predictions.jsonl.gz",
+              "bytes": 82982,
+              "sha256": "d36ced748da4eaf21e95c8354205690b6992be5cd5595b8304346034a359e5da"
+            }
+          },
+          "evaluation": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/window2018/evaluation-epoch-10.json",
+            "bytes": 4956,
+            "sha256": "0c607d0d9cdae8e6e5fc0e78a0bd59ec3ed5c2df41b1d49e402249cf5350b7d7"
+          },
+          "source_publication": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/source-publication.json",
+            "bytes": 1567,
+            "sha256": "db6a7c7cc8b7376ac42dc65fba21086a378079611cc906260c77d7ff6aff8868"
+          },
+          "root_submission": {
+            "CPUs": 12,
+            "EMA_decay": 0.9995,
+            "GPUs": 2,
+            "batch_attempt_budget": 1280,
+            "cache_window_capacity": 2018,
+            "cell": "window2018",
+            "entry": {
+              "bytes": 1734,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/window2018/training.sbatch",
+              "sha256": "7b825f80c398b1735122d18a55c1eb64929719a3cbd852d4e18ccd9bac9d4340"
+            },
+            "epochs": 10,
+            "exclude": "ACD1-13",
+            "final4096_read": false,
+            "fixture_reuse": {
+              "bytes": 1267,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/fixture-reuse.json",
+              "sha256": "c6b5403f356b53f40bec21a024ecaf393d7dd5fc943cae59948bb76eefb9106c"
+            },
+            "global_batch": 64,
+            "historical_groups_at_capacity": 1954,
+            "job_id": "749890",
+            "layer": 15,
+            "memory_GiB": 128,
+            "name": "q7b-L15P80-window2018",
+            "no_dependencies": true,
+            "partition": "acd_u",
+            "prefix": 80,
+            "ready": {
+              "bytes": 2225,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/window2018/ready.json",
+              "sha256": "5614a44de9ea68469d37d1e88fb59f1f00322b8d2866ff3074f0644ba8de1754"
+            },
+            "reference_population": 2018,
+            "source_commit": "237968e8acb8ffd8b5ebcc1c8197247878926ce0",
+            "target_top_k": 500,
+            "time": 1792693187.3208065,
+            "time_limit": "02:00:00"
+          },
+          "module_source": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1/code-237968e8acb8/reproduction/operations/qwen7b_warmup/online_packed_window_topk.py",
+            "bytes": 17771,
+            "sha256": "32299ef79467d7d5eb45c7e0c2f7348e8e5efe5f2160d03ad829a74035ad44a5"
+          }
+        }
+      }
+    },
+    {
+      "experiment": "WINDOW2018",
+      "seed": 2,
+      "epoch": 10,
+      "state": "raw",
+      "actual_training_objective": "TopK-ramp",
+      "budget": {
+        "training_questions": 8192,
+        "checkpoint_batch_attempts": 1280,
+        "global_batch": 64,
+        "actual_metadata": {
+          "epoch": 10,
+          "state": "raw",
+          "batch_attempts": 1280,
+          "actual_Adam_updates": 1273,
+          "EMA_updates": 1273,
+          "binding": {
+            "EMA_decay": 0.9995,
+            "architecture": "one_question_packed_global64_detached_window_topk_v1",
+            "cache_window_capacity": 2018,
+            "capture_layer": 14,
+            "class_weighting": false,
+            "diagnostic_seed": 2026102228,
+            "fixed_m": 5,
+            "fixture": {
+              "bytes": 3880,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/fixture/fixture-complete.json",
+              "sha256": "a269f9d4bf22bef0e30afc7cbc0e9a708fb83cb73230fefa95106b56ec54d936"
+            },
+            "global_batch": 64,
+            "gradient_accumulation": 4,
+            "head_max_positions": 2048,
+            "init_seed": 19137,
+            "initial_head_sha256": "10684fda52c0f9f7b670b0472ccd8b7e581346e4d01572bc078a143cc782b41e",
+            "layer": 15,
+            "local_batch": 32,
+            "loss_gradient_scale": "N_eff/current_global_batch",
+            "lr": 5e-06,
+            "micro": 8,
+            "objective": "topk_ramp",
+            "official_actor_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+            "prefix": 80,
+            "question_prompt_occurrences_per_group": 1,
+            "reference_population": 2018,
+            "sampling_independent_of_EM": true,
+            "scaling_unbiased_claimed": false,
+            "seed": 2026102302,
+            "seed_source": "explicit_CLI",
+            "target_top_k": 500,
+            "topk_margin": 1.0,
+            "topk_scope": "current_global64_autograd_plus_detached_historical_scores",
+            "train_plan_seed": 2026102302,
+            "training_questions": 8192,
+            "zero_current_gradient_skips_Adam_and_EMA": true,
+            "zero_ramp_loss_skips_Adam_and_EMA": true
+          },
+          "run_body_AST_SHA256": "5bf019ea7a6f79356d87e987528ceea99def1cff89d708e29fad77caaa644a3d",
+          "training_plan_SHAs": {
+            "1": "afaddd2f808c46ae606ae4f056af37c606bc6eb08bfbd1ffaa5e31f13a1f18d6",
+            "2": "71fb93b06211528e9b7b644342d6975ee85244080560d45943e55dc0de0814fa",
+            "3": "fd9f53e0c79999a255358adea66b63261f50bd22f5f1bce903a11233f9034c5f",
+            "4": "e3aad370c9dcc41ac034f6911296035d9167191a261e1b574f39550cbe14ced8",
+            "5": "11ef56e4113246e1dd4e421481183f5f0d0aaefbb8ee8806321f8b8fde32884c",
+            "6": "314681f47c0f1d92461fd4d4c32528e5d6bb5d499f1c7506b844eb23b61d5a68",
+            "7": "b74769b23f055dbd62fa38bf7f690fa139c01b075c5667306fdd8dab8b5888cd",
+            "8": "1f7de1567bf0d4065fb68e4a1fe2459ba97da3b867fa206cb27f95b22b7c0899",
+            "9": "f33da1c118a2cedd41c0e07d2826a8bf93e80336e85db633c567e8b50545be87",
+            "10": "d66352022e0fcc2ebf96be7ee01a21e4b6a116a074b266fd5df5948324ea44f6"
+          }
+        }
+      },
+      "trainA": null,
+      "trainB": {
+        "questions": 2048,
+        "true_Mixed_questions": 888,
+        "fixed_diagnostic_loss": {
+          "kind": "fixed-pool TopK-ramp loss",
+          "value": null,
+          "missing_reason": "Not computed/saved on fixed diagnostic pools; online optimizer-batch loss is deliberately not substituted."
+        },
+        "Mixed_BA": 0.5073275862068966,
+        "Mixed_recall": 1.0,
+        "all_wrong_FPR": 0.9842105263157894,
+        "all_correct_FPR": 0.9904761904761905,
+        "Top512_Mixed": 419,
+        "Top512_fraction": 0.818359375,
+        "Mixed_AUC": 0.801196509009009,
+        "threshold": 0.5,
+        "variance_MSE": null,
+        "variance_MAE": null
+      },
+      "development": {
+        "questions": 2048,
+        "true_Mixed_questions": 663,
+        "fixed_diagnostic_loss": {
+          "kind": "fixed-pool TopK-ramp loss",
+          "value": null,
+          "missing_reason": "Not computed/saved on fixed diagnostic pools; online optimizer-batch loss is deliberately not substituted."
+        },
+        "Mixed_BA": 0.5050541516245487,
+        "Mixed_recall": 1.0,
+        "all_wrong_FPR": 0.9924170616113744,
+        "all_correct_FPR": 0.9818181818181818,
+        "Top512_Mixed": 273,
+        "Top512_fraction": 0.533203125,
+        "Mixed_AUC": 0.692347441614802,
+        "threshold": 0.5,
+        "variance_MSE": null,
+        "variance_MAE": null
+      },
+      "source": {
+        "summary": "viewed2048-current64-window2018-sameE10-comparison/actual-latest.json",
+        "key": "WINDOW2018_seed2",
+        "remote": {
+          "predictions": {
+            "fixed_validation2048_G5": {
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-window2018-seed19137-plan2026102302-L15P80-8192-20261023-v2/window2018/epoch-10-fixed_validation2048_G5-predictions.jsonl.gz",
+              "bytes": 84812,
+              "sha256": "41f90a5a4e348563c02846b5b2c5ca7bdc40e41cb8af050bb7e8abb9b1fd14e3"
+            },
+            "fixed_train2048_G5": {
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-window2018-seed19137-plan2026102302-L15P80-8192-20261023-v2/window2018/epoch-10-fixed_train2048_G5-predictions.jsonl.gz",
+              "bytes": 86136,
+              "sha256": "315cde6619721adea2e5b926a2aea679e03becbfc2c5b07446969f59aced802e"
+            }
+          },
+          "evaluation": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-window2018-seed19137-plan2026102302-L15P80-8192-20261023-v2/window2018/evaluation-epoch-10.json",
+            "bytes": 5194,
+            "sha256": "72bb4ca60fe54e7e7519d2850469778c76c35535e73d054e94f47b547bc0a1ad"
+          },
+          "source_publication": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-window2018-seed19137-plan2026102302-L15P80-8192-20261023-v2/source-publication.json",
+            "bytes": 2835,
+            "sha256": "cbe9ebc96b24197ed3b7df511232541f32fa1b7bedee9ea787cd000b12a4b24d"
+          },
+          "root_submission": {
+            "GPUs": 2,
+            "actual_entry_CLI_2018_accepted": true,
+            "batch_attempt_budget": 1280,
+            "cache_window_total": 2018,
+            "current_differentiable": 64,
+            "entry": {
+              "bytes": 1878,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-window2018-seed19137-plan2026102302-L15P80-8192-20261023-v2/window2018/training.sbatch",
+              "sha256": "d15b7ab72b9b5fed7233fe605c96b5430a2b989777c3bc6b94eba50c2fea89f7"
+            },
+            "epochs": 10,
+            "final4096_read": false,
+            "fresh": true,
+            "global_batch": 64,
+            "historical_detached_max": 1954,
+            "init_seed": 19137,
+            "job_id": "750069",
+            "name": "q7b-L15P80-w2018v2-s19137",
+            "no_dependencies": true,
+            "partition": "acd_u",
+            "previous_attempt_training_updates": 0,
+            "primary_metric": "Top512_real_Mixed",
+            "ready": {
+              "bytes": 3070,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-window2018-seed19137-plan2026102302-L15P80-8192-20261023-v2/window2018/ready.json",
+              "sha256": "877c97add231fd6c90df4245460536a04d731617f180521097400cf89dc76b47"
+            },
+            "replication_epoch": 10,
+            "replication_state": "raw",
+            "resume_checkpoint": null,
+            "source_commit": "895051de98c6b2a4f5e13468623034a625b97eb8",
+            "superseded_failed_job": "750023",
+            "time": 1792697847.5211694,
+            "train_plan_seed": 2026102302
+          },
+          "module_source": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-window2018-seed19137-plan2026102302-L15P80-8192-20261023-v2/code-895051de98c6/reproduction/operations/qwen7b_warmup/online_packed_window_topk_seeded_v2.py",
+            "bytes": 19827,
+            "sha256": "fcd19cbf3f797fc1ba22b69be2455e2ea77a58cf592af57ef3c6af6aae363047"
+          }
+        }
+      }
+    },
+    {
+      "experiment": "fullP20 mse",
+      "seed": 1,
+      "epoch": 10,
+      "state": "raw",
+      "actual_training_objective": "MSE(4v)",
+      "budget": {
+        "training_questions": 169028,
+        "cursor": 13210,
+        "layer": 21,
+        "prefix": 20,
+        "M": "uniform3..10"
+      },
+      "trainA": null,
+      "trainB": {
+        "questions": 2048,
+        "true_Mixed_questions": 888,
+        "fixed_diagnostic_loss": {
+          "kind": "variance MSE(v)",
+          "value": 0.004807515627124008,
+          "missing_reason": null,
+          "note": "Fixed diagnostic in variance units; actual model trains on4v."
+        },
+        "Mixed_BA": 0.79028036657347,
+        "Mixed_recall": 0.634009009009009,
+        "all_wrong_FPR": 0.04736842105263158,
+        "all_correct_FPR": 0.08095238095238096,
+        "Top512_Mixed": 480,
+        "Top512_fraction": 0.9375,
+        "Mixed_AUC": null,
+        "Mixed_AUC_missing_reason": "This saved E10 producer metric does not contain ROC-AUC.",
+        "threshold": 0.08,
+        "variance_MSE": 0.004807515627124008,
+        "variance_MAE": 0.05143435051782944
+      },
+      "development": {
+        "questions": 2048,
+        "true_Mixed_questions": 663,
+        "fixed_diagnostic_loss": {
+          "kind": "variance MSE(v)",
+          "value": 0.00939902802510836,
+          "missing_reason": null,
+          "note": "Fixed diagnostic in variance units; actual model trains on4v."
+        },
+        "Mixed_BA": 0.5722838427234265,
+        "Mixed_recall": 0.3936651583710407,
+        "all_wrong_FPR": 0.22464454976303316,
+        "all_correct_FPR": 0.32727272727272727,
+        "Top512_Mixed": 222,
+        "Top512_fraction": 0.43359375,
+        "Mixed_AUC": null,
+        "Mixed_AUC_missing_reason": "This saved E10 producer metric does not contain ROC-AUC.",
+        "threshold": 0.08,
+        "variance_MSE": 0.00939902802510836,
+        "variance_MAE": 0.0755220320150056
+      },
+      "source": {
+        "summary": "packed-variance-full169028/agent-observations-mae/attempt-749576/actual-same-epoch-three-arm-10.json",
+        "arm": "mse",
+        "state": "raw",
+        "job_id": "749568"
+      }
+    },
+    {
+      "experiment": "fullP20 mse",
+      "seed": 1,
+      "epoch": 10,
+      "state": "EMA",
+      "actual_training_objective": "MSE(4v)",
+      "budget": {
+        "training_questions": 169028,
+        "cursor": 13210,
+        "layer": 21,
+        "prefix": 20,
+        "M": "uniform3..10"
+      },
+      "trainA": null,
+      "trainB": {
+        "questions": 2048,
+        "true_Mixed_questions": 888,
+        "fixed_diagnostic_loss": {
+          "kind": "variance MSE(v)",
+          "value": 0.005289586572751464,
+          "missing_reason": null,
+          "note": "Fixed diagnostic in variance units; actual model trains on4v."
+        },
+        "Mixed_BA": 0.7758970177073625,
+        "Mixed_recall": 0.6216216216216216,
+        "all_wrong_FPR": 0.05789473684210526,
+        "all_correct_FPR": 0.12380952380952381,
+        "Top512_Mixed": 477,
+        "Top512_fraction": 0.931640625,
+        "Mixed_AUC": null,
+        "Mixed_AUC_missing_reason": "This saved E10 producer metric does not contain ROC-AUC.",
+        "threshold": 0.08,
+        "variance_MSE": 0.005289586572751464,
+        "variance_MAE": 0.056392112928474486
+      },
+      "development": {
+        "questions": 2048,
+        "true_Mixed_questions": 663,
+        "fixed_diagnostic_loss": {
+          "kind": "variance MSE(v)",
+          "value": 0.00903066830947704,
+          "missing_reason": null,
+          "note": "Fixed diagnostic in variance units; actual model trains on4v."
+        },
+        "Mixed_BA": 0.5752040555183473,
+        "Mixed_recall": 0.3951734539969834,
+        "all_wrong_FPR": 0.22748815165876776,
+        "all_correct_FPR": 0.3,
+        "Top512_Mixed": 221,
+        "Top512_fraction": 0.431640625,
+        "Mixed_AUC": null,
+        "Mixed_AUC_missing_reason": "This saved E10 producer metric does not contain ROC-AUC.",
+        "threshold": 0.08,
+        "variance_MSE": 0.00903066830947704,
+        "variance_MAE": 0.07585795806481427
+      },
+      "source": {
+        "summary": "packed-variance-full169028/agent-observations-mae/attempt-749576/actual-same-epoch-three-arm-10.json",
+        "arm": "mse",
+        "state": "EMA",
+        "job_id": "749568"
+      }
+    },
+    {
+      "experiment": "fullP20 mae",
+      "seed": 1,
+      "epoch": 10,
+      "state": "raw",
+      "actual_training_objective": "MAE(4v)",
+      "budget": {
+        "training_questions": 169028,
+        "cursor": 13210,
+        "layer": 21,
+        "prefix": 20,
+        "M": "uniform3..10"
+      },
+      "trainA": null,
+      "trainB": {
+        "questions": 2048,
+        "true_Mixed_questions": 888,
+        "fixed_diagnostic_loss": {
+          "kind": "variance MAE(v)",
+          "value": 0.07040013289917166,
+          "missing_reason": null,
+          "note": "Fixed diagnostic in variance units; actual model trains on4v."
+        },
+        "Mixed_BA": 0.5767357875116496,
+        "Mixed_recall": 0.16554054054054054,
+        "all_wrong_FPR": 0.00631578947368421,
+        "all_correct_FPR": 0.0380952380952381,
+        "Top512_Mixed": 339,
+        "Top512_fraction": 0.662109375,
+        "Mixed_AUC": null,
+        "Mixed_AUC_missing_reason": "This saved E10 producer metric does not contain ROC-AUC.",
+        "threshold": 0.08,
+        "variance_MSE": 0.012741808043373612,
+        "variance_MAE": 0.07040013289917166
+      },
+      "development": {
+        "questions": 2048,
+        "true_Mixed_questions": 663,
+        "fixed_diagnostic_loss": {
+          "kind": "variance MAE(v)",
+          "value": 0.0625021270112763,
+          "missing_reason": null,
+          "note": "Fixed diagnostic in variance units; actual model trains on4v."
+        },
+        "Mixed_BA": 0.5282416104459001,
+        "Mixed_recall": 0.10558069381598793,
+        "all_wrong_FPR": 0.04549763033175355,
+        "all_correct_FPR": 0.06060606060606061,
+        "Top512_Mixed": 222,
+        "Top512_fraction": 0.43359375,
+        "Mixed_AUC": null,
+        "Mixed_AUC_missing_reason": "This saved E10 producer metric does not contain ROC-AUC.",
+        "threshold": 0.08,
+        "variance_MSE": 0.011816339270332836,
+        "variance_MAE": 0.0625021270112763
+      },
+      "source": {
+        "summary": "packed-variance-full169028/agent-observations-mae/attempt-749576/actual-same-epoch-three-arm-10.json",
+        "arm": "mae",
+        "state": "raw",
+        "job_id": "749576"
+      }
+    },
+    {
+      "experiment": "fullP20 mae",
+      "seed": 1,
+      "epoch": 10,
+      "state": "EMA",
+      "actual_training_objective": "MAE(4v)",
+      "budget": {
+        "training_questions": 169028,
+        "cursor": 13210,
+        "layer": 21,
+        "prefix": 20,
+        "M": "uniform3..10"
+      },
+      "trainA": null,
+      "trainB": {
+        "questions": 2048,
+        "true_Mixed_questions": 888,
+        "fixed_diagnostic_loss": {
+          "kind": "variance MAE(v)",
+          "value": 0.07183819457496853,
+          "missing_reason": null,
+          "note": "Fixed diagnostic in variance units; actual model trains on4v."
+        },
+        "Mixed_BA": 0.5685810810810811,
+        "Mixed_recall": 0.16216216216216217,
+        "all_wrong_FPR": 0.015789473684210527,
+        "all_correct_FPR": 0.06666666666666667,
+        "Top512_Mixed": 325,
+        "Top512_fraction": 0.634765625,
+        "Mixed_AUC": null,
+        "Mixed_AUC_missing_reason": "This saved E10 producer metric does not contain ROC-AUC.",
+        "threshold": 0.08,
+        "variance_MSE": 0.01303755732409289,
+        "variance_MAE": 0.07183819457496853
+      },
+      "development": {
+        "questions": 2048,
+        "true_Mixed_questions": 663,
+        "fixed_diagnostic_loss": {
+          "kind": "variance MAE(v)",
+          "value": 0.062023516421918216,
+          "missing_reason": null,
+          "note": "Fixed diagnostic in variance units; actual model trains on4v."
+        },
+        "Mixed_BA": 0.5339137821193459,
+        "Mixed_recall": 0.11764705882352941,
+        "all_wrong_FPR": 0.04075829383886256,
+        "all_correct_FPR": 0.07878787878787878,
+        "Top512_Mixed": 219,
+        "Top512_fraction": 0.427734375,
+        "Mixed_AUC": null,
+        "Mixed_AUC_missing_reason": "This saved E10 producer metric does not contain ROC-AUC.",
+        "threshold": 0.08,
+        "variance_MSE": 0.011660366382456894,
+        "variance_MAE": 0.062023516421918216
+      },
+      "source": {
+        "summary": "packed-variance-full169028/agent-observations-mae/attempt-749576/actual-same-epoch-three-arm-10.json",
+        "arm": "mae",
+        "state": "EMA",
+        "job_id": "749576"
+      }
+    },
+    {
+      "experiment": "fullP20 z_mse_anchor",
+      "seed": 1,
+      "epoch": 10,
+      "state": "raw",
+      "actual_training_objective": "global-batch standardized MSE + original4v MSE anchor",
+      "budget": {
+        "training_questions": 169028,
+        "cursor": 13210,
+        "layer": 21,
+        "prefix": 20,
+        "M": "uniform3..10"
+      },
+      "trainA": null,
+      "trainB": {
+        "questions": 2048,
+        "true_Mixed_questions": 888,
+        "fixed_diagnostic_loss": {
+          "kind": "variance MSE(v)",
+          "value": 0.004168537911822822,
+          "missing_reason": null,
+          "note": "Original-unit fixed-pool diagnostic, not normalized Z-MSE+anchor total or online batch loss."
+        },
+        "Mixed_BA": 0.8216604535570053,
+        "Mixed_recall": 0.670045045045045,
+        "all_wrong_FPR": 0.021052631578947368,
+        "all_correct_FPR": 0.05238095238095238,
+        "Top512_Mixed": 500,
+        "Top512_fraction": 0.9765625,
+        "Mixed_AUC": null,
+        "Mixed_AUC_missing_reason": "This saved E10 producer metric does not contain ROC-AUC.",
+        "threshold": 0.08,
+        "variance_MSE": 0.004168537911822822,
+        "variance_MAE": 0.043923888082377974
+      },
+      "development": {
+        "questions": 2048,
+        "true_Mixed_questions": 663,
+        "fixed_diagnostic_loss": {
+          "kind": "variance MSE(v)",
+          "value": 0.00956995707962692,
+          "missing_reason": null,
+          "note": "Original-unit fixed-pool diagnostic, not normalized Z-MSE+anchor total or online batch loss."
+        },
+        "Mixed_BA": 0.5929578385089109,
+        "Mixed_recall": 0.39819004524886875,
+        "all_wrong_FPR": 0.1990521327014218,
+        "all_correct_FPR": 0.2545454545454545,
+        "Top512_Mixed": 245,
+        "Top512_fraction": 0.478515625,
+        "Mixed_AUC": null,
+        "Mixed_AUC_missing_reason": "This saved E10 producer metric does not contain ROC-AUC.",
+        "threshold": 0.08,
+        "variance_MSE": 0.00956995707962692,
+        "variance_MAE": 0.07230598454358186
+      },
+      "source": {
+        "summary": "packed-variance-full169028/agent-observations-mae/attempt-749576/actual-same-epoch-three-arm-10.json",
+        "arm": "z_mse_anchor",
+        "state": "raw",
+        "job_id": "749577"
+      }
+    },
+    {
+      "experiment": "fullP20 z_mse_anchor",
+      "seed": 1,
+      "epoch": 10,
+      "state": "EMA",
+      "actual_training_objective": "global-batch standardized MSE + original4v MSE anchor",
+      "budget": {
+        "training_questions": 169028,
+        "cursor": 13210,
+        "layer": 21,
+        "prefix": 20,
+        "M": "uniform3..10"
+      },
+      "trainA": null,
+      "trainB": {
+        "questions": 2048,
+        "true_Mixed_questions": 888,
+        "fixed_diagnostic_loss": {
+          "kind": "variance MSE(v)",
+          "value": 0.0043959218743203025,
+          "missing_reason": null,
+          "note": "Original-unit fixed-pool diagnostic, not normalized Z-MSE+anchor total or online batch loss."
+        },
+        "Mixed_BA": 0.8174200062131096,
+        "Mixed_recall": 0.6632882882882883,
+        "all_wrong_FPR": 0.02,
+        "all_correct_FPR": 0.06666666666666667,
+        "Top512_Mixed": 500,
+        "Top512_fraction": 0.9765625,
+        "Mixed_AUC": null,
+        "Mixed_AUC_missing_reason": "This saved E10 producer metric does not contain ROC-AUC.",
+        "threshold": 0.08,
+        "variance_MSE": 0.0043959218743203025,
+        "variance_MAE": 0.047672296712407844
+      },
+      "development": {
+        "questions": 2048,
+        "true_Mixed_questions": 663,
+        "fixed_diagnostic_loss": {
+          "kind": "variance MSE(v)",
+          "value": 0.009245456304327982,
+          "missing_reason": null,
+          "note": "Original-unit fixed-pool diagnostic, not normalized Z-MSE+anchor total or online batch loss."
+        },
+        "Mixed_BA": 0.5855372418336955,
+        "Mixed_recall": 0.4057315233785822,
+        "all_wrong_FPR": 0.21800947867298578,
+        "all_correct_FPR": 0.2878787878787879,
+        "Top512_Mixed": 235,
+        "Top512_fraction": 0.458984375,
+        "Mixed_AUC": null,
+        "Mixed_AUC_missing_reason": "This saved E10 producer metric does not contain ROC-AUC.",
+        "threshold": 0.08,
+        "variance_MSE": 0.009245456304327982,
+        "variance_MAE": 0.07334709804440875
+      },
+      "source": {
+        "summary": "packed-variance-full169028/agent-observations-mae/attempt-749576/actual-same-epoch-three-arm-10.json",
+        "arm": "z_mse_anchor",
+        "state": "EMA",
+        "job_id": "749577"
+      }
+    }
+  ],
+  "pools": {
+    "trainA": {
+      "questions": 2048,
+      "Mixed": 1082,
+      "all_wrong": 720,
+      "all_correct": 246,
+      "note": "Old original E1 fixed training-A; never directly compared to trainB."
+    },
+    "trainB": {
+      "questions": 2048,
+      "Mixed": 888,
+      "all_wrong": 950,
+      "all_correct": 210,
+      "authoritative_metadata_SHA256": "e6e74d92160efb0740ba5c0316c4ee7686f06a499c90cafd5a545f325b62209b"
+    },
+    "development": {
+      "questions": 2048,
+      "Mixed": 663,
+      "all_wrong": 1055,
+      "all_correct": 330,
+      "NQ_only": true,
+      "own_G5_same_question_trajectory_order_and_EM_verified": true
+    }
+  },
+  "comparisons": {
+    "selected_P80_two_seed": {
+      "CURRENT64_E5_raw": {
+        "seed_models": [
+          "CURRENT64_seed1",
+          "CURRENT64_seed2"
+        ],
+        "seed_Top512_Mixed": [
+          266,
+          267
+        ],
+        "two_seed_mean_Top512_Mixed": 266.5,
+        "two_seed_mean_Top512_fraction": 0.5205078125,
+        "two_seed_mean_BA": 0.5669005341653461,
+        "minus_original_E1_EMA": {
+          "Top512_fraction_delta": 0.1201171875,
+          "paired_question_bootstrap_percentile95": [
+            0.080078125,
+            0.1650390625
+          ],
+          "BA_delta": 0.038054516446956344,
+          "BA_paired_question_bootstrap_percentile95": [
+            0.017154683525659624,
+            0.060012846199860595
+          ]
+        }
+      },
+      "MSE_M5_E7_raw": {
+        "seed_models": [
+          "MSE_M5_seed1",
+          "MSE_M5_seed2"
+        ],
+        "seed_Top512_Mixed": [
+          278,
+          277
+        ],
+        "two_seed_mean_Top512_Mixed": 277.5,
+        "two_seed_mean_Top512_fraction": 0.5419921875,
+        "two_seed_mean_BA": 0.6444105940071113,
+        "minus_original_E1_EMA": {
+          "Top512_fraction_delta": 0.1416015625,
+          "paired_question_bootstrap_percentile95": [
+            0.09765625,
+            0.185546875
+          ],
+          "BA_delta": 0.11556457628872152,
+          "BA_paired_question_bootstrap_percentile95": [
+            0.09248689942076253,
+            0.13975418578542786
+          ]
+        }
+      }
+    },
+    "MSE_minus_current64_selected": {
+      "candidate": "MSE_M5_E7_raw_two_seed_average",
+      "baseline": "CURRENT64_E5_raw_two_seed_average",
+      "Top512_fraction_delta": 0.021484375,
+      "paired_question_bootstrap_percentile95": [
+        -0.0029296875,
+        0.041015625
+      ],
+      "causal_objective_only_claimed": false,
+      "confound": "Different epoch, optimizer batch/number of updates and objective; observational selected checkpoints."
+    },
+    "window_minus_current_sameE10": {
+      "seed1": {
+        "candidate": [
+          "WINDOW2018_seed1"
+        ],
+        "baseline": [
+          "CURRENT64_seed1"
+        ],
+        "CURRENT64_Top512_fraction": 0.501953125,
+        "WINDOW2018_Top512_fraction": 0.525390625,
+        "WINDOW_minus_CURRENT_Top512_delta": 0.0234375,
+        "Top512_paired_question_percentile95": [
+          -0.00390625,
+          0.0546875
+        ],
+        "CURRENT64_BA": 0.5766524549280972,
+        "WINDOW2018_BA": 0.5484228237254357,
+        "BA_delta": -0.02822963120266153,
+        "BA_paired_question_percentile95": [
+          -0.048518368186471275,
+          -0.007919436689024202
+        ]
+      },
+      "seed2": {
+        "candidate": [
+          "WINDOW2018_seed2"
+        ],
+        "baseline": [
+          "CURRENT64_seed2"
+        ],
+        "CURRENT64_Top512_fraction": 0.51171875,
+        "WINDOW2018_Top512_fraction": 0.533203125,
+        "WINDOW_minus_CURRENT_Top512_delta": 0.021484375,
+        "Top512_paired_question_percentile95": [
+          -0.01171875,
+          0.052783203124999734
+        ],
+        "CURRENT64_BA": 0.6248188139460171,
+        "WINDOW2018_BA": 0.5050541516245487,
+        "BA_delta": -0.11976466232146843,
+        "BA_paired_question_percentile95": [
+          -0.14174460524024146,
+          -0.09745130975764066
+        ]
+      },
+      "two_seed_average": {
+        "candidate": [
+          "WINDOW2018_seed1",
+          "WINDOW2018_seed2"
+        ],
+        "baseline": [
+          "CURRENT64_seed1",
+          "CURRENT64_seed2"
+        ],
+        "CURRENT64_Top512_fraction": 0.5068359375,
+        "WINDOW2018_Top512_fraction": 0.529296875,
+        "WINDOW_minus_CURRENT_Top512_delta": 0.0224609375,
+        "Top512_paired_question_percentile95": [
+          0.0,
+          0.046875
+        ],
+        "CURRENT64_BA": 0.6007356344370571,
+        "WINDOW2018_BA": 0.5267384876749922,
+        "BA_delta": -0.07399714676206492,
+        "BA_paired_question_percentile95": [
+          -0.09141311295071695,
+          -0.05666530886960646
+        ]
+      }
+    }
+  },
+  "fullP80_input_status": {
+    "time": 1792700575.78527,
+    "status": "WAITING_FRESH_FULL_P20_ALIGNMENT_NO_TRAINING",
+    "observer_pid": 65820,
+    "source_commit": "7a8ff6ae8a33324846d85f77ffc28e9ab699c028",
+    "fixture_complete_exists": true,
+    "fixture_accepted_exists": true,
+    "Slurm_submitted": false,
+    "final4096_read": false
+  },
+  "full_Z_seed2_actual_status": {
+    "time": 1792700574.5671062,
+    "job_id": "749935",
+    "rank_epochs": [
+      5,
+      5
+    ],
+    "rank_cursors": [
+      6605,
+      6605
+    ],
+    "completed_eval_epochs": [
+      "evaluation-epoch-00.json",
+      "evaluation-epoch-01.json",
+      "evaluation-epoch-02.json",
+      "evaluation-epoch-03.json",
+      "evaluation-epoch-04.json"
+    ],
+    "failures": {}
+  },
+  "limits": [
+    "Metrics are viewed NQ development, not untouched final4096 or seven-benchmark generalization.",
+    "TrainA and trainB are distinct question/G5 diagnostic pools and cannot establish train-set improvement against each other.",
+    "TopK sigmoid scores are ranking outputs; threshold0.5 BA is diagnostic, not calibrated Mixed probability.",
+    "Variance threshold0.08 is predeclared; MSE/MAE losses are variance-unit diagnostics, not BCE.",
+    "Missing fixed-pool TopK loss and fullP20 E10 AUC remain null; no online batch loss substituted.",
+    "Bootstrap intervals condition on selected models and paired questions, not training-seed uncertainty."
+  ],
+  "source_proofs": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/viewed2048-two-seed-P80-paired-comparison/actual-latest.json",
+      "bytes": 34631,
+      "sha256": "dfab2a6f49669e792289a743dc12828bda630c2b1e139aa9a072dab966b041db",
+      "snapshot": "reproduction/reports/qwen7b-algorithm-improvement-20261021/current-development-decision-sources/00-viewed2048-two-seed-P80-paired-comparison--actual-latest.json"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/viewed2048-current64-window2018-sameE10-comparison/actual-latest.json",
+      "bytes": 44937,
+      "sha256": "f50c5a17daa8921f12ffd2ac7de4ceb2c4e07ec25525a8dcf0b6b80392532a6d",
+      "snapshot": "reproduction/reports/qwen7b-algorithm-improvement-20261021/current-development-decision-sources/01-viewed2048-current64-window2018-sameE10-comparison--actual-latest.json"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/packed-variance-full169028/agent-observations-mae/attempt-749576/actual-same-epoch-three-arm-10.json",
+      "bytes": 50991,
+      "sha256": "9b339393aa4ec2a8402a5168834409f0d3504b8e85269d15b957a4f5fa043b4b",
+      "snapshot": "reproduction/reports/qwen7b-algorithm-improvement-20261021/current-development-decision-sources/02-attempt-749576--actual-same-epoch-three-arm-10.json"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/mixed-direct-e1-unique-g5/E1-matched-training-independent-baseline.json",
+      "bytes": 31309,
+      "sha256": "9758a3fb0cb2415913daa473336a01c7b368f1e687ef3075cfd67968e0159252",
+      "snapshot": "reproduction/reports/qwen7b-algorithm-improvement-20261021/current-development-decision-sources/03-mixed-direct-e1-unique-g5--E1-matched-training-independent-baseline.json"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5/qualification-watch-latest.json",
+      "bytes": 304,
+      "sha256": "f7428d0b684c1bf71429d3120ef4fcb07f1eb7fe8bfe57b889286fa2938089b6",
+      "snapshot": "reproduction/reports/qwen7b-algorithm-improvement-20261021/current-development-decision-sources/04-full169028-L15P80-MSE-ownG5--qualification-watch-latest.json"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/seed2-agent-observer/agent-seed2-watch-latest.json",
+      "bytes": 5355,
+      "sha256": "281f78601844e432f3c10e4d601014341761bf3ccd996ac68c60a4a56374f81d",
+      "snapshot": "reproduction/reports/qwen7b-algorithm-improvement-20261021/current-development-decision-sources/05-seed2-agent-observer--agent-seed2-watch-latest.json"
+    }
+  ],
+  "new_inference": false,
+  "checkpoint_or_tensor_opened": false,
+  "final4096_read": false,
+  "Slurm_mutated": false
+}
