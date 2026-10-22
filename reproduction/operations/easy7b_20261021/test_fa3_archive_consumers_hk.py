@@ -77,6 +77,49 @@ class ConsumerTests(unittest.TestCase):
             self.assertEqual(failure['status'],'DEPENDENCY_TERMINAL');self.assertFalse(failure['training_failure_inferred'])
             self.assertEqual(calls,[])
 
+    def test_later_first_steps_skip_ancestor50_and_complete_only_requested_suffix(self):
+        for first in (100,150,200):
+            with self.subTest(first=first),tempfile.TemporaryDirectory() as name:
+                root=Path(name).resolve();future,helper,locations,calls=fake_future(root)
+                with patch.object(m,'source',return_value=(root,{})),patch.object(m,'future_module',return_value=future),\
+                     patch.object(m,'paths',return_value=locations),patch.object(m.socket,'gethostname',return_value='xielab3'),\
+                     patch.object(m.os,'getuid',return_value=1002),patch.object(m,'birth',return_value={'pid':1}):
+                    result=m.run_companion(BASE,TRAINING,JOB,'secret',CONTROLLER,first_step=first)
+                expected=[step for step in m.STEPS if step>=first]
+                self.assertEqual(result['requested_steps'],expected)
+                self.assertEqual(result['completed_steps'],expected)
+                self.assertEqual(result['first_step'],first)
+                self.assertEqual([step for kind,step in calls if kind=='tools'],[first])
+                self.assertEqual([step for kind,step in calls if kind=='boundary'],expected)
+                self.assertEqual([step for kind,step in calls if kind=='dependencies'],expected)
+                self.assertFalse((locations['companion']/'global_step_50').exists())
+
+                state={'state':'TERMINAL','records':{'result.json':dict(
+                    status='EASY2560_FULL_CHECKPOINT_SOURCE_ARCHIVE_SHA_PASS',completed_steps=expected,
+                    base=str(BASE),source_job=JOB,source_commit=TRAINING)}}
+                suffix_future=types.SimpleNamespace(controller_observation=lambda h:state,
+                    configure_step=lambda h,s:setattr(h,'STEP',s))
+                suffix_helper=types.SimpleNamespace(MODULE_COMMIT='c'*40,ready_core=lambda:{'actual_ack':True})
+                m.configure(suffix_future,suffix_helper,BASE,TRAINING,JOB,first_step=first)
+                self.assertEqual(suffix_helper.STEP,first)
+                suffix_helper.STEP=200
+                self.assertEqual(suffix_future.controller_observation(suffix_helper)['state'],'COMPLETE')
+
+    def test_later_first_step_is_propagated_to_both_children_and_paths(self):
+        with tempfile.TemporaryDirectory() as name:
+            root=Path(name).resolve();locations={key:root/key for key in ('bundle','core','companion')}
+            with patch.object(m,'source',return_value=(root,{})),patch.object(m,'paths',return_value=locations),\
+                 patch.object(m.socket,'gethostname',return_value='xielab3'),patch.object(m.os,'getuid',return_value=1002),\
+                 patch.object(m,'_detach',return_value={'birth':{'pid':123}}) as detached:
+                result=m.launch(BASE,TRAINING,JOB,'secret',CONTROLLER,first_step=100)
+            for call in detached.call_args_list:
+                argv=call.args[0]
+                self.assertEqual(argv[argv.index('--first-step')+1],'100')
+            self.assertEqual(result['requested_steps'],[100,150,200])
+            self.assertEqual(result['first_step'],100)
+        self.assertEqual(m.paths(JOB,100)['companion'].name,'future-100-200')
+        self.assertEqual(m.paths(JOB)['companion'].name,'future-50-200')
+
     def test_only_valid_completed_core200_is_nonterminal_pending_boundary(self):
         future=types.SimpleNamespace(controller_observation=lambda helper:state,configure_step=lambda h,s:setattr(h,'STEP',s))
         helper=types.SimpleNamespace(MODULE_COMMIT='c'*40,ready_core=Mock(return_value={'real_ack':True}))

@@ -66,6 +66,8 @@ def main(argv=None):
     parser.add_argument('--login-host', default=DEFAULT_LOGIN_HOST)
     parser.add_argument('--login-identity-json',
                         help='Explicit hostname/boot_id/pid_namespace JSON; required for a different login host')
+    parser.add_argument('--observation-timeout', type=int, default=55,
+                        help='Bounded SSH observation seconds; a timeout requires inspection of existing staging')
     args = parser.parse_args(argv)
     try:
         login_host, login_identity = resolve_login_route(args.login_host, args.login_identity_json)
@@ -93,7 +95,7 @@ def main(argv=None):
     bridge = importlib.util.module_from_spec(spec); spec.loader.exec_module(bridge)
     command = shlex.join(['/data/user/jxu957/experiments/topd-20261008/runtime/env/bin/python', '-B', '-c', REMOTE])
     observed = bridge.run('jxu957', command, payload, str(cwd/'work'),
-        login_host=login_host, observation_timeout=55, expected_host_identity=login_identity)
+        login_host=login_host, observation_timeout=args.observation_timeout, expected_host_identity=login_identity)
     result = dict(returncode=observed.returncode, stdout=observed.stdout,
                   stderr=observed.stderr, checked_unix=time.time(),
                   login_host=login_host, login_identity=login_identity)

@@ -63,10 +63,14 @@ def arguments(base,training_commit,job):
     return base,training_commit,job
 
 
-def paths(job):
+def requested_steps(first_step=50):
+    return STEPS[STEPS.index(first_step):]
+
+
+def paths(job,first_step=50):
     return dict(bundle=HK/'fa3-archive-consumers'/('job-'+job),
         core=HK/'archive-controller'/('job-'+job),
-        companion=HK/'post-callback-boundary-control'/('job-'+job)/'future-50-200')
+        companion=HK/'post-callback-boundary-control'/('job-'+job)/('future-'+str(first_step)+'-200'))
 
 
 def source(controller_commit):
@@ -131,9 +135,10 @@ def bind_private_installer_route(helper,route):
     helper.remote_install_code=remote_install_code
 
 
-def configure(future,helper,base,training_commit,job):
+def configure(future,helper,base,training_commit,job,first_step=50):
     """Change only this newly imported module instance, never an old consumer."""
-    locations=paths(job);future.ROOT=locations['companion'];future.CONTROLLER=locations['core']
+    steps=requested_steps(first_step)
+    locations=paths(job,first_step);future.ROOT=locations['companion'];future.CONTROLLER=locations['core']
     helper.BASE=base;helper.JOB=job;helper.TRAINING=training_commit;helper.RUN=RUN
     helper.HEALTHY_CLAIM=locations['core']/'claim.json'
     helper.HPC_TOOL=base/'preparation/post-callback-tools'/helper.MODULE_COMMIT/'post_callback_archive.py'
@@ -142,7 +147,7 @@ def configure(future,helper,base,training_commit,job):
         value=original_observation(current);records=value.get('records',{});result=records.get('result.json',{})
         if (current.STEP==200 and value.get('state')=='TERMINAL' and 'failure.json' not in records and
                 result.get('status')=='EASY2560_FULL_CHECKPOINT_SOURCE_ARCHIVE_SHA_PASS' and
-                result.get('completed_steps')==list(STEPS) and all(result.get(k)==v for k,v in
+                result.get('completed_steps')==list(steps) and all(result.get(k)==v for k,v in
                     dict(base=str(base),source_job=job,source_commit=training_commit).items())):
             # A normally completed core200 controller may exit before the
             # actual post-QA200 sidecar is visible. Its freshly verified ACK
@@ -152,7 +157,7 @@ def configure(future,helper,base,training_commit,job):
                         training_failure_inferred=False)
         return value
     future.controller_observation=observation
-    future.configure_step(helper,50)
+    future.configure_step(helper,first_step)
     return locations
 
 
@@ -175,14 +180,15 @@ def _detach(command,cwd,env,password,receipt_path,stdout_path,identity):
     return record
 
 
-def launch(base,training_commit,job,password,controller_commit,*,login_host=None,login_identity_json=None):
+def launch(base,training_commit,job,password,controller_commit,*,first_step=50,login_host=None,login_identity_json=None):
     need(socket.gethostname()=='xielab3' and os.getuid()==1002,'HKUST3_OWNER_REQUIRED')
     base,training_commit,job=arguments(base,training_commit,job);root,code=source(controller_commit)
     _,route,route_flags=configured_route(root,login_host,login_identity_json)
-    locations=paths(job);bundle=locations['bundle'];bundle.mkdir(parents=True,exist_ok=True)
+    steps=requested_steps(first_step)
+    locations=paths(job,first_step);bundle=locations['bundle'];bundle.mkdir(parents=True,exist_ok=True)
     identity=dict(base=str(base),training_commit=training_commit,source_job=job,run_id=RUN,
-        controller_commit=controller_commit,source_root=str(root),requested_steps=list(STEPS),
-        first_step=50,historical_CP5_replayed=False,training_jobs_submitted=0,training_modified=False,
+        controller_commit=controller_commit,source_root=str(root),requested_steps=list(steps),
+        first_step=first_step,historical_CP5_replayed=False,training_jobs_submitted=0,training_modified=False,
         old_controllers_modified=False,credentials_persisted=False,public_source_files=code,source_ssh_route=route)
     with (bundle/'launch.lock').open('a') as lock:
         fcntl.flock(lock.fileno(),fcntl.LOCK_EX|fcntl.LOCK_NB)
@@ -196,10 +202,11 @@ def launch(base,training_commit,job,password,controller_commit,*,login_host=None
         env.pop('SSHPASS',None)
         try:
             core_command=[sys.executable,'-B','-m','reproduction.easy2560_joint4.archive_controller',
-                '--base',str(base),'--commit',training_commit,'--job',job,'--first-step','50']+route_flags
+                '--base',str(base),'--commit',training_commit,'--job',job,'--first-step',str(first_step)]+route_flags
             core=_detach(core_command,root,env,password,bundle/'core-launch-receipt.json',bundle/'core.stdout.log',identity)
             companion_command=[sys.executable,'-B',str(root/(PREFIX+'fa3_archive_consumers_hk.py')),
-                'companion','--base',str(base),'--commit',training_commit,'--job',job,'--controller-commit',controller_commit]+route_flags
+                'companion','--base',str(base),'--commit',training_commit,'--job',job,'--controller-commit',controller_commit,
+                '--first-step',str(first_step)]+route_flags
             companion=_detach(companion_command,root,env,password,bundle/'companion-launch-receipt.json',
                               bundle/'companion.stdout.log',identity)
             result=dict(identity,status='NEW_FA3_CORE_AND_POST_CALLBACK_CONSUMERS_LAUNCHED',
@@ -213,7 +220,7 @@ def launch(base,training_commit,job,password,controller_commit,*,login_host=None
 
 
 def run_companion(base,training_commit,job,password,controller_commit,poll_seconds=60,
-                  *,login_host=None,login_identity_json=None):
+                  *,first_step=50,login_host=None,login_identity_json=None):
     need(socket.gethostname()=='xielab3' and os.getuid()==1002,'HKUST3_OWNER_REQUIRED')
     base,training_commit,job=arguments(base,training_commit,job);root,_=source(controller_commit)
     ssh_argv,route,_=configured_route(root,login_host,login_identity_json)
@@ -225,7 +232,8 @@ def run_companion(base,training_commit,job,password,controller_commit,poll_secon
     # four-field source envelope is synthesized; no package or file is patched.
     boundary_raw=helper.HK_TOOL.read_text()
     dependency_raw=(root/'reproduction/easy2560_joint4/post_callback_dependencies.py').read_text()
-    locations=configure(future,helper,base,training_commit,job);control=locations['companion']
+    steps=requested_steps(first_step)
+    locations=configure(future,helper,base,training_commit,job,first_step);control=locations['companion']
     envelope=dict(password=password,module_source=boundary_raw,module_sha256=helper.MODULE_SHA,
         published_commit=helper.MODULE_COMMIT,dependencies_source=dependency_raw,
         dependencies_sha256=hashlib.sha256(dependency_raw.encode()).hexdigest(),dependencies_commit=controller_commit)
@@ -235,7 +243,7 @@ def run_companion(base,training_commit,job,password,controller_commit,poll_secon
         fcntl.flock(lock.fileno(),fcntl.LOCK_EX|fcntl.LOCK_NB)
         need(not any((control/name).exists() for name in ('claim.json','result.json','failure.json')),'COMPANION_ALREADY_ATTEMPTED')
         identity=dict(base=str(base),source_job=job,run_id=RUN,training_commit=training_commit,
-            controller_commit=controller_commit,requested_steps=list(STEPS),birth=birth(os.getpid()),
+            controller_commit=controller_commit,requested_steps=list(steps),first_step=first_step,birth=birth(os.getpid()),
             historical_CP5_replayed=False,credentials_persisted=False,training_modified=False,
             old_controllers_modified=False,jobs_submitted=0,source_ssh_route=route,checked_unix=time.time())
         helper.write_json(control/'claim.json',identity);completed=[]
@@ -247,14 +255,14 @@ def run_companion(base,training_commit,job,password,controller_commit,poll_secon
             historical=future.verify_completed_five(helper,boundary)
             helper.write_json(control/'historical-CP5-read-only.json',historical)
             source_installed=False
-            for step in STEPS:
+            for step in steps:
                 future.configure_step(helper,step)
                 before,observed=future.wait_for_core(helper,completed,poll_seconds)
                 helper.CONTROL.mkdir(parents=True,exist_ok=True);helper.canonical(helper.CONTROL)
                 need(not any(helper.CONTROL.iterdir()),'STEP_ALREADY_ATTEMPTED_NO_REPLAY')
                 helper.write_json(helper.CONTROL/'claim.json',dict(identity,step=step,core_before=before,
                     core_controller=observed,phase=boundary.phase(step),writer_attempt=1))
-                # Core50 actual ACK guarantees the new run/allocation exists.
+                # The first requested core ACK guarantees the new allocation exists.
                 # No source install is attempted while its GPU job is pending.
                 if not source_installed:
                     helper.write_json(control/'source-tools.json',future.install_source_tools(helper,ssh_argv,env,raw,data))
@@ -286,9 +294,9 @@ def run_companion(base,training_commit,job,password,controller_commit,poll_secon
         finally:env.pop('SSHPASS',None);password=None
 
 
-def observe(base,training_commit,job,controller_commit):
+def observe(base,training_commit,job,controller_commit,first_step=50):
     base,training_commit,job=arguments(base,training_commit,job);root,_=source(controller_commit)
-    future=future_module(root);records={};locations=paths(job)
+    future=future_module(root);records={};locations=paths(job,first_step)
     for role,folder in locations.items():
         values={name:document(folder/name) for name in ('launch-claim.json','launch-receipt.json','claim.json',
             'progress.json','failure.json','result.json') if (folder/name).is_file()}
@@ -299,24 +307,26 @@ def observe(base,training_commit,job,controller_commit):
         if claim and isinstance(claim.get('birth'),dict):values['actual_process']=future.process_observation(claim['birth'])
         records[role]=dict(root=str(folder),records=values)
     return dict(base=str(base),training_commit=training_commit,source_job=job,run_id=RUN,
-        controller_commit=controller_commit,read_only=True,records=records,checked_unix=time.time())
+        controller_commit=controller_commit,first_step=first_step,requested_steps=list(requested_steps(first_step)),
+        read_only=True,records=records,checked_unix=time.time())
 
 
 def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('mode',choices=('launch','companion','observe'))
     parser.add_argument('--base',required=True);parser.add_argument('--commit',required=True)
     parser.add_argument('--job',required=True);parser.add_argument('--controller-commit',required=True)
+    parser.add_argument('--first-step',type=int,choices=STEPS,default=50)
     parser.add_argument('--login-host',help='Explicit source login host; default retains pinned Login1')
     parser.add_argument('--login-identity-json',help='Exact hostname, boot_id and pid_namespace pin')
     args=parser.parse_args(argv)
-    if args.mode=='observe':result=observe(args.base,args.commit,args.job,args.controller_commit)
+    if args.mode=='observe':result=observe(args.base,args.commit,args.job,args.controller_commit,args.first_step)
     else:
         raw=sys.stdin.buffer.read(MAX_ENVELOPE+1);need(0<len(raw)<=MAX_ENVELOPE,'SMALL_PASSWORD_STDIN_REQUIRED')
         envelope=json.loads(raw);raw=None;need(set(envelope)=={'password'},'PASSWORD_STDIN_SCHEMA_DIFFERS')
         password=envelope.pop('password');need(isinstance(password,str) and 0<len(password)<=4096 and
             '\n' not in password and '\x00' not in password,'RAM_PASSWORD_REQUIRED')
         result=(launch if args.mode=='launch' else run_companion)(args.base,args.commit,args.job,password,args.controller_commit,
-            login_host=args.login_host,login_identity_json=args.login_identity_json)
+            first_step=args.first_step,login_host=args.login_host,login_identity_json=args.login_identity_json)
         password=None
     print(json.dumps(result,sort_keys=True),flush=True)
 
