@@ -1,0 +1,104 @@
+{
+  "schema": "easy7b_natural_retrieval_counter_windows_v2",
+  "checked_unix": 1792708117.6702871,
+  "job": "750029",
+  "service_job": "745198",
+  "natural_training_windows": [
+    {
+      "evidence": [
+        "leanmetrics-retrieval-counters-1792707970792859000.json",
+        "leanmetrics-retrieval-counters-1792708000150253000.json"
+      ],
+      "start_unix": 1792707970.8408074,
+      "end_unix": 1792708000.188683,
+      "wall_seconds": 29.347875595092773,
+      "upstream_delta": {
+        "logical_requests": 517,
+        "logical_queries": 517,
+        "completed_requests": 517,
+        "completed_queries": 517,
+        "failed_requests": 0,
+        "backend_seconds": 21.37293595634401
+      },
+      "proxy_delta": {
+        "logical_requests": 727,
+        "logical_queries": 727
+      },
+      "cache_delta": {
+        "logical_calls": 727,
+        "backend_calls": 517,
+        "served_hit_queries": 210,
+        "backend_exceptions": 0
+      },
+      "upstream_backend_seconds_per_wall_second": 0.7282617744201476,
+      "backend_seconds_per_request": 0.04134030165637139,
+      "proxy_backend_delta_matches_upstream": true
+    },
+    {
+      "evidence": [
+        "leanmetrics-retrieval-counters-1792708000150253000.json",
+        "leanmetrics-retrieval-counters-1792708056768111000.json"
+      ],
+      "start_unix": 1792708000.188683,
+      "end_unix": 1792708056.7916167,
+      "wall_seconds": 56.60293364524841,
+      "upstream_delta": {
+        "logical_requests": 444,
+        "logical_queries": 444,
+        "completed_requests": 444,
+        "completed_queries": 444,
+        "failed_requests": 0,
+        "backend_seconds": 18.42281823605299
+      },
+      "proxy_delta": {
+        "logical_requests": 707,
+        "logical_queries": 707
+      },
+      "cache_delta": {
+        "logical_calls": 707,
+        "backend_calls": 444,
+        "served_hit_queries": 263,
+        "backend_exceptions": 0
+      },
+      "upstream_backend_seconds_per_wall_second": 0.32547461853330123,
+      "backend_seconds_per_request": 0.04149283386498421,
+      "proxy_backend_delta_matches_upstream": true
+    },
+    {
+      "evidence": [
+        "leanmetrics-retrieval-counters-1792707970792859000.json",
+        "leanmetrics-retrieval-counters-1792708056768111000.json"
+      ],
+      "start_unix": 1792707970.8408074,
+      "end_unix": 1792708056.7916167,
+      "wall_seconds": 85.95080924034119,
+      "upstream_delta": {
+        "logical_requests": 961,
+        "logical_queries": 961,
+        "completed_requests": 961,
+        "completed_queries": 961,
+        "failed_requests": 0,
+        "backend_seconds": 39.795754192397
+      },
+      "proxy_delta": {
+        "logical_requests": 1434,
+        "logical_queries": 1434
+      },
+      "cache_delta": {
+        "logical_calls": 1434,
+        "backend_calls": 961,
+        "served_hit_queries": 473,
+        "backend_exceptions": 0
+      },
+      "upstream_backend_seconds_per_wall_second": 0.4630061606647303,
+      "backend_seconds_per_request": 0.04141077439375338,
+      "proxy_backend_delta_matches_upstream": true
+    }
+  ],
+  "production_modified": false,
+  "extra_retrieval_requests": 0,
+  "health_requests": 3,
+  "gpu_work_added": false,
+  "scope": "Natural candidate windows, not whole-outer critical-path fraction or GPU utilization. Serial backend elapsed includes encoder/FAISS/load_docs/empty_cache; HTTP queue time and overlap are not separately measured.",
+  "numerical_outputs_changed": false
+}

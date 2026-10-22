@@ -1,0 +1,69 @@
+{
+  "schema": "easy7b_current_native4_final_entry_readiness_v1",
+  "checked_unix": 1792708143.746219,
+  "job": "750029",
+  "runtime_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+  "native_world_size": 4,
+  "archive_controller_evidence": "fastpath-leanmetrics-r1-hk-archive-observe-1792708117629821000.json",
+  "archive_claims": {
+    "core": {
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+      "source_job": "750029",
+      "source_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+      "requested_steps": [
+        100,
+        150,
+        200
+      ]
+    },
+    "companion": {
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+      "source_job": "750029",
+      "source_commit": null,
+      "requested_steps": [
+        100,
+        150,
+        200
+      ]
+    }
+  },
+  "current_final_semantics": {
+    "question_count": 51713,
+    "hardcoded_padding_to_remove": 0,
+    "legacy_native8_tail_trim_7_obsolete": true,
+    "actual_outer201_allowed": false,
+    "internal_global_steps201_is_exit_counter": true,
+    "final_actual_restore_still_required": true
+  },
+  "final_eval_completed": false,
+  "final_archive_completed": false,
+  "final_actual_restore_completed": false,
+  "final_cpu_acceptance_completed": false,
+  "source_files": {
+    "verl/trainer/ppo/ray_trainer.py": {
+      "sha256": "d0b3ed39518911af0d29b1734db9eed579e76ad9ed483ab41fc3cabe924c42da"
+    },
+    "search_r1/llm_agent/generation.py": {
+      "sha256": "38785f5f611f35fbaf8911c21c0434d915a83498d6d705c01fe27946129afc4f"
+    },
+    "search_g1/async_rollout_runtime.py": {
+      "sha256": "ce1b23d4192ce629df5d72378413ef8caeb8c4c2b0480410378745a15e0126aa"
+    },
+    "reproduction/common8/validation_identity.py": {
+      "sha256": "44d1b9dec6749947a2967d23abc294807c35a765bf2d65046556da4f9b5d3050"
+    },
+    "reproduction/easy2560_joint4/final_cpu_acceptance.py": {
+      "sha256": "b423ea97f415e517695925fb0a503d4a13b8275473c6857b1c48aaba92352ad3"
+    },
+    "reproduction/easy2560_joint4/final_restore_only.py": {
+      "sha256": "9d6f36fa2dc753d082667047b32ca8cb260773d04eafe8ae7de2f15918d42c6a"
+    },
+    "search_g1/easy2560_final_checkpoint.py": {
+      "sha256": "dc8313ee263c49121be251b95e6ea541715a7b3cc99e3f531bd7d41379dd1e45"
+    }
+  },
+  "remaining": "At complete200 and native51713, wait both archival paths; create final checkpoint receipt, prepare/execute independent actual native4 restore-only, then final_cpu_acceptance with explicit training_commit2d518345 and proof. Existing archive controllers do not automatically launch final actual restore.",
+  "training_modified": false,
+  "new_startup_checks_added": false
+}
