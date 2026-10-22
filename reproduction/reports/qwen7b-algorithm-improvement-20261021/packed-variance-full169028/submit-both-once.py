@@ -52,4 +52,4 @@ def main(loss):
  result=dict(job_id=job,layer=21,prefix=20,M_range=[3,10],loss=loss,epochs=10,EMA_decay=.9995,name=JOB,publication_commit=ready['runtime_commit'],source_controller=ready['root_submit_controller'],entry=ready['entry'],implementation_ready=proof(B/'ready.json'),slurm_identity_before_release=identity,time=time.time(),state='SUBMITTED_NOT_PROGRESS_VERIFIED')
  once(receipt,result);command(['scontrol','release',job]);print(json.dumps(dict(status='PACKED_VARIANCE_2GPU_JOB_RELEASED_NOT_PROGRESS_VERIFIED',receipt=result)))
 if __name__=='__main__':
- for loss in('mse','mae'):main(loss)
+ for loss in('mse','mae','z_mse_anchor'):main(loss)
