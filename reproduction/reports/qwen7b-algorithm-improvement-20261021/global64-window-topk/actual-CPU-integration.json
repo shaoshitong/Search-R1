@@ -1,0 +1,78 @@
+{
+  "status": "TINY_CPU_CACHE_AND_TWO_RANK_GRADIENT_INTEGRATION_PASSED",
+  "local_checks": {
+    "full_window_N": 2018,
+    "K": 500,
+    "history_rows": 1954,
+    "current_rows": 64,
+    "historical_requires_grad": false,
+    "current_gradient_L2": 0.3567353711086131,
+    "queue_JSON_roundtrip_exact": true,
+    "zero_margin_skips_Adam_and_EMA_preserving_moments": true,
+    "cached_only_positive_loss": 3.0,
+    "cached_only_current_gradient_L2": 0.0,
+    "cached_only_skips_Adam_and_EMA": true
+  },
+  "distributed": {
+    "world_size": 2,
+    "backend": "gloo",
+    "global_current": 64,
+    "local_current": 32,
+    "micro": 8,
+    "forwards_before_single_backward": 4,
+    "historical_scores": 1954,
+    "window_N": 2018,
+    "K": 500,
+    "scale": 31.53125,
+    "all_gather_backward_sum_and_DDP_gradient_average": true,
+    "one_rank_global_reference_gradients_match": true,
+    "maximum_absolute_gradient_error": 2.498001805406602e-16,
+    "actual": [
+      {
+        "rank": 0,
+        "loss": 31.52843686099458,
+        "gradients": {
+          "weight": [
+            [
+              -0.0624123711340205,
+              -0.06241237113402056,
+              -0.06241237113402075
+            ]
+          ],
+          "bias": [
+            0.0
+          ]
+        },
+        "current_logit_gradient_L2": 0.5044999999999998,
+        "historical_requires_grad": false,
+        "micro_forwards_before_one_backward": 4
+      },
+      {
+        "rank": 1,
+        "loss": 31.52843686099458,
+        "gradients": {
+          "weight": [
+            [
+              -0.0624123711340205,
+              -0.06241237113402056,
+              -0.06241237113402075
+            ]
+          ],
+          "bias": [
+            0.0
+          ]
+        },
+        "current_logit_gradient_L2": 0.5044999999999998,
+        "historical_requires_grad": false,
+        "micro_forwards_before_one_backward": 4
+      }
+    ]
+  },
+  "seconds": 2.032233953475952,
+  "no_GPU": true,
+  "no_Slurm": true,
+  "final4096_read": false,
+  "command": "python3 -m reproduction.operations.qwen7b_warmup.test_packed_window_runtime_cpu",
+  "interpreter": "/Library/Developer/CommandLineTools/usr/bin/python3",
+  "stderr": ""
+}

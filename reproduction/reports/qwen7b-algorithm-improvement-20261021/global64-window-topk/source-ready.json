@@ -1,0 +1,66 @@
+{
+  "status": "GLOBAL64_WINDOW_PAIR_SOURCE_AND_CPU_INTEGRATION_READY_NOT_YET_STAGED",
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-global64-window2018-L15P80-8192-20261023-v1",
+  "cells": [
+    "current64",
+    "window2018"
+  ],
+  "global_batch": 64,
+  "local_batch": 32,
+  "micro": 8,
+  "accumulation": 4,
+  "epochs": 10,
+  "batch_attempt_budget": 1280,
+  "layer": 15,
+  "prefix": 80,
+  "EMA_decay": 0.9995,
+  "LR": 5e-06,
+  "reference_population": 2018,
+  "targetK": 500,
+  "max_detached_history": 1954,
+  "exact_2rank_gloo_gradient_check": true,
+  "helper_publications": {
+    "queue": "77d170bcc66e1d774587c76a172845d083d96021",
+    "audit": "92662057c913de10150c39e701b1660a25163f3f"
+  },
+  "files": {
+    "reproduction/operations/qwen7b_warmup/online_packed_window_topk.py": {
+      "bytes": 17771,
+      "sha256": "32299ef79467d7d5eb45c7e0c2f7348e8e5efe5f2160d03ad829a74035ad44a5"
+    },
+    "reproduction/operations/qwen7b_warmup/deploy_packed_window_topk.py": {
+      "bytes": 9692,
+      "sha256": "9131416152bde7cd39e3269d26117787f987802be7c73e9e9290b8f1278d4a6f"
+    },
+    "reproduction/operations/qwen7b_warmup/test_packed_window_runtime_cpu.py": {
+      "bytes": 7086,
+      "sha256": "4dc0ca2e13a37a868da101b5b817a16aaa32249194eec21d1735158d448d0632"
+    },
+    "reproduction/operations/qwen7b_warmup/detached_score_window.py": {
+      "bytes": 7949,
+      "sha256": "6293e172cb594441bb07b1b1cd17cfcf0b660b3eff158be223a9b30d733b4fd2"
+    },
+    "reproduction/operations/qwen7b_warmup/test_detached_score_window.py": {
+      "bytes": 3284,
+      "sha256": "84cbdea2e9299c6f3495490a02185c7b858578b3e3b18ad39c566c7cf7bbca59"
+    },
+    "reproduction/operations/qwen7b_warmup/score_window_audit.py": {
+      "bytes": 9696,
+      "sha256": "9ddf561afa626cdfc0271459e3294551f4746848a8560856a0746b66cd6a2c0c"
+    },
+    "reproduction/operations/qwen7b_warmup/test_score_window_audit.py": {
+      "bytes": 4655,
+      "sha256": "a11fa88d44375bce92a696385f448433e4bd28b19f5c1d6f09f96c499e237cb1"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/global64-window-topk/PROTOCOL.md": {
+      "bytes": 3636,
+      "sha256": "f2118b6fac1138022db79b48b5f0b0e73fcc61ee8d6ca3d399c47ba36eb65d90"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/global64-window-topk/actual-CPU-integration.json": {
+      "bytes": 2192,
+      "sha256": "89ad846d6b9e87faeee66150643f58ee0dcfd91521a2dcd7bf84a3c22f2ee022"
+    }
+  },
+  "Slurm_submitted": false,
+  "final4096_read": false
+}
