@@ -1,38 +1,48 @@
 {
-  "timepoints": [
-    1792707682.4633942,
-    1792707801.1167157
-  ],
+  "time": 1792708616.1700888,
   "classification": "verified_wait",
-  "jobs": {
+  "previous_goal_turn_classification": "progress",
+  "seconds": 87.89865708351135,
+  "handles": {
     "seed1": {
       "job": "750189",
-      "sacct": "750189|RUNNING|0:0|01:18:07|ACD1-20",
-      "first_cursor": 5001,
+      "sacct": "750189|RUNNING|0:0|01:31:42|ACD1-20",
+      "first_cursors": [
+        5941,
+        5941
+      ],
       "second_cursors": [
-        5139,
-        5139
+        6044,
+        6044
       ],
       "epochs": [
-        4,
-        4
+        5,
+        5
       ],
+      "latest_evaluation": 4,
       "actual_Adam_EMA_match": true
     },
     "seed2": {
       "job": "750190",
-      "sacct": "750190|RUNNING|0:0|01:52:14|ACD1-8",
-      "first_cursor": 7281,
+      "sacct": "750190|RUNNING|0:0|02:05:49|ACD1-8",
+      "first_cursors": [
+        8215,
+        8215
+      ],
       "second_cursors": [
-        7419,
-        7419
+        8317,
+        8317
       ],
       "epochs": [
-        6,
-        6
+        7,
+        7
       ],
+      "latest_evaluation": 6,
       "actual_Adam_EMA_match": true
     }
   },
-  "final4096_read": false
+  "goal_complete": false,
+  "final4096_read": false,
+  "training_changed": false,
+  "Slurm_submitted": false
 }

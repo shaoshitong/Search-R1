@@ -12,6 +12,8 @@ Same fixed trainB2048 and viewed development2048 ownG5. Both raw/EMA and all com
 | seed1 | 3 | EMA | 67.63% | 373/512 (72.85%) | 66.07% | 298/512 (58.20%) | 0.00705294 |
 | seed1 | 4 | raw | 72.15% | 394/512 (76.95%) | 70.19% | 312/512 (60.94%) | 0.00679006 |
 | seed1 | 4 | EMA | 70.39% | 389/512 (75.98%) | 68.18% | 313/512 (61.13%) | 0.00680714 |
+| seed1 | 5 | raw | 70.19% | 402/512 (78.52%) | 67.79% | 314/512 (61.33%) | 0.00667131 |
+| seed1 | 5 | EMA | 71.60% | 397/512 (77.54%) | 69.28% | 312/512 (60.94%) | 0.00669189 |
 | seed2 | 1 | raw | 66.67% | 367/512 (71.68%) | 66.04% | 286/512 (55.86%) | 0.00714388 |
 | seed2 | 1 | EMA | 62.27% | 316/512 (61.72%) | 60.52% | 249/512 (48.63%) | 0.00850443 |
 | seed2 | 2 | raw | 71.56% | 383/512 (74.80%) | 68.89% | 310/512 (60.55%) | 0.00685546 |
@@ -58,4 +60,17 @@ Copied from local `actual-live.json`, snapshot `1792707990.0928564`, epoch4/curs
 | Viewed dev | raw | 452 | 211 | 385 | 1000 | 0.4118943362 | 0.2522608355 | 0.0950272345 | 452 / 366 / 19 |
 | Viewed dev | EMA | 399 | 264 | 330 | 1055 | 0.3658838251 | 0.2402586589 | 0.1194097771 | 399 / 303 / 27 |
 
-All values are copied from already completed fixed diagnostics, not online training batches. Existing E1–E4 seed1 and E1–E6 seed2 rows above are preserved. Final4096 remains blind and the seed1-only full-budget checkpoint selection rule is unchanged.
+All values are copied from already completed fixed diagnostics, not online training batches. Existing E1–E5 seed1 and E1–E6 seed2 rows above are preserved. Final4096 remains blind and the seed1-only full-budget checkpoint selection rule is unchanged.
+
+## Seed1 E5: fixed trainB/development diagnostics
+
+Local snapshot `1792709138.225533`; epoch5/cursor6605. Same ownG5 pools, variance threshold0.08 (4v score0.32), no fitted threshold.
+
+| Pool | State | BA | Mixed recall | nonMixed FPR | all-wrong FPR | all-correct FPR | Mixed@512 | AUC | Variance MSE(v) | Variance MAE(v) | Variance Spearman |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| TrainB | raw | 70.189500% | 55.292793% | 14.913793% | 17.263158% | 4.285714% | 402/512 (78.515625%) | 0.8200557238 | 0.0068473475 | 0.0648161460 | 0.5309417142 |
+| TrainB | EMA | 71.601041% | 63.288288% | 20.086207% | 23.368421% | 5.238095% | 397/512 (77.539062%) | 0.8068499534 | 0.0066607067 | 0.0662652559 | 0.5230842712 |
+| Viewed dev | raw | 67.787053% | 52.036199% | 16.462094% | 20.568720% | 3.333333% | 314/512 (61.328125%) | 0.7909082989 | 0.0066713075 | 0.0631782686 | 0.4685346760 |
+| Viewed dev | EMA | 69.275474% | 62.594268% | 24.043321% | 29.668246% | 6.060606% | 312/512 (60.937500%) | 0.7823779887 | 0.0066918926 | 0.0660570021 | 0.4619808844 |
+
+These are completed fixed diagnostics, not online batch metrics. All earlier completed rows remain above. No epoch/state selection or final4096 access.
