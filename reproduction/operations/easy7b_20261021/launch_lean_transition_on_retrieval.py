@@ -55,7 +55,7 @@ def command(base, commit, authorization_path, allocation_job=ALLOCATION_JOB, *,
     base = own_base(base)
     # Explicitly use the prepared target's immutable runtime, not this newer
     # operator's source for the CPU tensor reader or the training submission.
-    return ['srun', '--jobid='+str(allocation_job), '--overlap', '--exact', '--ntasks=1',
+    argv = ['srun', '--jobid='+str(allocation_job), '--overlap', '--exact', '--ntasks=1',
             '--cpus-per-task=4', '--mem=128G', '--gres=none', '--chdir='+str(base/'repo'),
             '--export=ALL,CUDA_VISIBLE_DEVICES=,OMP_NUM_THREADS=1,OPENBLAS_NUM_THREADS=1',
             str(base/'env/bin/python'), '-B', '-m',
@@ -63,6 +63,25 @@ def command(base, commit, authorization_path, allocation_job=ALLOCATION_JOB, *,
             '--base', str(base), '--commit', commit,
             '--authorization-json', str(authorization_path),
             *source_arguments(source_base, source_job, source_commit, minimum_outer)]
+    # A node that failed actual CUDA initialization can be excluded from this
+    # new allocation without changing the prepared immutable training runtime.
+    # The wrapper runs only in the CPU submit process, from target/repo, so all
+    # receipt readers and training code still come from the requested commit.
+    authorization = json.loads(Path(authorization_path).read_text())
+    excluded_node = authorization.get('sbatch_exclude_node')
+    if excluded_node:
+        code = (
+            'from reproduction.easy2560_joint4 import control\n'
+            'original = control.launch_command\n'
+            'def launch_command(*args, **kwargs):\n'
+            '    argv = original(*args, **kwargs)\n'
+            '    return argv[:1] + ['+repr('--exclude='+excluded_node)+'] + argv[1:]\n'
+            'control.launch_command = launch_command\n'
+            'from reproduction.operations.easy7b_20261021.fa3_lean_transition import main\n'
+            'main()\n')
+        index = argv.index('-m')
+        argv[index:index+2] = ['-c', code]
+    return argv
 
 
 def existing(p):
