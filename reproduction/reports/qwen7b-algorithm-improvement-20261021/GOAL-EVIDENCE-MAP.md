@@ -25,6 +25,12 @@
 
 新full训练早期进展只按原[首两epoch文档](full169028-L15P80-MSE-ownG5/FIRST-TWO-EPOCHS-SEED2.md)解释：开发仍参与探索，seed2不参与该family的epoch/state选择。不能把阶段数字拼接成全量双seed最终比较。
 
+## 前瞻最终判据：仍不是actual freeze
+
+根已在最终池未读取前写下[PREDECLARED-FINAL-CONFIRMATION.json](frozen-full169028-MSE-final4096-scoring/PREDECLARED-FINAL-CONFIRMATION.json)：主指标固定为Top512真实Mixed占比；每个seed×每个最终2048池相对E1的点差均须严格大于零，且两个池分别的two-seed均值相对E1的配对问题bootstrap95%下界须严格大于零。该区间不冒充训练seed不确定性。BA、召回、全错/全对误报、方差误差及AUC只是secondary，最终读取后不能改用BA替换Top512主指标。
+
+该文件状态为`PREDECLARED_ANALYSIS_RULE_NOT_A_CANDIDATE_FREEZE`，actual epoch和candidate均未选择/冻结，最终标签/分数仍未读取。若未通过前瞻主指标判据，不得宣布goal达成；这些最终池随后须标记为已查看，再选型必须另留新的未知问题。
+
 ## 最终收尾顺序
 
 1. 跟完当前full L15/P80 MSE两个seed的10epoch、逐epoch固定诊断、实际CP与真实退出状态；旧fullP20首seed终态不替代本项。
@@ -34,4 +40,4 @@
 5. 写下实际candidate configuration、主指标、epoch/state、阈值、两seed CP/source/CPU proof及原两个固定G5身份，形成**actual freeze**。stage模板不能充当freeze。
 6. 之后才在两个未参与选型的盲2048问题池运行最终统一评价，报告每seed、每池及预先定义的比较/不确定性，完成checkpoint、最新source和任务资源收尾验收。
 
-**目标的最终判据仍是：未参与选型的新问题上出现稳定、可复核的BA或Top512提升。作业正常结束、开发指标变好、源码已部署或模型可加载都不能独立满足这一判据。**
+**目标必须在未参与选型的新问题上形成稳定、可复核的提升；当前前瞻规则已经具体固定为Top512主指标的上述判据，不能只凭BA改善替代。作业正常结束、开发指标变好、源码已部署或模型可加载都不能独立满足这一判据。**
