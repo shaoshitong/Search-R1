@@ -1,8 +1,8 @@
 {
-  "time": 1792695287.5569658,
-  "status": "READ_ONLY_MSE_OBSERVER_CONTINUES_THROUGH_ACTUAL_E10_AND_CPU_ACCEPTANCE",
-  "observer_pid": 34317,
-  "exec_session": 9787,
+  "time": 1792696259.026133,
+  "status": "ALL10_EPOCHS_COMPLETED_0_0_AND_INDEPENDENT_CPU_CHECKPOINT_ACCEPTED",
+  "observer_pid": null,
+  "exec_session": null,
   "explicit_control_route": "campus",
   "job": "749568",
   "latest_actual_time": 1792695277.1947823,
@@ -22,5 +22,18 @@
   "final_read": false,
   "prior_local_observer_failures_only": "96476 stopped on campus wrapper TimeoutExpired; timeout handler fixed; remote job unmodified",
   "terminal_CPU_shared_mutex": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-P80-handoff-CPU-acceptance-20261023-v1/acceptance.lock",
-  "prior_local_observer_replacement_only": "Own metadata observer4058 replaced to load sharedCPU-mutex adapter; remote training unmodified"
+  "prior_local_observer_replacement_only": "Own metadata observer4058 replaced to load sharedCPU-mutex adapter; remote training unmodified",
+  "observer_exited_cleanly": true,
+  "CPU_acceptance_time": 1792696021.66046,
+  "checkpoint": {
+    "bytes": 3773205972,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mse/checkpoint-epoch-10.pt",
+    "sha256": "e5bd6ced8387e0d6e0399049e60e76dc1872c54adc62c6c7e3ab3298cc765a91"
+  },
+  "last_published_acceptance_commit": "2be954417f96734ead276ecc8676dde8b401660c",
+  "generic_CPU_worker_may_continue_other_completed_arms": null,
+  "CPU_worker_is_not_GPU_or_Slurm_job": true,
+  "generic_CPU_worker_exited_cleanly": true,
+  "generic_CPU_worker_last_fresh_status": 1792696213.8163395,
+  "all_original_three_full_arm_terminal_CPU_acceptance": true
 }

@@ -1,0 +1,70 @@
+{
+  "time": 1792696213.8163395,
+  "actual_validator_identity_live": false,
+  "controller": {
+    "pid": 1262856,
+    "source_sha": "05210c448426089966f0d151338942477bef77e368f01c0e413943633f02fc92",
+    "start_ticks": "140551441",
+    "time": 1792695910.9643242
+  },
+  "progress": {
+    "checkpoint": {
+      "bytes": 3773205972,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mae/checkpoint-epoch-10.pt",
+      "sha256": "c91de805d08c5ac1fbe39247bb608d3927b9df5d6ea10b8d1ba3edf99e6b5213"
+    },
+    "job_id": "749576",
+    "stage": "CPU_MMAP_TORCH_LOAD",
+    "time": 1792696098.6349075,
+    "variant": "full169028-mae-one-question-M3to10-P20-variance"
+  },
+  "failure": null,
+  "accepted": {
+    "mse": {
+      "status": "TERMINAL_FULL169028_PACKED_VARIANCE_CPU_SHA_MODEL_ADAM_RNG_PLAN_ACCEPTED",
+      "checkpoint": {
+        "bytes": 3773205972,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mse/checkpoint-epoch-10.pt",
+        "sha256": "e5bd6ced8387e0d6e0399049e60e76dc1872c54adc62c6c7e3ab3298cc765a91"
+      },
+      "time": 1792696021.66046,
+      "peak_RSS_bytes": 4842594304
+    },
+    "mae": {
+      "status": "TERMINAL_FULL169028_PACKED_VARIANCE_CPU_SHA_MODEL_ADAM_RNG_PLAN_ACCEPTED",
+      "checkpoint": {
+        "bytes": 3773205972,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mae/checkpoint-epoch-10.pt",
+        "sha256": "c91de805d08c5ac1fbe39247bb608d3927b9df5d6ea10b8d1ba3edf99e6b5213"
+      },
+      "time": 1792696104.4833722,
+      "peak_RSS_bytes": 4845314048
+    },
+    "z_mse_anchor": {
+      "status": "TERMINAL_FULL169028_PACKED_VARIANCE_CPU_SHA_MODEL_ADAM_RNG_PLAN_ACCEPTED",
+      "checkpoint": {
+        "bytes": 3773206036,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/checkpoint-epoch-10.pt",
+        "sha256": "08e71e56a667ab99b1e48895e8934d3bc699d5a7adc321b9277fe1faf52c82f1"
+      },
+      "time": 1792695463.1957648,
+      "peak_RSS_bytes": 4647604224
+    }
+  },
+  "run_complete_summary": [
+    {
+      "status": "TERMINAL_FULL169028_PACKED_VARIANCE_CPU_SHA_MODEL_ADAM_RNG_PLAN_ACCEPTED",
+      "variant": "full169028-mse-one-question-M3to10-P20-variance"
+    },
+    {
+      "status": "TERMINAL_FULL169028_PACKED_VARIANCE_CPU_SHA_MODEL_ADAM_RNG_PLAN_ACCEPTED",
+      "variant": "full169028-mae-one-question-M3to10-P20-variance"
+    },
+    {
+      "status": "EXISTING_PACKED_CPU_ACCEPTANCE_REUSED",
+      "variant": "full169028-z_mse_anchor-one-question-M3to10-P20-variance"
+    }
+  ],
+  "explicit_control_route": "campus",
+  "final_read": false
+}
