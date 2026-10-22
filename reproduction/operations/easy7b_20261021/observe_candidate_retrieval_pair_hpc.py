@@ -187,6 +187,8 @@ def observe(request):
         result['service']['documents'][name] = record
         jobs.update(jobs_in(value))
     result['pair'] = section(pair, jobs, log_limit=4)
+    if (pair / 'runs').is_dir():
+        result['pair']['runner'] = section(pair / 'runs', jobs, log_limit=0)
     variants = []
     for root in variant_roots(pair):
         variant = section(root, jobs, log_limit=1)
