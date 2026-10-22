@@ -1,0 +1,83 @@
+{
+  "status": "FULL_Z_SECOND_SEED_ACTUAL_TERMINAL_AND_E10_CPU_ACCEPTED",
+  "accounting": "749935|COMPLETED|0:0|02:55:18|ACD1-16",
+  "checkpoint": {
+    "bytes": 3773206164,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-Z-seed19137-plan2026102302-P20-20261023-v1/checkpoint-epoch-10.pt",
+    "sha256": "2ce425e1a2ac06f3aedb124f13bb57e1e3b6846852f6ccd27f5cb7d5a18bdded"
+  },
+  "accepted": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-Z-seed2-terminal-CPU-acceptance-20261023-v1/epoch10/accepted.json",
+    "bytes": 10579,
+    "sha256": "7f085600186da2bf0b9f90173405256442595c659691db67816f8ad339701f0f"
+  },
+  "actual_complete": {
+    "cursor": 13210,
+    "epochs": 10,
+    "final4096_scored": false,
+    "pilot_not_full169028": false,
+    "status": "PACKED_VARIANCE_FULL_SWEEP_COMPLETE",
+    "training_questions": 169028
+  },
+  "actual_Adam_updates": 13210,
+  "epoch": 10,
+  "init_seed": 19137,
+  "train_plan_seed": 2026102302,
+  "diagnostic_seed": 2026102228,
+  "ten_actual_seeded_plan_SHAs_verified": 10,
+  "raw_EMA_tensors": {
+    "EMA": 45,
+    "raw": 45
+  },
+  "two_rank_RNG": 2,
+  "normalization": {
+    "STD_epsilon_floor": 1e-06,
+    "actual_updates": 13210,
+    "anchor_weight": 1.0,
+    "final_rank_statistics_exactly_equal": true,
+    "full_batch": 128,
+    "mean_and_population_std_gradient_path": "autograd_all_gather_in_published_source",
+    "scope": "actual_global_optimizer_batch",
+    "tail_batch": 68,
+    "tail_epochs": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ]
+  },
+  "CPU_restore_only": true,
+  "GPU_next_update_restore_tested": false,
+  "coordinator_identity_live": false,
+  "CPU_child_identity_live": false,
+  "coordinator_complete": {
+    "CPU_restore_only": true,
+    "GPU_next_update_restore_tested": false,
+    "Slurm_mutated": false,
+    "accepted": {
+      "bytes": 10579,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-Z-seed2-terminal-CPU-acceptance-20261023-v1/epoch10/accepted.json",
+      "sha256": "7f085600186da2bf0b9f90173405256442595c659691db67816f8ad339701f0f"
+    },
+    "checkpoint": {
+      "bytes": 3773206164,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-Z-seed19137-plan2026102302-P20-20261023-v1/checkpoint-epoch-10.pt",
+      "sha256": "2ce425e1a2ac06f3aedb124f13bb57e1e3b6846852f6ccd27f5cb7d5a18bdded"
+    },
+    "final4096_read": false,
+    "job_id": "749935",
+    "status": "FULL_Z_SEED2_E10_TERMINAL_CPU_ACCEPTANCE_COMPLETE",
+    "time": 1792705968.6987197
+  },
+  "peak_RSS_bytes": 4630540288,
+  "acceptance_seconds": 25.94265103340149,
+  "time": 1792705991.4695158,
+  "Slurm_mutated": false,
+  "final4096_read": false
+}
