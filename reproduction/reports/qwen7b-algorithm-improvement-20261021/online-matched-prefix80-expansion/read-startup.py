@@ -21,8 +21,8 @@ for p in pathlib.Path('/proc').glob('[0-9]*'):
    except OSError:pass
   rows.append(row)
  except(OSError,UnicodeError):pass
-g=subprocess.run(['nvidia-smi','--query-gpu=index,utilization.gpu,memory.used','--format=csv,noheader'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=8)
+g=subprocess.run(['nvidia-smi','--query-gpu=index,name,utilization.gpu,memory.used','--format=csv,noheader'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=8)
 print(json.dumps({'time':time.time(),'processes':rows,'GPU_readonly':{'returncode':g.returncode,'stdout':g.stdout,'stderr':g.stderr}}))'''.replace('JOBID',job)
 compile(code,'own-allocation-reader','exec')
-p=subprocess.run(['srun','--jobid='+job,'--overlap','--nodes=1','--ntasks=1','--cpus-per-task=1','--gres=gpu:0','python3','-c',code],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=20);out['allocation_read']={'returncode':p.returncode,'stdout':p.stdout[-12000:],'stderr':p.stderr[-1000:]}
+p=subprocess.run(['srun','--jobid='+job,'--overlap','--nodes=1','--ntasks=1','--cpus-per-task=1','--gres=gpu:2','python3','-c',code],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=20);out['allocation_read']={'returncode':p.returncode,'stdout':p.stdout[-12000:],'stderr':p.stderr[-1000:]}
 print(json.dumps(out))
