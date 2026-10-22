@@ -1,5 +1,21 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
+**Current evidence, 2026-10-23:** production job `749598` runs immutable
+`c7976da3afc863a1c20b99daa7cc99de3bb61f15` on four H100 at `ACD1-14`.
+Actual native4 model/Adam/scheduler/RNG/data restoration from completed54 passed;
+outer55 completed and its full rolling checkpoint was sealed. Whole outer55,
+including checkpoint write/seal and inter-outer work, took **1756.665 seconds**
+(29m16.665s). Actor and candidate FA3 execution, compact GQA, one weight sync
+for five candidate phases, and zero extra monitor forwards were observed in the
+actual worker reports. The evidence is
+[`evidence/native-prefix-deployment-and-first-outer-evidence.json`](evidence/native-prefix-deployment-and-first-outer-evidence.json).
+The [speed attribution report](SPEED-DIAGNOSIS-20261023.md) includes the completed
+independent native4 measurement of 20 CPU rollback snapshots per rank.
+The remaining sections below retain the original Oct21 preparation history;
+their descriptions of optimizations as unimplemented are historical. The
+200/no201, native51713, seven-source metrics, full archive and actual final
+native4 recovery requirements are still pending.
+
 This is a fresh 7B actor experiment, adapted from the 3B Easy implementation at
 6956d9ffa0ec497c13a66061bd6460a471e9aa0d. The original 3B checkout is preserved. Original job734689 was subsequently
 stopped at the user’s explicit request, as recorded below. No other thread is messaged or modified.

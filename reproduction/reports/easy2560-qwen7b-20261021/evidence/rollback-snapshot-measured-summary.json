@@ -1,0 +1,69 @@
+{
+  "schema": "native4_cpu_rollback_cost_summary_v1",
+  "job_id": "749739",
+  "measured_unix": 1792689141.0995765,
+  "slurm": "749739|jxu957|COMPLETED|0:0|00:06:49|ACD1-25",
+  "operator_commit": "d87d3b54c505b581250b152bccef0f01e9a5f071",
+  "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_50",
+  "selection_step": 51,
+  "actual_world_size": 4,
+  "constructors_per_rank": 20,
+  "actual_adam_writes_per_rank": 20,
+  "training_forwards_per_rank": 80,
+  "production_modified": false,
+  "ranks": {
+    "0": {
+      "constructor_body_wall_seconds_total": 121.76951637677848,
+      "constructor_body_wall_seconds_median": 6.061709156259894,
+      "constructor_body_wall_seconds_min": 5.8740384094417095,
+      "constructor_body_wall_seconds_max": 6.532981250435114,
+      "parameter_snapshot_bytes_copied_total": 152312330240,
+      "adam_snapshot_bytes_copied_total": 304624662800,
+      "pre_constructor_cuda_sync_seconds_total": 0.0016982927918434143,
+      "snapshot_tensor_copies_all_cpu": true
+    },
+    "1": {
+      "constructor_body_wall_seconds_total": 122.7644975129515,
+      "constructor_body_wall_seconds_median": 6.080748036503792,
+      "constructor_body_wall_seconds_min": 5.987943511456251,
+      "constructor_body_wall_seconds_max": 6.56034847535193,
+      "parameter_snapshot_bytes_copied_total": 152312330240,
+      "adam_snapshot_bytes_copied_total": 304624662800,
+      "pre_constructor_cuda_sync_seconds_total": 0.0017183441668748856,
+      "snapshot_tensor_copies_all_cpu": true
+    },
+    "2": {
+      "constructor_body_wall_seconds_total": 122.77802286483347,
+      "constructor_body_wall_seconds_median": 6.09290306456387,
+      "constructor_body_wall_seconds_min": 5.969484379515052,
+      "constructor_body_wall_seconds_max": 6.610582988709211,
+      "parameter_snapshot_bytes_copied_total": 152312330240,
+      "adam_snapshot_bytes_copied_total": 304624662800,
+      "pre_constructor_cuda_sync_seconds_total": 0.0015158411115407944,
+      "snapshot_tensor_copies_all_cpu": true
+    },
+    "3": {
+      "constructor_body_wall_seconds_total": 118.96943800337613,
+      "constructor_body_wall_seconds_median": 5.948296163231134,
+      "constructor_body_wall_seconds_min": 5.745280714705586,
+      "constructor_body_wall_seconds_max": 6.111902728676796,
+      "parameter_snapshot_bytes_copied_total": 152312330240,
+      "adam_snapshot_bytes_copied_total": 304624662800,
+      "pre_constructor_cuda_sync_seconds_total": 0.0015693940222263336,
+      "snapshot_tensor_copies_all_cpu": true
+    }
+  },
+  "measured_fixed_work_wall_seconds": 273.7875532209873,
+  "bytes_copied_per_rank_per_outer": 456936993040,
+  "four_rank_sum_is_wall_time": false,
+  "full_outer_contribution_proven": false,
+  "source_evidence": "rollback-snapshot-native4-live-1792689141215248000.json",
+  "source_evidence_sha256": "388d1fc2446a87703e2f39a47fedf02bcc7f142aaadae222613647d2576ef5b8",
+  "actual_error_lines": [],
+  "limitations": [
+    "Four ranks run concurrently; never add their seconds and call that parallel wall time.",
+    "The legacy repeat includes instrumentation and a different node; do not subtract its wall from earlier modes as a pure component ablation.",
+    "Pre-constructor CUDA synchronization is excluded; exception rollback and snapshot release are not measured.",
+    "The production path is unchanged; this diagnostic executes old legacy work independently."
+  ]
+}
