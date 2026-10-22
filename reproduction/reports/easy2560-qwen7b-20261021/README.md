@@ -7,15 +7,23 @@ with zero extra monitor forwards. The required post-restore five-outer follow-up
 is accepted. The overall200-outer experiment and final acceptance remain incomplete.
 See [five complete post-restore outers](evidence/leanmetrics-five-complete-outers-summary.json).
 
+Outer66 has subsequently performed all20 real Adam updates on each of four
+ranks, reaching1320 writes. Its checkpoint save has actually started; at the
+latest evidence it is not yet sealed, so CP65 remains the durable boundary.
+See [outer66 update/save progress](evidence/leanmetrics-outer66-progress-summary.json).
+
 Natural candidate-generation counters identify a concrete remaining serial path:
 the local proxy and external retriever synchronously handle single-query calls.
 In an85.95-second window,961 backend calls consumed39.796 seconds;473 of1434
 logical calls were exact cache hits. This is46.3% serial backend occupancy in
 that window, not a whole-outer critical-path fraction or GPU utilization.
-Independent2GPU probe750360 onACD1-20 now replays the same128 saved queries at
-batch1/2/4/8/16/32, including fixed-singleton-embedding FAISS-only comparisons.
-It does not call or modify production retriever745198 or training750029.
-Numerical and speed acceptance are pending. See
+Independent2GPU probe750360 onACD1-20 completed128 saved-query comparisons.
+The conservative512-query probe750363 onACD1-4 also completed0:0: with E5
+unchanged singleton calls, FAISS batch16 reduced the component median from
+21.363 to4.650 seconds (4.59x); all1536 top3 slots match, max score error2.38e-7.
+Neither called or modified production retriever745198 or training750029.
+Full candidate-phase timing and production integration remain pending. See
+[conservative actual512-query result](evidence/retrieval-batching-r2-final-summary.json),
 [natural counter windows](evidence/leanmetrics-natural-retrieval-window-summary.json)
 and [complete phase breakdown](evidence/leanmetrics-phase-breakdown61-65.json).
 
