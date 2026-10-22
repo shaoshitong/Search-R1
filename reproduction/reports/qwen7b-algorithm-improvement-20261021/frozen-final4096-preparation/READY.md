@@ -9,3 +9,5 @@ Actual fresh metadata check found all entries/configs byte/SHA identical, no sam
 Remote preparation: `/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozen-final4096-generation-20261022-v1/prepared.json`.
 
 The default script time limit is 12h, but root may submit with `--time=02:00:00`. There is no collector TimeLimit identity requirement. Fresh metadata from previous matching512-question production shards showed 358.89s and373.54s elapsed; the override should be recorded in the actual root submission intent.
+
+Actual production verified at epoch1792679714: confirmation events A/B each sealed their first128-question/640-trajectory batch, and next-batch prefix generation continued without errors. Source complete-manifest SHA and full-journal/own-EM file descriptors were retained in `actual-first-two-sealed-batches.json`; no final EM values or probe predictions were read. Root subsequently selected45-minute Slurm walltime overrides without editing the collector.
