@@ -3,7 +3,7 @@
 正式训练已切换到优化实现。作业 `749598`，`ACD1-14` 四张 H100，运行源码
 `c7976da3afc863a1c20b99daa7cc99de3bb61f15`。实际从完整第54轮状态恢复，四卡
 model／Adam／scheduler／RNG 和 driver／数据流游标回读一致。第55轮四卡各完成20次
-Adam更新，完整断点已封存。第56、57轮随后也完成并封存，现运行第58轮；训练继续到
+Adam更新，完整断点已封存。第56—58轮随后也完成并封存，现运行第59轮；训练继续到
 200轮，不允许update201。
 
 ## 为什么局部接近两倍，整轮没有接近两倍
@@ -31,6 +31,7 @@ Adam更新，完整断点已封存。第56、57轮随后也完成并封存，现
 | 55，lean＋紧凑GQA＋native前缀解码 | 998.870秒 | 157.305秒 | 1756.665秒（29分17秒） |
 | 56，同上 | 1016.930秒 | 145.983秒 | 1775.756秒（29分36秒） |
 | 57，同上 | 944.780秒 | 144.034秒 | 1679.849秒（28分00秒） |
+| 58，同上 | 946.155秒 | 148.111秒 | 1691.419秒（28分11秒） |
 
 第55轮比第53轮整轮少8.76%，比第52轮少11.78%。候选占第55轮整轮约56.9%，
 actor更新约9.0%；优势计算202.775秒、checkpoint写入162.291秒也仍在整轮里。
@@ -44,6 +45,16 @@ checkpoint为91,405,594,385字节，manifest SHA为
 随后第58轮开始。第55—57轮整轮平均1737.423秒，即28分57秒，比旧第52轮观测
 耗时少12.74%；仍不将不同轮问题和policy下的差值当作同输入因果收益。第57轮
 选中443／512道混合题（86.52%），训练EM日志四舍五入为58.1%，reward均值0.753。
+
+第58轮同样完整结束，四卡累计1160次Adam、scheduler58，完整断点
+91,405,594,898字节，manifest SHA为
+`c2a5b82307b918eee3bfee8e1d95d918e7ab56d3d1d6156e7313e86d85bc217a`。
+第59轮已开始。第55—58轮完整均值1725.922秒，即28分46秒，较旧第52轮观测
+耗时少13.32%；第58轮选中480／512道混合题（93.75%）。
+四卡各20次真实更新、0额外monitor forward，未观察到新错误。独立配对作业749812
+在01:59—02:19约20分钟内7次成功观测均为PENDING(Resources)，没有节点或数值
+结果；仍保留同一作业。既有HK core／companion进程身份未变、轮询推进、无错误，
+继续等待同一生产作业的100／150／200里程碑。
 
 发现的另一个CPU开销是反复经过Hugging Face层进行前缀解码。对同一1024条已有
 action交替运行三次，HF解码8.5425ms/action，native backend解码0.4803ms/action，
@@ -135,6 +146,7 @@ PENDING(Resources)。空RSS不是0，无法据此证明512GB明显过大或是�
 - [正式第55轮完整状态与计时](evidence/native-prefix-deployment-and-first-outer-evidence.json)
 - [两轮完整计时与第56轮完整断点](evidence/native-prefix-two-complete-outers-summary.json)
 - [三轮完整计时与第57轮完整断点](evidence/native-prefix-three-complete-outers-summary.json)
+- [四轮完整计时与第58轮完整断点](evidence/native-prefix-four-complete-outers-summary.json)
 - [此前候选实际工作量与内核形状测试](evidence/fa3-production-speed-cause-20261022.json)
 - [四卡20次回滚快照的独立计时](evidence/rollback-snapshot-measured-summary.json)
 - [同legacy重复20步的样本差异](evidence/rollback-snapshot-legacy-repeatability-summary-20261023.json)

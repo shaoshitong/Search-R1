@@ -1,0 +1,56 @@
+{
+  "schema": "easy7b_native_prefix_four_complete_outers_v1",
+  "observed_unix": 1792693157.0067675,
+  "job": "749598",
+  "runtime_commit": "c7976da3afc863a1c20b99daa7cc99de3bb61f15",
+  "actual_completed_outers": [
+    55,
+    56,
+    57,
+    58
+  ],
+  "current_started_outer": 59,
+  "whole_outer_seconds": {
+    "55": 1756.6647560596466,
+    "56": 1775.7563478946686,
+    "57": 1679.8492681980133,
+    "58": 1691.4193348884583
+  },
+  "four_outer_mean_seconds": 1725.9224267601967,
+  "mean_elapsed_reduction_vs_observed_old52": 0.1331922405063728,
+  "whole_time_scope": "consecutive before-generation RNG snapshot mtimes, including full checkpoint write/seal and inter-outer work",
+  "next_snapshot_step_binding": "next as-yet unlabelled pool RNG snapshot after58; production log explicitly starts59; progress.json is published after its first candidate chunk",
+  "outer58": {
+    "candidate_fill_seconds": 946.1550106359646,
+    "actor_seconds_logged_rounded": 148.111,
+    "advantage_seconds_logged_rounded": 204.237,
+    "checkpoint_write_seconds_logged_rounded": 157.875,
+    "train_em_logged_rounded": 0.562,
+    "reward_mean_logged_rounded": 0.735,
+    "selected_mixed": 480,
+    "selected_questions": 512,
+    "selected_mixed_fraction": 0.9375,
+    "actual_twenty_writes_all4": true,
+    "actual_writes_per_rank": 1160,
+    "scheduler_after_all4": 58,
+    "checkpoint_manifest_sha256": "c2a5b82307b918eee3bfee8e1d95d918e7ab56d3d1d6156e7313e86d85bc217a",
+    "checkpoint_total_bytes": 91405594898,
+    "callbacks_complete": true,
+    "actual_cuda_restore_of_this_checkpoint_accepted": false,
+    "extra_monitor_forwards_all4": 0
+  },
+  "errors": {
+    "training": [],
+    "trainer": [],
+    "pipeline": [],
+    "slurm": []
+  },
+  "observation_errors": [],
+  "evidence": [
+    "fastpath-native-prefix-r2-live-1792693157447311000.json",
+    "native-prefix-fourth-outer-boundary-1792693166785416000.json"
+  ],
+  "tensors_read_or_saved_locally": false,
+  "causal_claim_across_different_policies_questions_nodes": false,
+  "goal_complete": false
+}
