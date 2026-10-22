@@ -27,12 +27,26 @@ import uuid
 sys.dont_write_bytecode = True
 REPO = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO))
+# Ray 2.40.0 source: src/ray/common/ray_config_def.h lines360/364,
+# 594/598/866. ray_config.h lines67-74 defines the RAY_{name} overrides.
+# Disable both distinct idle-worker prestart paths. Bound RPC pools rather
+# than letting each daemon/core-worker size them from the whole node's CPUs.
+RAY_SYSTEM_CONFIG = dict(enable_worker_prestart=False, prestart_worker_first_driver=False,
+    num_server_call_thread=2, gcs_server_rpc_server_thread_num=2,
+    gcs_server_rpc_client_thread_num=2)
+PROCESS_THREAD_ENV = dict(OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1', NUMEXPR_NUM_THREADS='1',
+    **{'RAY_' + name: ('true' if value is True else 'false' if value is False else str(value))
+       for name, value in RAY_SYSTEM_CONFIG.items()})
+# Apply before importing Ray/Torch/Numpy, and also pass these exact values to
+# workers below. Actor torch/OMP threads and CPU reservations remain unchanged.
+os.environ.update(PROCESS_THREAD_ENV)
 NATIVE_SOURCES = (
     'search_g1/async_rollout_runtime.py', 'search_r1/llm_agent/generation.py',
     'reproduction/common8/generation_behavior.py',
     'reproduction/common8/sampling_capture.py', 'search_g1/mixed_runtime.py',
     'search_g1/mixed_selection.py', 'search_g1/vllm_flash3.py',
     'verl/workers/rollout/vllm_rollout/vllm_rollout.py',
+    'reproduction/easy2560_joint4/native_ray_resources.py',
     'reproduction/operations/easy7b_20261021/benchmark_candidate_native4.py',
 )
 
@@ -237,6 +251,8 @@ def selection_summary(selector, chunks):
 
 
 def run(args):
+    from reproduction.easy2560_joint4.native_ray_resources import raise_self_soft
+    nproc = raise_self_soft()
     import ray
     import torch
     from transformers import AutoTokenizer
@@ -266,6 +282,8 @@ def run(args):
         label=args.label, options=options, candidate_files=args.candidate_files,
         requested_chunks=args.chunks, retrieval_url=args.retrieval_url,
         runtime_source_sha256=source_map, benchmark_source_commit_is_source_base_parent=True,
+        ray_system_config=RAY_SYSTEM_CONFIG, ray_process_thread_env=PROCESS_THREAD_ENV,
+        native_nproc=nproc,
         training_modified=False, optimizer_loaded=False, optimizer_writes=0,
         full_training_outer_speedup_proven=False,
         timing_scope='Real async multi-turn generation, HTTP retrieval, original strict-EM and Easy selection; '
@@ -280,7 +298,7 @@ def run(args):
         VLLM_NO_USAGE_STATS='1', TOKENIZERS_PARALLELISM='false',
         HF_HUB_OFFLINE='1', TRANSFORMERS_OFFLINE='1',
         PYTHONDONTWRITEBYTECODE='1', OMP_NUM_THREADS=str(args.worker_cpus),
-        PYTHONPATH=str(REPO), RAY_DEDUP_LOGS='0')
+        PYTHONPATH=str(REPO), RAY_DEDUP_LOGS='0', **PROCESS_THREAD_ENV)
     # Ray's UNIX sockets have a short platform path limit. This new per-job
     # remote /tmp directory is ephemeral; every durable report/raw tensor stays
     # under the explicit experiment root. Do not use a long root as socket path.
@@ -288,6 +306,7 @@ def run(args):
     env.update(TRITON_CACHE_DIR=str(root / 'cache/triton'), XDG_CACHE_HOME=str(root / 'cache'))
     ray.init(num_gpus=4, num_cpus=args.worker_cpus * 4 + 2,
         _temp_dir=ray_temp, include_dashboard=False,
+        _system_config=RAY_SYSTEM_CONFIG,
         runtime_env={'env_vars': env})
     workers = []
     try:

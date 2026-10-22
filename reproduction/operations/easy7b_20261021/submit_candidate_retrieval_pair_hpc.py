@@ -22,6 +22,7 @@ def main():
     pin = Path(request['pin_base'])
     command = ['env', 'LD_PRELOAD=' + str(target / 'preparation/flash3-runtime/libcudart.so.12'),
         'PYTHONDONTWRITEBYTECODE=1', 'PYTHONUNBUFFERED=1', 'OMP_NUM_THREADS=8',
+        'OPENBLAS_NUM_THREADS=1', 'MKL_NUM_THREADS=1', 'NUMEXPR_NUM_THREADS=1',
         'HF_HUB_OFFLINE=1', 'TRANSFORMERS_OFFLINE=1', 'VLLM_NO_USAGE_STATS=1',
         'PYTHONPATH=' + str(source), 'RAY_DEDUP_LOGS=0',
         'TRITON_CACHE_DIR=' + str(root / 'cache/triton'), 'XDG_CACHE_HOME=' + str(root / 'cache'),
