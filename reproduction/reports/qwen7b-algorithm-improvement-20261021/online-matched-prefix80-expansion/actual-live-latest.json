@@ -1,5 +1,5 @@
 {
-  "time": 1792689897.0259354,
+  "time": 1792690164.8033805,
   "experiments": {
     "15": {
       "prefix80-ready.json": {
@@ -203,7 +203,7 @@
       },
       "queue": {
         "returncode": 0,
-        "stdout": "749782|q7b-P80-L15-cont|acd_u|PENDING|2026-10-23T02:49:30|(Priority)",
+        "stdout": "749782|q7b-P80-L15-cont|acd_u|PENDING|2026-10-23T02:42:28|(Priority)",
         "stderr": ""
       }
     },
@@ -309,6 +309,50 @@
         "training_G5_per_epoch": 8192,
         "training_questions": 8192,
         "validation_questions": 2048,
+        "world_size": 2
+      },
+      "progress-rank-0.json": {
+        "cursor": 157,
+        "epoch": 3,
+        "epoch_questions_seen": 1856,
+        "epoch_unique_questions": 8192,
+        "global_batch_questions": 128,
+        "gradient_accumulation_microbatches": 8,
+        "head_gradient_L2": 0.9859677101519589,
+        "layer": 18,
+        "local_batch_questions": 64,
+        "loss": 0.5482608377933502,
+        "micro_questions": 8,
+        "native_gradient_L2": 0.38701070529182524,
+        "prefill_seconds": 7.996120345080271,
+        "prefix": 80,
+        "rank": 0,
+        "stage": "ONLINE_PREFILL_REAL_MIXED_UPDATES",
+        "time": 1792690161.3741946,
+        "train_seconds": 1.576118865981698,
+        "trajectory_rows_per_rank": 320,
+        "world_size": 2
+      },
+      "progress-rank-1.json": {
+        "cursor": 157,
+        "epoch": 3,
+        "epoch_questions_seen": 1856,
+        "epoch_unique_questions": 8192,
+        "global_batch_questions": 128,
+        "gradient_accumulation_microbatches": 8,
+        "head_gradient_L2": 0.9859677101519589,
+        "layer": 18,
+        "local_batch_questions": 64,
+        "loss": 0.6400528699159622,
+        "micro_questions": 8,
+        "native_gradient_L2": 0.38701070529182524,
+        "prefill_seconds": 9.153644090984017,
+        "prefix": 80,
+        "rank": 1,
+        "stage": "ONLINE_PREFILL_REAL_MIXED_UPDATES",
+        "time": 1792690161.3743646,
+        "train_seconds": 0.42244777479209006,
+        "trajectory_rows_per_rank": 320,
         "world_size": 2
       },
       "latest.json": {
@@ -424,9 +468,63 @@
           }
         }
       },
+      "evaluation-epoch-02.json": {
+        "cursor": 128,
+        "epoch": 2,
+        "metrics": {
+          "fixed_train2048": {
+            "EMA": {
+              "balanced_accuracy": 0.5892357875116496,
+              "binary_Mixed_BCE": 0.68133612965649,
+              "selected512": {
+                "Mixed": 297,
+                "Mixed_fraction": 0.580078125,
+                "questions": 512
+              },
+              "Mixed_recall": 0.7905405405405406,
+              "nonMixed_false_positive_rate": 0.6120689655172413
+            },
+            "raw": {
+              "balanced_accuracy": 0.6117621932277104,
+              "binary_Mixed_BCE": 0.6807934300465879,
+              "selected512": {
+                "Mixed": 313,
+                "Mixed_fraction": 0.611328125,
+                "questions": 512
+              },
+              "Mixed_recall": 0.8907657657657657,
+              "nonMixed_false_positive_rate": 0.6672413793103449
+            }
+          },
+          "fixed_validation2048": {
+            "EMA": {
+              "balanced_accuracy": 0.5628828593364588,
+              "binary_Mixed_BCE": 0.7020286990938727,
+              "selected512": {
+                "Mixed": 212,
+                "Mixed_fraction": 0.4140625,
+                "questions": 512
+              },
+              "Mixed_recall": 0.7828054298642534,
+              "nonMixed_false_positive_rate": 0.6570397111913358
+            },
+            "raw": {
+              "balanced_accuracy": 0.573410436098905,
+              "binary_Mixed_BCE": 0.7503682886646938,
+              "selected512": {
+                "Mixed": 224,
+                "Mixed_fraction": 0.4375,
+                "questions": 512
+              },
+              "Mixed_recall": 0.8702865761689291,
+              "nonMixed_false_positive_rate": 0.7234657039711192
+            }
+          }
+        }
+      },
       "accounting": {
         "returncode": 0,
-        "stdout": "749754|RUNNING|0:0|00:05:27|ACD1-23",
+        "stdout": "749754|RUNNING|0:0|00:09:55|ACD1-23",
         "stderr": ""
       },
       "queue": {
