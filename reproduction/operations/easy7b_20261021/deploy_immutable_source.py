@@ -62,6 +62,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('--base', required=True)
     parser.add_argument('--output', required=True)
+    parser.add_argument('--branch', help='Published branch; defaults to the current checkout branch')
     parser.add_argument('--login-host', default=DEFAULT_LOGIN_HOST)
     parser.add_argument('--login-identity-json',
                         help='Explicit hostname/boot_id/pid_namespace JSON; required for a different login host')
@@ -74,7 +75,9 @@ def main(argv=None):
     def git(*command):
         return subprocess.check_output(['git', '-C', str(repo), *command])
     commit = git('rev-parse', 'HEAD').decode().strip()
-    branch = 'codex/easy2560-qwen7b-20261021'
+    branch = args.branch or git('branch', '--show-current').decode().strip()
+    if not branch:
+        raise ValueError('An explicit published branch is required from a detached checkout')
     assert git('ls-remote', 'origin', 'refs/heads/'+branch).decode().split()[0] == commit
     from reproduction.easy2560_joint4.control import own_base
     base = own_base(args.base)
