@@ -51,9 +51,18 @@ NATIVE_SOURCES = (
 )
 
 
+def json_value(value):
+    """Serialize numpy-backed diagnostic values without changing source data."""
+    if hasattr(value, 'tolist'):
+        return value.tolist()
+    if hasattr(value, 'item'):
+        return value.item()
+    raise TypeError('Unsupported diagnostic JSON value: ' + type(value).__name__)
+
+
 def digest(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, ensure_ascii=False,
-        separators=(',', ':'), allow_nan=False).encode()).hexdigest()
+        separators=(',', ':'), allow_nan=False, default=json_value).encode()).hexdigest()
 
 
 def sha(path):
@@ -76,7 +85,7 @@ def publish(path, value):
     path = Path(path)
     temporary = path.with_name(path.name + '.partial')
     with temporary.open('w') as stream:
-        json.dump(value, stream, sort_keys=True, indent=2, allow_nan=False)
+        json.dump(value, stream, sort_keys=True, indent=2, allow_nan=False, default=json_value)
         stream.write('\n'); stream.flush(); os.fsync(stream.fileno())
     os.replace(temporary, path)
 
@@ -84,7 +93,7 @@ def publish(path, value):
 def event(root, stage, **values):
     record = dict(stage=stage, checked_unix=time.time(), **values)
     publish(Path(root) / 'progress.json', record)
-    print(json.dumps(record, sort_keys=True, allow_nan=False), flush=True)
+    print(json.dumps(record, sort_keys=True, allow_nan=False, default=json_value), flush=True)
 
 
 def bind_generation_capture(engine, tokenizer, checkpoint, run):
