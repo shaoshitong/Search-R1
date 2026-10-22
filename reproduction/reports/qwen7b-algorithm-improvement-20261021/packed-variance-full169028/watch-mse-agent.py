@@ -43,7 +43,7 @@ def run(control):
   if p.returncode:
    message=(p.stdout+p.stderr)[-2400:]
    if any(t in message for t in('Operation not permitted','Permission denied','network access is disabled','permission profile')):raise RuntimeError(message)
-   if not any(t in message.lower()for t in('connection closed','connection reset','connection timed out','connect to host','broken pipe')):raise RuntimeError(message)
+   if not any(t in message.lower()for t in('connection closed','connection reset','connection timed out','connect to host','broken pipe','timeoutexpired','timed out after')):raise RuntimeError(message)
    connection_failures+=1
    interruption=dict(time=time.time(),status='CURRENT_REMOTE_STATE_UNREADABLE_LAST_VALUES_STALE',explicit_private_route=control,no_route_fallback=True,no_Slurm_mutation=True,consecutive_failures=connection_failures,error=message,remote_training_failure_not_inferred=True)
    atomic(B/'agent-mse-control-interruption-latest.json',interruption)
