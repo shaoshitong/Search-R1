@@ -1,0 +1,10 @@
+# Historical exact operator executed on 2026-10-22; no credentials.
+import subprocess,json,shlex,time
+from pathlib import Path
+b=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022');commit='980d0a1232fcce1127652a39187ffb6ae139484e';source=b/'source'/commit;root=b/'diagnostics/prefix-decode-three-mode-cause-r1';root.mkdir(parents=True,exist_ok=True)
+if (root/'launch-receipt.json').is_file():print((root/'launch-receipt.json').read_text());raise SystemExit()
+old=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022');candidate=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-lean-r1-20261022/artifacts/mixed-candidate-pools/ac76dcefaf5a4cd793dea445f36ecc89-pool-0/0.pt')
+command=['env','PYTHONDONTWRITEBYTECODE=1','PYTHONUNBUFFERED=1','OMP_NUM_THREADS=2','TOKENIZERS_PARALLELISM=false','HF_HUB_OFFLINE=1','TRANSFORMERS_OFFLINE=1','CUDA_VISIBLE_DEVICES=',str(old/'env/bin/python'),'-B',str(source/'reproduction/operations/easy7b_20261021/benchmark_prefix_decode_cpu.py'),'--repo',str(source),'--candidate-file',str(candidate),'--checkpoint',str(old/'checkpoints/search-g1-common8/actor/global_step_52'),'--max-turns','1024','--chunk-size','16','--repeats','3','--output',str(root/'result.json')]
+argv=['srun','--jobid=745198','--overlap','--exact','--ntasks=1','--cpus-per-task=2','--mem=32G','--gres=none','--cpu-bind=none','--chdir='+str(source)]+command
+with (root/'step.log').open('x') as stream:p=subprocess.Popen(argv,stdin=subprocess.DEVNULL,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
+r={'epoch':time.time(),'pid':p.pid,'start_ticks':Path('/proc/%d/stat'%p.pid).read_text().split()[21],'argv':argv,'commit':commit,'cpu_only':True,'gpu_requested':0,'production_modified':False};(root/'launch-receipt.json').write_text(json.dumps(r,indent=2)+'\n');print(json.dumps({k:r[k] for k in ('epoch','pid','start_ticks','commit','cpu_only','gpu_requested','production_modified')}))
