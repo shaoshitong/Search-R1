@@ -1,0 +1,1631 @@
+{
+  "candidate": {
+    "actual_fa3_prefill_and_decode": true,
+    "actual_full_state_training_resume": false,
+    "baseline_median_seconds": 4.508510733023286,
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_50",
+    "fa2_over_fa3_speedup": 0.9884322403186682,
+    "fa2_page256_median_seconds": 3.8325833780691028,
+    "fa3": {
+      "calls": {
+        "decode": 25760,
+        "paged_prefill": 0,
+        "prefill": 1904
+      },
+      "checked_unix": 1792677486.7475858,
+      "implementation": "vllm063_process_local_flash3",
+      "installed_environment_modified": false,
+      "provenance": {
+        "compiled_torch_cuda": "12.1",
+        "cudart_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/flash3-runtime/libcudart.so.12",
+        "cudart_runtime_version": 12060,
+        "cudart_sha256": "095296727cfb5f51e5b3ae69a3cb88cbd7b6592f314ace0fdfc4e1d758c2aa85",
+        "extension_module": "flash_attn_3_cuda",
+        "extension_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/flash3-runtime/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+        "extension_sha256": "be3e87f7b0401f71be424916d4ca031f90aa21be70b479eec0c9898763dcb345",
+        "interface_module": "_search_g1_actor_flash3_f011b50066544b3c946c4ecd274adaf2",
+        "interface_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/flash3-runtime/flash_attn_interface.py",
+        "interface_sha256": "a50f564fa1fc4cdd85ffa61f79e913a463c2066e519f9c5e8bc2e5c74457fa38",
+        "interface_version": "3.0.0b1",
+        "source_scope": "private actor interface + explicit extension; no foreign site-packages path",
+        "torch_version": "2.4.0+cu121"
+      }
+    },
+    "fa3_median_seconds": 3.877436633221805,
+    "full_outer_speedup_proven": false,
+    "generation_speedup": 1.1627554901592587,
+    "greedy_sequences": 16,
+    "greedy_sequences_equal": 12,
+    "logprob_max_abs": 0.2591867446899414,
+    "logprob_mean_abs": 0.015065778075464595,
+    "logprob_p99_abs": 0.12524151802062988,
+    "numerical_prompt_lengths": [
+      147,
+      136,
+      156,
+      132,
+      153,
+      129,
+      128,
+      142,
+      1405,
+      1273,
+      782,
+      1842,
+      1245,
+      658,
+      688,
+      1300
+    ],
+    "speed_scope": "XFormers/page16 versus FA3/page256; FA2/page256 also measured",
+    "status": "COMPLETED",
+    "teacher_forced_token_count": 512,
+    "training_modified": false
+  },
+  "compact_kernel": {
+    "cases": [
+      {
+        "causal_prefix_bitwise_unchanged": true,
+        "compact_vs_expanded": {
+          "checks": {
+            "dq": true,
+            "output": true,
+            "shared_dk": true,
+            "shared_dv": true
+          },
+          "metrics": {
+            "dq": {
+              "elements": 35449344,
+              "finite": true,
+              "max_abs": 0.0,
+              "reference_max_abs": 3.84375,
+              "relative_l2": 0.0
+            },
+            "output": {
+              "elements": 35449344,
+              "finite": true,
+              "max_abs": 0.0,
+              "reference_max_abs": 3.6875,
+              "relative_l2": 0.0
+            },
+            "shared_dk": {
+              "elements": 5064192,
+              "finite": true,
+              "max_abs": 0.03125,
+              "reference_max_abs": 7.65625,
+              "relative_l2": 0.002616339966646431
+            },
+            "shared_dv": {
+              "elements": 5064192,
+              "finite": true,
+              "max_abs": 0.0625,
+              "reference_max_abs": 15.9375,
+              "relative_l2": 0.0026298322737939132
+            }
+          },
+          "passed": true
+        },
+        "compact_vs_fp32_math": {
+          "checks": {
+            "dq": true,
+            "output": true,
+            "shared_dk": true,
+            "shared_dv": true
+          },
+          "metrics": {
+            "dq": {
+              "elements": 35449344,
+              "finite": true,
+              "max_abs": 0.015897035598754883,
+              "reference_max_abs": 3.8489139080047607,
+              "relative_l2": 0.0024916362926135143
+            },
+            "output": {
+              "elements": 35449344,
+              "finite": true,
+              "max_abs": 0.00934147834777832,
+              "reference_max_abs": 3.6870667934417725,
+              "relative_l2": 0.001985779593010146
+            },
+            "shared_dk": {
+              "elements": 5064192,
+              "finite": true,
+              "max_abs": 0.024082660675048828,
+              "reference_max_abs": 7.645618915557861,
+              "relative_l2": 0.0024725300847535355
+            },
+            "shared_dv": {
+              "elements": 5064192,
+              "finite": true,
+              "max_abs": 0.03793621063232422,
+              "reference_max_abs": 15.91215705871582,
+              "relative_l2": 0.002305160653955678
+            }
+          },
+          "passed": true
+        },
+        "expanded_over_compact_speed_ratio": 1.108726052745622,
+        "label": "production_micro8",
+        "other_sequences_bitwise_unchanged": true,
+        "warmed_compact_median_ms": 1.544431984424591,
+        "warmed_expanded_median_ms": 1.7123519778251648
+      },
+      {
+        "causal_prefix_bitwise_unchanged": true,
+        "compact_vs_expanded": {
+          "checks": {
+            "dq": true,
+            "output": true,
+            "shared_dk": true,
+            "shared_dv": true
+          },
+          "metrics": {
+            "dq": {
+              "elements": 35449344,
+              "finite": true,
+              "max_abs": 0.0,
+              "reference_max_abs": 41.0,
+              "relative_l2": 0.0
+            },
+            "output": {
+              "elements": 35449344,
+              "finite": true,
+              "max_abs": 0.0,
+              "reference_max_abs": 1.2578125,
+              "relative_l2": 0.0
+            },
+            "shared_dk": {
+              "elements": 5064192,
+              "finite": true,
+              "max_abs": 0.03125,
+              "reference_max_abs": 4.46875,
+              "relative_l2": 0.00266314594588923
+            },
+            "shared_dv": {
+              "elements": 5064192,
+              "finite": true,
+              "max_abs": 0.125,
+              "reference_max_abs": 35.0,
+              "relative_l2": 0.002506808858826483
+            }
+          },
+          "passed": true
+        },
+        "compact_vs_fp32_math": {
+          "checks": {
+            "dq": true,
+            "output": true,
+            "shared_dk": true,
+            "shared_dv": true
+          },
+          "metrics": {
+            "dq": {
+              "elements": 35449344,
+              "finite": true,
+              "max_abs": 0.1819915771484375,
+              "reference_max_abs": 40.81800842285156,
+              "relative_l2": 0.007197581869179755
+            },
+            "output": {
+              "elements": 35449344,
+              "finite": true,
+              "max_abs": 0.0038813352584838867,
+              "reference_max_abs": 1.2578125,
+              "relative_l2": 0.0007359870864683967
+            },
+            "shared_dk": {
+              "elements": 5064192,
+              "finite": true,
+              "max_abs": 0.02494072914123535,
+              "reference_max_abs": 4.476202011108398,
+              "relative_l2": 0.0069412141586432516
+            },
+            "shared_dv": {
+              "elements": 5064192,
+              "finite": true,
+              "max_abs": 0.09502792358398438,
+              "reference_max_abs": 34.904972076416016,
+              "relative_l2": 0.0017489234629904649
+            }
+          },
+          "passed": true
+        },
+        "expanded_over_compact_speed_ratio": 1.0897056937921668,
+        "label": "high_magnitude",
+        "other_sequences_bitwise_unchanged": true,
+        "warmed_compact_median_ms": 1.5265920162200928,
+        "warmed_expanded_median_ms": 1.663536012172699
+      }
+    ],
+    "job": "749091",
+    "passed": true,
+    "projected_parameter_gradients": {
+      "compact_vs_expanded": {
+        "checks": {
+          "input_gradient": true,
+          "k_proj_gradient": true,
+          "o_proj_gradient": true,
+          "output": true,
+          "q_proj_gradient": true,
+          "v_proj_gradient": true
+        },
+        "metrics": {
+          "input_gradient": {
+            "elements": 344064,
+            "finite": true,
+            "max_abs": 0.03125,
+            "reference_max_abs": 6.28125,
+            "relative_l2": 0.003696027151123107
+          },
+          "k_proj_gradient": {
+            "elements": 1835008,
+            "finite": true,
+            "max_abs": 0.25,
+            "reference_max_abs": 46.0,
+            "relative_l2": 0.0035198799043097595
+          },
+          "o_proj_gradient": {
+            "elements": 12845056,
+            "finite": true,
+            "max_abs": 0.0,
+            "reference_max_abs": 30.25,
+            "relative_l2": 0.0
+          },
+          "output": {
+            "elements": 344064,
+            "finite": true,
+            "max_abs": 0.0,
+            "reference_max_abs": 3.796875,
+            "relative_l2": 0.0
+          },
+          "q_proj_gradient": {
+            "elements": 12845056,
+            "finite": true,
+            "max_abs": 0.0,
+            "reference_max_abs": 19.25,
+            "relative_l2": 0.0
+          },
+          "v_proj_gradient": {
+            "elements": 1835008,
+            "finite": true,
+            "max_abs": 0.25,
+            "reference_max_abs": 74.5,
+            "relative_l2": 0.003287309247736483
+          }
+        },
+        "passed": true
+      },
+      "compact_vs_math": {
+        "checks": {
+          "input_gradient": true,
+          "k_proj_gradient": true,
+          "o_proj_gradient": true,
+          "output": true,
+          "q_proj_gradient": true,
+          "v_proj_gradient": true
+        },
+        "metrics": {
+          "input_gradient": {
+            "elements": 344064,
+            "finite": true,
+            "max_abs": 0.03125,
+            "reference_max_abs": 6.28125,
+            "relative_l2": 0.004365517531667967
+          },
+          "k_proj_gradient": {
+            "elements": 1835008,
+            "finite": true,
+            "max_abs": 0.25,
+            "reference_max_abs": 46.0,
+            "relative_l2": 0.0037076443723451386
+          },
+          "o_proj_gradient": {
+            "elements": 12845056,
+            "finite": true,
+            "max_abs": 0.125,
+            "reference_max_abs": 30.25,
+            "relative_l2": 0.002631942128291859
+          },
+          "output": {
+            "elements": 344064,
+            "finite": true,
+            "max_abs": 0.015625,
+            "reference_max_abs": 3.796875,
+            "relative_l2": 0.0025808588090948876
+          },
+          "q_proj_gradient": {
+            "elements": 12845056,
+            "finite": true,
+            "max_abs": 0.125,
+            "reference_max_abs": 19.25,
+            "relative_l2": 0.0037849602484273277
+          },
+          "v_proj_gradient": {
+            "elements": 1835008,
+            "finite": true,
+            "max_abs": 0.5,
+            "reference_max_abs": 74.5,
+            "relative_l2": 0.0032574077571551974
+          }
+        },
+        "passed": true
+      },
+      "head_dim": 128,
+      "hidden_size": 3584,
+      "kv_heads": 4,
+      "lengths": [
+        31,
+        65
+      ],
+      "passed": true,
+      "projection_dtype": "bfloat16",
+      "q_heads": 28,
+      "rope_theta": 1000000.0,
+      "scope": "one random attention block Q/K/V/O projections+RoPE+parameter/input gradients; not pretrained full-actor or optimizer equivalence",
+      "sdpa_attention_dtype": "float32"
+    },
+    "status": "COMPACT_GQA_FORWARD_BACKWARD_PASS"
+  },
+  "decision": {
+    "original_producer_recent_error": null,
+    "pending_actual_state": "PENDING Resources",
+    "pending_job": "749150",
+    "pending_scope": "native4 lean actor, original expanded KV28 FA3, same CP50/selection51/20writes; no new production stop",
+    "production_switched": false,
+    "reason": "Some20-step training LP samples and gradient norms diverge, despite small final parameter samples and aligned loss. Separate removal of checks/snapshots from compact-GQA gradient rounding before production replacement.",
+    "status": "PENDING_EXPANDED_LEAN_CONTROL"
+  },
+  "isolation_operator_commit": "bf868208b9ece6319efc6bcb9fda2d9747dc0d36",
+  "native4_comparison": {
+    "fixed_work_wall_seconds": {
+      "leancompact_slowest_rank": 134.23235360195395,
+      "legacy_slowest_rank": 266.0791017039446
+    },
+    "fixed_work_wall_speedup": 1.9822277905739667,
+    "format": "native4_fixed_work_fastpath_comparison_v1",
+    "full_optimizer_numerical_equivalence_proven": false,
+    "full_parameter_numerical_equivalence_proven": false,
+    "leancompact_job": "749090",
+    "leancompact_root": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022/diagnostics/native4-leancompact-r1",
+    "legacy_root": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022/diagnostics/native4-legacy-r1",
+    "matching_twenty_update_work_proven_by_reports": true,
+    "original_job": "749089",
+    "production_reward_equivalence_proven": false,
+    "ranks": [
+      {
+        "actual_monitor_forwards": {
+          "leancompact": 0,
+          "legacy": 21
+        },
+        "clip_fraction": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.01296678212020197,
+          "max_abs": 0.008240070194005966,
+          "mean_abs": 0.0021109213354066013,
+          "reference_count": 80,
+          "reference_mean": 0.012683722537622089,
+          "relative_l2": 0.19959816696051944,
+          "same_count": true
+        },
+        "final_adam_samples": {
+          "numerical_moment_difference_available": false,
+          "numerical_moment_samples": null,
+          "same_state_indices": true,
+          "same_state_keys": true,
+          "sampled_state_hashes": {
+            "compared": 87,
+            "different": 58,
+            "equal": 29
+          },
+          "scope": "reported Adam step counters and64-element sample hashes per state tensor; hash mismatch supplies no numerical error magnitude; not full Adam equality",
+          "step_counters": {
+            "all_finite": true,
+            "candidate_count": 29,
+            "candidate_mean": 1020.0,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 29,
+            "reference_mean": 1020.0,
+            "relative_l2": 0.0,
+            "same_count": true
+          }
+        },
+        "final_parameter_samples": {
+          "matched_local_shards": 29,
+          "numerical_samples": {
+            "all_finite": true,
+            "candidate_count": 1856,
+            "candidate_mean": -0.0004596373758109143,
+            "max_abs": 2.4983659386634827e-05,
+            "mean_abs": 7.956573669346277e-07,
+            "reference_count": 1856,
+            "reference_mean": -0.000459597355628436,
+            "relative_l2": 7.730328620188449e-05,
+            "same_count": true
+          },
+          "same_layout": true,
+          "same_parameter_names": true,
+          "sampled_hashes_equal": 0,
+          "scope": "at most64 reported elements per local parameter shard; not full parameters"
+        },
+        "global_cpu_rng_equal": true,
+        "global_cuda_rng_equal": true,
+        "gradient_norm": {
+          "all_finite": true,
+          "candidate_count": 20,
+          "candidate_mean": 2.03206998282916,
+          "max_abs": 0.6395511820977817,
+          "mean_abs": 0.09094987741744426,
+          "reference_count": 20,
+          "reference_mean": 2.045155579910951,
+          "relative_l2": 0.07924213712264339,
+          "same_count": true
+        },
+        "initial_adam_samples": {
+          "numerical_moment_difference_available": false,
+          "numerical_moment_samples": null,
+          "same_state_indices": true,
+          "same_state_keys": true,
+          "sampled_state_hashes": {
+            "compared": 87,
+            "different": 0,
+            "equal": 87
+          },
+          "scope": "reported Adam step counters and64-element sample hashes per state tensor; hash mismatch supplies no numerical error magnitude; not full Adam equality",
+          "step_counters": {
+            "all_finite": true,
+            "candidate_count": 29,
+            "candidate_mean": 1000.0,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 29,
+            "reference_mean": 1000.0,
+            "relative_l2": 0.0,
+            "same_count": true
+          }
+        },
+        "initial_parameter_samples": {
+          "matched_local_shards": 29,
+          "numerical_samples": {
+            "all_finite": true,
+            "candidate_count": 1856,
+            "candidate_mean": -0.00045950091092095136,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 1856,
+            "reference_mean": -0.00045950091092095136,
+            "relative_l2": 0.0,
+            "same_count": true
+          },
+          "same_layout": true,
+          "same_parameter_names": true,
+          "sampled_hashes_equal": 29,
+          "scope": "at most64 reported elements per local parameter shard; not full parameters"
+        },
+        "leancompact_work": {
+          "eighty_training_forwards": true,
+          "original_local640_rows": true,
+          "twenty_adam_calls": true,
+          "twenty_adam_writes": true,
+          "twenty_minibatches": true
+        },
+        "legacy_work": {
+          "eighty_training_forwards": true,
+          "original_local640_rows": true,
+          "twenty_adam_calls": true,
+          "twenty_adam_writes": true,
+          "twenty_minibatches": true
+        },
+        "lp_means": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": -0.31569824431059107,
+          "max_abs": 0.005468085260674549,
+          "mean_abs": 0.0011971614119704963,
+          "reference_count": 80,
+          "reference_mean": -0.3157969568259603,
+          "relative_l2": 0.004856354140409401,
+          "same_count": true
+        },
+        "lp_samples": {
+          "all_finite": true,
+          "candidate_count": 2560,
+          "candidate_mean": -0.29624050483107567,
+          "max_abs": 0.8575115203857422,
+          "mean_abs": 0.014228563010692596,
+          "reference_count": 2560,
+          "reference_mean": -0.2957349129021168,
+          "relative_l2": 0.0546601795053495,
+          "same_count": true
+        },
+        "policy_loss": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.04883425475455782,
+          "max_abs": 0.0033882477623705665,
+          "mean_abs": 0.0008364559442713372,
+          "reference_count": 80,
+          "reference_mean": 0.04896413873661122,
+          "relative_l2": 0.003619673539046974,
+          "same_count": true
+        },
+        "ppo_kl": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.002835231453354936,
+          "max_abs": 0.006799492985010147,
+          "mean_abs": 0.0013187276477765407,
+          "reference_count": 80,
+          "reference_mean": 0.0029433152862111457,
+          "relative_l2": 0.4373579478550813,
+          "same_count": true
+        },
+        "rank": 0,
+        "same_checkpoint": true,
+        "same_forward_authored_token_counts": true,
+        "same_original_data_identity": true,
+        "scheduler_after_equal": true,
+        "scheduler_before_equal": true,
+        "wall_seconds": {
+          "leancompact": 134.23233601008542,
+          "legacy": 266.0790948009817,
+          "legacy_over_leancompact": 1.9822279989300797
+        }
+      },
+      {
+        "actual_monitor_forwards": {
+          "leancompact": 0,
+          "legacy": 21
+        },
+        "clip_fraction": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.011987815966858762,
+          "max_abs": 0.007113199681043625,
+          "mean_abs": 0.0021554684164584613,
+          "reference_count": 80,
+          "reference_mean": 0.012186526532605057,
+          "relative_l2": 0.20918814229715968,
+          "same_count": true
+        },
+        "final_adam_samples": {
+          "numerical_moment_difference_available": false,
+          "numerical_moment_samples": null,
+          "same_state_indices": true,
+          "same_state_keys": true,
+          "sampled_state_hashes": {
+            "compared": 87,
+            "different": 58,
+            "equal": 29
+          },
+          "scope": "reported Adam step counters and64-element sample hashes per state tensor; hash mismatch supplies no numerical error magnitude; not full Adam equality",
+          "step_counters": {
+            "all_finite": true,
+            "candidate_count": 29,
+            "candidate_mean": 1020.0,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 29,
+            "reference_mean": 1020.0,
+            "relative_l2": 0.0,
+            "same_count": true
+          }
+        },
+        "final_parameter_samples": {
+          "matched_local_shards": 29,
+          "numerical_samples": {
+            "all_finite": true,
+            "candidate_count": 1856,
+            "candidate_mean": 0.0019067236941394288,
+            "max_abs": 5.003064870834351e-06,
+            "mean_abs": 6.767401076305743e-07,
+            "reference_count": 1856,
+            "reference_mean": 0.0019067002443436379,
+            "relative_l2": 1.0687002598134848e-05,
+            "same_count": true
+          },
+          "same_layout": true,
+          "same_parameter_names": true,
+          "sampled_hashes_equal": 0,
+          "scope": "at most64 reported elements per local parameter shard; not full parameters"
+        },
+        "global_cpu_rng_equal": true,
+        "global_cuda_rng_equal": true,
+        "gradient_norm": {
+          "all_finite": true,
+          "candidate_count": 20,
+          "candidate_mean": 2.03206998282916,
+          "max_abs": 0.6395511820977817,
+          "mean_abs": 0.09094987741744426,
+          "reference_count": 20,
+          "reference_mean": 2.045155579910951,
+          "relative_l2": 0.07924213712264339,
+          "same_count": true
+        },
+        "initial_adam_samples": {
+          "numerical_moment_difference_available": false,
+          "numerical_moment_samples": null,
+          "same_state_indices": true,
+          "same_state_keys": true,
+          "sampled_state_hashes": {
+            "compared": 87,
+            "different": 0,
+            "equal": 87
+          },
+          "scope": "reported Adam step counters and64-element sample hashes per state tensor; hash mismatch supplies no numerical error magnitude; not full Adam equality",
+          "step_counters": {
+            "all_finite": true,
+            "candidate_count": 29,
+            "candidate_mean": 1000.0,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 29,
+            "reference_mean": 1000.0,
+            "relative_l2": 0.0,
+            "same_count": true
+          }
+        },
+        "initial_parameter_samples": {
+          "matched_local_shards": 29,
+          "numerical_samples": {
+            "all_finite": true,
+            "candidate_count": 1856,
+            "candidate_mean": 0.001906770072134536,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 1856,
+            "reference_mean": 0.001906770072134536,
+            "relative_l2": 0.0,
+            "same_count": true
+          },
+          "same_layout": true,
+          "same_parameter_names": true,
+          "sampled_hashes_equal": 29,
+          "scope": "at most64 reported elements per local parameter shard; not full parameters"
+        },
+        "leancompact_work": {
+          "eighty_training_forwards": true,
+          "original_local640_rows": true,
+          "twenty_adam_calls": true,
+          "twenty_adam_writes": true,
+          "twenty_minibatches": true
+        },
+        "legacy_work": {
+          "eighty_training_forwards": true,
+          "original_local640_rows": true,
+          "twenty_adam_calls": true,
+          "twenty_adam_writes": true,
+          "twenty_minibatches": true
+        },
+        "lp_means": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": -0.3131582330016943,
+          "max_abs": 0.004493545452022685,
+          "mean_abs": 0.0011921498055548,
+          "reference_count": 80,
+          "reference_mean": -0.31305904591882605,
+          "relative_l2": 0.005077423369190651,
+          "same_count": true
+        },
+        "lp_samples": {
+          "all_finite": true,
+          "candidate_count": 2560,
+          "candidate_mean": -0.3072687104344368,
+          "max_abs": 0.6130084991455078,
+          "mean_abs": 0.013989463448524475,
+          "reference_count": 2560,
+          "reference_mean": -0.30674095898866655,
+          "relative_l2": 0.05078272682619925,
+          "same_count": true
+        },
+        "policy_loss": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": -0.0019363450902319462,
+          "max_abs": 0.0034322237070158745,
+          "mean_abs": 0.0009010805014142856,
+          "reference_count": 80,
+          "reference_mean": -0.0018874553567495376,
+          "relative_l2": 0.003588811638631261,
+          "same_count": true
+        },
+        "ppo_kl": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.0028276421984628542,
+          "max_abs": 0.004225589334964752,
+          "mean_abs": 0.0013128309077728773,
+          "reference_count": 80,
+          "reference_mean": 0.0026692607854784,
+          "relative_l2": 0.4340243985317113,
+          "same_count": true
+        },
+        "rank": 1,
+        "same_checkpoint": true,
+        "same_forward_authored_token_counts": true,
+        "same_original_data_identity": true,
+        "scheduler_after_equal": true,
+        "scheduler_before_equal": true,
+        "wall_seconds": {
+          "leancompact": 134.2323228190653,
+          "legacy": 266.0790836109081,
+          "legacy_over_leancompact": 1.982228110360289
+        }
+      },
+      {
+        "actual_monitor_forwards": {
+          "leancompact": 0,
+          "legacy": 21
+        },
+        "clip_fraction": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.011946113253361545,
+          "max_abs": 0.014141065999865532,
+          "mean_abs": 0.002569850691361353,
+          "reference_count": 80,
+          "reference_mean": 0.012185517445323058,
+          "relative_l2": 0.2656422130072528,
+          "same_count": true
+        },
+        "final_adam_samples": {
+          "numerical_moment_difference_available": false,
+          "numerical_moment_samples": null,
+          "same_state_indices": true,
+          "same_state_keys": true,
+          "sampled_state_hashes": {
+            "compared": 87,
+            "different": 58,
+            "equal": 29
+          },
+          "scope": "reported Adam step counters and64-element sample hashes per state tensor; hash mismatch supplies no numerical error magnitude; not full Adam equality",
+          "step_counters": {
+            "all_finite": true,
+            "candidate_count": 29,
+            "candidate_mean": 1020.0,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 29,
+            "reference_mean": 1020.0,
+            "relative_l2": 0.0,
+            "same_count": true
+          }
+        },
+        "final_parameter_samples": {
+          "matched_local_shards": 29,
+          "numerical_samples": {
+            "all_finite": true,
+            "candidate_count": 1856,
+            "candidate_mean": 0.0023015338168888852,
+            "max_abs": 5.688518285751343e-06,
+            "mean_abs": 7.317273924862657e-07,
+            "reference_count": 1856,
+            "reference_mean": 0.002301563572158153,
+            "relative_l2": 1.1379493071899346e-05,
+            "same_count": true
+          },
+          "same_layout": true,
+          "same_parameter_names": true,
+          "sampled_hashes_equal": 0,
+          "scope": "at most64 reported elements per local parameter shard; not full parameters"
+        },
+        "global_cpu_rng_equal": true,
+        "global_cuda_rng_equal": true,
+        "gradient_norm": {
+          "all_finite": true,
+          "candidate_count": 20,
+          "candidate_mean": 2.03206998282916,
+          "max_abs": 0.6395511820977817,
+          "mean_abs": 0.09094987741744426,
+          "reference_count": 20,
+          "reference_mean": 2.045155579910951,
+          "relative_l2": 0.07924213712264339,
+          "same_count": true
+        },
+        "initial_adam_samples": {
+          "numerical_moment_difference_available": false,
+          "numerical_moment_samples": null,
+          "same_state_indices": true,
+          "same_state_keys": true,
+          "sampled_state_hashes": {
+            "compared": 87,
+            "different": 0,
+            "equal": 87
+          },
+          "scope": "reported Adam step counters and64-element sample hashes per state tensor; hash mismatch supplies no numerical error magnitude; not full Adam equality",
+          "step_counters": {
+            "all_finite": true,
+            "candidate_count": 29,
+            "candidate_mean": 1000.0,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 29,
+            "reference_mean": 1000.0,
+            "relative_l2": 0.0,
+            "same_count": true
+          }
+        },
+        "initial_parameter_samples": {
+          "matched_local_shards": 29,
+          "numerical_samples": {
+            "all_finite": true,
+            "candidate_count": 1856,
+            "candidate_mean": 0.002301622623932321,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 1856,
+            "reference_mean": 0.002301622623932321,
+            "relative_l2": 0.0,
+            "same_count": true
+          },
+          "same_layout": true,
+          "same_parameter_names": true,
+          "sampled_hashes_equal": 29,
+          "scope": "at most64 reported elements per local parameter shard; not full parameters"
+        },
+        "leancompact_work": {
+          "eighty_training_forwards": true,
+          "original_local640_rows": true,
+          "twenty_adam_calls": true,
+          "twenty_adam_writes": true,
+          "twenty_minibatches": true
+        },
+        "legacy_work": {
+          "eighty_training_forwards": true,
+          "original_local640_rows": true,
+          "twenty_adam_calls": true,
+          "twenty_adam_writes": true,
+          "twenty_minibatches": true
+        },
+        "lp_means": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": -0.30983846508487617,
+          "max_abs": 0.005877407000457968,
+          "mean_abs": 0.0011128797929122864,
+          "reference_count": 80,
+          "reference_mean": -0.3100388944337386,
+          "relative_l2": 0.004953916147598487,
+          "same_count": true
+        },
+        "lp_samples": {
+          "all_finite": true,
+          "candidate_count": 2560,
+          "candidate_mean": -0.2679959457367659,
+          "max_abs": 1.309295654296875,
+          "mean_abs": 0.013185885548591614,
+          "reference_count": 2560,
+          "reference_mean": -0.26686501763761045,
+          "relative_l2": 0.06626554383225086,
+          "same_count": true
+        },
+        "policy_loss": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.02793118496660692,
+          "max_abs": 0.0026885780794577707,
+          "mean_abs": 0.0008132106955285925,
+          "reference_count": 80,
+          "reference_mean": 0.028016119723667837,
+          "relative_l2": 0.0032521528735393115,
+          "same_count": true
+        },
+        "ppo_kl": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.0024372917014261475,
+          "max_abs": 0.004355326294898987,
+          "mean_abs": 0.0011121451603685272,
+          "reference_count": 80,
+          "reference_mean": 0.0026382253505289554,
+          "relative_l2": 0.36485950073314016,
+          "same_count": true
+        },
+        "rank": 2,
+        "same_checkpoint": true,
+        "same_forward_authored_token_counts": true,
+        "same_original_data_identity": true,
+        "scheduler_after_equal": true,
+        "scheduler_before_equal": true,
+        "wall_seconds": {
+          "leancompact": 134.23235360195395,
+          "legacy": 266.0791006019572,
+          "legacy_over_leancompact": 1.9822277823644152
+        }
+      },
+      {
+        "actual_monitor_forwards": {
+          "leancompact": 0,
+          "legacy": 21
+        },
+        "clip_fraction": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.012151406414341181,
+          "max_abs": 0.007890736684203148,
+          "mean_abs": 0.0025075780096813103,
+          "reference_count": 80,
+          "reference_mean": 0.01290307115559699,
+          "relative_l2": 0.2263420498425141,
+          "same_count": true
+        },
+        "final_adam_samples": {
+          "numerical_moment_difference_available": false,
+          "numerical_moment_samples": null,
+          "same_state_indices": true,
+          "same_state_keys": true,
+          "sampled_state_hashes": {
+            "compared": 87,
+            "different": 58,
+            "equal": 29
+          },
+          "scope": "reported Adam step counters and64-element sample hashes per state tensor; hash mismatch supplies no numerical error magnitude; not full Adam equality",
+          "step_counters": {
+            "all_finite": true,
+            "candidate_count": 29,
+            "candidate_mean": 1020.0,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 29,
+            "reference_mean": 1020.0,
+            "relative_l2": 0.0,
+            "same_count": true
+          }
+        },
+        "final_parameter_samples": {
+          "matched_local_shards": 29,
+          "numerical_samples": {
+            "all_finite": true,
+            "candidate_count": 1856,
+            "candidate_mean": 0.01856268308506,
+            "max_abs": 5.125999450683594e-06,
+            "mean_abs": 6.957618586707684e-07,
+            "reference_count": 1856,
+            "reference_mean": 0.018562717009342235,
+            "relative_l2": 5.8835299835309945e-06,
+            "same_count": true
+          },
+          "same_layout": true,
+          "same_parameter_names": true,
+          "sampled_hashes_equal": 0,
+          "scope": "at most64 reported elements per local parameter shard; not full parameters"
+        },
+        "global_cpu_rng_equal": true,
+        "global_cuda_rng_equal": true,
+        "gradient_norm": {
+          "all_finite": true,
+          "candidate_count": 20,
+          "candidate_mean": 2.03206998282916,
+          "max_abs": 0.6395511820977817,
+          "mean_abs": 0.09094987741744426,
+          "reference_count": 20,
+          "reference_mean": 2.045155579910951,
+          "relative_l2": 0.07924213712264339,
+          "same_count": true
+        },
+        "initial_adam_samples": {
+          "numerical_moment_difference_available": false,
+          "numerical_moment_samples": null,
+          "same_state_indices": true,
+          "same_state_keys": true,
+          "sampled_state_hashes": {
+            "compared": 87,
+            "different": 0,
+            "equal": 87
+          },
+          "scope": "reported Adam step counters and64-element sample hashes per state tensor; hash mismatch supplies no numerical error magnitude; not full Adam equality",
+          "step_counters": {
+            "all_finite": true,
+            "candidate_count": 29,
+            "candidate_mean": 1000.0,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 29,
+            "reference_mean": 1000.0,
+            "relative_l2": 0.0,
+            "same_count": true
+          }
+        },
+        "initial_parameter_samples": {
+          "matched_local_shards": 29,
+          "numerical_samples": {
+            "all_finite": true,
+            "candidate_count": 1856,
+            "candidate_mean": 0.018562713160715193,
+            "max_abs": 0.0,
+            "mean_abs": 0.0,
+            "reference_count": 1856,
+            "reference_mean": 0.018562713160715193,
+            "relative_l2": 0.0,
+            "same_count": true
+          },
+          "same_layout": true,
+          "same_parameter_names": true,
+          "sampled_hashes_equal": 29,
+          "scope": "at most64 reported elements per local parameter shard; not full parameters"
+        },
+        "leancompact_work": {
+          "eighty_training_forwards": true,
+          "original_local640_rows": true,
+          "twenty_adam_calls": true,
+          "twenty_adam_writes": true,
+          "twenty_minibatches": true
+        },
+        "legacy_work": {
+          "eighty_training_forwards": true,
+          "original_local640_rows": true,
+          "twenty_adam_calls": true,
+          "twenty_adam_writes": true,
+          "twenty_minibatches": true
+        },
+        "lp_means": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": -0.31826341846674217,
+          "max_abs": 0.004234506683576333,
+          "mean_abs": 0.001027686242875301,
+          "reference_count": 80,
+          "reference_mean": -0.3183174828861596,
+          "relative_l2": 0.004383918777010083,
+          "same_count": true
+        },
+        "lp_samples": {
+          "all_finite": true,
+          "candidate_count": 2560,
+          "candidate_mean": -0.31750749349594115,
+          "max_abs": 0.6104240417480469,
+          "mean_abs": 0.014464858919382095,
+          "reference_count": 2560,
+          "reference_mean": -0.31870885416865347,
+          "relative_l2": 0.04863849850824152,
+          "same_count": true
+        },
+        "policy_loss": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.019066879876886825,
+          "max_abs": 0.004729985750426324,
+          "mean_abs": 0.0009703784232689395,
+          "reference_count": 80,
+          "reference_mean": 0.018963756330869573,
+          "relative_l2": 0.005092281523394117,
+          "same_count": true
+        },
+        "ppo_kl": {
+          "all_finite": true,
+          "candidate_count": 80,
+          "candidate_mean": 0.002393030507300864,
+          "max_abs": 0.005621159914880991,
+          "mean_abs": 0.0011251301795709879,
+          "reference_count": 80,
+          "reference_mean": 0.002346817279976676,
+          "relative_l2": 0.502165853357323,
+          "same_count": true
+        },
+        "rank": 3,
+        "same_checkpoint": true,
+        "same_forward_authored_token_counts": true,
+        "same_original_data_identity": true,
+        "scheduler_after_equal": true,
+        "scheduler_before_equal": true,
+        "wall_seconds": {
+          "leancompact": 134.23232931504026,
+          "legacy": 266.0791017039446,
+          "legacy_over_leancompact": 1.9822281492222558
+        }
+      }
+    ],
+    "same_four_ranks": true,
+    "scope": "two independent native4 actor jobs, identical fixed saved trajectories and diagnostic EM advantages; numerical comparisons cover only reported LP, loss, norm and parameter/Adam samples; no fresh rollout, QA or full training-engine acceptance",
+    "whole_outer_speedup_proven": false
+  },
+  "observed_unix": 1792678928.669695,
+  "production_job": "747219",
+  "production_modified": false,
+  "production_source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+  "raw_evidence": [
+    {
+      "name": "fastpath-native4-comparison-1792678397691460000.json",
+      "sha256": "38265563aed17e2ac0cd702968876344a4fcf5b9b00613330cee9790c51a5ef1"
+    },
+    {
+      "name": "fastpath-parallel-observe-1792678161768380000.json",
+      "sha256": "e8628e6ffedbe22cb6d97f18d19026470988f1b5c8dbd2015d40e23b79f1807c"
+    },
+    {
+      "name": "fastpath-numerical-kernel-1792677643791054000.json",
+      "sha256": "55b941aab70fe8f48cf9b58a92a29e56066ec7571cfeafa092b149506698d13d"
+    },
+    {
+      "name": "fastpath-native4-stepwise-1792678595467463000.json",
+      "sha256": "be067189daa89e0cefb47d738462e40cca55b1989d131514646796349be25934"
+    },
+    {
+      "name": "fastpath-isolation-progress-1792678928635276000.json",
+      "sha256": "f18daa1b15308a19280ca4595d6da295bf06c7dd737fcc6e27e1bdb028d8030c"
+    }
+  ],
+  "runtime_implementation_commit": "48b87a7399a25f78b4fcf077e946a5a2b75ecace",
+  "same_state_first_minibatch": {
+    "compact_gradient_norm": 2.0222047872542115,
+    "lp_sample_max_abs": 0.0,
+    "lp_sample_mean_abs": 0.0,
+    "original_gradient_norm": 2.0212617398792503,
+    "rank": 0,
+    "relative_gradient_norm_difference": 0.00046656370936776394,
+    "scope": "first pre-update rank0 LP samples and global norm only; not full gradient-vector equivalence"
+  },
+  "sdpa_reference": {
+    "actual_attention_calls": 448,
+    "comparisons": {
+      "fa2_minus_sdpa_math": {
+        "max_abs": 0.3240804076194763,
+        "mean_abs": 0.01628117955900754,
+        "mean_signed_a_minus_b": -0.0004190061335549444,
+        "median_abs": 0.0013199234381318092,
+        "p99_abs": 0.14389914274215698,
+        "rms": 0.03631503653313691,
+        "tokens": 512,
+        "worst_tokens": [
+          {
+            "a": -0.3391852378845215,
+            "abs_error": 0.3240804076194763,
+            "b": -0.6632656455039978,
+            "continuation_index": 27,
+            "row": 15
+          },
+          {
+            "a": -0.4760890007019043,
+            "abs_error": 0.2534230351448059,
+            "b": -0.7295120358467102,
+            "continuation_index": 3,
+            "row": 12
+          },
+          {
+            "a": -0.5848615169525146,
+            "abs_error": 0.17555168271064758,
+            "b": -0.40930983424186707,
+            "continuation_index": 2,
+            "row": 9
+          },
+          {
+            "a": -0.7043894529342651,
+            "abs_error": 0.17160546779632568,
+            "b": -0.8759949207305908,
+            "continuation_index": 2,
+            "row": 12
+          },
+          {
+            "a": -0.35271745920181274,
+            "abs_error": 0.14613866806030273,
+            "b": -0.4988561272621155,
+            "continuation_index": 31,
+            "row": 9
+          },
+          {
+            "a": -0.7737012505531311,
+            "abs_error": 0.14389914274215698,
+            "b": -0.9176003932952881,
+            "continuation_index": 27,
+            "row": 4
+          },
+          {
+            "a": -1.2974433898925781,
+            "abs_error": 0.1436905860900879,
+            "b": -1.1537528038024902,
+            "continuation_index": 10,
+            "row": 5
+          },
+          {
+            "a": -0.8438271284103394,
+            "abs_error": 0.13337349891662598,
+            "b": -0.9772006273269653,
+            "continuation_index": 7,
+            "row": 14
+          }
+        ]
+      },
+      "fa2_minus_xformers_same_teacher_tokens": {
+        "max_abs": 0.1597110629081726,
+        "mean_abs": 0.014599920391779556,
+        "mean_signed_a_minus_b": 0.002287090953986534,
+        "median_abs": 0.0010203768033534288,
+        "p99_abs": 0.1354529857635498,
+        "rms": 0.030299711920313714,
+        "tokens": 512,
+        "worst_tokens": [
+          {
+            "a": -0.3391852378845215,
+            "abs_error": 0.1597110629081726,
+            "b": -0.4988963007926941,
+            "continuation_index": 27,
+            "row": 15
+          },
+          {
+            "a": -0.5901710391044617,
+            "abs_error": 0.15799236297607422,
+            "b": -0.7481634020805359,
+            "continuation_index": 25,
+            "row": 13
+          },
+          {
+            "a": -0.7502394318580627,
+            "abs_error": 0.15186434984207153,
+            "b": -0.9021037817001343,
+            "continuation_index": 28,
+            "row": 15
+          },
+          {
+            "a": -0.4760890007019043,
+            "abs_error": 0.14999115467071533,
+            "b": -0.6260801553726196,
+            "continuation_index": 3,
+            "row": 12
+          },
+          {
+            "a": -0.5872154831886292,
+            "abs_error": 0.14884492754936218,
+            "b": -0.43837055563926697,
+            "continuation_index": 29,
+            "row": 3
+          },
+          {
+            "a": -1.1392419338226318,
+            "abs_error": 0.1354529857635498,
+            "b": -1.2746949195861816,
+            "continuation_index": 30,
+            "row": 13
+          },
+          {
+            "a": -0.7243136167526245,
+            "abs_error": 0.12292391061782837,
+            "b": -0.8472375273704529,
+            "continuation_index": 31,
+            "row": 13
+          },
+          {
+            "a": -2.6158742904663086,
+            "abs_error": 0.11348462104797363,
+            "b": -2.7293589115142822,
+            "continuation_index": 3,
+            "row": 15
+          }
+        ]
+      },
+      "fa3_minus_fa2_same_teacher_tokens": {
+        "max_abs": 0.26542145013809204,
+        "mean_abs": 0.014971468119601095,
+        "mean_signed_a_minus_b": 0.001265578298889708,
+        "median_abs": 0.0011682361364364624,
+        "p99_abs": 0.13554126024246216,
+        "rms": 0.03307813301645072,
+        "tokens": 512,
+        "worst_tokens": [
+          {
+            "a": -0.6046066880226135,
+            "abs_error": 0.26542145013809204,
+            "b": -0.3391852378845215,
+            "continuation_index": 27,
+            "row": 15
+          },
+          {
+            "a": -0.6509535312652588,
+            "abs_error": 0.1748645305633545,
+            "b": -0.4760890007019043,
+            "continuation_index": 3,
+            "row": 12
+          },
+          {
+            "a": -0.9763888716697693,
+            "abs_error": 0.15448206663131714,
+            "b": -1.1308709383010864,
+            "continuation_index": 24,
+            "row": 12
+          },
+          {
+            "a": -0.5461108088493347,
+            "abs_error": 0.15369832515716553,
+            "b": -0.6998091340065002,
+            "continuation_index": 18,
+            "row": 6
+          },
+          {
+            "a": -0.7352707386016846,
+            "abs_error": 0.1450996994972229,
+            "b": -0.5901710391044617,
+            "continuation_index": 25,
+            "row": 13
+          },
+          {
+            "a": -0.7760202884674072,
+            "abs_error": 0.13554126024246216,
+            "b": -0.9115615487098694,
+            "continuation_index": 12,
+            "row": 3
+          },
+          {
+            "a": -1.0303287506103516,
+            "abs_error": 0.12675529718399048,
+            "b": -0.9035734534263611,
+            "continuation_index": 2,
+            "row": 13
+          },
+          {
+            "a": -1.0155081748962402,
+            "abs_error": 0.1237337589263916,
+            "b": -1.1392419338226318,
+            "continuation_index": 30,
+            "row": 13
+          }
+        ]
+      },
+      "fa3_minus_sdpa_math": {
+        "max_abs": 0.1825551986694336,
+        "mean_abs": 0.014770059389819956,
+        "mean_signed_a_minus_b": 0.0008465721653347635,
+        "median_abs": 0.001236951444298029,
+        "p99_abs": 0.11750555038452148,
+        "rms": 0.030523979065596476,
+        "tokens": 512,
+        "worst_tokens": [
+          {
+            "a": -1.0155081748962402,
+            "abs_error": 0.1825551986694336,
+            "b": -1.1980633735656738,
+            "continuation_index": 30,
+            "row": 13
+          },
+          {
+            "a": -0.5461108088493347,
+            "abs_error": 0.15369737148284912,
+            "b": -0.6998081803321838,
+            "continuation_index": 18,
+            "row": 6
+          },
+          {
+            "a": -0.786878764629364,
+            "abs_error": 0.14597630500793457,
+            "b": -0.6409024596214294,
+            "continuation_index": 21,
+            "row": 3
+          },
+          {
+            "a": -0.7739555835723877,
+            "abs_error": 0.1436448097229004,
+            "b": -0.9176003932952881,
+            "continuation_index": 27,
+            "row": 4
+          },
+          {
+            "a": -0.8463939428329468,
+            "abs_error": 0.13080668449401855,
+            "b": -0.9772006273269653,
+            "continuation_index": 7,
+            "row": 14
+          },
+          {
+            "a": -0.5778464674949646,
+            "abs_error": 0.11750555038452148,
+            "b": -0.6953520178794861,
+            "continuation_index": 20,
+            "row": 7
+          },
+          {
+            "a": -0.5241880416870117,
+            "abs_error": 0.11487820744514465,
+            "b": -0.40930983424186707,
+            "continuation_index": 2,
+            "row": 9
+          },
+          {
+            "a": -0.5719122290611267,
+            "abs_error": 0.11137914657592773,
+            "b": -0.6832913756370544,
+            "continuation_index": 13,
+            "row": 5
+          }
+        ]
+      },
+      "xformers_minus_sdpa_math": {
+        "max_abs": 0.22722503542900085,
+        "mean_abs": 0.016821780241305165,
+        "mean_signed_a_minus_b": -0.0027060970875414786,
+        "median_abs": 0.0012850519269704819,
+        "p99_abs": 0.13794487714767456,
+        "rms": 0.0349588290087043,
+        "tokens": 512,
+        "worst_tokens": [
+          {
+            "a": -0.6365348696708679,
+            "abs_error": 0.22722503542900085,
+            "b": -0.40930983424186707,
+            "continuation_index": 2,
+            "row": 9
+          },
+          {
+            "a": -2.7293589115142822,
+            "abs_error": 0.17854666709899902,
+            "b": -2.550812244415283,
+            "continuation_index": 3,
+            "row": 15
+          },
+          {
+            "a": -0.7447313070297241,
+            "abs_error": 0.17286908626556396,
+            "b": -0.9176003932952881,
+            "continuation_index": 27,
+            "row": 4
+          },
+          {
+            "a": -0.4988963007926941,
+            "abs_error": 0.1643693447113037,
+            "b": -0.6632656455039978,
+            "continuation_index": 27,
+            "row": 15
+          },
+          {
+            "a": -2.167452096939087,
+            "abs_error": 0.14946699142456055,
+            "b": -2.0179851055145264,
+            "continuation_index": 16,
+            "row": 14
+          },
+          {
+            "a": -0.8392557501792908,
+            "abs_error": 0.13794487714767456,
+            "b": -0.9772006273269653,
+            "continuation_index": 7,
+            "row": 14
+          },
+          {
+            "a": -0.8469770550727844,
+            "abs_error": 0.1323733925819397,
+            "b": -0.9793504476547241,
+            "continuation_index": 2,
+            "row": 13
+          },
+          {
+            "a": -0.8948190212249756,
+            "abs_error": 0.11967670917510986,
+            "b": -1.0144957304000854,
+            "continuation_index": 31,
+            "row": 8
+          }
+        ]
+      }
+    },
+    "continuation_tokens": 512,
+    "greedy_divergence_analysis": {
+      "xformers_vs_fa2": {
+        "equal_sequences": 13,
+        "first_divergences": [
+          {
+            "candidate_token_id": 830,
+            "first_divergent_continuation_index": 31,
+            "reference_candidate_token_logprob": -1.0144957304000854,
+            "reference_prefers": "tie",
+            "reference_top1_minus_top2_logprob": 0.0,
+            "reference_top1_token_id": 2797,
+            "reference_top2_token_id": 830,
+            "reference_xformers_minus_candidate_logprob": 0.0,
+            "reference_xformers_token_logprob": -1.0144957304000854,
+            "row": 8,
+            "same_prefix_as_teacher_before_divergence": true,
+            "xformers_token_id": 2797
+          },
+          {
+            "candidate_token_id": 151643,
+            "first_divergent_continuation_index": 2,
+            "reference_candidate_token_logprob": -0.7509949207305908,
+            "reference_prefers": "fa2",
+            "reference_top1_minus_top2_logprob": 0.125,
+            "reference_top1_token_id": 151643,
+            "reference_top2_token_id": 151644,
+            "reference_xformers_minus_candidate_logprob": -0.125,
+            "reference_xformers_token_logprob": -0.8759949207305908,
+            "row": 12,
+            "same_prefix_as_teacher_before_divergence": true,
+            "xformers_token_id": 151644
+          },
+          {
+            "candidate_token_id": 151643,
+            "first_divergent_continuation_index": 2,
+            "reference_candidate_token_logprob": -0.8543504476547241,
+            "reference_prefers": "fa2",
+            "reference_top1_minus_top2_logprob": 0.125,
+            "reference_top1_token_id": 151643,
+            "reference_top2_token_id": 151644,
+            "reference_xformers_minus_candidate_logprob": -0.125,
+            "reference_xformers_token_logprob": -0.9793504476547241,
+            "row": 13,
+            "same_prefix_as_teacher_before_divergence": true,
+            "xformers_token_id": 151644
+          }
+        ],
+        "interpretation": "Only the first different token has a common saved prefix. Later greedy tokens have different contexts; sequence mismatch is not a same-input logprob error.",
+        "sequences": 16
+      },
+      "xformers_vs_fa3": {
+        "equal_sequences": 12,
+        "first_divergences": [
+          {
+            "candidate_token_id": 830,
+            "first_divergent_continuation_index": 31,
+            "reference_candidate_token_logprob": -1.0144957304000854,
+            "reference_prefers": "tie",
+            "reference_top1_minus_top2_logprob": 0.0,
+            "reference_top1_token_id": 2797,
+            "reference_top2_token_id": 830,
+            "reference_xformers_minus_candidate_logprob": 0.0,
+            "reference_xformers_token_logprob": -1.0144957304000854,
+            "row": 8,
+            "same_prefix_as_teacher_before_divergence": true,
+            "xformers_token_id": 2797
+          },
+          {
+            "candidate_token_id": 2701,
+            "first_divergent_continuation_index": 8,
+            "reference_candidate_token_logprob": -0.9624152183532715,
+            "reference_prefers": "xformers",
+            "reference_top1_minus_top2_logprob": 0.125,
+            "reference_top1_token_id": 11652,
+            "reference_top2_token_id": 2701,
+            "reference_xformers_minus_candidate_logprob": 0.125,
+            "reference_xformers_token_logprob": -0.8374152183532715,
+            "row": 12,
+            "same_prefix_as_teacher_before_divergence": true,
+            "xformers_token_id": 11652
+          },
+          {
+            "candidate_token_id": 151643,
+            "first_divergent_continuation_index": 2,
+            "reference_candidate_token_logprob": -0.8543504476547241,
+            "reference_prefers": "fa3",
+            "reference_top1_minus_top2_logprob": 0.125,
+            "reference_top1_token_id": 151643,
+            "reference_top2_token_id": 151644,
+            "reference_xformers_minus_candidate_logprob": -0.125,
+            "reference_xformers_token_logprob": -0.9793504476547241,
+            "row": 13,
+            "same_prefix_as_teacher_before_divergence": true,
+            "xformers_token_id": 151644
+          },
+          {
+            "candidate_token_id": 151643,
+            "first_divergent_continuation_index": 3,
+            "reference_candidate_token_logprob": -1.9883123636245728,
+            "reference_prefers": "fa3",
+            "reference_top1_minus_top2_logprob": 0.5624998807907104,
+            "reference_top1_token_id": 151643,
+            "reference_top2_token_id": 69847,
+            "reference_xformers_minus_candidate_logprob": -0.5624998807907104,
+            "reference_xformers_token_logprob": -2.550812244415283,
+            "row": 15,
+            "same_prefix_as_teacher_before_divergence": true,
+            "xformers_token_id": 69847
+          }
+        ],
+        "interpretation": "Only the first different token has a common saved prefix. Later greedy tokens have different contexts; sequence mismatch is not a same-input logprob error.",
+        "sequences": 16
+      }
+    },
+    "job": "749115",
+    "scope": null
+  },
+  "source_checkpoint": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_51",
+    "manager": "easy2560_per_outer_full_state_v1",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_51/full-manifest.json",
+    "manifest_sha256": "aa6e5efb07a6150a9f0a610c633de58d40678b6dc49f40ca00a1fbac7ecf75a9",
+    "published_unix": 1792677107.847252,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+    "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+    "step": 51
+  },
+  "status": "MEASURED_NATIVE4_ACTOR_SPEEDUP_AND_CANDIDATE_SPEEDUP_NUMERICAL_ISOLATION_PENDING",
+  "transition_operator_commit": "7cdb8407c61dfb156236f9e29a61cc85957006ff"
+}
