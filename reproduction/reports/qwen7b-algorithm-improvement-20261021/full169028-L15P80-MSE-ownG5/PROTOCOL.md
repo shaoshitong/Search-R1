@@ -9,3 +9,11 @@ The original fixed trainB2048 and independent viewed2048 ownG5 are unchanged. Th
 The independent fixture is `A/full169028-policy80-ownG10-20261023-v1/fixture`. Source staging does not make a training-ready claim. The `qualify` action requires the complete fixture and its SHA-bound independent accepted.json; the runtime enforces the same gate. No training is submitted by this deployer. Both entries use normal/acd_u,2H100,12CPU,128GiB and12h. Root owns submission after fresh input acceptance.
 
 The full fixture must additionally have `fresh_full_P20_prefix_prompt_and_own_EM_exact=true` and a verified `P20_alignment` report, comparing every1690280 own training trajectory against the previously accepted fullP20 bank. Producer-only acceptance cannot start training. The final immutable two-seed entry roots use suffix-v2 and fixture-base ends in `/fixture`; earlier v1 source-only entries were never submitted.
+
+## Physical-source-qualified input revision
+
+The unsubmitted source-stage v2 entries are retained as history and must not be qualified against the incomplete old input. New immutable training roots use `full169028-L15P80-MSE-ownG5-physical-seed…-20261023-v3` and the source-resolved fixture `full169028-policy80-physical-ownG10-20261023-v2/fixture`.
+
+Before training/ready, the independently accepted input must set `actual_physical_execution_and_seal_source_exact=true` and provide the fresh SHA-bound `physical_source_contract` proof. Its status must be `ALL169028_OWN_G10_PHYSICAL_SEAL_EXECUTION_AND_OWN_EM_RESOLVED`, with all selected own EM matching canonical, complete G5 execution halves retained, and no EM-driven source selection. The physical contract proof is retained in the checkpoint's exact experiment binding. Existing P20 exact alignment requirements remain in force pending actual source audit evidence; P20 never chooses a physical generation execution.
+
+This changes only source admission/provenance and immutable entry roots. Architecture, objective, sampling, seeds, learning rate, EMA, and exact128/68-group mean normalization remain unchanged. No full training is submitted by this preparation task.
