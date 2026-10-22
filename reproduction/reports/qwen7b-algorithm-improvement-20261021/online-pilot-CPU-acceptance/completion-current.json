@@ -1,5 +1,5 @@
 {
-  "time": 1792684341.039747,
+  "time": 1792684608.8035376,
   "variants": [
     {
       "variant": "layer27-prefix20",
@@ -117,9 +117,14 @@
     },
     {
       "variant": "layer21-prefix80",
-      "complete_exists": false,
+      "complete_exists": true,
       "accepted_exists": false,
       "job_id": "749369",
+      "complete.json": {
+        "status": "MATCHED_ONLINE_MIXED_LAYER_PREFIX_PILOT_COMPLETE",
+        "epochs": 3,
+        "cursor": 192
+      },
       "progress-rank-0.json": {
         "stage": "ONLINE_PREFILL_REAL_MIXED_UPDATES",
         "epoch": 3,
@@ -138,12 +143,12 @@
       },
       "sacct": [
         "749369",
-        "RUNNING",
+        "COMPLETED",
         "0:0",
-        "00:52:13",
+        "00:56:38",
         "ACD1-51"
       ],
-      "eligible_new_CPU_acceptance": false
+      "eligible_new_CPU_acceptance": true
     },
     {
       "variant": "layer15-prefix20",

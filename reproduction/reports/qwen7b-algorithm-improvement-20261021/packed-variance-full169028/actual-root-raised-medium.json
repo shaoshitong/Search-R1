@@ -1,0 +1,34 @@
+{
+  "time": 1792684625.6863837,
+  "medium_partition": "PartitionName=acd_ue AllowGroups=formal,admin AllowAccounts=ALL AllowQos=ALL AllocNodes=ALL Default=NO QoS=N/A DefaultTime=NONE DisableRootJobs=NO ExclusiveUser=NO GraceTime=0 Hidden=NO MaxNodes=UNLIMITED MaxTime=7-00:00:00 MinNodes=0 LLN=NO MaxCPUsPerNode=UNLIMITED MaxCPUsPerSocket=UNLIMITED Nodes=ACD1-[1-4,6-9,11-26,28,30-33,36,50-52,54-56,59,61,64,67] PriorityJobFactor=200 PriorityTier=200 RootOnly=NO ReqResv=NO OverSubscribe=NO OverTimeLimit=NONE PreemptMode=OFF State=UP TotalCPUs=3840 TotalNodes=40 SelectTypeParameters=NONE JobDefaults=(null) DefMemPerCPU=10240 MaxMemPerNode=UNLIMITED TRES=cpu=3840,mem=78125G,node=40,billing=3840,gres/gpu=320",
+  "existing_handles_only": true,
+  "QOS_unchanged": "normal",
+  "no_emergency": true,
+  "new_submission": false,
+  "results": [
+    {
+      "loss": "mse",
+      "job_id": "749568",
+      "action": "EXISTING_PENDING_JOB_RAISED_ONE_TIER_TO_ACD_UE",
+      "before": "749568|acd_u|PENDING|2026-10-23T00:23:36|(Priority)",
+      "after_queue": "749568|acd_ue|PENDING|2026-10-23T00:23:36|(None)",
+      "identity_after": "JobId=749568 JobName=q7b-full-var-mse UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=6683 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=08:00:00 TimeMin=N/A SubmitTime=2026-10-22T23:55:57 EligibleTime=2026-10-22T23:55:57 AccrueTime=Unknown StartTime=2026-10-23T00:23:36 EndTime=2026-10-23T08:23:36 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-22T23:57:01 Scheduler=Main Partition=acd_ue AllocNode:Sid=ACD-Login-2:109553 ReqNodeList=(null) ExcNodeList=(null) NodeList= SchedNodeList=ACD1-56 NumNodes=1-1 NumCPUs=12 NumTasks=1 CPUs/Task=12 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=12,mem=128G,node=1,billing=12,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=12 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mse/training.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mse/train-749568.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mse/train-749568.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:12"
+    },
+    {
+      "loss": "mae",
+      "job_id": "749569",
+      "action": "EXISTING_PENDING_JOB_RAISED_ONE_TIER_TO_ACD_UE",
+      "before": "749569|acd_u|PENDING|2026-10-23T01:00:08|(Priority)",
+      "after_queue": "749569|acd_ue|PENDING|2026-10-23T01:00:08|(None)",
+      "identity_after": "JobId=749569 JobName=q7b-full-var-mae UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=6683 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=08:00:00 TimeMin=N/A SubmitTime=2026-10-22T23:55:59 EligibleTime=2026-10-22T23:56:01 AccrueTime=Unknown StartTime=2026-10-23T01:00:08 EndTime=2026-10-23T09:00:08 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-22T23:57:01 Scheduler=Main Partition=acd_ue AllocNode:Sid=ACD-Login-2:109553 ReqNodeList=(null) ExcNodeList=(null) NodeList= SchedNodeList=ACD1-3 NumNodes=1-1 NumCPUs=12 NumTasks=1 CPUs/Task=12 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=12,mem=128G,node=1,billing=12,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=12 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mae/training.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mae/train-749569.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/mae/train-749569.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:12"
+    },
+    {
+      "loss": "z_mse_anchor",
+      "job_id": "749570",
+      "action": "EXISTING_PENDING_JOB_RAISED_ONE_TIER_TO_ACD_UE",
+      "before": "749570|acd_u|PENDING|2026-10-23T01:00:08|(Priority)",
+      "after_queue": "749570|acd_ue|PENDING|2026-10-23T01:00:08|(None)",
+      "identity_after": "JobId=749570 JobName=q7b-full-var-z_mse_anchor UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=6683 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=08:00:00 TimeMin=N/A SubmitTime=2026-10-22T23:56:01 EligibleTime=2026-10-22T23:56:04 AccrueTime=Unknown StartTime=2026-10-23T01:00:08 EndTime=2026-10-23T09:00:08 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-22T23:57:01 Scheduler=Main Partition=acd_ue AllocNode:Sid=ACD-Login-2:109553 ReqNodeList=(null) ExcNodeList=(null) NodeList= SchedNodeList=ACD1-23 NumNodes=1-1 NumCPUs=12 NumTasks=1 CPUs/Task=12 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=12,mem=128G,node=1,billing=12,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=12 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/training.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/train-749570.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/train-749570.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:12"
+    }
+  ]
+}
