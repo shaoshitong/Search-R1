@@ -10,14 +10,14 @@ No new inference, training or final4096 read. All rows come from already publish
 |L18P20|EMA|50.35% → 56.59% → 57.22%|183 → 198 → 205|
 |L21P80|raw|53.66% → 58.10% → 59.94%|202 → 219 → 215|
 |L21P80|EMA|50.18% → 56.02% → 58.75%|183 → 203 → 214|
-|full_Z_L21P20_packed_M3to10|raw|53.78% → 55.58% → 54.91% → 59.67% → 54.44% → 54.67% → 57.60%|218 → 224 → 217 → 223 → 224 → 225 → 234|
-|full_Z_L21P20_packed_M3to10|EMA|57.27% → 54.94% → 55.18% → 55.01% → 55.56% → 56.58% → 57.20%|215 → 223 → 225 → 220 → 221 → 229 → 230|
+|full_Z_L21P20_packed_M3to10|raw|53.78% → 55.58% → 54.91% → 59.67% → 54.44% → 54.67% → 57.60% → 59.32%|218 → 224 → 217 → 223 → 224 → 225 → 234 → 227|
+|full_Z_L21P20_packed_M3to10|EMA|57.27% → 54.94% → 55.18% → 55.01% → 55.56% → 56.58% → 57.20% → 57.53%|215 → 223 → 225 → 220 → 221 → 229 → 230 → 235|
 
 The layer15/18 Prefix20 pilots show increasingly useful classification BA, but their final Top512 remains200–206(raw) or205(EMA). Layer21 Prefix80 has the strongest BA trend among these8192 pilots: raw53.66→58.10→59.94%, EMA50.18→56.02→58.75%. Its ranking improves from the initial epoch but is not monotonic: raw202→219→215; EMA183→203→214.
 
-Through E7, fullZ last-three raw Top512 range is[224, 234], EMA range[221, 230]. Raw's best BA is59.67% atE4 withTop223; EMA's best Top is230 atE7 withBA57.20%. Separate metric maxima must not be combined as one checkpoint.
+Through E8, fullZ last-three raw Top512 range is[225, 234], EMA range[229, 235]. Raw's best BA is59.67% atE4 withTop223; EMA's best Top is235 atE8 withBA57.53%. Separate metric maxima must not be combined as one checkpoint.
 
-Latest E7 train Top512 is467raw/433EMA versus independent234/230. This is a substantial training-versus-independent ranking gap; the trend has not established cross-run stability or final convergence.
+Latest E8 train Top512 is478raw/465EMA versus independent227/235. This is a substantial training-versus-independent ranking gap; the trend has not established cross-run stability or final convergence.
 
 Pilot fits use8192questions×3epochs, directMixedBCE with the original plan counts and inverse-frequency weighting, EMA.99, and authentic per-trajectory causal contexts. FullZ uses169028questions per epoch, randomM3…10, one repacked question+Mprefix input, normalized4vMSE+absolute4vMSE, and EMA.9995. The diagnostic thresholds are respectively Mixedprobability.5 and predicted variance.08. The same validation question/trajectory labels permit descriptive selection comparison, but this is not a single-factor causal ablation or equal-budget comparison. No final candidate is frozen by this report.
 

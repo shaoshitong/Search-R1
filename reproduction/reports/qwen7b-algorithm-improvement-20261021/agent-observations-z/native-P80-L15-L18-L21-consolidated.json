@@ -1,0 +1,2729 @@
+{
+  "status": "EXISTING_L15_L18_L21_NATIVE_P80_E0_TO_E3_CONSOLIDATED",
+  "source": {
+    "path": "native-P80-existing-evaluations-actual.json",
+    "sha256": "423e0a559df6ef8a1d37a61f8ef6a5c7fe5d665ba7b2b52d30556c06980aa8e3"
+  },
+  "rows": [
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "epoch": 0,
+      "state": "EMA",
+      "role": "fixed_train2048",
+      "BA": 0.5,
+      "BCE": 0.746825860786624,
+      "Top512": {
+        "Mixed": 225,
+        "Mixed_fraction": 0.439453125,
+        "questions": 512
+      },
+      "Mixed_recall": 1.0,
+      "nonMixed_FPR": 1.0,
+      "confusion": {
+        "fn": 0,
+        "fp": 1160,
+        "tn": 0,
+        "tp": 888
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 950,
+          "predicted_nonMixed": 0
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 210,
+          "predicted_nonMixed": 0
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 888,
+          "predicted_nonMixed": 0
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/evaluation-epoch-00.json",
+        "bytes": 1970,
+        "sha256": "5049141383614781887fcfaae7159b054cb8694bd4674499c6c6c63ec5616ec3"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/epoch-00-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "epoch": 0,
+      "state": "raw",
+      "role": "fixed_train2048",
+      "BA": 0.5,
+      "BCE": 0.746825860786624,
+      "Top512": {
+        "Mixed": 225,
+        "Mixed_fraction": 0.439453125,
+        "questions": 512
+      },
+      "Mixed_recall": 1.0,
+      "nonMixed_FPR": 1.0,
+      "confusion": {
+        "fn": 0,
+        "fp": 1160,
+        "tn": 0,
+        "tp": 888
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 950,
+          "predicted_nonMixed": 0
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 210,
+          "predicted_nonMixed": 0
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 888,
+          "predicted_nonMixed": 0
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/evaluation-epoch-00.json",
+        "bytes": 1970,
+        "sha256": "5049141383614781887fcfaae7159b054cb8694bd4674499c6c6c63ec5616ec3"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/epoch-00-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "epoch": 0,
+      "state": "EMA",
+      "role": "fixed_validation2048",
+      "BA": 0.5,
+      "BCE": 0.7958462220939382,
+      "Top512": {
+        "Mixed": 171,
+        "Mixed_fraction": 0.333984375,
+        "questions": 512
+      },
+      "Mixed_recall": 1.0,
+      "nonMixed_FPR": 1.0,
+      "confusion": {
+        "fn": 0,
+        "fp": 1385,
+        "tn": 0,
+        "tp": 663
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 1055,
+          "predicted_nonMixed": 0
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 330,
+          "predicted_nonMixed": 0
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 663,
+          "predicted_nonMixed": 0
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/evaluation-epoch-00.json",
+        "bytes": 1970,
+        "sha256": "5049141383614781887fcfaae7159b054cb8694bd4674499c6c6c63ec5616ec3"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/epoch-00-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "epoch": 0,
+      "state": "raw",
+      "role": "fixed_validation2048",
+      "BA": 0.5,
+      "BCE": 0.7958462220939382,
+      "Top512": {
+        "Mixed": 171,
+        "Mixed_fraction": 0.333984375,
+        "questions": 512
+      },
+      "Mixed_recall": 1.0,
+      "nonMixed_FPR": 1.0,
+      "confusion": {
+        "fn": 0,
+        "fp": 1385,
+        "tn": 0,
+        "tp": 663
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 1055,
+          "predicted_nonMixed": 0
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 330,
+          "predicted_nonMixed": 0
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 663,
+          "predicted_nonMixed": 0
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/evaluation-epoch-00.json",
+        "bytes": 1970,
+        "sha256": "5049141383614781887fcfaae7159b054cb8694bd4674499c6c6c63ec5616ec3"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/epoch-00-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "epoch": 1,
+      "state": "EMA",
+      "role": "fixed_train2048",
+      "BA": 0.5,
+      "BCE": 0.7130974626217677,
+      "Top512": {
+        "Mixed": 247,
+        "Mixed_fraction": 0.482421875,
+        "questions": 512
+      },
+      "Mixed_recall": 1.0,
+      "nonMixed_FPR": 1.0,
+      "confusion": {
+        "fn": 0,
+        "fp": 1160,
+        "tn": 0,
+        "tp": 888
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 950,
+          "predicted_nonMixed": 0
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 210,
+          "predicted_nonMixed": 0
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 888,
+          "predicted_nonMixed": 0
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/evaluation-epoch-01.json",
+        "bytes": 2124,
+        "sha256": "547f759b7d93896f82c6dd18386f6ba671d94929b20ea8cfb81bdc1577ef76cc"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/epoch-01-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "epoch": 1,
+      "state": "raw",
+      "role": "fixed_train2048",
+      "BA": 0.5251553277415346,
+      "BCE": 0.6680434853095862,
+      "Top512": {
+        "Mixed": 288,
+        "Mixed_fraction": 0.5625,
+        "questions": 512
+      },
+      "Mixed_recall": 0.08220720720720721,
+      "nonMixed_FPR": 0.03189655172413797,
+      "confusion": {
+        "fn": 815,
+        "fp": 37,
+        "tn": 1123,
+        "tp": 73
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 21,
+          "predicted_nonMixed": 929
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 16,
+          "predicted_nonMixed": 194
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 73,
+          "predicted_nonMixed": 815
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/evaluation-epoch-01.json",
+        "bytes": 2124,
+        "sha256": "547f759b7d93896f82c6dd18386f6ba671d94929b20ea8cfb81bdc1577ef76cc"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/epoch-01-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "epoch": 1,
+      "state": "EMA",
+      "role": "fixed_validation2048",
+      "BA": 0.5,
+      "BCE": 0.7408370309212893,
+      "Top512": {
+        "Mixed": 190,
+        "Mixed_fraction": 0.37109375,
+        "questions": 512
+      },
+      "Mixed_recall": 1.0,
+      "nonMixed_FPR": 1.0,
+      "confusion": {
+        "fn": 0,
+        "fp": 1385,
+        "tn": 0,
+        "tp": 663
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 1055,
+          "predicted_nonMixed": 0
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 330,
+          "predicted_nonMixed": 0
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 663,
+          "predicted_nonMixed": 0
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/evaluation-epoch-01.json",
+        "bytes": 2124,
+        "sha256": "547f759b7d93896f82c6dd18386f6ba671d94929b20ea8cfb81bdc1577ef76cc"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/epoch-01-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "epoch": 1,
+      "state": "raw",
+      "role": "fixed_validation2048",
+      "BA": 0.5158463607603553,
+      "BCE": 0.645265600879704,
+      "Top512": {
+        "Mixed": 207,
+        "Mixed_fraction": 0.404296875,
+        "questions": 512
+      },
+      "Mixed_recall": 0.08295625942684766,
+      "nonMixed_FPR": 0.051263537906137135,
+      "confusion": {
+        "fn": 608,
+        "fp": 71,
+        "tn": 1314,
+        "tp": 55
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 50,
+          "predicted_nonMixed": 1005
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 21,
+          "predicted_nonMixed": 309
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 55,
+          "predicted_nonMixed": 608
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/evaluation-epoch-01.json",
+        "bytes": 2124,
+        "sha256": "547f759b7d93896f82c6dd18386f6ba671d94929b20ea8cfb81bdc1577ef76cc"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/epoch-01-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "epoch": 2,
+      "state": "EMA",
+      "role": "fixed_train2048",
+      "BA": 0.5853487107797453,
+      "BCE": 0.6849242065904529,
+      "Top512": {
+        "Mixed": 292,
+        "Mixed_fraction": 0.5703125,
+        "questions": 512
+      },
+      "Mixed_recall": 0.8051801801801802,
+      "nonMixed_FPR": 0.6344827586206896,
+      "confusion": {
+        "fn": 173,
+        "fp": 736,
+        "tn": 424,
+        "tp": 715
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 573,
+          "predicted_nonMixed": 377
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 163,
+          "predicted_nonMixed": 47
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 715,
+          "predicted_nonMixed": 173
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/evaluation-epoch-02.json",
+        "bytes": 2276,
+        "sha256": "877d9a226da98a2c8a911b328597e1f6df53bd07648627b0800bb9dbca0dbe42"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/epoch-02-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "epoch": 2,
+      "state": "raw",
+      "role": "fixed_train2048",
+      "BA": 0.6134824479652066,
+      "BCE": 0.6736860676785068,
+      "Top512": {
+        "Mixed": 307,
+        "Mixed_fraction": 0.599609375,
+        "questions": 512
+      },
+      "Mixed_recall": 0.8355855855855856,
+      "nonMixed_FPR": 0.6086206896551725,
+      "confusion": {
+        "fn": 146,
+        "fp": 706,
+        "tn": 454,
+        "tp": 742
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 546,
+          "predicted_nonMixed": 404
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 160,
+          "predicted_nonMixed": 50
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 742,
+          "predicted_nonMixed": 146
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/evaluation-epoch-02.json",
+        "bytes": 2276,
+        "sha256": "877d9a226da98a2c8a911b328597e1f6df53bd07648627b0800bb9dbca0dbe42"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/epoch-02-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "epoch": 2,
+      "state": "EMA",
+      "role": "fixed_validation2048",
+      "BA": 0.557885336861765,
+      "BCE": 0.702893300790339,
+      "Top512": {
+        "Mixed": 212,
+        "Mixed_fraction": 0.4140625,
+        "questions": 512
+      },
+      "Mixed_recall": 0.8024132730015083,
+      "nonMixed_FPR": 0.6866425992779783,
+      "confusion": {
+        "fn": 131,
+        "fp": 951,
+        "tn": 434,
+        "tp": 532
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 696,
+          "predicted_nonMixed": 359
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 255,
+          "predicted_nonMixed": 75
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 532,
+          "predicted_nonMixed": 131
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/evaluation-epoch-02.json",
+        "bytes": 2276,
+        "sha256": "877d9a226da98a2c8a911b328597e1f6df53bd07648627b0800bb9dbca0dbe42"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/epoch-02-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "epoch": 2,
+      "state": "raw",
+      "role": "fixed_validation2048",
+      "BA": 0.5732405486493404,
+      "BCE": 0.729698181328667,
+      "Top512": {
+        "Mixed": 217,
+        "Mixed_fraction": 0.423828125,
+        "questions": 512
+      },
+      "Mixed_recall": 0.8114630467571644,
+      "nonMixed_FPR": 0.6649819494584838,
+      "confusion": {
+        "fn": 125,
+        "fp": 921,
+        "tn": 464,
+        "tp": 538
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 673,
+          "predicted_nonMixed": 382
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 248,
+          "predicted_nonMixed": 82
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 538,
+          "predicted_nonMixed": 125
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/evaluation-epoch-02.json",
+        "bytes": 2276,
+        "sha256": "877d9a226da98a2c8a911b328597e1f6df53bd07648627b0800bb9dbca0dbe42"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/epoch-02-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "epoch": 3,
+      "state": "EMA",
+      "role": "fixed_train2048",
+      "BA": 0.6302461944703324,
+      "BCE": 0.6616147244602568,
+      "Top512": {
+        "Mixed": 307,
+        "Mixed_fraction": 0.599609375,
+        "questions": 512
+      },
+      "Mixed_recall": 0.6734234234234234,
+      "nonMixed_FPR": 0.4129310344827586,
+      "confusion": {
+        "fn": 290,
+        "fp": 479,
+        "tn": 681,
+        "tp": 598
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 351,
+          "predicted_nonMixed": 599
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 128,
+          "predicted_nonMixed": 82
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 598,
+          "predicted_nonMixed": 290
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/evaluation-epoch-03.json",
+        "bytes": 2269,
+        "sha256": "18dd39df3447e4c18b5eff0c621a95fe5c7c077005fb0d5bd7ca96e566d948e5"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/epoch-03-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "epoch": 3,
+      "state": "raw",
+      "role": "fixed_train2048",
+      "BA": 0.6545899347623485,
+      "BCE": 0.6315423056785328,
+      "Top512": {
+        "Mixed": 327,
+        "Mixed_fraction": 0.638671875,
+        "questions": 512
+      },
+      "Mixed_recall": 0.722972972972973,
+      "nonMixed_FPR": 0.4137931034482759,
+      "confusion": {
+        "fn": 246,
+        "fp": 480,
+        "tn": 680,
+        "tp": 642
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 361,
+          "predicted_nonMixed": 589
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 119,
+          "predicted_nonMixed": 91
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 642,
+          "predicted_nonMixed": 246
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/evaluation-epoch-03.json",
+        "bytes": 2269,
+        "sha256": "18dd39df3447e4c18b5eff0c621a95fe5c7c077005fb0d5bd7ca96e566d948e5"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/epoch-03-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "epoch": 3,
+      "state": "EMA",
+      "role": "fixed_validation2048",
+      "BA": 0.5915922047797181,
+      "BCE": 0.6805780213400198,
+      "Top512": {
+        "Mixed": 213,
+        "Mixed_fraction": 0.416015625,
+        "questions": 512
+      },
+      "Mixed_recall": 0.6561085972850679,
+      "nonMixed_FPR": 0.4729241877256317,
+      "confusion": {
+        "fn": 228,
+        "fp": 655,
+        "tn": 730,
+        "tp": 435
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 456,
+          "predicted_nonMixed": 599
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 199,
+          "predicted_nonMixed": 131
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 435,
+          "predicted_nonMixed": 228
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/evaluation-epoch-03.json",
+        "bytes": 2269,
+        "sha256": "18dd39df3447e4c18b5eff0c621a95fe5c7c077005fb0d5bd7ca96e566d948e5"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/epoch-03-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "epoch": 3,
+      "state": "raw",
+      "role": "fixed_validation2048",
+      "BA": 0.5980185242661352,
+      "BCE": 0.6786233238779251,
+      "Top512": {
+        "Mixed": 219,
+        "Mixed_fraction": 0.427734375,
+        "questions": 512
+      },
+      "Mixed_recall": 0.669683257918552,
+      "nonMixed_FPR": 0.47364620938628155,
+      "confusion": {
+        "fn": 219,
+        "fp": 656,
+        "tn": 729,
+        "tp": 444
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 457,
+          "predicted_nonMixed": 598
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 199,
+          "predicted_nonMixed": 131
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 444,
+          "predicted_nonMixed": 219
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/evaluation-epoch-03.json",
+        "bytes": 2269,
+        "sha256": "18dd39df3447e4c18b5eff0c621a95fe5c7c077005fb0d5bd7ca96e566d948e5"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/epoch-03-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "epoch": 0,
+      "state": "EMA",
+      "role": "fixed_train2048",
+      "BA": 0.5,
+      "BCE": 0.7502455466213802,
+      "Top512": {
+        "Mixed": 218,
+        "Mixed_fraction": 0.42578125,
+        "questions": 512
+      },
+      "Mixed_recall": 1.0,
+      "nonMixed_FPR": 1.0,
+      "confusion": {
+        "fn": 0,
+        "fp": 1160,
+        "tn": 0,
+        "tp": 888
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 950,
+          "predicted_nonMixed": 0
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 210,
+          "predicted_nonMixed": 0
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 888,
+          "predicted_nonMixed": 0
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/evaluation-epoch-00.json",
+        "bytes": 1970,
+        "sha256": "c4e931edc0145ca47e468d6551862d2e186459c2713a871992c95ac267cb93ab"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/epoch-00-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "epoch": 0,
+      "state": "raw",
+      "role": "fixed_train2048",
+      "BA": 0.5,
+      "BCE": 0.7502455466213802,
+      "Top512": {
+        "Mixed": 218,
+        "Mixed_fraction": 0.42578125,
+        "questions": 512
+      },
+      "Mixed_recall": 1.0,
+      "nonMixed_FPR": 1.0,
+      "confusion": {
+        "fn": 0,
+        "fp": 1160,
+        "tn": 0,
+        "tp": 888
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 950,
+          "predicted_nonMixed": 0
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 210,
+          "predicted_nonMixed": 0
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 888,
+          "predicted_nonMixed": 0
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/evaluation-epoch-00.json",
+        "bytes": 1970,
+        "sha256": "c4e931edc0145ca47e468d6551862d2e186459c2713a871992c95ac267cb93ab"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/epoch-00-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "epoch": 0,
+      "state": "EMA",
+      "role": "fixed_validation2048",
+      "BA": 0.5,
+      "BCE": 0.8007621625337846,
+      "Top512": {
+        "Mixed": 179,
+        "Mixed_fraction": 0.349609375,
+        "questions": 512
+      },
+      "Mixed_recall": 1.0,
+      "nonMixed_FPR": 1.0,
+      "confusion": {
+        "fn": 0,
+        "fp": 1385,
+        "tn": 0,
+        "tp": 663
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 1055,
+          "predicted_nonMixed": 0
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 330,
+          "predicted_nonMixed": 0
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 663,
+          "predicted_nonMixed": 0
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/evaluation-epoch-00.json",
+        "bytes": 1970,
+        "sha256": "c4e931edc0145ca47e468d6551862d2e186459c2713a871992c95ac267cb93ab"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/epoch-00-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "epoch": 0,
+      "state": "raw",
+      "role": "fixed_validation2048",
+      "BA": 0.5,
+      "BCE": 0.8007621625337846,
+      "Top512": {
+        "Mixed": 179,
+        "Mixed_fraction": 0.349609375,
+        "questions": 512
+      },
+      "Mixed_recall": 1.0,
+      "nonMixed_FPR": 1.0,
+      "confusion": {
+        "fn": 0,
+        "fp": 1385,
+        "tn": 0,
+        "tp": 663
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 1055,
+          "predicted_nonMixed": 0
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 330,
+          "predicted_nonMixed": 0
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 663,
+          "predicted_nonMixed": 0
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/evaluation-epoch-00.json",
+        "bytes": 1970,
+        "sha256": "c4e931edc0145ca47e468d6551862d2e186459c2713a871992c95ac267cb93ab"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/epoch-00-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "epoch": 1,
+      "state": "EMA",
+      "role": "fixed_train2048",
+      "BA": 0.5002990059024541,
+      "BCE": 0.7139692513882581,
+      "Top512": {
+        "Mixed": 254,
+        "Mixed_fraction": 0.49609375,
+        "questions": 512
+      },
+      "Mixed_recall": 0.9988738738738738,
+      "nonMixed_FPR": 0.9982758620689656,
+      "confusion": {
+        "fn": 1,
+        "fp": 1158,
+        "tn": 2,
+        "tp": 887
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 948,
+          "predicted_nonMixed": 2
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 210,
+          "predicted_nonMixed": 0
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 887,
+          "predicted_nonMixed": 1
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/evaluation-epoch-01.json",
+        "bytes": 2236,
+        "sha256": "e851acf83ee838fe77e29566e0df2ecab948f097e25641cab6bb5b27f16d2154"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/epoch-01-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "epoch": 1,
+      "state": "raw",
+      "role": "fixed_train2048",
+      "BA": 0.5434141037589314,
+      "BCE": 0.6627286094938694,
+      "Top512": {
+        "Mixed": 293,
+        "Mixed_fraction": 0.572265625,
+        "questions": 512
+      },
+      "Mixed_recall": 0.16441441441441443,
+      "nonMixed_FPR": 0.07758620689655171,
+      "confusion": {
+        "fn": 742,
+        "fp": 90,
+        "tn": 1070,
+        "tp": 146
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 54,
+          "predicted_nonMixed": 896
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 36,
+          "predicted_nonMixed": 174
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 146,
+          "predicted_nonMixed": 742
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/evaluation-epoch-01.json",
+        "bytes": 2236,
+        "sha256": "e851acf83ee838fe77e29566e0df2ecab948f097e25641cab6bb5b27f16d2154"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/epoch-01-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "epoch": 1,
+      "state": "EMA",
+      "role": "fixed_validation2048",
+      "BA": 0.5003610108303249,
+      "BCE": 0.7436812678257292,
+      "Top512": {
+        "Mixed": 191,
+        "Mixed_fraction": 0.373046875,
+        "questions": 512
+      },
+      "Mixed_recall": 1.0,
+      "nonMixed_FPR": 0.9992779783393502,
+      "confusion": {
+        "fn": 0,
+        "fp": 1384,
+        "tn": 1,
+        "tp": 663
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 1054,
+          "predicted_nonMixed": 1
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 330,
+          "predicted_nonMixed": 0
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 663,
+          "predicted_nonMixed": 0
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/evaluation-epoch-01.json",
+        "bytes": 2236,
+        "sha256": "e851acf83ee838fe77e29566e0df2ecab948f097e25641cab6bb5b27f16d2154"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/epoch-01-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "epoch": 1,
+      "state": "raw",
+      "role": "fixed_validation2048",
+      "BA": 0.5264458129822326,
+      "BCE": 0.6408533204624075,
+      "Top512": {
+        "Mixed": 209,
+        "Mixed_fraction": 0.408203125,
+        "questions": 512
+      },
+      "Mixed_recall": 0.1568627450980392,
+      "nonMixed_FPR": 0.10397111913357404,
+      "confusion": {
+        "fn": 559,
+        "fp": 144,
+        "tn": 1241,
+        "tp": 104
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 97,
+          "predicted_nonMixed": 958
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 47,
+          "predicted_nonMixed": 283
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 104,
+          "predicted_nonMixed": 559
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/evaluation-epoch-01.json",
+        "bytes": 2236,
+        "sha256": "e851acf83ee838fe77e29566e0df2ecab948f097e25641cab6bb5b27f16d2154"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/epoch-01-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "epoch": 2,
+      "state": "EMA",
+      "role": "fixed_train2048",
+      "BA": 0.5892357875116496,
+      "BCE": 0.68133612965649,
+      "Top512": {
+        "Mixed": 297,
+        "Mixed_fraction": 0.580078125,
+        "questions": 512
+      },
+      "Mixed_recall": 0.7905405405405406,
+      "nonMixed_FPR": 0.6120689655172413,
+      "confusion": {
+        "fn": 186,
+        "fp": 710,
+        "tn": 450,
+        "tp": 702
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 541,
+          "predicted_nonMixed": 409
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 169,
+          "predicted_nonMixed": 41
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 702,
+          "predicted_nonMixed": 186
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/evaluation-epoch-02.json",
+        "bytes": 2272,
+        "sha256": "9a8b091bda124ba339b35327f914a45349ef801bec1d8de560af2f02d6b56282"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/epoch-02-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "epoch": 2,
+      "state": "raw",
+      "role": "fixed_train2048",
+      "BA": 0.6117621932277104,
+      "BCE": 0.6807934300465879,
+      "Top512": {
+        "Mixed": 313,
+        "Mixed_fraction": 0.611328125,
+        "questions": 512
+      },
+      "Mixed_recall": 0.8907657657657657,
+      "nonMixed_FPR": 0.6672413793103449,
+      "confusion": {
+        "fn": 97,
+        "fp": 774,
+        "tn": 386,
+        "tp": 791
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 604,
+          "predicted_nonMixed": 346
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 170,
+          "predicted_nonMixed": 40
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 791,
+          "predicted_nonMixed": 97
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/evaluation-epoch-02.json",
+        "bytes": 2272,
+        "sha256": "9a8b091bda124ba339b35327f914a45349ef801bec1d8de560af2f02d6b56282"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/epoch-02-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "epoch": 2,
+      "state": "EMA",
+      "role": "fixed_validation2048",
+      "BA": 0.5628828593364588,
+      "BCE": 0.7020286990938727,
+      "Top512": {
+        "Mixed": 212,
+        "Mixed_fraction": 0.4140625,
+        "questions": 512
+      },
+      "Mixed_recall": 0.7828054298642534,
+      "nonMixed_FPR": 0.6570397111913358,
+      "confusion": {
+        "fn": 144,
+        "fp": 910,
+        "tn": 475,
+        "tp": 519
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 654,
+          "predicted_nonMixed": 401
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 256,
+          "predicted_nonMixed": 74
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 519,
+          "predicted_nonMixed": 144
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/evaluation-epoch-02.json",
+        "bytes": 2272,
+        "sha256": "9a8b091bda124ba339b35327f914a45349ef801bec1d8de560af2f02d6b56282"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/epoch-02-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "epoch": 2,
+      "state": "raw",
+      "role": "fixed_validation2048",
+      "BA": 0.573410436098905,
+      "BCE": 0.7503682886646938,
+      "Top512": {
+        "Mixed": 224,
+        "Mixed_fraction": 0.4375,
+        "questions": 512
+      },
+      "Mixed_recall": 0.8702865761689291,
+      "nonMixed_FPR": 0.7234657039711192,
+      "confusion": {
+        "fn": 86,
+        "fp": 1002,
+        "tn": 383,
+        "tp": 577
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 731,
+          "predicted_nonMixed": 324
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 271,
+          "predicted_nonMixed": 59
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 577,
+          "predicted_nonMixed": 86
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/evaluation-epoch-02.json",
+        "bytes": 2272,
+        "sha256": "9a8b091bda124ba339b35327f914a45349ef801bec1d8de560af2f02d6b56282"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/epoch-02-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "epoch": 3,
+      "state": "EMA",
+      "role": "fixed_train2048",
+      "BA": 0.6225768872320596,
+      "BCE": 0.6580120874258377,
+      "Top512": {
+        "Mixed": 311,
+        "Mixed_fraction": 0.607421875,
+        "questions": 512
+      },
+      "Mixed_recall": 0.6925675675675675,
+      "nonMixed_FPR": 0.4474137931034483,
+      "confusion": {
+        "fn": 273,
+        "fp": 519,
+        "tn": 641,
+        "tp": 615
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 387,
+          "predicted_nonMixed": 563
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 132,
+          "predicted_nonMixed": 78
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 615,
+          "predicted_nonMixed": 273
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/evaluation-epoch-03.json",
+        "bytes": 2280,
+        "sha256": "80216bb4fc2c51f789938a6d90e1e000b4fdafe32e9d0e101e9853bb4c46d56f"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/epoch-03-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "epoch": 3,
+      "state": "raw",
+      "role": "fixed_train2048",
+      "BA": 0.6312830071450761,
+      "BCE": 0.6702304804110369,
+      "Top512": {
+        "Mixed": 323,
+        "Mixed_fraction": 0.630859375,
+        "questions": 512
+      },
+      "Mixed_recall": 0.9065315315315315,
+      "nonMixed_FPR": 0.6439655172413793,
+      "confusion": {
+        "fn": 83,
+        "fp": 747,
+        "tn": 413,
+        "tp": 805
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 582,
+          "predicted_nonMixed": 368
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 165,
+          "predicted_nonMixed": 45
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 805,
+          "predicted_nonMixed": 83
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/evaluation-epoch-03.json",
+        "bytes": 2280,
+        "sha256": "80216bb4fc2c51f789938a6d90e1e000b4fdafe32e9d0e101e9853bb4c46d56f"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/epoch-03-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "epoch": 3,
+      "state": "EMA",
+      "role": "fixed_validation2048",
+      "BA": 0.5914484538608556,
+      "BCE": 0.6822619120958933,
+      "Top512": {
+        "Mixed": 222,
+        "Mixed_fraction": 0.43359375,
+        "questions": 512
+      },
+      "Mixed_recall": 0.6832579185520362,
+      "nonMixed_FPR": 0.5003610108303249,
+      "confusion": {
+        "fn": 210,
+        "fp": 693,
+        "tn": 692,
+        "tp": 453
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 492,
+          "predicted_nonMixed": 563
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 201,
+          "predicted_nonMixed": 129
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 453,
+          "predicted_nonMixed": 210
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/evaluation-epoch-03.json",
+        "bytes": 2280,
+        "sha256": "80216bb4fc2c51f789938a6d90e1e000b4fdafe32e9d0e101e9853bb4c46d56f"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/epoch-03-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "epoch": 3,
+      "state": "raw",
+      "role": "fixed_validation2048",
+      "BA": 0.5911642190894686,
+      "BCE": 0.7599053767590616,
+      "Top512": {
+        "Mixed": 223,
+        "Mixed_fraction": 0.435546875,
+        "questions": 512
+      },
+      "Mixed_recall": 0.8733031674208145,
+      "nonMixed_FPR": 0.6909747292418773,
+      "confusion": {
+        "fn": 84,
+        "fp": 957,
+        "tn": 428,
+        "tp": 579
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 690,
+          "predicted_nonMixed": 365
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 267,
+          "predicted_nonMixed": 63
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 579,
+          "predicted_nonMixed": 84
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/evaluation-epoch-03.json",
+        "bytes": 2280,
+        "sha256": "80216bb4fc2c51f789938a6d90e1e000b4fdafe32e9d0e101e9853bb4c46d56f"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/epoch-03-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "epoch": 0,
+      "state": "EMA",
+      "role": "fixed_train2048",
+      "BA": 0.5,
+      "BCE": 0.7785022963957062,
+      "Top512": {
+        "Mixed": 209,
+        "Mixed_fraction": 0.408203125,
+        "questions": 512
+      },
+      "Mixed_recall": 1.0,
+      "nonMixed_FPR": 1.0,
+      "confusion": {
+        "fn": 0,
+        "fp": 1160,
+        "tn": 0,
+        "tp": 888
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 950,
+          "predicted_nonMixed": 0
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 210,
+          "predicted_nonMixed": 0
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 888,
+          "predicted_nonMixed": 0
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/evaluation-epoch-00.json",
+        "bytes": 1965,
+        "sha256": "7a1c2b8c17a6b5c9a3d07be961606acd5229e34c506dc8580fef814771276c86"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/epoch-00-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "epoch": 0,
+      "state": "raw",
+      "role": "fixed_train2048",
+      "BA": 0.5,
+      "BCE": 0.7785022963957062,
+      "Top512": {
+        "Mixed": 209,
+        "Mixed_fraction": 0.408203125,
+        "questions": 512
+      },
+      "Mixed_recall": 1.0,
+      "nonMixed_FPR": 1.0,
+      "confusion": {
+        "fn": 0,
+        "fp": 1160,
+        "tn": 0,
+        "tp": 888
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 950,
+          "predicted_nonMixed": 0
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 210,
+          "predicted_nonMixed": 0
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 888,
+          "predicted_nonMixed": 0
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/evaluation-epoch-00.json",
+        "bytes": 1965,
+        "sha256": "7a1c2b8c17a6b5c9a3d07be961606acd5229e34c506dc8580fef814771276c86"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/epoch-00-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "epoch": 0,
+      "state": "EMA",
+      "role": "fixed_validation2048",
+      "BA": 0.5,
+      "BCE": 0.8445966224051613,
+      "Top512": {
+        "Mixed": 168,
+        "Mixed_fraction": 0.328125,
+        "questions": 512
+      },
+      "Mixed_recall": 1.0,
+      "nonMixed_FPR": 1.0,
+      "confusion": {
+        "fn": 0,
+        "fp": 1385,
+        "tn": 0,
+        "tp": 663
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 1055,
+          "predicted_nonMixed": 0
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 330,
+          "predicted_nonMixed": 0
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 663,
+          "predicted_nonMixed": 0
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/evaluation-epoch-00.json",
+        "bytes": 1965,
+        "sha256": "7a1c2b8c17a6b5c9a3d07be961606acd5229e34c506dc8580fef814771276c86"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/epoch-00-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "epoch": 0,
+      "state": "raw",
+      "role": "fixed_validation2048",
+      "BA": 0.5,
+      "BCE": 0.8445966224051613,
+      "Top512": {
+        "Mixed": 168,
+        "Mixed_fraction": 0.328125,
+        "questions": 512
+      },
+      "Mixed_recall": 1.0,
+      "nonMixed_FPR": 1.0,
+      "confusion": {
+        "fn": 0,
+        "fp": 1385,
+        "tn": 0,
+        "tp": 663
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 1055,
+          "predicted_nonMixed": 0
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 330,
+          "predicted_nonMixed": 0
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 663,
+          "predicted_nonMixed": 0
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/evaluation-epoch-00.json",
+        "bytes": 1965,
+        "sha256": "7a1c2b8c17a6b5c9a3d07be961606acd5229e34c506dc8580fef814771276c86"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/epoch-00-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "epoch": 1,
+      "state": "EMA",
+      "role": "fixed_train2048",
+      "BA": 0.5013280521901211,
+      "BCE": 0.7249323461063509,
+      "Top512": {
+        "Mixed": 247,
+        "Mixed_fraction": 0.482421875,
+        "questions": 512
+      },
+      "Mixed_recall": 0.9966216216216216,
+      "nonMixed_FPR": 0.9939655172413793,
+      "confusion": {
+        "fn": 3,
+        "fp": 1153,
+        "tn": 7,
+        "tp": 885
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 943,
+          "predicted_nonMixed": 7
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 210,
+          "predicted_nonMixed": 0
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 885,
+          "predicted_nonMixed": 3
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/evaluation-epoch-01.json",
+        "bytes": 2248,
+        "sha256": "3cf873a0c044737625c675289e0eb3f5a580ffbfaa60beae1bf008d337a8f22f"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/epoch-01-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "epoch": 1,
+      "state": "raw",
+      "role": "fixed_train2048",
+      "BA": 0.5446295433364399,
+      "BCE": 0.6596883757831509,
+      "Top512": {
+        "Mixed": 296,
+        "Mixed_fraction": 0.578125,
+        "questions": 512
+      },
+      "Mixed_recall": 0.1858108108108108,
+      "nonMixed_FPR": 0.096551724137931,
+      "confusion": {
+        "fn": 723,
+        "fp": 112,
+        "tn": 1048,
+        "tp": 165
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 72,
+          "predicted_nonMixed": 878
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 40,
+          "predicted_nonMixed": 170
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 165,
+          "predicted_nonMixed": 723
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/evaluation-epoch-01.json",
+        "bytes": 2248,
+        "sha256": "3cf873a0c044737625c675289e0eb3f5a580ffbfaa60beae1bf008d337a8f22f"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/epoch-01-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "epoch": 1,
+      "state": "EMA",
+      "role": "fixed_validation2048",
+      "BA": 0.5017729279993031,
+      "BCE": 0.7644146968831018,
+      "Top512": {
+        "Mixed": 183,
+        "Mixed_fraction": 0.357421875,
+        "questions": 512
+      },
+      "Mixed_recall": 0.9984917043740573,
+      "nonMixed_FPR": 0.9949458483754513,
+      "confusion": {
+        "fn": 1,
+        "fp": 1378,
+        "tn": 7,
+        "tp": 662
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 1048,
+          "predicted_nonMixed": 7
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 330,
+          "predicted_nonMixed": 0
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 662,
+          "predicted_nonMixed": 1
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/evaluation-epoch-01.json",
+        "bytes": 2248,
+        "sha256": "3cf873a0c044737625c675289e0eb3f5a580ffbfaa60beae1bf008d337a8f22f"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/epoch-01-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "epoch": 1,
+      "state": "raw",
+      "role": "fixed_validation2048",
+      "BA": 0.5366352483787183,
+      "BCE": 0.6406639414302958,
+      "Top512": {
+        "Mixed": 202,
+        "Mixed_fraction": 0.39453125,
+        "questions": 512
+      },
+      "Mixed_recall": 0.19457013574660634,
+      "nonMixed_FPR": 0.12129963898916962,
+      "confusion": {
+        "fn": 534,
+        "fp": 168,
+        "tn": 1217,
+        "tp": 129
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 113,
+          "predicted_nonMixed": 942
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 55,
+          "predicted_nonMixed": 275
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 129,
+          "predicted_nonMixed": 534
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/evaluation-epoch-01.json",
+        "bytes": 2248,
+        "sha256": "3cf873a0c044737625c675289e0eb3f5a580ffbfaa60beae1bf008d337a8f22f"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/epoch-01-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "epoch": 2,
+      "state": "EMA",
+      "role": "fixed_train2048",
+      "BA": 0.5920977011494253,
+      "BCE": 0.6836801317443345,
+      "Top512": {
+        "Mixed": 297,
+        "Mixed_fraction": 0.580078125,
+        "questions": 512
+      },
+      "Mixed_recall": 0.8333333333333334,
+      "nonMixed_FPR": 0.6491379310344827,
+      "confusion": {
+        "fn": 148,
+        "fp": 753,
+        "tn": 407,
+        "tp": 740
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 579,
+          "predicted_nonMixed": 371
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 174,
+          "predicted_nonMixed": 36
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 740,
+          "predicted_nonMixed": 148
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/evaluation-epoch-02.json",
+        "bytes": 2280,
+        "sha256": "5a3b9c01d37856a2d0f8290650d6b78db0fc5aa5fe3c45fb2c5783ffffb844de"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/epoch-02-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "epoch": 2,
+      "state": "raw",
+      "role": "fixed_train2048",
+      "BA": 0.6257805219012116,
+      "BCE": 0.6673880429390298,
+      "Top512": {
+        "Mixed": 314,
+        "Mixed_fraction": 0.61328125,
+        "questions": 512
+      },
+      "Mixed_recall": 0.8412162162162162,
+      "nonMixed_FPR": 0.5896551724137931,
+      "confusion": {
+        "fn": 141,
+        "fp": 684,
+        "tn": 476,
+        "tp": 747
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 531,
+          "predicted_nonMixed": 419
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 153,
+          "predicted_nonMixed": 57
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 747,
+          "predicted_nonMixed": 141
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/evaluation-epoch-02.json",
+        "bytes": 2280,
+        "sha256": "5a3b9c01d37856a2d0f8290650d6b78db0fc5aa5fe3c45fb2c5783ffffb844de"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/epoch-02-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "epoch": 2,
+      "state": "EMA",
+      "role": "fixed_validation2048",
+      "BA": 0.5602365356028554,
+      "BCE": 0.7129933233488561,
+      "Top512": {
+        "Mixed": 203,
+        "Mixed_fraction": 0.396484375,
+        "questions": 512
+      },
+      "Mixed_recall": 0.8280542986425339,
+      "nonMixed_FPR": 0.7075812274368232,
+      "confusion": {
+        "fn": 114,
+        "fp": 980,
+        "tn": 405,
+        "tp": 549
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 718,
+          "predicted_nonMixed": 337
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 262,
+          "predicted_nonMixed": 68
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 549,
+          "predicted_nonMixed": 114
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/evaluation-epoch-02.json",
+        "bytes": 2280,
+        "sha256": "5a3b9c01d37856a2d0f8290650d6b78db0fc5aa5fe3c45fb2c5783ffffb844de"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/epoch-02-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "epoch": 2,
+      "state": "raw",
+      "role": "fixed_validation2048",
+      "BA": 0.581046659152414,
+      "BCE": 0.7364542937744448,
+      "Top512": {
+        "Mixed": 219,
+        "Mixed_fraction": 0.427734375,
+        "questions": 512
+      },
+      "Mixed_recall": 0.8220211161387632,
+      "nonMixed_FPR": 0.6599277978339351,
+      "confusion": {
+        "fn": 118,
+        "fp": 914,
+        "tn": 471,
+        "tp": 545
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 670,
+          "predicted_nonMixed": 385
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 244,
+          "predicted_nonMixed": 86
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 545,
+          "predicted_nonMixed": 118
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/evaluation-epoch-02.json",
+        "bytes": 2280,
+        "sha256": "5a3b9c01d37856a2d0f8290650d6b78db0fc5aa5fe3c45fb2c5783ffffb844de"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/epoch-02-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "epoch": 3,
+      "state": "EMA",
+      "role": "fixed_train2048",
+      "BA": 0.6402958993476235,
+      "BCE": 0.6561754461307915,
+      "Top512": {
+        "Mixed": 313,
+        "Mixed_fraction": 0.611328125,
+        "questions": 512
+      },
+      "Mixed_recall": 0.7297297297297297,
+      "nonMixed_FPR": 0.44913793103448274,
+      "confusion": {
+        "fn": 240,
+        "fp": 521,
+        "tn": 639,
+        "tp": 648
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 394,
+          "predicted_nonMixed": 556
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 127,
+          "predicted_nonMixed": 83
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 648,
+          "predicted_nonMixed": 240
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/evaluation-epoch-03.json",
+        "bytes": 2286,
+        "sha256": "197e8ba521ee05e0a75dc976793de370434263a0dfb72f647c0529f16a004287"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/epoch-03-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "epoch": 3,
+      "state": "raw",
+      "role": "fixed_train2048",
+      "BA": 0.6619447033240137,
+      "BCE": 0.6231045605433239,
+      "Top512": {
+        "Mixed": 337,
+        "Mixed_fraction": 0.658203125,
+        "questions": 512
+      },
+      "Mixed_recall": 0.7342342342342343,
+      "nonMixed_FPR": 0.41034482758620694,
+      "confusion": {
+        "fn": 236,
+        "fp": 476,
+        "tn": 684,
+        "tp": 652
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 950,
+          "predicted_Mixed": 369,
+          "predicted_nonMixed": 581
+        },
+        "all_correct": {
+          "questions": 210,
+          "predicted_Mixed": 107,
+          "predicted_nonMixed": 103
+        },
+        "Mixed": {
+          "questions": 888,
+          "predicted_Mixed": 652,
+          "predicted_nonMixed": 236
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/evaluation-epoch-03.json",
+        "bytes": 2286,
+        "sha256": "197e8ba521ee05e0a75dc976793de370434263a0dfb72f647c0529f16a004287"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/epoch-03-fixed_train2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "epoch": 3,
+      "state": "EMA",
+      "role": "fixed_validation2048",
+      "BA": 0.587501837724815,
+      "BCE": 0.6901539628025428,
+      "Top512": {
+        "Mixed": 214,
+        "Mixed_fraction": 0.41796875,
+        "questions": 512
+      },
+      "Mixed_recall": 0.7013574660633484,
+      "nonMixed_FPR": 0.5263537906137183,
+      "confusion": {
+        "fn": 198,
+        "fp": 729,
+        "tn": 656,
+        "tp": 465
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 520,
+          "predicted_nonMixed": 535
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 209,
+          "predicted_nonMixed": 121
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 465,
+          "predicted_nonMixed": 198
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/evaluation-epoch-03.json",
+        "bytes": 2286,
+        "sha256": "197e8ba521ee05e0a75dc976793de370434263a0dfb72f647c0529f16a004287"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/epoch-03-fixed_validation2048-predictions.jsonl.gz"
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "epoch": 3,
+      "state": "raw",
+      "role": "fixed_validation2048",
+      "BA": 0.5993585659756822,
+      "BCE": 0.6867617116009535,
+      "Top512": {
+        "Mixed": 215,
+        "Mixed_fraction": 0.419921875,
+        "questions": 512
+      },
+      "Mixed_recall": 0.6817496229260935,
+      "nonMixed_FPR": 0.4830324909747292,
+      "confusion": {
+        "fn": 211,
+        "fp": 669,
+        "tn": 716,
+        "tp": 452
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 490,
+          "predicted_nonMixed": 565
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 179,
+          "predicted_nonMixed": 151
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 452,
+          "predicted_nonMixed": 211
+        }
+      },
+      "evaluation_proof": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/evaluation-epoch-03.json",
+        "bytes": 2286,
+        "sha256": "197e8ba521ee05e0a75dc976793de370434263a0dfb72f647c0529f16a004287"
+      },
+      "prediction_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/epoch-03-fixed_validation2048-predictions.jsonl.gz"
+    }
+  ],
+  "candidates": [
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/checkpoint-epoch-01.pt",
+        "bytes": 3770454598,
+        "states": [
+          "raw",
+          "EMA"
+        ],
+        "model_contents_opened": false
+      },
+      "state_key": "raw",
+      "actual_published_E3_SHA": null,
+      "not_frozen_for_final": true,
+      "prediction_score": "direct_Mixed_logit",
+      "classification_threshold": "logit>=0",
+      "native_final4096_v3_existing_geometry_gate_allows": false
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/checkpoint-epoch-01.pt",
+        "bytes": 3770454598,
+        "states": [
+          "raw",
+          "EMA"
+        ],
+        "model_contents_opened": false
+      },
+      "state_key": "EMA",
+      "actual_published_E3_SHA": null,
+      "not_frozen_for_final": true,
+      "prediction_score": "direct_Mixed_logit",
+      "classification_threshold": "logit>=0",
+      "native_final4096_v3_existing_geometry_gate_allows": false
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/checkpoint-epoch-02.pt",
+        "bytes": 3770454598,
+        "states": [
+          "raw",
+          "EMA"
+        ],
+        "model_contents_opened": false
+      },
+      "state_key": "raw",
+      "actual_published_E3_SHA": null,
+      "not_frozen_for_final": true,
+      "prediction_score": "direct_Mixed_logit",
+      "classification_threshold": "logit>=0",
+      "native_final4096_v3_existing_geometry_gate_allows": false
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/checkpoint-epoch-02.pt",
+        "bytes": 3770454598,
+        "states": [
+          "raw",
+          "EMA"
+        ],
+        "model_contents_opened": false
+      },
+      "state_key": "EMA",
+      "actual_published_E3_SHA": null,
+      "not_frozen_for_final": true,
+      "prediction_score": "direct_Mixed_logit",
+      "classification_threshold": "logit>=0",
+      "native_final4096_v3_existing_geometry_gate_allows": false
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/checkpoint-epoch-03.pt",
+        "bytes": 3770454598,
+        "states": [
+          "raw",
+          "EMA"
+        ],
+        "model_contents_opened": false
+      },
+      "state_key": "raw",
+      "actual_published_E3_SHA": {
+        "bytes": 3770454598,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/checkpoint-epoch-03.pt",
+        "sha256": "3a37cec3f585c86872dd8a1ff12774ed79b4fbe2e4e1253757ddf2b911939330"
+      },
+      "not_frozen_for_final": true,
+      "prediction_score": "direct_Mixed_logit",
+      "classification_threshold": "logit>=0",
+      "native_final4096_v3_existing_geometry_gate_allows": false
+    },
+    {
+      "experiment": "L15P80",
+      "layer": 15,
+      "prefix": 80,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/checkpoint-epoch-03.pt",
+        "bytes": 3770454598,
+        "states": [
+          "raw",
+          "EMA"
+        ],
+        "model_contents_opened": false
+      },
+      "state_key": "EMA",
+      "actual_published_E3_SHA": {
+        "bytes": 3770454598,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/checkpoint-epoch-03.pt",
+        "sha256": "3a37cec3f585c86872dd8a1ff12774ed79b4fbe2e4e1253757ddf2b911939330"
+      },
+      "not_frozen_for_final": true,
+      "prediction_score": "direct_Mixed_logit",
+      "classification_threshold": "logit>=0",
+      "native_final4096_v3_existing_geometry_gate_allows": false
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/checkpoint-epoch-01.pt",
+        "bytes": 3770454598,
+        "states": [
+          "raw",
+          "EMA"
+        ],
+        "model_contents_opened": false
+      },
+      "state_key": "raw",
+      "actual_published_E3_SHA": null,
+      "not_frozen_for_final": true,
+      "prediction_score": "direct_Mixed_logit",
+      "classification_threshold": "logit>=0",
+      "native_final4096_v3_existing_geometry_gate_allows": false
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/checkpoint-epoch-01.pt",
+        "bytes": 3770454598,
+        "states": [
+          "raw",
+          "EMA"
+        ],
+        "model_contents_opened": false
+      },
+      "state_key": "EMA",
+      "actual_published_E3_SHA": null,
+      "not_frozen_for_final": true,
+      "prediction_score": "direct_Mixed_logit",
+      "classification_threshold": "logit>=0",
+      "native_final4096_v3_existing_geometry_gate_allows": false
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/checkpoint-epoch-02.pt",
+        "bytes": 3770454598,
+        "states": [
+          "raw",
+          "EMA"
+        ],
+        "model_contents_opened": false
+      },
+      "state_key": "raw",
+      "actual_published_E3_SHA": null,
+      "not_frozen_for_final": true,
+      "prediction_score": "direct_Mixed_logit",
+      "classification_threshold": "logit>=0",
+      "native_final4096_v3_existing_geometry_gate_allows": false
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/checkpoint-epoch-02.pt",
+        "bytes": 3770454598,
+        "states": [
+          "raw",
+          "EMA"
+        ],
+        "model_contents_opened": false
+      },
+      "state_key": "EMA",
+      "actual_published_E3_SHA": null,
+      "not_frozen_for_final": true,
+      "prediction_score": "direct_Mixed_logit",
+      "classification_threshold": "logit>=0",
+      "native_final4096_v3_existing_geometry_gate_allows": false
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/checkpoint-epoch-03.pt",
+        "bytes": 3770454598,
+        "states": [
+          "raw",
+          "EMA"
+        ],
+        "model_contents_opened": false
+      },
+      "state_key": "raw",
+      "actual_published_E3_SHA": {
+        "bytes": 3770454598,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/checkpoint-epoch-03.pt",
+        "sha256": "b242c9b12b88159fc483c5322b28fb2c4f0d81df7480a750fc99afb04a6ae0db"
+      },
+      "not_frozen_for_final": true,
+      "prediction_score": "direct_Mixed_logit",
+      "classification_threshold": "logit>=0",
+      "native_final4096_v3_existing_geometry_gate_allows": false
+    },
+    {
+      "experiment": "L18P80",
+      "layer": 18,
+      "prefix": 80,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/checkpoint-epoch-03.pt",
+        "bytes": 3770454598,
+        "states": [
+          "raw",
+          "EMA"
+        ],
+        "model_contents_opened": false
+      },
+      "state_key": "EMA",
+      "actual_published_E3_SHA": {
+        "bytes": 3770454598,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/checkpoint-epoch-03.pt",
+        "sha256": "b242c9b12b88159fc483c5322b28fb2c4f0d81df7480a750fc99afb04a6ae0db"
+      },
+      "not_frozen_for_final": true,
+      "prediction_score": "direct_Mixed_logit",
+      "classification_threshold": "logit>=0",
+      "native_final4096_v3_existing_geometry_gate_allows": false
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/checkpoint-epoch-01.pt",
+        "bytes": 3770454598,
+        "states": [
+          "raw",
+          "EMA"
+        ],
+        "model_contents_opened": false
+      },
+      "state_key": "raw",
+      "actual_published_E3_SHA": null,
+      "not_frozen_for_final": true,
+      "prediction_score": "direct_Mixed_logit",
+      "classification_threshold": "logit>=0",
+      "native_final4096_v3_existing_geometry_gate_allows": true
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/checkpoint-epoch-01.pt",
+        "bytes": 3770454598,
+        "states": [
+          "raw",
+          "EMA"
+        ],
+        "model_contents_opened": false
+      },
+      "state_key": "EMA",
+      "actual_published_E3_SHA": null,
+      "not_frozen_for_final": true,
+      "prediction_score": "direct_Mixed_logit",
+      "classification_threshold": "logit>=0",
+      "native_final4096_v3_existing_geometry_gate_allows": true
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/checkpoint-epoch-02.pt",
+        "bytes": 3770454598,
+        "states": [
+          "raw",
+          "EMA"
+        ],
+        "model_contents_opened": false
+      },
+      "state_key": "raw",
+      "actual_published_E3_SHA": null,
+      "not_frozen_for_final": true,
+      "prediction_score": "direct_Mixed_logit",
+      "classification_threshold": "logit>=0",
+      "native_final4096_v3_existing_geometry_gate_allows": true
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/checkpoint-epoch-02.pt",
+        "bytes": 3770454598,
+        "states": [
+          "raw",
+          "EMA"
+        ],
+        "model_contents_opened": false
+      },
+      "state_key": "EMA",
+      "actual_published_E3_SHA": null,
+      "not_frozen_for_final": true,
+      "prediction_score": "direct_Mixed_logit",
+      "classification_threshold": "logit>=0",
+      "native_final4096_v3_existing_geometry_gate_allows": true
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/checkpoint-epoch-03.pt",
+        "bytes": 3770454598,
+        "states": [
+          "raw",
+          "EMA"
+        ],
+        "model_contents_opened": false
+      },
+      "state_key": "raw",
+      "actual_published_E3_SHA": {
+        "bytes": 3770454598,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/checkpoint-epoch-03.pt",
+        "sha256": "31b9527b571ca5b90ab6b6f83f2f25c541a314c4ab23a09e7300c0e79811305c"
+      },
+      "not_frozen_for_final": true,
+      "prediction_score": "direct_Mixed_logit",
+      "classification_threshold": "logit>=0",
+      "native_final4096_v3_existing_geometry_gate_allows": true
+    },
+    {
+      "experiment": "L21P80",
+      "layer": 21,
+      "prefix": 80,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/checkpoint-epoch-03.pt",
+        "bytes": 3770454598,
+        "states": [
+          "raw",
+          "EMA"
+        ],
+        "model_contents_opened": false
+      },
+      "state_key": "EMA",
+      "actual_published_E3_SHA": {
+        "bytes": 3770454598,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/checkpoint-epoch-03.pt",
+        "sha256": "31b9527b571ca5b90ab6b6f83f2f25c541a314c4ab23a09e7300c0e79811305c"
+      },
+      "not_frozen_for_final": true,
+      "prediction_score": "direct_Mixed_logit",
+      "classification_threshold": "logit>=0",
+      "native_final4096_v3_existing_geometry_gate_allows": true
+    }
+  ],
+  "architecture": {
+    "official_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "actor_model": "Qwen2.5-7B-Instruct",
+    "official_model_dir": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70",
+    "layer_index_semantics": "Exact runtime index: copied actor.layers[layer]; frozen actor.layers[:layer] supplies input, last included block index layer-1. Do not relabel zero-based runtime index as one-based layer ordinal.",
+    "online_input": "Each of the real G5 trajectories retains its own causal tool-context prefill. Not the new packed one-question+Mprefix branch.",
+    "native_block_hidden_size": 3584,
+    "QMAX": 273,
+    "prefix": 80,
+    "real_trajectory_rows_per_question": 5,
+    "head": {
+      "projection_dimension": 256,
+      "noncausal_transformer_layers": 2,
+      "attention_heads": 8,
+      "dropout": 0,
+      "question_hidden": "average shared question slots across five trajectories",
+      "policy_hidden": "all five times80 slots retained; within-prefix position embeddings repeated across trajectories; no trajectory-index embedding",
+      "CLS_output_logits": 1
+    },
+    "loss": "Direct binary true-Mixed BCE only, inverse class-frequency weights from each complete epoch plan. No trajectory BCE.",
+    "actual_epoch_counts": [
+      {
+        "Mixed": 3489,
+        "epoch": 1,
+        "hard_replay": false,
+        "nonMixed": 4703,
+        "plan_sha256": "d3d1468633e510b0117b66f5937cb33852288ae7120120c60903204205b39998",
+        "questions": 8192,
+        "seed": 20261022,
+        "unique_questions": 8192
+      },
+      {
+        "Mixed": 3489,
+        "epoch": 2,
+        "hard_replay": false,
+        "nonMixed": 4703,
+        "plan_sha256": "56f60781885fe176e1d95bb005ae3bdacca1fa622b5018062be11dfb6fd736cb",
+        "questions": 8192,
+        "seed": 20261022,
+        "unique_questions": 8192
+      },
+      {
+        "Mixed": 3489,
+        "epoch": 3,
+        "hard_replay": false,
+        "nonMixed": 4703,
+        "plan_sha256": "bb06f94c2ff00444542a5ff2f88244b6236dfc52a132c5c4edb57ce63fa56977",
+        "questions": 8192,
+        "seed": 20261022,
+        "unique_questions": 8192
+      }
+    ],
+    "learning_rate": 5e-06,
+    "EMA_decay": 0.99,
+    "raw_updates_EMA": true,
+    "questions": 8192,
+    "epochs": 3,
+    "optimizer_updates": 192,
+    "global_batch": 128,
+    "GPUs": 2,
+    "local_batch": 64,
+    "micro_questions": 8,
+    "accumulation": 8,
+    "model_and_head_seed": 9137,
+    "sampler_seed": 20261022,
+    "source_seeds_currently_hardcoded": true,
+    "two_seed_reproduction": "Not run. New independent code/output/locks must expose and bind both model/head seed and own-G5 plan seed; keep paired layer arms identical within a seed. Preserve the fixed train/dev G5 identities. Existing seed9137 and plans20261022 are one matched run, not two-seed evidence."
+  },
+  "trajectory_permutation_audit_search": {
+    "existing_native_test": "test_native_mixed_group_classifier.py:test_group_permutation_and_shared_question_averaging",
+    "test_kind": "Small CPU synthetic hidden-state fixture with permutation [4,0,3,1,2], tolerance rtol1e-5/atol2e-6; does not load the actual candidate checkpoint.",
+    "native_architecture": "Permutation-invariant by shared question averaging, repeated within-prefix embeddings and noncausal group attention/CLS. Floating-point equality still needs tolerance.",
+    "actual_candidate_model_permutation_audit_found": false,
+    "related_sampler_audit": "packed-variance-full169028/sampler-hardnegative-diagnostic/actual-epoch-*.json reverses trajectory order only to verify target variance; explicitly prediction_permutation_invariance_not_measured=true.",
+    "packed_architecture": "The new question+Mprefix packed causal context with absolute positions is order-sensitive; random training order is augmentation, not a guarantee of invariant prediction.",
+    "new_inference_run": false
+  },
+  "source_proofs": [
+    {
+      "path": "reproduction/operations/qwen7b_warmup/online_mixed_prefix_explore.py",
+      "bytes": 19727,
+      "sha256": "00fac590369a610373d7353a2218c83455cf2e85f10f59a0c5ac636591ac1df0"
+    },
+    {
+      "path": "reproduction/operations/qwen7b_warmup/online_mixed_depth_expansion.py",
+      "bytes": 19736,
+      "sha256": "a7cb839bf000a1ff7ac6e4aea29d3b5a4c78db90879f4027b7e86a9c96130032"
+    },
+    {
+      "path": "reproduction/operations/qwen7b_warmup/online_mixed_depth_resume.py",
+      "bytes": 19832,
+      "sha256": "8debcd947e11f8aaac27db15e94cadd1116f32c0a50221cd5b17a07a04ccac4a"
+    },
+    {
+      "path": "reproduction/operations/qwen7b_warmup/native_mixed_group_classifier.py",
+      "bytes": 15152,
+      "sha256": "597dddade38f03b3d72c3f861a37859188148494ef3957c7250bcf00ba08a728"
+    },
+    {
+      "path": "reproduction/operations/qwen7b_warmup/test_native_mixed_group_classifier.py",
+      "bytes": 6678,
+      "sha256": "57ca398a3b7df6a4b20d6dd99fec3ee3e4e6ecbd4a649def0d9f35d20779ba8e"
+    },
+    {
+      "path": "reproduction/operations/qwen7b_warmup/score_frozen_final4096.py",
+      "bytes": 22147,
+      "sha256": "f6ef03fd59693a491c52c505e160204f8f4b141c1c3ab422c398dfeefc676793"
+    }
+  ],
+  "fixed_train": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-v1/inputs/fixed-train2048.json",
+    "bytes": 825187,
+    "sha256": "e6e74d92160efb0740ba5c0316c4ee7686f06a499c90cafd5a545f325b62209b"
+  },
+  "fixed_dev": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-v1/inputs/validation-groups.json",
+    "bytes": 972316,
+    "sha256": "50f1e3a6927d02c0f8cadf1feb5b4229b075b5d099fe31fd0de5c2ae3b149292"
+  },
+  "fixed_dev_G5_digest": "c55de2b4f66f45dcd94a8e246bfca97e53bdedc4ca85180c75e60c574dfc04b7",
+  "dev_is_already_viewed": true,
+  "final4096_read": false,
+  "new_inference": false,
+  "new_training": false,
+  "Slurm_mutated": false,
+  "scope": "Same 8192 training questions, frozen ownG5 epoch plans and fixed train/dev groups. These are single-seed observed validation metrics; no generalization guarantee, no final candidate freeze and no causal comparison against full packed Z."
+}
