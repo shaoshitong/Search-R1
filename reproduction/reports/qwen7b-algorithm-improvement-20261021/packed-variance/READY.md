@@ -27,3 +27,9 @@ Remote prepare has not run: it reuses accepted8192 fullG10 Prefix20 token rows, 
 5. Follow two real updates and one full epoch, then full3epoch/checkpoint/evaluation acceptance. GPU/native7B forward, DDP, remote fixture schema and source metadata are not yet runtime-verified.
 
 Network unavailable at handoff: **not pushed, not deployed, not submitted**. Existing remote job status is unknown after the final earlier observation; no exit is inferred from connectivity loss.
+
+## Local producer/prepare schema integration confirmation
+
+The actual producer `sampling.py:227` writes `behavior_turns`; `prefix_selection200/interaction_protocol.py:145–146` writes `raw_generated_token_ids` and `kept_token_count`. The producer extraction at `prefix_selection200/rollout.py:195–201` and accepted reconstruction at `peer_long_prefix_diagnostic.py:53–66` both select `raw[:min(kept, remaining_prefix)]`. The accepted validation merger `validation_g10_merge.py:280,289,301` verifies `initial_prompt_token_ids`, full journals and publishes `phase_payloads['full']`. New prepare uses exactly these names. No mismatched field was found, and no runtime refactor was made for this check.
+
+One targeted integration test executes the **exact extraction loop AST from the new prepare function**, then compares it with the existing reconstruct(full,20) on its repository journal fixture for a single-turn cut, a cross-turn cut, and a short seven-token response. All agree; observations and discarded raw tails are excluded. `python3 -m reproduction.operations.qwen7b_warmup.test_packed_variance_full_schema` passed1test in0.004sec. This checks real producer/consumer source contracts locally; it does not claim fresh remote payload verification. No repeat of the earlier5tests and no model load was needed.
