@@ -55,7 +55,7 @@
   },
   "latest_new_user_experiment": {
     "name": "one_question_variable_M_prefix20_variance_regression",
-    "status": "LOCAL_IMPLEMENTATION_IN_PROGRESS_NOT_DEPLOYED_NOT_SUBMITTED",
+    "status": "LOCAL_CODE_TESTS_AND_IMMUTABLE_GIT_COMMIT_COMPLETE_NOT_PUSHED_NOT_DEPLOYED_NOT_SUBMITTED",
     "M_uniform_integer_range": [
       3,
       10
@@ -83,7 +83,17 @@
     },
     "full169028_target_not_shrunk_to_pilot": true,
     "fixed_eval": "same2048 ownG5 selection, varianceMSE/MAE/rank correlation/Top512realMixed, predeclaredG5variance_threshold.08 diagnostic_only",
-    "final4096_read": false
+    "final4096_read": false,
+    "source_commit": "2cd772d88f91eb2eb6176965ad42b20d3ce4f6ea",
+    "source_branch": "codex/q7b-packed-variable-M-variance-20261022",
+    "local_tests": {
+      "tests": 5,
+      "CPU_only": true,
+      "passed": true,
+      "official7B_loaded": false,
+      "CUDA_tested": false
+    },
+    "ready_document": "work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/packed-variance/READY.md"
   },
   "resume_after_network_permission_restored": [
     "fresh poll SAME existing handles and reconcile terminal status; no restart from stale values",
@@ -92,5 +102,11 @@
     "follow new jobs through two actual update observations and complete epoch",
     "evaluate all planned candidates on viewed2048; freeze candidate before final4096 scoring",
     "do not call goal complete until independent confirmation and full objective evidence exist"
-  ]
+  ],
+  "local_postrun_audits": {
+    "commit": "c91222bd3215440b061dc58ae1f61a23a9adcf7e",
+    "branch": "codex/q7b-online-natural-g5-postrun-audits-20261022",
+    "pushed": false,
+    "remote_executed": false
+  }
 }
