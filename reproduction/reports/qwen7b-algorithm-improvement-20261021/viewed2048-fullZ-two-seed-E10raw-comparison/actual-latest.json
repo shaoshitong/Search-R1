@@ -1,0 +1,363 @@
+{
+  "receipt": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/viewed2048-fullZ-two-seed-E10raw-comparison-20261023-v1/result.json",
+    "bytes": 11446,
+    "sha256": "c623c3359178c69ad191b13c2aede70ee01111b9c4a2a52e5c91f5e3000792c1"
+  },
+  "result": {
+    "status": "FULL_Z_TWO_SEED_PRESELECTED_E10_RAW_VIEWED2048_COMPARISON_COMPLETE",
+    "time": 1792706302.9249725,
+    "selected_epoch": 10,
+    "selected_state": "raw",
+    "selection_rule": "seed1_only_predeclared_E10raw_then_same_for_seed2",
+    "predeclared_rule": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/viewed2048-fullZ-two-seed-E10raw-comparison-20261023-v1/code-2646cce17f6e/predeclared-seed1-rule.json",
+      "bytes": 36357,
+      "sha256": "4bee25d0e554be1414d4a368e1610678561ef2698d59c5c4dd158209d00f01e7"
+    },
+    "seed2_selection_or_threshold_tuning": false,
+    "pool": {
+      "role": "fixed_validation2048_G5",
+      "questions": 2048,
+      "true_Mixed": 663,
+      "all_wrong": 1055,
+      "all_correct": 330,
+      "same_qid_ordered_ownG5_and_strictEM": true,
+      "identity_SHA256": "8576fb8f80441e2ef37f36ea57009a218384abab6faddfbaa362243d4e1f642c"
+    },
+    "summaries": {
+      "seed1": {
+        "questions": 2048,
+        "Mixed_questions": 663,
+        "Mixed_balanced_accuracy": 0.5929578385089109,
+        "Mixed_recall": 0.39819004524886875,
+        "nonMixed_FPR": 0.21227436823104695,
+        "Mixed_ROC_AUC": 0.6337297373823175,
+        "threshold": 0.08,
+        "Top512": {
+          "Mixed": 245,
+          "fraction": 0.478515625,
+          "true_class_composition": {
+            "all_wrong": 194,
+            "Mixed": 245,
+            "all_correct": 73
+          }
+        },
+        "score_mean": 0.0556260090734213,
+        "score_std": 0.05545652658398723,
+        "score_quantiles": [
+          0.0008984006708487868,
+          0.0038561380933970213,
+          0.010482840472832322,
+          0.03392238914966583,
+          0.0885524358600378,
+          0.14520691335201263,
+          0.2244238257408142
+        ],
+        "classwise": {
+          "all_wrong": {
+            "questions": 1055,
+            "mean_score": 0.04512242220554024,
+            "predicted_Mixed_fraction": 0.1990521327014218,
+            "error_rate": 0.1990521327014218,
+            "variance_MSE": 0.004689989703487253,
+            "variance_MAE": 0.04512242220554024
+          },
+          "Mixed": {
+            "questions": 663,
+            "mean_score": 0.0721159824437067,
+            "predicted_Mixed_fraction": 0.39819004524886875,
+            "error_rate": 0.6018099547511312,
+            "variance_MSE": 0.019241856770408867,
+            "variance_MAE": 0.12364025056269441
+          },
+          "all_correct": {
+            "questions": 330,
+            "mean_score": 0.05607580241013431,
+            "predicted_Mixed_fraction": 0.2545454545454545,
+            "error_rate": 0.2545454545454545,
+            "variance_MSE": 0.005739339160956968,
+            "variance_MAE": 0.05607580241013431
+          }
+        },
+        "score_semantics": "predicted_population_variance_not_Mixed_probability",
+        "Mixed_BCE": null,
+        "variance_MSE": 0.00956995707962692,
+        "variance_MAE": 0.07230598454358186,
+        "variance_Pearson": 0.20881478137272197,
+        "variance_Spearman": 0.21620430511611344,
+        "mean_only_oracle_MSE": 0.008597991943359376,
+        "constant_zero_MAE": 0.06226562499999999,
+        "classification_confusion": {
+          "tp": 264,
+          "tn": 1091,
+          "fp": 294,
+          "fn": 399
+        },
+        "classification_error_decomposition": {
+          "all_wrong": {
+            "questions": 1055,
+            "predicted_Mixed": 210,
+            "predicted_nonMixed": 845,
+            "errors": 210,
+            "error_type": "nonMixed_false_positive"
+          },
+          "Mixed": {
+            "questions": 663,
+            "predicted_Mixed": 264,
+            "predicted_nonMixed": 399,
+            "errors": 399,
+            "error_type": "Mixed_false_negative"
+          },
+          "all_correct": {
+            "questions": 330,
+            "predicted_Mixed": 84,
+            "predicted_nonMixed": 246,
+            "errors": 84,
+            "error_type": "nonMixed_false_positive"
+          }
+        }
+      },
+      "seed2": {
+        "questions": 2048,
+        "Mixed_questions": 663,
+        "Mixed_balanced_accuracy": 0.5743214030960899,
+        "Mixed_recall": 0.38763197586727,
+        "nonMixed_FPR": 0.2389891696750902,
+        "Mixed_ROC_AUC": 0.6256448372184197,
+        "threshold": 0.08,
+        "Top512": {
+          "Mixed": 224,
+          "fraction": 0.4375,
+          "true_class_composition": {
+            "all_wrong": 195,
+            "Mixed": 224,
+            "all_correct": 93
+          }
+        },
+        "score_mean": 0.0583720845654625,
+        "score_std": 0.0570730987109377,
+        "score_quantiles": [
+          0.0011887999717146158,
+          0.004708282649517059,
+          0.01185646839439869,
+          0.03555797412991524,
+          0.09210142493247986,
+          0.1536447212100029,
+          0.22932566702365875
+        ],
+        "classwise": {
+          "all_wrong": {
+            "questions": 1055,
+            "mean_score": 0.047439727841068716,
+            "predicted_Mixed_fraction": 0.2123222748815166,
+            "error_rate": 0.2123222748815166,
+            "variance_MSE": 0.005146953962430623,
+            "variance_MAE": 0.047439727841068716
+          },
+          "Mixed": {
+            "questions": 663,
+            "mean_score": 0.0731393466886206,
+            "predicted_Mixed_fraction": 0.38763197586727,
+            "error_rate": 0.6123680241327301,
+            "variance_MSE": 0.019090367693352983,
+            "variance_MAE": 0.12238993775624876
+          },
+          "all_correct": {
+            "questions": 330,
+            "mean_score": 0.06365372564601289,
+            "predicted_Mixed_fraction": 0.3242424242424242,
+            "error_rate": 0.3242424242424242,
+            "variance_MSE": 0.007021477751898972,
+            "variance_MAE": 0.06365372564601289
+          }
+        },
+        "score_semantics": "predicted_population_variance_not_Mixed_probability",
+        "Mixed_BCE": null,
+        "variance_MSE": 0.009962909115812497,
+        "variance_MAE": 0.07431600149800033,
+        "variance_Pearson": 0.180228322861206,
+        "variance_Spearman": 0.19815680266387953,
+        "mean_only_oracle_MSE": 0.008597991943359376,
+        "constant_zero_MAE": 0.06226562499999999,
+        "classification_confusion": {
+          "tp": 257,
+          "tn": 1054,
+          "fp": 331,
+          "fn": 406
+        },
+        "classification_error_decomposition": {
+          "all_wrong": {
+            "questions": 1055,
+            "predicted_Mixed": 224,
+            "predicted_nonMixed": 831,
+            "errors": 224,
+            "error_type": "nonMixed_false_positive"
+          },
+          "Mixed": {
+            "questions": 663,
+            "predicted_Mixed": 257,
+            "predicted_nonMixed": 406,
+            "errors": 406,
+            "error_type": "Mixed_false_negative"
+          },
+          "all_correct": {
+            "questions": 330,
+            "predicted_Mixed": 107,
+            "predicted_nonMixed": 223,
+            "errors": 107,
+            "error_type": "nonMixed_false_positive"
+          }
+        }
+      }
+    },
+    "paired_comparison": {
+      "seed2_minus_seed1_Top512_delta": -0.041015625,
+      "Top512_paired_question_percentile95": [
+        -0.078125,
+        0.00390625
+      ],
+      "seed2_minus_seed1_BA_delta": -0.018636435412821006,
+      "BA_paired_question_percentile95": [
+        -0.042647035365055985,
+        0.004419500539100963
+      ],
+      "two_seed_mean_Top512_fraction": 0.4580078125,
+      "two_seed_mean_BA": 0.5836396208025004
+    },
+    "Top512_overlap": {
+      "questions": 289,
+      "true_Mixed": 137,
+      "all_wrong": 102,
+      "all_correct": 50
+    },
+    "threshold_classification_agreement": {
+      "all_wrong": {
+        "questions": 1055,
+        "both_predicted_Mixed": 114,
+        "only_seed1_predicted_Mixed": 96,
+        "only_seed2_predicted_Mixed": 110,
+        "both_predicted_nonMixed": 735
+      },
+      "Mixed": {
+        "questions": 663,
+        "both_predicted_Mixed": 161,
+        "only_seed1_predicted_Mixed": 103,
+        "only_seed2_predicted_Mixed": 96,
+        "both_predicted_nonMixed": 303
+      },
+      "all_correct": {
+        "questions": 330,
+        "both_predicted_Mixed": 56,
+        "only_seed1_predicted_Mixed": 28,
+        "only_seed2_predicted_Mixed": 51,
+        "both_predicted_nonMixed": 195
+      }
+    },
+    "actual_training_metadata": {
+      "seed1": {
+        "job_id": "749577",
+        "selected_epoch": 10,
+        "selected_state": "raw",
+        "actual_Adam_updates": 13210,
+        "checkpoint_ref_only_no_checkpoint_opened": {
+          "bytes": 3773206036,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/checkpoint-epoch-10.pt",
+          "sha256": "08e71e56a667ab99b1e48895e8934d3bc699d5a7adc321b9277fe1faf52c82f1"
+        },
+        "source_fixture": {
+          "bytes": 861230,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/fixture/fixture-complete.json",
+          "sha256": "06af00b5265ef15aa8d1a2c0ee1e9047d36e982f7488aaf1952835773ed512d4"
+        }
+      },
+      "seed2": {
+        "job_id": "749935",
+        "selected_epoch": 10,
+        "selected_state": "raw",
+        "actual_Adam_updates": 13210,
+        "checkpoint_ref_only_no_checkpoint_opened": {
+          "bytes": 3773206164,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-Z-seed19137-plan2026102302-P20-20261023-v1/checkpoint-epoch-10.pt",
+          "sha256": "2ce425e1a2ac06f3aedb124f13bb57e1e3b6846852f6ccd27f5cb7d5a18bdded"
+        },
+        "source_fixture": {
+          "bytes": 861230,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/fixture/fixture-complete.json",
+          "sha256": "06af00b5265ef15aa8d1a2c0ee1e9047d36e982f7488aaf1952835773ed512d4"
+        }
+      }
+    },
+    "source_proofs": {
+      "seed1": {
+        "predictions": {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/epoch-10-fixed_validation2048_G5-predictions.jsonl.gz",
+          "bytes": 86761,
+          "sha256": "9f30c4d4686f54b6ff41ae0147d1ffd9cbb6b934bc7edaa27ba45ffd0a845111"
+        },
+        "evaluation": {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/evaluation-epoch-10.json",
+          "bytes": 10297,
+          "sha256": "4a263cdead338e4e39dbef4c30b858c4b7f9b49a45ef748f898c6cd42863acdb"
+        },
+        "complete": {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor/complete.json",
+          "bytes": 158,
+          "sha256": "dc841b3b11ff0eaa1e9ac5c5a44fafc55279f06204d55733effa6642cf397292"
+        },
+        "CPU_acceptance": {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/packed-full169028-variance-CPU-acceptance-20261022-v1/z_mse_anchor/accepted.json",
+          "bytes": 6704,
+          "sha256": "863601d5eae2b629231c1286ddf4b372266058bc5d29bec10b931b149e3d4ff7"
+        },
+        "training_publication": {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/source-publication.json",
+          "bytes": 765,
+          "sha256": "dd9455fdf2159615e6cb41392ce2aab45a7f2607932e84d5b8327a1331d15f51"
+        }
+      },
+      "seed2": {
+        "predictions": {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-Z-seed19137-plan2026102302-P20-20261023-v1/epoch-10-fixed_validation2048_G5-predictions.jsonl.gz",
+          "bytes": 86706,
+          "sha256": "636a8c20e048b740a4b8018d1fe5d80d6f6cebfdcacfb8518a3e4d43dde9c9b7"
+        },
+        "evaluation": {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-Z-seed19137-plan2026102302-P20-20261023-v1/evaluation-epoch-10.json",
+          "bytes": 10292,
+          "sha256": "34456022b443ddfca1da5ed804b3071ec17edc5b4952850b804edf6727bf2739"
+        },
+        "complete": {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-Z-seed19137-plan2026102302-P20-20261023-v1/complete.json",
+          "bytes": 158,
+          "sha256": "dc841b3b11ff0eaa1e9ac5c5a44fafc55279f06204d55733effa6642cf397292"
+        },
+        "CPU_acceptance": {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-Z-seed2-terminal-CPU-acceptance-20261023-v1/epoch10/accepted.json",
+          "bytes": 10579,
+          "sha256": "7f085600186da2bf0b9f90173405256442595c659691db67816f8ad339701f0f"
+        },
+        "training_publication": {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-Z-seed19137-plan2026102302-P20-20261023-v1/source-publication.json",
+          "bytes": 1185,
+          "sha256": "4b75af0e51d4745e83dbfbfe03945d0814c7351874785e2b8fe4520ad603047c"
+        }
+      }
+    },
+    "bootstrap": {
+      "repeats": 2000,
+      "seed": 2026102306,
+      "unit": "paired_question_resample2048_then_rerank_Top512",
+      "not_training_seed_CI": true,
+      "limitation": "Descriptive conditional viewed-development uncertainty; not final confirmation or future-question generalization."
+    },
+    "score_semantics": "predicted_population_variance_not_Mixed_probability",
+    "diagnostic_threshold": 0.08,
+    "ranking": "predicted_variance_descending_qid_ties_not_EM",
+    "new_inference": false,
+    "model_or_checkpoint_tensor_or_hidden_read": false,
+    "final4096_read": false,
+    "Slurm_mutated": false,
+    "seconds": 0.8286318778991699
+  }
+}
