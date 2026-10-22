@@ -3,7 +3,7 @@ S=pathlib.Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-2026
 out={'time':time.time(),'cells':[]}
 for layer in(15,18,24):
  b=S/('layer%d-prefix20'%layer);x={'layer':layer,'prefix':20}
- for n in('root-submission.json','controller.json','latest.json','progress-rank-0.json','progress-rank-1.json','complete.json'):
+ for n in('root-submission.json','controller.json','latest.json','progress-rank-0.json','progress-rank-1.json','complete.json','coverage-epoch-01.json','coverage-epoch-02.json','coverage-epoch-03.json'):
   p=b/n
   if p.exists():
    try:x[n]=json.loads(p.read_bytes())
