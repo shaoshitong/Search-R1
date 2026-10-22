@@ -120,6 +120,8 @@ def engine(args):
         torch.cuda.synchronize()
         elapsed = time.monotonic() - began
         generated = sum(len(row.outputs[0].token_ids) for row in result)
+        if len(result) != len(payload['prompts']) or generated != len(payload['prompts']) * args.output_tokens:
+            raise RuntimeError('Benchmark backends did not perform the same requested token work')
         if repeat >= args.warmup:
             timings.append(dict(seconds=elapsed, generated_tokens=generated,
                                 generated_tokens_per_second=generated / elapsed))
@@ -162,6 +164,11 @@ def controller(args):
             raise SystemExit(result.returncode)
     baseline = json.loads((root / 'xformers.json').read_text())
     candidate = json.loads((root / 'fa3.json').read_text())
+    fa2 = json.loads((root / 'fa2.json').read_text())
+    if not (baseline['prompt_sha256'] == candidate['prompt_sha256'] == fa2['prompt_sha256']):
+        raise RuntimeError('Backend replay inputs differ')
+    if not (candidate['fa3']['calls']['prefill'] and candidate['fa3']['calls']['decode']):
+        raise RuntimeError('Both actual FA3 prefill and paged decode must execute')
     a, b = baseline['teacher_forced_logprobs'], candidate['teacher_forced_logprobs']
     if (len(a) != len(b) or not a or any(len(x) != len(y) or not x for x, y in zip(a, b))):
         raise RuntimeError('Missing teacher-forced rows or tokens')
@@ -171,6 +178,8 @@ def controller(args):
     result = dict(status='COMPLETED', checkpoint=args.checkpoint,
                   baseline_median_seconds=baseline['median_seconds'],
                   fa3_median_seconds=candidate['median_seconds'],
+                  fa2_page256_median_seconds=fa2['median_seconds'],
+                  fa2_over_fa3_speedup=fa2['median_seconds'] / candidate['median_seconds'],
                   generation_speedup=baseline['median_seconds'] / candidate['median_seconds'],
                   teacher_forced_token_count=len(pairs),
                   logprob_max_abs=max(diffs), logprob_mean_abs=statistics.mean(diffs),
@@ -182,6 +191,7 @@ def controller(args):
                   actual_fa3_prefill_and_decode=bool(candidate['fa3']['calls']['prefill'] and
                                                     candidate['fa3']['calls']['decode']),
                   training_modified=False, full_outer_speedup_proven=False,
+                  speed_scope='XFormers/page16 versus FA3/page256; FA2/page256 also measured',
                   actual_full_state_training_resume=False)
     save(root / 'result.json', result)
     progress(root, 'ALL_BACKENDS_COMPLETE', **result)
