@@ -36,6 +36,12 @@ def main():
         str(source_base/'env/bin/python'), '-B', str(code), '--root', str(root),
         '--source-base', str(source_base), '--checkpoint', str(checkpoint),
         '--candidate-file', request['candidate_file']]
+    # Independent replay geometry only; production configuration is untouched.
+    for key, default in (('batch', 64), ('output_tokens', 128), ('warmup', 2), ('repeats', 5)):
+        value = request.get(key, default)
+        if type(value) is not int or value < (0 if key == 'warmup' else 1):
+            raise ValueError('Invalid diagnostic replay argument: ' + key)
+        command.extend(['--' + key.replace('_', '-'), str(value)])
     argv = ['sbatch', '--parsable', '--partition=emergency_acd', '--qos=formal-user',
         '--account=jxu957', '--nodes=1', '--ntasks=1', '--gres=gpu:1',
         '--cpus-per-task=12', '--mem=128G', '--time=02:00:00',
