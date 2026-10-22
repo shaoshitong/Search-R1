@@ -37,12 +37,22 @@ def report(x):
  rows+=['', 'Latest actual sample epoch%.6f. Each metric is copied from the completed epoch evaluation receipt; an epoch absent from the table is not claimed complete. Terminal model/Adam/RNG acceptance is separate.'%x['time']]
  (B/'MSE-EPOCHS.md').write_text('\n'.join(rows)+'\n')
 def run():
- guard=(B/'agent-mse-watch.lock').open('a+');fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB);seen=set();start=time.time();heartbeat=0
+ guard=(B/'agent-mse-watch.lock').open('a+');fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB);seen=set();start=time.time();heartbeat=0;connection_failures=0
  while time.time()-start<8*3600:
   p=subprocess.run([sys.executable,str(B/'poll-mse-agent.py')],cwd=REPO,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
-  if p.returncode:raise RuntimeError((p.stdout+p.stderr)[-2400:])
+  if p.returncode:
+   message=(p.stdout+p.stderr)[-2400:]
+   if any(t in message for t in('Operation not permitted','Permission denied','network access is disabled','permission profile')):raise RuntimeError(message)
+   if not any(t in message.lower()for t in('connection closed','connection reset','connection timed out','connect to host','broken pipe')):raise RuntimeError(message)
+   connection_failures+=1
+   interruption=dict(time=time.time(),status='CURRENT_REMOTE_STATE_UNREADABLE_LAST_VALUES_STALE',same_original_private_route_only=True,no_Slurm_mutation=True,consecutive_failures=connection_failures,error=message,remote_training_failure_not_inferred=True)
+   atomic(B/'agent-mse-control-interruption-latest.json',interruption)
+   if connection_failures==1 or connection_failures%10==0:print(json.dumps(dict(event='ORIGINAL_SSH_CONNECTION_INTERRUPTED_RETRYING_SAME_ROUTE',**interruption)),flush=True)
+   time.sleep(55);continue
   summary=json.loads(p.stdout.splitlines()[-1]);x=json.loads((B/'agent-observations-mse-latest.json').read_text());epochs={k for k in x if k.startswith('evaluation-epoch-')};report(x)
   current=dict(time=x['time'],job='749568',observer_pid=os.getpid(),latest_rank_cursors=[x.get('progress-rank-%d.json'%r,{}).get('cursor')for r in(0,1)],latest_rank_epochs=[x.get('progress-rank-%d.json'%r,{}).get('epoch')for r in(0,1)],completed_evaluation_epochs=sorted(epochs),failures=x['failures'],Slurm=x['accounting']['stdout'],final_read=False)
+  if connection_failures:
+   atomic(B/'agent-mse-control-restored.json',dict(status='ORIGINAL_PRIVATE_ROUTE_FRESH_STATE_RESTORED',prior_consecutive_failures=connection_failures,**current));print(json.dumps(dict(event='ORIGINAL_ROUTE_FRESHLY_RESTORED',**current)),flush=True);connection_failures=0
   atomic(B/'agent-mse-watch-latest.json',current)
   if epochs!=seen:
    c=publish('Record MSE actual fixed-pool evaluations '+','.join(sorted(epochs)));seen=epochs;print(json.dumps(dict(event='NEW_ACTUAL_EPOCH_METRICS_PUBLISHED',commit=c,**current)),flush=True)
