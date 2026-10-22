@@ -1,0 +1,122 @@
+{
+  "status": "NATURAL_RANDOM_G5_PAIRED_CONTROL_PREPARED_NOT_SUBMITTED",
+  "fixture": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-natural-g5-8192-20261022-v1/fixture/fixture-complete.json",
+    "bytes": 7195,
+    "sha256": "5bbd29164cea5bcff95b662c259ceb8013dcdf8b1ff7ec2941cc49de062661c7"
+  },
+  "plans": [
+    {
+      "epoch": 1,
+      "seed": 2026102207,
+      "derived_seed_sha256": "5d87305ac060cf76cdea214589c2816b514b3e6075a81f7b36e063d899cb765c",
+      "questions": 8192,
+      "unique_questions": 8192,
+      "Mixed": 2638,
+      "nonMixed": 5554,
+      "label_blind_G5_selection": true,
+      "own_trajectory_indices_only": true,
+      "hard_replay": false,
+      "G10_Mixed_questions": 3489,
+      "G10Mixed_to_G5_homogeneous": 851,
+      "G10Mixed_to_G5_all_wrong": 391,
+      "G10Mixed_to_G5_all_correct": 460,
+      "epoch_BCE_class_weights": {
+        "Mixed": 1.552691432903715,
+        "nonMixed": 0.7374864962189414
+      },
+      "plan_sha256": "38f76013664d0dbb3bc6467b7b8dc71345f9315b8d60f7a7faeb55ad0560950c",
+      "ordered_qids_sha256": "9d5e562c127f7dfb94114e5f9a7b648f49d284935ed63d93969e8862d323592f",
+      "same_G5_as_original_plan": 33,
+      "same_G5_as_previous_new_epoch": null,
+      "source_original_plan": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-v1/inputs/epoch-01-plan.json",
+        "bytes": 3300930,
+        "sha256": "3b69a040abd76518ca2e1248761304562d33b2081cde6434706bc40e46c9ecf6"
+      },
+      "question_order_exactly_original": true,
+      "plan": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-natural-g5-8192-20261022-v1/fixture/inputs/epoch-01-plan.json",
+        "bytes": 3301781,
+        "sha256": "1e048fe48eb865e27359443cf0b42fc65d0368811130fedd298af2e76f9c8509"
+      }
+    },
+    {
+      "epoch": 2,
+      "seed": 2026102207,
+      "derived_seed_sha256": "3d18e09ac0dc58acb10556493ed5db4a40068fa3257534d093ef715b8bc653a1",
+      "questions": 8192,
+      "unique_questions": 8192,
+      "Mixed": 2709,
+      "nonMixed": 5483,
+      "label_blind_G5_selection": true,
+      "own_trajectory_indices_only": true,
+      "hard_replay": false,
+      "G10_Mixed_questions": 3489,
+      "G10Mixed_to_G5_homogeneous": 780,
+      "G10Mixed_to_G5_all_wrong": 355,
+      "G10Mixed_to_G5_all_correct": 425,
+      "epoch_BCE_class_weights": {
+        "Mixed": 1.5119970468807677,
+        "nonMixed": 0.7470362939996352
+      },
+      "plan_sha256": "7dd7f9503dd9c922a519aa64e7ef6c643dbcd5088aefb189e6f3650935da1c1f",
+      "ordered_qids_sha256": "4931e3062e3ebe1b025efa84d3d6f918c27a5e81373d2ca13325f6181bfd42ff",
+      "same_G5_as_original_plan": 34,
+      "same_G5_as_previous_new_epoch": 39,
+      "source_original_plan": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-v1/inputs/epoch-02-plan.json",
+        "bytes": 3300930,
+        "sha256": "414591bf58d0dfa245a7bca9934f6a8142759f82724ba09f7e0e26140c2ea794"
+      },
+      "question_order_exactly_original": true,
+      "plan": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-natural-g5-8192-20261022-v1/fixture/inputs/epoch-02-plan.json",
+        "bytes": 3301710,
+        "sha256": "7535e3f8a38673d0ebbbf2cd22df9fd0d1bf1f0e6dae647051045355176ac493"
+      }
+    },
+    {
+      "epoch": 3,
+      "seed": 2026102207,
+      "derived_seed_sha256": "a749ef38bbdefd06726e47ae9731409c09f53e444b407b12f5f6c58bf8fb0f11",
+      "questions": 8192,
+      "unique_questions": 8192,
+      "Mixed": 2664,
+      "nonMixed": 5528,
+      "label_blind_G5_selection": true,
+      "own_trajectory_indices_only": true,
+      "hard_replay": false,
+      "G10_Mixed_questions": 3489,
+      "G10Mixed_to_G5_homogeneous": 825,
+      "G10Mixed_to_G5_all_wrong": 374,
+      "G10Mixed_to_G5_all_correct": 451,
+      "epoch_BCE_class_weights": {
+        "Mixed": 1.5375375375375375,
+        "nonMixed": 0.7409551374819102
+      },
+      "plan_sha256": "8df7fa9b730e224b2f22881cef6edd675339f08010ed5870912a4facb1403e93",
+      "ordered_qids_sha256": "8c53117607394fbdcd3fd9c660598980ac5f0cbad442e1a776a78e6acaf5520f",
+      "same_G5_as_original_plan": 43,
+      "same_G5_as_previous_new_epoch": 48,
+      "source_original_plan": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-v1/inputs/epoch-03-plan.json",
+        "bytes": 3300930,
+        "sha256": "c4fa36af042c372c9fc3f70df6c3bc7bec749e233d3f01796bb7a494ea6d1ee4"
+      },
+      "question_order_exactly_original": true,
+      "plan": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-natural-g5-8192-20261022-v1/fixture/inputs/epoch-03-plan.json",
+        "bytes": 3301755,
+        "sha256": "4c406a35a8606056d816d87fca2a86b3638fcde67ef557c09f41f4f8da310f45"
+      }
+    }
+  ],
+  "training_questions": 8192,
+  "validation_questions": 2048,
+  "all_layers_share_identical_plans": true,
+  "new_token_or_hidden_or_rollout_artifacts": false,
+  "final4096_read": false,
+  "Slurm_submitted": false,
+  "time": 1792682240.8088539
+}
