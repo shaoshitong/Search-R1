@@ -1,0 +1,3 @@
+Independent second-seed terminal CPU acceptance. No checkpoint opened by staging.
+
+Exact init_seed=19137, train_plan_seed=2026102302, diagnostic_seed=2026102228; matched MSE-M5 uses online_packed_matched_objective_seeded, current64/window2018 use online_packed_window_topk_seeded with explicit keyword train_plan_seed. All ten saved plans and coverage seed stamps must match reconstruction. Raw/EMA, Adam clocks/moments, two-rank serialized RNG, selected immutable checkpoint hash, source manifest, cache state and data labels retain the original76637 checks. Same common8GiB CPU mutex; selected epochs only after actual whole-task COMPLETED0:0. CPU restoration does not claim CUDA next-update verification. Existing76637 source/entries remain unchanged.
