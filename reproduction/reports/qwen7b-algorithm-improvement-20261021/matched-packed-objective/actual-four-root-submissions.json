@@ -1,0 +1,134 @@
+{
+  "time": 1792692516.879286,
+  "jobs": {
+    "mse-Mrandom": {
+      "time": 1792692518.1756067,
+      "job_id": "749856",
+      "name": "q7b-L15P80-mse-Mrandom",
+      "cell": "mse-Mrandom",
+      "entry": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/mse-Mrandom/training.sbatch",
+        "bytes": 1704,
+        "sha256": "77207cf2f992fdc808d57aec083b6ba6c71e44878928ae89bcedd35a7dd4de58"
+      },
+      "source_commit": "0436c2c1e3c1b38a2abcbc252bf3524eff0e6deb",
+      "fixture_acceptance": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/fixture/accepted.json",
+        "bytes": 1175,
+        "sha256": "b3574a10480ca154ad8b979f9e2613c80894a76834691d26d6422a6979939484"
+      },
+      "no_dependencies": true,
+      "exclude": "ACD1-13",
+      "partition": "acd_u",
+      "GPUs": 2,
+      "CPUs": 12,
+      "memory_GiB": 128,
+      "time_limit": "02:00:00",
+      "epochs": 10,
+      "max_batch_attempts": 640,
+      "global_batch": 128,
+      "layer": 15,
+      "prefix": 80,
+      "EMA_decay": 0.9995,
+      "primary_metric": "developmentTop512_then_frozen_unseen_confirmation",
+      "final4096_read": false
+    },
+    "mse-M5": {
+      "time": 1792692519.423486,
+      "job_id": "749857",
+      "name": "q7b-L15P80-mse-M5",
+      "cell": "mse-M5",
+      "entry": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/mse-M5/training.sbatch",
+        "bytes": 1684,
+        "sha256": "a50e95e65081c5a5c5136235bcf6add632d8b55bf27109150ce78c86c091b6e4"
+      },
+      "source_commit": "0436c2c1e3c1b38a2abcbc252bf3524eff0e6deb",
+      "fixture_acceptance": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/fixture/accepted.json",
+        "bytes": 1175,
+        "sha256": "b3574a10480ca154ad8b979f9e2613c80894a76834691d26d6422a6979939484"
+      },
+      "no_dependencies": true,
+      "exclude": "ACD1-13",
+      "partition": "acd_u",
+      "GPUs": 2,
+      "CPUs": 12,
+      "memory_GiB": 128,
+      "time_limit": "02:00:00",
+      "epochs": 10,
+      "max_batch_attempts": 640,
+      "global_batch": 128,
+      "layer": 15,
+      "prefix": 80,
+      "EMA_decay": 0.9995,
+      "primary_metric": "developmentTop512_then_frozen_unseen_confirmation",
+      "final4096_read": false
+    },
+    "mixed-bce-Mrandom": {
+      "time": 1792692520.8016546,
+      "job_id": "749858",
+      "name": "q7b-L15P80-mixed-bce-Mrandom",
+      "cell": "mixed-bce-Mrandom",
+      "entry": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/mixed-bce-Mrandom/training.sbatch",
+        "bytes": 1734,
+        "sha256": "a1480b4b16c3da963f5f33af9b8af3019ae530d9d0d7a2c1507b7f30a75ee830"
+      },
+      "source_commit": "0436c2c1e3c1b38a2abcbc252bf3524eff0e6deb",
+      "fixture_acceptance": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/fixture/accepted.json",
+        "bytes": 1175,
+        "sha256": "b3574a10480ca154ad8b979f9e2613c80894a76834691d26d6422a6979939484"
+      },
+      "no_dependencies": true,
+      "exclude": "ACD1-13",
+      "partition": "acd_u",
+      "GPUs": 2,
+      "CPUs": 12,
+      "memory_GiB": 128,
+      "time_limit": "02:00:00",
+      "epochs": 10,
+      "max_batch_attempts": 640,
+      "global_batch": 128,
+      "layer": 15,
+      "prefix": 80,
+      "EMA_decay": 0.9995,
+      "primary_metric": "developmentTop512_then_frozen_unseen_confirmation",
+      "final4096_read": false
+    },
+    "mixed-bce-M5": {
+      "time": 1792692522.125883,
+      "job_id": "749859",
+      "name": "q7b-L15P80-mixed-bce-M5",
+      "cell": "mixed-bce-M5",
+      "entry": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/mixed-bce-M5/training.sbatch",
+        "bytes": 1714,
+        "sha256": "27d56727f1a077e7218127644cbdf495b7565d95d4e9d7833687c6b732f7061e"
+      },
+      "source_commit": "0436c2c1e3c1b38a2abcbc252bf3524eff0e6deb",
+      "fixture_acceptance": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/fixture/accepted.json",
+        "bytes": 1175,
+        "sha256": "b3574a10480ca154ad8b979f9e2613c80894a76834691d26d6422a6979939484"
+      },
+      "no_dependencies": true,
+      "exclude": "ACD1-13",
+      "partition": "acd_u",
+      "GPUs": 2,
+      "CPUs": 12,
+      "memory_GiB": 128,
+      "time_limit": "02:00:00",
+      "epochs": 10,
+      "max_batch_attempts": 640,
+      "global_batch": 128,
+      "layer": 15,
+      "prefix": 80,
+      "EMA_decay": 0.9995,
+      "primary_metric": "developmentTop512_then_frozen_unseen_confirmation",
+      "final4096_read": false
+    }
+  },
+  "topk128_not_submitted": "Superseded by human requested matchedglobal64 cached-windowpair."
+}

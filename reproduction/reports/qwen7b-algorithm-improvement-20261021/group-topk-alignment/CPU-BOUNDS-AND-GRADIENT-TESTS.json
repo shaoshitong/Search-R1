@@ -1,0 +1,40 @@
+{
+  "time": 1792692501.7364962,
+  "status": "FINITE_POOL_METRIC_BOUNDS_AND_TENSOR_GRADIENTS_VERIFIED",
+  "exhaustive_cases": 44790,
+  "unit_tests": 5,
+  "passed": true,
+  "tests": [
+    "K-specific oracle regret upperbound including ties/M<K/alloneclass",
+    "allpositive-negative pair hinge count bound",
+    "scoretranslationinvariance",
+    "MSEdecreasewithworseMixedTopKcounterexample",
+    "actualTorchwrong-negativegradientandmargin/deadzonezero-grad"
+  ],
+  "skill": "formula-derivation",
+  "main_document": "DERIVATION_PACKAGE.md",
+  "new_geometry": {
+    "layer": 15,
+    "prefix": 80
+  },
+  "new_window": {
+    "global_current_groups": 64,
+    "total_window": 2018,
+    "historical_detached_groups_when_full": 1954,
+    "topk": 500,
+    "evaluation_remains": "2048 ownG5 ->512"
+  },
+  "theory_scope": "Empiricalregret onexactscorevector; freshscore extensionadd2delta/gamma; no SGDmonotonicity or unseenquestion guarantee",
+  "source_files": [
+    {
+      "path": "work/qwen7b-probe-warmup-20261019/reproduction/operations/qwen7b_warmup/group_topk_losses.py",
+      "bytes": 3174,
+      "sha256": "abf956398fbf948e497fa7d0282da40809f6824685f74b388cf96a210cd28c28"
+    },
+    {
+      "path": "work/qwen7b-probe-warmup-20261019/reproduction/operations/qwen7b_warmup/test_group_topk_losses.py",
+      "bytes": 3460,
+      "sha256": "a9f06fd1f526f151fee41f539bdfef92934f5389bc531a02c150995fdba49b35"
+    }
+  ]
+}
