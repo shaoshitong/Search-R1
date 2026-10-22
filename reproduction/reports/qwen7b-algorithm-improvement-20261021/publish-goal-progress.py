@@ -21,7 +21,7 @@ files.extend(pathlib.Path('reproduction/operations/qwen7b_warmup')/n for n in ('
 files.extend(p.relative_to(repo) for p in (report/'viewed2048-pilot-depth-comparison').rglob('*') if p.is_file() and p.suffix in ('.py','.md','.json','.txt') and p.stat().st_size<600000)
 files.extend(p.relative_to(repo) for p in (report/'online-matched-depth-expansion').rglob('*') if p.is_file() and p.suffix in ('.py','.md','.json','.txt') and p.stat().st_size<600000)
 files.extend(p.relative_to(repo) for p in (report/'viewed2048-expanded-depth-comparison').rglob('*') if p.is_file() and p.suffix in ('.py','.md','.json','.txt') and p.stat().st_size<600000)
-for folder in ('natural-g5-online-8192','packed-variance','packed-variance-M3to10-8192','packed-variance-CPU-acceptance','login-incident','packed-variance-full169028','packed-variance-full169028-CPU-acceptance','historical-all-experiments'):
+for folder in ('natural-g5-online-8192','packed-variance','packed-variance-M3to10-8192','packed-variance-CPU-acceptance','login-incident','packed-variance-full169028','packed-variance-full169028-CPU-acceptance','historical-all-experiments','online-matched-prefix80-expansion'):
  files.extend(p.relative_to(repo) for p in (report/folder).rglob('*') if p.is_file() and p.suffix in ('.py','.md','.json','.txt') and p.stat().st_size<600000)
 files.extend(report.relative_to(repo)/n for n in ('read-current-metrics-table.py','read-all-pilot-epochs-metrics.py','CURRENT-METRICS-TABLE.md','CURRENT-METRICS-TABLE.json'))
 files.append(report.relative_to(repo)/'historical-all-experiments/ALL-HISTORICAL-RESULTS.json')

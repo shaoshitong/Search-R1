@@ -24,6 +24,16 @@ Existing MSE job749568 only. Each epoch uses the full169028-question pool, per-e
 | 1 | fixed_validation2048_M5 | EMA | 0.008747 | 0.088389 | 0.1648 | — | — | 228/512 (44.53%) |
 | 1 | fixed_validation2048_M10 | raw | 0.007844 | 0.076357 | 0.2317 | — | — | 295/512 (57.62%) |
 | 1 | fixed_validation2048_M10 | EMA | 0.008193 | 0.080787 | 0.1879 | — | — | 283/512 (55.27%) |
+| 2 | fixed_train2048_G5 | raw | 0.008294 | 0.083342 | 0.2947 | 62.29 | 23.62 | 329/512 (64.26%) |
+| 2 | fixed_train2048_G5 | EMA | 0.008830 | 0.085579 | 0.2427 | 53.91 | 6.03 | 317/512 (61.91%) |
+| 2 | fixed_validation2048_G5 | raw | 0.008304 | 0.083652 | 0.2031 | 57.30 | 28.23 | 221/512 (43.16%) |
+| 2 | fixed_validation2048_G5 | EMA | 0.008322 | 0.082650 | 0.1836 | 53.32 | 8.45 | 226/512 (44.14%) |
+| 2 | fixed_validation2048_M3 | raw | 0.008787 | 0.081670 | 0.1732 | — | — | 166/512 (32.42%) |
+| 2 | fixed_validation2048_M3 | EMA | 0.008835 | 0.080650 | 0.1602 | — | — | 175/512 (34.18%) |
+| 2 | fixed_validation2048_M5 | raw | 0.008416 | 0.083887 | 0.2143 | — | — | 239/512 (46.68%) |
+| 2 | fixed_validation2048_M5 | EMA | 0.008467 | 0.083150 | 0.2031 | — | — | 243/512 (47.46%) |
+| 2 | fixed_validation2048_M10 | raw | 0.007869 | 0.078229 | 0.2535 | — | — | 294/512 (57.42%) |
+| 2 | fixed_validation2048_M10 | EMA | 0.007859 | 0.077574 | 0.2355 | — | — | 297/512 (58.01%) |
 
 ## Actual epoch coverage
 
@@ -32,4 +42,4 @@ Existing MSE job749568 only. Each epoch uses the full169028-question pool, per-e
 | 1 | 169028 | 169028 | 1098580 | `1b54acb15a9e90a55d7339ee082565deb02ce734773ac822a94ea209b70c4143` |
 | 2 | 169028 | 169028 | 1100933 | `28c5fecd05219f79b0b3f2bdad708ed4b517497705d4b015dd48c7776e009bd2` |
 
-Latest actual sample epoch1792686964.827414. Each metric is copied from the completed epoch evaluation receipt; an epoch absent from the table is not claimed complete. Terminal model/Adam/RNG acceptance is separate.
+Latest actual sample epoch1792687252.197700. Each metric is copied from the completed epoch evaluation receipt; an epoch absent from the table is not claimed complete. Terminal model/Adam/RNG acceptance is separate.
