@@ -190,9 +190,12 @@ def observe(request):
     variants = []
     for root in variant_roots(pair):
         variant = section(root, jobs, log_limit=1)
-        variant['chunks'] = [document(path)[0] for path in sorted(root.glob('chunk-*.json'))[:5]]
+        candidate = root / 'candidate' if (root / 'candidate').is_dir() else root
+        if candidate != root:
+            variant['candidate'] = section(candidate, jobs, log_limit=0)
+        variant['chunks'] = [document(path)[0] for path in sorted(candidate.glob('chunk-*.json'))[:5]]
         # Metadata only: never open or deserialize a raw candidate tensor.
-        variant['raw_chunk_metadata'] = [metadata(path) for path in sorted((root / 'raw').glob('chunk-*.pt'))[:6]]
+        variant['raw_chunk_metadata'] = [metadata(path) for path in sorted((candidate / 'raw').glob('chunk-*.pt'))[:6]]
         variants.append(variant)
     result['pair']['variants'] = variants
     production_job = job_file(production)
