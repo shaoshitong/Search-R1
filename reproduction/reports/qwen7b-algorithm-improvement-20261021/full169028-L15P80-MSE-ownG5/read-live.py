@@ -21,7 +21,7 @@ def tail(path,budget=64000):
 out=dict(time=time.time(),replicas={},read_only=True,checkpoint_tensors_loaded=False,final4096_read=False)
 for name,base in ROOTS.items():
  cell=dict(base=str(base),files={})
- for filename in ('root-submission.json','controller.json','progress-rank-0.json','progress-rank-1.json','failure-rank-0.json','failure-rank-1.json','failure.json','latest.json','complete.json'):
+ for filename in ('root-submission.json','root-pending-walltime-rightsize.json','controller.json','progress-rank-0.json','progress-rank-1.json','failure-rank-0.json','failure-rank-1.json','failure.json','latest.json','complete.json'):
   if(base/filename).is_file():cell['files'][filename]=read(base/filename)
  receipt=cell['files'].get('root-submission.json')
  if receipt:

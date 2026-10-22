@@ -1,0 +1,29 @@
+{
+  "after": {
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "JobId=750189 JobName=q7b-fullP80-MSE5-s9137 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=6684 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=06:00:00 TimeMin=N/A SubmitTime=2026-10-23T04:25:30 EligibleTime=2026-10-23T04:25:30 AccrueTime=2026-10-23T04:25:30 StartTime=2026-10-23T05:54:46 EndTime=2026-10-23T11:54:46 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-23T04:59:08 Scheduler=Backfill:* Partition=acd_ue AllocNode:Sid=ACD-Login-2:2718212 ReqNodeList=(null) ExcNodeList=ACD1-13 NodeList= SchedNodeList=ACD1-7 NumNodes=1-1 NumCPUs=12 NumTasks=1 CPUs/Task=12 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=12,mem=128G,node=1,billing=12,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=12 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/training.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/train-750189.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/train-750189.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:12"
+  },
+  "before": {
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "JobId=750189 JobName=q7b-fullP80-MSE5-s9137 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=6684 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=Nodes_required_for_job_are_DOWN,_DRAINED_or_reserved_for_jobs_in_higher_priority_partitions Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=12:00:00 TimeMin=N/A SubmitTime=2026-10-23T04:25:30 EligibleTime=2026-10-23T04:25:30 AccrueTime=2026-10-23T04:25:30 StartTime=2026-10-23T05:54:46 EndTime=2026-10-23T17:54:46 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-23T04:59:08 Scheduler=Backfill:* Partition=acd_ue AllocNode:Sid=ACD-Login-2:2718212 ReqNodeList=(null) ExcNodeList=ACD1-13 NodeList= SchedNodeList=ACD1-7 NumNodes=1-1 NumCPUs=12 NumTasks=1 CPUs/Task=12 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=12,mem=128G,node=1,billing=12,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=12 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/training.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/train-750189.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/train-750189.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:12"
+  },
+  "changed": true,
+  "duplicate_submission": false,
+  "epochs_preserved": 10,
+  "final4096_read": false,
+  "job_id": "750189",
+  "observed_E1_evaluation_seconds": 24.89636731147766,
+  "observed_E1_training_seconds": 1145.6384012699127,
+  "optimizer_update_budget_preserved": 13210,
+  "requested_wall_seconds": 21600,
+  "ten_epochs_plus_one_hour_estimate_seconds": 15305.347685813904,
+  "time": 1792702753.103684,
+  "training_source_changed": false,
+  "update": {
+    "returncode": 0,
+    "stderr": "",
+    "stdout": ""
+  }
+}

@@ -40,6 +40,9 @@ files.extend(pathlib.Path('reproduction/operations/qwen7b_warmup')/n for n in ('
 files.extend(report.relative_to(repo)/n for n in ('CURRENT-DEVELOPMENT-DECISION.md','CURRENT-DEVELOPMENT-DECISION.json'))
 for folder in ('full169028-P80-preparation','full169028-P80-source-inventory','full169028-P80-physical-v2','full169028-P80-physical-P20-audit','viewed-label-ownEM-audit','viewed2048-two-seed-P80-paired-comparison','viewed2048-current64-window2018-sameE10-comparison','fullZ-seed2-live-20261023','full169028-Z-seed2-CPU-acceptance','full169028-L15P80-MSE-ownG5','full169028-L15P80-MSE-CPU-acceptance','full169028-L15P80-MSE-metadata-observer','full169028-MSE-metadata-observer','fullMSE-750190-actual-E1-sampler','full169028-L15P80-permutation-audit','current-development-decision-sources','seed2-window2018-v2-CPU-acceptance','seed2-matched-window-CPU-acceptance'):
  files.extend(p.relative_to(repo) for p in (report/folder).rglob('*') if p.is_file() and p.suffix in ('.py','.md','.json','.jsonl','.txt') and p.stat().st_size<1000000)
+files.extend(pathlib.Path('reproduction/operations/qwen7b_warmup')/n for n in ('score_selected_fixed_trainB.py','deploy_selected_fixed_trainB.py','test_selected_fixed_trainB.py','deploy_full169028_frozen_final4096_scoring.py','test_frozen_full169028_MSE_final4096.py','packed_full169028_trajectory_permutation_audit.py','deploy_packed_full169028_permutation_audit.py','test_packed_full169028_trajectory_permutation_audit.py'))
+for folder in ('selected-state-fixed-trainB','frozen-full169028-MSE-final4096-scoring'):
+ files.extend(p.relative_to(repo) for p in (report/folder).rglob('*') if p.is_file() and p.suffix in ('.py','.md','.json','.txt') and p.stat().st_size<1000000)
 files=sorted(set(p for p in files if (repo/p).is_file()))
 fd,index=tempfile.mkstemp(prefix='q7b-root-publish-');os.close(fd);os.unlink(index)
 env=dict(os.environ,GIT_INDEX_FILE=index)
