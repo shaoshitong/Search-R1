@@ -19,7 +19,7 @@ def main():
     own_base(base)
     results = []
     for mode in request.get('modes', ['legacy', 'leancompact', 'compact-kernel']):
-        if mode not in ('legacy', 'leanexpanded', 'leancompact', 'compact-kernel', 'clip-geometry'):
+        if mode not in ('legacy', 'leanexpanded', 'leancompact', 'compact-kernel', 'clip-geometry', 'clip-native4'):
             raise ValueError('Unknown independent experiment mode')
         label = request.get('suffix', 'r1')
         root = base/'diagnostics'/('native4-'+mode+'-'+label)
@@ -51,10 +51,11 @@ def main():
                 ';runpy.run_path('+repr(str(code))+',run_name="__main__")']
             gpus, cpus, memory, duration = 1, 8, '64G', '00:30:00'
         else:
-            code = base/'source'/commit/'reproduction/operations/easy7b_20261021/benchmark_native4_fastpath.py'
+            script = 'benchmark_clip_native4.py' if mode == 'clip-native4' else 'benchmark_native4_fastpath.py'
+            code = base/'source'/commit/'reproduction/operations/easy7b_20261021'/script
             command = common + ['-m', 'torch.distributed.run', '--standalone', '--nnodes=1',
                 '--nproc_per_node=4', str(code), '--source-base', str(source),
-                '--checkpoint', request['checkpoint'], '--mode', mode,
+                '--checkpoint', request['checkpoint'], '--mode', 'leancompact' if mode == 'clip-native4' else mode,
                 '--output', str(root), '--steps', '20']
             gpus, cpus, memory, duration = 4, 48, '512G', '00:30:00'
         argv = ['sbatch', '--parsable', '--partition=emergency_acd', '--qos=formal-user',
@@ -64,7 +65,7 @@ def main():
             '--chdir='+str(base/'source'/commit),
             '--output='+str(root/'slurm-%j.log'), '--error='+str(root/'slurm-%j.log'),
             '--wrap='+shlex.join(command)]
-        if mode == 'clip-geometry':
+        if mode in ('clip-geometry', 'clip-native4'):
             argv.insert(2, '--exclude=ACD1-13')
         publish(claim, dict(source_commit=commit, command=argv, mode=mode,
             checkpoint=request['checkpoint'], production_modified=False, created_unix=time.time()))
