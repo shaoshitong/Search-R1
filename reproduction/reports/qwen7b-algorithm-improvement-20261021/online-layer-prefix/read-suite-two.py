@@ -4,7 +4,7 @@ for n in ('fixture-complete.json','prepare-progress.json'):
  p=b/n
  if p.exists():
   v=json.loads(p.read_bytes());x[n]={k:v[k]for k in('status','stage','trajectories','expected','source_files','seconds','training_questions','validation_questions')if k in v}
-for layer,prefix in ((27,20),(21,20),(27,80)):
+for layer,prefix in ((27,20),(21,20),(27,80),(21,80)):
  d=b/('layer%d-prefix%d'%(layer,prefix));v=dict(layer=layer,prefix=prefix)
  p=d/'root-submission.json'
  if p.exists():

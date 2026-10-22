@@ -141,7 +141,7 @@ def main():
  atomic(OUT/'controller.json',dict(pid=os.getpid(),start_ticks=Path('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19],source_sha=args.source_sha,time=time.time()))
  results=[]
  try:
-  for layer,prefix in((27,20),(21,20),(27,80)):
+  for layer,prefix in((27,20),(21,20),(27,80),(21,80)):
    if not(SUITE/('layer%d-prefix%d'%(layer,prefix))/'complete.json').exists():
     results.append(dict(variant='layer%d-prefix%d'%(layer,prefix),status='NOT_COMPLETE_NOT_TOUCHED'));continue
    result=validate_one(layer,prefix);results.append(result);atomic(OUT/'progress.json',dict(stage='VARIANT_CPU_ACCEPTANCE_FINISHED',variant=result['variant'],status=result['status'],time=time.time()))

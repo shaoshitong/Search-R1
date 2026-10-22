@@ -1,0 +1,1361 @@
+{
+  "receipt": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/viewed2048-pilot-depth-comparison-20261022-v1/complete.json",
+    "bytes": 32806,
+    "sha256": "dced81de85c30dbefd7f64065f5721baeb892ed8a5ec314fd1873b76da13a3f8"
+  },
+  "metrics": {
+    "E1_raw": {
+      "questions": 2048,
+      "Mixed_questions": 663,
+      "nonMixed_questions": 1385,
+      "BCE": 0.6438072573923485,
+      "Mixed_balanced_accuracy": 0.5228112016814501,
+      "Mixed_ROC_AUC": 0.5927721602387136,
+      "Mixed_recall": 0.138763197586727,
+      "nonMixed_false_positive_rate": 0.09314079422382672,
+      "confusion": {
+        "tp": 92,
+        "tn": 1256,
+        "fp": 129,
+        "fn": 571
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 90,
+          "predicted_nonMixed": 965,
+          "predicted_Mixed_fraction": 0.08530805687203792,
+          "BCE": 0.5515515376715578,
+          "false_positive_rate": 0.08530805687203792,
+          "false_negative_rate": null,
+          "mean_predicted_Mixed_probability": 0.4209603967966062,
+          "probability_quantiles_10_25_50_75_90": [
+            0.33895185589790344,
+            0.3830641508102417,
+            0.42107561230659485,
+            0.4627158045768738,
+            0.49570325613021854
+          ]
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 92,
+          "predicted_nonMixed": 571,
+          "predicted_Mixed_fraction": 0.138763197586727,
+          "BCE": 0.8179939172049302,
+          "false_positive_rate": null,
+          "false_negative_rate": 0.861236802413273,
+          "mean_predicted_Mixed_probability": 0.44443708730139525,
+          "probability_quantiles_10_25_50_75_90": [
+            0.3775406777858734,
+            0.40969306230545044,
+            0.4474602937698364,
+            0.47840698063373566,
+            0.509093189239502
+          ]
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 39,
+          "predicted_nonMixed": 291,
+          "predicted_Mixed_fraction": 0.11818181818181818,
+          "BCE": 0.5887891629974773,
+          "false_positive_rate": 0.11818181818181818,
+          "false_negative_rate": null,
+          "mean_predicted_Mixed_probability": 0.4429954685948112,
+          "probability_quantiles_10_25_50_75_90": [
+            0.3797923237085342,
+            0.40768721699714655,
+            0.4463740438222885,
+            0.477127805352211,
+            0.5027953505516052
+          ]
+        }
+      },
+      "Top512": {
+        "questions": 512,
+        "Mixed": 201,
+        "Mixed_fraction": 0.392578125,
+        "selected_qid_sha256": "2695d2f900944950f271c013031590949d21f922e8deaf68fe9a53c812d31f98"
+      },
+      "threshold": 0.5,
+      "labels_used_for_ranking": false,
+      "score_and_calibration": {
+        "observed_Mixed_prevalence": 0.32373046875,
+        "mean_predicted_Mixed_probability": 0.4321110899109044,
+        "mean_logit": -0.2772253461005995,
+        "probability_quantiles_10_25_50_75_90": [
+          0.35756751894950867,
+          0.3942009508609772,
+          0.43638181686401367,
+          0.4724704846739769,
+          0.5017471313476562
+        ],
+        "Brier_score": 0.22582366265893333,
+        "ECE10_equal_width": 0.10838062116090441,
+        "fixed_probability_bins": [
+          {
+            "bin": 0,
+            "lower": 0.0,
+            "upper": 0.1,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 1,
+            "lower": 0.1,
+            "upper": 0.2,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 2,
+            "lower": 0.2,
+            "upper": 0.3,
+            "questions": 25,
+            "mean_predicted_Mixed": 0.2799119120836258,
+            "actual_Mixed_fraction": 0.16
+          },
+          {
+            "bin": 3,
+            "lower": 0.3,
+            "upper": 0.4,
+            "questions": 552,
+            "mean_predicted_Mixed": 0.366797623211059,
+            "actual_Mixed_fraction": 0.23731884057971014
+          },
+          {
+            "bin": 4,
+            "lower": 0.4,
+            "upper": 0.5,
+            "questions": 1250,
+            "mean_predicted_Mixed": 0.44820122509002686,
+            "actual_Mixed_fraction": 0.3488
+          },
+          {
+            "bin": 5,
+            "lower": 0.5,
+            "upper": 0.6,
+            "questions": 221,
+            "mean_predicted_Mixed": 0.5214565382823685,
+            "actual_Mixed_fraction": 0.416289592760181
+          },
+          {
+            "bin": 6,
+            "lower": 0.6,
+            "upper": 0.7,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 7,
+            "lower": 0.7,
+            "upper": 0.8,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 8,
+            "lower": 0.8,
+            "upper": 0.9,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 9,
+            "lower": 0.9,
+            "upper": 1.0,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          }
+        ],
+        "calibration_fitted": false,
+        "threshold_tuned": false
+      },
+      "stored_original_GPU_BCE": 0.6438072642486077
+    },
+    "E1_EMA": {
+      "questions": 2048,
+      "Mixed_questions": 663,
+      "nonMixed_questions": 1385,
+      "BCE": 0.6530157524057931,
+      "Mixed_balanced_accuracy": 0.5288460177183898,
+      "Mixed_ROC_AUC": 0.5950122787243195,
+      "Mixed_recall": 0.2187028657616893,
+      "nonMixed_false_positive_rate": 0.16101083032490976,
+      "confusion": {
+        "tp": 145,
+        "tn": 1162,
+        "fp": 223,
+        "fn": 518
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 147,
+          "predicted_nonMixed": 908,
+          "predicted_Mixed_fraction": 0.13933649289099526,
+          "BCE": 0.583430876450895,
+          "false_positive_rate": 0.13933649289099526,
+          "false_negative_rate": null,
+          "mean_predicted_Mixed_probability": 0.43922677667220056,
+          "probability_quantiles_10_25_50_75_90": [
+            0.3633306801319122,
+            0.40333183109760284,
+            0.44360041618347174,
+            0.4794427305459976,
+            0.5091054201126098
+          ]
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 145,
+          "predicted_nonMixed": 518,
+          "predicted_Mixed_fraction": 0.2187028657616893,
+          "BCE": 0.7745091649246654,
+          "false_positive_rate": null,
+          "false_negative_rate": 0.7812971342383107,
+          "mean_predicted_Mixed_probability": 0.4634521255665775,
+          "probability_quantiles_10_25_50_75_90": [
+            0.3993430435657501,
+            0.4335017800331115,
+            0.46939864754676824,
+            0.49626168608665466,
+            0.5190337300300598
+          ]
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 76,
+          "predicted_nonMixed": 254,
+          "predicted_Mixed_fraction": 0.23030303030303031,
+          "BCE": 0.6313851815948992,
+          "false_positive_rate": 0.23030303030303031,
+          "false_negative_rate": null,
+          "mean_predicted_Mixed_probability": 0.4665718311613256,
+          "probability_quantiles_10_25_50_75_90": [
+            0.41238819360733026,
+            0.4369824007153511,
+            0.47091910243034363,
+            0.49540720134973526,
+            0.519350701570511
+          ]
+        }
+      },
+      "Top512": {
+        "questions": 512,
+        "Mixed": 205,
+        "Mixed_fraction": 0.400390625,
+        "selected_qid_sha256": "c60d700d6a0e0a3684e2f8218ffb31fb5d4a0317c2380684fbd98ce2a694391b"
+      },
+      "threshold": 0.5,
+      "labels_used_for_ranking": false,
+      "score_and_calibration": {
+        "observed_Mixed_prevalence": 0.32373046875,
+        "mean_predicted_Mixed_probability": 0.45147544576320797,
+        "mean_logit": -0.19745223371979204,
+        "probability_quantiles_10_25_50_75_90": [
+          0.3806208372116089,
+          0.418696939945221,
+          0.45640978217124945,
+          0.48889344930648815,
+          0.5152296304702759
+        ],
+        "Brier_score": 0.23027831236619517,
+        "ECE10_equal_width": 0.12774497701320797,
+        "fixed_probability_bins": [
+          {
+            "bin": 0,
+            "lower": 0.0,
+            "upper": 0.1,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 1,
+            "lower": 0.1,
+            "upper": 0.2,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 2,
+            "lower": 0.2,
+            "upper": 0.3,
+            "questions": 11,
+            "mean_predicted_Mixed": 0.2757460420781916,
+            "actual_Mixed_fraction": 0.09090909090909091
+          },
+          {
+            "bin": 3,
+            "lower": 0.3,
+            "upper": 0.4,
+            "questions": 333,
+            "mean_predicted_Mixed": 0.36889149933247956,
+            "actual_Mixed_fraction": 0.2072072072072072
+          },
+          {
+            "bin": 4,
+            "lower": 0.4,
+            "upper": 0.5,
+            "questions": 1336,
+            "mean_predicted_Mixed": 0.4542514877895752,
+            "actual_Mixed_fraction": 0.33532934131736525
+          },
+          {
+            "bin": 5,
+            "lower": 0.5,
+            "upper": 0.6,
+            "questions": 368,
+            "mean_predicted_Mixed": 0.5213794823250045,
+            "actual_Mixed_fraction": 0.39402173913043476
+          },
+          {
+            "bin": 6,
+            "lower": 0.6,
+            "upper": 0.7,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 7,
+            "lower": 0.7,
+            "upper": 0.8,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 8,
+            "lower": 0.8,
+            "upper": 0.9,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 9,
+            "lower": 0.9,
+            "upper": 1.0,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          }
+        ],
+        "calibration_fitted": false,
+        "threshold_tuned": false
+      },
+      "stored_original_GPU_BCE": 0.6530157596280333
+    },
+    "L27P20_E3_raw": {
+      "questions": 2048,
+      "Mixed_questions": 663,
+      "nonMixed_questions": 1385,
+      "BCE": 0.7760722814630141,
+      "Mixed_balanced_accuracy": 0.5388421516898901,
+      "Mixed_ROC_AUC": 0.5695177265574377,
+      "Mixed_recall": 0.8914027149321267,
+      "nonMixed_false_positive_rate": 0.8137184115523466,
+      "confusion": {
+        "tp": 591,
+        "tn": 258,
+        "fp": 1127,
+        "fn": 72
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 828,
+          "predicted_nonMixed": 227,
+          "predicted_Mixed_fraction": 0.7848341232227488,
+          "BCE": 0.8839363624404544,
+          "false_positive_rate": 0.7848341232227488,
+          "false_negative_rate": null,
+          "mean_predicted_Mixed_probability": 0.5757529546294893,
+          "probability_quantiles_10_25_50_75_90": [
+            0.4515683441049571,
+            0.5153455203710842,
+            0.5827285196657404,
+            0.6433292938858967,
+            0.6972790526223078
+          ]
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 591,
+          "predicted_nonMixed": 72,
+          "predicted_Mixed_fraction": 0.8914027149321267,
+          "BCE": 0.5070142085125747,
+          "false_positive_rate": null,
+          "false_negative_rate": 0.1085972850678733,
+          "mean_predicted_Mixed_probability": 0.6085917396483712,
+          "probability_quantiles_10_25_50_75_90": [
+            0.49439722762619775,
+            0.5538672740387964,
+            0.6127732140221069,
+            0.672331699179286,
+            0.7176454246156809
+          ]
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 299,
+          "predicted_nonMixed": 31,
+          "predicted_Mixed_fraction": 0.906060606060606,
+          "BCE": 0.9717962115688985,
+          "false_positive_rate": 0.906060606060606,
+          "false_negative_rate": null,
+          "mean_predicted_Mixed_probability": 0.6122222626260547,
+          "probability_quantiles_10_25_50_75_90": [
+            0.5010364517281889,
+            0.5456488887469146,
+            0.6220001204938297,
+            0.6746937171012313,
+            0.7131119973481902
+          ]
+        }
+      },
+      "Top512": {
+        "questions": 512,
+        "Mixed": 200,
+        "Mixed_fraction": 0.390625,
+        "selected_qid_sha256": "531d882e90648fe0141610ad832485d3f028d0a9a3b9bf454a35c3a569f0cd83"
+      },
+      "threshold": 0.5,
+      "labels_used_for_ranking": false,
+      "score_and_calibration": {
+        "observed_Mixed_prevalence": 0.32373046875,
+        "mean_predicted_Mixed_probability": 0.5922602720642478,
+        "mean_logit": 0.3861020617187023,
+        "probability_quantiles_10_25_50_75_90": [
+          0.46847449451072665,
+          0.5326074624531665,
+          0.5992506407605962,
+          0.6619228758499942,
+          0.7065955179610504
+        ],
+        "Brier_score": 0.2891320903706902,
+        "ECE10_equal_width": 0.2685298033142477,
+        "fixed_probability_bins": [
+          {
+            "bin": 0,
+            "lower": 0.0,
+            "upper": 0.1,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 1,
+            "lower": 0.1,
+            "upper": 0.2,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 2,
+            "lower": 0.2,
+            "upper": 0.3,
+            "questions": 6,
+            "mean_predicted_Mixed": 0.2706421563095602,
+            "actual_Mixed_fraction": 0.0
+          },
+          {
+            "bin": 3,
+            "lower": 0.3,
+            "upper": 0.4,
+            "questions": 58,
+            "mean_predicted_Mixed": 0.36739984933279674,
+            "actual_Mixed_fraction": 0.08620689655172414
+          },
+          {
+            "bin": 4,
+            "lower": 0.4,
+            "upper": 0.5,
+            "questions": 266,
+            "mean_predicted_Mixed": 0.46199403483311874,
+            "actual_Mixed_fraction": 0.2518796992481203
+          },
+          {
+            "bin": 5,
+            "lower": 0.5,
+            "upper": 0.6,
+            "questions": 702,
+            "mean_predicted_Mixed": 0.5541179375483389,
+            "actual_Mixed_fraction": 0.32051282051282054
+          },
+          {
+            "bin": 6,
+            "lower": 0.6,
+            "upper": 0.7,
+            "questions": 770,
+            "mean_predicted_Mixed": 0.646881624742031,
+            "actual_Mixed_fraction": 0.35324675324675325
+          },
+          {
+            "bin": 7,
+            "lower": 0.7,
+            "upper": 0.8,
+            "questions": 244,
+            "mean_predicted_Mixed": 0.7309352298274724,
+            "actual_Mixed_fraction": 0.38524590163934425
+          },
+          {
+            "bin": 8,
+            "lower": 0.8,
+            "upper": 0.9,
+            "questions": 2,
+            "mean_predicted_Mixed": 0.8438702173045249,
+            "actual_Mixed_fraction": 0.0
+          },
+          {
+            "bin": 9,
+            "lower": 0.9,
+            "upper": 1.0,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          }
+        ],
+        "calibration_fitted": false,
+        "threshold_tuned": false
+      },
+      "stored_original_GPU_BCE": 0.776072281463014
+    },
+    "L27P20_E3_EMA": {
+      "questions": 2048,
+      "Mixed_questions": 663,
+      "nonMixed_questions": 1385,
+      "BCE": 0.674933952624682,
+      "Mixed_balanced_accuracy": 0.5389761014097392,
+      "Mixed_ROC_AUC": 0.5673249805337297,
+      "Mixed_recall": 0.45701357466063347,
+      "nonMixed_false_positive_rate": 0.37906137184115524,
+      "confusion": {
+        "tp": 303,
+        "tn": 860,
+        "fp": 525,
+        "fn": 360
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 376,
+          "predicted_nonMixed": 679,
+          "predicted_Mixed_fraction": 0.35639810426540286,
+          "BCE": 0.6470202272279352,
+          "false_positive_rate": 0.35639810426540286,
+          "false_negative_rate": null,
+          "mean_predicted_Mixed_probability": 0.47094250800463483,
+          "probability_quantiles_10_25_50_75_90": [
+            0.3693150796290264,
+            0.4194101535220824,
+            0.4707366066334113,
+            0.5231767370374663,
+            0.5701398628497573
+          ]
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 303,
+          "predicted_nonMixed": 360,
+          "predicted_Mixed_fraction": 0.45701357466063347,
+          "BCE": 0.7171743795282003,
+          "false_positive_rate": null,
+          "false_negative_rate": 0.5429864253393665,
+          "mean_predicted_Mixed_probability": 0.493322006120706,
+          "probability_quantiles_10_25_50_75_90": [
+            0.4001868736164201,
+            0.4446853453221701,
+            0.49353063448756707,
+            0.5437113679986793,
+            0.5821585003642455
+          ]
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 149,
+          "predicted_nonMixed": 181,
+          "predicted_Mixed_fraction": 0.45151515151515154,
+          "BCE": 0.6793084291596374,
+          "false_positive_rate": 0.45151515151515154,
+          "false_negative_rate": null,
+          "mean_predicted_Mixed_probability": 0.4875637280743593,
+          "probability_quantiles_10_25_50_75_90": [
+            0.3876903297319391,
+            0.43254271949155154,
+            0.49229492159079535,
+            0.540074979272027,
+            0.584674360716217
+          ]
+        }
+      },
+      "Top512": {
+        "questions": 512,
+        "Mixed": 198,
+        "Mixed_fraction": 0.38671875,
+        "selected_qid_sha256": "2059c076ac2ed406931eb7c4d6ca2d61d49c2a7cd58aab8daab176e4f9649ea8"
+      },
+      "threshold": 0.5,
+      "labels_used_for_ranking": false,
+      "score_and_calibration": {
+        "observed_Mixed_prevalence": 0.32373046875,
+        "mean_predicted_Mixed_probability": 0.4808656573571565,
+        "mean_logit": -0.07846717815846205,
+        "probability_quantiles_10_25_50_75_90": [
+          0.37891862846644336,
+          0.43002767715434276,
+          0.48267295667550336,
+          0.5339442876880419,
+          0.5770187415004098
+        ],
+        "Brier_score": 0.24108013936917813,
+        "ECE10_equal_width": 0.15713518860715642,
+        "fixed_probability_bins": [
+          {
+            "bin": 0,
+            "lower": 0.0,
+            "upper": 0.1,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 1,
+            "lower": 0.1,
+            "upper": 0.2,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 2,
+            "lower": 0.2,
+            "upper": 0.3,
+            "questions": 6,
+            "mean_predicted_Mixed": 0.28123548762983924,
+            "actual_Mixed_fraction": 0.0
+          },
+          {
+            "bin": 3,
+            "lower": 0.3,
+            "upper": 0.4,
+            "questions": 308,
+            "mean_predicted_Mixed": 0.365588696427693,
+            "actual_Mixed_fraction": 0.21753246753246752
+          },
+          {
+            "bin": 4,
+            "lower": 0.4,
+            "upper": 0.5,
+            "questions": 906,
+            "mean_predicted_Mixed": 0.45555879176541464,
+            "actual_Mixed_fraction": 0.32339955849889623
+          },
+          {
+            "bin": 5,
+            "lower": 0.5,
+            "upper": 0.6,
+            "questions": 724,
+            "mean_predicted_Mixed": 0.54238041090164,
+            "actual_Mixed_fraction": 0.35497237569060774
+          },
+          {
+            "bin": 6,
+            "lower": 0.6,
+            "upper": 0.7,
+            "questions": 102,
+            "mean_predicted_Mixed": 0.6238550889120175,
+            "actual_Mixed_fraction": 0.45098039215686275
+          },
+          {
+            "bin": 7,
+            "lower": 0.7,
+            "upper": 0.8,
+            "questions": 2,
+            "mean_predicted_Mixed": 0.7356164703345106,
+            "actual_Mixed_fraction": 0.0
+          },
+          {
+            "bin": 8,
+            "lower": 0.8,
+            "upper": 0.9,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 9,
+            "lower": 0.9,
+            "upper": 1.0,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          }
+        ],
+        "calibration_fitted": false,
+        "threshold_tuned": false
+      },
+      "stored_original_GPU_BCE": 0.674933952624682
+    },
+    "L21P20_E3_raw": {
+      "questions": 2048,
+      "Mixed_questions": 663,
+      "nonMixed_questions": 1385,
+      "BCE": 0.7119151103859349,
+      "Mixed_balanced_accuracy": 0.5722751305465257,
+      "Mixed_ROC_AUC": 0.5888190099699975,
+      "Mixed_recall": 0.698340874811463,
+      "nonMixed_false_positive_rate": 0.5537906137184115,
+      "confusion": {
+        "tp": 463,
+        "tn": 618,
+        "fp": 767,
+        "fn": 200
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 539,
+          "predicted_nonMixed": 516,
+          "predicted_Mixed_fraction": 0.5109004739336492,
+          "BCE": 0.7324985678733495,
+          "false_positive_rate": 0.5109004739336492,
+          "false_negative_rate": null,
+          "mean_predicted_Mixed_probability": 0.5032209451795564,
+          "probability_quantiles_10_25_50_75_90": [
+            0.3481132043204145,
+            0.42226639510141906,
+            0.503433173583241,
+            0.5905430701698209,
+            0.665410558746814
+          ]
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 463,
+          "predicted_nonMixed": 200,
+          "predicted_Mixed_fraction": 0.698340874811463,
+          "BCE": 0.6145517286079138,
+          "false_positive_rate": null,
+          "false_negative_rate": 0.30165912518853694,
+          "mean_predicted_Mixed_probability": 0.5522297344780498,
+          "probability_quantiles_10_25_50_75_90": [
+            0.4043193956325955,
+            0.4774932500422032,
+            0.5568815945592309,
+            0.6279512168265432,
+            0.6924755385124404
+          ]
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 228,
+          "predicted_nonMixed": 102,
+          "predicted_Mixed_fraction": 0.6909090909090909,
+          "BCE": 0.8417223057483765,
+          "false_positive_rate": 0.6909090909090909,
+          "false_negative_rate": null,
+          "mean_predicted_Mixed_probability": 0.5551978867474898,
+          "probability_quantiles_10_25_50_75_90": [
+            0.4157999953794551,
+            0.48357228175440864,
+            0.5554352309883238,
+            0.6386098406375837,
+            0.6969490607079748
+          ]
+        }
+      },
+      "Top512": {
+        "questions": 512,
+        "Mixed": 198,
+        "Mixed_fraction": 0.38671875,
+        "selected_qid_sha256": "44d2f0991ddde547584e8edac6b72a9907dcc17b67c68f62be5c102a8c288e8c"
+      },
+      "threshold": 0.5,
+      "labels_used_for_ranking": false,
+      "score_and_calibration": {
+        "observed_Mixed_prevalence": 0.32373046875,
+        "mean_predicted_Mixed_probability": 0.5274617742920169,
+        "mean_logit": 0.1152114481665194,
+        "probability_quantiles_10_25_50_75_90": [
+          0.3729618496455532,
+          0.4478224963250174,
+          0.5293850438006483,
+          0.6141626173598018,
+          0.6800292550948656
+        ],
+        "Brier_score": 0.2583990159840477,
+        "ECE10_equal_width": 0.20373130554201696,
+        "fixed_probability_bins": [
+          {
+            "bin": 0,
+            "lower": 0.0,
+            "upper": 0.1,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 1,
+            "lower": 0.1,
+            "upper": 0.2,
+            "questions": 2,
+            "mean_predicted_Mixed": 0.16228668405103,
+            "actual_Mixed_fraction": 0.0
+          },
+          {
+            "bin": 2,
+            "lower": 0.2,
+            "upper": 0.3,
+            "questions": 63,
+            "mean_predicted_Mixed": 0.2579503202112959,
+            "actual_Mixed_fraction": 0.09523809523809523
+          },
+          {
+            "bin": 3,
+            "lower": 0.3,
+            "upper": 0.4,
+            "questions": 240,
+            "mean_predicted_Mixed": 0.35962872937150825,
+            "actual_Mixed_fraction": 0.22916666666666666
+          },
+          {
+            "bin": 4,
+            "lower": 0.4,
+            "upper": 0.5,
+            "questions": 513,
+            "mean_predicted_Mixed": 0.4547586241516744,
+            "actual_Mixed_fraction": 0.2709551656920078
+          },
+          {
+            "bin": 5,
+            "lower": 0.5,
+            "upper": 0.6,
+            "questions": 648,
+            "mean_predicted_Mixed": 0.5481293377844453,
+            "actual_Mixed_fraction": 0.36728395061728397
+          },
+          {
+            "bin": 6,
+            "lower": 0.6,
+            "upper": 0.7,
+            "questions": 439,
+            "mean_predicted_Mixed": 0.6454054537479333,
+            "actual_Mixed_fraction": 0.3804100227790433
+          },
+          {
+            "bin": 7,
+            "lower": 0.7,
+            "upper": 0.8,
+            "questions": 136,
+            "mean_predicted_Mixed": 0.7336343368446601,
+            "actual_Mixed_fraction": 0.40441176470588236
+          },
+          {
+            "bin": 8,
+            "lower": 0.8,
+            "upper": 0.9,
+            "questions": 7,
+            "mean_predicted_Mixed": 0.8241608684470069,
+            "actual_Mixed_fraction": 0.42857142857142855
+          },
+          {
+            "bin": 9,
+            "lower": 0.9,
+            "upper": 1.0,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          }
+        ],
+        "calibration_fitted": false,
+        "threshold_tuned": false
+      },
+      "stored_original_GPU_BCE": 0.711915110385935
+    },
+    "L21P20_E3_EMA": {
+      "questions": 2048,
+      "Mixed_questions": 663,
+      "nonMixed_questions": 1385,
+      "BCE": 0.6850085584519601,
+      "Mixed_balanced_accuracy": 0.5633996003288847,
+      "Mixed_ROC_AUC": 0.5880185787172408,
+      "Mixed_recall": 0.5867269984917044,
+      "nonMixed_false_positive_rate": 0.459927797833935,
+      "confusion": {
+        "tp": 389,
+        "tn": 748,
+        "fp": 637,
+        "fn": 274
+      },
+      "classwise": {
+        "all_wrong": {
+          "questions": 1055,
+          "predicted_Mixed": 452,
+          "predicted_nonMixed": 603,
+          "predicted_Mixed_fraction": 0.42843601895734595,
+          "BCE": 0.6781139705876064,
+          "false_positive_rate": 0.42843601895734595,
+          "false_negative_rate": null,
+          "mean_predicted_Mixed_probability": 0.4871246360595508,
+          "probability_quantiles_10_25_50_75_90": [
+            0.3911268491566929,
+            0.4363818365677061,
+            0.48590461464718054,
+            0.5393471823348445,
+            0.5855752115734775
+          ]
+        },
+        "Mixed": {
+          "questions": 663,
+          "predicted_Mixed": 389,
+          "predicted_nonMixed": 274,
+          "predicted_Mixed_fraction": 0.5867269984917044,
+          "BCE": 0.6706119343496652,
+          "false_positive_rate": null,
+          "false_negative_rate": 0.4132730015082956,
+          "mean_predicted_Mixed_probability": 0.5160155659930709,
+          "probability_quantiles_10_25_50_75_90": [
+            0.42574865375104803,
+            0.47116242114310625,
+            0.5157418659712667,
+            0.5693738350552698,
+            0.6024358633128367
+          ]
+        },
+        "all_correct": {
+          "questions": 330,
+          "predicted_Mixed": 185,
+          "predicted_nonMixed": 145,
+          "predicted_Mixed_fraction": 0.5606060606060606,
+          "BCE": 0.7359744735329137,
+          "false_positive_rate": 0.5606060606060606,
+          "false_negative_rate": null,
+          "mean_predicted_Mixed_probability": 0.5160721832027707,
+          "probability_quantiles_10_25_50_75_90": [
+            0.4257007831267143,
+            0.4635050892526633,
+            0.5136379652172338,
+            0.5688948889236563,
+            0.6040719032063643
+          ]
+        }
+      },
+      "Top512": {
+        "questions": 512,
+        "Mixed": 207,
+        "Mixed_fraction": 0.404296875,
+        "selected_qid_sha256": "3f814854e98911866497e1559103b87460a1626c5f295d3fc8ba9ec009ef5e3b"
+      },
+      "threshold": 0.5,
+      "labels_used_for_ranking": false,
+      "score_and_calibration": {
+        "observed_Mixed_prevalence": 0.32373046875,
+        "mean_predicted_Mixed_probability": 0.501141910035716,
+        "mean_logit": 0.004440703196451068,
+        "probability_quantiles_10_25_50_75_90": [
+          0.40483683481608673,
+          0.4510846900584313,
+          0.5001683235100238,
+          0.5551940783673361,
+          0.5950219975882318
+        ],
+        "Brier_score": 0.24596390429370069,
+        "ECE10_equal_width": 0.177411441285716,
+        "fixed_probability_bins": [
+          {
+            "bin": 0,
+            "lower": 0.0,
+            "upper": 0.1,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 1,
+            "lower": 0.1,
+            "upper": 0.2,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 2,
+            "lower": 0.2,
+            "upper": 0.3,
+            "questions": 4,
+            "mean_predicted_Mixed": 0.2812384115390859,
+            "actual_Mixed_fraction": 0.25
+          },
+          {
+            "bin": 3,
+            "lower": 0.3,
+            "upper": 0.4,
+            "questions": 176,
+            "mean_predicted_Mixed": 0.37114349102283645,
+            "actual_Mixed_fraction": 0.17045454545454544
+          },
+          {
+            "bin": 4,
+            "lower": 0.4,
+            "upper": 0.5,
+            "questions": 842,
+            "mean_predicted_Mixed": 0.45820886921430787,
+            "actual_Mixed_fraction": 0.28859857482185275
+          },
+          {
+            "bin": 5,
+            "lower": 0.5,
+            "upper": 0.6,
+            "questions": 851,
+            "mean_predicted_Mixed": 0.5460754869048048,
+            "actual_Mixed_fraction": 0.37132784958871917
+          },
+          {
+            "bin": 6,
+            "lower": 0.6,
+            "upper": 0.7,
+            "questions": 175,
+            "mean_predicted_Mixed": 0.6249732368716274,
+            "actual_Mixed_fraction": 0.41714285714285715
+          },
+          {
+            "bin": 7,
+            "lower": 0.7,
+            "upper": 0.8,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 8,
+            "lower": 0.8,
+            "upper": 0.9,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          },
+          {
+            "bin": 9,
+            "lower": 0.9,
+            "upper": 1.0,
+            "questions": 0,
+            "mean_predicted_Mixed": null,
+            "actual_Mixed_fraction": null
+          }
+        ],
+        "calibration_fitted": false,
+        "threshold_tuned": false
+      },
+      "stored_original_GPU_BCE": 0.6850085584519601
+    }
+  },
+  "comparisons": {
+    "L27P20_E3_raw_minus_E1_raw": {
+      "candidate": "L27P20_E3_raw",
+      "baseline": "E1_raw",
+      "Mixed_balanced_accuracy_difference": 0.016030950008440015,
+      "Mixed_balanced_accuracy_percentile95": [
+        -0.004412373251679818,
+        0.03634568862959596
+      ],
+      "Top512_true_Mixed_fraction_difference": -0.001953125,
+      "Top512_true_Mixed_fraction_percentile95": [
+        -0.044921875,
+        0.037109375
+      ],
+      "BCE_difference": 0.13226502407066565,
+      "Mixed_ROC_AUC_difference": -0.023254433681275888,
+      "Mixed_ROC_AUC_percentile95": [
+        -0.04665960374854332,
+        8.612244943616285e-05
+      ],
+      "Brier_score_difference": 0.06330842771175688,
+      "ECE10_difference": 0.16014918215334328,
+      "paired_correctness": {
+        "candidate_only": 501,
+        "baseline_only": 1000,
+        "both_correct": 348,
+        "both_wrong": 199
+      },
+      "scope": "different_E1_training_budget_and_data_recipe_not_LR_or_depth_causality"
+    },
+    "L27P20_E3_raw_minus_E1_EMA": {
+      "candidate": "L27P20_E3_raw",
+      "baseline": "E1_EMA",
+      "Mixed_balanced_accuracy_difference": 0.009996133971500343,
+      "Mixed_balanced_accuracy_percentile95": [
+        -0.011939080745568102,
+        0.03222374596005009
+      ],
+      "Top512_true_Mixed_fraction_difference": -0.009765625,
+      "Top512_true_Mixed_fraction_percentile95": [
+        -0.050830078125,
+        0.029296875
+      ],
+      "BCE_difference": 0.12305652905722098,
+      "Mixed_ROC_AUC_difference": -0.02549455216688179,
+      "Mixed_ROC_AUC_percentile95": [
+        -0.048154891265966684,
+        -0.0037618923644393717
+      ],
+      "Brier_score_difference": 0.05885377800449504,
+      "ECE10_difference": 0.14078482630103972,
+      "paired_correctness": {
+        "candidate_only": 450,
+        "baseline_only": 908,
+        "both_correct": 399,
+        "both_wrong": 291
+      },
+      "scope": "different_E1_training_budget_and_data_recipe_not_LR_or_depth_causality"
+    },
+    "L27P20_E3_EMA_minus_E1_raw": {
+      "candidate": "L27P20_E3_EMA",
+      "baseline": "E1_raw",
+      "Mixed_balanced_accuracy_difference": 0.01616489972828905,
+      "Mixed_balanced_accuracy_percentile95": [
+        -0.008423065591011067,
+        0.03918353649367481
+      ],
+      "Top512_true_Mixed_fraction_difference": -0.005859375,
+      "Top512_true_Mixed_fraction_percentile95": [
+        -0.05078125,
+        0.03515625
+      ],
+      "BCE_difference": 0.03112669523233358,
+      "Mixed_ROC_AUC_difference": -0.02544717970498389,
+      "Mixed_ROC_AUC_percentile95": [
+        -0.04922994929014078,
+        -0.003326589492434603
+      ],
+      "Brier_score_difference": 0.015256476710244798,
+      "ECE10_difference": 0.048754567446252006,
+      "paired_correctness": {
+        "candidate_only": 251,
+        "baseline_only": 436,
+        "both_correct": 912,
+        "both_wrong": 449
+      },
+      "scope": "different_E1_training_budget_and_data_recipe_not_LR_or_depth_causality"
+    },
+    "L27P20_E3_EMA_minus_E1_EMA": {
+      "candidate": "L27P20_E3_EMA",
+      "baseline": "E1_EMA",
+      "Mixed_balanced_accuracy_difference": 0.010130083691349379,
+      "Mixed_balanced_accuracy_percentile95": [
+        -0.013891092846824564,
+        0.03224244380110862
+      ],
+      "Top512_true_Mixed_fraction_difference": -0.013671875,
+      "Top512_true_Mixed_fraction_percentile95": [
+        -0.052734375,
+        0.025390625
+      ],
+      "BCE_difference": 0.021918200218888906,
+      "Mixed_ROC_AUC_difference": -0.027687298190589793,
+      "Mixed_ROC_AUC_percentile95": [
+        -0.05106936901933346,
+        -0.007257066771408185
+      ],
+      "Brier_score_difference": 0.010801827002982961,
+      "ECE10_difference": 0.029390211593948445,
+      "paired_correctness": {
+        "candidate_only": 218,
+        "baseline_only": 362,
+        "both_correct": 945,
+        "both_wrong": 523
+      },
+      "scope": "different_E1_training_budget_and_data_recipe_not_LR_or_depth_causality"
+    },
+    "L21P20_E3_raw_minus_E1_raw": {
+      "candidate": "L21P20_E3_raw",
+      "baseline": "E1_raw",
+      "Mixed_balanced_accuracy_difference": 0.04946392886507556,
+      "Mixed_balanced_accuracy_percentile95": [
+        0.02534256443476356,
+        0.07337510776275531
+      ],
+      "Top512_true_Mixed_fraction_difference": -0.005859375,
+      "Top512_true_Mixed_fraction_percentile95": [
+        -0.046875,
+        0.033251953124999734
+      ],
+      "BCE_difference": 0.06810785299358646,
+      "Mixed_ROC_AUC_difference": -0.003953150268716121,
+      "Mixed_ROC_AUC_percentile95": [
+        -0.028595217160908022,
+        0.02115805313946812
+      ],
+      "Brier_score_difference": 0.03257535332511435,
+      "ECE10_difference": 0.09535068438111255,
+      "paired_correctness": {
+        "candidate_only": 393,
+        "baseline_only": 660,
+        "both_correct": 688,
+        "both_wrong": 307
+      },
+      "scope": "different_E1_training_budget_and_data_recipe_not_LR_or_depth_causality"
+    },
+    "L21P20_E3_raw_minus_E1_EMA": {
+      "candidate": "L21P20_E3_raw",
+      "baseline": "E1_EMA",
+      "Mixed_balanced_accuracy_difference": 0.043429112828135885,
+      "Mixed_balanced_accuracy_percentile95": [
+        0.01855049781043757,
+        0.0673718771658704
+      ],
+      "Top512_true_Mixed_fraction_difference": -0.013671875,
+      "Top512_true_Mixed_fraction_percentile95": [
+        -0.050830078125,
+        0.029296875
+      ],
+      "BCE_difference": 0.05889935798014179,
+      "Mixed_ROC_AUC_difference": -0.006193268754322023,
+      "Mixed_ROC_AUC_percentile95": [
+        -0.029949581530361584,
+        0.018353160517682564
+      ],
+      "Brier_score_difference": 0.028120703617852516,
+      "ECE10_difference": 0.07598632852880899,
+      "paired_correctness": {
+        "candidate_only": 359,
+        "baseline_only": 585,
+        "both_correct": 722,
+        "both_wrong": 382
+      },
+      "scope": "different_E1_training_budget_and_data_recipe_not_LR_or_depth_causality"
+    },
+    "L21P20_E3_EMA_minus_E1_raw": {
+      "candidate": "L21P20_E3_EMA",
+      "baseline": "E1_raw",
+      "Mixed_balanced_accuracy_difference": 0.040588398647434576,
+      "Mixed_balanced_accuracy_percentile95": [
+        0.016900692349964382,
+        0.06336320560727575
+      ],
+      "Top512_true_Mixed_fraction_difference": 0.01171875,
+      "Top512_true_Mixed_fraction_percentile95": [
+        -0.025390625,
+        0.056640625
+      ],
+      "BCE_difference": 0.04120130105961162,
+      "Mixed_ROC_AUC_difference": -0.004753581521472761,
+      "Mixed_ROC_AUC_percentile95": [
+        -0.02495327448500133,
+        0.015692590804280603
+      ],
+      "Brier_score_difference": 0.020140241634767353,
+      "ECE10_difference": 0.0690308201248116,
+      "paired_correctness": {
+        "candidate_only": 316,
+        "baseline_only": 527,
+        "both_correct": 821,
+        "both_wrong": 384
+      },
+      "scope": "different_E1_training_budget_and_data_recipe_not_LR_or_depth_causality"
+    },
+    "L21P20_E3_EMA_minus_E1_EMA": {
+      "candidate": "L21P20_E3_EMA",
+      "baseline": "E1_EMA",
+      "Mixed_balanced_accuracy_difference": 0.034553582610494904,
+      "Mixed_balanced_accuracy_percentile95": [
+        0.010452305417617335,
+        0.05774991430342881
+      ],
+      "Top512_true_Mixed_fraction_difference": 0.00390625,
+      "Top512_true_Mixed_fraction_percentile95": [
+        -0.029296875,
+        0.046875
+      ],
+      "BCE_difference": 0.031992806046166944,
+      "Mixed_ROC_AUC_difference": -0.006993700007078663,
+      "Mixed_ROC_AUC_percentile95": [
+        -0.027462019006159043,
+        0.012099493488912434
+      ],
+      "Brier_score_difference": 0.015685591927505516,
+      "ECE10_difference": 0.04966646427250804,
+      "paired_correctness": {
+        "candidate_only": 276,
+        "baseline_only": 446,
+        "both_correct": 861,
+        "both_wrong": 465
+      },
+      "scope": "different_E1_training_budget_and_data_recipe_not_LR_or_depth_causality"
+    },
+    "L21P20_E3_raw_minus_L27P20_E3_raw": {
+      "candidate": "L21P20_E3_raw",
+      "baseline": "L27P20_E3_raw",
+      "Mixed_balanced_accuracy_difference": 0.03343297885663554,
+      "Mixed_balanced_accuracy_percentile95": [
+        0.013373200362417464,
+        0.05366862278148274
+      ],
+      "Top512_true_Mixed_fraction_difference": -0.00390625,
+      "Top512_true_Mixed_fraction_percentile95": [
+        -0.037109375,
+        0.033251953124999734
+      ],
+      "BCE_difference": -0.06415717107707919,
+      "Mixed_ROC_AUC_difference": 0.019301283412559767,
+      "Mixed_ROC_AUC_percentile95": [
+        -0.00019052748958922318,
+        0.03985326563237239
+      ],
+      "Brier_score_difference": -0.030733074386642523,
+      "ECE10_difference": -0.06479849777223073,
+      "paired_correctness": {
+        "candidate_only": 390,
+        "baseline_only": 158,
+        "both_correct": 691,
+        "both_wrong": 809
+      },
+      "scope": "matched_pilot_depth_with_same8192_budget"
+    },
+    "L21P20_E3_EMA_minus_L27P20_E3_EMA": {
+      "candidate": "L21P20_E3_EMA",
+      "baseline": "L27P20_E3_EMA",
+      "Mixed_balanced_accuracy_difference": 0.024423498919145525,
+      "Mixed_balanced_accuracy_percentile95": [
+        0.0028826386454170573,
+        0.0456458133198849
+      ],
+      "Top512_true_Mixed_fraction_difference": 0.017578125,
+      "Top512_true_Mixed_fraction_percentile95": [
+        -0.013671875,
+        0.056640625
+      ],
+      "BCE_difference": 0.010074605827278038,
+      "Mixed_ROC_AUC_difference": 0.02069359818351113,
+      "Mixed_ROC_AUC_percentile95": [
+        0.003802212205987926,
+        0.03845249952164784
+      ],
+      "Brier_score_difference": 0.0048837649245225545,
+      "ECE10_difference": 0.020276252678559592,
+      "paired_correctness": {
+        "candidate_only": 217,
+        "baseline_only": 243,
+        "both_correct": 920,
+        "both_wrong": 668
+      },
+      "scope": "matched_pilot_depth_with_same8192_budget"
+    }
+  },
+  "question_and_fixed_trajectory_identity_sha256": "c55de2b4f66f45dcd94a8e246bfca97e53bdedc4ca85180c75e60c574dfc04b7",
+  "own_strict_EM_exactly_identical": true,
+  "no_final4096_read": true,
+  "seconds": 2.2555294036865234
+}

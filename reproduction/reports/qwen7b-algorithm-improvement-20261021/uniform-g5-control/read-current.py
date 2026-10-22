@@ -9,7 +9,7 @@ for name in ('controller.json','progress.json','failure.json','complete.json','s
   x[name]=d
 p=b/'latest.json'
 if p.exists():
- d=json.loads(p.read_bytes());x['checkpoint']={k:d[k]for k in('cursor','path','bytes','sha256','native_steps','head_steps','training_phase','full_CPU_native_head_two_Adam_RNG_sampler_source_reload_passed')}
+ d=json.loads(p.read_bytes());x['checkpoint']={k:d[k]for k in('cursor','path','bytes','sha256','native_steps','head_steps','training_phase','full_CPU_native_head_two_Adam_RNG_sampler_source_reload_passed','native_frozen','native_frozen_boundary_sha256','native_learning_rate','head_learning_rate')if k in d}
 p=b/'submission-result.json'
 if p.exists():
  job=json.loads(p.read_bytes())['job_id'];x['job_id']=job

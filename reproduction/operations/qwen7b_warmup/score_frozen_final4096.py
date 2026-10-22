@@ -11,7 +11,8 @@ from pathlib import Path
 
 B = Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019')
 A = B/'algorithm-improvement-20261021'
-BASE = A/'frozen-final4096-scoring-20261022-v1'
+BASE = A/'frozen-final4096-scoring-20261022-v2'
+PREVIOUS_BASE = A/'frozen-final4096-scoring-20261022-v1'
 MATERIALIZATION = B/'confirmation-materialization-deploy-20261021/materialized/materialization.json'
 MATERIALIZATION_SHA = 'ff68f243b1daa7d8a617a2c7a825e1126d0771eee2e92b96a85dc5f9b4f2bfe3'
 E1 = dict(path=str(A/'joint-mixed-direct-official-169028-b128-v1/checkpoints/cursor-002577.pt'),
@@ -69,7 +70,7 @@ def freeze_contract(value):
             or not isinstance(value.get('freeze_epoch'), (float, int))):
         raise ValueError('Explicit viewed-validation-only candidate freeze required')
     candidate = value['candidate']
-    if (candidate.get('layer'), candidate.get('prefix')) not in ((27,20),(21,20),(27,40),(27,80)):
+    if (candidate.get('layer'), candidate.get('prefix')) not in ((27,20),(21,20),(27,40),(27,80),(21,80)):
         raise ValueError('Predeclared native layer/prefix geometry required')
     if candidate.get('state_key') not in ('raw', 'ema', 'EMA'):
         raise ValueError('Freeze actual raw/EMA checkpoint field, never implicit alias')
@@ -266,6 +267,8 @@ def run(freeze_path, freeze_sha):
     freeze_path=remote(freeze_path)
     if proof(freeze_path)['sha256']!=freeze_sha: raise ValueError('Candidate-freeze SHA changed')
     frozen=read(freeze_path); freeze_contract(frozen)
+    if (PREVIOUS_BASE/'final-use-started.json').exists():
+        raise RuntimeError('Prior final scorer was already used; preserve its frozen-candidate protocol instead of unblinding through v2')
     if frozen['freeze_epoch']>time.time(): raise ValueError('Candidate freeze is in the future')
     checked(frozen['viewed_validation_evaluation']); checked(frozen['scorer_publication'])
     pub=read(frozen['scorer_publication']['path']); code=Path(__file__).resolve().parents[3]
