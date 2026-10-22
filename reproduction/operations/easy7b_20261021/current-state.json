@@ -1,12 +1,12 @@
 {
-  "epoch": 1792643271.752129,
-  "status": "ACTUAL_JOB746125_FAILED_OUTER35_SOURCE34_PRESERVED_RECOVERY_IN_PROGRESS_GOAL200_ACTIVE",
+  "epoch": 1792643711.423126,
+  "status": "SOURCE34_CPU_PASS_JOB747219_NATIVE4_RECOVERY_SUBMITTED_ACTUAL_CUDA_PENDING_GOAL200_ACTIVE",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
-  "job": "746125",
+  "job": "747219",
   "run_id": "232f20e112ac4a978c5aba52a0367195",
-  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
-  "runtime_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
+  "runtime_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
   "actor_physical_micro": 8,
   "global_mini": 128,
   "logical_micro": 4,
@@ -2429,12 +2429,14 @@
     "continuation_requires_CP34_recovery": true
   },
   "active_local_watcher": {
-    "session_id": 51482,
-    "root": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792639571933631000",
-    "source_commit": "b8da5a072452538e101abe767ec2fef4ee3657f4",
-    "remote_operator_commit": "0110264b81133a61515e89af52854d7c0d8cefae",
-    "completed_outer_horizon": 35,
-    "next_outer_horizon": 36,
+    "session_id": 89489,
+    "root": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp34-recovery-watch-1792643731167836000",
+    "read_only": true,
+    "source_commit": "90b1e948f7d0e55a00b82a2c1c091650b408f937",
+    "runtime_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+    "job": "747219",
+    "completed_outer_horizon": 39,
+    "next_outer_horizon": 40,
     "bounded_observations": 180,
     "interval_seconds": 60,
     "login_host": "10.120.48.32",
@@ -2443,29 +2445,10 @@
       "boot_id": "3c637b25-17cf-404c-971b-30bc4c4e9fbb",
       "pid_namespace": "pid:[4026531836]"
     },
-    "read_only": true,
-    "new_recovery_gate": false,
     "total_training_goal": 200,
-    "current_recovery_followup_already_accepted": true,
-    "previous_failed_watcher": {
-      "session_id": 15155,
-      "root": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792633978227610000",
-      "exit_code": 2,
-      "failure": "SSH banner exchange timeout on10.120.48.31",
-      "training_failure_inferred": false,
-      "original_failure_receipt": {
-        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792633978227610000/observation-085.json",
-        "bytes": 139,
-        "sha256": "7f409bd93f9fc9067416d299b98c9d2a8f14fcefcb3c0db0da197fc33566ccc8"
-      }
-    },
-    "state": "EXITED2_ACTUAL_TRAINING_FAILURE",
-    "not_live": true,
-    "failure_observation": {
-      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792639571933631000/observation-045.json",
-      "bytes": 502392,
-      "sha256": "f5b8f10312414c8068df1710d133cb809c20af4321311fce135e04fa18105459"
-    }
+    "current_recovery_followup_accepted": false,
+    "state": "LIVE_OBSERVER_ACTUAL_RESTORE_PENDING",
+    "epoch": 1792643854.099651
   },
   "historical_cp1_actual_state_restore": {
     "model_tensors": 339,
@@ -2820,7 +2803,7 @@
     "recompute_from_outer": 35,
     "source_writes_per_rank": 680,
     "source_cursor": 87040,
-    "new_job_submitted": false,
+    "new_job_submitted": true,
     "actual_new_restore_accepted": false,
     "remote_preserved_evidence": {
       "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/failed-job-746125/failure-evidence.json",
@@ -2828,29 +2811,200 @@
       "bytes": 149859608
     },
     "source34_cpu_audit": {
-      "status": "CPU_AUDIT_SUBMISSION_REJECTED_NO_JOB_TRAINING_NOT_SUBMITTED",
-      "checked_unix": 1792643194.63254,
-      "raw_local": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp34-source-audit-submit-readback-1792643193.json",
-      "actual_submission_result": {
-        "actual_full_state_audit_complete": false,
-        "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
-        "checked_unix": 1792643177.6425264,
-        "job": null,
-        "operator_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
-        "returncode": 1,
-        "source_step": 34,
-        "stderr": "sbatch: error: can not get user jxu957 default account: timeout: context deadline exceeded (Client.Timeout exceeded while awaiting headers)\nsbatch: error: Batch job submission failed: Access/permission denied\n",
-        "stdout": "",
-        "training_submitted": false
+      "job": "747190",
+      "state": "COMPLETED0:0",
+      "receipt_sha256": "f27ecedbd288daeb16e94dc64ed3c180489523cd6bd0e2a1f3356e69470842b9",
+      "first_failed_submission_evidence": "evidence/source34-first-audit-submission-rejection-20261022.json"
+    },
+    "new_job": "747219"
+  },
+  "source34_oom_recovery": {
+    "status": "CPU_SOURCE34_FULL_SHA_STATES_PASS_AND_NATIVE4_RECOVERY_SUBMITTED_CUDA_PENDING",
+    "epoch": 1792643644.9728544,
+    "cpu_audit_job": "747190",
+    "cpu_audit_accounting": {
+      "returncode": 0,
+      "stdout": "747190|COMPLETED|0:0|00:03:09|ACD1-1\n747190.batch|COMPLETED|0:0|00:03:09|ACD1-1\n747190.extern|COMPLETED|0:0|00:03:09|ACD1-1\n",
+      "stderr": ""
+    },
+    "receipt": {
+      "status": "EASY2560_NATIVE4_FULL_SHA_CPU_STATES_PASS",
+      "step": 34,
+      "world_size": 4,
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+      "source_job": "746125",
+      "hf_saved_tensor_count": 339,
+      "actual_optimizer_writes_per_rank": 680,
+      "driver_state": {
+        "actual_driver_rng_saved": true,
+        "callbacks_complete": true,
+        "candidate_cursor": 87040,
+        "candidate_order_count": 168510,
+        "candidate_order_sha256": "43cbb8cae7c9fd423987146a57a313b682b48be010a10794fb25e758f7da037d",
+        "completed_outer": 34,
+        "epoch": 0,
+        "pending_offset": 0,
+        "pending_source_present": false,
+        "prefix20_pool_binding": {
+          "canonical_train_sha256": "5d40180ba54d35513bb780408caa068d7d60123214a49b0739f835a2ae47c8a1",
+          "cycle_policy": "permutation_once_defer_current_pool_at_boundary",
+          "eligible_pool_sha256": "ae13710254e7ae77cf5531b62a755ec2000bc3fba20051bbafaff1f6714aa8fc",
+          "eligible_questions": 168510,
+          "ordered_membership_sha256": "0b512505d322868dd919c38245ca4f38e5922b47e99ae2081e25dbe061cd9be7",
+          "stream_kind": "prefix20_exported_eligible_v1"
+        },
+        "probe_round": 0,
+        "probe_version": "232f20e112ac4a978c5aba52a0367195:0:c7f8da3ab2f84097ae6430983e5329af",
+        "question_probe": null,
+        "reward_refresh_pending": false,
+        "source_consumed": 87040
       },
-      "live_queue": "745198|easy7b-retrieval2|RUNNING|ACD1-26|ACD1-26\n",
-      "failure_preservation": {
-        "status": "FAILED746125_OUTER35_CUDA_OOM_EVIDENCE_PRESERVED",
-        "files": 194,
-        "bytes": 149859608
-      },
-      "recovery_action": "Explicit account/qos/partition allocation flags in sbatch argv; retained original failed claim/result; separate r2 claim after queue excludes source34 audit",
-      "no_training_restart_occurred": true
+      "post_callback_rng_captured": true,
+      "completed_QA5_replay_required": false,
+      "sampling_rng_stage": "post_outer_scheduled_QA_and_grounding_adoption_before_final_evaluation"
+    },
+    "receipt_sha256": "f27ecedbd288daeb16e94dc64ed3c180489523cd6bd0e2a1f3356e69470842b9",
+    "authenticated_updates": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34
+    ],
+    "training_submission": {
+      "source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--partition=emergency_acd",
+        "--qos=formal-user",
+        "--account=jxu957",
+        "--nodes=1",
+        "--ntasks=1",
+        "--gres=gpu:4",
+        "--cpus-per-task=48",
+        "--mem=512G",
+        "--time=7-00:00:00",
+        "--job-name=easy2560-7b-corollout200",
+        "--export=NONE",
+        "--chdir=/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/repo",
+        "--output=/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/logs/training-%j.log",
+        "--error=/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/logs/training-%j.log",
+        "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/source/b76d7a05245a5eb7adc75385e2db803c67acce43/reproduction/easy2560_joint4/train.sh",
+        "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
+        "b76d7a05245a5eb7adc75385e2db803c67acce43",
+        "8",
+        "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/source34-receipt.json",
+        "fa3-exact-cache-v1",
+        "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/external-retriever-receipt.json"
+      ],
+      "returncode": 0,
+      "stdout": "747219\n",
+      "stderr": "",
+      "checked_unix": 1792643668.8309457,
+      "actor_micro_batch_per_rank": 8,
+      "training_world_size": 4,
+      "restore_receipt": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/source34-receipt.json",
+      "restore_receipt_sha256": "f27ecedbd288daeb16e94dc64ed3c180489523cd6bd0e2a1f3356e69470842b9",
+      "infra_profile": "fa3-exact-cache-v1",
+      "job": "747219"
+    },
+    "external_retrieval": {
+      "service_job": "745198",
+      "endpoint": "http://ACD1-26:18020/retrieve",
+      "modified": false
+    },
+    "source_job": "746125",
+    "recompute_from_outer": 35,
+    "new_base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "actual_cuda_restore_accepted": false,
+    "required_followup": {
+      "complete_outers": [
+        35,
+        36,
+        37,
+        38,
+        39
+      ],
+      "next_outer_saved": 40
+    },
+    "total_goal": 200,
+    "overall_goal_complete": false,
+    "raw": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp34-audit-and-recovery-submission-1792643667.json",
+      "bytes": 40190,
+      "sha256": "16310579e3cd0bdfa400b2567003e4872247d0e6f286fba180b08bb7184c1744"
+    },
+    "evidence": "evidence/source34-cpu-pass-and747219-submitted-20261022.json"
+  },
+  "historical_failed_readonly_watcher": {
+    "session_id": 51482,
+    "root": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792639571933631000",
+    "source_commit": "b8da5a072452538e101abe767ec2fef4ee3657f4",
+    "remote_operator_commit": "0110264b81133a61515e89af52854d7c0d8cefae",
+    "completed_outer_horizon": 35,
+    "next_outer_horizon": 36,
+    "bounded_observations": 180,
+    "interval_seconds": 60,
+    "login_host": "10.120.48.32",
+    "expected_host_identity": {
+      "hostname": "ACD-Login-2",
+      "boot_id": "3c637b25-17cf-404c-971b-30bc4c4e9fbb",
+      "pid_namespace": "pid:[4026531836]"
+    },
+    "read_only": true,
+    "new_recovery_gate": false,
+    "total_training_goal": 200,
+    "current_recovery_followup_already_accepted": true,
+    "previous_failed_watcher": {
+      "session_id": 15155,
+      "root": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792633978227610000",
+      "exit_code": 2,
+      "failure": "SSH banner exchange timeout on10.120.48.31",
+      "training_failure_inferred": false,
+      "original_failure_receipt": {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792633978227610000/observation-085.json",
+        "bytes": 139,
+        "sha256": "7f409bd93f9fc9067416d299b98c9d2a8f14fcefcb3c0db0da197fc33566ccc8"
+      }
+    },
+    "state": "EXITED2_ACTUAL_TRAINING_FAILURE",
+    "not_live": true,
+    "failure_observation": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792639571933631000/observation-045.json",
+      "bytes": 502392,
+      "sha256": "f5b8f10312414c8068df1710d133cb809c20af4321311fce135e04fa18105459"
     }
   }
 }

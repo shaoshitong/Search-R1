@@ -13,7 +13,7 @@ import time
 
 from . import checkpoint_archive as core
 from .control import own_base, publish
-from reproduction.prefix20_joint4.archive_supervisor import ssh_argv
+from .archive_login_route import ssh_argv, route_record, resolve_login_route
 
 HK_ROOT = Path('/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017')
 
@@ -85,15 +85,16 @@ def event(root, **values):
 
 
 def observe_checkpoint(base, step, job, env, root, *, attempts=3, retry_seconds=15,
-                       completed_steps=()):
+                       completed_steps=(), transport=None):
     """Retry only read-only transport failures; never replay archive writers."""
     if type(attempts) is not int or attempts < 1 or retry_seconds < 0:
         raise ValueError('EASY2560_ARCHIVE_OBSERVATION_RETRY_POLICY_INVALID')
     code = checkpoint_status_code(base, step, job)
     command = shlex.join([str(base / 'env/bin/python'), '-B', '-c', code])
+    transport = ssh_argv if transport is None else transport
     for attempt in range(1, attempts + 1):
         try:
-            checked = subprocess.run(ssh_argv(command), env=env, capture_output=True,
+            checked = subprocess.run(transport(command), env=env, capture_output=True,
                                      text=True, timeout=90)
         except subprocess.TimeoutExpired:
             detail = 'SSH read-only observation timed out'
@@ -113,10 +114,16 @@ def observe_checkpoint(base, step, job, env, root, *, attempts=3, retry_seconds=
         time.sleep(retry_seconds)
 
 
-def run(base, commit, job, password, poll_seconds=60, first_step=5, controller_suffix=None):
+def run(base, commit, job, password, poll_seconds=60, first_step=5, controller_suffix=None,
+        *, login_host=None, login_identity_json=None):
     if socket.gethostname() != 'xielab3' or os.getuid() != 1002:
         raise ValueError('EASY2560_ARCHIVE_CONTROLLER_REQUIRES_HKUST3')
     base = own_base(base)
+    host, identity = resolve_login_route(login_host, login_identity_json)
+    identity_json = json.dumps(identity, sort_keys=True)
+    def transport(command):
+        return ssh_argv(command, login_host=host, login_identity_json=identity_json)
+    routing = route_record(host, identity_json)
     if first_step not in core.STEPS: raise ValueError('EASY2560_ARCHIVE_FIXED_FIRST_MILESTONE_REQUIRED')
     if not str(job).isdecimal(): raise ValueError('EASY2560_ARCHIVE_SOURCE_JOB_REQUIRED')
     job_root = HK_ROOT / 'archive-controller' / ('job-' + job)
@@ -137,6 +144,7 @@ def run(base, commit, job, password, poll_seconds=60, first_step=5, controller_s
                             requested_steps=[step for step in core.STEPS if step>=first_step],
                             controller_suffix=controller_suffix,
                             recovery_parent=str(job_root) if controller_suffix else None,
+                            source_ssh_route=routing,
                             credentials_persisted=False, checked_unix=time.time()))
     except BaseException:
         if lock is not None: lock.close()
@@ -148,7 +156,8 @@ def run(base, commit, job, password, poll_seconds=60, first_step=5, controller_s
             source = base / 'preparation/checkpoint-archives' / ('global_step_' + str(step)) / 'source-snapshot.json'
             while True:
                 # Observe actual job and a fully produced native4 checkpoint.
-                state = observe_checkpoint(base, step, job, env, root, completed_steps=completed)
+                state = observe_checkpoint(base, step, job, env, root, completed_steps=completed,
+                                           transport=transport)
                 if state['ready']: break
                 if state['queue_returncode'] != 0:
                     raise RuntimeError('EASY2560_ARCHIVE_SOURCE_QUEUE_OBSERVATION_UNKNOWN: ' + state['queue_error'])
@@ -158,7 +167,7 @@ def run(base, commit, job, password, poll_seconds=60, first_step=5, controller_s
                     raise RuntimeError('EASY2560_ARCHIVE_SOURCE_JOB_NOT_LIVE_AND_CHECKPOINT_MISSING')
                 time.sleep(poll_seconds)
             event(root, phase='SOURCE_SNAPSHOT', step=step, completed_steps=completed)
-            captured = subprocess.run(ssh_argv(source_command(base, 'snapshot', '--base', base,
+            captured = subprocess.run(transport(source_command(base, 'snapshot', '--base', base,
                                         '--commit', commit, '--step', step)), env=env,
                                       capture_output=True, text=True, timeout=7200)
             if captured.returncode: raise RuntimeError('EASY2560_ARCHIVE_SNAPSHOT_FAILED: ' + captured.stderr[-2000:])
@@ -167,7 +176,7 @@ def run(base, commit, job, password, poll_seconds=60, first_step=5, controller_s
             directory = HK_ROOT / 'checkpoints' / snapshot['run_id'] / ('global_step_' + str(step))
             event(root, phase='STREAMING_SOURCE_TO_HKUST3', step=step, total_bytes=snapshot['total_bytes'], completed_steps=completed)
             with (root / ('stream-step-%d.stderr' % step)).open('xb') as error:
-                child = subprocess.Popen(ssh_argv(source_command(base, 'stream', '--snapshot', source)),
+                child = subprocess.Popen(transport(source_command(base, 'stream', '--snapshot', source)),
                                          env=env, stdout=subprocess.PIPE, stderr=error)
                 try:
                     receipt = core.receive(directory, child.stdout)
@@ -178,7 +187,7 @@ def run(base, commit, job, password, poll_seconds=60, first_step=5, controller_s
                     try: child.wait(timeout=15)
                     except subprocess.TimeoutExpired: child.kill(); child.wait()
                     raise
-            accepted = subprocess.run(ssh_argv(source_command(base, 'accept', '--snapshot', source)),
+            accepted = subprocess.run(transport(source_command(base, 'accept', '--snapshot', source)),
                                       input=json.dumps(receipt), env=env, capture_output=True, text=True, timeout=7200)
             if accepted.returncode: raise RuntimeError('EASY2560_ARCHIVE_SOURCE_READBACK_FAILED: ' + accepted.stderr[-2000:])
             proof = json.loads(accepted.stdout)
@@ -203,11 +212,14 @@ def main():
     p.add_argument('--job', required=True); p.add_argument('--poll-seconds', type=int, default=60)
     p.add_argument('--first-step', type=int, choices=core.STEPS, default=5)
     p.add_argument('--controller-suffix', help='New child directory for a verified dead failed controller')
+    p.add_argument('--login-host', help='Explicit source login host; default retains pinned Login1')
+    p.add_argument('--login-identity-json', help='Exact hostname, boot_id and pid_namespace pin')
     a = p.parse_args()
     secret = json.load(sys.stdin); password = secret.pop('password'); secret = None
     if not isinstance(password, str) or not password or '\n' in password:
         raise ValueError('EASY2560_RAM_PASSWORD_STDIN_REQUIRED')
-    run(a.base, a.commit, a.job, password, a.poll_seconds, a.first_step, a.controller_suffix)
+    run(a.base, a.commit, a.job, password, a.poll_seconds, a.first_step, a.controller_suffix,
+        login_host=a.login_host, login_identity_json=a.login_identity_json)
 
 
 if __name__ == '__main__': main()

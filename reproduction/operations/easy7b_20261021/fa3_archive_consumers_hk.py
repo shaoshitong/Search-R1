@@ -76,6 +76,7 @@ def source(controller_commit):
     names=(PREFIX+'fa3_archive_consumers_hk.py',PREFIX+'archive_post_callback_future_hk.py',
         'reproduction/easy2560_joint4/post_callback_dependencies.py',
         'reproduction/easy2560_joint4/archive_controller.py','reproduction/easy2560_joint4/checkpoint_archive.py',
+        'reproduction/easy2560_joint4/archive_login_route.py',
         'reproduction/prefix20_joint4/archive_supervisor.py')
     for name in names:
         path=canonical(root/name);row=proof['files'][name]
@@ -91,6 +92,43 @@ def future_module(root):
     need(result.STEPS==STEPS and result.HELPER_COMMIT=='9a5025a2471c5a3cf4476a0f5981e1c99af8dc06',
          'FROZEN_FUTURE_API_DIFFERS')
     return result
+
+
+def route_module(root):
+    """No package import: frozen helper.bootstrap must still load only083."""
+    path=root/'reproduction/easy2560_joint4/archive_login_route.py'
+    spec=importlib.util.spec_from_file_location('_fa3_private_archive_route_'+uuid.uuid4().hex,str(path))
+    result=importlib.util.module_from_spec(spec);spec.loader.exec_module(result)
+    return result
+
+
+def configured_route(root,login_host=None,login_identity_json=None):
+    module=route_module(root)
+    host,identity=module.resolve_login_route(login_host,login_identity_json)
+    identity_json=json.dumps(identity,sort_keys=True)
+    def transport(command):
+        return module.ssh_argv(command,login_host=host,login_identity_json=identity_json)
+    flags=[]
+    # No new flags on the default launch; explicit routes are propagated as a
+    # complete public pin, never via credentials or inherited environment.
+    if login_host is not None or login_identity_json is not None:
+        flags=['--login-host',host,'--login-identity-json',identity_json]
+    return transport,module.route_record(host,identity_json),flags
+
+
+def bind_private_installer_route(helper,route):
+    """Change only new helper-generated code; never its frozen file/globals.
+
+    The original installer independently checks uid and hostname after the
+    transport has checked hostname, boot_id and pid namespace. Retain both.
+    """
+    original=helper.remote_install_code
+    marker="socket.gethostname()=='ACD-Login-1'"
+    def remote_install_code():
+        code=original()
+        need(code.count(marker)==1,'FROZEN_INSTALLER_HOST_ASSERTION_DIFFERS')
+        return code.replace(marker,'socket.gethostname()=='+repr(route['hpc_identity']['hostname']))
+    helper.remote_install_code=remote_install_code
 
 
 def configure(future,helper,base,training_commit,job):
@@ -137,14 +175,15 @@ def _detach(command,cwd,env,password,receipt_path,stdout_path,identity):
     return record
 
 
-def launch(base,training_commit,job,password,controller_commit):
+def launch(base,training_commit,job,password,controller_commit,*,login_host=None,login_identity_json=None):
     need(socket.gethostname()=='xielab3' and os.getuid()==1002,'HKUST3_OWNER_REQUIRED')
     base,training_commit,job=arguments(base,training_commit,job);root,code=source(controller_commit)
+    _,route,route_flags=configured_route(root,login_host,login_identity_json)
     locations=paths(job);bundle=locations['bundle'];bundle.mkdir(parents=True,exist_ok=True)
     identity=dict(base=str(base),training_commit=training_commit,source_job=job,run_id=RUN,
         controller_commit=controller_commit,source_root=str(root),requested_steps=list(STEPS),
         first_step=50,historical_CP5_replayed=False,training_jobs_submitted=0,training_modified=False,
-        old_controllers_modified=False,credentials_persisted=False,public_source_files=code)
+        old_controllers_modified=False,credentials_persisted=False,public_source_files=code,source_ssh_route=route)
     with (bundle/'launch.lock').open('a') as lock:
         fcntl.flock(lock.fileno(),fcntl.LOCK_EX|fcntl.LOCK_NB)
         need(not any((bundle/name).exists() for name in ('launch-claim.json','launch-receipt.json','failure.json')),
@@ -157,10 +196,10 @@ def launch(base,training_commit,job,password,controller_commit):
         env.pop('SSHPASS',None)
         try:
             core_command=[sys.executable,'-B','-m','reproduction.easy2560_joint4.archive_controller',
-                '--base',str(base),'--commit',training_commit,'--job',job,'--first-step','50']
+                '--base',str(base),'--commit',training_commit,'--job',job,'--first-step','50']+route_flags
             core=_detach(core_command,root,env,password,bundle/'core-launch-receipt.json',bundle/'core.stdout.log',identity)
             companion_command=[sys.executable,'-B',str(root/(PREFIX+'fa3_archive_consumers_hk.py')),
-                'companion','--base',str(base),'--commit',training_commit,'--job',job,'--controller-commit',controller_commit]
+                'companion','--base',str(base),'--commit',training_commit,'--job',job,'--controller-commit',controller_commit]+route_flags
             companion=_detach(companion_command,root,env,password,bundle/'companion-launch-receipt.json',
                               bundle/'companion.stdout.log',identity)
             result=dict(identity,status='NEW_FA3_CORE_AND_POST_CALLBACK_CONSUMERS_LAUNCHED',
@@ -173,10 +212,15 @@ def launch(base,training_commit,job,password,controller_commit):
             raise RuntimeError('FA3_ARCHIVE_LAUNCH_UNCERTAIN_INSPECT_PRESERVED_BIRTHS') from None
 
 
-def run_companion(base,training_commit,job,password,controller_commit,poll_seconds=60):
+def run_companion(base,training_commit,job,password,controller_commit,poll_seconds=60,
+                  *,login_host=None,login_identity_json=None):
     need(socket.gethostname()=='xielab3' and os.getuid()==1002,'HKUST3_OWNER_REQUIRED')
     base,training_commit,job=arguments(base,training_commit,job);root,_=source(controller_commit)
-    future=future_module(root);helper=future.frozen_helper();ssh_argv=helper.bootstrap()
+    ssh_argv,route,_=configured_route(root,login_host,login_identity_json)
+    future=future_module(root);helper=future.frozen_helper();helper.bootstrap()
+    # bootstrap's frozen083 transport remains unchanged. This new process
+    # uses the separately SHA-bound public route function for every operation.
+    bind_private_installer_route(helper,route)
     # Reuse the already installed immutable boundary tool. Only its original
     # four-field source envelope is synthesized; no package or file is patched.
     boundary_raw=helper.HK_TOOL.read_text()
@@ -193,7 +237,7 @@ def run_companion(base,training_commit,job,password,controller_commit,poll_secon
         identity=dict(base=str(base),source_job=job,run_id=RUN,training_commit=training_commit,
             controller_commit=controller_commit,requested_steps=list(STEPS),birth=birth(os.getpid()),
             historical_CP5_replayed=False,credentials_persisted=False,training_modified=False,
-            old_controllers_modified=False,jobs_submitted=0,checked_unix=time.time())
+            old_controllers_modified=False,jobs_submitted=0,source_ssh_route=route,checked_unix=time.time())
         helper.write_json(control/'claim.json',identity);completed=[]
         try:
             helper.install_immutable(helper.HK_TOOL,raw);future.install_dependency(helper,data)
@@ -261,14 +305,18 @@ def observe(base,training_commit,job,controller_commit):
 def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('mode',choices=('launch','companion','observe'))
     parser.add_argument('--base',required=True);parser.add_argument('--commit',required=True)
-    parser.add_argument('--job',required=True);parser.add_argument('--controller-commit',required=True);args=parser.parse_args(argv)
+    parser.add_argument('--job',required=True);parser.add_argument('--controller-commit',required=True)
+    parser.add_argument('--login-host',help='Explicit source login host; default retains pinned Login1')
+    parser.add_argument('--login-identity-json',help='Exact hostname, boot_id and pid_namespace pin')
+    args=parser.parse_args(argv)
     if args.mode=='observe':result=observe(args.base,args.commit,args.job,args.controller_commit)
     else:
         raw=sys.stdin.buffer.read(MAX_ENVELOPE+1);need(0<len(raw)<=MAX_ENVELOPE,'SMALL_PASSWORD_STDIN_REQUIRED')
         envelope=json.loads(raw);raw=None;need(set(envelope)=={'password'},'PASSWORD_STDIN_SCHEMA_DIFFERS')
         password=envelope.pop('password');need(isinstance(password,str) and 0<len(password)<=4096 and
             '\n' not in password and '\x00' not in password,'RAM_PASSWORD_REQUIRED')
-        result=(launch if args.mode=='launch' else run_companion)(args.base,args.commit,args.job,password,args.controller_commit)
+        result=(launch if args.mode=='launch' else run_companion)(args.base,args.commit,args.job,password,args.controller_commit,
+            login_host=args.login_host,login_identity_json=args.login_identity_json)
         password=None
     print(json.dumps(result,sort_keys=True),flush=True)
 
