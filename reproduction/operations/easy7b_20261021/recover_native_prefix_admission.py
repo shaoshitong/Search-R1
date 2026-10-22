@@ -37,7 +37,7 @@ def recover(failed_base, target_base, commit, excluded_node='ACD1-13'):
     if target.exists():
         raise ValueError('Recovery target already exists; inspect its claims instead of replaying')
     target.mkdir()
-    preserved = target/'preparation/failed-job-'+job
+    preserved = target/'preparation'/('failed-job-'+job)
     preserved.mkdir(parents=True)
     files = {}
     names = ['logs/run-manifest.json', 'logs/training-'+job+'.log', 'logs/native-gpu-inventory.xml',
