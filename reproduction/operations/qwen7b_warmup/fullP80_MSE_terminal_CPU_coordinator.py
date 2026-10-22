@@ -1,4 +1,4 @@
-"""Two explicit full-P80 MSE jobs: metadata wait, then existing693 CPU entry.
+"""Full-P80 MSE metadata observation retry, then existing693 CPU entry.
 
 One independent worker/config per actual job. The worker never imports model
 packages or holds the common CPU mutex; the existing CPU child owns that mutex.
@@ -6,6 +6,8 @@ packages or holds the common CPU mutex; the existing CPU child owns that mutex.
 import argparse,fcntl,hashlib,json,os,subprocess,time,traceback
 from pathlib import Path
 JOBS={'750189':(9137,2026102227),'750190':(19137,2026102302)}
+class ObservationUnavailable(RuntimeError):pass
+class TrainingTerminalFailure(RuntimeError):pass
 def read(p):return json.loads(Path(p).read_bytes())
 def proof(p):
  p=Path(p);raw=p.read_bytes();return dict(path=str(p),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
@@ -23,18 +25,38 @@ def validate_complete(value,job):
 def inspect_terminal(base,job):
  if str(read(base/'root-submission.json')['job_id'])!=job:raise ValueError('Actual full MSE job handle changed')
  reply=subprocess.run(['sacct','-X','-n','-P','-j',job,'--format=JobIDRaw,State,ExitCode'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=15)
- if reply.returncode:raise RuntimeError('Accounting query failed: '+reply.stderr[-500:])
+ if reply.returncode:raise ObservationUnavailable('sacct query temporarily unavailable: '+reply.stderr[-500:])
  rows=[r.split('|')[:3]for r in reply.stdout.splitlines()if r.split('|')[0]==job];ok=[job,'COMPLETED','0:0']in rows
  failed=[r for r in rows if r[1].split('+')[0]in('FAILED','CANCELLED','TIMEOUT','OUT_OF_MEMORY','NODE_FAIL','BOOT_FAIL','DEADLINE','PREEMPTED','REVOKED')or(r[1]=='COMPLETED'and r[2]!='0:0')]
- if failed:raise RuntimeError('Actual training terminal failure; checkpoint not opened: '+repr(failed))
+ if failed:raise TrainingTerminalFailure('Actual training terminal failure; checkpoint not opened: '+repr(failed))
+ if not rows:raise ObservationUnavailable('sacct row temporarily unavailable for same job '+job)
  complete=read(base/'complete.json')if(base/'complete.json').is_file()else None
- if ok and complete is None:raise RuntimeError('Actual successful complete receipt missing; no CPU child launched')
+ if ok and complete is None:raise ObservationUnavailable('Actual successful complete receipt not yet visible; no CPU child launched')
  if ok:validate_complete(complete,job)
  progress={}
  for rank in(0,1):
   p=base/('progress-rank-%d.json'%rank)
   if p.is_file():r=read(p);progress[str(rank)]={k:r.get(k)for k in('cursor','actual_Adam_updates','epoch','time')}
  return ok,dict(job_id=job,accounting=reply.stdout.strip(),actual_complete=complete,rank_progress=progress)
+def wait_for_terminal(base,job,out,interval=30):
+ """Only waiting-stage observation failures retry; real failures stay fatal."""
+ polls=0;observation_errors=0;last_success=None
+ while True:
+  polls+=1
+  try:
+   ready,observed=inspect_terminal(base,job)
+   atomic(out/'progress.json',dict(stage='TERMINAL_CONFIRMED_READY_FOR_CPU'if ready else'WAITING_ACTUAL_TERMINAL_NO_CP_OR_COMMON_LOCK_HELD',polls=polls,observation_errors=observation_errors,CP_or_tensor_opened=False,shared_CPU_mutex_held=False,time=time.time(),**observed))
+   last_success=dict(time=time.time(),**observed)
+  except(OSError,json.JSONDecodeError,subprocess.TimeoutExpired,ObservationUnavailable)as error:
+   observation_errors+=1;row=dict(stage='OBSERVATION_RETRY_NO_CP_OR_COMMON_LOCK_HELD',job_id=job,polls=polls,observation_errors=observation_errors,error_type=type(error).__name__,error=repr(error),CP_or_tensor_opened=False,shared_CPU_mutex_held=False,time=time.time())
+   try:
+    with(out/'observation-errors.jsonl').open('a')as f:f.write(json.dumps(row,sort_keys=True)+'\n')
+    atomic(out/'progress.json',dict(row,last_successful_observation=last_success))
+   except OSError as log_error:
+    print(json.dumps(dict(row,observation_record_write_error=repr(log_error))),flush=True)
+   time.sleep(interval);continue
+  if ready:return observed
+  time.sleep(interval)
 def accepted_metadata(value,cfg,complete):
  job=str(cfg['job_id']);init,plan=JOBS[job]
  required=dict(status='TERMINAL_FULL169028_P80_MSE_CPU_SHA_MODEL_ADAM_RNG_PLAN_PHYSICAL_GATE_ACCEPTED',job_id=job,epoch=10,batch_attempts=13210,actual_Adam_updates=13210,EMA_updates=13210,epoch_complete=True,next_epoch=11,within_next_epoch_question_position=0,CPU_only=True,final4096_read=False)
@@ -47,11 +69,7 @@ def main():
  p=argparse.ArgumentParser();p.add_argument('--config',required=True);p.add_argument('--config-sha',required=True);a=p.parse_args();assert proof(a.config)['sha256']==a.config_sha;cfg=read(a.config);job=str(cfg['job_id']);assert job in JOBS;out=Path(cfg['out']);base=Path(cfg['base']);init,plan=JOBS[job];assert base.name=='full169028-L15P80-MSE-ownG5-physical-seed%d-plan%d-20261023-v3'%(init,plan)
  guard=(out/'coordinator.lock').open('a+');fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB);atomic(out/'controller.json',dict(pid=os.getpid(),start_ticks=ticks(os.getpid()),source=proof(__file__),config=proof(a.config),job_id=job,time=time.time()))
  try:
-  polls=0
-  while True:
-   ready,observed=inspect_terminal(base,job);polls+=1;atomic(out/'progress.json',dict(stage='TERMINAL_CONFIRMED_READY_FOR_CPU'if ready else'WAITING_ACTUAL_TERMINAL_NO_CP_OR_COMMON_LOCK_HELD',polls=polls,CP_or_tensor_opened=False,shared_CPU_mutex_held=False,time=time.time(),**observed))
-   if ready:break
-   time.sleep(30)
+  observed=wait_for_terminal(base,job,out)
   entry=Path(cfg['entry']['path']);validator=Path(cfg['validator']['path']);assert proof(entry)==cfg['entry']and proof(validator)==cfg['validator'];dest=Path(cfg['accepted']);reused=dest.exists()
   if not reused:
    log=out/'epoch10-validator.log'

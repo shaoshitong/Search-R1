@@ -41,3 +41,7 @@
 6. 之后才在两个未参与选型的盲2048问题池运行最终统一评价，报告每seed、每池及预先定义的比较/不确定性，完成checkpoint、最新source和任务资源收尾验收。
 
 **目标必须在未参与选型的新问题上形成稳定、可复核的提升；当前前瞻规则已经具体固定为Top512主指标的上述判据，不能只凭BA改善替代。作业正常结束、开发指标变好、源码已部署或模型可加载都不能独立满足这一判据。**
+
+## Required execution helpers now actually ready
+
+The [selected fullP80 root controller](fullP80-selected-root-control/README.md) is source-staged and its real early bind correctly returns WAITING for the missing completed family selection. It fills the previously missing audit/freeze/submit execution bridge; it is not an actual selection or freeze. The seed2 terminal metadata follower was independently found dead on a transient progress-file read, repaired separately, and [verified in two actual runtime polls](fullP80-MSE-terminal-CPU-coordinator-retry-v2/ACTUAL-V2-RUNTIME-REPAIR-ACCEPTANCE.json), without changing training or the healthy seed1 follower. Current completed epochs and non-monotonic BA are preserved in the [latest full table](full169028-L15P80-MSE-ownG5/LATEST-COMPLETED-EPOCHS.md). Final access remains pending.
