@@ -32,6 +32,8 @@ result = {'observation_time': snapshot['time'], 'job_id': '749576',
 proof = HERE/('actual-epoch-%02d-proof.json'%epoch)
 proof.write_text(json.dumps(result, sort_keys=True)+'\n')
 owned = [proof, HERE/'actual-all-completed-epoch-metrics.json', Path(__file__)]
+for name in ('follow-full-ten-epochs-mae-campus.py','actual-observer-campus-handoff.json','control-read-errors.jsonl'):
+    if (HERE/name).exists(): owned.append(HERE/name)
 for template in ('actual-score-spread-baselines-epoch-%02d.json', 'actual-same-epoch-three-arm-%02d.json',
                  'read-score-spread-baselines-epoch-%02d.py', 'read-same-epoch-three-arm-%02d.py'):
     path = HERE/(template%epoch)
