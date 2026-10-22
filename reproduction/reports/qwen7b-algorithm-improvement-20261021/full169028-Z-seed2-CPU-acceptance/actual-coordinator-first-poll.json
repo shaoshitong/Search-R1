@@ -1,0 +1,59 @@
+{
+  "status": "FULL_Z_SEED2_DURABLE_TERMINAL_CPU_COORDINATOR_STAGED",
+  "source_commit": "edafd6e8a65b8bd07cb41fde9ea697423ca5ba63",
+  "worker": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/fullZ-seed2-749935-terminal-CPU-coordinator-20261023-v1/code-edafd6e8a65b/fullZ_seed2_terminal_CPU_coordinator.py",
+    "bytes": 4773,
+    "sha256": "1cdd6073d27f82f6b3f356bfae8ce48f0dc0bc6131b31068a14141dc2ca55037"
+  },
+  "config": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/fullZ-seed2-749935-terminal-CPU-coordinator-20261023-v1/code-edafd6e8a65b/config.json",
+    "bytes": 1192,
+    "sha256": "c34409e86512d251d59bbdaf45a7d699792916cad866f687d669c48d843ed523"
+  },
+  "model_or_checkpoint_read": false,
+  "Slurm_mutated": false,
+  "final4096_read": false,
+  "controller.json": {
+    "config": {
+      "bytes": 1192,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/fullZ-seed2-749935-terminal-CPU-coordinator-20261023-v1/code-edafd6e8a65b/config.json",
+      "sha256": "c34409e86512d251d59bbdaf45a7d699792916cad866f687d669c48d843ed523"
+    },
+    "job_id": "749935",
+    "pid": 2764625,
+    "source": {
+      "bytes": 4773,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/fullZ-seed2-749935-terminal-CPU-coordinator-20261023-v1/code-edafd6e8a65b/fullZ_seed2_terminal_CPU_coordinator.py",
+      "sha256": "1cdd6073d27f82f6b3f356bfae8ce48f0dc0bc6131b31068a14141dc2ca55037"
+    },
+    "start_ticks": "1165095",
+    "time": 1792700920.5481493
+  },
+  "progress.json": {
+    "CP_or_tensor_opened": false,
+    "accounting": "749935|RUNNING|0:0",
+    "actual_complete": null,
+    "job_id": "749935",
+    "polls": 1,
+    "rank_progress": {
+      "0": {
+        "cursor": 7038,
+        "epoch": 6,
+        "head_gradient_L2": 9.881338825909774,
+        "native_gradient_L2": 6.939865444268835,
+        "time": 1792700920.312965
+      },
+      "1": {
+        "cursor": 7038,
+        "epoch": 6,
+        "head_gradient_L2": 9.881338825909774,
+        "native_gradient_L2": 6.939865444268835,
+        "time": 1792700920.3133838
+      }
+    },
+    "shared_CPU_mutex_held": false,
+    "stage": "WAITING_ACTUAL_TERMINAL_NO_CP_OR_COMMON_LOCK_HELD",
+    "time": 1792700920.6656308
+  }
+}

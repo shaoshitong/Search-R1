@@ -1,0 +1,161 @@
+{
+  "time": 1792700859.4573956,
+  "observer_pid": 42819,
+  "queue": {
+    "returncode": 0,
+    "stdout": "749935|q7b-full-Z-s19137|acd_u|RUNNING|1:32:20|ACD1-16",
+    "stderr": ""
+  },
+  "accounting": {
+    "returncode": 0,
+    "stdout": "749935|RUNNING|0:0|01:32:20|ACD1-16\n749965|COMPLETED|0:0|00:15:22|ACD1-51",
+    "stderr": ""
+  },
+  "cells": {
+    "current64": {
+      "job_id": "749965",
+      "actual_rank_epochs": [
+        10,
+        10
+      ],
+      "actual_rank_cursors": [
+        1280,
+        1280
+      ],
+      "actual_Adam_updates": [
+        1280,
+        1280
+      ],
+      "real_six_update_sequence": [
+        1275,
+        1276,
+        1277,
+        1278,
+        1279,
+        1280
+      ],
+      "real_six_updates_continuous": true,
+      "verified_two_samples_plus_six_updates": true,
+      "initial_head_sha256": "10684fda52c0f9f7b670b0472ccd8b7e581346e4d01572bc078a143cc782b41e",
+      "init_seed": 19137,
+      "train_plan_seed": 2026102302,
+      "diagnostic_seed": 2026102228,
+      "evaluation_epochs": [
+        "evaluation-epoch-00.json",
+        "evaluation-epoch-01.json",
+        "evaluation-epoch-02.json",
+        "evaluation-epoch-03.json",
+        "evaluation-epoch-04.json",
+        "evaluation-epoch-05.json",
+        "evaluation-epoch-06.json",
+        "evaluation-epoch-07.json",
+        "evaluation-epoch-08.json",
+        "evaluation-epoch-09.json",
+        "evaluation-epoch-10.json"
+      ],
+      "failures": {},
+      "checkpoint": {
+        "bytes": 3777431572,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-current64-seed19137-plan2026102302-L15P80-8192-20261023-v1/current64/checkpoint-epoch-10.pt",
+        "sha256": "044c919e2ed61ad2a9d23caee06f900c361de2bc527d6bca0f70bc97f68925eb"
+      },
+      "complete": {
+        "EMA_updates": 1280,
+        "actual_Adam_updates": 1280,
+        "batch_attempts": 1280,
+        "binding": {
+          "EMA_decay": 0.9995,
+          "architecture": "one_question_packed_global64_detached_window_topk_v1",
+          "cache_window_capacity": 0,
+          "capture_layer": 14,
+          "class_weighting": false,
+          "diagnostic_seed": 2026102228,
+          "fixed_m": 5,
+          "fixture": {
+            "bytes": 3880,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/fixture/fixture-complete.json",
+            "sha256": "a269f9d4bf22bef0e30afc7cbc0e9a708fb83cb73230fefa95106b56ec54d936"
+          },
+          "global_batch": 64,
+          "gradient_accumulation": 4,
+          "head_max_positions": 2048,
+          "init_seed": 19137,
+          "initial_head_sha256": "10684fda52c0f9f7b670b0472ccd8b7e581346e4d01572bc078a143cc782b41e",
+          "layer": 15,
+          "local_batch": 32,
+          "loss_gradient_scale": "N_eff/current_global_batch",
+          "lr": 5e-06,
+          "micro": 8,
+          "objective": "topk_ramp",
+          "official_actor_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+          "prefix": 80,
+          "question_prompt_occurrences_per_group": 1,
+          "reference_population": 2018,
+          "sampling_independent_of_EM": true,
+          "scaling_unbiased_claimed": false,
+          "seed": 2026102302,
+          "seed_source": "explicit_CLI",
+          "target_top_k": 500,
+          "topk_margin": 1.0,
+          "topk_scope": "current_global64_autograd_plus_detached_historical_scores",
+          "train_plan_seed": 2026102302,
+          "training_questions": 8192,
+          "zero_current_gradient_skips_Adam_and_EMA": true,
+          "zero_ramp_loss_skips_Adam_and_EMA": true
+        },
+        "cached_only_zero_current_gradient_batches": 0,
+        "cursor": 1280,
+        "epochs": 10,
+        "final4096_scored": false,
+        "margin_satisfied_batches": 0,
+        "status": "MATCHED_GLOBAL64_DETACHED_WINDOW_TOPK_COMPLETE",
+        "training_questions": 8192
+      }
+    },
+    "Z": {
+      "job_id": "749935",
+      "actual_rank_epochs": [
+        6,
+        6
+      ],
+      "actual_rank_cursors": [
+        6954,
+        6954
+      ],
+      "actual_Adam_updates": [
+        6954,
+        6954
+      ],
+      "real_six_update_sequence": [
+        6949,
+        6950,
+        6951,
+        6952,
+        6953,
+        6954
+      ],
+      "real_six_updates_continuous": true,
+      "verified_two_samples_plus_six_updates": true,
+      "initial_head_sha256": "d535b972ce10b74110b9c58264e5a1dced114b889896140b33484b31267e0acd",
+      "init_seed": 19137,
+      "train_plan_seed": 2026102302,
+      "diagnostic_seed": 2026102228,
+      "evaluation_epochs": [
+        "evaluation-epoch-00.json",
+        "evaluation-epoch-01.json",
+        "evaluation-epoch-02.json",
+        "evaluation-epoch-03.json",
+        "evaluation-epoch-04.json",
+        "evaluation-epoch-05.json"
+      ],
+      "failures": {},
+      "checkpoint": {
+        "bytes": 3773206164,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-Z-seed19137-plan2026102302-P20-20261023-v1/checkpoint-epoch-05.pt",
+        "sha256": "3295a0f1878ef9d0247bf0d57d9d9d95f99179d9879b92510a1ad47007abf700"
+      },
+      "complete": null
+    }
+  },
+  "final4096_read": false
+}
