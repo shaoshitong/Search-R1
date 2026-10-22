@@ -1,6 +1,6 @@
 """Pure metadata guards only; no large arrays, model/checkpoint or GPU loads."""
 import copy,unittest
-from .accept_full169028_L15P80_MSE_checkpoint import A,FIXTURE,PARENTS,recipe_for,verify_saved_phase
+from .accept_full169028_L15P80_MSE_checkpoint import A,FIXTURE,PARENTS,recipe_for,verify_saved_phase,new_sampling_diagnostic,add_sampling_question,finish_sampling_diagnostic
 from .online_packed_full169028_MSE_P80 import full_acceptance_alignment_ref,full_acceptance_physical_source_ref,validate_physical_source_contract
 class FullAcceptanceMetadata(unittest.TestCase):
  def binding(self,parent):
@@ -24,4 +24,7 @@ class FullAcceptanceMetadata(unittest.TestCase):
   valid=dict(status='ALL169028_OWN_G10_PHYSICAL_SEAL_EXECUTION_AND_OWN_EM_RESOLVED',all_selected_own_EM_matches_canonical=True,whole_G5_not_mixed=True,selection_used_EM=False);validate_physical_source_contract(valid)
   for k,v in [('whole_G5_not_mixed',False),('all_selected_own_EM_matches_canonical',False),('selection_used_EM',True)]:
    with self.assertRaises(ValueError):validate_physical_source_contract(dict(valid,**{k:v}))
+ def test_exact_hypergeometric_homogeneous_expectation(self):
+  c=new_sampling_diagnostic();add_sampling_question(c,[1]*5+[0]*5,[1]*5);add_sampling_question(c,[1]+[0]*9,[0]*5);add_sampling_question(c,[1]*9+[0],[1]*5);add_sampling_question(c,[0]*10,[0]*5);d=finish_sampling_diagnostic(c)
+  self.assertEqual(d['expectation_denominator'],252);self.assertEqual(d['K10_strata']['5']['probability_G5_homogeneous_numerator_over_252'],2);self.assertEqual(d['K10_strata']['1']['expected_G5_all_wrong'],.5);self.assertEqual(d['K10_strata']['9']['expected_G5_all_correct'],.5);self.assertEqual(d['G10_Mixed_questions'],3);self.assertEqual(d['observed_G10Mixed_to_G5_homogeneous'],3);self.assertEqual(d['expected_G10Mixed_to_G5_homogeneous'],254/252)
 if __name__=='__main__':unittest.main()

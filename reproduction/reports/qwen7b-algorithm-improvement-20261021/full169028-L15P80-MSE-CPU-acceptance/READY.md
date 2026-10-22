@@ -3,3 +3,7 @@ Independent terminal-only CPU acceptance for the two full169028 L15/P80/MSE phys
 Every acceptance requires actual whole-task COMPLETED0:0 plus complete10epochs/13210updates, source/fixture/independent acceptance hashes, actual physical execution/seal/ownEM resolution, fullP20 prompt/prefix/ownEM alignment, identical fixed dev/trainB gates, ten169028-question ownG5 sampling plans, explicit seed/head identity, selected immutable raw/EMA/Adam/two-rank RNG, and explicit epoch-complete next-epoch data cursor. Existing shared8GiB CPU mutex serializes all model loaders. Geometry is officialblock15/P80/head2048. CPU restoration does not claim CUDA next-update equality.
 
 Default selected epoch10; --epoch1..10 is allowed only after the whole job has completed. All tensor/state files remain remote. Stage only now; no complete/accepted fixture or job currently required to compile/stage the entry, but every gate is mandatory when acceptance later runs.
+
+accepted.json additionally preserves exact recursive refs accepted_input.fixture/physical_source_contract/P20_alignment/independent_acceptance for future scorer qualification.
+
+Goal6 diagnostics are computed during the already-required ten actual-plan verification passes: perK10 and each epoch, observed G10Mixed→G5allcorrect/allwrong versus exact hypergeometric expectation; numerator/denominator252 retained. No additional RAW scan or sampling-plan reconstruction is introduced for this diagnostic. No new class weighting/filtering.
