@@ -42,12 +42,21 @@ def append(experiment, checkpoint, epoch, metrics, source, top=None, independent
 warmup_source = REPORTS / 'qwen7b-four-epoch-unseen2048-20261020/delivery/metrics-and-acceptance.json'
 warmup = read(warmup_source)
 selection = {r['epoch']: r for r in warmup['comparison']['results']}
+derived_path = OUTPUT / 'old-unseen641-warmup-derived-BA.json'
+derived = read(derived_path) if derived_path.exists() else None
+derived_by_epoch = {r['epoch']: r for r in derived['results']} if derived else {}
 for checkpoint in warmup['epochs']:
     epoch = checkpoint['epoch']
     assert checkpoint['completed_epoch'] and checkpoint['metrics']['train']['weight_kind'] == 'EMA0.99'
     append('7B native L26→block27 Prefix5 trajectoryBCE+MixedBCE warmup', checkpoint['path'], epoch,
            checkpoint['metrics'], warmup_source, selection[epoch]['selected512']['true_mixed'],
-           train_pool='Fixed original169028 questions/G5 evaluation; fit uses233175 three-class-balanced groups with repeated whole G5s')
+           independent_BA=derived_by_epoch.get(epoch, {}).get('mixed_balanced_accuracy'),
+           train_pool='Fixed original169028 questions/G5 evaluation; fit uses233175 three-class-balanced groups with repeated whole G5s',
+           extra_sources=[str(derived_path.resolve())] if derived else [])
+    if derived:
+        measured = rows[-2]
+        measured['test_BA_origin'] = 'Authorized CPU-only confusion of original saved EMA q>=0.5 and own labels; no new forward'
+        measured['test_confusion'] = derived_by_epoch[epoch]['confusion']
 tail = warmup['preserved_tail_checkpoint_audit']['checkpoint']
 append('7B native Prefix5 warmup E5 preserved tail ONLY', tail['path'], 5, {}, warmup_source,
        train_pool='Original169028/G5; only4 updates of E5 preserved after user reduced budget to4 full epochs',
@@ -123,11 +132,12 @@ if weighted.exists():
 
 result = {'status': 'EXISTING_LOCAL_EARLY_7B_WARMUP_FINETUNE_HISTORY_COMPILED', 'time': time.time(),
           'rows': rows, 'sources': sources, 'new_evaluation_performed': False, 'final4096_read': False,
+          'authorized_CPU_existing_prediction_summary_performed': derived is not None,
           'scope': '20261019/20 early warmup/Mixed-only/balanced rank1; later weighted fork missing-status inventory only',
           'limitations': ['Warmup completed4 full epochs; E5 is only a preserved4-update tail, not a fifth completed epoch.',
                           'Existing early reports evaluate EMA0.99; raw metrics are explicitly missing.',
                           'test_BA refers to independent2048 when actually reported; fixed512 diagnostic is a separate field.',
-                          'No independent2048 BA was present for warmupE1..4 or balancedE4/E5 in the inspected local reports.',
+                          'WarmupE1..4 independent BA is supplied by authorized CPU confusion of original saved q/own labels; balancedE4/E5 independent BA remains missing locally.',
                           'Original Mixed-only Prefix5 launch attempts failed or were superseded before a completed reported evaluation.',
                           'This is history of evaluated probe Mixed discrimination, not downstream actor QA EM.']}
 OUTPUT.mkdir(parents=True, exist_ok=True)
@@ -135,7 +145,9 @@ OUTPUT.mkdir(parents=True, exist_ok=True)
 lines = ['# Early7B warmup and fine-tune history', '',
          'Only existing local small reports were read. All values below are actual recorded EMA0.99 results; raw metrics were not reported. '
          'The independent2048 pool here contains641 Mixed questions (31.2988%), distinct from the later663-Mixed HF fixedG5 pool. '
-         'Do not rank results across those pools. No new scoring or GPU evaluation was run.', '',
+         'Do not rank results across those pools. No new forward or GPU evaluation was run. '
+         'Warmup independent BA was added by authorized CPU-only counting of the original saved EMA q>=0.5 versus same-trajectory labels, '
+         'with all original prediction SHA/bytes, bank/groups manifest, ordered qids and own G5 identity checked.', '',
          '| Experiment/checkpoint | Train Mixed BA | Fixed512 diagnostic BA | Independent2048 BA | Actual Mixed in top512 |',
          '| --- | ---: | ---: | ---: | ---: |']
 def percent(value):return 'missing' if value is None else '%.4f%%' % (100*value)
@@ -155,8 +167,8 @@ lines += ['', 'Mixed-only training has no negative class, so its train Mixed bal
 for source, proof in sources.items():
     lines.append('- `%s` (%d bytes, SHA256 `%s`).' % (source, proof['bytes'], proof['sha256']))
 lines += ['', 'Each JSON row also identifies the actual remote checkpoint path, pool identity, weight state, '
-          'source and comparability limitations. Missing values remain null; none were inferred from confusion counts, '
-          'other states or later pools.']
+          'source and comparability limitations. Missing values remain null; no metric was borrowed from another weight state or later pool. '
+          'The authorized warmup CPU derivation preserves the actual threshold0.5 confusion matrices in the JSON.']
 (OUTPUT / 'early-warmup-finetune.md').write_text('\n'.join(lines) + '\n')
 print(json.dumps({'rows': len(rows), 'actual_EMA_rows': sum(r['state']=='EMA0.99' and r['status']=='MEASURED_EXISTING_REPORT' for r in rows),
                   'output': str(OUTPUT), 'new_evaluation_performed': False}))

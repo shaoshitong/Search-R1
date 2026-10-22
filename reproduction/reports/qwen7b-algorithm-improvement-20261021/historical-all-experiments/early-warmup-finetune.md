@@ -1,13 +1,13 @@
 # Early7B warmup and fine-tune history
 
-Only existing local small reports were read. All values below are actual recorded EMA0.99 results; raw metrics were not reported. The independent2048 pool here contains641 Mixed questions (31.2988%), distinct from the later663-Mixed HF fixedG5 pool. Do not rank results across those pools. No new scoring or GPU evaluation was run.
+Only existing local small reports were read. All values below are actual recorded EMA0.99 results; raw metrics were not reported. The independent2048 pool here contains641 Mixed questions (31.2988%), distinct from the later663-Mixed HF fixedG5 pool. Do not rank results across those pools. No new forward or GPU evaluation was run. Warmup independent BA was added by authorized CPU-only counting of the original saved EMA q>=0.5 versus same-trajectory labels, with all original prediction SHA/bytes, bank/groups manifest, ordered qids and own G5 identity checked.
 
 | Experiment/checkpoint | Train Mixed BA | Fixed512 diagnostic BA | Independent2048 BA | Actual Mixed in top512 |
 | --- | ---: | ---: | ---: | ---: |
-| 7B native L26→block27 Prefix5 trajectoryBCE+MixedBCE warmup E1 (EMA0.99) | 59.6270% | 54.6659% | missing | 169/512 |
-| 7B native L26→block27 Prefix5 trajectoryBCE+MixedBCE warmup E2 (EMA0.99) | 66.8419% | 53.2891% | missing | 181/512 |
-| 7B native L26→block27 Prefix5 trajectoryBCE+MixedBCE warmup E3 (EMA0.99) | 73.7080% | 54.1050% | missing | 177/512 |
-| 7B native L26→block27 Prefix5 trajectoryBCE+MixedBCE warmup E4 (EMA0.99) | 80.0430% | 54.5944% | missing | 178/512 |
+| 7B native L26→block27 Prefix5 trajectoryBCE+MixedBCE warmup E1 (EMA0.99) | 59.6270% | 54.6659% | 55.9267% | 169/512 |
+| 7B native L26→block27 Prefix5 trajectoryBCE+MixedBCE warmup E2 (EMA0.99) | 66.8419% | 53.2891% | 55.5854% | 181/512 |
+| 7B native L26→block27 Prefix5 trajectoryBCE+MixedBCE warmup E3 (EMA0.99) | 73.7080% | 54.1050% | 54.5792% | 177/512 |
+| 7B native L26→block27 Prefix5 trajectoryBCE+MixedBCE warmup E4 (EMA0.99) | 80.0430% | 54.5944% | 53.0642% | 178/512 |
 | 7B native Prefix5 warmup E5 preserved tail ONLY E5 (EMA0.99) | missing | missing | missing | missing |
 | Mixed-only continuation from warmupE2, Prefix20, rank weight0.1 E1 (EMA0.99) | missing | 51.3864% | 50.3138% | 182/512 |
 | Prefix20 1:1 Mixed/nonMixed continuation, rank weight1.0 E2 (EMA0.99) | 73.8221% | 53.5235% | 56.3608% | 182/512 |
@@ -26,6 +26,7 @@ WarmupE5 was not completed: the user changed the target to4 full epochs and a4-u
 ## Exact local sources
 
 - `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-four-epoch-unseen2048-20261020/delivery/metrics-and-acceptance.json` (72467 bytes, SHA256 `94a29b1f641fd89eb733f36eeaa26e5e981bd04a529fe3ea0959fc9984a513f2`).
+- `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/historical-all-experiments/old-unseen641-warmup-derived-BA.json` (4295 bytes, SHA256 `241203dd91a5cb81619cd0ddcd16a860fa6644fce9685ef6d99ccc19f80783e2`).
 - `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-prefix20-balanced-rank1-20261020/mixed-error-diagnosis/mixed-ranking-diagnosis.json` (14872 bytes, SHA256 `30fb67e9b1fbee1592cb67f6a3dfaa356d91ab7fa18332af4cb39b3465fe7a4d`).
 - `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-prefix20-mixed-20261020/epoch1-complete/prefix20-epoch1-complete-audit.json` (5664 bytes, SHA256 `37829b6eb7431dbd12b8fac88b7233a01e910291e40f87902d76f360ab61d3de`).
 - `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-prefix20-mixed-20261020/prefix20-current-source-config.json` (9259 bytes, SHA256 `e9e6ff1ed44036b3070a21a9064b91a467f19d962f8af1de68a690cf1590aef9`).
@@ -39,4 +40,4 @@ WarmupE5 was not completed: the user changed the target to4 full epochs and a4-u
 - `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-mixed-ft-cp2-20261020/five-epoch-alias-repair/mixed-ft-first-trial-failure.json` (7175 bytes, SHA256 `5d2f35b2c58e64b63cbab45eadea1847dfdada2d0152f35e3f294d0805b36cb5`).
 - `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/mixed-direct-e1-uniform-g5-weighted/actual-status.json` (65 bytes, SHA256 `d965ee59d617e3eaa0319aa7b7a43af3ffc889aff30bb55d57de75cbd9cd9289`).
 
-Each JSON row also identifies the actual remote checkpoint path, pool identity, weight state, source and comparability limitations. Missing values remain null; none were inferred from confusion counts, other states or later pools.
+Each JSON row also identifies the actual remote checkpoint path, pool identity, weight state, source and comparability limitations. Missing values remain null; no metric was borrowed from another weight state or later pool. The authorized warmup CPU derivation preserves the actual threshold0.5 confusion matrices in the JSON.
