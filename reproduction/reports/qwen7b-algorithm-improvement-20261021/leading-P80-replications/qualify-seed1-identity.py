@@ -14,13 +14,19 @@ for name,ref in REFS.items():
   if isinstance(node,ast.Call)and isinstance(node.func,ast.Attribute)and isinstance(node.func.value,ast.Name)and node.func.value.id=='torch'and node.func.attr=='manual_seed'and len(node.args)==1:
    try:initial.append(ast.literal_eval(node.args[0]))
    except (ValueError,TypeError):pass
+ sampler_ref=bound
+ if not plans:
+  imported=[n for n in tree.body if isinstance(n,ast.ImportFrom)and n.module=='online_packed_matched_objective'and {'SEED','epoch_plan'}<={a.name for a in n.names}];assert len(imported)==1
+  sampler_relative='reproduction/operations/qwen7b_warmup/online_packed_matched_objective.py';sampler_ref=dict(pub['files'][sampler_relative],path=str(pathlib.Path(pub['code_root'])/sampler_relative));sampler_tree=ast.parse(checked(sampler_ref).read_text())
+  for node in ast.walk(sampler_tree):
+   if isinstance(node,ast.Assign)and any(isinstance(t,ast.Name)and t.id=='SEED'for t in node.targets):plans.append(ast.literal_eval(node.value))
  assert initial==[9137]and plans==[2026102227]
  binding=accept['binding'];assert binding['seed']==2026102227 and binding['initial_head_sha256']=='777b9a7c77d0402084fcb99929b05c975011e8bf17fe44e4cfe1db016bb02327'
  epoch=accept['epoch'];plan=accept['epoch_plan_SHAs'][str(epoch)];planref=pathlib.Path(accept['checkpoint']['path']).parent/('sampling-plan-epoch-%02d.json'%epoch);saved=json.loads(planref.read_bytes());assert saved['epoch']==epoch and saved['plan_sha256']==plan
- identity=dict(status='ACTUAL_TRAINING_SEED_AND_PLAN_IDENTITY_VERIFIED',time=time.time(),checkpoint=accept['checkpoint'],source_publication=pubref,plan_sha256=plan,init_seed=9137,train_plan_seed=2026102227,epoch=epoch,actual_runtime=bound,source_commit=pub['commit'],actual_initial_head_sha256=binding['initial_head_sha256'],actual_CPU_acceptance=ref,sampling_plan=proof(planref),CP_and_all10_plans_independently_CPU_verified=True,proof_scope='published literal runtime seeds, actual checkpoint binding and independently reconstructed ownG5 plans; no final input read',checkpoint_tensors_opened=False,final4096_read=False)
+ identity=dict(status='ACTUAL_TRAINING_SEED_AND_PLAN_IDENTITY_VERIFIED',time=time.time(),checkpoint=accept['checkpoint'],source_publication=pubref,plan_sha256=plan,init_seed=9137,train_plan_seed=2026102227,epoch=epoch,actual_runtime=bound,actual_sampler_runtime=sampler_ref,source_commit=pub['commit'],actual_initial_head_sha256=binding['initial_head_sha256'],actual_CPU_acceptance=ref,sampling_plan=proof(planref),CP_and_all10_plans_independently_CPU_verified=True,proof_scope='published literal runtime seeds, actual checkpoint binding and independently reconstructed ownG5 plans; no final input read',checkpoint_tensors_opened=False,final4096_read=False)
  dest=pathlib.Path(ref['path']).parent/'actual-seed-identity.json'
  if dest.exists():
   old=json.loads(dest.read_bytes());assert all(old[k]==identity[k]for k in('status','checkpoint','source_publication','plan_sha256','init_seed','train_plan_seed','epoch'));identity=old
- else:dest.write_text(json.dumps(identity,sort_keys=True)+'\n')
+ else:dest.write_bytes(json.dumps(identity,sort_keys=True).encode()+bytes([10]))
  out[name]=dict(identity=identity,proof=proof(dest))
 print(json.dumps(dict(time=time.time(),replications=out,final4096_read=False)))
