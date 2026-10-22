@@ -1,5 +1,5 @@
 """Read-only Z749577 own progress; no checkpoint contents or final data."""
-import pathlib,json,subprocess,time
+import pathlib,json,subprocess,time,gzip,math
 B=pathlib.Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-full169028-M3to10-P20-20261022-v1/z_mse_anchor');JOB='749577'
 def read(p):return json.loads(p.read_bytes())
 out=dict(time=time.time(),job_id=JOB,checkpoint_contents_opened=False,final4096_read=False)
@@ -29,4 +29,21 @@ log=B/('train-'+JOB+'.log')
 if log.exists():
  with log.open('rb')as f:f.seek(max(0,log.stat().st_size-3000));tail=f.read().decode(errors='replace')
  out['actual_log_error_tail']=tail if any(w in tail for w in('Traceback (most recent','RuntimeError:','out of memory','NCCL error','DUE TO TIME LIMIT'))else None
+# Summarize only already published epoch evaluation files; never a checkpoint.
+finished=[v['epoch']for k,v in out.items()if k.startswith('evaluation-epoch-')]
+if finished:
+ epoch=max(finished);scores={}
+ for role in('fixed_train2048_G5','fixed_validation2048_G5'):
+  path=B/('epoch-%02d-%s-predictions.jsonl.gz'%(epoch,role))
+  if not path.exists():continue
+  with gzip.open(path,'rt')as f:rows=[json.loads(line)for line in f]
+  targets=[r['target_variance']for r in rows];n=len(targets);tm=sum(targets)/n;tv=sum((x-tm)**2for x in targets)/n
+  item=dict(questions=n,target_mean=tm,target_std=math.sqrt(tv),oracle_constant_mean_MSE=tv)
+  for state in('raw','EMA'):
+   x=sorted(r[state+'_predicted_variance']for r in rows);mean=sum(x)/n
+   item[state]=dict(mean=mean,std=math.sqrt(sum((v-mean)**2for v in x)/n),minimum=x[0],p05=x[int(.05*(n-1))],median=x[n//2],p95=x[int(.95*(n-1))],maximum=x[-1])
+  scores[role]=item
+ if 'fixed_train2048_G5'in scores and'fixed_validation2048_G5'in scores:
+  delta=scores['fixed_train2048_G5']['target_mean']-scores['fixed_validation2048_G5']['target_mean'];scores['fixed_validation2048_G5']['training_mean_constant_MSE']=scores['fixed_validation2048_G5']['oracle_constant_mean_MSE']+delta**2
+ out['latest_completed_evaluation_score_spread']=dict(epoch=epoch,roles=scores)
 print(json.dumps(out))
