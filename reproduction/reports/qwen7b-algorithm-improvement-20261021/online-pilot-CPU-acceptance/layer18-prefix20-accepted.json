@@ -1,0 +1,81 @@
+{
+  "Adam": {
+    "actual_steps": 192,
+    "finite_first_and_second_moment_elements": 471263234,
+    "parameter_states": 46,
+    "strict_actual_optimizer_state_load_passed": true
+  },
+  "CPU_mmap": true,
+  "actor_updates": 0,
+  "actual_GPU_forward_or_next_update_restore_tested": false,
+  "checkpoint": {
+    "bytes": 3770208838,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix20/checkpoint-epoch-03.pt",
+    "sha256": "b997d0e7e7a978ad473e090fe7bbca44ea2045ced55822aeb2a2b33d0dc74a95"
+  },
+  "completed_epoch": 3,
+  "cursor": 192,
+  "file_stat": {
+    "bytes": 3770208838,
+    "ctime_ns": 1792682067529727000,
+    "device": 50,
+    "inode": 11186085282,
+    "mtime_ns": 1792682067529727000
+  },
+  "full_trajectory_sampler_RNG_resume_not_claimed": true,
+  "geometry": {
+    "EMA": {
+      "independent_dtype_shape_tensor_SHA256": "1836e34fb5cf468b240c92d1bb715ebcf82dabb8aa69c4a2ca7ee770dcb6ce18",
+      "parameter_elements": 235631617,
+      "strict_load_state_dict_passed": true,
+      "tensors": 46
+    },
+    "raw": {
+      "independent_dtype_shape_tensor_SHA256": "114d0f847ac33817cb473d1ccf5146fe952a5466695647df204394458a65fda0",
+      "parameter_elements": 235631617,
+      "strict_load_state_dict_passed": true,
+      "tensors": 46
+    }
+  },
+  "job_id": "749399",
+  "layer": 18,
+  "one_checkpoint_at_a_time": true,
+  "peak_RSS_bytes": 4417466368,
+  "prefix": 20,
+  "probe_optimizer_updates": 0,
+  "raw_and_EMA_separate": true,
+  "raw_or_EMA_finite": true,
+  "seconds": 15.788434505462646,
+  "source_RNG_by_rank": [
+    {
+      "CPU_torch_generator_state_accepted": true,
+      "CUDA_RNG_serialized_bytes": 16,
+      "CUDA_runtime_restore_tested": false,
+      "numpy_state_accepted": true,
+      "python_state_accepted": true,
+      "rank": 0
+    },
+    {
+      "CPU_torch_generator_state_accepted": true,
+      "CUDA_RNG_serialized_bytes": 16,
+      "CUDA_runtime_restore_tested": false,
+      "numpy_state_accepted": true,
+      "python_state_accepted": true,
+      "rank": 1
+    }
+  ],
+  "source_complete": {
+    "bytes": 168,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix20/complete.json",
+    "sha256": "256c87bd13d3d93d63a4147e7aaca1766cc7e6348a0e4f252e6d7c196dfa2b31"
+  },
+  "source_plan_sha256": "bb06f94c2ff00444542a5ff2f88244b6236dfc52a132c5c4edb57ce63fa56977",
+  "source_training_publication": {
+    "bytes": 1357,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/depth-expansion-source-publication.json",
+    "sha256": "cc76d46721f9416b7c32a5c38b2e88a68b7e4eb2acbc608ec3bd71bb7e39a6cf"
+  },
+  "status": "COMPLETED_ONLINE_PILOT_CPU_SHA_MODEL_ADAM_TWO_RANK_RNG_ACCEPTED",
+  "time": 1792682174.4431474,
+  "variant": "layer18-prefix20"
+}
