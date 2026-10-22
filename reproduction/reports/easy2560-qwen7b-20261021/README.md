@@ -3,9 +3,9 @@
 **Current evidence, 2026-10-23:** production job `749598` runs immutable
 `c7976da3afc863a1c20b99daa7cc99de3bb61f15` on four H100 at `ACD1-14`.
 Actual native4 model/Adam/scheduler/RNG/data restoration from completed54 passed;
-outers55 and56 completed and their full rolling checkpoints were sealed.
-Whole outer55/56, including checkpoint write/seal and inter-outer work, took
-**1756.665/1775.756 seconds**, averaging **29m26.211s**. Actor and candidate FA3 execution, compact GQA, one weight sync
+outers55–57 completed and their full rolling checkpoints were sealed; outer58 started.
+Whole outer55/56/57, including checkpoint write/seal and inter-outer work, took
+**1756.665/1775.756/1679.849 seconds**, averaging **28m57.423s**. Actor and candidate FA3 execution, compact GQA, one weight sync
 for five candidate phases, and zero extra monitor forwards were observed in the
 actual worker reports. The evidence is
 [`evidence/native-prefix-deployment-and-first-outer-evidence.json`](evidence/native-prefix-deployment-and-first-outer-evidence.json).

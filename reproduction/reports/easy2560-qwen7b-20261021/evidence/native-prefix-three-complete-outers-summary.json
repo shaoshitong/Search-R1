@@ -1,0 +1,52 @@
+{
+  "schema": "easy7b_native_prefix_three_complete_outers_v1",
+  "observed_unix": 1792691476.9346683,
+  "job": "749598",
+  "runtime_commit": "c7976da3afc863a1c20b99daa7cc99de3bb61f15",
+  "actual_completed_outers": [
+    55,
+    56,
+    57
+  ],
+  "current_started_outer": 58,
+  "whole_outer_seconds": {
+    "55": 1756.6647560596466,
+    "56": 1775.7563478946686,
+    "57": 1679.8492681980133
+  },
+  "three_outer_mean_seconds": 1737.4234573841095,
+  "mean_elapsed_reduction_vs_observed_old52": 0.1274160929620738,
+  "whole_time_scope": "consecutive before-generation RNG snapshot mtimes, including full checkpoint write/seal and inter-outer work",
+  "next_snapshot_step_binding": "next unlabelled pool snapshot after57; production log explicitly starts58; progress.json is written after its first candidate chunk",
+  "outer57": {
+    "candidate_fill_seconds": 944.7796840458177,
+    "actor_seconds_logged_rounded": 144.034,
+    "advantage_seconds_logged_rounded": 199.202,
+    "checkpoint_write_seconds_logged_rounded": 158.31,
+    "train_em_logged_rounded": 0.581,
+    "reward_mean_logged_rounded": 0.753,
+    "selected_mixed": 443,
+    "selected_questions": 512,
+    "selected_mixed_fraction": 0.865234375,
+    "actual_twenty_writes_all4": true,
+    "actual_writes_per_rank": 1140,
+    "checkpoint_manifest_sha256": "53f39189baf974803278f9d75e33f832ced9493199e6bd33ec6aa41adb62acf0",
+    "checkpoint_total_bytes": 91405594386,
+    "callbacks_complete": true,
+    "actual_cuda_restore_of_this_checkpoint_accepted": false
+  },
+  "actual_error_lines": {
+    "training": [],
+    "trainer": [],
+    "pipeline": [],
+    "slurm": []
+  },
+  "observation_errors": [],
+  "evidence": [
+    "fastpath-native-prefix-r2-live-1792691477185555000.json",
+    "native-prefix-third-outer-boundary-1792691465149869000.json"
+  ],
+  "tensors_read_or_saved_locally": false,
+  "causal_claim_across_different_policies_questions_nodes": false,
+  "goal_complete": false
+}
