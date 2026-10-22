@@ -1,0 +1,9 @@
+# Full169028 authentic own-G10 Prefix80 CPU preparation
+
+Root authorized new remote fixture only. No GPU, Slurm, generation, feature extraction, model/checkpoint access or final4096 read. Canonical169028questions/1690280own trajectoryIDs/strictEM come from the accepted full169028 bank, bound through the existing descriptor SHA. The18original/new-seed source scopes reference2678 existing full RAW files,12017369444compressed bytes. All source files are read-only and preserved.
+
+A persistent locked CPU process freshly SHA-checks RAW, verifies selected qid/own strictEM/official snapshot, concatenates only each behavior turn raw_generated_token_ids[:kept_token_count] and truncates80. True short answers stay short; original runtime supplies masked padding. The pilot81920 training rows are compared exactly with independently accepted Prefix80 compact records. Fixed dev2048ownG5 and fixed trainB2048 metadata remain byte-identical.
+
+Writes chunked gzip token files remotely, using separate sorted-train and sorted-dev parity. token_shards alternate rank0/rank1 so old loader shardindex%2 exactly matches qrank. Chunk receipts bind source/producer/canonical SHA and RAW-derived row digests. Interrupted processes are identified by PID startticks and locks; finished chunks persist and are reused only after fresh RAW/output SHA checks. No duplicate CPU worker is started on uncertain control outcomes.
+
+After full extraction, independent output readback compares all1690280 train rows with RAW-derived fingerprints, complete own IDs, prompt alignment, rank routing, real retained lengths and original pilot rows; checks10240 original dev rows. fixture-complete status is FULL169028_AUTHENTIC_POLICY80_OWN_G10_FIXED2048_READY; accepted.json binds its full SHA and ends ACCEPTED. Root-owned full training must wait for this actual receipt. The code, entry, deployment and small progress summaries are committed/pushed before start.
