@@ -1,0 +1,111 @@
+{
+  "status": "L15_P80_E3_COMPLETE_ACTUAL_192_ADAM_UPDATES",
+  "job_id": "749782",
+  "complete": {
+    "cursor": 192,
+    "epochs": 3,
+    "final4096_scored": false,
+    "layer": 15,
+    "not_full169028_replacement": true,
+    "prefix": 80,
+    "status": "MATCHED_ONLINE_MIXED_LAYER_PREFIX_PILOT_COMPLETE"
+  },
+  "checkpoint": {
+    "bytes": 3770454598,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/checkpoint-epoch-03.pt",
+    "sha256": "3a37cec3f585c86872dd8a1ff12774ed79b4fbe2e4e1253757ddf2b911939330"
+  },
+  "same_fixed_validation_pool": "2048 questions, 663 true Mixed under own G5",
+  "metrics": [
+    {
+      "epoch": 1,
+      "state": "raw",
+      "train_BA": 0.5251553277415346,
+      "train_BCE": 0.6680434853095862,
+      "train_Top512": 288,
+      "test_BA": 0.5158463607603553,
+      "test_BCE": 0.645265600879704,
+      "test_Top512": 207,
+      "test_Mixed_recall": 0.08295625942684766,
+      "test_all_correct_FPR": 0.06363636363636363,
+      "test_all_wrong_FPR": 0.04739336492890995
+    },
+    {
+      "epoch": 1,
+      "state": "EMA",
+      "train_BA": 0.5,
+      "train_BCE": 0.7130974626217677,
+      "train_Top512": 247,
+      "test_BA": 0.5,
+      "test_BCE": 0.7408370309212893,
+      "test_Top512": 190,
+      "test_Mixed_recall": 1.0,
+      "test_all_correct_FPR": 1.0,
+      "test_all_wrong_FPR": 1.0
+    },
+    {
+      "epoch": 2,
+      "state": "raw",
+      "train_BA": 0.6134824479652066,
+      "train_BCE": 0.6736860676785068,
+      "train_Top512": 307,
+      "test_BA": 0.5732405486493404,
+      "test_BCE": 0.729698181328667,
+      "test_Top512": 217,
+      "test_Mixed_recall": 0.8114630467571644,
+      "test_all_correct_FPR": 0.7515151515151515,
+      "test_all_wrong_FPR": 0.637914691943128
+    },
+    {
+      "epoch": 2,
+      "state": "EMA",
+      "train_BA": 0.5853487107797453,
+      "train_BCE": 0.6849242065904529,
+      "train_Top512": 292,
+      "test_BA": 0.557885336861765,
+      "test_BCE": 0.702893300790339,
+      "test_Top512": 212,
+      "test_Mixed_recall": 0.8024132730015083,
+      "test_all_correct_FPR": 0.7727272727272727,
+      "test_all_wrong_FPR": 0.6597156398104266
+    },
+    {
+      "epoch": 3,
+      "state": "raw",
+      "train_BA": 0.6545899347623485,
+      "train_BCE": 0.6315423056785328,
+      "train_Top512": 327,
+      "test_BA": 0.5980185242661352,
+      "test_BCE": 0.6786233238779251,
+      "test_Top512": 219,
+      "test_Mixed_recall": 0.669683257918552,
+      "test_all_correct_FPR": 0.603030303030303,
+      "test_all_wrong_FPR": 0.43317535545023694
+    },
+    {
+      "epoch": 3,
+      "state": "EMA",
+      "train_BA": 0.6302461944703324,
+      "train_BCE": 0.6616147244602568,
+      "train_Top512": 307,
+      "test_BA": 0.5915922047797181,
+      "test_BCE": 0.6805780213400198,
+      "test_Top512": 213,
+      "test_Mixed_recall": 0.6561085972850679,
+      "test_all_correct_FPR": 0.603030303030303,
+      "test_all_wrong_FPR": 0.4322274881516588
+    }
+  ],
+  "terminal": {
+    "returncode": 0,
+    "stdout": "749782|COMPLETED|0:0|00:17:47|ACD1-6",
+    "stderr": ""
+  },
+  "final4096_read": false,
+  "Slurm_mutated": false,
+  "terminal_CPU_acceptance": {
+    "path": "L15-P80-terminal-CPU-accepted.json",
+    "sha256": "93e534dd19ee522627bc748016abf6d93f1ecef14d3fcfa38854af9fe0b2d85f",
+    "GPU_next_update_tested": false
+  }
+}
