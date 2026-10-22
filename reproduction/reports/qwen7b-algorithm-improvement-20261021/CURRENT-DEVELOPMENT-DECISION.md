@@ -67,3 +67,7 @@ B及所有8192题pilot均为NQ。B为2048题、888 Mixed、950全错、210全对
 Qualifier snapshot: `TWO_IMMUTABLE_V3_FULL_MSE_SEED_INPUTS_QUALIFIED_ROOT_MAY_SUBMIT_ONCE`, timestamp `1792700671.869853`, fixture complete=`True`, accepted=`True`。
 
 [完整指标、来源及比较区间](CURRENT-DEVELOPMENT-DECISION.json)
+
+## Actual shared-trainB update: 2026-10-23
+
+The historical table above retains its original snapshot. [Unified fixedtrainB v2](selected-state-fixed-trainB-v2/RESULT.md) has now actually completed under750334, including numerical E1 same-CP32 replay(max delta5.21e-8). E1 EMA trainB BA55.83%/Top292, fullP20 Z seed1 BA82.17%/Top500, seed2 BA79.88%/Top490; these use the same2048/888Mixed pool, not oldtrainA. Their corresponding Z development BA59.30%/57.43% andTop245/224 reveal a substantial fit-generalization gap. See [same-E10 two-seed Z comparison](viewed2048-fullZ-two-seed-E10raw-comparison/RESULT.md). Current fullL15/P80 MSE results remain training-in-progress development evidence: [all completed epochs](full169028-L15P80-MSE-ownG5/LATEST-COMPLETED-EPOCHS.md), with both E2/raw310/512 and seed2E4/raw318/512. Different configurations/epochs do not isolate a loss-only or prefix-only effect. Final4096 is still blind.

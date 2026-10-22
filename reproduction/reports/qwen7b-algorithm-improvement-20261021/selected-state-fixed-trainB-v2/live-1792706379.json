@@ -1,0 +1,111 @@
+{
+  "read_script_SHA256": "6fc558b257f82775112817a7d850a1f42bd9076f4e80b840227a32e5c9c11ee5",
+  "control_stderr": "[metadata-control route=direct rc=0]",
+  "observation": {
+    "time": 1792706379.629795,
+    "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v2",
+    "files": {
+      "root-submission.json": {
+        "CPUs": 12,
+        "GPUs": 2,
+        "Z_saved_trainB_predictions_reused": true,
+        "comment": "q7b-trainB-fdac450a935f336d95ae",
+        "config": {
+          "bytes": 7940,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v2/root-bound-trainB.json",
+          "sha256": "fdac450a935f336d95ae000c57ccbff3002ea258422844decee0448dbde02dcc"
+        },
+        "entry": {
+          "bytes": 1375,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v2/scoring.sbatch",
+          "sha256": "07be86fa0369e79187d0193b42df12c616bf1febb309468611a6a29443b1b498"
+        },
+        "exclude": "ACD1-13",
+        "final4096_read": false,
+        "job_id": "750334",
+        "memory_GiB": 128,
+        "models": [
+          "E1_EMA",
+          "Z_seed1_E10_raw",
+          "Z_seed2_E10_raw"
+        ],
+        "name": "q7b-fixed-trainB-unified",
+        "new_rollouts": 0,
+        "no_dependencies": true,
+        "partition": "acd_u",
+        "qos": "normal",
+        "questions": 2048,
+        "role": "fixed_trainB_only_plus_E1_fixed32_adapter_replay",
+        "source_commit": "ab8060368cc49c1313493463642350dd5912dc0e",
+        "source_publication": {
+          "bytes": 2642,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/selected-state-fixed-trainB2048-unified-20261023-v2/source-publication.json",
+          "sha256": "61eaa510f24f6830304ddcd81aed8090e75de7b9e7683404d0ee276f44dc067c"
+        },
+        "status": "FIXED_TRAIN_B_ROOT_OWNED_JOB_SUBMISSION_RECORDED",
+        "submitted_now": true,
+        "time": 1792706260.9352386,
+        "time_limit": "01:00:00",
+        "training_changed": false
+      },
+      "controller.json": {
+        "actor_updates": 0,
+        "development2048_rescored": false,
+        "epoch_or_threshold_selected_on_trainB": false,
+        "final4096_read": false,
+        "fixed_train_SHA256": "e6e74d92160efb0740ba5c0316c4ee7686f06a499c90cafd5a545f325b62209b",
+        "job_id": "750334",
+        "models": [
+          "E1_EMA",
+          "Z_seed1",
+          "Z_seed2"
+        ],
+        "probe_updates": 0,
+        "questions": 2048,
+        "replay_questions": 32,
+        "role": "fixed_trainB_not_trainA",
+        "time": 1792706288.924337
+      },
+      "progress-rank-0.json": {
+        "actor_updates": 0,
+        "expected_questions": 1040,
+        "layer": 27,
+        "method": "E1_EMA_trainB_and_fixed32_replay",
+        "prefix": 20,
+        "probe_updates": 0,
+        "questions_scored": 1040,
+        "rank": 0,
+        "seconds": 32.61705183982849,
+        "stage": "FROZEN_FINAL_REAL_CAUSAL_PREFILL",
+        "time": 1792706377.0496883
+      },
+      "progress-rank-1.json": {
+        "actor_updates": 0,
+        "expected_questions": 1040,
+        "layer": 27,
+        "method": "E1_EMA_trainB_and_fixed32_replay",
+        "prefix": 20,
+        "probe_updates": 0,
+        "questions_scored": 1040,
+        "rank": 1,
+        "seconds": 34.55948567390442,
+        "stage": "FROZEN_FINAL_REAL_CAUSAL_PREFILL",
+        "time": 1792706378.9908824
+      }
+    },
+    "read_only": true,
+    "checkpoint_or_tensor_loaded": false,
+    "final4096_read": false,
+    "queue": {
+      "returncode": 0,
+      "stdout": "750334|RUNNING|1:55|ACD1-20",
+      "stderr": ""
+    },
+    "accounting": {
+      "returncode": 0,
+      "stdout": "750334|RUNNING|0:0|00:01:55|ACD1-20",
+      "stderr": ""
+    },
+    "log_tail": "You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\nYou are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n\rLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\rLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\rLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:01<00:05,  1.75s/it]\rLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:01<00:05,  1.78s/it]\rLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:04<00:04,  2.24s/it]\rLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:04<00:04,  2.25s/it]\rLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:06<00:02,  2.41s/it]\rLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:06<00:02,  2.42s/it]\rLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:08<00:00,  2.16s/it]\rLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:08<00:00,  2.18s/it]\n\rLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:08<00:00,  2.16s/it]\rLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:08<00:00,  2.19s/it]\n"
+  }
+}
