@@ -1,0 +1,57 @@
+{
+  "status": "FULL169028_SAMPLER_RESUME_BOUNDARY_AND_REAL_TWO_RANK_TAIL_MEAN_CPU_PASS",
+  "sampler": {
+    "training_questions": 169028,
+    "trajectory_visits": 845140,
+    "rank_questions": [
+      84514,
+      84514
+    ],
+    "updates_per_epoch": 1321,
+    "tail": {
+      "actual_global_batch": 68,
+      "local_batch": 34,
+      "micro": 8,
+      "gradient_accumulation": 5,
+      "micro_question_counts": [
+        8,
+        8,
+        8,
+        8,
+        2
+      ]
+    },
+    "plan_sha256": "a950b19d66e38a4e93090241e31640eba147762d895f577521ce47e7a7d84e96",
+    "full_epoch_resume_boundary_passed": true,
+    "invalid_Adam_clock_or_phase_rejected": true,
+    "pilot_prepare_disabled": true
+  },
+  "distributed": {
+    "backend": "gloo",
+    "world_size": 2,
+    "actual_global_batches": [
+      128,
+      68
+    ],
+    "local_batches": [
+      64,
+      34
+    ],
+    "tail_micro_counts": [
+      8,
+      8,
+      8,
+      8,
+      2
+    ],
+    "DDP_equal_local_means_match_true_global_mean": true,
+    "maximum_absolute_gradient_error": 2.7755575615628914e-17
+  },
+  "seconds": 14.211952209472656,
+  "no_GPU": true,
+  "no_Slurm": true,
+  "no_real_model_checkpoint_or_rollout_read": true,
+  "final4096_read": false,
+  "runtime_SHA256": "f7780e5599048b97c0b1f4ffbe32530fb2e3b90664e55e3f262b63b239d639d2",
+  "tested_at": 1792697230.5575092
+}
