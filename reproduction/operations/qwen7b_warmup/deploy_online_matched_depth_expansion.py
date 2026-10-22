@@ -5,7 +5,7 @@ R=Path(__file__).resolve().parents[3];CONTROL=R.parents[1]
 P='reproduction/operations/qwen7b_warmup/'
 BRANCH='codex/q7b-online-matched-depth-expansion-20261022'
 ORIGINAL='5a3cfa1588c883d1c816d77ff95191acaa71eb35'
-NAMES=['online_mixed_depth_expansion.py','deploy_online_matched_depth_expansion.py']
+NAMES=['online_mixed_depth_expansion.py']
 REPORT='reproduction/reports/qwen7b-algorithm-improvement-20261021/online-matched-depth-expansion/'
 REMOTE='''import pathlib,json,hashlib,fcntl,os,re,subprocess,time,base64,zlib
 suite=pathlib.Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1');guard=(suite/'depth-expansion-stage.lock').open('a+');fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB)
@@ -42,8 +42,8 @@ def main():
  payload={};files={}
  for name in NAMES:
   rel=P+name;raw=subprocess.check_output(['git','show',a.commit+':'+rel],cwd=R);assert raw==(R/rel).read_bytes();payload[rel]=base64.b64encode(zlib.compress(raw)).decode();files[rel]=dict(bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
- own=P+Path(__file__).name;submit=REPORT+'submit-depth-cells-once.py';raw=subprocess.check_output(['git','show',a.commit+':'+submit],cwd=R);assert raw==(R/submit).read_bytes()
- v=dict(prefix=P,original=ORIGINAL,commit=a.commit,branch=BRANCH,payload=payload,files=files,controller=dict(commit=a.commit,path=own,sha256=files[own]['sha256']),submit_controller=dict(commit=a.commit,path=submit,sha256=hashlib.sha256(raw).hexdigest()))
+ own=P+Path(__file__).name;controller_source=subprocess.check_output(['git','show',a.commit+':'+own],cwd=R);assert controller_source==Path(__file__).read_bytes();submit=REPORT+'submit-depth-cells-once.py';raw=subprocess.check_output(['git','show',a.commit+':'+submit],cwd=R);assert raw==(R/submit).read_bytes()
+ v=dict(prefix=P,original=ORIGINAL,commit=a.commit,branch=BRANCH,payload=payload,files=files,controller=dict(commit=a.commit,path=own,sha256=hashlib.sha256(controller_source).hexdigest()),submit_controller=dict(commit=a.commit,path=submit,sha256=hashlib.sha256(raw).hexdigest()))
  spec=importlib.util.spec_from_file_location('depth_private_control',CONTROL/'work/prefix-schedule-cp50-20261018/reproduction/hpc3_prefix5/direct_control.py');ctl=importlib.util.module_from_spec(spec);spec.loader.exec_module(ctl);ip=subprocess.check_output(['/usr/sbin/ipconfig','getifaddr','en0'],text=True).strip();script='v='+repr(v)+'\n'+REMOTE;compile(script,'depth_stage_remote','exec');packed=base64.b64encode(zlib.compress(script.encode())).decode();command='python3 -c '+shlex.quote('import base64,zlib;exec(zlib.decompress(base64.b64decode('+repr(packed)+')))');assert len(command.encode())<16000,len(command.encode());r=ctl.run(command,account='mou176',source_address=ip,timeout=55)
  if r.returncode:raise RuntimeError(r.stdout[-2000:]+r.stderr[-3000:])
  result=json.loads(r.stdout.splitlines()[-1]);dest=R/REPORT;dest.mkdir(parents=True,exist_ok=True);(dest/'actual-stage.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
