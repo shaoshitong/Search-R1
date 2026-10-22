@@ -762,7 +762,8 @@
     "fastpath-cause-prefix-three-mode-results-1792683830845969000.json",
     "fastpath-native-prefix-full-outer-qualification-1792684229888097000.json",
     "fastpath-actual-tokenizer-decode-source-1792683659143663000.json",
-    "fastpath-cause-sweep-recovery-progress-1792684401168242000.json"
+    "fastpath-cause-sweep-recovery-progress-1792684401168242000.json",
+    "fastpath-real-iteration-wall-1792684472091196000.json"
   ],
   "interpretation": [
     "Actor optimization improved actual formal outer53:288.139s to165.714s.",
@@ -1639,5 +1640,11 @@
       "pipeline": [],
       "slurm": []
     }
+  },
+  "observed_full_outer_wall": {
+    "old52_seconds": 1991.1247618198395,
+    "new53_seconds": 1925.3887040615082,
+    "elapsed_reduction_fraction": 0.03301453480908456,
+    "scope": "Matched saved before-generation RNG-boundary timestamps, outer start to next outer start; includes checkpoint sealing and inter-outer work. Different sampled trajectories; not controlled fixed work."
   }
 }
