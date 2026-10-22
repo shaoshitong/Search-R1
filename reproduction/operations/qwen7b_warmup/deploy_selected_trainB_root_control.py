@@ -20,7 +20,7 @@ if p.exists():assert p.read_bytes()==raw
 else:p.write_bytes(raw)
 print(json.dumps(dict(stored=True)))
 '''
-STAGE='''guard=(b/'root-control-stage.lock').open('a+');fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB);scorer=b/'code-5899b5043b1e';assert proof(b/'source-publication.json')['sha256']=='ca7e33504db357e327f167e942409be8668ca463ffe252ff03c602304b31fe94'and proof(b/'scoring.sbatch')['sha256']=='bf891e86a6c59a4c5df554cd343e5165a557e5d154eb10578b08e4d30fb372d0'
+STAGE=r'''guard=(b/'root-control-stage.lock').open('a+');fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB);scorer=b/'code-5899b5043b1e';assert proof(b/'source-publication.json')['sha256']=='ca7e33504db357e327f167e942409be8668ca463ffe252ff03c602304b31fe94'and proof(b/'scoring.sbatch')['sha256']=='bf891e86a6c59a4c5df554cd343e5165a557e5d154eb10578b08e4d30fb372d0'
 for name,ref in v['files'].items():
  p=code/name;p.parent.mkdir(exist_ok=True,parents=True);parts=sorted(code.glob(name+'.part-*'));raw=b''.join(q.read_bytes()for q in parts)if parts else p.read_bytes();assert len(raw)==ref['bytes']and hashlib.sha256(raw).hexdigest()==ref['sha256']
  if p.exists():assert p.read_bytes()==raw
