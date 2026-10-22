@@ -1,5 +1,13 @@
 {
   "actual_all4_writes": 660,
+  "actual_progress_after_route_recovery": {
+    "first_observation_epoch": 1792639438.1831553,
+    "first_saved_questions": 512,
+    "same_training_job": true,
+    "second_observation_epoch": 1792639574.4357862,
+    "second_saved_questions": 1024,
+    "training_restart_performed": false
+  },
   "checked_unix": 1792639530.9810529,
   "credentials_recorded": false,
   "failed_observer_exit_code": 2,
@@ -17,6 +25,38 @@
     "uid": 14090
   },
   "new_explicit_endpoint": "10.120.48.32",
+  "new_read_only_watcher": {
+    "bounded_observations": 180,
+    "completed_outer_horizon": 35,
+    "current_recovery_followup_already_accepted": true,
+    "expected_host_identity": {
+      "boot_id": "3c637b25-17cf-404c-971b-30bc4c4e9fbb",
+      "hostname": "ACD-Login-2",
+      "pid_namespace": "pid:[4026531836]"
+    },
+    "interval_seconds": 60,
+    "login_host": "10.120.48.32",
+    "new_recovery_gate": false,
+    "next_outer_horizon": 36,
+    "previous_failed_watcher": {
+      "exit_code": 2,
+      "failure": "SSH banner exchange timeout on10.120.48.31",
+      "original_failure_receipt": {
+        "bytes": 139,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792633978227610000/observation-085.json",
+        "sha256": "7f409bd93f9fc9067416d299b98c9d2a8f14fcefcb3c0db0da197fc33566ccc8"
+      },
+      "root": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792633978227610000",
+      "session_id": 15155,
+      "training_failure_inferred": false
+    },
+    "read_only": true,
+    "remote_operator_commit": "0110264b81133a61515e89af52854d7c0d8cefae",
+    "root": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792639571933631000",
+    "session_id": 51482,
+    "source_commit": "b8da5a072452538e101abe767ec2fef4ee3657f4",
+    "total_training_goal": 200
+  },
   "observed_completed_outer": 33,
   "observed_next_outer_saved_questions": 512,
   "observed_sealed_checkpoint": {
@@ -34,7 +74,8 @@
   "observed_training_state": "RUNNING",
   "old_read_only_endpoint": "10.120.48.31",
   "owned_training_job": "746125",
-  "periodic_watcher_relaunch_pending": true,
+  "periodic_watcher_actual_observation_accepted": true,
+  "periodic_watcher_relaunch_pending": false,
   "receipts": {
     "archive_consumers": {
       "bytes": 17857,
