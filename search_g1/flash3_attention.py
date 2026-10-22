@@ -1,9 +1,11 @@
-"""Opt-in, instance-local FA3 kernels beneath the unchanged Qwen2/HF forwards.
+"""Opt-in, instance-local FA3 kernels with an optional native-KV4 fast path.
 
 No Transformers class/module, sys.path, reference model, or vLLM backend is
 patched. Each actor receives private clones of its existing Python forward and
 HF helper functions. The pinned FA3 interface returns (out, lse); only out is
 returned to HF, with its original autograd connection intact.
+The separately opted-in compact path replaces only the private forward's
+repeat_kv binding; RoPE, packing, masking, output projection and state stay put.
 """
 import ctypes
 from contextlib import contextmanager
@@ -190,7 +192,40 @@ def _clone(function,replacements):
     return cloned
 
 
-def install_flash3_actor(model,run=None,*,backend=None,require_cuda=True):
+def _compact_requested(explicit):
+    if explicit is not None:
+        _need(type(explicit) is bool,'BOOLEAN_COMPACT_GQA_REQUIRED')
+        return explicit
+    setting=os.environ.get('SEARCH_G1_FA3_COMPACT_GQA','0')
+    _need(setting in ('0','1'),'COMPACT_GQA_ENV_MUST_BE_ZERO_OR_ONE')
+    return setting=='1'
+
+
+def _compact_repeat(layer,function):
+    """Keep native KV heads only inside this actor's private forward namespace.
+
+    FA3 itself performs grouped-query attention and sums the seven query-head
+    gradient contributions into each KV head. All operations before/after the
+    original repeat_kv calls, including RoPE and HF packing, remain unchanged.
+    """
+    _need('repeat_kv' in function.__code__.co_names and
+          'get_ulysses_sequence_parallel_world_size' in function.__globals__,
+          'COMPACT_GQA_PINNED_VERL_FORWARD_REQUIRED')
+    groups=getattr(layer,'num_key_value_groups',None)
+    _need(groups==7 and getattr(layer,'num_key_value_heads',None)==4 and
+          getattr(layer,'num_heads',None)==28,'COMPACT_GQA_NATIVE28_QUERY4_KV_REQUIRED')
+    sequence_world=function.__globals__['get_ulysses_sequence_parallel_world_size']
+    _need(callable(sequence_world) and sequence_world()==1,'COMPACT_GQA_SEQUENCE_PARALLEL_ONE_REQUIRED')
+    def keep_native_kv(hidden_states,n_rep):
+        _need(sequence_world()==1,'COMPACT_GQA_SEQUENCE_PARALLEL_CHANGED')
+        _need(isinstance(hidden_states,torch.Tensor) and hidden_states.ndim==4 and
+              hidden_states.shape[1]==4 and hidden_states.shape[-1]==layer.head_dim and
+              type(n_rep) is int and n_rep==groups,'COMPACT_GQA_REPEAT_INPUT_DIFFERS')
+        return hidden_states
+    return keep_native_kv
+
+
+def install_flash3_actor(model,run=None,*,backend=None,require_cuda=True,compact_gqa=None):
     """Called only for the 7B native4 actor, before FSDP wraps that instance."""
     if run is None:run=json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
     from search_g1.easy7b_infra import flags
@@ -200,6 +235,7 @@ def install_flash3_actor(model,run=None,*,backend=None,require_cuda=True):
     _need(config.model_type=='qwen2' and config.hidden_size==3584 and config.num_hidden_layers==28 and
           config._attn_implementation=='flash_attention_2','PINNED_QWEN7B_HF_FA2_SHELL_REQUIRED')
     _need(not getattr(model,'_search_g1_flash3_installed',False),'ACTOR_ALREADY_INSTALLED')
+    compact_gqa=_compact_requested(compact_gqa)
     layers=[m for m in model.modules() if type(m).__name__=='Qwen2FlashAttention2']
     _need(len(layers)==28,'ALL28_ACTOR_ATTENTION_INSTANCES_REQUIRED')
     before=tuple(model.state_dict().keys())
@@ -215,8 +251,9 @@ def install_flash3_actor(model,run=None,*,backend=None,require_cuda=True):
             kernels={name:_Kernel(namespace[name],backend,audit,kind,require_cuda) for name,kind in
                 (('flash_attn_func','dense'),('flash_attn_varlen_func','varlen'))}
             helpers[helper]=_clone(helper,kernels)
-        plans.append((layer,layer.forward,types.MethodType(
-            _clone(function,{'_flash_attention_forward':helpers[helper]}),layer)))
+        replacements={'_flash_attention_forward':helpers[helper]}
+        if compact_gqa:replacements['repeat_kv']=_compact_repeat(layer,function)
+        plans.append((layer,layer.forward,types.MethodType(_clone(function,replacements),layer)))
     for layer,original,private in plans:layer.forward=private
     audit.attention_layers=len(layers)
     model._search_g1_flash3_audit=audit;model._search_g1_flash3_installed=True
@@ -224,6 +261,7 @@ def install_flash3_actor(model,run=None,*,backend=None,require_cuda=True):
     # state. The original bound forwards remain available for isolated A/B
     # qualification without a second model allocation.
     model._search_g1_flash3_forwards=tuple(plans);model._search_g1_flash3_enabled=True
+    model._search_g1_flash3_compact_gqa=compact_gqa
     _need(tuple(model.state_dict().keys())==before,'STATE_DICT_KEYS_CHANGED')
     return execution_report(model)
 
@@ -261,6 +299,7 @@ def execution_report(model,synchronize=False):
     _need(isinstance(audit,_Audit),'INSTALLED_ACTOR_AUDIT_REQUIRED')
     report=audit.report(synchronize=synchronize)
     report['flash3_enabled']=model._search_g1_flash3_enabled
+    report['compact_gqa_enabled']=model._search_g1_flash3_compact_gqa
     return report
 
 
