@@ -1,0 +1,122 @@
+{
+  "actual_all4_writes": 660,
+  "checked_unix": 1792639530.9810529,
+  "credentials_recorded": false,
+  "failed_observer_exit_code": 2,
+  "failed_observer_session": 15155,
+  "format": "READ_ONLY_WATCHER_LOGIN1_BANNER_TIMEOUT_LOGIN2_ACTUAL_RECOVERY_V1",
+  "identity_pin_for_bridge": {
+    "boot_id": "3c637b25-17cf-404c-971b-30bc4c4e9fbb",
+    "hostname": "ACD-Login-2",
+    "pid_namespace": "pid:[4026531836]"
+  },
+  "new_expected_identity": {
+    "boot_id": "3c637b25-17cf-404c-971b-30bc4c4e9fbb",
+    "hostname": "ACD-Login-2",
+    "pid_namespace": "pid:[4026531836]",
+    "uid": 14090
+  },
+  "new_explicit_endpoint": "10.120.48.32",
+  "observed_completed_outer": 33,
+  "observed_next_outer_saved_questions": 512,
+  "observed_sealed_checkpoint": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/checkpoints/search-g1-common8/actor/global_step_33",
+    "manager": "easy2560_per_outer_full_state_v1",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/preparation/rolling-checkpoints/global_step_33/full-manifest.json",
+    "manifest_sha256": "a3c06aedc36667403f480e30423ec33905283231e16b2bef32c8eb65730eae33",
+    "published_unix": 1792639113.27057,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+    "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+    "step": 33
+  },
+  "observed_training_state": "RUNNING",
+  "old_read_only_endpoint": "10.120.48.31",
+  "owned_training_job": "746125",
+  "periodic_watcher_relaunch_pending": true,
+  "receipts": {
+    "archive_consumers": {
+      "bytes": 17857,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-archive-consumers-observe-1792639468.json",
+      "returncode": 0,
+      "sha256": "80f0f7bdeebf1e972397147786e53a1901f6327d83ff64fabf467ab0892f7664"
+    },
+    "cp33_fresh_readback": {
+      "bytes": 9985,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-cp33-small-sha-metadata-readback-1792639470.json",
+      "returncode": 0,
+      "sha256": "0d893efcaa868e8cd90443c50c454e72d2fa4ffc5c7b207d8298440b5b0aa87b"
+    },
+    "failed_observer": {
+      "bytes": 139,
+      "error": "Connection timed out during banner exchange\nConnection to 10.120.48.31 port 22 timed out\n",
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-transition-watch-1792633978227610000/observation-085.json",
+      "returncode": 255,
+      "sha256": "7f409bd93f9fc9067416d299b98c9d2a8f14fcefcb3c0db0da197fc33566ccc8"
+    },
+    "login2_actual_progress": {
+      "bytes": 495132,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-readonly-observation-login2-1792639443.json",
+      "returncode": 0,
+      "sha256": "6e8228f0f3a1ea3cb17d0e4bebde97f0be9cf241b85a80203b46667f7622fa64"
+    },
+    "login2_identity": {
+      "bytes": 306,
+      "identity": {
+        "boot_id": "3c637b25-17cf-404c-971b-30bc4c4e9fbb",
+        "hostname": "ACD-Login-2",
+        "pid_namespace": "pid:[4026531836]",
+        "uid": 14090
+      },
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/hpc3-alternate-login-identity-10.120.48.32-1792639388.json",
+      "returncode": 0,
+      "sha256": "f9d1802599454536bf1854a91eea7d42f332f5aa202bdd8b1b13baa7126dc22a"
+    },
+    "login3_identity": {
+      "bytes": 306,
+      "identity": {
+        "boot_id": "0c30b1aa-91b0-4730-a9f6-492f81411be9",
+        "hostname": "ACD-Login-3",
+        "pid_namespace": "pid:[4026531836]",
+        "uid": 14090
+      },
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/hpc3-alternate-login-identity-10.120.48.33-1792639388.json",
+      "returncode": 0,
+      "sha256": "59511c788004825f401b7e13435cee516ac46847bc0ddee768120b10915f3cbb"
+    },
+    "same_login_recheck": {
+      "bytes": 487,
+      "error": "Connection timed out during banner exchange\nConnection to 10.120.48.31 port 22 timed out\n",
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-readonly-observation-transport-recheck-1792639372.json",
+      "returncode": 255,
+      "sha256": "49178d987e67df804da16c2a5c758e500e7794c1afee6a34590b4c2caa454e0f"
+    }
+  },
+  "route_fix_files": [
+    {
+      "bytes": 21977,
+      "path": "reproduction/operations/easy7b_20261021/watch_fa3_transition_local.py",
+      "sha256": "511c3104b6218e0944a48ce47ac7dc13d6c3770a2e6848d363c5f3b079599062"
+    },
+    {
+      "bytes": 3524,
+      "path": "reproduction/operations/easy7b_20261021/test_watch_fa3_login_route.py",
+      "sha256": "fac204bdd8b8e39fe1ce7e64ba9a5d9cc2bc28c99d180dea8289773a234903e8"
+    }
+  ],
+  "route_fix_validation": {
+    "default_login1_pin_unchanged": true,
+    "existing_bridge_host_boot_namespace_check_retained": true,
+    "independent_static_review_passed": true,
+    "material_blockers": [],
+    "no_training_startup_gate": true,
+    "no_unpinned_fallback": true,
+    "root_cpu_unittests_passed": 4
+  },
+  "scope": "Only the local read-only observer failed. Same training job and retrieval remained running; the original failure receipts are preserved. No GPU resource or model reload action.",
+  "training_failure_inferred": false,
+  "training_jobs_submitted": 0,
+  "training_runtime_changed": false,
+  "training_stopped_or_restarted": false
+}

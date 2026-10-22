@@ -20,12 +20,30 @@ import time
 OPERATOR_COMMIT = '0110264b81133a61515e89af52854d7c0d8cefae'
 BASE = '/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022'
 RUN = '232f20e112ac4a978c5aba52a0367195'
+DEFAULT_LOGIN_HOST = '10.120.48.31'
+DEFAULT_LOGIN_IDENTITY = dict(hostname='ACD-Login-1',
+    boot_id='a27512a3-24a0-4ca3-aa92-98d2a5256d9a', pid_namespace='pid:[4026531836]')
 TERMINAL = {'FAILED', 'CANCELLED', 'TIMEOUT', 'NODE_FAIL', 'OUT_OF_MEMORY',
             'PREEMPTED', 'BOOT_FAIL', 'DEADLINE', 'REVOKED', 'COMPLETED'}
 ERROR = re.compile(r'Traceback \(most recent call last\)|CUDA out of memory|RayTaskError|'
     r'OutOfMemoryError|NCCLError|FloatingPointError|(?:ModuleNotFound|Import|Runtime|Value|'
     r'FileNotFound|Permission|Assertion|Key)Error\b|undefined symbol|Segmentation fault|'
     r'slurmstepd: error:|Error executing job with overrides|CUBLAS_STATUS')
+
+
+def resolve_login_route(login_host=DEFAULT_LOGIN_HOST, login_identity_json=None):
+    """Changing the observer route always requires an explicit host identity."""
+    if not isinstance(login_host, str) or not login_host or any(c.isspace() for c in login_host):
+        raise ValueError('Require a nonempty login host without whitespace')
+    if login_identity_json is None:
+        if login_host != DEFAULT_LOGIN_HOST:
+            raise ValueError('A nondefault --login-host requires --login-identity-json')
+        return login_host, dict(DEFAULT_LOGIN_IDENTITY)
+    identity = json.loads(login_identity_json)
+    if not isinstance(identity, dict) or set(identity) != set(DEFAULT_LOGIN_IDENTITY) or \
+            any(not isinstance(value, str) or not value.strip() for value in identity.values()):
+        raise ValueError('Login identity must contain exactly hostname, boot_id and pid_namespace strings')
+    return login_host, identity
 
 
 def load_bridge(workspace):
@@ -259,11 +277,18 @@ def main(argv=None):
     parser.add_argument('--next-outer', type=int, default=18)
     parser.add_argument('--observations', type=int, default=180)
     parser.add_argument('--interval', type=int, default=60)
+    parser.add_argument('--login-host', default=DEFAULT_LOGIN_HOST)
+    parser.add_argument('--login-identity-json',
+                        help='Explicit observed hostname/boot_id/pid_namespace JSON; required for a different login host')
     args = parser.parse_args(argv)
     if re.fullmatch('[0-9a-f]{40}', args.operator_commit) is None or \
             not (17 <= args.completed_outer < args.next_outer <= 200) or \
             not (1 <= args.observations <= 180 and 10 <= args.interval <= 60):
         parser.error('Require full operatorSHA, target17..199, later next<=200, observations1..180, interval10..60')
+    try:
+        login_host, login_identity = resolve_login_route(args.login_host, args.login_identity_json)
+    except ValueError as error:
+        parser.error(str(error))
     repo = Path(__file__).resolve().parents[3]
     workspace = repo.parents[1]
     bridge = load_bridge(workspace)
@@ -274,9 +299,8 @@ def main(argv=None):
     for index in range(args.observations):
         wrapper = {}
         try:
-            result = bridge.run('jxu957', remote, '', str(workspace/'work'), login_host='10.120.48.31',
-                expected_host_identity=dict(hostname='ACD-Login-1', boot_id='a27512a3-24a0-4ca3-aa92-98d2a5256d9a',
-                                            pid_namespace='pid:[4026531836]'), observation_timeout=55)
+            result = bridge.run('jxu957', remote, '', str(workspace/'work'), login_host=login_host,
+                expected_host_identity=login_identity, observation_timeout=55)
             wrapper = dict(returncode=result.returncode, stdout=result.stdout, stderr=result.stderr)
             if result.returncode:
                 raise ValueError('Read-only transport returned '+str(result.returncode))
@@ -287,7 +311,8 @@ def main(argv=None):
                 inspection_issues=['Read-only observation failed; inspect before another observation'],
                 requested_followup_observed=False, overall_goal_complete=False, production_mutated=False,
                 training_failure_inferred=False)
-        summary.update(observation=index+1, operator_commit=args.operator_commit)
+        summary.update(observation=index+1, operator_commit=args.operator_commit,
+                       login_host=login_host, login_identity=login_identity)
         # Epoch and ever-growing log bytes do not themselves constitute a
         # phase/pool/writes state change deserving another full wrapper.
         stable = {key:value for key,value in summary.items() if key not in ('epoch', 'observation', 'log_bytes')}
