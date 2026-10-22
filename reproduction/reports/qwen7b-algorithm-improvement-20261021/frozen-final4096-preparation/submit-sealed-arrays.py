@@ -18,7 +18,7 @@ for item in plan['arrays']:
  active=command(['squeue','-h','-u','mou176','-n',item['job_name'],'-o','%i|%T|%R']);assert not active,'Do not duplicate owned array '+active
  assert not intent.exists(),'Unknown previous submit result: reconcile same-name array, no blindretry'
  atomic(intent,dict(time=time.time(),key=item['key'],entry=item['entry'],config=item['config'],array='0-3%1',max_active_GPUs=2,partition='acd_u',time_limit_override='02:00:00',purpose='Generate sealed final inputs only; no probe scoring or model selection',final_labels_read_for_selection=False))
- answer=command(['sbatch','--parsable','--time=02:00:00',item['entry']['path']]);assert re.fullmatch(r'[0-9]+(?:;[^ ]+)?',answer);job=answer.split(';')[0]
+ answer=command(['sbatch','--parsable','--account=mou176','--time=02:00:00',item['entry']['path']]);assert re.fullmatch(r'[0-9]+(?:;[^ ]+)?',answer);job=answer.split(';')[0]
  receipt=dict(job_id=job,key=item['key'],name=item['job_name'],config=item['config'],entry=item['entry'],original_event_root=item['original_event_root'],time=time.time(),status='ARRAY_SUBMITTED_NOT_ROLLOUT_PROGRESS_VERIFIED',sealed_data_only=True,final_probe_scored=False,array='0-3%1',time_limit='02:00:00');atomic(record,receipt)
  identity=command(['scontrol','show','job','-o',job]);assert all(x in identity for x in ('UserId=mou176','JobName='+item['job_name'],'Partition=acd_u','Dependency=(null)','TimeLimit=02:00:00'));assert 'gres/gpu=2'in identity or'TresPerNode=gres/gpu:2'in identity;receipt['slurm_identity']=identity;atomic(record,receipt);out.append(receipt)
 print(json.dumps(dict(jobs=[dict(job_id=x['job_id'],key=x['key'],array=x['array'])for x in out],max_concurrent_GPUs=8,no_probe_scoring=True)))
