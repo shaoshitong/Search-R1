@@ -1,0 +1,124 @@
+{
+  "acceptor_edited": false,
+  "acceptor_to_extend": "reproduction/operations/qwen7b_warmup/accept_matched_window_checkpoint.py",
+  "common": {
+    "EMA_decay": 0.9995,
+    "LR": 5e-06,
+    "actual_seed2_checkpoints_loaded": false,
+    "binding_seed_keys": {
+      "diagnostic_seed": 2026102228,
+      "init_seed": 19137,
+      "initial_head_sha256": "SAME_AS_CHECKPOINT_TOP_LEVEL",
+      "seed": 2026102302,
+      "seed_source": "explicit_CLI",
+      "train_plan_seed": 2026102302
+    },
+    "capture_layer": 14,
+    "checkpoint_epoch_range": [
+      1,
+      10
+    ],
+    "checkpoint_state_keys": [
+      "raw",
+      "EMA",
+      "Adam",
+      "RNG_by_rank",
+      "epoch",
+      "plan_sha256",
+      "cursor",
+      "batch_attempts",
+      "actual_Adam_updates",
+      "EMA_updates",
+      "margin_satisfied_batches",
+      "binding",
+      "actor_updates"
+    ],
+    "checkpoint_top_level_seed_keys": {
+      "diagnostic_seed": 2026102228,
+      "init_seed": 19137,
+      "initial_head_sha256": "ACTUAL_RUNTIME_RECORDED_SHA",
+      "train_plan_seed": 2026102302
+    },
+    "diagnostic_seed_semantics": "Metadata convention; actual diagnostic ownG5 identities are read from the unchanged SHA-bound fixture, never regenerated from this seed",
+    "epoch_plan_signature": "epoch_plan(groups, epoch, fixed_m, *, train_plan_seed)",
+    "explicit_plan_call": {
+      "fixed_m": 5,
+      "train_plan_seed": 2026102302
+    },
+    "fixed_train_G5": {
+      "bytes": 825187,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/fixture/inputs/fixed-train-G5.json",
+      "sha256": "e6e74d92160efb0740ba5c0316c4ee7686f06a499c90cafd5a545f325b62209b"
+    },
+    "fixed_validation_G5": {
+      "bytes": 972316,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/fixture/inputs/validation-groups.json",
+      "sha256": "50f1e3a6927d02c0f8cadf1feb5b4229b075b5d099fe31fd0de5c2ae3b149292"
+    },
+    "fixture": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/fixture",
+    "fixture_manifest_sha256": "a269f9d4bf22bef0e30afc7cbc0e9a708fb83cb73230fefa95106b56ec54d936",
+    "head_max_positions": 2048,
+    "layer": 15,
+    "official_actor_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "prefix": 80,
+    "states": [
+      "raw",
+      "EMA"
+    ],
+    "train_groups": {
+      "bytes": 12348914,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-L15P80-8192-20261023-v1/fixture/inputs/train-groups.json",
+      "sha256": "7c3ed56d052c2c304428a9688113689a30687cee9a33297cc0710e11d4d7dae2"
+    },
+    "training_questions": 8192
+  },
+  "replicas": {
+    "current64": {
+      "Adam_count_rule": "actual_Adam_updates + margin_satisfied_batches + cached_only_zero_current_gradient_batches == batch_attempts; EMA_updates == actual_Adam_updates",
+      "accumulation": 4,
+      "architecture": "one_question_packed_global64_detached_window_topk_v1",
+      "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-current64-seed19137-plan2026102302-L15P80-8192-20261023-v1/current64",
+      "cache_window_capacity": 0,
+      "epochs": 10,
+      "expected_batch_attempts": 1280,
+      "extra_checkpoint_keys": [
+        "cached_only_zero_current_gradient_batches",
+        "score_window",
+        "score_window_sha256",
+        "score_model_version",
+        "last_window_entries"
+      ],
+      "fixed_m": 5,
+      "frozen_primary_epoch": 5,
+      "frozen_primary_state": "raw",
+      "global_batch": 64,
+      "local_batch": 32,
+      "micro": 8,
+      "objective": "topk_ramp",
+      "runtime_module": "reproduction.operations.qwen7b_warmup.online_packed_window_topk_seeded",
+      "runtime_sha256": "a2dd6286efeb6b8d9aa24068acd1f51581ead24393add716c1458f0013b7c057",
+      "runtime_source_commit": "34579cbfb9729afb21c88b540b7ded7d3db823f4"
+    },
+    "mse-M5": {
+      "Adam_count_rule": "actual_Adam_updates == EMA_updates == batch_attempts == 640 at E10; margin_satisfied_batches ==0",
+      "accumulation": 8,
+      "architecture": "one_question_packed_matched_objective_v1",
+      "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-packed-matched-MSE-M5-seed19137-plan2026102302-L15P80-8192-20261023-v1/mse-M5",
+      "epochs": 10,
+      "expected_Adam_updates": 640,
+      "expected_batch_attempts": 640,
+      "extra_checkpoint_keys": [],
+      "fixed_m": 5,
+      "frozen_primary_epoch": 7,
+      "frozen_primary_state": "raw",
+      "global_batch": 128,
+      "local_batch": 64,
+      "micro": 8,
+      "objective": "mse",
+      "runtime_module": "reproduction.operations.qwen7b_warmup.online_packed_matched_objective_seeded",
+      "runtime_sha256": "a4405c81749595a25da56b4bad6484b734d6adc7131a4246d2ec7194795ce3f1",
+      "runtime_source_commit": "92ec87b0c1a02a068517c8ed84aa4b8f5727599c"
+    }
+  },
+  "status": "STATIC_SEEDED_CHECKPOINT_ACCEPTOR_COMPATIBILITY_NOTES_NOT_TENSOR_ACCEPTANCE"
+}
