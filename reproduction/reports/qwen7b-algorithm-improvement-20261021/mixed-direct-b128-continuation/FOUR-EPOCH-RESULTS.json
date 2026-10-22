@@ -1,0 +1,236 @@
+{
+  "observed_epoch": 1792649581.2124057,
+  "job": "746266|COMPLETED|0:0|06:51:48|ACD1-3",
+  "status": "OFFICIAL_DIRECT_MIXED_B128_FOUR_EPOCH_QUESTION_BUDGET_COMPLETE",
+  "cursor": 6540,
+  "final_checkpoint": {
+    "cursor": 6540,
+    "native_steps": 6540,
+    "head_steps": 6540,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/checkpoints/cursor-006540.pt",
+    "sha256": "3b046f136f91dfb37fa9c91970b05d611c02cd24af13ed9c020cf9af73ec574b",
+    "bytes": 3782600282
+  },
+  "four_epochs": [
+    {
+      "epoch": 1,
+      "model": "EMA",
+      "cursor": 2577,
+      "Mixed_BCE": 0.6530157596280333,
+      "Mixed_BA": 0.5288460177183898,
+      "Mixed_recall": 0.2187028657616893,
+      "nonMixed_recall": 0.8389891696750903,
+      "AUC": 0.5950122787243195,
+      "Top512": {
+        "Mixed_fraction": 0.400390625,
+        "actual_Mixed": 205,
+        "selected_questions": 512,
+        "selection_budget": 512
+      },
+      "receipt": {
+        "bytes": 27129,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/evaluations/epoch-01/complete.json",
+        "sha256": "3d832d00b2d40eaf5ffad4568c1785c84270b0a81e033c57e6c7030a93cd0de8"
+      },
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/checkpoints/cursor-002577.pt",
+        "cursor": 2577,
+        "sha256": "c0a1c7dc3663d4216966a3440c2103348bcc52db3cd04c2f5c59a784a2792917",
+        "bytes": 3781073882
+      }
+    },
+    {
+      "epoch": 1,
+      "model": "raw",
+      "cursor": 2577,
+      "Mixed_BCE": 0.6438072642486077,
+      "Mixed_BA": 0.5228112016814501,
+      "Mixed_recall": 0.138763197586727,
+      "nonMixed_recall": 0.9068592057761733,
+      "AUC": 0.5927721602387136,
+      "Top512": {
+        "Mixed_fraction": 0.392578125,
+        "actual_Mixed": 201,
+        "selected_questions": 512,
+        "selection_budget": 512
+      },
+      "receipt": {
+        "bytes": 27129,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/evaluations/epoch-01/complete.json",
+        "sha256": "3d832d00b2d40eaf5ffad4568c1785c84270b0a81e033c57e6c7030a93cd0de8"
+      },
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/checkpoints/cursor-002577.pt",
+        "cursor": 2577,
+        "sha256": "c0a1c7dc3663d4216966a3440c2103348bcc52db3cd04c2f5c59a784a2792917",
+        "bytes": 3781073882
+      }
+    },
+    {
+      "epoch": 2,
+      "model": "EMA",
+      "cursor": 3898,
+      "Mixed_BCE": 0.9679134759571753,
+      "Mixed_BA": 0.48068728185525805,
+      "Mixed_recall": 0.889894419306184,
+      "nonMixed_recall": 0.07148014440433213,
+      "AUC": 0.47497536087470255,
+      "Top512": {
+        "Mixed_fraction": 0.30859375,
+        "actual_Mixed": 158,
+        "selected_questions": 512,
+        "selection_budget": 512
+      },
+      "receipt": {
+        "bytes": 26607,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/evaluations/epoch-02/complete.json",
+        "sha256": "e570c8be473423092d4c177476c7c670cb3343db3485859392ee8aca1bf7b954"
+      },
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/checkpoints/cursor-003898.pt",
+        "cursor": 3898,
+        "sha256": "920a2aa1b04aabbfd3f1aa2bed3acd16e498d2d9d89f22ae21fef6f6c4ba9561",
+        "bytes": 3781853402
+      }
+    },
+    {
+      "epoch": 2,
+      "model": "raw",
+      "cursor": 3898,
+      "Mixed_BCE": 1.0352276028279448,
+      "Mixed_BA": 0.48246783300934926,
+      "Mixed_recall": 0.8717948717948718,
+      "nonMixed_recall": 0.09314079422382672,
+      "AUC": 0.4595172364974871,
+      "Top512": {
+        "Mixed_fraction": 0.3046875,
+        "actual_Mixed": 156,
+        "selected_questions": 512,
+        "selection_budget": 512
+      },
+      "receipt": {
+        "bytes": 26607,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/evaluations/epoch-02/complete.json",
+        "sha256": "e570c8be473423092d4c177476c7c670cb3343db3485859392ee8aca1bf7b954"
+      },
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/checkpoints/cursor-003898.pt",
+        "cursor": 3898,
+        "sha256": "920a2aa1b04aabbfd3f1aa2bed3acd16e498d2d9d89f22ae21fef6f6c4ba9561",
+        "bytes": 3781853402
+      }
+    },
+    {
+      "epoch": 3,
+      "model": "EMA",
+      "cursor": 5219,
+      "Mixed_BCE": 0.623642421734985,
+      "Mixed_BA": 0.5125803834446858,
+      "Mixed_recall": 0.048265460030165915,
+      "nonMixed_recall": 0.9768953068592058,
+      "AUC": 0.578285443585932,
+      "Top512": {
+        "Mixed_fraction": 0.400390625,
+        "actual_Mixed": 205,
+        "selected_questions": 512,
+        "selection_budget": 512
+      },
+      "receipt": {
+        "bytes": 27065,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/evaluations/epoch-03/complete.json",
+        "sha256": "aa9bff3e29086d52721b6bd692ad74908a8089fd33f091bc16e39bcaabff33ed"
+      },
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/checkpoints/cursor-005219.pt",
+        "cursor": 5219,
+        "sha256": "5c25c35464ec7e9f361970d8140bb16eddca0a9403ed9b03a8c17c530040f3aa",
+        "bytes": 3782600090
+      }
+    },
+    {
+      "epoch": 3,
+      "model": "raw",
+      "cursor": 5219,
+      "Mixed_BCE": 0.6241334024089156,
+      "Mixed_BA": 0.5099493060206587,
+      "Mixed_recall": 0.06033182503770739,
+      "nonMixed_recall": 0.9595667870036101,
+      "AUC": 0.5770602937092638,
+      "Top512": {
+        "Mixed_fraction": 0.388671875,
+        "actual_Mixed": 199,
+        "selected_questions": 512,
+        "selection_budget": 512
+      },
+      "receipt": {
+        "bytes": 27065,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/evaluations/epoch-03/complete.json",
+        "sha256": "aa9bff3e29086d52721b6bd692ad74908a8089fd33f091bc16e39bcaabff33ed"
+      },
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/checkpoints/cursor-005219.pt",
+        "cursor": 5219,
+        "sha256": "5c25c35464ec7e9f361970d8140bb16eddca0a9403ed9b03a8c17c530040f3aa",
+        "bytes": 3782600090
+      }
+    },
+    {
+      "epoch": 4,
+      "model": "EMA",
+      "cursor": 6540,
+      "Mixed_BCE": 0.768948831158923,
+      "Mixed_BA": 0.5337575074461887,
+      "Mixed_recall": 0.9577677224736049,
+      "nonMixed_recall": 0.10974729241877257,
+      "AUC": 0.5665218267256916,
+      "Top512": {
+        "Mixed_fraction": 0.373046875,
+        "actual_Mixed": 191,
+        "selected_questions": 512,
+        "selection_budget": 512
+      },
+      "receipt": {
+        "bytes": 26594,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/evaluations/epoch-04/complete.json",
+        "sha256": "8a555cda65bcb902683d164996e00e96151ea4233f4bea07df87511c5af4e341"
+      },
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/checkpoints/cursor-006540.pt",
+        "cursor": 6540,
+        "sha256": "3b046f136f91dfb37fa9c91970b05d611c02cd24af13ed9c020cf9af73ec574b",
+        "bytes": 3782600282
+      }
+    },
+    {
+      "epoch": 4,
+      "model": "raw",
+      "cursor": 6540,
+      "Mixed_BCE": 0.8027573032668442,
+      "Mixed_BA": 0.5200712220461636,
+      "Mixed_recall": 0.9592760180995475,
+      "nonMixed_recall": 0.08086642599277978,
+      "AUC": 0.570348650429347,
+      "Top512": {
+        "Mixed_fraction": 0.38671875,
+        "actual_Mixed": 198,
+        "selected_questions": 512,
+        "selection_budget": 512
+      },
+      "receipt": {
+        "bytes": 26594,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/evaluations/epoch-04/complete.json",
+        "sha256": "8a555cda65bcb902683d164996e00e96151ea4233f4bea07df87511c5af4e341"
+      },
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/checkpoints/cursor-006540.pt",
+        "cursor": 6540,
+        "sha256": "3b046f136f91dfb37fa9c91970b05d611c02cd24af13ed9c020cf9af73ec574b",
+        "bytes": 3782600282
+      }
+    }
+  ],
+  "final4096_scored": false,
+  "scientific_goal_complete": false,
+  "primary_failure": "Fixed2048 Mixed BA remains near chance; class bias flips across epochs; no stable joint primary superiority",
+  "next_work": "Independently recompute ownG5 metrics and quantify training/selection sampling mismatch before next actual data correction experiment"
+}

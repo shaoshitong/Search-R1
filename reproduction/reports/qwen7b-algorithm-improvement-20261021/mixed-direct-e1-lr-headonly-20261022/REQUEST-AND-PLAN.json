@@ -1,0 +1,57 @@
+{
+  "request_time": "2026-10-22T14:33:07.818389+08:00",
+  "human_instruction": "第二轮的学习率减小为原来的1/10，然后继续第一轮训练，第三轮只训练最后的head而不训练transformer block，学习率为原来的10倍，这样跑完三轮看看",
+  "status": "IMPLEMENTING_NEW_E2_E3_CONTINUATION_NOT_SUBMITTED",
+  "source_job": "746266",
+  "source_epoch": 1,
+  "source_cursor": 2577,
+  "source_checkpoint": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/checkpoints/cursor-002577.pt",
+    "bytes": 3781073882,
+    "sha256": "c0a1c7dc3663d4216966a3440c2103348bcc52db3cd04c2f5c59a784a2792917"
+  },
+  "phase2": {
+    "updates": 1321,
+    "end_cursor": 3898,
+    "native_trainable": true,
+    "native_lr": 5e-07,
+    "head_lr": 5e-07
+  },
+  "phase3": {
+    "updates": 1321,
+    "end_cursor": 5219,
+    "native_trainable": false,
+    "native_optimizer_steps_frozen_at": 3898,
+    "head_lr": 5e-05,
+    "head_optimizer_continues": true,
+    "EMA_passively_tracks_full_raw_with_decay": 0.99
+  },
+  "preserved": [
+    "raw",
+    "EMA",
+    "native_Adam",
+    "head_Adam",
+    "RNG",
+    "sampler_binding",
+    "sampler_order_and_cursor",
+    "hard_sampling_state"
+  ],
+  "data": {
+    "questions": 169028,
+    "genuine_trajectories_per_question": 10,
+    "trajectories": 1690280,
+    "global_batch_questions": 128,
+    "GPU_micro_questions": 64,
+    "views_per_question": 4,
+    "weighted_mixed_class_mass": 0.5,
+    "nominal_question_visits_per_new_epoch": 169088,
+    "unique_all_questions_each_epoch_guaranteed": false,
+    "old_four_epoch_cumulative_unique_seen_questions": 169028,
+    "sampler_unchanged_for_controlled_LR_freeze_comparison": true
+  },
+  "evaluation": "each new epoch full checkpoint and raw/EMA fixed512+2048; final4096 untouched",
+  "old_outputs_preserved": true,
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-e1-lr-headonly-20261022-v1",
+  "root_only_submit": true,
+  "formal_compute": "1H100 normal/acd_u 8CPU128GiB"
+}
