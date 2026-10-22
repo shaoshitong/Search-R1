@@ -1,0 +1,171 @@
+{
+  "time": 1792687426.5353072,
+  "experiments": {
+    "15": {
+      "prefix80-ready.json": {
+        "Slurm_submitted": false,
+        "entry": {
+          "bytes": 1354,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/training.sbatch",
+          "sha256": "327e486c0b29a206999527817ec0de52378743732c6da6dc3898c93869aa634c"
+        },
+        "final4096_read": false,
+        "job_name": "q7b-online2-L15P80",
+        "layer": 15,
+        "prefix": 80,
+        "rationale": "L15/L18 P20 improved BA; matched P80 isolates longer prefix against own P20 and L21P80.",
+        "resources": {
+          "CPUs": 12,
+          "GPUs": 2,
+          "memGiB": 128,
+          "partition": "acd_u",
+          "time": "00:30:00"
+        },
+        "runtime_commit": "c366ad4bf11c32f78b2622775c2a7bf83e1a5299",
+        "source_entry": {
+          "bytes": 1337,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/training.sbatch",
+          "sha256": "71bb3bc2cc92647282dcc7ae8fba669c1ec1c8412876c8d6505ea86138ac8f8c"
+        },
+        "source_publication": {
+          "bytes": 1357,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/depth-expansion-source-publication.json",
+          "sha256": "cc76d46721f9416b7c32a5c38b2e88a68b7e4eb2acbc608ec3bd71bb7e39a6cf"
+        },
+        "status": "PREFIX80_MATCHED_GEOMETRY_READY_NOT_SUBMITTED",
+        "training": {
+          "EMA_decay": 0.99,
+          "accumulation": 8,
+          "epochs": 3,
+          "global_batch": 128,
+          "hidden_features_persisted": false,
+          "lr": 5e-06,
+          "micro": 8,
+          "official_fresh_block_head_Adam": true,
+          "questions": 8192,
+          "same_frozen_own_G5_plans": true,
+          "updates": 192,
+          "world_size": 2
+        }
+      },
+      "root-submission.json": {
+        "entry": {
+          "bytes": 1354,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/training.sbatch",
+          "sha256": "327e486c0b29a206999527817ec0de52378743732c6da6dc3898c93869aa634c"
+        },
+        "job_id": "749684",
+        "name": "q7b-online2-L15P80",
+        "no_dependencies": true,
+        "resources": {
+          "CPUs": 12,
+          "GPUs": 2,
+          "memGiB": 128,
+          "partition": "acd_u",
+          "time": "00:30:00"
+        },
+        "runtime_commit": "c366ad4bf11c32f78b2622775c2a7bf83e1a5299",
+        "time": 1792687386.284961
+      },
+      "failure-rank-0.json": {
+        "message": "CUDA unknown error - this may be due to an incorrectly set up environment, e.g. changing env variable CUDA_VISIBLE_DEVICES after program start. Setting the available devices to be zero.",
+        "time": 1792687420.7895217,
+        "traceback": "Traceback (most recent call last):\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/depth-expansion-code-c366ad4bf11c/reproduction/operations/qwen7b_warmup/online_mixed_depth_expansion.py\", line 194, in main\n    try:run(a)\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/depth-expansion-code-c366ad4bf11c/reproduction/operations/qwen7b_warmup/online_mixed_depth_expansion.py\", line 109, in run\n    rank=int(os.environ['RANK']);world=int(os.environ['WORLD_SIZE']);device=torch.device('cuda',int(os.environ['LOCAL_RANK']));torch.cuda.set_device(device);dist.init_process_group('nccl');assert world==2;local_batch=128//world;micro_questions=8\n  File \"/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/source/env/lib/python3.10/site-packages/torch/cuda/__init__.py\", line 420, in set_device\n    torch._C._cuda_setDevice(device)\n  File \"/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/source/env/lib/python3.10/site-packages/torch/cuda/__init__.py\", line 314, in _lazy_init\n    torch._C._cuda_init()\nRuntimeError: CUDA unknown error - this may be due to an incorrectly set up environment, e.g. changing env variable CUDA_VISIBLE_DEVICES after program start. Setting the available devices to be zero.\n",
+        "type": "RuntimeError"
+      },
+      "failure-rank-1.json": {
+        "message": "CUDA unknown error - this may be due to an incorrectly set up environment, e.g. changing env variable CUDA_VISIBLE_DEVICES after program start. Setting the available devices to be zero.",
+        "time": 1792687420.7895381,
+        "traceback": "Traceback (most recent call last):\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/depth-expansion-code-c366ad4bf11c/reproduction/operations/qwen7b_warmup/online_mixed_depth_expansion.py\", line 194, in main\n    try:run(a)\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/depth-expansion-code-c366ad4bf11c/reproduction/operations/qwen7b_warmup/online_mixed_depth_expansion.py\", line 109, in run\n    rank=int(os.environ['RANK']);world=int(os.environ['WORLD_SIZE']);device=torch.device('cuda',int(os.environ['LOCAL_RANK']));torch.cuda.set_device(device);dist.init_process_group('nccl');assert world==2;local_batch=128//world;micro_questions=8\n  File \"/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/source/env/lib/python3.10/site-packages/torch/cuda/__init__.py\", line 420, in set_device\n    torch._C._cuda_setDevice(device)\n  File \"/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/source/env/lib/python3.10/site-packages/torch/cuda/__init__.py\", line 314, in _lazy_init\n    torch._C._cuda_init()\nRuntimeError: CUDA unknown error - this may be due to an incorrectly set up environment, e.g. changing env variable CUDA_VISIBLE_DEVICES after program start. Setting the available devices to be zero.\n",
+        "type": "RuntimeError"
+      },
+      "accounting": {
+        "returncode": 0,
+        "stdout": "749684|FAILED|1:0|00:00:17|ACD1-13",
+        "stderr": ""
+      },
+      "queue": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    "18": {
+      "prefix80-ready.json": {
+        "Slurm_submitted": false,
+        "entry": {
+          "bytes": 1354,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/training.sbatch",
+          "sha256": "4c60f896f4c73c4641f9178f50b1cf7d8b2b3e027dfa781a42b410086f45d8ca"
+        },
+        "final4096_read": false,
+        "job_name": "q7b-online2-L18P80",
+        "layer": 18,
+        "prefix": 80,
+        "rationale": "L15/L18 P20 improved BA; matched P80 isolates longer prefix against own P20 and L21P80.",
+        "resources": {
+          "CPUs": 12,
+          "GPUs": 2,
+          "memGiB": 128,
+          "partition": "acd_u",
+          "time": "00:30:00"
+        },
+        "runtime_commit": "c366ad4bf11c32f78b2622775c2a7bf83e1a5299",
+        "source_entry": {
+          "bytes": 1337,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/training.sbatch",
+          "sha256": "71bb3bc2cc92647282dcc7ae8fba669c1ec1c8412876c8d6505ea86138ac8f8c"
+        },
+        "source_publication": {
+          "bytes": 1357,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/depth-expansion-source-publication.json",
+          "sha256": "cc76d46721f9416b7c32a5c38b2e88a68b7e4eb2acbc608ec3bd71bb7e39a6cf"
+        },
+        "status": "PREFIX80_MATCHED_GEOMETRY_READY_NOT_SUBMITTED",
+        "training": {
+          "EMA_decay": 0.99,
+          "accumulation": 8,
+          "epochs": 3,
+          "global_batch": 128,
+          "hidden_features_persisted": false,
+          "lr": 5e-06,
+          "micro": 8,
+          "official_fresh_block_head_Adam": true,
+          "questions": 8192,
+          "same_frozen_own_G5_plans": true,
+          "updates": 192,
+          "world_size": 2
+        }
+      },
+      "root-submission.json": {
+        "entry": {
+          "bytes": 1354,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/training.sbatch",
+          "sha256": "4c60f896f4c73c4641f9178f50b1cf7d8b2b3e027dfa781a42b410086f45d8ca"
+        },
+        "job_id": "749685",
+        "name": "q7b-online2-L18P80",
+        "no_dependencies": true,
+        "resources": {
+          "CPUs": 12,
+          "GPUs": 2,
+          "memGiB": 128,
+          "partition": "acd_u",
+          "time": "00:30:00"
+        },
+        "runtime_commit": "c366ad4bf11c32f78b2622775c2a7bf83e1a5299",
+        "time": 1792687387.549464
+      },
+      "accounting": {
+        "returncode": 0,
+        "stdout": "749685|PENDING|0:0|00:00:00|None assigned",
+        "stderr": ""
+      },
+      "queue": {
+        "returncode": 0,
+        "stdout": "749685|q7b-online2-L18P80|acd_u|PENDING|2026-10-23T00:47:52|(Priority)",
+        "stderr": ""
+      }
+    }
+  }
+}

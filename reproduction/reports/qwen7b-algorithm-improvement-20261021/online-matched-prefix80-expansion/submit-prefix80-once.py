@@ -12,7 +12,7 @@ for layer in (15,18):
  entry=pathlib.Path(ready['entry']['path']);assert hashlib.sha256(entry.read_bytes()).hexdigest()==ready['entry']['sha256']
  intent=b/'root-submission-intent.json';assert not intent.exists(),'Unknown previous outcome: inspect accounting before retry'
  intent.write_text(json.dumps(dict(name=name,entry=ready['entry'],time=time.time()))+'\n')
- p=subprocess.run(['sbatch','--parsable',str(entry)],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=30)
+ p=subprocess.run(['sbatch','--parsable','--exclude=ACD1-13',str(entry)],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=30)
  assert p.returncode==0,p.stdout+p.stderr
  job=p.stdout.strip().split(';')[0];assert job.isdigit()
  result=dict(job_id=job,name=name,entry=ready['entry'],runtime_commit=ready['runtime_commit'],time=time.time(),resources=ready['resources'],no_dependencies=True)
