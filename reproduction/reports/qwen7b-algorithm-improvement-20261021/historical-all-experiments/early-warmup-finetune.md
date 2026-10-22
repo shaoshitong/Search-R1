@@ -14,6 +14,9 @@ Only existing local small reports were read. All values below are actual recorde
 | Prefix20 1:1 Mixed/nonMixed continuation, rank weight1.0 E3 (EMA0.99) | 76.8178% | 54.4220% | 56.1364% | 190/512 |
 | Prefix20 1:1 Mixed/nonMixed continuation, rank weight1.0 E4 (EMA0.99) | 79.6482% | 52.3079% | missing | 179/512 |
 | Prefix20 1:1 Mixed/nonMixed continuation, rank weight1.0 E5 (EMA0.99) | 81.6780% | 54.8320% | missing | 188/512 |
+| Original Prefix5 genuineMixed-only + auxiliary ranking from warmupE2 E1 (unknown) | missing | missing | missing | missing |
+| Original Prefix5 genuineMixed-only + auxiliary ranking from warmupE2 E2 (unknown) | missing | missing | missing | missing |
+| Original Prefix5 genuineMixed-only + auxiliary ranking from warmupE2 (unknown) | missing | missing | missing | missing |
 | Uniform ownG5 class-weighted fork from direct E1 (later metadata only) (unknown) | missing | missing | missing | missing |
 
 Mixed-only training has no negative class, so its train Mixed balanced accuracy is undefined. Its cohort differs from the later1:1 balanced67198-question training cohort. Warmup evaluated the original169028 questions, while fitting used a three-class-balanced233175-group plan with repeated wholeG5 groups.
@@ -32,6 +35,8 @@ WarmupE5 was not completed: the user changed the target to4 full epochs and a4-u
 - `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/outputs/qwen7b-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020-epoch03-prediction-audit.json` (5888 bytes, SHA256 `70d87eb6ac9fc2fef06c31734ce656e3cf2ec766b1b99937758da71b99ea61f0`).
 - `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/outputs/qwen7b-warmup-20261019/mixed-ft-status-1792519011.json` (17216 bytes, SHA256 `b480e6f6042229cf717064fb764274e4d31342425a9f8002f084749a54a54a40`).
 - `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/outputs/qwen7b-warmup-20261019/mixed-ft-status-1792523075.json` (23948 bytes, SHA256 `58fb3f2cbc47eb1092a0825e5a8bd6bbd01311a0f1a62419ef561ccc0f19b4fb`).
+- `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-mixed-ft-cp2-20261020/five-epoch-alias-repair/mixed-current-source-config.json` (8331 bytes, SHA256 `16fd85346af4c805741839a1a84ac5b3f38f277f8f85e7a53de94f7735a68447`).
+- `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-mixed-ft-cp2-20261020/five-epoch-alias-repair/mixed-ft-first-trial-failure.json` (7175 bytes, SHA256 `5d2f35b2c58e64b63cbab45eadea1847dfdada2d0152f35e3f294d0805b36cb5`).
 - `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/mixed-direct-e1-uniform-g5-weighted/actual-status.json` (65 bytes, SHA256 `d965ee59d617e3eaa0319aa7b7a43af3ffc889aff30bb55d57de75cbd9cd9289`).
 
 Each JSON row also identifies the actual remote checkpoint path, pool identity, weight state, source and comparability limitations. Missing values remain null; none were inferred from confusion counts, other states or later pools.

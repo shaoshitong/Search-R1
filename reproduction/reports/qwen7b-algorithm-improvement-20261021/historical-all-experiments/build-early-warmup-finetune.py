@@ -95,6 +95,22 @@ for epoch in sorted(sealed):
            train_pool='67198 unique G5 questions per epoch:33599Mixed+33599nonMixed; differs from allMixed E1 cohort',
            extra_sources=extra_sources)
 
+prefix5_config_path = REPORTS / 'qwen7b-mixed-ft-cp2-20261020/five-epoch-alias-repair/mixed-current-source-config.json'
+prefix5_failure_path = REPORTS / 'qwen7b-mixed-ft-cp2-20261020/five-epoch-alias-repair/mixed-ft-first-trial-failure.json'
+prefix5_config = read(prefix5_config_path)
+read(prefix5_failure_path)
+assert prefix5_config['config']['prefix_tokens'] == 5
+for label, epoch, cursor in [('E1', 1, None), ('E2', 2, None), ('CP256', None, 256)]:
+    rows.append({'experiment': 'Original Prefix5 genuineMixed-only + auxiliary ranking from warmupE2',
+                 'checkpoint': None, 'checkpoint_epoch': epoch, 'requested_checkpoint_tag': label,
+                 'requested_cursor': cursor, 'state': 'unknown', 'train_BA': None, 'test_BA': None,
+                 'top_mixed': None, 'top_k': None, 'pool_questions': 2048, 'pool_identity': POOL,
+                 'train_pool': 'Planned67199 genuineMixed G5 questions; completed evaluated checkpoint not established locally',
+                 'source': str(prefix5_config_path.resolve()), 'supporting_sources': [str(prefix5_failure_path.resolve())],
+                 'comparability_note': 'Nested source_checkpoint.metrics belongs to warmupE2, NOT this fine-tune. '
+                                       'No actual Prefix5 E1/E2/CP256 evaluation found in existing local records; do not substitute later Prefix20 metrics.',
+                 'status': 'NO_LOCAL_ACCEPTED_PREFIX5_FINETUNE_CHECKPOINT_METRICS_FOUND'})
+
 weighted = REPO / 'reproduction/reports/qwen7b-algorithm-improvement-20261021/mixed-direct-e1-uniform-g5-weighted/actual-status.json'
 if weighted.exists():
     read(weighted)
