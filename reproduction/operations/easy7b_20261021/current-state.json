@@ -1,6 +1,6 @@
 {
-  "epoch": 1792674007.6842923,
-  "status": "ACTUAL_NATIVE4_49_COMPLETE_CP49_SEALED_50_ACTOR_UPDATE_ADVANCING_GOAL200_ACTIVE",
+  "epoch": 1792674823.1444874,
+  "status": "ACTUAL_NATIVE4_50_UPDATE_FIXED512_QA_COMPLETE_CP50_SEAL_PENDING_GOAL200_ACTIVE",
   "active_goal_achieved": false,
   "active_goal": "Qwen2.5-7B fresh Easy2560 Co 4H100200outer, final exact51713",
   "job": "747219",
@@ -11,7 +11,7 @@
   "global_mini": 128,
   "logical_micro": 4,
   "accumulation": 4,
-  "actual_completed_outer": 49,
+  "actual_completed_outer": 50,
   "initialization_is_not_training_acceptance": true,
   "old3b": {
     "job": "734689",
@@ -54,10 +54,10 @@
     "enabled_scope": "Exact retrieval cache + original dense head + separate2H100 retrieval service + authorized actor-local FA3; vLLM rollout XFormers and grounding SDPA unchanged"
   },
   "previous_goal_turn_classification": "PROGRESS_ACTUAL_OUTERS27_TO30_COMPLETE_AND31_GENERATION",
-  "latest_turn_classification": "PROGRESS_ACTUAL40_TO49_COMPLETE_AND50_ACTOR_WRITES984_TO987",
+  "latest_turn_classification": "PROGRESS_ACTUAL50_UPDATE_FIXED512_QA_COMPLETE_READONLY_FA3_PERFORMANCE_REVIEW",
   "last_observation": {
-    "epoch": 1792674007.6842923,
-    "raw": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp34-recovery-watch-1792674004722406000/observation-001.json"
+    "epoch": 1792674727.357548,
+    "raw": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/fa3-review-followup50-1792674726077007000.json"
   },
   "pipeline": {
     "execution_role": "production",
@@ -115,7 +115,7 @@
   "fallback_profile": "exact-cache-v1",
   "storage_inventory_report": "HPC3-storage-distribution-20261021.txt",
   "last_measured_queue": {
-    "epoch": 1792674007.6842923,
+    "epoch": 1792674727.357548,
     "training_job": "747219",
     "training_state": "RUNNING",
     "retrieval_job": "745198",
@@ -2745,5 +2745,38 @@
     "exit_code": 0
   },
   "latest_actual_training_em_reward_history": "evidence/actual-training-em-reward-history1-to49-20261022.json",
-  "latest_progress_evidence": "evidence/actual747219-native4-through49-and50-advancing-20261022.json"
+  "latest_progress_evidence": "evidence/actual747219-native4-through49-and50-advancing-20261022.json",
+  "latest_fixed_validation": {
+    "correct_count": 259.0,
+    "count": 512,
+    "final": false,
+    "source_correct": {
+      "hotpotqa": 144.0,
+      "nq": 115.0
+    },
+    "source_counts": {
+      "hotpotqa": 256,
+      "nq": 256
+    },
+    "source_em": {
+      "hotpotqa": 0.5625,
+      "nq": 0.44921875
+    },
+    "source_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/logs/validation-identities.jsonl",
+    "step": 50,
+    "weighted_em": 0.505859375
+  },
+  "performance_review_evidence": "evidence/fa3-performance-code-review-20261022.json",
+  "latest_actual_update_metrics": {
+    "attempt_index": 50,
+    "grad_norm": 2.000130423262165,
+    "optimizer_writes": 1000,
+    "optimizer_writes_before": 980,
+    "optimizer_writes_this_outer": 20,
+    "pg_loss": 0.008273278082036279,
+    "ppo_kl": 0.002527606353032752,
+    "reward": 0.6758504509925842,
+    "step": 50
+  },
+  "next_required_actual_progress": "Producer seals fullCP50, thenoriginaljob747219 continues51; readonlywatch31501 remainsactive50/51. Archive50 andpostcallbackclosurestillrequireactualacceptance."
 }
