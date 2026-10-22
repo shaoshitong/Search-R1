@@ -1,5 +1,5 @@
 {
-  "time": 1792703602.857718,
+  "time": 1792703934.519213,
   "replicas": {
     "seed1": {
       "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3",
@@ -124,11 +124,11 @@
         },
         "progress-rank-0.json": {
           "Adam_and_EMA_step_performed": true,
-          "EMA_updates": 400,
+          "EMA_updates": 787,
           "actor_rows": 64,
-          "actual_Adam_updates": 400,
+          "actual_Adam_updates": 787,
           "actual_global_batch": 128,
-          "batch_attempts": 400,
+          "batch_attempts": 787,
           "binding": {
             "EMA_decay": 0.9995,
             "architecture": "one_question_packed_matched_objective_v1",
@@ -172,11 +172,11 @@
             "updates_per_epoch": 1321,
             "zero_ramp_loss_skips_Adam_and_EMA": true
           },
-          "cursor": 400,
+          "cursor": 787,
           "epoch": 1,
-          "epoch_questions_seen": 25600,
+          "epoch_questions_seen": 50368,
           "gradient_accumulation": 8,
-          "head_gradient_L2": 1.7283013645745384,
+          "head_gradient_L2": 1.1563132479933333,
           "local_batch": 64,
           "loss_details": {},
           "margin_satisfied_batches": 0,
@@ -191,21 +191,21 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.7526250438257233,
+          "native_gradient_L2": 0.4913269659866307,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6068086000159383,
+          "prefill_seconds": 0.6193555509671569,
           "rank": 0,
           "stage": "FULL169028_P80_OWNG5_MSE_UPDATES",
-          "time": 1792703602.719929,
-          "training_loss": 0.140134921297431
+          "time": 1792703934.1796823,
+          "training_loss": 0.1502503352239728
         },
         "progress-rank-1.json": {
           "Adam_and_EMA_step_performed": true,
-          "EMA_updates": 400,
+          "EMA_updates": 787,
           "actor_rows": 64,
-          "actual_Adam_updates": 400,
+          "actual_Adam_updates": 787,
           "actual_global_batch": 128,
-          "batch_attempts": 400,
+          "batch_attempts": 787,
           "binding": {
             "EMA_decay": 0.9995,
             "architecture": "one_question_packed_matched_objective_v1",
@@ -249,11 +249,11 @@
             "updates_per_epoch": 1321,
             "zero_ramp_loss_skips_Adam_and_EMA": true
           },
-          "cursor": 400,
+          "cursor": 787,
           "epoch": 1,
-          "epoch_questions_seen": 25600,
+          "epoch_questions_seen": 50368,
           "gradient_accumulation": 8,
-          "head_gradient_L2": 1.7283013645745384,
+          "head_gradient_L2": 1.1563132479933333,
           "local_batch": 64,
           "loss_details": {},
           "margin_satisfied_batches": 0,
@@ -268,35 +268,35 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.7526250438257233,
+          "native_gradient_L2": 0.4913269659866307,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6080033313483,
+          "prefill_seconds": 0.6077651949599385,
           "rank": 1,
           "stage": "FULL169028_P80_OWNG5_MSE_UPDATES",
-          "time": 1792703602.7199867,
-          "training_loss": 0.14782476983964443
+          "time": 1792703934.179432,
+          "training_loss": 0.10254893451929092
         }
       },
       "squeue": {
         "returncode": 0,
-        "stdout": "750189|RUNNING|8:08|ACD1-20",
+        "stdout": "750189|RUNNING|13:40|ACD1-20",
         "stderr": ""
       },
       "sacct": {
         "returncode": 0,
-        "stdout": "750189|RUNNING|0:0|00:08:08|ACD1-20",
+        "stdout": "750189|RUNNING|0:0|00:13:40|ACD1-20",
         "stderr": ""
       },
       "log_tail": [
-        "{\"stage\": \"FULL169028_P80_OWNG5_MSE_UPDATES\", \"binding\": {\"architecture\": \"one_question_packed_matched_objective_v1\", \"objective\": \"mse\", \"fixed_m\": 5, \"layer\": 15, \"capture_layer\": 14, \"prefix\": 80, \"EMA_decay\": 0.9995, \"lr\": 5e-06, \"global_batch\": 128, \"head_max_positions\": 2048, \"initial_head_sha256\": \"777b9a7c77d0402084fcb99929b05c975011e8bf17fe44e4cfe1db016bb02327\", \"official_actor_revision\": \"a09a35458c702b33eeacc393d103063234e8bc28\", \"training_questions\": 169028, \"seed\": 2026102227, \"init_seed\": 9137, \"train_plan_seed\": 2026102227, \"diagnostic_seed\": 2026102228, \"seed_source\": \"explicit_CLI\", \"fixture\": {\"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/fixture/fixture-complete.json\", \"bytes\": 41653, \"sha256\": \"745bdef27a1098603142a3e9f5506b4bd2777f8b699933923dbc1a208f44f1f8\"}, \"physical_source_contract\": {\"bytes\": 3529468, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/physical-source-contract.json\", \"sha256\": \"8b6c59c2151cd27350e6c0e5763cdfbd0a8c36f3382662c48d6f9289834ca5b4\"}, \"training_scope\": \"full169028_fresh_official_actor_not_pilot_resume\", \"configured_local_batch\": 64, \"configured_micro\": 8, \"configured_accumulation\": 8, \"tail_local_batch\": 34, \"tail_global_batch\": 68, \"updates_per_epoch\": 1321, \"sampling_independent_of_EM\": true, \"class_weighting\": false, \"question_prompt_occurrences_per_group\": 1, \"topk_margin\": null, \"topk_scope\": null, \"zero_ramp_loss_skips_Adam_and_EMA\": true}, \"epoch\": 1, \"cursor\": 399, \"batch_attempts\": 399, \"actual_Adam_updates\": 399, \"EMA_updates\": 399, \"margin_satisfied_batches\": 0, \"Adam_and_EMA_step_performed\": true, \"rank\": 0, \"epoch_questions_seen\": 25536, \"training_loss\": 0.15803320333361626, \"native_gradient_L2\": 0.30872609180619986, \"head_gradient_L2\": 0.6399584901319972, \"actual_global_batch\": 128, \"local_batch\": 64, \"micro\": 8, \"gradient_accumulation\": 8, \"micro_question_counts\": [8, 8, 8, 8, 8, 8, 8, 8], \"loss_details\": {}, \"actor_rows\": 64, \"prefill_rows_equal_groups\": true, \"prefill_seconds\": 0.6052603665739298, \"time\": 1792703601.86907}",
-        "{\"stage\": \"FULL169028_P80_OWNG5_MSE_UPDATES\", \"binding\": {\"architecture\": \"one_question_packed_matched_objective_v1\", \"objective\": \"mse\", \"fixed_m\": 5, \"layer\": 15, \"capture_layer\": 14, \"prefix\": 80, \"EMA_decay\": 0.9995, \"lr\": 5e-06, \"global_batch\": 128, \"head_max_positions\": 2048, \"initial_head_sha256\": \"777b9a7c77d0402084fcb99929b05c975011e8bf17fe44e4cfe1db016bb02327\", \"official_actor_revision\": \"a09a35458c702b33eeacc393d103063234e8bc28\", \"training_questions\": 169028, \"seed\": 2026102227, \"init_seed\": 9137, \"train_plan_seed\": 2026102227, \"diagnostic_seed\": 2026102228, \"seed_source\": \"explicit_CLI\", \"fixture\": {\"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/fixture/fixture-complete.json\", \"bytes\": 41653, \"sha256\": \"745bdef27a1098603142a3e9f5506b4bd2777f8b699933923dbc1a208f44f1f8\"}, \"physical_source_contract\": {\"bytes\": 3529468, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/physical-source-contract.json\", \"sha256\": \"8b6c59c2151cd27350e6c0e5763cdfbd0a8c36f3382662c48d6f9289834ca5b4\"}, \"training_scope\": \"full169028_fresh_official_actor_not_pilot_resume\", \"configured_local_batch\": 64, \"configured_micro\": 8, \"configured_accumulation\": 8, \"tail_local_batch\": 34, \"tail_global_batch\": 68, \"updates_per_epoch\": 1321, \"sampling_independent_of_EM\": true, \"class_weighting\": false, \"question_prompt_occurrences_per_group\": 1, \"topk_margin\": null, \"topk_scope\": null, \"zero_ramp_loss_skips_Adam_and_EMA\": true}, \"epoch\": 1, \"cursor\": 400, \"batch_attempts\": 400, \"actual_Adam_updates\": 400, \"EMA_updates\": 400, \"margin_satisfied_batches\": 0, \"Adam_and_EMA_step_performed\": true, \"rank\": 0, \"epoch_questions_seen\": 25600, \"training_loss\": 0.140134921297431, \"native_gradient_L2\": 0.7526250438257233, \"head_gradient_L2\": 1.7283013645745384, \"actual_global_batch\": 128, \"local_batch\": 64, \"micro\": 8, \"gradient_accumulation\": 8, \"micro_question_counts\": [8, 8, 8, 8, 8, 8, 8, 8], \"loss_details\": {}, \"actor_rows\": 64, \"prefill_rows_equal_groups\": true, \"prefill_seconds\": 0.6068086000159383, \"time\": 1792703602.719929}"
+        "{\"stage\": \"FULL169028_P80_OWNG5_MSE_UPDATES\", \"binding\": {\"architecture\": \"one_question_packed_matched_objective_v1\", \"objective\": \"mse\", \"fixed_m\": 5, \"layer\": 15, \"capture_layer\": 14, \"prefix\": 80, \"EMA_decay\": 0.9995, \"lr\": 5e-06, \"global_batch\": 128, \"head_max_positions\": 2048, \"initial_head_sha256\": \"777b9a7c77d0402084fcb99929b05c975011e8bf17fe44e4cfe1db016bb02327\", \"official_actor_revision\": \"a09a35458c702b33eeacc393d103063234e8bc28\", \"training_questions\": 169028, \"seed\": 2026102227, \"init_seed\": 9137, \"train_plan_seed\": 2026102227, \"diagnostic_seed\": 2026102228, \"seed_source\": \"explicit_CLI\", \"fixture\": {\"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/fixture/fixture-complete.json\", \"bytes\": 41653, \"sha256\": \"745bdef27a1098603142a3e9f5506b4bd2777f8b699933923dbc1a208f44f1f8\"}, \"physical_source_contract\": {\"bytes\": 3529468, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/physical-source-contract.json\", \"sha256\": \"8b6c59c2151cd27350e6c0e5763cdfbd0a8c36f3382662c48d6f9289834ca5b4\"}, \"training_scope\": \"full169028_fresh_official_actor_not_pilot_resume\", \"configured_local_batch\": 64, \"configured_micro\": 8, \"configured_accumulation\": 8, \"tail_local_batch\": 34, \"tail_global_batch\": 68, \"updates_per_epoch\": 1321, \"sampling_independent_of_EM\": true, \"class_weighting\": false, \"question_prompt_occurrences_per_group\": 1, \"topk_margin\": null, \"topk_scope\": null, \"zero_ramp_loss_skips_Adam_and_EMA\": true}, \"epoch\": 1, \"cursor\": 786, \"batch_attempts\": 786, \"actual_Adam_updates\": 786, \"EMA_updates\": 786, \"margin_satisfied_batches\": 0, \"Adam_and_EMA_step_performed\": true, \"rank\": 0, \"epoch_questions_seen\": 50304, \"training_loss\": 0.12641314789652824, \"native_gradient_L2\": 0.47607014546243165, \"head_gradient_L2\": 1.1644509508616763, \"actual_global_batch\": 128, \"local_batch\": 64, \"micro\": 8, \"gradient_accumulation\": 8, \"micro_question_counts\": [8, 8, 8, 8, 8, 8, 8, 8], \"loss_details\": {}, \"actor_rows\": 64, \"prefill_rows_equal_groups\": true, \"prefill_seconds\": 0.6011800821870565, \"time\": 1792703933.328308}",
+        "{\"stage\": \"FULL169028_P80_OWNG5_MSE_UPDATES\", \"binding\": {\"architecture\": \"one_question_packed_matched_objective_v1\", \"objective\": \"mse\", \"fixed_m\": 5, \"layer\": 15, \"capture_layer\": 14, \"prefix\": 80, \"EMA_decay\": 0.9995, \"lr\": 5e-06, \"global_batch\": 128, \"head_max_positions\": 2048, \"initial_head_sha256\": \"777b9a7c77d0402084fcb99929b05c975011e8bf17fe44e4cfe1db016bb02327\", \"official_actor_revision\": \"a09a35458c702b33eeacc393d103063234e8bc28\", \"training_questions\": 169028, \"seed\": 2026102227, \"init_seed\": 9137, \"train_plan_seed\": 2026102227, \"diagnostic_seed\": 2026102228, \"seed_source\": \"explicit_CLI\", \"fixture\": {\"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/fixture/fixture-complete.json\", \"bytes\": 41653, \"sha256\": \"745bdef27a1098603142a3e9f5506b4bd2777f8b699933923dbc1a208f44f1f8\"}, \"physical_source_contract\": {\"bytes\": 3529468, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/physical-source-contract.json\", \"sha256\": \"8b6c59c2151cd27350e6c0e5763cdfbd0a8c36f3382662c48d6f9289834ca5b4\"}, \"training_scope\": \"full169028_fresh_official_actor_not_pilot_resume\", \"configured_local_batch\": 64, \"configured_micro\": 8, \"configured_accumulation\": 8, \"tail_local_batch\": 34, \"tail_global_batch\": 68, \"updates_per_epoch\": 1321, \"sampling_independent_of_EM\": true, \"class_weighting\": false, \"question_prompt_occurrences_per_group\": 1, \"topk_margin\": null, \"topk_scope\": null, \"zero_ramp_loss_skips_Adam_and_EMA\": true}, \"epoch\": 1, \"cursor\": 787, \"batch_attempts\": 787, \"actual_Adam_updates\": 787, \"EMA_updates\": 787, \"margin_satisfied_batches\": 0, \"Adam_and_EMA_step_performed\": true, \"rank\": 0, \"epoch_questions_seen\": 50368, \"training_loss\": 0.1502503352239728, \"native_gradient_L2\": 0.4913269659866307, \"head_gradient_L2\": 1.1563132479933333, \"actual_global_batch\": 128, \"local_batch\": 64, \"micro\": 8, \"gradient_accumulation\": 8, \"micro_question_counts\": [8, 8, 8, 8, 8, 8, 8, 8], \"loss_details\": {}, \"actor_rows\": 64, \"prefill_rows_equal_groups\": true, \"prefill_seconds\": 0.6193555509671569, \"time\": 1792703934.1796823}"
       ],
       "recent_actual_updates": [
         {
           "epoch": 1,
-          "cursor": 393,
-          "actual_Adam_updates": 393,
-          "EMA_updates": 393,
+          "cursor": 780,
+          "actual_Adam_updates": 780,
+          "EMA_updates": 780,
           "rank": 0,
           "local_batch": 64,
           "actual_global_batch": 128,
@@ -311,17 +311,17 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.15473006679026077,
-          "head_gradient_L2": 0.15970931542424563,
+          "native_gradient_L2": 0.41678715040405556,
+          "head_gradient_L2": 1.1352118807738598,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6783043276518583,
-          "time": 1792703596.6005988
+          "prefill_seconds": 0.6140380902215838,
+          "time": 1792703928.2142334
         },
         {
           "epoch": 1,
-          "cursor": 394,
-          "actual_Adam_updates": 394,
-          "EMA_updates": 394,
+          "cursor": 781,
+          "actual_Adam_updates": 781,
+          "EMA_updates": 781,
           "rank": 0,
           "local_batch": 64,
           "actual_global_batch": 128,
@@ -336,17 +336,17 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.7560271489979147,
-          "head_gradient_L2": 1.8970588769819359,
+          "native_gradient_L2": 0.490241039532901,
+          "head_gradient_L2": 1.0375657008351036,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6146660940721631,
-          "time": 1792703597.4615002
+          "prefill_seconds": 0.6084712082520127,
+          "time": 1792703929.0740368
         },
         {
           "epoch": 1,
-          "cursor": 395,
-          "actual_Adam_updates": 395,
-          "EMA_updates": 395,
+          "cursor": 782,
+          "actual_Adam_updates": 782,
+          "EMA_updates": 782,
           "rank": 0,
           "local_batch": 64,
           "actual_global_batch": 128,
@@ -361,17 +361,17 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.6877741140655566,
-          "head_gradient_L2": 1.818464003826231,
+          "native_gradient_L2": 0.7359535571347844,
+          "head_gradient_L2": 1.682292271636994,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6120391711592674,
-          "time": 1792703598.3328705
+          "prefill_seconds": 0.6056417943909764,
+          "time": 1792703929.9184105
         },
         {
           "epoch": 1,
-          "cursor": 396,
-          "actual_Adam_updates": 396,
-          "EMA_updates": 396,
+          "cursor": 783,
+          "actual_Adam_updates": 783,
+          "EMA_updates": 783,
           "rank": 0,
           "local_batch": 64,
           "actual_global_batch": 128,
@@ -386,17 +386,17 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.1881448449953558,
-          "head_gradient_L2": 0.4445554640279357,
+          "native_gradient_L2": 0.2193793461950114,
+          "head_gradient_L2": 0.4853244147556765,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6248298231512308,
-          "time": 1792703599.2908425
+          "prefill_seconds": 0.6113563347607851,
+          "time": 1792703930.7679126
         },
         {
           "epoch": 1,
-          "cursor": 397,
-          "actual_Adam_updates": 397,
-          "EMA_updates": 397,
+          "cursor": 784,
+          "actual_Adam_updates": 784,
+          "EMA_updates": 784,
           "rank": 0,
           "local_batch": 64,
           "actual_global_batch": 128,
@@ -411,17 +411,17 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.6809702925940169,
-          "head_gradient_L2": 1.7709132804677725,
+          "native_gradient_L2": 0.3737539262471645,
+          "head_gradient_L2": 0.7895423771561201,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6138142328709364,
-          "time": 1792703600.148116
+          "prefill_seconds": 0.6243683313950896,
+          "time": 1792703931.629522
         },
         {
           "epoch": 1,
-          "cursor": 398,
-          "actual_Adam_updates": 398,
-          "EMA_updates": 398,
+          "cursor": 785,
+          "actual_Adam_updates": 785,
+          "EMA_updates": 785,
           "rank": 0,
           "local_batch": 64,
           "actual_global_batch": 128,
@@ -436,17 +436,17 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.6108080035094262,
-          "head_gradient_L2": 1.4444431162182936,
+          "native_gradient_L2": 0.28720535767225625,
+          "head_gradient_L2": 0.4007645269295587,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6130937486886978,
-          "time": 1792703601.0114567
+          "prefill_seconds": 0.6175300860777497,
+          "time": 1792703932.4864883
         },
         {
           "epoch": 1,
-          "cursor": 399,
-          "actual_Adam_updates": 399,
-          "EMA_updates": 399,
+          "cursor": 786,
+          "actual_Adam_updates": 786,
+          "EMA_updates": 786,
           "rank": 0,
           "local_batch": 64,
           "actual_global_batch": 128,
@@ -461,17 +461,17 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.30872609180619986,
-          "head_gradient_L2": 0.6399584901319972,
+          "native_gradient_L2": 0.47607014546243165,
+          "head_gradient_L2": 1.1644509508616763,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6052603665739298,
-          "time": 1792703601.86907
+          "prefill_seconds": 0.6011800821870565,
+          "time": 1792703933.328308
         },
         {
           "epoch": 1,
-          "cursor": 400,
-          "actual_Adam_updates": 400,
-          "EMA_updates": 400,
+          "cursor": 787,
+          "actual_Adam_updates": 787,
+          "EMA_updates": 787,
           "rank": 0,
           "local_batch": 64,
           "actual_global_batch": 128,
@@ -486,11 +486,11 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.7526250438257233,
-          "head_gradient_L2": 1.7283013645745384,
+          "native_gradient_L2": 0.4913269659866307,
+          "head_gradient_L2": 1.1563132479933333,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6068086000159383,
-          "time": 1792703602.719929
+          "prefill_seconds": 0.6193555509671569,
+          "time": 1792703934.1796823
         }
       ],
       "finished_evaluations": {
@@ -837,11 +837,11 @@
         },
         "progress-rank-0.json": {
           "Adam_and_EMA_step_performed": true,
-          "EMA_updates": 2688,
+          "EMA_updates": 3074,
           "actor_rows": 64,
-          "actual_Adam_updates": 2688,
+          "actual_Adam_updates": 3074,
           "actual_global_batch": 128,
-          "batch_attempts": 2688,
+          "batch_attempts": 3074,
           "binding": {
             "EMA_decay": 0.9995,
             "architecture": "one_question_packed_matched_objective_v1",
@@ -885,11 +885,11 @@
             "updates_per_epoch": 1321,
             "zero_ramp_loss_skips_Adam_and_EMA": true
           },
-          "cursor": 2688,
+          "cursor": 3074,
           "epoch": 3,
-          "epoch_questions_seen": 2944,
+          "epoch_questions_seen": 27648,
           "gradient_accumulation": 8,
-          "head_gradient_L2": 0.6151697196237803,
+          "head_gradient_L2": 0.255555551389451,
           "local_batch": 64,
           "loss_details": {},
           "margin_satisfied_batches": 0,
@@ -904,21 +904,21 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.4459283876108667,
+          "native_gradient_L2": 0.2040092476826519,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6239329818636179,
+          "prefill_seconds": 0.6137818656861782,
           "rank": 0,
           "stage": "FULL169028_P80_OWNG5_MSE_UPDATES",
-          "time": 1792703602.853735,
-          "training_loss": 0.13797198981046677
+          "time": 1792703934.5487456,
+          "training_loss": 0.08875886024907231
         },
         "progress-rank-1.json": {
           "Adam_and_EMA_step_performed": true,
-          "EMA_updates": 2688,
+          "EMA_updates": 3074,
           "actor_rows": 64,
-          "actual_Adam_updates": 2688,
+          "actual_Adam_updates": 3074,
           "actual_global_batch": 128,
-          "batch_attempts": 2688,
+          "batch_attempts": 3074,
           "binding": {
             "EMA_decay": 0.9995,
             "architecture": "one_question_packed_matched_objective_v1",
@@ -962,11 +962,11 @@
             "updates_per_epoch": 1321,
             "zero_ramp_loss_skips_Adam_and_EMA": true
           },
-          "cursor": 2688,
+          "cursor": 3074,
           "epoch": 3,
-          "epoch_questions_seen": 2944,
+          "epoch_questions_seen": 27648,
           "gradient_accumulation": 8,
-          "head_gradient_L2": 0.6151697196237803,
+          "head_gradient_L2": 0.255555551389451,
           "local_batch": 64,
           "loss_details": {},
           "margin_satisfied_batches": 0,
@@ -981,13 +981,13 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.4459283876108667,
+          "native_gradient_L2": 0.2040092476826519,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6146287694573402,
+          "prefill_seconds": 0.6081149056553841,
           "rank": 1,
           "stage": "FULL169028_P80_OWNG5_MSE_UPDATES",
-          "time": 1792703602.8536754,
-          "training_loss": 0.12772841192781925
+          "time": 1792703934.5489523,
+          "training_loss": 0.11890594009310007
         },
         "latest.json": {
           "bytes": 3777401684,
@@ -997,24 +997,24 @@
       },
       "squeue": {
         "returncode": 0,
-        "stdout": "750190|RUNNING|42:16|ACD1-8",
+        "stdout": "750190|RUNNING|47:47|ACD1-8",
         "stderr": ""
       },
       "sacct": {
         "returncode": 0,
-        "stdout": "750190|RUNNING|0:0|00:42:16|ACD1-8",
+        "stdout": "750190|RUNNING|0:0|00:47:47|ACD1-8",
         "stderr": ""
       },
       "log_tail": [
-        "{\"stage\": \"FULL169028_P80_OWNG5_MSE_UPDATES\", \"binding\": {\"architecture\": \"one_question_packed_matched_objective_v1\", \"objective\": \"mse\", \"fixed_m\": 5, \"layer\": 15, \"capture_layer\": 14, \"prefix\": 80, \"EMA_decay\": 0.9995, \"lr\": 5e-06, \"global_batch\": 128, \"head_max_positions\": 2048, \"initial_head_sha256\": \"10684fda52c0f9f7b670b0472ccd8b7e581346e4d01572bc078a143cc782b41e\", \"official_actor_revision\": \"a09a35458c702b33eeacc393d103063234e8bc28\", \"training_questions\": 169028, \"seed\": 2026102302, \"init_seed\": 19137, \"train_plan_seed\": 2026102302, \"diagnostic_seed\": 2026102228, \"seed_source\": \"explicit_CLI\", \"fixture\": {\"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/fixture/fixture-complete.json\", \"bytes\": 41653, \"sha256\": \"745bdef27a1098603142a3e9f5506b4bd2777f8b699933923dbc1a208f44f1f8\"}, \"physical_source_contract\": {\"bytes\": 3529468, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/physical-source-contract.json\", \"sha256\": \"8b6c59c2151cd27350e6c0e5763cdfbd0a8c36f3382662c48d6f9289834ca5b4\"}, \"training_scope\": \"full169028_fresh_official_actor_not_pilot_resume\", \"configured_local_batch\": 64, \"configured_micro\": 8, \"configured_accumulation\": 8, \"tail_local_batch\": 34, \"tail_global_batch\": 68, \"updates_per_epoch\": 1321, \"sampling_independent_of_EM\": true, \"class_weighting\": false, \"question_prompt_occurrences_per_group\": 1, \"topk_margin\": null, \"topk_scope\": null, \"zero_ramp_loss_skips_Adam_and_EMA\": true}, \"epoch\": 3, \"cursor\": 2687, \"batch_attempts\": 2687, \"actual_Adam_updates\": 2687, \"EMA_updates\": 2687, \"margin_satisfied_batches\": 0, \"Adam_and_EMA_step_performed\": true, \"rank\": 0, \"epoch_questions_seen\": 2880, \"training_loss\": 0.1275901049375534, \"native_gradient_L2\": 0.6603730302888775, \"head_gradient_L2\": 1.4267431557033479, \"actual_global_batch\": 128, \"local_batch\": 64, \"micro\": 8, \"gradient_accumulation\": 8, \"micro_question_counts\": [8, 8, 8, 8, 8, 8, 8, 8], \"loss_details\": {}, \"actor_rows\": 64, \"prefill_rows_equal_groups\": true, \"prefill_seconds\": 0.6048666685819626, \"time\": 1792703601.9926424}",
-        "{\"stage\": \"FULL169028_P80_OWNG5_MSE_UPDATES\", \"binding\": {\"architecture\": \"one_question_packed_matched_objective_v1\", \"objective\": \"mse\", \"fixed_m\": 5, \"layer\": 15, \"capture_layer\": 14, \"prefix\": 80, \"EMA_decay\": 0.9995, \"lr\": 5e-06, \"global_batch\": 128, \"head_max_positions\": 2048, \"initial_head_sha256\": \"10684fda52c0f9f7b670b0472ccd8b7e581346e4d01572bc078a143cc782b41e\", \"official_actor_revision\": \"a09a35458c702b33eeacc393d103063234e8bc28\", \"training_questions\": 169028, \"seed\": 2026102302, \"init_seed\": 19137, \"train_plan_seed\": 2026102302, \"diagnostic_seed\": 2026102228, \"seed_source\": \"explicit_CLI\", \"fixture\": {\"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/fixture/fixture-complete.json\", \"bytes\": 41653, \"sha256\": \"745bdef27a1098603142a3e9f5506b4bd2777f8b699933923dbc1a208f44f1f8\"}, \"physical_source_contract\": {\"bytes\": 3529468, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/physical-source-contract.json\", \"sha256\": \"8b6c59c2151cd27350e6c0e5763cdfbd0a8c36f3382662c48d6f9289834ca5b4\"}, \"training_scope\": \"full169028_fresh_official_actor_not_pilot_resume\", \"configured_local_batch\": 64, \"configured_micro\": 8, \"configured_accumulation\": 8, \"tail_local_batch\": 34, \"tail_global_batch\": 68, \"updates_per_epoch\": 1321, \"sampling_independent_of_EM\": true, \"class_weighting\": false, \"question_prompt_occurrences_per_group\": 1, \"topk_margin\": null, \"topk_scope\": null, \"zero_ramp_loss_skips_Adam_and_EMA\": true}, \"epoch\": 3, \"cursor\": 2688, \"batch_attempts\": 2688, \"actual_Adam_updates\": 2688, \"EMA_updates\": 2688, \"margin_satisfied_batches\": 0, \"Adam_and_EMA_step_performed\": true, \"rank\": 0, \"epoch_questions_seen\": 2944, \"training_loss\": 0.13797198981046677, \"native_gradient_L2\": 0.4459283876108667, \"head_gradient_L2\": 0.6151697196237803, \"actual_global_batch\": 128, \"local_batch\": 64, \"micro\": 8, \"gradient_accumulation\": 8, \"micro_question_counts\": [8, 8, 8, 8, 8, 8, 8, 8], \"loss_details\": {}, \"actor_rows\": 64, \"prefill_rows_equal_groups\": true, \"prefill_seconds\": 0.6239329818636179, \"time\": 1792703602.853735}"
+        "{\"stage\": \"FULL169028_P80_OWNG5_MSE_UPDATES\", \"binding\": {\"architecture\": \"one_question_packed_matched_objective_v1\", \"objective\": \"mse\", \"fixed_m\": 5, \"layer\": 15, \"capture_layer\": 14, \"prefix\": 80, \"EMA_decay\": 0.9995, \"lr\": 5e-06, \"global_batch\": 128, \"head_max_positions\": 2048, \"initial_head_sha256\": \"10684fda52c0f9f7b670b0472ccd8b7e581346e4d01572bc078a143cc782b41e\", \"official_actor_revision\": \"a09a35458c702b33eeacc393d103063234e8bc28\", \"training_questions\": 169028, \"seed\": 2026102302, \"init_seed\": 19137, \"train_plan_seed\": 2026102302, \"diagnostic_seed\": 2026102228, \"seed_source\": \"explicit_CLI\", \"fixture\": {\"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/fixture/fixture-complete.json\", \"bytes\": 41653, \"sha256\": \"745bdef27a1098603142a3e9f5506b4bd2777f8b699933923dbc1a208f44f1f8\"}, \"physical_source_contract\": {\"bytes\": 3529468, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/physical-source-contract.json\", \"sha256\": \"8b6c59c2151cd27350e6c0e5763cdfbd0a8c36f3382662c48d6f9289834ca5b4\"}, \"training_scope\": \"full169028_fresh_official_actor_not_pilot_resume\", \"configured_local_batch\": 64, \"configured_micro\": 8, \"configured_accumulation\": 8, \"tail_local_batch\": 34, \"tail_global_batch\": 68, \"updates_per_epoch\": 1321, \"sampling_independent_of_EM\": true, \"class_weighting\": false, \"question_prompt_occurrences_per_group\": 1, \"topk_margin\": null, \"topk_scope\": null, \"zero_ramp_loss_skips_Adam_and_EMA\": true}, \"epoch\": 3, \"cursor\": 3073, \"batch_attempts\": 3073, \"actual_Adam_updates\": 3073, \"EMA_updates\": 3073, \"margin_satisfied_batches\": 0, \"Adam_and_EMA_step_performed\": true, \"rank\": 0, \"epoch_questions_seen\": 27584, \"training_loss\": 0.08916125586256385, \"native_gradient_L2\": 0.23718327997716712, \"head_gradient_L2\": 0.36481234472756435, \"actual_global_batch\": 128, \"local_batch\": 64, \"micro\": 8, \"gradient_accumulation\": 8, \"micro_question_counts\": [8, 8, 8, 8, 8, 8, 8, 8], \"loss_details\": {}, \"actor_rows\": 64, \"prefill_rows_equal_groups\": true, \"prefill_seconds\": 0.6192222945392132, \"time\": 1792703933.698399}",
+        "{\"stage\": \"FULL169028_P80_OWNG5_MSE_UPDATES\", \"binding\": {\"architecture\": \"one_question_packed_matched_objective_v1\", \"objective\": \"mse\", \"fixed_m\": 5, \"layer\": 15, \"capture_layer\": 14, \"prefix\": 80, \"EMA_decay\": 0.9995, \"lr\": 5e-06, \"global_batch\": 128, \"head_max_positions\": 2048, \"initial_head_sha256\": \"10684fda52c0f9f7b670b0472ccd8b7e581346e4d01572bc078a143cc782b41e\", \"official_actor_revision\": \"a09a35458c702b33eeacc393d103063234e8bc28\", \"training_questions\": 169028, \"seed\": 2026102302, \"init_seed\": 19137, \"train_plan_seed\": 2026102302, \"diagnostic_seed\": 2026102228, \"seed_source\": \"explicit_CLI\", \"fixture\": {\"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/fixture/fixture-complete.json\", \"bytes\": 41653, \"sha256\": \"745bdef27a1098603142a3e9f5506b4bd2777f8b699933923dbc1a208f44f1f8\"}, \"physical_source_contract\": {\"bytes\": 3529468, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/physical-source-contract.json\", \"sha256\": \"8b6c59c2151cd27350e6c0e5763cdfbd0a8c36f3382662c48d6f9289834ca5b4\"}, \"training_scope\": \"full169028_fresh_official_actor_not_pilot_resume\", \"configured_local_batch\": 64, \"configured_micro\": 8, \"configured_accumulation\": 8, \"tail_local_batch\": 34, \"tail_global_batch\": 68, \"updates_per_epoch\": 1321, \"sampling_independent_of_EM\": true, \"class_weighting\": false, \"question_prompt_occurrences_per_group\": 1, \"topk_margin\": null, \"topk_scope\": null, \"zero_ramp_loss_skips_Adam_and_EMA\": true}, \"epoch\": 3, \"cursor\": 3074, \"batch_attempts\": 3074, \"actual_Adam_updates\": 3074, \"EMA_updates\": 3074, \"margin_satisfied_batches\": 0, \"Adam_and_EMA_step_performed\": true, \"rank\": 0, \"epoch_questions_seen\": 27648, \"training_loss\": 0.08875886024907231, \"native_gradient_L2\": 0.2040092476826519, \"head_gradient_L2\": 0.255555551389451, \"actual_global_batch\": 128, \"local_batch\": 64, \"micro\": 8, \"gradient_accumulation\": 8, \"micro_question_counts\": [8, 8, 8, 8, 8, 8, 8, 8], \"loss_details\": {}, \"actor_rows\": 64, \"prefill_rows_equal_groups\": true, \"prefill_seconds\": 0.6137818656861782, \"time\": 1792703934.5487456}"
       ],
       "recent_actual_updates": [
         {
           "epoch": 3,
-          "cursor": 2681,
-          "actual_Adam_updates": 2681,
-          "EMA_updates": 2681,
+          "cursor": 3067,
+          "actual_Adam_updates": 3067,
+          "EMA_updates": 3067,
           "rank": 0,
           "local_batch": 64,
           "actual_global_batch": 128,
@@ -1029,17 +1029,17 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.2241584036107945,
-          "head_gradient_L2": 0.33785831440067543,
+          "native_gradient_L2": 0.7812835339139993,
+          "head_gradient_L2": 1.6681608135940256,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6113088019192219,
-          "time": 1792703596.8624125
+          "prefill_seconds": 0.6089734751731157,
+          "time": 1792703928.5157983
         },
         {
           "epoch": 3,
-          "cursor": 2682,
-          "actual_Adam_updates": 2682,
-          "EMA_updates": 2682,
+          "cursor": 3068,
+          "actual_Adam_updates": 3068,
+          "EMA_updates": 3068,
           "rank": 0,
           "local_batch": 64,
           "actual_global_batch": 128,
@@ -1054,17 +1054,17 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.6280033077794853,
-          "head_gradient_L2": 1.1441458323368867,
+          "native_gradient_L2": 0.7226797072732876,
+          "head_gradient_L2": 1.457777809662144,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6061340551823378,
-          "time": 1792703597.7187266
+          "prefill_seconds": 0.6102270781993866,
+          "time": 1792703929.4015849
         },
         {
           "epoch": 3,
-          "cursor": 2683,
-          "actual_Adam_updates": 2683,
-          "EMA_updates": 2683,
+          "cursor": 3069,
+          "actual_Adam_updates": 3069,
+          "EMA_updates": 3069,
           "rank": 0,
           "local_batch": 64,
           "actual_global_batch": 128,
@@ -1079,17 +1079,17 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.6166438368623457,
-          "head_gradient_L2": 1.3818484784471108,
+          "native_gradient_L2": 1.0931510559789859,
+          "head_gradient_L2": 2.500750842075581,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6164929363876581,
-          "time": 1792703598.5715923
+          "prefill_seconds": 0.6065327171236277,
+          "time": 1792703930.244617
         },
         {
           "epoch": 3,
-          "cursor": 2684,
-          "actual_Adam_updates": 2684,
-          "EMA_updates": 2684,
+          "cursor": 3070,
+          "actual_Adam_updates": 3070,
+          "EMA_updates": 3070,
           "rank": 0,
           "local_batch": 64,
           "actual_global_batch": 128,
@@ -1104,17 +1104,17 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.4426160509914777,
-          "head_gradient_L2": 0.8228081409220541,
+          "native_gradient_L2": 0.2796179501276043,
+          "head_gradient_L2": 0.36508213751194923,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6150034926831722,
-          "time": 1792703599.4136095
+          "prefill_seconds": 0.6245725713670254,
+          "time": 1792703931.1149676
         },
         {
           "epoch": 3,
-          "cursor": 2685,
-          "actual_Adam_updates": 2685,
-          "EMA_updates": 2685,
+          "cursor": 3071,
+          "actual_Adam_updates": 3071,
+          "EMA_updates": 3071,
           "rank": 0,
           "local_batch": 64,
           "actual_global_batch": 128,
@@ -1129,17 +1129,17 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.4873556175594951,
-          "head_gradient_L2": 0.6903288509803829,
+          "native_gradient_L2": 0.24409363368575263,
+          "head_gradient_L2": 0.3322236337998886,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6121718268841505,
-          "time": 1792703600.2697384
+          "prefill_seconds": 0.6073926836252213,
+          "time": 1792703931.9807324
         },
         {
           "epoch": 3,
-          "cursor": 2686,
-          "actual_Adam_updates": 2686,
-          "EMA_updates": 2686,
+          "cursor": 3072,
+          "actual_Adam_updates": 3072,
+          "EMA_updates": 3072,
           "rank": 0,
           "local_batch": 64,
           "actual_global_batch": 128,
@@ -1154,17 +1154,17 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.2982955118166564,
-          "head_gradient_L2": 0.49161396637634364,
+          "native_gradient_L2": 0.32718582228493087,
+          "head_gradient_L2": 0.43668745032588696,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6185077708214521,
-          "time": 1792703601.1318753
+          "prefill_seconds": 0.6209034398198128,
+          "time": 1792703932.8352888
         },
         {
           "epoch": 3,
-          "cursor": 2687,
-          "actual_Adam_updates": 2687,
-          "EMA_updates": 2687,
+          "cursor": 3073,
+          "actual_Adam_updates": 3073,
+          "EMA_updates": 3073,
           "rank": 0,
           "local_batch": 64,
           "actual_global_batch": 128,
@@ -1179,17 +1179,17 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.6603730302888775,
-          "head_gradient_L2": 1.4267431557033479,
+          "native_gradient_L2": 0.23718327997716712,
+          "head_gradient_L2": 0.36481234472756435,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6048666685819626,
-          "time": 1792703601.9926424
+          "prefill_seconds": 0.6192222945392132,
+          "time": 1792703933.698399
         },
         {
           "epoch": 3,
-          "cursor": 2688,
-          "actual_Adam_updates": 2688,
-          "EMA_updates": 2688,
+          "cursor": 3074,
+          "actual_Adam_updates": 3074,
+          "EMA_updates": 3074,
           "rank": 0,
           "local_batch": 64,
           "actual_global_batch": 128,
@@ -1204,11 +1204,11 @@
             8,
             8
           ],
-          "native_gradient_L2": 0.4459283876108667,
-          "head_gradient_L2": 0.6151697196237803,
+          "native_gradient_L2": 0.2040092476826519,
+          "head_gradient_L2": 0.255555551389451,
           "prefill_rows_equal_groups": true,
-          "prefill_seconds": 0.6239329818636179,
-          "time": 1792703602.853735
+          "prefill_seconds": 0.6137818656861782,
+          "time": 1792703934.5487456
         }
       ],
       "finished_evaluations": {

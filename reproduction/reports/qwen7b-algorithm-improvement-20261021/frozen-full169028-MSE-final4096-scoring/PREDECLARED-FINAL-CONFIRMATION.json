@@ -1,0 +1,39 @@
+{
+  "status": "PREDECLARED_ANALYSIS_RULE_NOT_A_CANDIDATE_FREEZE",
+  "created_at": 1792703878.126574,
+  "primary_metric": "Top512_true_Mixed_fraction",
+  "baseline": "original_E1_EMA_fixed_checkpoint",
+  "candidate_family": "full169028_L15_P80_MSE_ownG5",
+  "candidate_epoch_and_state": "seed1_development_only_rule_then_identical_on_seed2",
+  "training_replications": 2,
+  "final_candidate_pools": 2,
+  "questions_per_pool": 2048,
+  "selected_questions_per_model_per_pool": 512,
+  "same_qid_ordered_own_G5_strict_EM_for_all_models": true,
+  "no_score_ensemble_or_best_seed_selection": true,
+  "confirmation_rule": {
+    "every_seed_in_every_pool": "Top512 true Mixed fraction strictly exceeds the E1 EMA baseline in that pool",
+    "each_pool_replication_mean": "paired question bootstrap95 percent interval for two-seed mean Top512 fraction minus E1 has lower bound strictly above zero",
+    "bootstrap_repeats": 2000,
+    "bootstrap_seed": 20261023,
+    "bootstrap_unit": "same question resample shared across baseline and both seeds; reselect Top512 per model",
+    "training_seed_uncertainty_CI_claimed": false
+  },
+  "secondary_metrics": [
+    "Mixed_BA",
+    "Mixed_recall",
+    "all_correct_false_positive",
+    "all_wrong_false_positive",
+    "variance_MSE",
+    "Mixed_AUC"
+  ],
+  "thresholds": {
+    "variance_population": 0.08,
+    "E1_direct_Mixed": 0.5
+  },
+  "secondary_metric_cannot_replace_primary_after_final_read": true,
+  "if_confirmation_fails": "Do not claim this goal achieved; keep these pools labelled viewed and reserve new unseen data before future confirmatory selection",
+  "actual_epoch_selected": false,
+  "actual_candidate_frozen": false,
+  "final_labels_or_predictions_read": false
+}
