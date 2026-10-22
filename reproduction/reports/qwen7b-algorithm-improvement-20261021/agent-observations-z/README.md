@@ -24,3 +24,22 @@ At 1792686105 both ranks had entered epoch2/cursor1420. Epoch1 covered169028 uni
 The only predeclared G5 classification diagnostic uses predicted variance≥.08. The sigmoid output predicts4v, not Mixed probability. Selection ranks predicted variance only; the independent2048/ownfixedG5 pool contains663trueMixed. The train diagnostic is a fixed2048subset of already trained data.
 
 Independent raw score std=.018014 versus true variance std=.092725; EMA score std=.008034. Scores are not literally constant, but spread remains markedly compressed. Raw MSE is about3.60% below the unattainable validation-oracle constant-mean baseline.008598; EMA MSE is still worse than that oracle baseline. This is an early evaluation, not an accepted final improvement or completed10epoch experiment.
+
+## Epochs2–3 and continuing progress
+
+Published immutable evaluation metadata records the following primary independent2048/G5 results. This is the same663-Mixed pool at every epoch. Top512 selection uses predicted variance descending; the predeclared BA diagnostic threshold remains0.08.
+
+| Epoch | State | Train BA | Independent BA | Independent variance MSE | Independent rho | Independent Top512 Mixed |
+|---:|---|---:|---:|---:|---:|---:|
+|0|raw|50.000000%|50.000000%|0.01198474|0.041191|175/512=34.1797%|
+|0|EMA|50.000000%|50.000000%|0.01198474|0.041191|175/512=34.1797%|
+|1|raw|56.987030%|53.783916%|0.00828889|0.191058|218/512=42.5781%|
+|1|EMA|57.375738%|57.272490%|0.00883213|0.156836|215/512=41.9922%|
+|2|raw|60.528503%|55.575521%|0.00823818|0.203084|224/512=43.7500%|
+|2|EMA|58.568267%|54.940077%|0.00834652|0.191491|223/512=43.5547%|
+|3|raw|61.700450%|54.908876%|0.00820418|0.216648|217/512=42.3828%|
+|3|EMA|60.036502%|55.176721%|0.00822664|0.210059|225/512=43.9453%|
+
+E2 and E3 each covered169028 distinct questions exactly once with new label-blind M3..10/subset plans. Trajectory visits were1100933 and1098015; measured epoch durations were994.09 and985.52seconds. These counts are not evidence of new independent question data. E3 independent raw/EMA score standard deviations were0.02355/0.01659 versus true variance0.09273: neither score vector is literally constant, but both remain compressed. Raw Top512 decreased224→217 while EMA increased223→225; this does not establish a stable independent improvement. Fixed-train Top512 was340raw/335EMA, so the larger training gain does not transfer equally to the independent pool.
+
+The observer subsequently confirmed epoch4/cursor4714 at1792688671 with no new errors. No checkpoint contents or final4096 data were opened; final10epoch completion and CPU state acceptance remain pending.
