@@ -1,0 +1,311 @@
+{
+  "time": 1792681649.7956474,
+  "cells": [
+    {
+      "layer": 15,
+      "prefix": 20,
+      "root-submission.json": {
+        "depth_ready": {
+          "bytes": 5370,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix20/depth-ready.json",
+          "sha256": "53edfb3ce8d687b1ac2122de8fd9005d84c4cffa58ef8bbd075dc078b8da6bd1"
+        },
+        "entry": {
+          "bytes": 1354,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix20/training.sbatch",
+          "sha256": "4220ceeba7d3675cbc09ec2294dd1b48b7b6ff3f7392a7658244f6070c6c8b59"
+        },
+        "job_id": "749398",
+        "layer": 15,
+        "name": "q7b-online2-L15P20",
+        "prefix": 20,
+        "publication_commit": "c366ad4bf11c32f78b2622775c2a7bf83e1a5299",
+        "slurm_identity_before_release": "JobId=749398 JobName=q7b-online2-L15P20 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=0 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=JobHeldUser Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=00:30:00 TimeMin=N/A SubmitTime=2026-10-22T23:02:05 EligibleTime=Unknown AccrueTime=Unknown StartTime=Unknown EndTime=Unknown Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-22T23:02:05 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-3:958442 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=12 NumTasks=1 CPUs/Task=12 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=12,mem=128G,node=1,billing=12,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=12 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix20/training.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix20/train-749398.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix20/train-749398.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:12",
+        "source_controller": {
+          "commit": "c366ad4bf11c32f78b2622775c2a7bf83e1a5299",
+          "path": "reproduction/reports/qwen7b-algorithm-improvement-20261021/online-matched-depth-expansion/submit-depth-cells-once.py",
+          "sha256": "f11cf80d4e1e024088dee44f39c442d48150206158ed39da849503e73554d8c8"
+        },
+        "state": "SUBMITTED_NOT_PROGRESS_VERIFIED",
+        "time": 1792681325.1065192
+      },
+      "controller.json": {
+        "EMA_decay": 0.99,
+        "capture_layer": 14,
+        "final4096_read": false,
+        "fixture_source": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-v1",
+        "fresh_official_block_and_head": true,
+        "gradient_accumulation_microbatches": 8,
+        "hidden_feature_cache": false,
+        "job_id": "749398",
+        "layer": 15,
+        "local_batch_questions": 64,
+        "not_E1_continuation": true,
+        "pid": 1929109,
+        "prefix": 20,
+        "raw_gradient_updates_EMA": true,
+        "stage": "LOADING_FROZEN_OFFICIAL_ACTOR_FOR_ONLINE_PREFILL",
+        "time": 1792681534.1854944,
+        "training_G5_per_epoch": 8192,
+        "training_questions": 8192,
+        "validation_questions": 2048,
+        "world_size": 2
+      },
+      "progress-rank-0.json": {
+        "cursor": 48,
+        "epoch": 1,
+        "epoch_questions_seen": 3072,
+        "epoch_unique_questions": 8192,
+        "global_batch_questions": 128,
+        "gradient_accumulation_microbatches": 8,
+        "head_gradient_L2": 0.35167289301202415,
+        "layer": 15,
+        "local_batch_questions": 64,
+        "loss": 0.6762831136584282,
+        "micro_questions": 8,
+        "native_gradient_L2": 0.10841623861789494,
+        "prefill_seconds": 0.8395582640077919,
+        "prefix": 20,
+        "rank": 0,
+        "stage": "ONLINE_PREFILL_REAL_MIXED_UPDATES",
+        "time": 1792681649.1664414,
+        "train_seconds": 0.35598637512885034,
+        "trajectory_rows_per_rank": 320,
+        "world_size": 2
+      },
+      "progress-rank-1.json": {
+        "cursor": 48,
+        "epoch": 1,
+        "epoch_questions_seen": 3072,
+        "epoch_unique_questions": 8192,
+        "global_batch_questions": 128,
+        "gradient_accumulation_microbatches": 8,
+        "head_gradient_L2": 0.35167289301202415,
+        "layer": 15,
+        "local_batch_questions": 64,
+        "loss": 0.7001813724637032,
+        "micro_questions": 8,
+        "native_gradient_L2": 0.10841623861789494,
+        "prefill_seconds": 0.8474314080085605,
+        "prefix": 20,
+        "rank": 1,
+        "stage": "ONLINE_PREFILL_REAL_MIXED_UPDATES",
+        "time": 1792681649.1664195,
+        "train_seconds": 0.3520982258487493,
+        "trajectory_rows_per_rank": 320,
+        "world_size": 2
+      },
+      "queue": "749398|RUNNING|ACD1-28|2026-10-22T23:05:20|emergency_acd|normal",
+      "accounting": "749398|RUNNING|0:0|00:02:09|ACD1-28",
+      "evaluation-epoch-00.json": {
+        "epoch": 0,
+        "cursor": 0,
+        "metrics": {
+          "fixed_train2048": {
+            "EMA": {
+              "Mixed_recall": 1.0,
+              "all_correct": {
+                "Mixed_false_positive_rate": 1.0,
+                "predicted_Mixed": 210,
+                "questions": 210
+              },
+              "all_wrong": {
+                "Mixed_false_positive_rate": 1.0,
+                "predicted_Mixed": 950,
+                "questions": 950
+              },
+              "balanced_accuracy": 0.5,
+              "binary_Mixed_BCE": 0.7264873537038194,
+              "confusion": {
+                "fn": 0,
+                "fp": 1160,
+                "tn": 0,
+                "tp": 888
+              },
+              "nonMixed_false_positive_rate": 1.0,
+              "questions": 2048,
+              "selected512": {
+                "Mixed": 235,
+                "Mixed_fraction": 0.458984375,
+                "questions": 512
+              }
+            },
+            "raw": {
+              "Mixed_recall": 1.0,
+              "all_correct": {
+                "Mixed_false_positive_rate": 1.0,
+                "predicted_Mixed": 210,
+                "questions": 210
+              },
+              "all_wrong": {
+                "Mixed_false_positive_rate": 1.0,
+                "predicted_Mixed": 950,
+                "questions": 950
+              },
+              "balanced_accuracy": 0.5,
+              "binary_Mixed_BCE": 0.7264873537038194,
+              "confusion": {
+                "fn": 0,
+                "fp": 1160,
+                "tn": 0,
+                "tp": 888
+              },
+              "nonMixed_false_positive_rate": 1.0,
+              "questions": 2048,
+              "selected512": {
+                "Mixed": 235,
+                "Mixed_fraction": 0.458984375,
+                "questions": 512
+              }
+            }
+          },
+          "fixed_validation2048": {
+            "EMA": {
+              "Mixed_recall": 1.0,
+              "all_correct": {
+                "Mixed_false_positive_rate": 1.0,
+                "predicted_Mixed": 330,
+                "questions": 330
+              },
+              "all_wrong": {
+                "Mixed_false_positive_rate": 1.0,
+                "predicted_Mixed": 1055,
+                "questions": 1055
+              },
+              "balanced_accuracy": 0.5,
+              "binary_Mixed_BCE": 0.7629764906962793,
+              "confusion": {
+                "fn": 0,
+                "fp": 1385,
+                "tn": 0,
+                "tp": 663
+              },
+              "nonMixed_false_positive_rate": 1.0,
+              "questions": 2048,
+              "selected512": {
+                "Mixed": 174,
+                "Mixed_fraction": 0.33984375,
+                "questions": 512
+              }
+            },
+            "raw": {
+              "Mixed_recall": 1.0,
+              "all_correct": {
+                "Mixed_false_positive_rate": 1.0,
+                "predicted_Mixed": 330,
+                "questions": 330
+              },
+              "all_wrong": {
+                "Mixed_false_positive_rate": 1.0,
+                "predicted_Mixed": 1055,
+                "questions": 1055
+              },
+              "balanced_accuracy": 0.5,
+              "binary_Mixed_BCE": 0.7629764906962793,
+              "confusion": {
+                "fn": 0,
+                "fp": 1385,
+                "tn": 0,
+                "tp": 663
+              },
+              "nonMixed_false_positive_rate": 1.0,
+              "questions": 2048,
+              "selected512": {
+                "Mixed": 174,
+                "Mixed_fraction": 0.33984375,
+                "questions": 512
+              }
+            }
+          }
+        },
+        "seconds": 39.70277452468872
+      },
+      "log_tail": "85573959, \"native_gradient_L2\": 0.16562958436277972, \"head_gradient_L2\": 0.8971465622035097, \"global_batch_questions\": 128, \"world_size\": 2, \"local_batch_questions\": 64, \"micro_questions\": 8, \"gradient_accumulation_microbatches\": 8, \"trajectory_rows_per_rank\": 320, \"layer\": 15, \"prefix\": 20, \"time\": 1792681645.5394897}\n{\"stage\": \"ONLINE_PREFILL_REAL_MIXED_UPDATES\", \"epoch\": 1, \"cursor\": 46, \"rank\": 0, \"epoch_questions_seen\": 2944, \"epoch_unique_questions\": 8192, \"prefill_seconds\": 0.845590285025537, \"train_seconds\": 0.3508919030427933, \"loss\": 0.7005685493350029, \"native_gradient_L2\": 0.3664383992669506, \"head_gradient_L2\": 2.368990580145301, \"global_batch_questions\": 128, \"world_size\": 2, \"local_batch_questions\": 64, \"micro_questions\": 8, \"gradient_accumulation_microbatches\": 8, \"trajectory_rows_per_rank\": 320, \"layer\": 15, \"prefix\": 20, \"time\": 1792681646.747753}\n{\"stage\": \"ONLINE_PREFILL_REAL_MIXED_UPDATES\", \"epoch\": 1, \"cursor\": 47, \"rank\": 0, \"epoch_questions_seen\": 3008, \"epoch_unique_questions\": 8192, \"prefill_seconds\": 0.8451155410148203, \"train_seconds\": 0.352750499965623, \"loss\": 0.7110478952527046, \"native_gradient_L2\": 0.20863468044766215, \"head_gradient_L2\": 1.276395645471542, \"global_batch_questions\": 128, \"world_size\": 2, \"local_batch_questions\": 64, \"micro_questions\": 8, \"gradient_accumulation_microbatches\": 8, \"trajectory_rows_per_rank\": 320, \"layer\": 15, \"prefix\": 20, \"time\": 1792681647.9577138}\n{\"stage\": \"ONLINE_PREFILL_REAL_MIXED_UPDATES\", \"epoch\": 1, \"cursor\": 48, \"rank\": 0, \"epoch_questions_seen\": 3072, \"epoch_unique_questions\": 8192, \"prefill_seconds\": 0.8395582640077919, \"train_seconds\": 0.35598637512885034, \"loss\": 0.6762831136584282, \"native_gradient_L2\": 0.10841623861789494, \"head_gradient_L2\": 0.35167289301202415, \"global_batch_questions\": 128, \"world_size\": 2, \"local_batch_questions\": 64, \"micro_questions\": 8, \"gradient_accumulation_microbatches\": 8, \"trajectory_rows_per_rank\": 320, \"layer\": 15, \"prefix\": 20, \"time\": 1792681649.1664414}\n"
+    },
+    {
+      "layer": 18,
+      "prefix": 20,
+      "root-submission.json": {
+        "depth_ready": {
+          "bytes": 5370,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix20/depth-ready.json",
+          "sha256": "7e7598cf12e077f940488de2b5555dcbfc60ca3aac71418f254e50ea6a375bda"
+        },
+        "entry": {
+          "bytes": 1354,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix20/training.sbatch",
+          "sha256": "aa0fa41cfde45ecce897c4de06ac69a874f169914f101d3d9600e3e26c36aa59"
+        },
+        "job_id": "749399",
+        "layer": 18,
+        "name": "q7b-online2-L18P20",
+        "prefix": 20,
+        "publication_commit": "c366ad4bf11c32f78b2622775c2a7bf83e1a5299",
+        "slurm_identity_before_release": "JobId=749399 JobName=q7b-online2-L18P20 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=0 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=JobHeldUser Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=00:30:00 TimeMin=N/A SubmitTime=2026-10-22T23:02:06 EligibleTime=Unknown AccrueTime=Unknown StartTime=Unknown EndTime=Unknown Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-22T23:02:06 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-3:958442 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=12 NumTasks=1 CPUs/Task=12 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=12,mem=128G,node=1,billing=12,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=12 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix20/training.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix20/train-749399.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix20/train-749399.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:12",
+        "source_controller": {
+          "commit": "c366ad4bf11c32f78b2622775c2a7bf83e1a5299",
+          "path": "reproduction/reports/qwen7b-algorithm-improvement-20261021/online-matched-depth-expansion/submit-depth-cells-once.py",
+          "sha256": "f11cf80d4e1e024088dee44f39c442d48150206158ed39da849503e73554d8c8"
+        },
+        "state": "SUBMITTED_NOT_PROGRESS_VERIFIED",
+        "time": 1792681326.6801164
+      },
+      "controller.json": {
+        "EMA_decay": 0.99,
+        "capture_layer": 17,
+        "final4096_read": false,
+        "fixture_source": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-v1",
+        "fresh_official_block_and_head": true,
+        "gradient_accumulation_microbatches": 8,
+        "hidden_feature_cache": false,
+        "job_id": "749399",
+        "layer": 18,
+        "local_batch_questions": 64,
+        "not_E1_continuation": true,
+        "pid": 2766123,
+        "prefix": 20,
+        "raw_gradient_updates_EMA": true,
+        "stage": "LOADING_FROZEN_OFFICIAL_ACTOR_FOR_ONLINE_PREFILL",
+        "time": 1792681612.0458274,
+        "training_G5_per_epoch": 8192,
+        "training_questions": 8192,
+        "validation_questions": 2048,
+        "world_size": 2
+      },
+      "queue": "749399|RUNNING|ACD1-12|2026-10-22T23:06:39|emergency_acd|normal",
+      "accounting": "749399|RUNNING|0:0|00:00:51|ACD1-12",
+      "log_tail": "YNC_ERROR_HANDLING is deprecated; use TORCH_NCCL_ASYNC_ERROR_HANDLING instead (function operator())\n[W1022 23:06:46.082431287 Utils.hpp:135] Warning: Environment variable NCCL_ASYNC_ERROR_HANDLING is deprecated; use TORCH_NCCL_ASYNC_ERROR_HANDLING instead (function operator())\nYou are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\nYou are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n\rLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\rLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\rLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:00<00:01,  2.61it/s]\rLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:00<00:01,  1.79it/s]\rLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:00<00:00,  2.63it/s]\rLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:00<00:00,  2.23it/s]\rLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:01<00:00,  2.59it/s]\rLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:01<00:00,  2.34it/s]\rLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:01<00:00,  2.58it/s]\rLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:01<00:00,  2.59it/s]\n\rLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:01<00:00,  2.49it/s]\rLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:01<00:00,  2.36it/s]\n[rank1]:[W1022 23:07:00.415609842 Utils.hpp:110] Warning: Environment variable NCCL_ASYNC_ERROR_HANDLING is deprecated; use TORCH_NCCL_ASYNC_ERROR_HANDLING instead (function operator())\n[rank0]:[W1022 23:07:00.415777966 Utils.hpp:110] Warning: Environment variable NCCL_ASYNC_ERROR_HANDLING is deprecated; use TORCH_NCCL_ASYNC_ERROR_HANDLING instead (function operator())\n"
+    },
+    {
+      "layer": 24,
+      "prefix": 20,
+      "root-submission.json": {
+        "depth_ready": {
+          "bytes": 5370,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer24-prefix20/depth-ready.json",
+          "sha256": "3be6f5179c0244729d39b7b64884456c18bc6b61ac3172e1a82d5e8fc7c3519e"
+        },
+        "entry": {
+          "bytes": 1354,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer24-prefix20/training.sbatch",
+          "sha256": "fb61c25cf2c6d824810ac315b262e5aee7f70ac2a94a98176f6845fcbf65e950"
+        },
+        "job_id": "749400",
+        "layer": 24,
+        "name": "q7b-online2-L24P20",
+        "prefix": 20,
+        "publication_commit": "c366ad4bf11c32f78b2622775c2a7bf83e1a5299",
+        "slurm_identity_before_release": "JobId=749400 JobName=q7b-online2-L24P20 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=0 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=JobHeldUser Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=00:30:00 TimeMin=N/A SubmitTime=2026-10-22T23:02:08 EligibleTime=Unknown AccrueTime=Unknown StartTime=Unknown EndTime=Unknown Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-22T23:02:08 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-3:958442 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=12 NumTasks=1 CPUs/Task=12 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=12,mem=128G,node=1,billing=12,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=12 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer24-prefix20/training.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer24-prefix20/train-749400.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer24-prefix20/train-749400.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:12",
+        "source_controller": {
+          "commit": "c366ad4bf11c32f78b2622775c2a7bf83e1a5299",
+          "path": "reproduction/reports/qwen7b-algorithm-improvement-20261021/online-matched-depth-expansion/submit-depth-cells-once.py",
+          "sha256": "f11cf80d4e1e024088dee44f39c442d48150206158ed39da849503e73554d8c8"
+        },
+        "state": "SUBMITTED_NOT_PROGRESS_VERIFIED",
+        "time": 1792681328.2104564
+      },
+      "queue": "749400|PENDING|(Resources)|2026-10-22T23:36:39|emergency_acd|normal",
+      "accounting": "749400|PENDING|0:0|00:00:00|None assigned"
+    }
+  ]
+}
