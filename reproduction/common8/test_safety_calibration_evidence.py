@@ -31,6 +31,88 @@ class ActualMonitorTensorTests(unittest.TestCase):
         with self.assertRaises(EvidenceError):_identity(identity)
 
 
+class OptimizerGradientEvidenceTests(unittest.TestCase):
+    def run_binding(self):
+        return dict(performance_profile='lean_v1', easy2560_selection=True, profile='common8',
+            execution_site='hpc3', training_world_size=4, data_selection_mode='mixed_first',
+            actor_logical_micro_batch_per_rank=4, extra_policy_monitor_forwards=False)
+
+    def unmeasured(self, before=2.):
+        return dict(gradient_norm_before=before, gradient_norm_after=None,
+            gradient_norm_after_measured=False, gradient_norm_after_source='not_measured',
+            gradient_clip_coefficient=min(1.,1./(before+1e-6)), gradient_clip_threshold=1.)
+
+    def test_explicit_bound_lean_unmeasured_coefficient_is_not_a_measured_clip_proof(self):
+        from reproduction.common8.safety_calibration_evidence import optimizer_gradient_evidence
+        for before in (0.,.2,2.,1e120):
+            result=optimizer_gradient_evidence(self.unmeasured(before),run=self.run_binding())
+            self.assertIsNone(result['gradient_norm_after'])
+            self.assertIs(result['gradient_norm_after_measured'],False)
+            self.assertIs(result['measured_post_clip_bound_proven'],False)
+            self.assertIs(result['coefficient_arithmetic_consistent'],True)
+
+    def test_legacy_missing_or_nonfinite_post_norm_remains_rejected(self):
+        from reproduction.common8.safety_calibration_evidence import optimizer_gradient_evidence
+        for run in (None,{},dict(self.run_binding(),performance_profile=None)):
+            with self.assertRaises(ValueError):optimizer_gradient_evidence(self.unmeasured(),run=run)
+        for after in (None,float('inf'),float('nan'),1.+2.*GRADIENT_CLIP_FLOAT32_TOLERANCE):
+            with self.assertRaises(EvidenceError):
+                optimizer_gradient_evidence(dict(gradient_norm_before=2.,gradient_norm_after=after))
+        old=optimizer_gradient_evidence(dict(gradient_norm_before=2.,gradient_norm_after=1.))
+        self.assertIs(old['measured_post_clip_bound_proven'],True)
+
+    def test_unmeasured_schema_and_coefficient_are_explicit_and_arithmetically_consistent(self):
+        from reproduction.common8.safety_calibration_evidence import optimizer_gradient_evidence
+        for mutation in (dict(gradient_norm_before=float('inf')),dict(gradient_norm_after=.9),
+                dict(gradient_norm_after_measured=True),dict(gradient_norm_after_source='derived'),
+                dict(gradient_clip_threshold=2.),dict(gradient_clip_coefficient=.8),
+                dict(gradient_clip_coefficient=float('nan'))):
+            with self.subTest(mutation=mutation),self.assertRaises(EvidenceError):
+                optimizer_gradient_evidence(dict(self.unmeasured(),**mutation),run=self.run_binding())
+        missing=self.unmeasured();missing.pop('gradient_norm_after_measured')
+        with self.assertRaises(EvidenceError):optimizer_gradient_evidence(missing,run=self.run_binding())
+
+    def test_wrong_native_scope_cannot_claim_lean_unmeasured_acceptance(self):
+        from reproduction.common8.safety_calibration_evidence import optimizer_gradient_evidence
+        for mutation in (dict(training_world_size=8),dict(extra_policy_monitor_forwards=True),
+                         dict(easy2560_selection=False)):
+            with self.subTest(mutation=mutation),self.assertRaises(ValueError):
+                optimizer_gradient_evidence(self.unmeasured(),run=dict(self.run_binding(),**mutation))
+
+    def test_transaction_audit_reports_unmeasured_norms_without_measured_clip_claim(self):
+        from reproduction.common8.formal_attempt_audit import _audit_transaction_rows, consumed_lr
+        run=self.run_binding();binding=dict(run_id='a'*32,calibration_sha256='b'*64)
+        attempt=dict(logical_update=1,attempt_id='c'*32,attempt_index=1,
+            behavior_probability_gate_sha256='d'*64,opportunities_processed=20,
+            optimizer_writes_before=0,optimizer_writes_after=20,opportunity_statuses=['written']*20,
+            complete_outer=True,actual_monitor_forward_count=0,reused_monitor_forward_count=0)
+        ranks={}
+        for rank in range(4):
+            rows=[];header=dict(rank=rank,run_id=binding['run_id'])
+            for mini in range(20):
+                context=dict(logical_update=1,minibatch_index=mini,prior_optimizer_writes=mini,
+                    attempt_id=attempt['attempt_id'],attempt_index=1,
+                    behavior_probability_gate_sha256=attempt['behavior_probability_gate_sha256'])
+                rows.append(dict(header,kind='OPTIMIZER_WRITE',context=context,write_count=mini+1,
+                    learning_rates=[consumed_lr(1)],**self.unmeasured()))
+                rows.append(dict(header,kind='OPPORTUNITY',context=context,opportunity_index=mini,
+                    processed=True,status='written',optimizer_write_succeeded=True,
+                    optimizer_write_rolled_back=False,optimizer_call_attempted=True,
+                    optimizer_writes_before=mini,optimizer_writes_after=mini+1,
+                    guard_stage=None,guard_reasons=[]))
+            rows.append(dict(header,kind='OUTER_BUDGET',opportunities_processed=20,optimizer_writes=20,
+                cumulative_writes=20,extra_policy_monitor_forwards=False,
+                actual_monitor_forward_count=0,reused_monitor_forward_count=0))
+            ranks[rank]=rows
+        report=_audit_transaction_rows(ranks,binding,attempt,0,run=run)['gradient_norm_measurement']
+        self.assertEqual(report['actual_write_receipts_checked'],80)
+        self.assertEqual(report['measured_post_clip_receipts'],0)
+        self.assertEqual(report['explicitly_unmeasured_post_clip_receipts'],80)
+        self.assertIs(report['all_post_clip_bounds_measured'],False)
+        ranks[0][0]['gradient_clip_coefficient']=.9
+        with self.assertRaises(EvidenceError):_audit_transaction_rows(ranks,binding,attempt,0,run=run)
+
+
 def digest(text):
     return hashlib.sha256(text.encode()).hexdigest()
 

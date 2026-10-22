@@ -217,7 +217,7 @@ class DataParallelPPOActor(BasePPOActor):
         from search_g1.gradient_clipping import clip_global_l2
         grad_norm = clip_global_l2(self.actor_module,self.config.grad_clip,
             context=getattr(self,"_gradient_diagnostic_context",None),recoverable=recoverable,
-            check_finite=not lean)
+            diagnostic=not lean, check_finite=not lean, measure_post_norm=not lean)
         if not lean:
             require_finite({"grad_norm":grad_norm},stage="before_optimizer_step",process_group=group,recoverable=recoverable)
         if recoverable and not lean:
@@ -228,13 +228,22 @@ class DataParallelPPOActor(BasePPOActor):
         self.actor_optimizer.step()
         self._optimizer_calls = getattr(self, '_optimizer_calls', 0) + 1
         self._optimizer_writes = getattr(self, '_optimizer_writes', 0) + 1
+        gradient_norm_before = float(grad_norm)
+        post_clip_norm = self.actor_module._last_clipped_global_l2
         self._pending_write_receipt = dict(
             rank=torch.distributed.get_rank() if torch.distributed.is_initialized() else 0,
             context=dict(getattr(self, '_gradient_diagnostic_context', {})),
             write_count=self._optimizer_writes, optimizer_call_count=self._optimizer_calls,
-            gradient_norm_before=float(grad_norm),
-            gradient_norm_after=float(self.actor_module._last_clipped_global_l2),
+            gradient_norm_before=gradient_norm_before,
+            gradient_norm_after=None if post_clip_norm is None else float(post_clip_norm),
             learning_rates=[float(part['lr']) for part in self.actor_optimizer.param_groups])
+        if lean:
+            # These scalar metadata describe the existing clipping operation.
+            # No post-write scan or analytic value is labelled as a measurement.
+            self._pending_write_receipt.update(gradient_norm_after_measured=False,
+                gradient_norm_after_source='not_measured',
+                gradient_clip_threshold=float(self.config.grad_clip),
+                gradient_clip_coefficient=min(1., float(self.config.grad_clip)/(gradient_norm_before+1e-6)))
         if os.environ.get('SEARCH_G1_PROFILE') == 'common8' and not lean:
             post = {f'parameter_{i}': p.detach() for i,p in enumerate(self.actor_module.parameters())}
             for i,state in enumerate(self.actor_optimizer.state.values()):

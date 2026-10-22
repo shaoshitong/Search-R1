@@ -19,7 +19,7 @@ def main():
     own_base(base)
     results = []
     for mode in request.get('modes', ['legacy', 'leancompact', 'compact-kernel']):
-        if mode not in ('legacy', 'leanexpanded', 'leancompact', 'compact-kernel'):
+        if mode not in ('legacy', 'leanexpanded', 'leancompact', 'compact-kernel', 'clip-geometry'):
             raise ValueError('Unknown independent experiment mode')
         label = request.get('suffix', 'r1')
         root = base/'diagnostics'/('native4-'+mode+'-'+label)
@@ -36,7 +36,12 @@ def main():
             'PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True',
             'TRITON_CACHE_DIR='+str(root/'cache/triton'), 'XDG_CACHE_HOME='+str(root/'cache'),
             str(source/'env/bin/python'), '-B']
-        if mode == 'compact-kernel':
+        if mode == 'clip-geometry':
+            code = base/'source'/commit/'reproduction/operations/easy7b_20261021/benchmark_clip_measurements_cuda.py'
+            command = common + [str(code), '--base', str(root),
+                '--geometry-report', request['geometry_report']]
+            gpus, cpus, memory, duration = 1, 8, '64G', '00:20:00'
+        elif mode == 'compact-kernel':
             publish(root/'logs/run-manifest.json', dict(training_world_size=4,
                 source_commit=commit, infra_flash_attention_3=binding(source)))
             code = base/'source'/commit/'reproduction/operations/easy7b_20261021/qualify_fa3_compact_gqa_cuda.py'
@@ -59,6 +64,8 @@ def main():
             '--chdir='+str(base/'source'/commit),
             '--output='+str(root/'slurm-%j.log'), '--error='+str(root/'slurm-%j.log'),
             '--wrap='+shlex.join(command)]
+        if mode == 'clip-geometry':
+            argv.insert(2, '--exclude=ACD1-13')
         publish(claim, dict(source_commit=commit, command=argv, mode=mode,
             checkpoint=request['checkpoint'], production_modified=False, created_unix=time.time()))
         result = subprocess.run(argv, capture_output=True, text=True, timeout=30)

@@ -17,7 +17,7 @@ from reproduction.common8.topology import (
 from search_g1.monitor_forward_reuse import summarize_monitor_execution
 from reproduction.common8.safety_calibration_evidence import (
     EvidenceError, GLOBAL_FIELDS, GRADIENT_CLIP_FLOAT32_TOLERANCE, GRADIENT_CLIP_LIMIT,
-    QUANTILE_METHOD, objective_weight_definition,
+    QUANTILE_METHOD, objective_weight_definition, optimizer_gradient_evidence,
     _adjacent, _enforcement, _finite, _hash, _identity, _integer, _require,
     _row, _same_arithmetic, _statistics,
 )
@@ -160,7 +160,7 @@ def _audit_transaction_rows(rows_by_rank, binding, attempt, rejection_before, *,
     """Audit only actual executed opportunities; rolled-back calls are not writes."""
     from search_g1.actor_performance import lean_run
     lean = lean_run(run)
-    observations = {}; final_rejections = []; decisions_by_rank = []; executions = []
+    observations = {}; final_rejections = []; decisions_by_rank = []; executions = []; gradients = []
     extra_monitors = run.get('extra_policy_monitor_forwards',True)
     _require(type(extra_monitors) is bool and (extra_monitors or run.get('finite_thresholds_diagnostic_only') is True or lean),
              'Omitted monitor forwards require explicit diagnostic-only or native4 lean run binding')
@@ -228,9 +228,7 @@ def _audit_transaction_rows(rows_by_rank, binding, attempt, rejection_before, *,
                 _require(row['context']==context and row['write_count']==counter+1 and
                          row['learning_rates'] and all(rate==consumed_lr(attempt['logical_update']) for rate in row['learning_rates']),
                          'Transaction accepted Adam counter or LR differs')
-                _finite(row['gradient_norm_before'],'gradient_norm_before')
-                _require(_finite(row['gradient_norm_after'],'gradient_norm_after') <=
-                         GRADIENT_CLIP_LIMIT+GRADIENT_CLIP_FLOAT32_TOLERANCE, 'Transaction gradient clip differs')
+                gradients.append(optimizer_gradient_evidence(row, run=run, clip_message='Transaction gradient clip differs'))
             else:
                 _require(mini==len(decisions)-1 and decision['guard_reasons'] and
                          decision['guard_stage'] in NUMERICAL_GUARD_STAGES | {'before_minibatch','after_minibatch'},
@@ -261,6 +259,11 @@ def _audit_transaction_rows(rows_by_rank, binding, attempt, rejection_before, *,
     return dict(global_monitor_count=len(observations), rejection_count=final_rejections[0],
                 actual_monitor_forward_count=executions[0]['actual_monitor_forward_count'],
                 reused_monitor_forward_count=executions[0]['reused_monitor_forward_count'],
+                gradient_norm_measurement=dict(actual_write_receipts_checked=len(gradients),
+                    measured_post_clip_receipts=sum(row['gradient_norm_after_measured'] for row in gradients),
+                    explicitly_unmeasured_post_clip_receipts=sum(not row['gradient_norm_after_measured'] for row in gradients),
+                    all_post_clip_bounds_measured=bool(gradients) and all(row['measured_post_clip_bound_proven'] for row in gradients),
+                    scope='Reported coefficient arithmetic is not a measured post-clip norm or GPU finite-scan proof'),
                 guard_triggered_monitor_count=sum(not row['allowed'] for row in observations.values()))
 
 
@@ -373,9 +376,7 @@ def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before, *, run
                 _require(write['write_count'] == counter + 1 and write['learning_rates'] and
                          all(type(rate) in (int, float) and rate == consumed_lr(outer) for rate in write['learning_rates']),
                          'Actual retained Adam write or consumed LR differs')
-                _finite(write['gradient_norm_before'], 'gradient_norm_before')
-                _require(_finite(write['gradient_norm_after'], 'gradient_norm_after') <=
-                         GRADIENT_CLIP_LIMIT + GRADIENT_CLIP_FLOAT32_TOLERANCE, 'Actual global L2 clip differs')
+                optimizer_gradient_evidence(write, run=run, clip_message='Actual global L2 clip differs')
                 counter += 1
         _require(cursor == len(rows) - 1, 'Missing or extra actual attempt monitor/write/terminal receipts')
         terminal = rows[cursor]

@@ -22,21 +22,28 @@ def _partition(module):
     return list(sharded),list(replicated),module.process_group,module.compute_device
 
 
-def _sum_squares(params,device,chunk_size):
+def _sum_squares(params,device,chunk_size,*,measure_max_abs=True):
     total=torch.zeros((),device=device,dtype=torch.float64)
-    maximum=torch.zeros_like(total)
+    maximum=torch.zeros_like(total) if measure_max_abs else None
     for p in params:
         if p.grad is None:continue
         flat=p.grad.detach().reshape(-1)
         for start in range(0,flat.numel(),chunk_size):
             x=flat[start:start+chunk_size].to(dtype=torch.float64)
             total.add_(torch.sum(x*x).to(device))
-            if x.numel():maximum=torch.maximum(maximum,x.abs().max().to(device))
+            if measure_max_abs and x.numel():maximum=torch.maximum(maximum,x.abs().max().to(device))
     return total,maximum
 
 
 @torch.no_grad()
-def clip_global_l2(module,max_norm,*,chunk_size=1048576,diagnostic=True,context=None,recoverable=False,check_finite=True):
+def clip_global_l2(module,max_norm,*,chunk_size=1048576,diagnostic=True,context=None,recoverable=False,check_finite=True,measure_post_norm=True):
+    """Clip with the original FP64 formula; measurements can be disabled.
+
+    ``diagnostic=False, check_finite=False`` skips max-absolute diagnostics and
+    their MAX collective. ``measure_post_norm=False`` also skips the second
+    gradient norm pass and its SUM collective. The post-norm field is then
+    ``None`` with an explicit unmeasured flag, never an analytic estimate.
+    """
     assert math.isfinite(max_norm) and max_norm>0 and chunk_size>0
     sharded,replicated,group,compute_device=_partition(module)
     params=list(dict.fromkeys(sharded+replicated))
@@ -50,14 +57,17 @@ def clip_global_l2(module,max_norm,*,chunk_size=1048576,diagnostic=True,context=
         # Keep the structural contract without launching a numerical scan or a
         # scalar device-to-host check. This does not alter the clipping formula.
         raise RuntimeError('Gradient clipping requires nonempty contiguous floating gradients')
-    shard_sq,shard_max=_sum_squares(sharded,communication_device,chunk_size)
-    replica_sq,replica_max=_sum_squares(replicated,communication_device,chunk_size)
-    local_sharded_l2=torch.sqrt(shard_sq.clone())
-    local_sharded_max=shard_max.clone()
+    measure_max_abs=diagnostic or check_finite
+    shard_sq,shard_max=_sum_squares(sharded,communication_device,chunk_size,measure_max_abs=measure_max_abs)
+    replica_sq,replica_max=_sum_squares(replicated,communication_device,chunk_size,measure_max_abs=measure_max_abs)
+    if diagnostic:
+        local_sharded_l2=torch.sqrt(shard_sq.clone())
+        local_sharded_max=shard_max.clone()
     if sharded:dist.all_reduce(shard_sq,group=group)
     norm=torch.sqrt(shard_sq+replica_sq)
-    maximum=torch.maximum(shard_max,replica_max)
-    if dist.is_initialized():dist.all_reduce(maximum,op=dist.ReduceOp.MAX,group=group)
+    if measure_max_abs:
+        maximum=torch.maximum(shard_max,replica_max)
+        if dist.is_initialized():dist.all_reduce(maximum,op=dist.ReduceOp.MAX,group=group)
     if check_finite:
         require_finite({'grad_norm':norm,'max_abs':maximum},stage='before_fp64_clip_write',process_group=group,recoverable=recoverable)
     coefficient=torch.clamp(float(max_norm)/(norm+1e-6),max=1.)
@@ -70,10 +80,15 @@ def clip_global_l2(module,max_norm,*,chunk_size=1048576,diagnostic=True,context=
             x.copy_((x.to(dtype=torch.float64)*coefficient.to(x.device)).to(x.dtype))
     if check_finite:
         require_finite({str(i):g for i,g in enumerate(grads)},stage='after_fp64_gradient_clipping',process_group=group,recoverable=recoverable)
-    post_shard,_=_sum_squares(sharded,communication_device,chunk_size)
-    post_replica,_=_sum_squares(replicated,communication_device,chunk_size)
-    if sharded:dist.all_reduce(post_shard,group=group)
-    module._last_clipped_global_l2=torch.sqrt(post_shard+post_replica)
-    if check_finite:
-        require_finite({'actual_post_clip_norm':module._last_clipped_global_l2},stage='measured_after_gradient_clipping',process_group=group,recoverable=recoverable)
+    if measure_post_norm:
+        post_shard,_=_sum_squares(sharded,communication_device,chunk_size)
+        post_replica,_=_sum_squares(replicated,communication_device,chunk_size)
+        if sharded:dist.all_reduce(post_shard,group=group)
+        module._last_clipped_global_l2=torch.sqrt(post_shard+post_replica)
+        module._last_clipped_global_l2_measured=True
+        if check_finite:
+            require_finite({'actual_post_clip_norm':module._last_clipped_global_l2},stage='measured_after_gradient_clipping',process_group=group,recoverable=recoverable)
+    else:
+        module._last_clipped_global_l2=None
+        module._last_clipped_global_l2_measured=False
     return norm

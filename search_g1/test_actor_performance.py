@@ -130,7 +130,17 @@ class ActorPerformanceTests(unittest.TestCase):
         self.assertTrue(torch.equal(lean['grad'], legacy['grad']))
         for key in legacy['state']:
             self.assertTrue(torch.equal(lean['state'][key], legacy['state'][key]))
-        self.assertEqual(lean['rows'], legacy['rows'])
+        for lean_row, legacy_row in zip(lean['rows'], legacy['rows']):
+            self.assertIsNone(lean_row['gradient_norm_after'])
+            self.assertIs(lean_row['gradient_norm_after_measured'], False)
+            self.assertEqual(lean_row['gradient_norm_after_source'], 'not_measured')
+            self.assertEqual(lean_row['gradient_clip_threshold'], 1.)
+            self.assertEqual(lean_row['gradient_clip_coefficient'],
+                min(1., 1./(legacy_row['gradient_norm_before']+1e-6)))
+            self.assertEqual({key: value for key, value in lean_row.items()
+                              if key in legacy_row and key != 'gradient_norm_after'},
+                             {key: value for key, value in legacy_row.items()
+                              if key != 'gradient_norm_after'})
         self.assertEqual(lean['metrics'], legacy['metrics'])
 
     def test_lean_clipping_preserves_fp64_extreme_and_bf16_rounding(self):

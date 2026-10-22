@@ -93,6 +93,41 @@ def _same_arithmetic(actual, expected, name):
              'Inconsistent report arithmetic: ' + name)
 
 
+def optimizer_gradient_evidence(row, *, run=None,
+        clip_message='Actual post-clip norm exceeds clip1 numerical bound'):
+    """Validate measured legacy norms or explicitly unmeasured native4 lean logs.
+
+    A reported coefficient is checked only as CPU arithmetic. It does not
+    establish a measured post-clip norm, gradient finite scan, or GPU clipping
+    correctness. Historical records retain their finite measured-norm checks.
+    """
+    before = _finite(row['gradient_norm_before'], 'gradient_norm_before')
+    unmeasured = (row.get('gradient_norm_after_measured') is False or
+                  row.get('gradient_norm_after') is None)
+    if unmeasured:
+        from search_g1.actor_performance import lean_run
+        _require(run is not None and lean_run(run) is True,
+                 'Unmeasured post-clip norm requires explicit native4 lean_run binding')
+        _require('gradient_norm_after' in row and row['gradient_norm_after'] is None and
+                 row.get('gradient_norm_after_measured') is False and
+                 row.get('gradient_norm_after_source') == 'not_measured',
+                 'Unmeasured post-clip norm must be explicitly null and not_measured')
+        threshold = _finite(row['gradient_clip_threshold'], 'gradient_clip_threshold')
+        coefficient = _finite(row['gradient_clip_coefficient'], 'gradient_clip_coefficient')
+        _require(threshold == GRADIENT_CLIP_LIMIT and coefficient <= 1.,
+                 'Lean clipping threshold or coefficient differs')
+        _same_arithmetic(coefficient, min(1., threshold / (before + 1e-6)),
+                         'reported gradient clip coefficient')
+        return dict(gradient_norm_before=before, gradient_norm_after=None,
+                    gradient_norm_after_measured=False, gradient_norm_after_source='not_measured',
+                    gradient_clip_threshold=threshold, gradient_clip_coefficient=coefficient,
+                    coefficient_arithmetic_consistent=True, measured_post_clip_bound_proven=False)
+    after = _finite(row['gradient_norm_after'], 'gradient_norm_after')
+    _require(after <= GRADIENT_CLIP_LIMIT + GRADIENT_CLIP_FLOAT32_TOLERANCE, clip_message)
+    return dict(gradient_norm_before=before, gradient_norm_after=after,
+                gradient_norm_after_measured=True, measured_post_clip_bound_proven=True)
+
+
 def _hash(value, name):
     _require(isinstance(value, str) and _SHA256.fullmatch(value) is not None,
              'Invalid SHA256: ' + name)
@@ -236,7 +271,8 @@ def verify_formal_segment(rows_by_rank, binding):
     from reproduction.common8.topology import formal_monitor_geometry
     run=dict(profile='common8',training_world_size=size)
     for name in ('actor_micro_batch_per_rank', 'actor_logical_micro_batch_per_rank',
-                 'easy2560_selection', 'execution_site', 'execution_backend', 'data_selection_mode', 'question_probe'):
+                 'easy2560_selection', 'execution_site', 'execution_backend', 'data_selection_mode', 'question_probe',
+                 'performance_profile', 'extra_policy_monitor_forwards', 'policy_calibration_role'):
         if name in binding:
             run[name] = binding[name]
     try:geometry=formal_monitor_geometry(run)
@@ -369,9 +405,7 @@ def verify_formal_segment(rows_by_rank, binding):
                     _require(write['write_count'] == prior + 1 and write['learning_rates'] and
                              all(type(rate) in (int, float) and rate == consumed_lr(outer) for rate in write['learning_rates']),
                              'Actual formal Adam write or consumed LR differs')
-                    _finite(write['gradient_norm_before'], 'gradient_norm_before')
-                    _require(_finite(write['gradient_norm_after'], 'gradient_norm_after') <=
-                             GRADIENT_CLIP_LIMIT + GRADIENT_CLIP_FLOAT32_TOLERANCE, 'Actual formal L2 clipping differs')
+                    optimizer_gradient_evidence(write, run=run, clip_message='Actual formal L2 clipping differs')
                     counter += 1
             _require(cursor < len(rows), 'Missing completed opportunity budget')
             budget = rows[cursor]; cursor += 1; _row(budget, rank, binding, 'OUTER_BUDGET')
@@ -480,12 +514,9 @@ def _verify_segment(rows_by_rank, binding):
                 _require(isinstance(rates, list) and bool(rates), 'Missing actual learning rates')
                 for rate in rates:
                     _require(_finite(rate, 'learning_rate') == 1e-6, 'Actual learning rate differs')
-                for name in ('gradient_norm_before', 'gradient_norm_after'):
-                    _finite(write[name], name)
                 # FP32 coordinate rounding has unit roundoff epsilon/2; one
                 # epsilon also leaves room for FP64 norm arithmetic/serialization.
-                _require(write['gradient_norm_after'] <= GRADIENT_CLIP_LIMIT + GRADIENT_CLIP_FLOAT32_TOLERANCE,
-                         'Actual post-clip norm exceeds clip1 numerical bound')
+                optimizer_gradient_evidence(write)
             budget = rows[cursor]
             cursor += 1
             _row(budget, rank, binding, 'OUTER_BUDGET')
