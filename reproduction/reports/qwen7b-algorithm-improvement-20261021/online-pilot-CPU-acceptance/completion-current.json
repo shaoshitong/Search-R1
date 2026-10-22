@@ -1,5 +1,5 @@
 {
-  "time": 1792682391.1123812,
+  "time": 1792683088.5436263,
   "variants": [
     {
       "variant": "layer27-prefix20",
@@ -79,9 +79,14 @@
     },
     {
       "variant": "layer27-prefix80",
-      "complete_exists": false,
+      "complete_exists": true,
       "accepted_exists": false,
       "job_id": "749079",
+      "complete.json": {
+        "status": "MATCHED_ONLINE_MIXED_LAYER_PREFIX_PILOT_COMPLETE",
+        "epochs": 3,
+        "cursor": 192
+      },
       "progress-rank-0.json": {
         "stage": "ONLINE_PREFILL_REAL_MIXED_UPDATES",
         "epoch": 3,
@@ -100,12 +105,12 @@
       },
       "sacct": [
         "749079",
-        "RUNNING",
+        "COMPLETED",
         "0:0",
-        "01:10:24",
+        "01:10:53",
         "ACD1-16"
       ],
-      "eligible_new_CPU_acceptance": false
+      "eligible_new_CPU_acceptance": true
     },
     {
       "variant": "layer21-prefix80",
@@ -114,25 +119,25 @@
       "job_id": "749369",
       "progress-rank-0.json": {
         "stage": "ONLINE_PREFILL_REAL_MIXED_UPDATES",
-        "epoch": 1,
-        "cursor": 64,
+        "epoch": 2,
+        "cursor": 112,
         "rank": 0,
-        "epoch_questions_seen": 4096,
-        "time": 1792682244.9097369
+        "epoch_questions_seen": 3072,
+        "time": 1792683082.9732525
       },
       "progress-rank-1.json": {
         "stage": "ONLINE_PREFILL_REAL_MIXED_UPDATES",
-        "epoch": 1,
-        "cursor": 64,
+        "epoch": 2,
+        "cursor": 112,
         "rank": 1,
-        "epoch_questions_seen": 4096,
-        "time": 1792682244.9091225
+        "epoch_questions_seen": 3072,
+        "time": 1792683082.9727821
       },
       "sacct": [
         "749369",
         "RUNNING",
         "0:0",
-        "00:19:43",
+        "00:31:20",
         "ACD1-51"
       ],
       "eligible_new_CPU_acceptance": false
@@ -215,33 +220,38 @@
     },
     {
       "variant": "layer24-prefix20",
-      "complete_exists": false,
+      "complete_exists": true,
       "accepted_exists": false,
       "job_id": "749400",
+      "complete.json": {
+        "status": "MATCHED_ONLINE_MIXED_LAYER_PREFIX_PILOT_COMPLETE",
+        "epochs": 3,
+        "cursor": 192
+      },
       "progress-rank-0.json": {
         "stage": "ONLINE_PREFILL_REAL_MIXED_UPDATES",
-        "epoch": 2,
-        "cursor": 128,
+        "epoch": 3,
+        "cursor": 192,
         "rank": 0,
         "epoch_questions_seen": 4096,
-        "time": 1792682335.3566504
+        "time": 1792682520.578231
       },
       "progress-rank-1.json": {
         "stage": "ONLINE_PREFILL_REAL_MIXED_UPDATES",
-        "epoch": 2,
-        "cursor": 128,
+        "epoch": 3,
+        "cursor": 192,
         "rank": 1,
         "epoch_questions_seen": 4096,
-        "time": 1792682335.3573744
+        "time": 1792682520.5789578
       },
       "sacct": [
         "749400",
-        "RUNNING",
+        "COMPLETED",
         "0:0",
-        "00:08:21",
+        "00:11:35",
         "ACD1-56"
       ],
-      "eligible_new_CPU_acceptance": false
+      "eligible_new_CPU_acceptance": true
     }
   ],
   "final_read": false,

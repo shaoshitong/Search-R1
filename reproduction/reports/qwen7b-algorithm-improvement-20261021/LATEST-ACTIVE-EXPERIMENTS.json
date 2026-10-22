@@ -84,7 +84,7 @@
     "full169028_target_not_shrunk_to_pilot": true,
     "fixed_eval": "same2048 ownG5 selection, varianceMSE/MAE/rank correlation/Top512realMixed, predeclaredG5variance_threshold.08 diagnostic_only",
     "final4096_read": false,
-    "source_commit": "2cd772d88f91eb2eb6176965ad42b20d3ce4f6ea",
+    "source_commit": "6116e75c776be40cc919cb5e25324ab391643c06",
     "source_branch": "codex/q7b-packed-variable-M-variance-20261022",
     "local_tests": {
       "tests": 5,
@@ -93,7 +93,19 @@
       "official7B_loaded": false,
       "CUDA_tested": false
     },
-    "ready_document": "work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/packed-variance/READY.md"
+    "ready_document": "work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/packed-variance/READY.md",
+    "schema_integration_test": {
+      "passed": true,
+      "tests": 1,
+      "fixture_cases": [
+        "singleturn",
+        "crossturn",
+        "short7token"
+      ],
+      "reference": "peer_long_prefix_diagnostic.reconstruct(full,20)",
+      "actual_prepare_loop_tested": true,
+      "remote_schema_refreshed": false
+    }
   },
   "resume_after_network_permission_restored": [
     "fresh poll SAME existing handles and reconcile terminal status; no restart from stale values",
@@ -108,5 +120,6 @@
     "branch": "codex/q7b-online-natural-g5-postrun-audits-20261022",
     "pushed": false,
     "remote_executed": false
-  }
+  },
+  "network_permission_last_revalidated_epoch": 1792682780.998272
 }
