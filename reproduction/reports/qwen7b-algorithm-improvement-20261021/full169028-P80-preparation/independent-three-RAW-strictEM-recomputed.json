@@ -1,0 +1,85 @@
+{
+  "time": 1792698370.399877,
+  "status": "THREE_RAW_STRICT_EM_RECOMPUTED_WITH_OFFICIAL_TOKENIZER_NO_MODEL",
+  "cases": [
+    {
+      "qid": "[\"hotpotqa\", \"hotpotqa:train:70604\"]",
+      "trajectory_id": "70188b8e50fd4b45bc420ce58014f46e-outer000001-c107521-g3",
+      "raw_strict_em": 0,
+      "independent_current_strict_em": 0,
+      "answer": "United Kingdom",
+      "normalized_answer": "united kingdom",
+      "ground_truth": [
+        "England"
+      ],
+      "normalized_ground_truth": [
+        "england"
+      ],
+      "last_model_authored_excerpt": "<think> The question asks for the country where Leeds United Football Club is based. The club is located in Leeds, which is in West Yorkshire. West Yorkshire is a metropolitan county in the United Kingdom. </think>\n<answer> United Kingdom </answer>",
+      "authored_segments": 1,
+      "response_tokens": 52,
+      "strict_answer_from_last_complete_model_authored_segment_only": true
+    },
+    {
+      "qid": "[\"hotpotqa\", \"hotpotqa:train:2094\"]",
+      "trajectory_id": "70188b8e50fd4b45bc420ce58014f46e-outer000001-c107529-g3",
+      "raw_strict_em": 0,
+      "independent_current_strict_em": 0,
+      "answer": null,
+      "normalized_answer": null,
+      "ground_truth": [
+        "no"
+      ],
+      "normalized_ground_truth": [
+        "no"
+      ],
+      "last_model_authored_excerpt": "Oingo Boingo was an American new wave band. Therefore, both bands were not American.\n</think>\n<answer> No </answer>",
+      "authored_segments": 2,
+      "response_tokens": 545,
+      "strict_answer_from_last_complete_model_authored_segment_only": true
+    },
+    {
+      "qid": "[\"hotpotqa\", \"hotpotqa:train:81793\"]",
+      "trajectory_id": "70188b8e50fd4b45bc420ce58014f46e-outer000001-c107543-g2",
+      "raw_strict_em": 1,
+      "independent_current_strict_em": 1,
+      "answer": "Lea & Perrins",
+      "normalized_answer": "lea perrins",
+      "ground_truth": [
+        "Lea & Perrins"
+      ],
+      "normalized_ground_truth": [
+        "lea perrins"
+      ],
+      "last_model_authored_excerpt": "<think> The mention of Worcestershire sauce in combination with a Bloody Mary is clear, but the question is asking about a company. The likely referring company is the one that originally created Worcestershire sauce, which is Lea & Perrins. </think>\n\n<answer> Lea & Perrins </answer>",
+      "authored_segments": 2,
+      "response_tokens": 597,
+      "strict_answer_from_last_complete_model_authored_segment_only": true
+    }
+  ],
+  "sources": {
+    "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/repo/search_g1/signals.py": {
+      "bytes": 3119,
+      "sha256": "470865b441c1f9944695006c143481e64afab0bcf041ae882f8ddf1b536a9d20"
+    },
+    "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/repo/search_r1/qa_protocol.py": {
+      "bytes": 2984,
+      "sha256": "9a825a7b222b5a3fd2c1de7f63ed38e157258fcf858e773ff64c963a4b6daddd"
+    },
+    "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/repo/verl/utils/reward_score/qa_em.py": {
+      "bytes": 11184,
+      "sha256": "565933963b21062b37c5d4923306f18fa08fbef9a1b54270fb99aab600c323fa"
+    },
+    "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/tokenizer.json": {
+      "bytes": 7031645,
+      "sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539"
+    },
+    "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/tokenizer_config.json": {
+      "bytes": 7305,
+      "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+    }
+  },
+  "final4096_read": false,
+  "model_or_checkpoint_loaded": false,
+  "label_or_training_modified": false
+}
