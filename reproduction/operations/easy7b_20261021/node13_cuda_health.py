@@ -2,6 +2,8 @@
 import json
 import os
 from pathlib import Path
+import shlex
+import subprocess
 import sys
 import time
 
@@ -48,5 +50,34 @@ def main():
             dist.destroy_process_group()
 
 
+def submit():
+    root = Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022/diagnostics/node13-health-after749812-r1-20261023')
+    root.mkdir(parents=True, exist_ok=False)
+    python = '/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/env/bin/python'
+    script = root / 'job.sh'
+    script.write_text('#!/bin/bash\nset -euo pipefail\n'
+                      'export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1\nexec ' +
+                      shlex.join([python, '-B', '-m', 'torch.distributed.run', '--standalone',
+                                  '--nproc_per_node=4', str(Path(__file__).resolve()), str(root)]) + '\n')
+    command = ['sbatch', '--parsable', '--partition=emergency_acd', '--qos=formal-user',
+               '--account=jxu957', '--nodelist=ACD1-13', '--nodes=1', '--ntasks=1',
+               '--gres=gpu:4', '--cpus-per-task=8', '--mem=32G', '--time=00:02:00',
+               '--export=NONE', '--job-name=easy7b-node13-health',
+               '--output='+str(root/'slurm.log'), '--error='+str(root/'slurm.log'), str(script)]
+    claim = dict(epoch=time.time(), source_file=str(Path(__file__).resolve()), command=command,
+                 model_loaded=False, training_updates=0, formal_job750029_modified=False)
+    (root/'claim.json').write_text(json.dumps(claim, indent=2)+'\n')
+    result = subprocess.run(command, capture_output=True, text=True, timeout=20)
+    value = dict(claim, returncode=result.returncode, stdout=result.stdout, stderr=result.stderr)
+    if result.returncode == 0:
+        value['job'] = result.stdout.strip().split(';')[0]
+        (root/'job.id').write_text(value['job']+'\n')
+    (root/'submission.json').write_text(json.dumps(value, indent=2)+'\n')
+    print(json.dumps(value), flush=True)
+
+
 if __name__ == '__main__':
-    main()
+    if sys.argv[1] == 'submit':
+        submit()
+    else:
+        main()
