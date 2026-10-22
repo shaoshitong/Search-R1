@@ -1,7 +1,7 @@
 """Serial read-only followup for root's exact submitted seed2 MSE-M5 job."""
 import json,subprocess,time
 from pathlib import Path
-H=Path(__file__).resolve().parent;R=H.parents[5];C=R.parents[1]/'outputs/qwen7b-warmup-20261019/metadata-control.py'
+H=Path(__file__).resolve().parent;R=H.parents[4];C=R.parents[1]/'outputs/qwen7b-warmup-20261019/metadata-control.py'
 last=None;deadline=time.time()+10*3600;first=None
 while time.time()<deadline:
  r=subprocess.run(['python3',str(C),str(H/'read-live.py'),'--read-only','--timeout','25'],cwd=R,capture_output=True,text=True)
