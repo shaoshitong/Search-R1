@@ -1,0 +1,814 @@
+{
+  "actions": {
+    "CURRENT_STATE_modified": false,
+    "GPUs_requested": false,
+    "jobs_stopped": false,
+    "jobs_submitted": false,
+    "large_files_read": false,
+    "local_small_evidence_only": true,
+    "models_loaded": false,
+    "overall_200_goal_complete": false,
+    "remote_calls_made": false,
+    "training_modified": false
+  },
+  "checkpoint35": {
+    "HK_archive_verified_by_this_evidence": false,
+    "actual_CP35_restart_reload_test_performed_by_this_evidence": false,
+    "full_manifest": {
+      "bytes": 16236,
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_35/full-manifest.json",
+      "sha256": "bef237c4078a2a2bb1f29559a6516a7ad09355e389501b1ec0fcaa607350831b"
+    },
+    "independent_observation_scope": {
+      "all_sealed_file_identities_verified": true,
+      "fresh_small_file_count": 19,
+      "large_bytes_not_rehashed": 91387605804,
+      "large_files_identity_only": 11,
+      "large_tensor_payloads_rehashed": false,
+      "payload_scope_note": "The producer published its full-file SHA seal. The later independent observer freshly hashed only the listed small files and checked all sealed file identities; it did not reread/hash the 91,387,605,804 bytes of large model/optimizer payloads.",
+      "post_callback_boundary_verified": true,
+      "small_files_fresh_sha": [
+        {
+          "bytes": 605,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_35/added_tokens.json",
+          "sha256": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b"
+        },
+        {
+          "bytes": 2037,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_35/complete.json",
+          "sha256": "a80e54b81b9edb5f772e502d0e6546e677b55e39906d3a4376d9840afbea0e21"
+        },
+        {
+          "bytes": 838,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_35/config.json",
+          "sha256": "41738c0431dd36302f46f19dd531d90ba99456720622174889676372300352e3"
+        },
+        {
+          "bytes": 243,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_35/generation_config.json",
+          "sha256": "5cbc3d054b73e70801535a65ffc9b427481257fa29f896e48f68e9ea3c285b96"
+        },
+        {
+          "bytes": 1671853,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_35/merges.txt",
+          "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+        },
+        {
+          "bytes": 27752,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_35/model.safetensors.index.json",
+          "sha256": "3cb581aa586322d386864a9f80d0adbaa1f0f838cc310d7d7670990fa42121be"
+        },
+        {
+          "bytes": 613,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_35/special_tokens_map.json",
+          "sha256": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd"
+        },
+        {
+          "bytes": 11421896,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_35/tokenizer.json",
+          "sha256": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa"
+        },
+        {
+          "bytes": 7306,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_35/tokenizer_config.json",
+          "sha256": "7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6"
+        },
+        {
+          "bytes": 726812,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_35/training_state/driver.pt",
+          "sha256": "59bdb9743c125d42f38049e485e04b9133f48539d4eb9e1e6848763a58403e94"
+        },
+        {
+          "bytes": 2146,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_35/training_state/manifest.json",
+          "sha256": "b16c1b26e3fc55487f0ea57e2b82d178250d66a720b229de01fa758198e1596b"
+        },
+        {
+          "bytes": 2776833,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_35/vocab.json",
+          "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+        },
+        {
+          "bytes": 726812,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_35/boundary/driver.pt",
+          "sha256": "6e61f728b6413559abbddb939ed57399577618d1557aee3dbc5a72f918d7f4cc"
+        },
+        {
+          "bytes": 2649,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_35/boundary/manifest.json",
+          "sha256": "5d81b7ee5d8b06cec7197436b29a2d3726f0d958627373df1d97f6ce1097cd68"
+        },
+        {
+          "bytes": 18064,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_35/boundary/rank-0.pt",
+          "sha256": "4796c122d0275aa3ff0e8d60f8c64e321fbe4a30f63e361ab85db2c64d41f9f5"
+        },
+        {
+          "bytes": 18064,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_35/boundary/rank-1.pt",
+          "sha256": "937b8a5b11f3164da0925749850347d72f454e2c4d37784dec7f747fba3bbdb7"
+        },
+        {
+          "bytes": 18064,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_35/boundary/rank-2.pt",
+          "sha256": "43bb06466672a815ba1b8f4914af17c1b090d4d0421394ea9ff71ba9881826ac"
+        },
+        {
+          "bytes": 18064,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_35/boundary/rank-3.pt",
+          "sha256": "7f76dbf68bdc2f94b7e06439564caa2bb0f30f55185e7c25bb989152bdb92afc"
+        },
+        {
+          "bytes": 468333,
+          "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_35/boundary/reward-probe-manifest.json",
+          "sha256": "04f812a28bd230c54fb7fd8dda0b1a54ed442d2bc16dc336d27362d8a825c387"
+        }
+      ],
+      "status": "ACTUAL_CP35_SMALL_SHA_LARGE_PAYLOAD_METADATA_PASS"
+    },
+    "latest_pointer": {
+      "bytes": 790,
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/latest.json",
+      "sha256": "59cfddbd71704abb807f4c482fbcf15bc52682b155207495383a07589b34fa94"
+    },
+    "producer_complete_summary": {
+      "actual_optimizer_writes_per_rank": 700,
+      "finite_all_saved_tensors": true,
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "step": 35,
+      "training_state_readback": "all rank Adam/scheduler states and actual driver cursor verified; actual restart/reload pending",
+      "validated_tensor_count": 339
+    },
+    "producer_full_sha_seal": {
+      "boundary_file_count": 7,
+      "checkpoint_file_count": 23,
+      "latest": {
+        "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
+        "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/checkpoints/search-g1-common8/actor/global_step_35",
+        "manager": "easy2560_per_outer_full_state_v1",
+        "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/preparation/rolling-checkpoints/global_step_35/full-manifest.json",
+        "manifest_sha256": "bef237c4078a2a2bb1f29559a6516a7ad09355e389501b1ec0fcaa607350831b",
+        "published_unix": 1792646053.1239235,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+        "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+        "step": 35
+      },
+      "retention_errors": [],
+      "retired_steps": [],
+      "total_bytes": 91405514788
+    }
+  },
+  "completed_outer35": {
+    "actual_flash3_by_rank": [
+      {
+        "actual_flash3_training_executed": true,
+        "actual_optimizer_writes": 700,
+        "attention_layers": 28,
+        "checked_unix": 1792645809.5899742,
+        "cuda_synchronized": true,
+        "forward_success_returns": {
+          "dense": 0,
+          "varlen": 5068
+        },
+        "global_transformers_patch": false,
+        "kernel_backward_success_returns": 2240,
+        "logical_update": 35,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/logs/actual-flash3-execution-rank-0.jsonl",
+        "qkv_gradient_returns": 2240,
+        "rank": 0,
+        "state_dict_keys_changed": false
+      },
+      {
+        "actual_flash3_training_executed": true,
+        "actual_optimizer_writes": 700,
+        "attention_layers": 28,
+        "checked_unix": 1792645809.589938,
+        "cuda_synchronized": true,
+        "forward_success_returns": {
+          "dense": 0,
+          "varlen": 5068
+        },
+        "global_transformers_patch": false,
+        "kernel_backward_success_returns": 2240,
+        "logical_update": 35,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/logs/actual-flash3-execution-rank-1.jsonl",
+        "qkv_gradient_returns": 2240,
+        "rank": 1,
+        "state_dict_keys_changed": false
+      },
+      {
+        "actual_flash3_training_executed": true,
+        "actual_optimizer_writes": 700,
+        "attention_layers": 28,
+        "checked_unix": 1792645809.5900156,
+        "cuda_synchronized": true,
+        "forward_success_returns": {
+          "dense": 0,
+          "varlen": 5068
+        },
+        "global_transformers_patch": false,
+        "kernel_backward_success_returns": 2240,
+        "logical_update": 35,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/logs/actual-flash3-execution-rank-2.jsonl",
+        "qkv_gradient_returns": 2240,
+        "rank": 2,
+        "state_dict_keys_changed": false
+      },
+      {
+        "actual_flash3_training_executed": true,
+        "actual_optimizer_writes": 700,
+        "attention_layers": 28,
+        "checked_unix": 1792645809.5899374,
+        "cuda_synchronized": true,
+        "forward_success_returns": {
+          "dense": 0,
+          "varlen": 5068
+        },
+        "global_transformers_patch": false,
+        "kernel_backward_success_returns": 2240,
+        "logical_update": 35,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/logs/actual-flash3-execution-rank-3.jsonl",
+        "qkv_gradient_returns": 2240,
+        "rank": 3,
+        "state_dict_keys_changed": false
+      }
+    ],
+    "actual_next_outer_log": "epoch 0, step 36",
+    "all_ranks_agreed_attempt_record": {
+      "all_ranks_agreed": true,
+      "attempt_id": "ac512297cc994a62a6f77a76ebeb2994",
+      "complete_outer": true,
+      "completed_outer": 35,
+      "full_budget_complete": true,
+      "logical_update": 35,
+      "opportunities_processed": 20,
+      "opportunities_unattempted": 0,
+      "optimizer_calls_this_attempt": 20,
+      "optimizer_rollbacks_this_attempt": 0,
+      "optimizer_writes_after": 700,
+      "optimizer_writes_before": 680,
+      "optimizer_writes_this_attempt": 20,
+      "real_rank_count": 4,
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "scheduler_advances": 1,
+      "slurm_job_id": "747219",
+      "status": "complete"
+    },
+    "calls_rollback_scope": "20 calls and 0 rollbacks are the actual all-ranks-agreed attempt record; each rank write sequence and COMPLETE scheduler record is included separately.",
+    "fixed_QA_or_post_update_evaluation": false,
+    "gradient_accumulation": 4,
+    "local_mini_per_rank": 32,
+    "logical_micro_per_rank": 4,
+    "metrics_exact_from_compact_summary": {
+      "attempt_index": 35,
+      "grad_norm": 2.2651834634942003,
+      "optimizer_writes": 700,
+      "optimizer_writes_before": 680,
+      "optimizer_writes_this_outer": 20,
+      "pg_loss": 0.052366061277391816,
+      "ppo_kl": 0.002154226534003101,
+      "reward": 0.6463346481323242,
+      "step": 35
+    },
+    "metrics_from_three_decimal_training_log": {
+      "selection/attempted_candidates": 2560.0,
+      "selection/insufficient_pool_retries": 0.0,
+      "selection/raw_actual_retrieval_calls": 22046.0,
+      "selection/raw_generated_trajectories": 12800.0,
+      "selection/selected_all_correct_fallback": 0.0,
+      "selection/selected_mixed": 512.0,
+      "selection/selected_mixed_fraction": 1.0,
+      "timing_s/adv": 194.837,
+      "timing_s/candidate_fill": 1002.219,
+      "timing_s/save_checkpoint": 166.08,
+      "timing_s/update_actor": 290.371,
+      "train/perf/em": 0.498
+    },
+    "next_outer_completed_in_this_evidence": false,
+    "physical_micro_per_rank": 8,
+    "rank_updates": [
+      {
+        "optimizer": {
+          "actual_write_counts": [
+            681,
+            682,
+            683,
+            684,
+            685,
+            686,
+            687,
+            688,
+            689,
+            690,
+            691,
+            692,
+            693,
+            694,
+            695,
+            696,
+            697,
+            698,
+            699,
+            700
+          ],
+          "cumulative_writes": 700,
+          "full_budget_complete": true,
+          "gradient_accumulation": 4,
+          "local_logical_micro": 4,
+          "local_micro": 8,
+          "local_mini": 32,
+          "logical_update": 35,
+          "opportunities_processed": 20,
+          "optimizer_writes": 20,
+          "rank": 0,
+          "run_id": "232f20e112ac4a978c5aba52a0367195"
+        },
+        "rank": 0,
+        "scheduler_complete": {
+          "actual_optimizer_writes": 20,
+          "attempt_id": "ac512297cc994a62a6f77a76ebeb2994",
+          "full_budget_complete": true,
+          "kind": "COMPLETE",
+          "logical_update": 35,
+          "opportunities_processed": 20,
+          "rank": 0,
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "scheduler_advances": 1,
+          "scheduler_last_epoch_after": 35,
+          "slurm_job_id": "747219",
+          "update_status": "complete",
+          "writes_after": 700,
+          "writes_before": 680
+        }
+      },
+      {
+        "optimizer": {
+          "actual_write_counts": [
+            681,
+            682,
+            683,
+            684,
+            685,
+            686,
+            687,
+            688,
+            689,
+            690,
+            691,
+            692,
+            693,
+            694,
+            695,
+            696,
+            697,
+            698,
+            699,
+            700
+          ],
+          "cumulative_writes": 700,
+          "full_budget_complete": true,
+          "gradient_accumulation": 4,
+          "local_logical_micro": 4,
+          "local_micro": 8,
+          "local_mini": 32,
+          "logical_update": 35,
+          "opportunities_processed": 20,
+          "optimizer_writes": 20,
+          "rank": 1,
+          "run_id": "232f20e112ac4a978c5aba52a0367195"
+        },
+        "rank": 1,
+        "scheduler_complete": {
+          "actual_optimizer_writes": 20,
+          "attempt_id": "ac512297cc994a62a6f77a76ebeb2994",
+          "full_budget_complete": true,
+          "kind": "COMPLETE",
+          "logical_update": 35,
+          "opportunities_processed": 20,
+          "rank": 1,
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "scheduler_advances": 1,
+          "scheduler_last_epoch_after": 35,
+          "slurm_job_id": "747219",
+          "update_status": "complete",
+          "writes_after": 700,
+          "writes_before": 680
+        }
+      },
+      {
+        "optimizer": {
+          "actual_write_counts": [
+            681,
+            682,
+            683,
+            684,
+            685,
+            686,
+            687,
+            688,
+            689,
+            690,
+            691,
+            692,
+            693,
+            694,
+            695,
+            696,
+            697,
+            698,
+            699,
+            700
+          ],
+          "cumulative_writes": 700,
+          "full_budget_complete": true,
+          "gradient_accumulation": 4,
+          "local_logical_micro": 4,
+          "local_micro": 8,
+          "local_mini": 32,
+          "logical_update": 35,
+          "opportunities_processed": 20,
+          "optimizer_writes": 20,
+          "rank": 2,
+          "run_id": "232f20e112ac4a978c5aba52a0367195"
+        },
+        "rank": 2,
+        "scheduler_complete": {
+          "actual_optimizer_writes": 20,
+          "attempt_id": "ac512297cc994a62a6f77a76ebeb2994",
+          "full_budget_complete": true,
+          "kind": "COMPLETE",
+          "logical_update": 35,
+          "opportunities_processed": 20,
+          "rank": 2,
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "scheduler_advances": 1,
+          "scheduler_last_epoch_after": 35,
+          "slurm_job_id": "747219",
+          "update_status": "complete",
+          "writes_after": 700,
+          "writes_before": 680
+        }
+      },
+      {
+        "optimizer": {
+          "actual_write_counts": [
+            681,
+            682,
+            683,
+            684,
+            685,
+            686,
+            687,
+            688,
+            689,
+            690,
+            691,
+            692,
+            693,
+            694,
+            695,
+            696,
+            697,
+            698,
+            699,
+            700
+          ],
+          "cumulative_writes": 700,
+          "full_budget_complete": true,
+          "gradient_accumulation": 4,
+          "local_logical_micro": 4,
+          "local_micro": 8,
+          "local_mini": 32,
+          "logical_update": 35,
+          "opportunities_processed": 20,
+          "optimizer_writes": 20,
+          "rank": 3,
+          "run_id": "232f20e112ac4a978c5aba52a0367195"
+        },
+        "rank": 3,
+        "scheduler_complete": {
+          "actual_optimizer_writes": 20,
+          "attempt_id": "ac512297cc994a62a6f77a76ebeb2994",
+          "full_budget_complete": true,
+          "kind": "COMPLETE",
+          "logical_update": 35,
+          "opportunities_processed": 20,
+          "rank": 3,
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "scheduler_advances": 1,
+          "scheduler_last_epoch_after": 35,
+          "slurm_job_id": "747219",
+          "update_status": "complete",
+          "writes_after": 700,
+          "writes_before": 680
+        }
+      }
+    ],
+    "update_record": {
+      "actual_optimizer_writes": 20,
+      "attempt_id": "ac512297cc994a62a6f77a76ebeb2994",
+      "full_budget_complete": true,
+      "opportunities_processed": 20,
+      "opportunities_unattempted": 0,
+      "optimizer_writes_after": 700,
+      "optimizer_writes_before": 680,
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "step": 35,
+      "update_status": "complete"
+    }
+  },
+  "identity": {
+    "attempt_id": "ac512297cc994a62a6f77a76ebeb2994",
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
+    "completed_outer": 35,
+    "restored_completed_outer": 34,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "slurm_job_id": "747219",
+    "source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+    "source_job": "746125",
+    "training_world_size": 4
+  },
+  "interpretation": {
+    "asynchronous_future_sampling_bitwise_reproduction_accepted": false,
+    "causal_root_cause_established": false,
+    "collapse_inferred": false,
+    "combined_hash_scope": "Combined token/context/mask/old-and-sampling-logprob row hash; not an isolated numeric logprob difference measurement.",
+    "differences_observed": "Same 2560 ordered question IDs/content; 788 strict 5-label vectors differ; selected-question overlap 335/512; 0/1675 combined row hashes equal; token counts differ for 1630/1675 mapped rows.",
+    "local_code_diagnosis": "Ray wait-any and HTTP future completion order alter next-turn admission and dynamic engine batches. Saved RNG readback equality alone does not prove an identical future request schedule or assignment of sampling draws to trajectories. No additional missing private RNG has been established by this evidence.",
+    "numerical_error_magnitude_measured": false,
+    "restore_failure_inferred_from_trajectory_differences": false,
+    "saved_rng_namespace_readback": "Exact readback of the saved per-worker Python/NumPy/Torch CPU/current CUDA, sharding-manager actor/rollout CUDA state and runner request_generators, plus driver RNG and candidate stream, as implemented by training_state.worker_rng and full_state_restore.restore_worker.",
+    "unknowns": [
+      "First divergent generated token and corresponding engine batch order were not read.",
+      "No independent GPU/model numerical remeasurement was performed.",
+      "No final200 completion, final51713 score, final archive closure or CP35 actual reload is asserted."
+    ]
+  },
+  "memory": {
+    "allocator_resources": {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/logs/native-ray-resources-train-ray-1343302.json",
+      "present": true,
+      "value": {
+        "after": [
+          8192,
+          100000
+        ],
+        "before": [
+          8192,
+          100000
+        ],
+        "checked_unix": 1792643991.782665,
+        "hard_unchanged": true,
+        "phase": "ray",
+        "pid": 1343302,
+        "public_ray_init_kwargs": {
+          "num_cpus": 16,
+          "object_store_memory": 8589934592
+        },
+        "role": "train",
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "scope": "current process only; fork/exec descendants inherit",
+        "slurm_job_id": "747219",
+        "soft_raised": false,
+        "source_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43",
+        "torch_allocator_env": {
+          "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True"
+        }
+      }
+    },
+    "grounding_cache_release": {
+      "bytes": 3716,
+      "complete_records_in_tail": 2,
+      "error_lines": [],
+      "latest": {
+        "after": {
+          "allocated_bytes": 15264802304,
+          "device_free_bytes": 66839117824,
+          "device_total_bytes": 85009367040,
+          "reserved_bytes": 15269363712
+        },
+        "before": {
+          "allocated_bytes": 15264802304,
+          "device_free_bytes": 65031372800,
+          "device_total_bytes": 85009367040,
+          "reserved_bytes": 17077108736
+        },
+        "checked_unix": 1792645525.5264986,
+        "cuda_device": 0,
+        "cuda_synchronized": true,
+        "pid": 1313798,
+        "released_reserved_bytes": 1807745024,
+        "role": "probe_post_judge_cuda_cache_release",
+        "scope": "current probe process unused cache only; encoder weights remain resident",
+        "version": "232f20e112ac4a978c5aba52a0367195:0:c7f8da3ab2f84097ae6430983e5329af"
+      },
+      "mtime": 1792645535.229368,
+      "observation_errors": [],
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/logs/probe-server.log"
+    },
+    "scope": "Probe process unused CUDA cache only; allocated encoder weights remain resident. Actor GPU peak memory is not provided by these two inputs."
+  },
+  "observation_epochs": {
+    "fresh_small_sha": 1792646188.0894368,
+    "training": 1792646102.980905
+  },
+  "observation_health": {
+    "bounded_tail_error_matches": {
+      "slurm_log": [],
+      "trainer_log": [],
+      "training_log": []
+    },
+    "compact_summary_observation_errors": [],
+    "ledger_observation_errors": [],
+    "raw_wrapper_returncodes": [
+      0,
+      0
+    ],
+    "whole_job_error_free_claim": false
+  },
+  "recomputed_outer35_comparison": {
+    "all_selected_combined_row_hashes_equal": false,
+    "candidate_questions": 2560,
+    "comparable_same_question_selected_rows": 1675,
+    "evidence": {
+      "new_gate": {
+        "bytes": 1702850,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/logs/behavior-probability-attempt-ac512297cc994a62a6f77a76ebeb2994.json",
+        "sha256": "fff322624d4825f90c057b9142fc83b3d4953085c1ad0227bf6eecc00a04c6fa"
+      },
+      "new_selection": {
+        "bytes": 2766948,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/artifacts/mixed-selection/ac512297cc994a62a6f77a76ebeb2994.json",
+        "sha256": "bdbf24f57c1c3d2b7325929715b4606ad1efde09526da805f4ae6586da8fe2fc"
+      },
+      "old_gate": {
+        "bytes": 1700522,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/logs/behavior-probability-attempt-18ace454753b415287eeb23f4e9e1077.json",
+        "sha256": "52fff1ba4009a14f61250cd9e176e87aca57ee71fafb89dc9e2e25469b1cdde1"
+      },
+      "old_selection": {
+        "bytes": 2766653,
+        "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp12-20261022/artifacts/mixed-selection/18ace454753b415287eeb23f4e9e1077.json",
+        "sha256": "384963642944fac7081cec6581455195905990d996c06c8e7585871d375512e8"
+      }
+    },
+    "limits": {
+      "hashes_include_padding_dtype_and_shape": true,
+      "independent_gpu_probability_or_tensor_remeasurement": false,
+      "new_outer35_training_completion_checked": false,
+      "numerical_error_magnitude_available": false,
+      "old_outer35_training_complete": false,
+      "private_trace_read": false,
+      "raw_pt_read": false,
+      "restore_or_model_state_independently_checked": false,
+      "row_hash_is_combined_token_context_mask_old_and_sampling_logprob_hash": true,
+      "separate_token_id_hash_available_in_small_gate": false,
+      "token_ids_or_text_returned": false,
+      "unselected_candidate_token_or_logprob_hashes_available": false,
+      "whole_json_trace_actor_rows_and_audit_hashes_compared": false
+    },
+    "mapped_actor_token_counts_different": 1630,
+    "mapped_actor_token_counts_equal": 45,
+    "mapped_combined_row_hash_different": 1675,
+    "mapped_combined_row_hash_equal": 0,
+    "new_attempt": "ac512297cc994a62a6f77a76ebeb2994",
+    "new_included_actor_tokens": 336043,
+    "new_job": "747219",
+    "new_pool_retry": 0,
+    "old_attempt": "18ace454753b415287eeb23f4e9e1077",
+    "old_included_actor_tokens": 337099,
+    "old_job": "746125",
+    "old_pool_retry": 0,
+    "outer": 35,
+    "question_content_hash_differences": 0,
+    "question_id_differences": 0,
+    "restart_or_rollback_requested": false,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "sampling_dtype_equal": true,
+    "selected_ordinal_overlap": 335,
+    "selected_questions_each": 512,
+    "selection_flag_differences": 354,
+    "status": "COMPARISON_RECORDED",
+    "strict_label_vector_differences_at_ordinal": 788,
+    "strict_label_vector_differences_same_question": 788,
+    "training_failure_inferred": false,
+    "training_gate": false,
+    "training_modified": false,
+    "whole_tensor_hash_equal": {
+      "actor_mask": false,
+      "attention_mask": false,
+      "sampling_log_probs": false
+    },
+    "whole_tensor_row_alignment_equal": false
+  },
+  "role": "actual_easy7b_recovery_outer35_completed_and_sealed_evidence",
+  "schema_version": 1,
+  "source34_actual_restore": {
+    "all4_saved_namespace_readbacks_equal": true,
+    "driver": {
+      "actual_candidate_source_cursor": 87040,
+      "actual_candidate_stream_readback_equal": true,
+      "actual_cuda_restore_accepted": false,
+      "actual_driver_dataequal": true,
+      "actual_driver_rng_readback_equal": true,
+      "completed_QA5_replay_required": false,
+      "completed_outer": 34,
+      "post_callback_rng_captured": true,
+      "source_receipt_sha256": "f27ecedbd288daeb16e94dc64ed3c180489523cd6bd0e2a1f3356e69470842b9"
+    },
+    "driver_summary_flag_note": "The literal driver actual_cuda_restore_accepted remains false; this evidence relies on the separate actual all4 worker proofs and actual driver/data readbacks, and does not overwrite that placeholder.",
+    "ranks": [
+      {
+        "actual_adam_scheduler_readback_equal": true,
+        "actual_cuda_uuid": "GPU-d7ba04a7-dc6b-00b3-fe1d-e87f4665266a",
+        "actual_model_collective_readback_equal": true,
+        "actual_optimizer_writes": 680,
+        "actual_rng_readback_equal": true,
+        "checked_unix": 1792644148.3516452,
+        "model_hf_exact_tensors_checked_on_rank0": 339,
+        "rank": 0,
+        "sampling_rng_source": "post_outer_scheduled_QA_and_grounding_adoption_before_final_evaluation",
+        "scheduler_last_epoch": 34,
+        "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+        "source_job": "746125",
+        "source_receipt_sha256": "f27ecedbd288daeb16e94dc64ed3c180489523cd6bd0e2a1f3356e69470842b9",
+        "source_state_full_sha256": "e9e58ac73dc323490ecbed727e2fd3779a528bba2fc66e54d24b244d211aca6a",
+        "source_step": 34
+      },
+      {
+        "actual_adam_scheduler_readback_equal": true,
+        "actual_cuda_uuid": "GPU-d04b7144-912a-10dc-febc-ac1320daa831",
+        "actual_model_collective_readback_equal": true,
+        "actual_optimizer_writes": 680,
+        "actual_rng_readback_equal": true,
+        "checked_unix": 1792644144.7635062,
+        "model_hf_exact_tensors_checked_on_rank0": 0,
+        "rank": 1,
+        "sampling_rng_source": "post_outer_scheduled_QA_and_grounding_adoption_before_final_evaluation",
+        "scheduler_last_epoch": 34,
+        "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+        "source_job": "746125",
+        "source_receipt_sha256": "f27ecedbd288daeb16e94dc64ed3c180489523cd6bd0e2a1f3356e69470842b9",
+        "source_state_full_sha256": "52840c4c7f2c4ffe376378cb26ee1ccf6d5531d035f655cffd703709d0eb170e",
+        "source_step": 34
+      },
+      {
+        "actual_adam_scheduler_readback_equal": true,
+        "actual_cuda_uuid": "GPU-493642c5-4c5a-16cd-f192-84d19bd1d336",
+        "actual_model_collective_readback_equal": true,
+        "actual_optimizer_writes": 680,
+        "actual_rng_readback_equal": true,
+        "checked_unix": 1792644144.5595589,
+        "model_hf_exact_tensors_checked_on_rank0": 0,
+        "rank": 2,
+        "sampling_rng_source": "post_outer_scheduled_QA_and_grounding_adoption_before_final_evaluation",
+        "scheduler_last_epoch": 34,
+        "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+        "source_job": "746125",
+        "source_receipt_sha256": "f27ecedbd288daeb16e94dc64ed3c180489523cd6bd0e2a1f3356e69470842b9",
+        "source_state_full_sha256": "2bc308471d40a6319d37d2c6ce4f86d8733cca6b69078d7775f5d8d6f914a0cd",
+        "source_step": 34
+      },
+      {
+        "actual_adam_scheduler_readback_equal": true,
+        "actual_cuda_uuid": "GPU-21d5f0a5-f749-1602-deea-3c2ba18232f4",
+        "actual_model_collective_readback_equal": true,
+        "actual_optimizer_writes": 680,
+        "actual_rng_readback_equal": true,
+        "checked_unix": 1792644144.7464793,
+        "model_hf_exact_tensors_checked_on_rank0": 0,
+        "rank": 3,
+        "sampling_rng_source": "post_outer_scheduled_QA_and_grounding_adoption_before_final_evaluation",
+        "scheduler_last_epoch": 34,
+        "source_commit": "ebb6844db6a1ae739a06d5cc31d3510e7b4779b1",
+        "source_job": "746125",
+        "source_receipt_sha256": "f27ecedbd288daeb16e94dc64ed3c180489523cd6bd0e2a1f3356e69470842b9",
+        "source_state_full_sha256": "d43fbbf2d98af0ad330e4507af151858c825e0512bc0090a72f80fc75290a585",
+        "source_step": 34
+      }
+    ],
+    "reconstructed_stream": {
+      "actual_candidate_stream_readback_equal": true,
+      "actual_driver_rng_readback_equal": true,
+      "candidate_source_cursor": 87040,
+      "checked_unix": 1792644169.3468447,
+      "completed_outer": 34,
+      "current_world_size": 4,
+      "question_probe": null
+    }
+  },
+  "source_files": {
+    "checkpoint_and_comparison_observation": {
+      "bytes": 13066,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp35-small-sha-and-recomputed35-comparison-r2-1792646187.json",
+      "sha256": "d9c104b5fb142dde1a2d1e9319983691788a002ab96502eaa00c596c27fd52f0"
+    },
+    "training_observation": {
+      "bytes": 83066,
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/cp34-recovery-watch-1792644663200672000/observation-024.json",
+      "sha256": "61232e530277169fa71c8dd4d0d8fd73879039374ada98e726e3f3c6a2968715"
+    }
+  },
+  "status": "ACTUAL_OUTER35_COMPLETE_SEALED_WITH_RECORDED_SAMPLING_NONREPRODUCTION"
+}
