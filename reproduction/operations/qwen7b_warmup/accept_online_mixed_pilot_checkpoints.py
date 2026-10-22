@@ -73,8 +73,12 @@ def validate_one(layer,prefix):
  accepted=dest/'accepted.json'
  if accepted.exists():
   old=read(accepted)
-  if old['checkpoint']!=latest or old['file_stat']!=stamp(path):raise ValueError('Previously accepted checkpoint changed')
-  return dict(status='EXISTING_ACTUAL_CPU_CHECKPOINT_ACCEPTANCE_REUSED',variant=variant,accepted=str(accepted),checkpoint=latest)
+  current=stamp(path)
+  # The shared mount has node-local st_dev48/50 across login hosts. Its file
+  # inode, bytes, mtime and ctime remain the actual content-change evidence.
+  stable=('inode','bytes','mtime_ns','ctime_ns')
+  if old['checkpoint']!=latest or any(old['file_stat'][k]!=current[k]for k in stable):raise ValueError('Previously accepted checkpoint changed')
+  return dict(status='EXISTING_ACTUAL_CPU_CHECKPOINT_ACCEPTANCE_REUSED',variant=variant,accepted=str(accepted),checkpoint=latest,node_local_device_number_ignored=True)
  started=time.time();before=stamp(path);progress=OUT/'progress.json';binding=dict(variant=variant,job_id=job)
  actualproof=sha(path,progress,**binding)
  if actualproof!=latest:raise ValueError('Fresh entire completed checkpoint SHA differs from latest receipt')
