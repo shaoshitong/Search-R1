@@ -1,0 +1,113 @@
+{
+  "observed_epoch": 1792677406.523713,
+  "main": {
+    "job": "749015",
+    "progress": {
+      "binary_Mixed_BCE": 0.6482587407808751,
+      "loss": 0.6482587407808751,
+      "questions": 128,
+      "effective_batch_questions": 128,
+      "real_native_trajectories": 640,
+      "views": 128,
+      "mixed_views": 64,
+      "nonmixed_views": 64,
+      "per_question_view_total_weight": 1,
+      "micro_questions": 128,
+      "native_forward_calls": 1,
+      "gradient_accumulation_microbatches": 1,
+      "native_gradient_L2": 0.2936951220035553,
+      "group_head_gradient_L2": 0.3987902104854584,
+      "gradient_norm_before_clip": 0.4952680766582489,
+      "native_steps": 2670,
+      "head_steps": 2670,
+      "native_frozen": false,
+      "native_Adam_updates_per_global_update": 1,
+      "head_Adam_updates_per_global_update": 1,
+      "EMA_updates_per_global_update": 1,
+      "native_lr": 5e-7,
+      "head_lr": 5e-7,
+      "phase": "phase2_joint_low_lr",
+      "confusion": {
+        "tp": 37,
+        "tn": 40,
+        "fp": 24,
+        "fn": 27
+      },
+      "mixed_recall": 0.578125,
+      "nonmixed_recall": 0.625,
+      "mixed_balanced_accuracy": 0.6015625,
+      "attempted_micro_questions": [
+        128
+      ],
+      "pre_Adam_OOM_retries": [],
+      "seconds": 1.6509612300433218,
+      "batch_token": "a14e1c9d8b04161a3cccf4f0a623b95ce16d6ffc3bfa6c60c7b606cadebc0944",
+      "source_qids_sha256": "5badad291ddda6d5861ee6d421eab8fc4ebcdfd6dcc757619b8b252dc9dde2a0",
+      "sampler_epoch": 1,
+      "sampler_state_sha256": "e8667fc3e730a3748d0588ef88df9ade098ba7ab277610564677ce17363c9a2e",
+      "trajectory_loss_computed": false,
+      "trajectory_accuracy_computed": false,
+      "updater_variant": "one_unique_question_one_real_G5_v1",
+      "cursor": 2670,
+      "budget": 5219,
+      "source_cursor": 2577,
+      "new_updates": 93,
+      "question_visits_since_E1": 11904,
+      "epoch_unique_question_coverage": {
+        "count": 11904,
+        "unique_count": 11904,
+        "qid_sha256": "5b93fe05c7c4403247612cdef492ff3b4b6ba6ce70228ea471170058ba2874c3",
+        "mixed_count": 5952,
+        "nonmixed_count": 5952
+      },
+      "completed_epoch_coverage": [],
+      "seen_questions": 129749,
+      "time": 1792677406.1350577,
+      "training_phase": "phase2_joint_low_lr",
+      "prefetch": {
+        "submitted_question_groups": 12544,
+        "consumed_question_groups": 11904,
+        "wait_seconds": 14.15544336149469,
+        "prepare_calls": 93,
+        "trajectories_per_question": 5
+      }
+    },
+    "checkpoint": {
+      "cursor": 2578,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-e1-unique-g5-20261022-v1/checkpoints/.rolling-accepted-cursor-002578-175a71d600734e71b386f1687b29f29c.pt",
+      "bytes": 3782149850,
+      "sha256": "b616b634739262cbe3b76f85005bfaf9d58f6defec975082b37da83474fa01b9",
+      "native_steps": 2578,
+      "head_steps": 2578,
+      "training_phase": "phase2_joint_low_lr",
+      "full_CPU_native_head_two_Adam_RNG_sampler_source_reload_passed": true
+    },
+    "sacct": "749015|RUNNING|0:0|00:20:18|ACD1-14"
+  },
+  "pilots": {
+    "time": 1792677406.5262694,
+    "variants": [
+      {
+        "layer": 27,
+        "prefix": 20,
+        "job": "749077",
+        "sacct": "749077|PENDING|0:0|00:00:00|None assigned"
+      },
+      {
+        "layer": 21,
+        "prefix": 20,
+        "job": "749078",
+        "sacct": "749078|PENDING|0:0|00:00:00|None assigned"
+      },
+      {
+        "layer": 27,
+        "prefix": 80,
+        "job": "749079",
+        "sacct": "749079|PENDING|0:0|00:00:00|None assigned"
+      }
+    ],
+    "queue_reasons": "749079|PENDING|Priority|2026-10-23T08:07:31\n749078|PENDING|Priority|2026-10-23T08:05:00\n749077|PENDING|Priority|2026-10-23T06:21:49"
+  },
+  "goal_complete": false,
+  "source_backup_commit": "3d40905fba242c3ba974fbba0509e4d0a05d6cd1"
+}
