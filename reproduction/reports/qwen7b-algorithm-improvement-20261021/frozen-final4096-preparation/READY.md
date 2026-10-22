@@ -7,3 +7,5 @@ The four arrays use the already qualified collector commit `751c73050dc61468ce64
 Actual fresh metadata check found all entries/configs byte/SHA identical, no same-name jobs, and no completed shards. Root alone submits. Generation does not inspect aggregate final EM or score any probe. Candidate freezing and later blinded final comparison remain separate.
 
 Remote preparation: `/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozen-final4096-generation-20261022-v1/prepared.json`.
+
+The default script time limit is 12h, but root may submit with `--time=02:00:00`. There is no collector TimeLimit identity requirement. Fresh metadata from previous matching512-question production shards showed 358.89s and373.54s elapsed; the override should be recorded in the actual root submission intent.
