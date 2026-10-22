@@ -78,9 +78,9 @@ def metrics(rows,objective):
  y=np.array([r['true_mixed']for r in rows],bool);s=np.array([r['score']for r in rows],float);v=np.array([r['target_variance']for r in rows]);threshold=.32 if objective=='mse'else.5;pred=s>=threshold
  tp=int((pred&y).sum());tn=int((~pred&~y).sum());pos=int(y.sum());neg=len(rows)-pos;order=sorted(rows,key=lambda r:(-r['score'],r['qid']));top=order[:512]
  auc=float((ranks(s)[y].sum()-pos*(pos-1)/2)/(pos*neg));rho=float(np.corrcoef(ranks(s),ranks(v))[0,1])if np.std(s)>0 and np.std(v)>0 else None;eps=np.finfo(float).eps;q=np.clip(s,eps,1-eps)
- result=dict(questions=len(rows),objective=objective,score_semantics='4*predicted_population_variance'if objective=='mse'else'direct_Mixed_probability',Mixed_AUC=auc,variance_Spearman=rho,balanced_accuracy=.5*(tp/pos+tn/neg),Mixed_recall=tp/pos,nonMixed_false_positive_rate=1-tn/neg,confusion=dict(tp=tp,tn=tn,fp=neg-tn,fn=pos-tp),threshold=threshold,threshold_fitted=False,true_Mixed_fraction=float(y.mean()),Top512=dict(Mixed=sum(r['true_mixed']for r in top),questions=512,Mixed_fraction=sum(r['true_mixed']for r in top)/512),classwise={})
+ result=dict(questions=len(rows),objective=objective,score_semantics={'mse':'4*predicted_population_variance','mixed_bce':'direct_Mixed_probability','topk_ramp':'sigmoid_ranking_score_not_calibrated_Mixed_probability'}[objective],Mixed_AUC=auc,variance_Spearman=rho,balanced_accuracy=.5*(tp/pos+tn/neg),Mixed_recall=tp/pos,nonMixed_false_positive_rate=1-tn/neg,confusion=dict(tp=tp,tn=tn,fp=neg-tn,fn=pos-tp),threshold=threshold,threshold_fitted=False,true_Mixed_fraction=float(y.mean()),Top512=dict(Mixed=sum(r['true_mixed']for r in top),questions=512,Mixed_fraction=sum(r['true_mixed']for r in top)/512),classwise={})
  if objective=='mse':result.update(variance_MSE=float(((s/4-v)**2).mean()),variance_MAE=float(np.abs(s/4-v).mean()),target4variance_MSE=float(((s-4*v)**2).mean()))
- else:result['binary_Mixed_BCE']=float(-(y*np.log(q)+(1-y)*np.log1p(-q)).mean())
+ elif objective=='mixed_bce':result['binary_Mixed_BCE']=float(-(y*np.log(q)+(1-y)*np.log1p(-q)).mean())
  for name,mask in(('all_wrong',np.array([sum(r['labels'])==0 for r in rows])),('Mixed',y),('all_correct',np.array([sum(r['labels'])==len(r['labels'])for r in rows]))):result['classwise'][name]=dict(questions=int(mask.sum()),predicted_Mixed=int(pred[mask].sum()),predicted_Mixed_fraction=float(pred[mask].mean())if mask.any()else None,mean_score=float(s[mask].mean())if mask.any()else None)
  return result
 
@@ -100,10 +100,10 @@ def run(args):
    for line in f:r=json.loads(line);records[r['trajectory_id']]=r
  torch.manual_seed(9137);np.random.seed(9137);random.seed(9137);model_dir=B/'assets/qwen25-7b-instruct-a09a35458c70';tokenizer=AutoTokenizer.from_pretrained(str(model_dir),local_files_only=True);separator=tokenizer.encode('\n### trajectory\n',add_special_tokens=False)
  actor=AutoModel.from_pretrained(str(model_dir),local_files_only=True,torch_dtype=torch.bfloat16,attn_implementation='flash_attention_2').to(device).eval().requires_grad_(False);block=copy.deepcopy(actor.layers[args.layer]).float().requires_grad_(True);rotary=copy.deepcopy(actor.rotary_emb).float();actor.layers=nn.ModuleList(list(actor.layers[:args.layer]));actor.norm=nn.Identity();torch.cuda.empty_cache()
- probe=PackedVarianceProbe(block,rotary,'cache_position'in inspect.signature(block.forward).parameters,PackedVarianceHead(max_positions=2048)).to(device);ema=copy.deepcopy(probe).eval().requires_grad_(False);optim=torch.optim.Adam(probe.parameters(),lr=args.lr);ddp=DDP(probe,device_ids=[device.index],broadcast_buffers=False);cursor=0;start_epoch=1
- binding=dict(architecture=ARCHITECTURE,objective=args.objective,fixed_m=args.fixed_m,layer=args.layer,capture_layer=args.layer-1,prefix=args.prefix,EMA_decay=args.ema_decay,lr=args.lr,global_batch=128,head_max_positions=2048,training_questions=8192,seed=SEED,fixture=proof(fixture_base/'fixture-complete.json'),sampling_independent_of_EM=True,class_weighting=False,question_prompt_occurrences_per_group=1)
+ probe=PackedVarianceProbe(block,rotary,'cache_position'in inspect.signature(block.forward).parameters,PackedVarianceHead(max_positions=2048)).to(device);ema=copy.deepcopy(probe).eval().requires_grad_(False);optim=torch.optim.Adam(probe.parameters(),lr=args.lr);ddp=DDP(probe,device_ids=[device.index],broadcast_buffers=False);cursor=0;actual_Adam_updates=0;EMA_updates=0;margin_satisfied_batches=0;start_epoch=1
+ binding=dict(architecture=ARCHITECTURE,objective=args.objective,fixed_m=args.fixed_m,layer=args.layer,capture_layer=args.layer-1,prefix=args.prefix,EMA_decay=args.ema_decay,lr=args.lr,global_batch=128,head_max_positions=2048,training_questions=8192,seed=SEED,fixture=proof(fixture_base/'fixture-complete.json'),sampling_independent_of_EM=True,class_weighting=False,question_prompt_occurrences_per_group=1,topk_margin=args.margin if args.objective=='topk_ramp'else None,topk_scope='actual_global_optimizer_batch_autograd_all_gather'if args.objective=='topk_ramp'else None,zero_ramp_loss_skips_Adam_and_EMA=True)
  if(base/'latest.json').exists():
-  old=torch.load(checked(read(base/'latest.json')),map_location='cpu',weights_only=False);assert old['binding']==binding;probe.load_state_dict(old['raw']);ema.load_state_dict(old['EMA']);optim.load_state_dict(old['Adam']);cursor=old['cursor'];start_epoch=old['epoch']+1
+  old=torch.load(checked(read(base/'latest.json')),map_location='cpu',weights_only=False);assert old['binding']==binding;probe.load_state_dict(old['raw']);ema.load_state_dict(old['EMA']);optim.load_state_dict(old['Adam']);cursor=old['cursor'];actual_Adam_updates=old['actual_Adam_updates'];EMA_updates=old['EMA_updates'];margin_satisfied_batches=old['margin_satisfied_batches'];assert old['batch_attempts']==cursor and EMA_updates==actual_Adam_updates and actual_Adam_updates+margin_satisfied_batches==cursor;start_epoch=old['epoch']+1
   for state in optim.state.values():
    for k,value in state.items():
     if torch.is_tensor(value)and k!='step':state[k]=value.to(device)
@@ -134,7 +134,7 @@ def run(args):
      for row in allrows:f.write(json.dumps(row)+'\n')
     out[role]={state:metrics([dict(r,score=r[state+'_score'])for r in allrows],args.objective)for state in('raw','EMA')}
    atomic(base/('evaluation-progress-rank-%d.json'%rank),dict(epoch=epoch,role=role,own_questions=len(own),seconds=time.time()-start))
-  if rank==0:atomic(base/('evaluation-epoch-%02d.json'%epoch),dict(epoch=epoch,cursor=cursor,binding=binding,metrics=out,seconds=time.time()-start,final4096_scored=False))
+  if rank==0:atomic(base/('evaluation-epoch-%02d.json'%epoch),dict(epoch=epoch,cursor=cursor,batch_attempts=cursor,actual_Adam_updates=actual_Adam_updates,EMA_updates=EMA_updates,margin_satisfied_batches=margin_satisfied_batches,binding=binding,metrics=out,seconds=time.time()-start,final4096_scored=False))
   dist.barrier();probe.train()
  if start_epoch==1:evaluate(0)
  elif not(base/('evaluation-epoch-%02d.json'%(start_epoch-1))).exists():evaluate(start_epoch-1)
@@ -142,27 +142,44 @@ def run(args):
   fullplan=epoch_plan(groups,epoch,args.fixed_m);mine=[v for v in fullplan if qrank[v['qid']]==rank];assert len(mine)==4096;start=time.time()
   if rank==0:atomic(base/('sampling-plan-epoch-%02d.json'%epoch),dict(epoch=epoch,plan_sha256=digest(fullplan),rows=fullplan))
   for offset in range(0,len(mine),64):
-   batch=mine[offset:offset+64];optim.zero_grad(set_to_none=True);total=0.;prefill=0.;actor_rows=0
+   batch=mine[offset:offset+64];optim.zero_grad(set_to_none=True);total=0.;prefill=0.;actor_rows=0;local_logits=[];local_labels=[];loss_details={}
    for lo in range(0,len(batch),8):
     vs=batch[lo:lo+8];data,cost=capture(vs);prefill+=cost;actor_rows+=len(vs);target=torch.tensor([v['target4variance']if args.objective=='mse'else float(v['true_mixed'])for v in vs],device=device,dtype=torch.float32)
-    with torch.autocast('cuda',dtype=torch.bfloat16):logit=ddp(data);loss=(torch.sigmoid(logit).float()-target).square().sum()/len(batch)if args.objective=='mse'else torch.nn.functional.binary_cross_entropy_with_logits(logit.float(),target,reduction='sum')/len(batch)
-    loss.backward();total+=float(loss.detach())
-   ng=math.sqrt(sum(float(p.grad.detach().float().square().sum())for p in probe.block.parameters()if p.grad is not None));hg=math.sqrt(sum(float(p.grad.detach().float().square().sum())for p in probe.group_head.parameters()if p.grad is not None));assert ng>0 and hg>0;torch.nn.utils.clip_grad_norm_(probe.parameters(),1.);optim.step()
-   with torch.no_grad():
-    for p,e in zip(probe.parameters(),ema.parameters()):e.mul_(args.ema_decay).add_(p,alpha=1-args.ema_decay)
-   cursor+=1;row=dict(stage='MATCHED_PACKED_OBJECTIVE_UPDATES',binding=binding,epoch=epoch,cursor=cursor,rank=rank,epoch_questions_seen=offset+len(batch),training_loss=total,native_gradient_L2=ng,head_gradient_L2=hg,actual_global_batch=128,local_batch=64,micro=8,gradient_accumulation=8,actor_rows=actor_rows,prefill_rows_equal_groups=actor_rows==len(batch),prefill_seconds=prefill,time=time.time());atomic(base/('progress-rank-%d.json'%rank),row)
+    with torch.autocast('cuda',dtype=torch.bfloat16):logit=ddp(data)
+    if args.objective=='topk_ramp':local_logits.append(logit.float());local_labels.append(target)
+    else:
+     loss=(torch.sigmoid(logit).float()-target).square().sum()/len(batch)if args.objective=='mse'else torch.nn.functional.binary_cross_entropy_with_logits(logit.float(),target,reduction='sum')/len(batch)
+     loss.backward();total+=float(loss.detach())
+   if args.objective=='topk_ramp':
+    from torch.distributed.nn.functional import all_gather
+    from .group_topk_losses import precision_at_k_ramp
+    scores=torch.cat(all_gather(torch.cat(local_logits).contiguous())).float();labels_local=torch.cat(local_labels).contiguous();label_parts=[torch.empty_like(labels_local)for _ in range(world)];dist.all_gather(label_parts,labels_local);labels=torch.cat(label_parts).float();actual_global=len(batch)*world;assert scores.numel()==labels.numel()==actual_global;k=(actual_global+3)//4
+    loss=precision_at_k_ramp(scores,labels,k,margin=args.margin);loss.backward();total=float(loss.detach());loss_details=dict(topk_global_questions=actual_global,topk_K=k,topk_margin=args.margin,topk_scope='actual_global_optimizer_batch_autograd_all_gather',global_true_Mixed=int(labels.sum()),zero_loss_margin_satisfied=total==0.,score_is_logit=True,global2048_theorem_claimed=False)
+   ng=math.sqrt(sum(float(p.grad.detach().float().square().sum())for p in probe.block.parameters()if p.grad is not None));hg=math.sqrt(sum(float(p.grad.detach().float().square().sum())for p in probe.group_head.parameters()if p.grad is not None));assert math.isfinite(ng)and math.isfinite(hg)and((ng>0 and hg>0)or args.objective=='topk_ramp');torch.nn.utils.clip_grad_norm_(probe.parameters(),1.)
+   # Backward still runs on every rank to complete DDP synchronization. A
+   # satisfied global margin skips Adam AND EMA, preserving old moments without
+   # allowing their momentum to move parameters after the objective is zero.
+   update=not(args.objective=='topk_ramp'and total==0.)
+   if update:
+    optim.step();actual_Adam_updates+=1
+    with torch.no_grad():
+     for p,e in zip(probe.parameters(),ema.parameters()):e.mul_(args.ema_decay).add_(p,alpha=1-args.ema_decay)
+    EMA_updates+=1
+   else:margin_satisfied_batches+=1
+   cursor+=1;assert actual_Adam_updates+margin_satisfied_batches==cursor and EMA_updates==actual_Adam_updates;row=dict(stage='MATCHED_PACKED_OBJECTIVE_UPDATES',binding=binding,epoch=epoch,cursor=cursor,batch_attempts=cursor,actual_Adam_updates=actual_Adam_updates,EMA_updates=EMA_updates,margin_satisfied_batches=margin_satisfied_batches,Adam_and_EMA_step_performed=update,rank=rank,epoch_questions_seen=offset+len(batch),training_loss=total,native_gradient_L2=ng,head_gradient_L2=hg,actual_global_batch=128,local_batch=64,micro=8,gradient_accumulation=8,loss_details=loss_details,actor_rows=actor_rows,prefill_rows_equal_groups=actor_rows==len(batch),prefill_seconds=prefill,time=time.time());atomic(base/('progress-rank-%d.json'%rank),row)
    if rank==0:
     print(json.dumps(row),flush=True)
     with(base/'curve.jsonl').open('a')as f:f.write(json.dumps(row)+'\n')
   rng=dict(python=random.getstate(),numpy=np.random.get_state(),torch=torch.get_rng_state(),cuda=torch.cuda.get_rng_state(device));rngs=[None]*world;dist.all_gather_object(rngs,rng)
   if rank==0:
-   path=base/('checkpoint-epoch-%02d.pt'%epoch);tmp=path.with_suffix('.tmp');torch.save(dict(raw=probe.state_dict(),EMA=ema.state_dict(),Adam=optim.state_dict(),RNG_by_rank=rngs,cursor=cursor,epoch=epoch,plan_sha256=digest(fullplan),binding=binding,actor_updates=0),tmp);tmp.replace(path);atomic(base/'latest.json',proof(path));atomic(base/('coverage-epoch-%02d.json'%epoch),dict(epoch=epoch,questions=8192,unique_questions=8192,trajectory_visits=sum(v['M']for v in fullplan),M_counts={m:sum(v['M']==m for v in fullplan)for m in range(3,11)},Mixed=sum(v['true_mixed']for v in fullplan),plan_sha256=digest(fullplan),sampling_independent_of_EM=True,seconds=time.time()-start))
+   path=base/('checkpoint-epoch-%02d.pt'%epoch);tmp=path.with_suffix('.tmp');torch.save(dict(raw=probe.state_dict(),EMA=ema.state_dict(),Adam=optim.state_dict(),RNG_by_rank=rngs,cursor=cursor,batch_attempts=cursor,actual_Adam_updates=actual_Adam_updates,EMA_updates=EMA_updates,margin_satisfied_batches=margin_satisfied_batches,epoch=epoch,plan_sha256=digest(fullplan),binding=binding,actor_updates=0),tmp);tmp.replace(path);atomic(base/'latest.json',proof(path));atomic(base/('coverage-epoch-%02d.json'%epoch),dict(epoch=epoch,questions=8192,unique_questions=8192,trajectory_visits=sum(v['M']for v in fullplan),M_counts={m:sum(v['M']==m for v in fullplan)for m in range(3,11)},Mixed=sum(v['true_mixed']for v in fullplan),plan_sha256=digest(fullplan),sampling_independent_of_EM=True,seconds=time.time()-start))
   dist.barrier();evaluate(epoch)
- if rank==0:atomic(base/'complete.json',dict(status='MATCHED_PACKED_OBJECTIVE_PILOT_COMPLETE',epochs=args.epochs,cursor=cursor,training_questions=8192,binding=binding,final4096_scored=False))
+ if rank==0:atomic(base/'complete.json',dict(status='MATCHED_PACKED_OBJECTIVE_PILOT_COMPLETE',epochs=args.epochs,cursor=cursor,batch_attempts=cursor,actual_Adam_updates=actual_Adam_updates,EMA_updates=EMA_updates,margin_satisfied_batches=margin_satisfied_batches,training_questions=8192,binding=binding,final4096_scored=False))
  dist.destroy_process_group()
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--action',choices=('prepare','train'),required=True);p.add_argument('--base',type=Path,required=True);p.add_argument('--fixture-base',type=Path);p.add_argument('--token-fixture-base',type=Path,default=TOKEN_FIXTURE);p.add_argument('--objective',choices=('mse','mixed_bce'),default='mse');p.add_argument('--fixed-m',type=int,choices=(0,5),default=0);p.add_argument('--layer',type=int,choices=(15,21),default=21);p.add_argument('--prefix',type=int,choices=(20,80),default=20);p.add_argument('--lr',type=float,default=5e-6);p.add_argument('--ema-decay',type=float,default=.9995);p.add_argument('--epochs',type=int,default=3);a=p.parse_args();assert a.lr>0 and 0<a.ema_decay<1 and a.epochs>0
+ p=argparse.ArgumentParser();p.add_argument('--action',choices=('prepare','train'),required=True);p.add_argument('--base',type=Path,required=True);p.add_argument('--fixture-base',type=Path);p.add_argument('--token-fixture-base',type=Path,default=TOKEN_FIXTURE);p.add_argument('--objective',choices=('mse','mixed_bce','topk_ramp'),default='mse');p.add_argument('--margin',type=float,default=1.0);p.add_argument('--fixed-m',type=int,choices=(0,5),default=0);p.add_argument('--layer',type=int,choices=(15,21),default=21);p.add_argument('--prefix',type=int,choices=(20,80),default=20);p.add_argument('--lr',type=float,default=5e-6);p.add_argument('--ema-decay',type=float,default=.9995);p.add_argument('--epochs',type=int,default=10);a=p.parse_args();assert a.lr>0 and 0<a.ema_decay<1 and a.epochs>0 and a.margin>0
+ if a.objective=='topk_ramp'and a.fixed_m!=5:p.error('The declared fifth TopK-ramp arm uses fixed own-G5 (--fixed-m5)')
  if a.action=='train'and a.fixture_base is None:p.error('--fixture-base is required for train')
  a.base.mkdir(exist_ok=True,parents=True)
  try:print(json.dumps(prepare(a)))if a.action=='prepare'else run(a)

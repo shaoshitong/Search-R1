@@ -2,7 +2,8 @@
   "status": "LOCAL_SOURCE_READY_NOT_STAGED_OR_SUBMITTED",
   "objective": [
     "mse",
-    "mixed_bce"
+    "mixed_bce",
+    "topk_ramp"
   ],
   "fixed_m": [
     0,
@@ -17,8 +18,7 @@
     80
   ],
   "training_questions": 8192,
-  "epochs": 3,
-  "optimizer_updates": 192,
+  "epochs": 10,
   "learning_rate": 5e-06,
   "EMA_decay": 0.9995,
   "global_batch": 128,
@@ -37,14 +37,33 @@
       "reused_exact_commit": "7ac274ac8ff5dea0a12dfd44cfb03fe57491458f"
     },
     "reproduction/operations/qwen7b_warmup/online_packed_matched_objective.py": {
-      "bytes": 18047,
-      "sha256": "f5f95c5310a7f5b649a5543bfbca505a790dcc7147d9f7eae74842185395587a"
+      "bytes": 21120,
+      "sha256": "8cd41f9af86936e633a676133f1baba547c6236a3d34ccd407345619759d127c"
     },
     "reproduction/reports/qwen7b-algorithm-improvement-20261021/matched-packed-objective/READY-NOT-STAGED.md": {
-      "bytes": 3281,
-      "sha256": "da82f4c6932f8c7fa2770af273590fea56fabd799cb1d04b8159e1155a5ff334"
+      "bytes": 4291,
+      "sha256": "1246a31d86c6113747a2b1b3b9d2482ff93c192248a3c1e0e9d5a69fe26f42cf"
+    },
+    "reproduction/operations/qwen7b_warmup/group_topk_losses.py": {
+      "bytes": 3174,
+      "sha256": "abf956398fbf948e497fa7d0282da40809f6824685f74b388cf96a210cd28c28"
     }
   },
   "final4096_read": false,
-  "GPU_validation_performed": false
+  "GPU_validation_performed": false,
+  "current_geometry": {
+    "layer": 15,
+    "prefix": 80
+  },
+  "fifth_objective_pending_root_library_API": false,
+  "fifth_arm": {
+    "objective": "topk_ramp",
+    "fixed_m": 5,
+    "margin": 1.0,
+    "globalK": "ceil(actual_global_batch/4)",
+    "no_BCE_or_variance_anchor": true
+  },
+  "global_batch_attempt_budget": 640,
+  "actual_Adam_updates": "640 for BCE/MSE; <=640 for TopK-ramp",
+  "margin_satisfied_skip_both_Adam_and_EMA": true
 }
