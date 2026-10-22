@@ -1,0 +1,521 @@
+{
+  "time": 1792689055.815698,
+  "experiments": {
+    "15": {
+      "prefix80-ready.json": {
+        "Slurm_submitted": false,
+        "entry": {
+          "bytes": 1354,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/training.sbatch",
+          "sha256": "327e486c0b29a206999527817ec0de52378743732c6da6dc3898c93869aa634c"
+        },
+        "final4096_read": false,
+        "job_name": "q7b-online2-L15P80",
+        "layer": 15,
+        "prefix": 80,
+        "rationale": "L15/L18 P20 improved BA; matched P80 isolates longer prefix against own P20 and L21P80.",
+        "resources": {
+          "CPUs": 12,
+          "GPUs": 2,
+          "memGiB": 128,
+          "partition": "acd_u",
+          "time": "00:30:00"
+        },
+        "runtime_commit": "c366ad4bf11c32f78b2622775c2a7bf83e1a5299",
+        "source_entry": {
+          "bytes": 1337,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/training.sbatch",
+          "sha256": "71bb3bc2cc92647282dcc7ae8fba669c1ec1c8412876c8d6505ea86138ac8f8c"
+        },
+        "source_publication": {
+          "bytes": 1357,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/depth-expansion-source-publication.json",
+          "sha256": "cc76d46721f9416b7c32a5c38b2e88a68b7e4eb2acbc608ec3bd71bb7e39a6cf"
+        },
+        "status": "PREFIX80_MATCHED_GEOMETRY_READY_NOT_SUBMITTED",
+        "training": {
+          "EMA_decay": 0.99,
+          "accumulation": 8,
+          "epochs": 3,
+          "global_batch": 128,
+          "hidden_features_persisted": false,
+          "lr": 5e-06,
+          "micro": 8,
+          "official_fresh_block_head_Adam": true,
+          "questions": 8192,
+          "same_frozen_own_G5_plans": true,
+          "updates": 192,
+          "world_size": 2
+        }
+      },
+      "root-submission.json": {
+        "entry": {
+          "bytes": 1354,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/training.sbatch",
+          "sha256": "327e486c0b29a206999527817ec0de52378743732c6da6dc3898c93869aa634c"
+        },
+        "exclude": "ACD1-13",
+        "job_id": "749691",
+        "name": "q7b-online2-L15P80",
+        "no_dependencies": true,
+        "optimizer_updates_lost": 0,
+        "previous_failed_attempt": "749684",
+        "replacement_not_optimizer_resume": true,
+        "resources": {
+          "CPUs": 12,
+          "GPUs": 2,
+          "memGiB": 128,
+          "partition": "acd_u",
+          "time": "00:30:00"
+        },
+        "runtime_commit": "c366ad4bf11c32f78b2622775c2a7bf83e1a5299",
+        "time": 1792687504.1163845
+      },
+      "controller.json": {
+        "EMA_decay": 0.99,
+        "capture_layer": 14,
+        "final4096_read": false,
+        "fixture_source": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-v1",
+        "fresh_official_block_and_head": true,
+        "gradient_accumulation_microbatches": 8,
+        "hidden_feature_cache": false,
+        "job_id": "749691",
+        "layer": 15,
+        "local_batch_questions": 64,
+        "not_E1_continuation": true,
+        "pid": 833839,
+        "prefix": 80,
+        "raw_gradient_updates_EMA": true,
+        "stage": "LOADING_FROZEN_OFFICIAL_ACTOR_FOR_ONLINE_PREFILL",
+        "time": 1792687728.1204274,
+        "training_G5_per_epoch": 8192,
+        "training_questions": 8192,
+        "validation_questions": 2048,
+        "world_size": 2
+      },
+      "progress-rank-0.json": {
+        "cursor": 106,
+        "epoch": 2,
+        "epoch_questions_seen": 2688,
+        "epoch_unique_questions": 8192,
+        "global_batch_questions": 128,
+        "gradient_accumulation_microbatches": 8,
+        "head_gradient_L2": 1.0910421487824322,
+        "layer": 15,
+        "local_batch_questions": 64,
+        "loss": 0.6362567320466042,
+        "micro_questions": 8,
+        "native_gradient_L2": 0.3109227941436541,
+        "prefill_seconds": 7.317218712065369,
+        "prefix": 80,
+        "rank": 0,
+        "stage": "ONLINE_PREFILL_REAL_MIXED_UPDATES",
+        "time": 1792689050.282986,
+        "train_seconds": 0.411167360143736,
+        "trajectory_rows_per_rank": 320,
+        "world_size": 2
+      },
+      "progress-rank-1.json": {
+        "cursor": 106,
+        "epoch": 2,
+        "epoch_questions_seen": 2688,
+        "epoch_unique_questions": 8192,
+        "global_batch_questions": 128,
+        "gradient_accumulation_microbatches": 8,
+        "head_gradient_L2": 1.0910421487824322,
+        "layer": 15,
+        "local_batch_questions": 64,
+        "loss": 0.7058593556284904,
+        "micro_questions": 8,
+        "native_gradient_L2": 0.3109227941436541,
+        "prefill_seconds": 6.474847048055381,
+        "prefix": 80,
+        "rank": 1,
+        "stage": "ONLINE_PREFILL_REAL_MIXED_UPDATES",
+        "time": 1792689050.2824957,
+        "train_seconds": 1.2531228219158947,
+        "trajectory_rows_per_rank": 320,
+        "world_size": 2
+      },
+      "latest.json": {
+        "bytes": 3770454598,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer15-prefix80/checkpoint-epoch-01.pt",
+        "sha256": "ad171bc1ed40ab3d08cc2d5be1689189e226feebddde11f666f0deec15a0088f"
+      },
+      "evaluation-epoch-00.json": {
+        "cursor": 0,
+        "epoch": 0,
+        "metrics": {
+          "fixed_train2048": {
+            "EMA": {
+              "balanced_accuracy": 0.5,
+              "binary_Mixed_BCE": 0.746825860786624,
+              "selected512": {
+                "Mixed": 225,
+                "Mixed_fraction": 0.439453125,
+                "questions": 512
+              },
+              "Mixed_recall": 1.0,
+              "nonMixed_false_positive_rate": 1.0
+            },
+            "raw": {
+              "balanced_accuracy": 0.5,
+              "binary_Mixed_BCE": 0.746825860786624,
+              "selected512": {
+                "Mixed": 225,
+                "Mixed_fraction": 0.439453125,
+                "questions": 512
+              },
+              "Mixed_recall": 1.0,
+              "nonMixed_false_positive_rate": 1.0
+            }
+          },
+          "fixed_validation2048": {
+            "EMA": {
+              "balanced_accuracy": 0.5,
+              "binary_Mixed_BCE": 0.7958462220939382,
+              "selected512": {
+                "Mixed": 171,
+                "Mixed_fraction": 0.333984375,
+                "questions": 512
+              },
+              "Mixed_recall": 1.0,
+              "nonMixed_false_positive_rate": 1.0
+            },
+            "raw": {
+              "balanced_accuracy": 0.5,
+              "binary_Mixed_BCE": 0.7958462220939382,
+              "selected512": {
+                "Mixed": 171,
+                "Mixed_fraction": 0.333984375,
+                "questions": 512
+              },
+              "Mixed_recall": 1.0,
+              "nonMixed_false_positive_rate": 1.0
+            }
+          }
+        }
+      },
+      "evaluation-epoch-01.json": {
+        "cursor": 64,
+        "epoch": 1,
+        "metrics": {
+          "fixed_train2048": {
+            "EMA": {
+              "balanced_accuracy": 0.5,
+              "binary_Mixed_BCE": 0.7130974626217677,
+              "selected512": {
+                "Mixed": 247,
+                "Mixed_fraction": 0.482421875,
+                "questions": 512
+              },
+              "Mixed_recall": 1.0,
+              "nonMixed_false_positive_rate": 1.0
+            },
+            "raw": {
+              "balanced_accuracy": 0.5251553277415346,
+              "binary_Mixed_BCE": 0.6680434853095862,
+              "selected512": {
+                "Mixed": 288,
+                "Mixed_fraction": 0.5625,
+                "questions": 512
+              },
+              "Mixed_recall": 0.08220720720720721,
+              "nonMixed_false_positive_rate": 0.03189655172413797
+            }
+          },
+          "fixed_validation2048": {
+            "EMA": {
+              "balanced_accuracy": 0.5,
+              "binary_Mixed_BCE": 0.7408370309212893,
+              "selected512": {
+                "Mixed": 190,
+                "Mixed_fraction": 0.37109375,
+                "questions": 512
+              },
+              "Mixed_recall": 1.0,
+              "nonMixed_false_positive_rate": 1.0
+            },
+            "raw": {
+              "balanced_accuracy": 0.5158463607603553,
+              "binary_Mixed_BCE": 0.645265600879704,
+              "selected512": {
+                "Mixed": 207,
+                "Mixed_fraction": 0.404296875,
+                "questions": 512
+              },
+              "Mixed_recall": 0.08295625942684766,
+              "nonMixed_false_positive_rate": 0.051263537906137135
+            }
+          }
+        }
+      },
+      "accounting": {
+        "returncode": 0,
+        "stdout": "749691|RUNNING|0:0|00:22:30|ACD1-23",
+        "stderr": ""
+      },
+      "queue": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    "18": {
+      "prefix80-ready.json": {
+        "Slurm_submitted": false,
+        "entry": {
+          "bytes": 1354,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/training.sbatch",
+          "sha256": "4c60f896f4c73c4641f9178f50b1cf7d8b2b3e027dfa781a42b410086f45d8ca"
+        },
+        "final4096_read": false,
+        "job_name": "q7b-online2-L18P80",
+        "layer": 18,
+        "prefix": 80,
+        "rationale": "L15/L18 P20 improved BA; matched P80 isolates longer prefix against own P20 and L21P80.",
+        "resources": {
+          "CPUs": 12,
+          "GPUs": 2,
+          "memGiB": 128,
+          "partition": "acd_u",
+          "time": "00:30:00"
+        },
+        "runtime_commit": "c366ad4bf11c32f78b2622775c2a7bf83e1a5299",
+        "source_entry": {
+          "bytes": 1337,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer21-prefix80/training.sbatch",
+          "sha256": "71bb3bc2cc92647282dcc7ae8fba669c1ec1c8412876c8d6505ea86138ac8f8c"
+        },
+        "source_publication": {
+          "bytes": 1357,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/depth-expansion-source-publication.json",
+          "sha256": "cc76d46721f9416b7c32a5c38b2e88a68b7e4eb2acbc608ec3bd71bb7e39a6cf"
+        },
+        "status": "PREFIX80_MATCHED_GEOMETRY_READY_NOT_SUBMITTED",
+        "training": {
+          "EMA_decay": 0.99,
+          "accumulation": 8,
+          "epochs": 3,
+          "global_batch": 128,
+          "hidden_features_persisted": false,
+          "lr": 5e-06,
+          "micro": 8,
+          "official_fresh_block_head_Adam": true,
+          "questions": 8192,
+          "same_frozen_own_G5_plans": true,
+          "updates": 192,
+          "world_size": 2
+        }
+      },
+      "root-submission.json": {
+        "entry": {
+          "bytes": 1354,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/training.sbatch",
+          "sha256": "4c60f896f4c73c4641f9178f50b1cf7d8b2b3e027dfa781a42b410086f45d8ca"
+        },
+        "job_id": "749685",
+        "name": "q7b-online2-L18P80",
+        "no_dependencies": true,
+        "resources": {
+          "CPUs": 12,
+          "GPUs": 2,
+          "memGiB": 128,
+          "partition": "acd_u",
+          "time": "00:30:00"
+        },
+        "runtime_commit": "c366ad4bf11c32f78b2622775c2a7bf83e1a5299",
+        "time": 1792687387.549464
+      },
+      "controller.json": {
+        "EMA_decay": 0.99,
+        "capture_layer": 17,
+        "final4096_read": false,
+        "fixture_source": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-v1",
+        "fresh_official_block_and_head": true,
+        "gradient_accumulation_microbatches": 8,
+        "hidden_feature_cache": false,
+        "job_id": "749685",
+        "layer": 18,
+        "local_batch_questions": 64,
+        "not_E1_continuation": true,
+        "pid": 971313,
+        "prefix": 80,
+        "raw_gradient_updates_EMA": true,
+        "stage": "LOADING_FROZEN_OFFICIAL_ACTOR_FOR_ONLINE_PREFILL",
+        "time": 1792687528.5857928,
+        "training_G5_per_epoch": 8192,
+        "training_questions": 8192,
+        "validation_questions": 2048,
+        "world_size": 2
+      },
+      "progress-rank-0.json": {
+        "cursor": 102,
+        "epoch": 2,
+        "epoch_questions_seen": 2432,
+        "epoch_unique_questions": 8192,
+        "global_batch_questions": 128,
+        "gradient_accumulation_microbatches": 8,
+        "head_gradient_L2": 1.3098476620726747,
+        "layer": 18,
+        "local_batch_questions": 64,
+        "loss": 0.6297786384820938,
+        "micro_questions": 8,
+        "native_gradient_L2": 0.3382606492981261,
+        "prefill_seconds": 8.166740468004718,
+        "prefix": 80,
+        "rank": 0,
+        "stage": "ONLINE_PREFILL_REAL_MIXED_UPDATES",
+        "time": 1792689054.814975,
+        "train_seconds": 0.5569520799908787,
+        "trajectory_rows_per_rank": 320,
+        "world_size": 2
+      },
+      "progress-rank-1.json": {
+        "cursor": 102,
+        "epoch": 2,
+        "epoch_questions_seen": 2432,
+        "epoch_unique_questions": 8192,
+        "global_batch_questions": 128,
+        "gradient_accumulation_microbatches": 8,
+        "head_gradient_L2": 1.3098476620726747,
+        "layer": 18,
+        "local_batch_questions": 64,
+        "loss": 0.6635825261473656,
+        "micro_questions": 8,
+        "native_gradient_L2": 0.3382606492981261,
+        "prefill_seconds": 8.306404364062473,
+        "prefix": 80,
+        "rank": 1,
+        "stage": "ONLINE_PREFILL_REAL_MIXED_UPDATES",
+        "time": 1792689054.8148115,
+        "train_seconds": 0.4172209470998496,
+        "trajectory_rows_per_rank": 320,
+        "world_size": 2
+      },
+      "latest.json": {
+        "bytes": 3770454598,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/online-mixed-layer-prefix-20261022-2gpu-v1/layer18-prefix80/checkpoint-epoch-01.pt",
+        "sha256": "09dd3c0e6f72901111f231bb8da0bf293968640ea3be3b14fc74ce1aa584ed8c"
+      },
+      "evaluation-epoch-00.json": {
+        "cursor": 0,
+        "epoch": 0,
+        "metrics": {
+          "fixed_train2048": {
+            "EMA": {
+              "balanced_accuracy": 0.5,
+              "binary_Mixed_BCE": 0.7502455466213802,
+              "selected512": {
+                "Mixed": 218,
+                "Mixed_fraction": 0.42578125,
+                "questions": 512
+              },
+              "Mixed_recall": 1.0,
+              "nonMixed_false_positive_rate": 1.0
+            },
+            "raw": {
+              "balanced_accuracy": 0.5,
+              "binary_Mixed_BCE": 0.7502455466213802,
+              "selected512": {
+                "Mixed": 218,
+                "Mixed_fraction": 0.42578125,
+                "questions": 512
+              },
+              "Mixed_recall": 1.0,
+              "nonMixed_false_positive_rate": 1.0
+            }
+          },
+          "fixed_validation2048": {
+            "EMA": {
+              "balanced_accuracy": 0.5,
+              "binary_Mixed_BCE": 0.8007621625337846,
+              "selected512": {
+                "Mixed": 179,
+                "Mixed_fraction": 0.349609375,
+                "questions": 512
+              },
+              "Mixed_recall": 1.0,
+              "nonMixed_false_positive_rate": 1.0
+            },
+            "raw": {
+              "balanced_accuracy": 0.5,
+              "binary_Mixed_BCE": 0.8007621625337846,
+              "selected512": {
+                "Mixed": 179,
+                "Mixed_fraction": 0.349609375,
+                "questions": 512
+              },
+              "Mixed_recall": 1.0,
+              "nonMixed_false_positive_rate": 1.0
+            }
+          }
+        }
+      },
+      "evaluation-epoch-01.json": {
+        "cursor": 64,
+        "epoch": 1,
+        "metrics": {
+          "fixed_train2048": {
+            "EMA": {
+              "balanced_accuracy": 0.5002990059024541,
+              "binary_Mixed_BCE": 0.7139692513882581,
+              "selected512": {
+                "Mixed": 254,
+                "Mixed_fraction": 0.49609375,
+                "questions": 512
+              },
+              "Mixed_recall": 0.9988738738738738,
+              "nonMixed_false_positive_rate": 0.9982758620689656
+            },
+            "raw": {
+              "balanced_accuracy": 0.5434141037589314,
+              "binary_Mixed_BCE": 0.6627286094938694,
+              "selected512": {
+                "Mixed": 293,
+                "Mixed_fraction": 0.572265625,
+                "questions": 512
+              },
+              "Mixed_recall": 0.16441441441441443,
+              "nonMixed_false_positive_rate": 0.07758620689655171
+            }
+          },
+          "fixed_validation2048": {
+            "EMA": {
+              "balanced_accuracy": 0.5003610108303249,
+              "binary_Mixed_BCE": 0.7436812678257292,
+              "selected512": {
+                "Mixed": 191,
+                "Mixed_fraction": 0.373046875,
+                "questions": 512
+              },
+              "Mixed_recall": 1.0,
+              "nonMixed_false_positive_rate": 0.9992779783393502
+            },
+            "raw": {
+              "balanced_accuracy": 0.5264458129822326,
+              "binary_Mixed_BCE": 0.6408533204624075,
+              "selected512": {
+                "Mixed": 209,
+                "Mixed_fraction": 0.408203125,
+                "questions": 512
+              },
+              "Mixed_recall": 0.1568627450980392,
+              "nonMixed_false_positive_rate": 0.10397111913357404
+            }
+          }
+        }
+      },
+      "accounting": {
+        "returncode": 0,
+        "stdout": "749685|RUNNING|0:0|00:26:01|ACD1-1",
+        "stderr": ""
+      },
+      "queue": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    }
+  }
+}
