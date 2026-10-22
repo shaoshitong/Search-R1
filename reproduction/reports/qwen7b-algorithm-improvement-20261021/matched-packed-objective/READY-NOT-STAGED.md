@@ -21,6 +21,8 @@ bash reproduction/operations/qwen7b_warmup/runtime.sh -m torch.distributed.run -
   --objective mse --fixed-m 0 --layer 15 --prefix 80 --epochs 10 --lr 5e-6 --ema-decay .9995
 ```
 
-The fifth cell uses only `--objective topk_ramp --fixed-m 5 --margin 1.0`, in its own directory. The remaining factorial cells replace only the own output directory and `--objective/--fixed-m`: `mse/5`, `mixed_bce/0`, `mixed_bce/5`. Each epoch saves raw, EMA, Adam, both rank RNG, cursor, exact plan SHA and immutable geometry/objective/fixture binding before evaluation. Resume requires that binding to match. Existing jobs and their source files are untouched.
+The fifth cell uses only `--objective topk_ramp --fixed-m 5 --margin 1.0`, in its own directory. The remaining factorial cells replace only the own output directory and `--objective/--fixed-m`: `mse/5`, `mixed_bce/0`, `mixed_bce/5`. Each epoch saves raw, EMA, Adam, both rank RNG, cursor, exact plan SHA and immutable geometry/objective/fixture binding before evaluation. Resume requires that binding to match. The identical initial head SHA and official actor revision are recorded in each binding; E0 same-pool prediction identities provide an additional cross-arm initialization comparison. Existing jobs and their source files are untouched.
 
 Validation performed at preparation of this source: Python compilation and exact byte equality of the reused helper/runtime against published7ac274ac. GPU forward/backward and actual accepted fixture preparation remain unrun until root authorizes staging.
+
+CPU staging uses `deploy_matched_packed_objective.py --commit COMMIT --action stage`, then `--action prepare`, observe `--action status` until the CPU process exits and fixture complete exists, then `--action accept`. It never submits Slurm. The five separate entries declare2 GPUs/12 CPUs/128G/2h, acd_u/normal.
