@@ -1,0 +1,86 @@
+{
+  "time": 1792700420.8192441,
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2",
+  "final4096_read": false,
+  "Slurm_changed": false,
+  "files": {
+    "prepare-process.json": {
+      "GPU_used": false,
+      "Slurm_submitted": false,
+      "commit": "25357860e5461a6034719aaa31c9f8979760fe54",
+      "entry": {
+        "bytes": 782,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/prepare.sh",
+        "sha256": "3a34e7de3b112d1fdd1e9d57af34f77ba53a8948877b9bea47fe4e47e4d08963"
+      },
+      "final4096_read": false,
+      "new_rollouts_generated": 0,
+      "pid": 2235146,
+      "start_ticks": "955170",
+      "status": "PERSISTENT_CPU_POLICY80_PIPELINE_STARTED_NOT_ACCEPTED",
+      "time": 1792698821.2728887
+    },
+    "controller.json": {
+      "GPU_used": false,
+      "code": {
+        "bytes": 19041,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/code-25357860e546/reproduction/operations/qwen7b_warmup/prepare_full169028_policy80_physical_v2.py",
+        "sha256": "76f32aa0471e240f32c751dc0e1279a9c2a7e4b2347cf43101942bbb967b162e"
+      },
+      "final4096_read": false,
+      "new_rollouts_generated": 0,
+      "pid": 2235146,
+      "source_publication": {
+        "bytes": 1266,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/source-publication.json",
+        "sha256": "00ca55c306479306c24f1f21a49787ac37d68f8da11f6afce3ce0309a42ad5e2"
+      },
+      "start_ticks": "955170",
+      "started": 1792698821.3155887
+    },
+    "progress.json": {
+      "GPU_used": false,
+      "RAW_compressed_bytes_completed": 11204790172,
+      "RAW_compressed_bytes_total": 11874678489,
+      "chunks_completed": 39,
+      "current_chunk": 39,
+      "duplicate_source_rows_verified": 0,
+      "expected_train_trajectories": 1690280,
+      "final4096_read": false,
+      "new_rollouts_generated": 0,
+      "seconds": 1594.2489902973175,
+      "source_files_completed": 2504,
+      "source_files_total": 2650,
+      "stage": "STREAMING_TRUE_RAW_POLICY80",
+      "time": 1792700415.5682402,
+      "unique_train_trajectories": 1597440
+    }
+  },
+  "physical_source_contract": {
+    "proof": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-policy80-physical-ownG10-20261023-v2/physical-source-contract.json",
+      "bytes": 3529468,
+      "sha256": "8b6c59c2151cd27350e6c0e5763cdfbd0a8c36f3382662c48d6f9289834ca5b4"
+    },
+    "status": "ALL169028_OWN_G10_PHYSICAL_SEAL_EXECUTION_AND_OWN_EM_RESOLVED",
+    "training_questions": 169028,
+    "training_trajectories": 1690280,
+    "explicit_chosen_physical_questions": 30754,
+    "excluded_same_protocol_tid_wrong_physical_rows": 17920,
+    "excluded_wrong_execution_label_disagreements": 1718,
+    "duplicate_equal_payload_rows": 0,
+    "all_selected_own_EM_matches_canonical": true,
+    "actual_physical_execution_and_seal_source_exact": true,
+    "whole_G5_not_mixed": true,
+    "selection_used_EM": false,
+    "canonical_labels_changed": false,
+    "selected_source_files": 2650
+  },
+  "actual_owned_process_live": true,
+  "process_resources": {
+    "VmPeak": "1029984 kB",
+    "VmRSS": "707508 kB",
+    "Threads": "1"
+  },
+  "log_tail": ""
+}
