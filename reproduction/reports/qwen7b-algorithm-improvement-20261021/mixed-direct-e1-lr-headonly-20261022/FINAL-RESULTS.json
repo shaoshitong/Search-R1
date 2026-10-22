@@ -1,0 +1,191 @@
+{
+  "observed_epoch": 1792673210.023352,
+  "job_id": "747723",
+  "sacct": "747723|COMPLETED|0:0|03:43:10|ACD1-6",
+  "status": "E1_CONTINUATION_LOW_LR_E2_HEADONLY_E3_COMPLETE",
+  "final_cursor": 5219,
+  "native_Adam_steps": 3898,
+  "head_Adam_steps": 5219,
+  "raw_native_freeze_hash": "00ba5ff6e389f47f509ccfaaf635e3e77150bdafbd0330b9e6b7dc00a395b6f4",
+  "full_checkpoint": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-e1-lr-headonly-20261022-v1/checkpoints/cursor-005219.pt",
+    "bytes": 3782597146,
+    "sha256": "e13310b458b4e2d59bd8c23f47d6506d77be48836797a8d4bdafa3faaf160302",
+    "cursor": 5219,
+    "native_steps": 3898,
+    "head_steps": 5219,
+    "stage": "evaluation_due",
+    "training_phase": "phase3_head_only",
+    "phase_state": {
+      "training_phase": "phase3_head_only",
+      "native_freeze_cursor": 3898,
+      "native_frozen_boundary_sha256": "00ba5ff6e389f47f509ccfaaf635e3e77150bdafbd0330b9e6b7dc00a395b6f4",
+      "source_epoch1_checkpoint": {
+        "accepted_hashes": {
+          "ema": "30717cbccac35f98f6a3502b149b85c27a9339ae50e6838f6b9d44492700f456",
+          "ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+          "head_adam": "3def95c27223ea5cc84ae9d59a9c99299d68f49a16ccf3cadc18d661c2fa7ad5",
+          "native_adam": "6449bac5f93ba569a46baabb3dcd77d234a29c8252fc1c014933d61737bd16de",
+          "official_source": "f56f31ea08617395aafcb67a1c1fb8a25d7a2552f0ae23f435ba1d9c4a8d95ee",
+          "raw": "19768254b2b2d790fc512d1d55a744d33bb5241d76e75ed08a5dfc7a6f29e675",
+          "raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+          "rng": "2994b0b3702db59ba952402cab67a80637702621362a22f1201845fbc37b31b0",
+          "sampler": "62fab5913ad1cbb7da9301885b181089792554539038fc7ce801fd277787024d"
+        },
+        "allocation_job_id": "746266",
+        "bytes": 3781073882,
+        "config_sha256": "e5f0027dfcff4b6db442b38e9b2452e86cc2c9adcabd97a194971dc4d8f8d837",
+        "cursor": 2577,
+        "data_cursor": {
+          "cursor": 2577,
+          "sampler_binding": "a0056a458758d1bf168d64729222fa0d865654937f82842318f142df98d5bb11",
+          "sampler_state_sha256": "62fab5913ad1cbb7da9301885b181089792554539038fc7ce801fd277787024d"
+        },
+        "epoch_time": 1792611569.9492016,
+        "full_CPU_native_head_two_Adam_RNG_sampler_source_reload_passed": true,
+        "head_steps": 2577,
+        "matched_binding_sha256": "545686d14f8df2ab2490cbfc8948c983dbcc06a65a37db55842156776b1fb7e1",
+        "native_steps": 2577,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/joint-mixed-direct-official-169028-b128-v1/checkpoints/cursor-002577.pt",
+        "pinned": true,
+        "sampler_state_sha256": "62fab5913ad1cbb7da9301885b181089792554539038fc7ce801fd277787024d",
+        "sha256": "c0a1c7dc3663d4216966a3440c2103348bcc52db3cd04c2f5c59a784a2792917",
+        "stage": "evaluation_due"
+      }
+    },
+    "native_frozen": true,
+    "native_frozen_boundary_sha256": "00ba5ff6e389f47f509ccfaaf635e3e77150bdafbd0330b9e6b7dc00a395b6f4",
+    "native_learning_rate": 5e-07,
+    "head_learning_rate": 5e-05,
+    "config_sha256": "662f0931dabdcaace9d645d7c0fded786a9fe34cbe1421fdfd557b450803caf7",
+    "matched_binding_sha256": "9b709277279e2b14c86c2a32fd2a678b3aa99146cc0b8c3fd99f6c0cc160cd0f",
+    "accepted_hashes": {
+      "raw": "815083e081edcc21e61541a81e5526026e1f0cf8045d9236a8ff1e81af0fcce7",
+      "ema": "32f04b93d08d468e58bad8d8c47508c8510e263b9eafd1d35e115c7369b544a3",
+      "native_adam": "9f28a89df9b5eed195dec3d3eb94336505c5cdc8d7d5ab587400908077dd00bc",
+      "head_adam": "0f97cd007bf575543276016bf61e43f818423fe12332846ebcbe36fb68d20442",
+      "raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "rng": "2994b0b3702db59ba952402cab67a80637702621362a22f1201845fbc37b31b0",
+      "sampler": "a03eadd30997a52cf465a12e4fa9b6e55c66d8499727c047c5e8da245d1471db",
+      "official_source": "f56f31ea08617395aafcb67a1c1fb8a25d7a2552f0ae23f435ba1d9c4a8d95ee",
+      "phase_policy": "c70cdddc0626220f575857fa5d71db91c6338fe17a062352d4f63351fe7fd85b"
+    },
+    "data_cursor": {
+      "cursor": 5219,
+      "sampler_binding": "a0056a458758d1bf168d64729222fa0d865654937f82842318f142df98d5bb11",
+      "sampler_state_sha256": "a03eadd30997a52cf465a12e4fa9b6e55c66d8499727c047c5e8da245d1471db"
+    },
+    "sampler_state_sha256": "a03eadd30997a52cf465a12e4fa9b6e55c66d8499727c047c5e8da245d1471db",
+    "full_CPU_native_head_two_Adam_RNG_sampler_source_reload_passed": true,
+    "pinned": true,
+    "allocation_job_id": "747723",
+    "epoch_time": 1792665216.1492267
+  },
+  "seen_questions": 169028,
+  "new_failure": null,
+  "epoch1_baseline_EMA": {
+    "Mixed_BA": 0.5288460177183898,
+    "Mixed_BCE": 0.6530157596280333,
+    "Top512_Mixed": 205,
+    "Top512_fraction": 0.400390625
+  },
+  "rows": [
+    {
+      "epoch": 2,
+      "model": "raw",
+      "Mixed_BCE": 0.9410899117283407,
+      "Mixed_BA": 0.48108804199269267,
+      "Mixed_recall": 0.8748114630467572,
+      "nonMixed_recall": 0.08736462093862817,
+      "nonMixed_FPR": 0.9126353790613718,
+      "AUC": 0.4832530179525295,
+      "confusion": {
+        "tp": 580,
+        "fp": 1264,
+        "fn": 83,
+        "tn": 121
+      },
+      "Top512_Mixed": 165,
+      "Top512_fraction": 0.322265625,
+      "predictions": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-e1-lr-headonly-20261022-v1/evaluations/epoch-02/raw-fixed_selection2048.jsonl.gz",
+        "bytes": 60779,
+        "sha256": "193166e6e5b7a929ac74b928b89ec45098c718662984234ec557d65c703e7e3b"
+      }
+    },
+    {
+      "epoch": 2,
+      "model": "EMA",
+      "Mixed_BCE": 0.9460600587553927,
+      "Mixed_BA": 0.4878356230023251,
+      "Mixed_recall": 0.9034690799396682,
+      "nonMixed_recall": 0.07220216606498195,
+      "nonMixed_FPR": 0.927797833935018,
+      "AUC": 0.4972888794506972,
+      "confusion": {
+        "tp": 599,
+        "fp": 1285,
+        "fn": 64,
+        "tn": 100
+      },
+      "Top512_Mixed": 176,
+      "Top512_fraction": 0.34375,
+      "predictions": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-e1-lr-headonly-20261022-v1/evaluations/epoch-02/EMA-fixed_selection2048.jsonl.gz",
+        "bytes": 60265,
+        "sha256": "ea3792905711438f4dae0d1cf882bce0915506e40e1ce09ca135fc3efc0bbc86"
+      }
+    },
+    {
+      "epoch": 3,
+      "model": "raw",
+      "Mixed_BCE": 0.6270115769875702,
+      "Mixed_BA": 0.5094597905810477,
+      "Mixed_recall": 0.05429864253393665,
+      "nonMixed_recall": 0.9646209386281589,
+      "nonMixed_FPR": 0.0353790613718411,
+      "AUC": 0.5716690897408672,
+      "confusion": {
+        "tp": 36,
+        "fp": 49,
+        "fn": 627,
+        "tn": 1336
+      },
+      "Top512_Mixed": 191,
+      "Top512_fraction": 0.373046875,
+      "predictions": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-e1-lr-headonly-20261022-v1/evaluations/epoch-03/raw-fixed_selection2048.jsonl.gz",
+        "bytes": 59306,
+        "sha256": "42d2eb6c1fdc7c1f04837204bbe5d75acec25ea6d353f63bc646fd2ffb130b22"
+      }
+    },
+    {
+      "epoch": 3,
+      "model": "EMA",
+      "Mixed_BCE": 0.6263741612056037,
+      "Mixed_BA": 0.5086735166157549,
+      "Mixed_recall": 0.05128205128205128,
+      "nonMixed_recall": 0.9660649819494584,
+      "nonMixed_FPR": 0.033935018050541554,
+      "AUC": 0.568729819058976,
+      "confusion": {
+        "tp": 34,
+        "fp": 47,
+        "fn": 629,
+        "tn": 1338
+      },
+      "Top512_Mixed": 194,
+      "Top512_fraction": 0.37890625,
+      "predictions": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/mixed-direct-e1-lr-headonly-20261022-v1/evaluations/epoch-03/EMA-fixed_selection2048.jsonl.gz",
+        "bytes": 59109,
+        "sha256": "822fde013924812433f9d2d75cca85a697f808fe46cea6008b53fc2aee150f58"
+      }
+    }
+  ],
+  "final4096_scored": false,
+  "three_epoch_run_completed": true,
+  "first_epoch_selection_outperformed": false,
+  "scientific_goal_complete": false
+}
