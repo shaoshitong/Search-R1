@@ -7,3 +7,9 @@ Development uses actual execution runs7276b1c7… andb5a4ca3f…; all32 full pay
 Exact question intersections with the HPC3_first9344 cohort are zero for pilot8192, viewed development2048, and fixedB2048. This does not imply correctness of the new full169028 physical-source producer. Identical protocol trajectory IDs or Prefix20 strings are never treated as complete payload identity.
 
 The two scoped raw pass reports contain a legacy general status string; only the named completed pool was tested in each. `development-and-fixedB-source-summary.json` combines their actual tested scopes. No final4096 input, score or label was read. No model, GPU, inference, training source, or Slurm state was changed.
+
+## Completed all81920 training-pilot check
+
+The independent durable CPU audit completed in229.96seconds at1792699305. It freshly hashed all492 actual full payloads (1,849,227,304 compressed bytes), all own-EM files, all actual completion seals and all four compact P80 shards. It read314,880 source RAW rows and verified every selected own-G10 trajectory:81,920/81,920 canonical labels, actual own EM, actual RAW strict EM, initial prompt, question hash and retained first80 policy tokens all match. Mismatches:0. The own physical source identities are original runbdbb550f… and new run70188b8e…; all8192 questions are NQ. The audit process exited normally and touched no training state.
+
+This completes the larger full-file check that the earlier bounded fixedB pass did not claim. It establishes consistency for the existing8192 pilot inputs, development pool and fixed training-B pool; it makes no claim about the new full169028 physical-source producer or unseen final questions.
