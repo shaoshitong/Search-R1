@@ -56,16 +56,23 @@ def adopt(base, run):
     directory = base / 'artifacts' / ('round_0-attempt-' + token)
     directory.mkdir(parents=True, exist_ok=False)
     origin_dir = archive.parent
+    dump_sources = {}
     for name, hashes in (('heads', dict(source['head_sha256'], **{
             'calibration-report.json': source['calibration_report_sha256']})), ('dumps', source['dump_sha256'])):
         for filename, expected in hashes.items():
             if Path(filename).name != filename: raise ValueError('EASY2560_UNSAFE_ROUND0_MEMBER')
-            link_verified(origin_dir / name / filename, directory / name / filename, expected)
+            original_file = origin_dir / name / filename
+            if run.get('dynrpo7b_selection') and name == 'dumps':
+                from reproduction.dynrpo7b.reward_adapter import resolve_dump
+                original_file, dump_sources[filename] = resolve_dump(archive, filename, expected)
+            link_verified(original_file, directory / name / filename, expected)
     origin = dict(base=str(old), run_id=previous['run_id'], version=source['version'],
                   original_manifest=str(archive), original_manifest_sha256=sha(archive),
                   original_run_manifest_sha256=sha(old / 'logs/run-manifest.json'),
                   new_calibration_generated=False, inherited_actor_or_optimizer=False,
                   hardlinked_complete_original_calibration_artifacts=True)
+    if run.get('dynrpo7b_selection'):
+        origin['dump_sources'] = dump_sources
     version = run['run_id'] + ':0:' + token
     live = dict(source, run_id=run['run_id'], version=version,
                 encoder=run['initial_model'], commit=str(directory / 'heads/commit_probe.pkl'),
@@ -115,7 +122,13 @@ def verify_adopted(base, run, live, archive):
     for directory, hashes in (('heads', dict(source['head_sha256'], **{
             'calibration-report.json': source['calibration_report_sha256']})), ('dumps', source['dump_sha256'])):
         for name, expected_sha in hashes.items():
-            if (sha(original.parent / directory / name) != expected_sha or
+            source_file = original.parent / directory / name
+            if run.get('dynrpo7b_selection') and directory == 'dumps':
+                from reproduction.dynrpo7b.reward_adapter import resolve_dump
+                source_file, provenance = resolve_dump(original, name, expected_sha)
+                if origin.get('dump_sources', {}).get(name) != provenance:
+                    raise ValueError('DYNRPO7B_REUSED_DUMP_ORIGIN_DIFFERS: ' + name)
+            if (sha(source_file) != expected_sha or
                     sha(archive.parent / directory / name) != expected_sha):
                 raise ValueError('EASY2560_REUSED_ROUND0_FITTED_BYTES_CHANGED')
     return receipt

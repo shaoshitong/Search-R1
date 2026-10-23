@@ -14,6 +14,25 @@ MANIFEST = (REWARD_SOURCE + '/artifacts/'
 MANIFEST_SHA = '893fe8c21df2c30044d63a03884bef6ef98443f0010d38219e7dc96ae0b17286'
 HEAD_SHA = dict(boundary_probe='a2c33da3d37f779a6792b36aea80b4e095c2e6cfaed2900a75042de2e0af7b75',
     commit_probe='b4e402c811e5d09a1df15716666528e008e9bc576ccb1a9fc0ccb4ef85a4a143')
+ORIGINAL_DUMPS = Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-20261021/'
+    'artifacts/round_0-attempt-e0086aba4f4043e1acbf20dca55c634a/dumps')
+
+
+def verified_dump_source(primary, expected, fallback=None):
+    """Use the original static bytes only when the restored archive omits them."""
+    primary = Path(primary)
+    chosen = primary if primary.exists() else Path(fallback) if fallback is not None else primary
+    if not chosen.is_file() or chosen.is_symlink() or sha(chosen) != expected:
+        raise ValueError('Grounding calibration dump absent or SHA differs: ' + str(chosen))
+    return chosen, dict(path=str(chosen), sha256=expected,
+                        restored_archive_missing=chosen != primary)
+
+
+def resolve_dump(archive, filename, expected):
+    archive = Path(archive)
+    primary = archive.parent / 'dumps' / filename
+    fallback = ORIGINAL_DUMPS / filename if archive == Path(MANIFEST) else None
+    return verified_dump_source(primary, expected, fallback)
 
 
 def validate_source(run):
