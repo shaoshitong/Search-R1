@@ -1,0 +1,4 @@
+import io,json,runpy,sys
+request={'base': '/data/user/jxu957/experiments/easy2560-corollout-joint4-retrieval-batch-production-r1-20261023', 'commit': 'dde1452d2ec65fb3f4a0464d4beacf3b8136414c', 'index': '/data/user/jxu957/experiments/topd-20261008/bundle/retrieval/wiki/e5_Flat.index', 'corpus': '/data/user/jxu957/experiments/topd-20261008/bundle/retrieval/wiki/wiki-18.jsonl', 'port': 18026, 'faiss_max_wait_ms': 2, 'time_limit': '7-00:00:00', 'stage_parquet': '/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/data/stage.parquet', 'training_run_id': '232f20e112ac4a978c5aba52a0367195', 'job_name': 'easy7b-retrieval-batch16'}
+sys.stdin=io.StringIO(json.dumps(request))
+runpy.run_path(request["base"]+"/source/"+request["commit"]+"/reproduction/operations/easy7b_20261021/submit_private_retrieval_service_hpc.py",run_name="__main__")
