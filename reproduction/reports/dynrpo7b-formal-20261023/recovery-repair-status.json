@@ -1,0 +1,43 @@
+{
+  "checked_utc": "2026-10-23T08:32:40.680464+00:00",
+  "implementation_commit": "6dbb341eacd0b34e3fa2eb8c57372d36c9f46738",
+  "branch": "codex/dynrpo7b-formal-20261023",
+  "remote_git_SHA_verified": true,
+  "remote_runtime_files_SHA_verified": 1955,
+  "runtime_base": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023-recoveryfix-r1",
+  "scope": [
+    "Restore phase-journal published probe raw/EMA/Adam/RNG instead of stale wrapper",
+    "Resume production candidate/prefix/continuation and committed Backstop batches with original producer provenance",
+    "Reuse fitted reward manifest before adoption without duplicate rollout or fitting",
+    "Retain one actor snapshot across generation/scoring/Backstop, explicitly release before actor updates"
+  ],
+  "validation": {
+    "remote_cpu": {
+      "DynRPO": 28,
+      "behavior_trace_and_snapshot": 54,
+      "passed": 82,
+      "tested_commit": "297f4c3a1134c7eb4dde97baa5de15c6c5bac28f"
+    },
+    "subsequent_change": "Removed duplicate Hydra snapshot-cache override already supplied by mature profile",
+    "production_collection_cpu_injection": "Exit after first committed128 Backstop questions; resume only next128. Candidate order, attempt, labels and saved batches retained.",
+    "real_four_rank_recovery": "PENDING",
+    "real_weight_sync_once_per_rank": "PENDING",
+    "inflight_phase_replay": "Only work after last atomic collection commit may replay; committed batches do not repeat."
+  },
+  "unchanged": [
+    "GRPO loss and logical micro2 weighting",
+    "FA3 and GQA",
+    "200 outer budget",
+    "4 training GPUs plus existing2 retrieval GPUs",
+    "probe fitting every10 outer for3epochs",
+    "prefix80 then160 after outer100"
+  ],
+  "handoff": {
+    "old_job": 751231,
+    "retrieval_job_keep": 751011,
+    "old_runtime_commit": "3e51587d582f4f1bdea5f559d4de6e2e4421344b",
+    "waiting_for_complete_outer": 3,
+    "preserve_model_Adam_scheduler_RNG_driver_probe": true,
+    "allow_reset_or_replay_committed_actor": false
+  }
+}
