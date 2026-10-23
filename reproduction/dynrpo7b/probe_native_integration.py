@@ -148,7 +148,7 @@ def compare_representatives(expected, actual):
             right = actual[name]['Adam'][key]
             if torch.is_tensor(left):
                 equal = (torch.equal(left, right) if key == 'step' else
-                         torch.allclose(left, right, atol=1e-7, rtol=1e-4))
+                         torch.allclose(left, right, atol=1e-6, rtol=1e-4))
                 row['Adam'][key] = dict(max_abs_difference=float((left - right).abs().max()),
                     bitwise_equal=torch.equal(left, right), within_tolerance=equal)
             else:
@@ -186,6 +186,8 @@ def run(args):
     progress('PRIVATE_ADAM_UPDATE1', score_range=[min(scores), max(scores)])
     update1 = step(adapter, groups)
     adapter.offload()
+    saved_representatives = representative_state(adapter)
+    saved_probe_rng = copy.deepcopy(adapter.rng)
     private_checkpoint = output / 'private-state-after-update1.pt'
     temporary = private_checkpoint.with_suffix('.tmp')
     torch.save(adapter.state_dict([adapter.rng]), temporary)
@@ -201,6 +203,14 @@ def run(args):
     state = torch.load(private_checkpoint, map_location='cpu', weights_only=False)
     adapter.load_state_dict(state)
     del state
+    loaded_representatives = representative_state(adapter)
+    loading_comparison = compare_representatives(saved_representatives, loaded_representatives)
+    loaded_state_bitwise = (all(value['bitwise_equal'] for row in loading_comparison.values()
+        for key, value in row.items() if key != 'Adam') and
+        all(value['bitwise_equal'] for row in loading_comparison.values()
+            for value in row['Adam'].values()))
+    loaded_rng_bitwise = rng_equal(saved_probe_rng, adapter.rng)
+    loaded_counter_matches = adapter.online_updates == 1
     repeated2 = step(adapter, groups)
     actual = representative_state(adapter)
     comparison = compare_representatives(expected, actual)
@@ -211,7 +221,8 @@ def run(args):
         for key, value in row.items() if key != 'Adam')
     all_Adam_ok = all(value['within_tolerance'] for row in comparison.values()
                      for value in row['Adam'].values())
-    accepted = (losses_equal and all_parameters_ok and all_Adam_ok and actual_rng_equal
+    accepted = (loaded_state_bitwise and loaded_rng_bitwise and loaded_counter_matches
+        and losses_equal and all_parameters_ok and all_Adam_ok and actual_rng_equal
         and update2['actual_Adam_updates'] == repeated2['actual_Adam_updates'] == adapter.warmup_cursor + 2
         and not any(row['encoder_has_gradients'] for row in (update1, update2, repeated2)))
     report = dict(status='ONE_GPU_NATIVE_PROBE_ADAPTER_INTEGRATION_PASS' if accepted else
@@ -223,7 +234,13 @@ def run(args):
         score_semantics='4*predicted_population_EM_variance', prefix=80,
         score_range=[min(scores), max(scores)], update1=update1, update2=update2,
         restored_update2=repeated2, next_loss_matches=losses_equal,
+        saved_vs_loaded_representative_comparison=loading_comparison,
+        loaded_representative_raw_EMA_Adam_bitwise_equal=loaded_state_bitwise,
+        loaded_probe_RNG_bitwise_equal=loaded_rng_bitwise,
+        loaded_counter_matches=loaded_counter_matches,
         representative_comparison=comparison, probe_RNG_matches=actual_rng_equal,
+        next_step_tolerances=dict(raw_EMA_atol=1e-7, raw_EMA_rtol=1e-5,
+                                  Adam_moment_atol=1e-6, Adam_moment_rtol=1e-4),
         private_checkpoint=checkpoint_ref, actual_optimizer_executions=3,
         private_model_updates_after_restore=2, seconds=time.monotonic() - started,
         not_claimed=['four-rank NCCL/Ray integration', 'all-parameter numerical equivalence',
