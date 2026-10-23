@@ -1,0 +1,40 @@
+{
+  "status": "VERIFIED_WAIT_FOR_TRAINING_RESOURCES",
+  "checked_utc": "2026-10-23T06:07:26.423036+00:00",
+  "active_goal": true,
+  "source_branch": "codex/dynrpo7b-formal-20261023",
+  "published_source": "710d5aa8c959f8dc93dcbb64cfc300ee2a777b7f",
+  "remote_base": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023",
+  "retrieval": {
+    "job": 751011,
+    "state": "RUNNING",
+    "node": "ACD1-51",
+    "ready": true,
+    "physical_gpus": 2,
+    "endpoint": "http://ACD1-51:18126/retrieve"
+  },
+  "training": {
+    "failed_job": 751019,
+    "terminal_state": "FAILED",
+    "node": "ACD1-59",
+    "failure": "Slurm GPU4 allocated but NVIDIA inventory only3 H100; all recovery_action Reboot",
+    "completed_outer": 0,
+    "actual_actor_updates": 0,
+    "next_action": "poll751047; verify allocation, firstfive completeouters and10to11probeupdate",
+    "job": 751047,
+    "excluded_nodes": [
+      "ACD1-59"
+    ],
+    "source_commit": "710d5aa8c959f8dc93dcbb64cfc300ee2a777b7f",
+    "state": "PENDING",
+    "reason": "Resources",
+    "partition": "acd_ue",
+    "qos": "normal",
+    "account": "mou176"
+  },
+  "CPU_tests_passed": 13,
+  "extra_GPU_qualification_jobs": 0,
+  "source_remote_SHA_verified": true,
+  "remote_source_files_SHA_verified": 1941,
+  "previous_goal_turn_classification": "progress"
+}
