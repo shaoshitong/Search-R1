@@ -2,7 +2,7 @@
 
 日期：2026年10月23日。范围：制定并固定实现方案；本轮不修改生产训练代码，不提交训练作业。
 
-目标是在独立运行目录组合 **Soft Reward + GRPO + Update Probe + Progressive Prefix + Post Selection + Backstop Funding**。学生从官方 Qwen2.5-7B-Instruct 初始化，选题探针继承本线程已验收的 L15、Prefix80、整组方差 MSE 模型。以下保留原200个完整outer、固定数据划分和评测安排；尚未确认的预算单独列出，不能在启动器中静默取值。
+目标是在独立运行目录组合 **Soft Reward + GRPO + Update Probe + Progressive Prefix + Post Selection + Backstop Funding**。学生从官方 Qwen2.5-7B-Instruct 初始化，选题探针继承本线程已验收的 L15、Prefix80、整组方差 MSE 模型。保留原200个完整outer、固定数据划分和评测安排。用户已确认：outer1～100用Prefix80，完成100后切换160；每10轮复用该更新轮2560题×5条旧actor轨迹拟合3epoch；采用4张训练卡加2张独立检索卡。
 
 ## 1 实现来源与独立部署
 
@@ -27,7 +27,7 @@
 
 `Mixed = 1[0 < sum(EM_j) < 5]`。Post Selection用真实EM参与训练选题是本方案的明确设计；这些标签绝不进入探针预测输入。报告分别列出候选池、探针Top1024、最终512的Mixed比例，避免将Post Selection的收益全部记成探针预测收益。
 
-本分支普通轮候选预算固定5120，不混入历史动态候选上限20480或其他分支的768/1536续写预算。探针更新轮若沿用参考方案，则先完成2560题G5供actor选512；后续新增探针数据另按第5节处理。
+本分支普通轮候选预算固定5120，不混入历史动态候选上限20480或其他分支的768/1536续写预算。探针更新轮完成2560题G5供actor选512，并保留全部2560组供本节点拟合；不再为探针额外生成一套新actor轨迹。
 
 ## 3 Backstop Funding的实际含义
 
@@ -72,20 +72,22 @@ raw接受梯度，EMA以0.9995跟随；继承raw、EMA、Adam、RNG，保留warm
 
 outer0直接加载已完成warmup；在完成10、20、30……190后更新探针。沿用原200轮结束约定：200保存与最终评测，不再做没有后续选题用途的探针拟合。两节点之间参数固定，新探针只从下一outer使用。
 
-**建议的更新顺序**：完成actor10 → 保存并验收完整actor10及旧探针 → 固定actor10生成本次探针拟合数据 → 继承探针及Adam拟合 → 原子发布新probe → outer11。这样特征、标签及数据来源均有明确快照。如果选择复用第10轮训练轨迹，它们实际来自actor9，必须据实标注，不能称为actor10新数据。
+**已确认的更新顺序**：actor9为第10轮生成2560题×5条完整轨迹 → 从中选512题完成actor10更新 → 保存并验收完整actor10及旧探针 → 使用原2560组轨迹继承拟合3epoch → 原子发布新probe → outer11。所有更新节点按此顺序执行：在完成outer t后拟合时，复用的轨迹来源为actor(t−1)，不是actor t。特征仍由官方冻结编码器计算；保存`rollout_actor_outer=t-1`、`completed_actor_outer=t`、`probe_effective_from_outer=t+1`，以区分这三个计数。
 
-尚待用户选择的配置已通过异步问题提出：
+用户已确认的配置：
 
-| 项目 | 建议值或待定内容 |
+| 项目 | 固定配置 |
 |---|---|
-| 在线拟合预算 | 每节点用完成该outer后的新actor生成2560题×5条，拟合3epoch；另提供5120题×5条、20epoch，以及复用旧actor轨迹的显式配置 |
-| Progressive Prefix起点 | 建议从已验证Prefix80开始；若坚持原5→20→40→80，则先做短前缀适配，不能直接继承当前约65%～67%的结果声明 |
-| 后续长度与切换节点 | 固定在配置表中，取得前缀选择后再确定；不在启动器中自动猜测或沿用旧3B默认值 |
-| GPU布局 | 已跑通参考为4张H100训练＋2张独立检索；若总计4张共享，则需要单独安排检索和探针阶段，不能将6卡写成4卡 |
+| 在线拟合预算 | 每10轮复用本更新轮全部2560题×5条旧actor轨迹，拟合3epoch，不新增完整rollout |
+| 选题前缀 | outer1～100为Prefix80；完成outer100后切换，outer101～200为Prefix160 |
+| 拟合前缀 | 完成outer10～90后的节点用P80；完成outer100～190后的节点用P160；与下一轮实际选题长度一致 |
+| GPU布局 | 4张H100训练＋2张独立检索，共6张；探针阶段复用训练资源，不暗增第三组GPU |
+
+**第100轮边界**：第100轮本身仍按P80打分和选题，其完整G5由actor99生成。actor100保存后，从同一批2560组完整轨迹中提取每条前160个policy token，重新计算P160表征并拟合3epoch；不重新采样轨迹、不追加完整rollout，也不把P80缓存假装成P160。短于160的回答沿用padding及无效位置mask。发布P160探针后，outer101才使用P160选题。checkpoint分别记录“actor100完成/P160探针待拟合”和“P160探针已发布”，避免恢复时多训actor100或重复完成的拟合epoch。
 
 拟合输入必须包括未经Mixed筛选的本次完整数据，不仅训练入选512题。保持自然问题分布、独立shuffle与轨迹随机排列，不按EM凑50/50，不重复困难题补类。若仅有G5，每epoch不得伪称重新从G10抽样；真实G5复用次数与生成量分别报告。
 
-Progressive Prefix需要同时作用于候选打分、拟合、诊断和恢复。当前组头支持变长输入，不能照搬旧逐轨迹扁平linear的扩维代码。超出2048位置容量时需明确扩展位置embedding及对应EMA/Adam状态，并保留旧坐标和优化器step。任何切换均先保存边界checkpoint，再按新长度拟合/验收后供下一轮选题；不重置Qwen block、读出头或Adam。
+Progressive Prefix需要同时作用于候选打分、拟合、诊断和恢复。当前组头支持变长输入，P80切P160不因为输入变长就更换linear、Qwen block或重置Adam。按实际question与五条前缀的有效长度核对2048位置容量，不静默截断question；若需要扩展位置embedding，保留旧权重、EMA和Adam坐标及step。切换先保存边界checkpoint，再按新长度拟合/验收后供下一轮选题。
 
 ## 6 Soft Reward与GRPO的绑定
 
@@ -136,7 +138,7 @@ tokenizer加速使用固定Qwen2TokenizerFast的底层`backend_tokenizer.decode`
 
 | 顺序 | 新模块或接线 | 完成条件 |
 |---|---|---|
-| 1 | `recipe.py`、`source_manifest.json`、独立部署入口 | 源码/资产/数据/环境版本可追溯；待定配置无隐式默认 |
+| 1 | `recipe.py`、`source_manifest.json`、独立部署入口 | 源码/资产/数据/环境版本可追溯；使用已确认的前缀、复用预算及4＋2卡布局 |
 | 2 | `group_probe_adapter.py`、`prefix_schedule.py` | E9 raw重放分数与原实现一致；raw/EMA/Adam继承正确；变长mask/位置一致 |
 | 3 | `selection.py`、`mixed_backstop.py` | 同一G5贯穿prefix与续写；选题顺序、153/154边界、池耗尽及中断恢复正确 |
 | 4 | `infra_profile.py`、rollout/actor适配 | 接入成熟FA3、token与检索路径；新增投影优化独立开关，数值一致后启用 |
@@ -150,6 +152,6 @@ tokenizer加速使用固定Qwen2TokenizerFast的底层`backend_tokenizer.decode`
 
 ## 10 当前交付范围
 
-本轮交付实现计划和来源定位。正式训练代码尚未组合；Prefix阶段表、在线拟合预算、GPU布局按异步问题确认后写入固定配置。已经可以先完成不依赖这三项选择的模块设计和实现，不需要反复展开全仓review。
+本轮交付实现计划和来源定位。正式训练代码尚未组合；三个配置选择已全部确认，并固定于本文及同目录`dynrpo7b-formal-training-decisions-20261023.json`。下一步按第9节编码顺序实现，不再因这三项配置停下询问，也不反复展开全仓review。本轮没有提交训练作业。
 
 相关结果：[本线程warmup方案与独立验证结果](../reproduction/reports/qwen7b-algorithm-improvement-20261021/fullP80-selected-root-control/QWEN7B-WARMUP-SCHEME-AND-RESULTS-20261023.md)。
