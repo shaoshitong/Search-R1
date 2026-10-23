@@ -9,6 +9,47 @@ import time
 from .deploy import launch_command, publish
 
 
+def ensure_no_actor_writes(base):
+    """Read the real four-rank journal before allowing a fresh retry.
+
+    A first outer can write Adam before any driver update or checkpoint is
+    published. Missing startup journals are valid; an unreadable journal or
+    any persisted write evidence cannot establish a pre-actor boundary.
+    """
+    for rank in range(4):
+        path=Path(base)/'logs'/('optimizer-rank-%d.jsonl'%rank)
+        if not path.exists():
+            continue
+        try:
+            with path.open() as stream:
+                for line_number,line in enumerate(stream,1):
+                    if not line.strip():
+                        continue
+                    row=json.loads(line)
+                    if not isinstance(row,dict):
+                        raise ValueError('Journal row is not a JSON object')
+                    kind=row.get('kind')
+                    wrote=kind=='OPTIMIZER_WRITE'
+                    if kind=='OPPORTUNITY':
+                        succeeded=row['optimizer_write_succeeded']
+                        if type(succeeded) is not bool:
+                            raise ValueError('Opportunity write result is not binary')
+                        wrote=wrote or succeeded
+                    if kind in ('OPPORTUNITY','OUTER_BUDGET'):
+                        counters=('optimizer_writes','cumulative_writes','optimizer_writes_before','optimizer_writes_after')
+                        for key in counters:
+                            if key in row:
+                                if type(row[key]) is not int or row[key]<0:
+                                    raise ValueError('Invalid actual optimizer counter '+key)
+                                wrote=wrote or row[key]>0
+                        if kind=='OUTER_BUDGET' and not any(key in row for key in counters):
+                            raise ValueError('Outer budget has no actual optimizer count')
+                    if wrote:
+                        raise RuntimeError('Use full-state resume after actual actor Adam write: %s:%d'%(path,line_number))
+        except (OSError,UnicodeError,ValueError,KeyError) as error:
+            raise RuntimeError('Cannot prove pre-actor retry from damaged journal '+str(path)) from error
+
+
 def retry(base,commit,*,exclude):
     base=Path(base)
     previous=(base/'job.id').read_text().strip()
@@ -17,6 +58,7 @@ def retry(base,commit,*,exclude):
         raise RuntimeError('Prior allocation is not confirmed terminal: '+state)
     if (base/'logs/actual-updates.jsonl').exists() or (base/'checkpoints').exists():
         raise RuntimeError('Use full-state resume after actor training starts')
+    ensure_no_actor_writes(base)
     archive=base/'attempts'/previous
     archive.mkdir(parents=True,exist_ok=False)
     moves=['logs','job.id','preparation/train-submit-claim.json','preparation/train-submission.json',
