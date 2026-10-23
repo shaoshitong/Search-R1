@@ -14,6 +14,29 @@ from reproduction.dynrpo7b.collection_resume import begin_attempt
 
 
 class RecoveryTransactions(unittest.TestCase):
+    def test_pinned_collection_origin_checks_actual_writer_logs(self):
+        import hashlib
+        from reproduction.dynrpo7b.collection_resume import find_resume
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);base=root/'new';origin=root/'failed'
+            (base/'preparation').mkdir(parents=True)
+            (origin/'preparation/dynrpo7b-collection').mkdir(parents=True)
+            (origin/'logs').mkdir()
+            pointer=origin/'preparation/dynrpo7b-collection/outer-0004.json'
+            value=dict(run_id='run',outer=4,prior_writes=60,stage='collected')
+            pointer.write_text(json.dumps(value))
+            pin=dict(source_base=str(origin),outer=4,
+                     pointer_sha256=hashlib.sha256(pointer.read_bytes()).hexdigest())
+            (base/'preparation/collection-resume-origin.json').write_text(json.dumps(pin))
+            self.assertEqual(find_resume(base,{'run_id':'run'},4,60),value)
+            self.assertIsNone(find_resume(base,{'run_id':'run'},5,80))
+            (origin/'logs/optimizer-rank-0.jsonl').write_text(json.dumps(dict(kind='OPTIMIZER_WRITE',write_count=61))+'\n')
+            with self.assertRaisesRegex(ValueError,'later real Adam'):
+                find_resume(base,{'run_id':'run'},4,60)
+            pointer.write_text('{}')
+            with self.assertRaisesRegex(ValueError,'origin changed'):
+                find_resume(base,{'run_id':'run'},4,60)
+
     def test_published_probe_overrides_old_wrapper_raw_ema_adam(self):
         old = dict(completed_outer=10, actor_snapshot_id='run:10', reference={'path':'old'},
                    head_version='old', probe_pending=True, fit_groups=['G5'],fit_output_dir='/old/fit')

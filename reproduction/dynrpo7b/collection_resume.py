@@ -35,6 +35,18 @@ def producer(identity):
 
 def find_resume(base, run, outer, prior_writes):
     roots = [Path(base)]
+    # Actor state and unfinished collection can originate in different jobs:
+    # a restored actor may have collected its next batch before failing with
+    # zero new optimizer writes. Pin that terminal attempt's small pointer;
+    # retain the actual tensor parts and producer identity at their origin.
+    origin_path = Path(base)/'preparation/collection-resume-origin.json'
+    origin = json.loads(origin_path.read_text()) if origin_path.is_file() else None
+    if origin is not None and origin['outer'] == outer:
+        root = Path(origin['source_base'])
+        pointer = root/'preparation/dynrpo7b-collection'/('outer-%04d.json' % outer)
+        if hashlib.sha256(pointer.read_bytes()).hexdigest() != origin['pointer_sha256']:
+            raise ValueError('Pinned collection origin changed')
+        roots.append(root)
     binding = run.get('full_state_restore', {})
     if binding.get('source_base'):
         roots.append(Path(binding['source_base']))

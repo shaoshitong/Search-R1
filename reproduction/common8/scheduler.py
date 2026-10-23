@@ -185,7 +185,7 @@ class OuterSchedulerEvidence:
         if restore:
             from search_g1.full_state_restore import verified_runtime_prefix
             prefix=verified_runtime_prefix(self.base,run)
-            if restore.get('kind') in ('question_probe_pair','easy2560_native4'):
+            if restore.get('kind') in ('question_probe_pair','easy2560_native4','dynrpo7b_native4'):
                 _need(prefix['completed_outer']==restore['completed_outer'] and
                       prefix['writes']==restore['actual_optimizer_writes_per_rank'] and optimizer.state,
                       'Actual paired optimizer/readback is required')
@@ -205,7 +205,7 @@ class OuterSchedulerEvidence:
         self.recoverable=self.identity['policy_safety_mode']=='inline_first_five'
         self.actual_writes,self.last_attempt_index,self.used_attempt_ids=prefix['writes'],prefix['attempt_index'],set()
         if restore:
-            if restore.get('kind') in ('question_probe_pair','easy2560_native4'):
+            if restore.get('kind') in ('question_probe_pair','easy2560_native4','dynrpo7b_native4'):
                 self.used_attempt_ids=set(prefix['used_attempt_ids'])
             else:
                 origin=Path(restore['source_base'])

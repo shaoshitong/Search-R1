@@ -8,6 +8,37 @@ from search_g1.full_state_restore import optimizer_construction_config
 
 
 class DynRPOOptimizerConstructor(unittest.TestCase):
+    def test_native_scheduler_continues_real_saved_adam_and_attempt_history(self):
+        import torch
+        from reproduction.common8.scheduler import OuterSchedulerEvidence, fixed_outer_warmup_scheduler, expected_lr
+        with tempfile.TemporaryDirectory() as tmp:
+            base=Path(tmp);(base/'logs').mkdir()
+            run=dict(profile='common8',training_world_size=4,budget={'world_size':4},
+                     full_state_restore=dict(kind='dynrpo7b_native4',completed_outer=3,
+                                             actual_optimizer_writes_per_rank=60))
+            (base/'logs/run-manifest.json').write_text(json.dumps(run))
+            p=torch.nn.Parameter(torch.ones(1));opt=torch.optim.AdamW([p],lr=1e-6)
+            scheduler=fixed_outer_warmup_scheduler(opt,warmup_steps=57)
+            for outer in range(3):
+                for _ in range(20):p.grad=torch.ones_like(p);opt.step()
+                scheduler.step()
+            prefix=dict(completed_outer=3,writes=60,attempt_index=3,used_attempt_ids=['a'*32])
+            identity=dict(policy_safety_mode='inline_first_five',slurm_job_id='123')
+            with patch('reproduction.common8.scheduler._identity',return_value=identity), \
+                 patch('reproduction.common8.scheduler._start_ticks',return_value=123), \
+                 patch('search_g1.full_state_restore.verified_runtime_prefix',return_value=prefix):
+                evidence=OuterSchedulerEvidence(base,opt,scheduler,rank=0,world_size=4,job_id='123')
+                try:
+                    self.assertEqual(evidence.used_attempt_ids,{'a'*32})
+                    evidence.begin_outer(4,optimizer_writes=60,batch_gate_sha256='b'*64,
+                                         attempt_id='c'*32,attempt_index=4)
+                    for _ in range(20):p.grad=torch.ones_like(p);opt.step()
+                    evidence.complete_outer(optimizer_writes=80,opportunities_processed=20)
+                    self.assertEqual(int(opt.state[p]['step']),80)
+                    self.assertEqual(scheduler.last_epoch,4)
+                    self.assertEqual(opt.param_groups[0]['lr'],expected_lr(4))
+                finally:evidence.close()
+
     def test_actual_constructor_accepts_native_outer_and_preserves_resolved_count(self):
         with tempfile.TemporaryDirectory() as tmp:
             base=Path(tmp);(base/'logs').mkdir();receipt=base/'boundary.json';receipt.write_text('{}')
