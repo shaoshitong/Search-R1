@@ -1,0 +1,83 @@
+{
+  "schema": "job750491_node_memory_baseline_v1",
+  "job": "750491",
+  "observed_phase": "outer105 candidate generation; checkpoint105 peak not sampled",
+  "snapshots": [
+    {
+      "source_receipt": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/job750491-node-memory-io-1792770082096844000.json",
+      "source_receipt_sha256": "d3a54e73c05cd4c263eb2586b2d4e43474673503d0a765f5ec53f390665ab88f",
+      "epoch": 1792770082.3705106,
+      "hostname": "ACD1-14",
+      "job_memory_bytes": 340751196160,
+      "job_cgroup_hard_limit_bytes": 659706974208,
+      "memory_failcnt": 0,
+      "total_swap_bytes": 0,
+      "total_shmem_bytes": 228860039168,
+      "total_anon_rss_bytes": 88582791168,
+      "total_cache_bytes": 250538831872,
+      "total_major_faults": 100027,
+      "worker_vm_swap": {
+        "198924": "0 kB",
+        "200330": "0 kB",
+        "200331": "0 kB",
+        "200332": "0 kB"
+      },
+      "worker_births_all_match": true,
+      "node_meminfo": {
+        "MemTotal": "2111104980 kB",
+        "MemAvailable": "1679741052 kB",
+        "Cached": "750001540 kB",
+        "SwapTotal": "33554428 kB",
+        "SwapFree": "33554428 kB",
+        "Dirty": "1220 kB",
+        "Writeback": "0 kB"
+      },
+      "srun_returncode": 0,
+      "diagnostic_gpu_request": "none",
+      "diagnostic_cpu_count": 1
+    },
+    {
+      "source_receipt": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/job750491-node-memory-io-1792770188377732000.json",
+      "source_receipt_sha256": "83d53b985f8cd8f914c9d1f7c6aba3eb4e11aaa08c549ff4d9fd029cf9b63e41",
+      "epoch": 1792770188.6907487,
+      "hostname": "ACD1-14",
+      "job_memory_bytes": 340573782016,
+      "job_cgroup_hard_limit_bytes": 659706974208,
+      "memory_failcnt": 0,
+      "total_swap_bytes": 0,
+      "total_shmem_bytes": 228860039168,
+      "total_anon_rss_bytes": 88402661376,
+      "total_cache_bytes": 250539245568,
+      "total_major_faults": 100027,
+      "worker_vm_swap": {
+        "198924": "0 kB",
+        "200330": "0 kB",
+        "200331": "0 kB",
+        "200332": "0 kB"
+      },
+      "worker_births_all_match": true,
+      "node_meminfo": {
+        "MemTotal": "2111104980 kB",
+        "MemAvailable": "1678859652 kB",
+        "Cached": "750148452 kB",
+        "SwapTotal": "33554428 kB",
+        "SwapFree": "33554428 kB",
+        "Dirty": "1352 kB",
+        "Writeback": "0 kB"
+      },
+      "srun_returncode": 0,
+      "diagnostic_gpu_request": "none",
+      "diagnostic_cpu_count": 1
+    }
+  ],
+  "interval_seconds": 106.32023811340332,
+  "major_fault_delta": 0,
+  "scope": "Two actual one-CPU no-GPU read-only Slurm steps in existing allocation, /proc and cgroup metadata only. RSS mappings share pages, so do not sum worker RSS as unique physical memory. Current no-swap/no-limit-failure evidence does not rule out transient checkpoint-save memory pressure.",
+  "source_operator_sha256": "5dd5c9a76549762a1f2b07cd91244252bcab9d4ee2fdc6b2fab397d387aa168c",
+  "tensor_files_read": false,
+  "model_loaded": false,
+  "torch_imported": false,
+  "gpu_forward_triggered": false,
+  "training_modified": false,
+  "goal_complete": false
+}
