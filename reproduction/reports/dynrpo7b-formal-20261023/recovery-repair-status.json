@@ -1,5 +1,5 @@
 {
-  "checked_utc": "2026-10-23T11:50:03.650440+00:00",
+  "checked_utc": "2026-10-23T12:12:37.581686+00:00",
   "implementation_commit": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
   "branch": "codex/dynrpo7b-formal-20261023",
   "remote_git_SHA_verified": true,
@@ -121,10 +121,13 @@
         6,
         7,
         8,
-        9
+        9,
+        10
       ],
       "next_outer_to_confirm": 11,
-      "status": "RUNNING_OUTER10"
+      "status": "FIVE_COMPLETE_OUTERS_PASS_NEXT11_GENERATING",
+      "next_outer_started": 11,
+      "actual_next11_probe_scoring": "PENDING"
     },
     "scheduler_production_update": {
       "status": "PASS",
@@ -263,6 +266,104 @@
       "selected512_mixed": 512,
       "train_EM_rounded": 0.541,
       "next_outer_started": 10
+    },
+    "probe10_real_file_and_stale_wrapper": {
+      "status": "REAL_PROBE_FILE_AND_STALE_WRAPPER_RESOLUTION_PASS",
+      "outer": 10,
+      "checked_utc": "2026-10-23T12:12:37.581686+00:00",
+      "runtime_commit": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
+      "training_job": 751884,
+      "checkpoint_sha256": "a53346d923dc4be107436ef7f96cf94aeca17a9d9596e37ee8530b516da3078a",
+      "epochs": [
+        {
+          "epoch": 1,
+          "target4variance_MSE": 0.10547628703789087,
+          "actual_questions": 2560,
+          "actual_optimizer_updates": 20,
+          "online_updates": 20,
+          "warmup_updates": 11889,
+          "seconds": 14.06680336385034,
+          "dataset_sha256": "7f154d378a9575dd93abf2a11f40a865e189b45c50cbcf30879677ef2e40204c",
+          "completed_actor_outer": 10,
+          "rollout_actor_outer": 9,
+          "prefix": 80
+        },
+        {
+          "epoch": 2,
+          "target4variance_MSE": 0.09488266564731021,
+          "actual_questions": 2560,
+          "actual_optimizer_updates": 20,
+          "online_updates": 40,
+          "warmup_updates": 11889,
+          "seconds": 13.42559507722035,
+          "dataset_sha256": "7f154d378a9575dd93abf2a11f40a865e189b45c50cbcf30879677ef2e40204c",
+          "completed_actor_outer": 10,
+          "rollout_actor_outer": 9,
+          "prefix": 80
+        },
+        {
+          "epoch": 3,
+          "target4variance_MSE": 0.08238666852848837,
+          "actual_questions": 2560,
+          "actual_optimizer_updates": 20,
+          "online_updates": 60,
+          "warmup_updates": 11889,
+          "seconds": 13.24523060885258,
+          "dataset_sha256": "7f154d378a9575dd93abf2a11f40a865e189b45c50cbcf30879677ef2e40204c",
+          "completed_actor_outer": 10,
+          "rollout_actor_outer": 9,
+          "prefix": 80
+        }
+      ],
+      "actual_Adam_updates": 11949,
+      "warmup_updates": 11889,
+      "online_updates": 60,
+      "EMA_updates": 11949,
+      "Adam_parameter_step_values": [
+        11949
+      ],
+      "RNG_ranks": 4,
+      "raw_and_EMA_state_tensors": 45,
+      "old_wrapper_sha": "712360d21927d9378b339f0ed340aa157147911eeac26449c00504a0bc1456c6",
+      "resolved_new_sha": "a53346d923dc4be107436ef7f96cf94aeca17a9d9596e37ee8530b516da3078a",
+      "stale_wrapper_test": "CPU metadata resolution using actual saved pre-fit wrapper and epoch3 reference",
+      "GPU_reload_performed": false,
+      "production_failure_injected": false,
+      "boundary_publication": "SAME_EPOCH3_REFERENCE"
+    },
+    "CP10_file_acceptance": {
+      "status": "CP10_PRODUCER_METADATA_AND_SMALL_BOUNDARY_SHA_PASS",
+      "actor_producer_files": 16,
+      "fresh_small_files_SHA": 6,
+      "full_model_rehashed": false,
+      "full_Adam_reloaded": false,
+      "Adam_per_rank": [
+        200,
+        200,
+        200,
+        200
+      ],
+      "probe_epochs": 3,
+      "effective_from_outer": 11
+    },
+    "outer10": {
+      "status": "DYNRPO7B_ROLLING_READY",
+      "actual_Adam_per_rank": [
+        200,
+        200,
+        200,
+        200
+      ],
+      "weight_syncs_per_rank": 1,
+      "candidate_seconds": 593.9701149470638,
+      "other_step_seconds": 581.522,
+      "full2560_pool_mixed": 894,
+      "full_pool_mixed_fraction": 0.34921875,
+      "selected512_mixed": 512,
+      "train_EM_rounded": 0.536,
+      "next_outer_started": 11,
+      "probe_fit_epochs": 3,
+      "probe_fit_epoch_seconds_total": 40.73762904992327
     }
   },
   "unchanged": [
@@ -353,7 +454,7 @@
     "retriever_retained": 751011,
     "runtime_source": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
     "backup_source": "0f4c3cc092cf7400c929d29a2f076ec4331aa66c",
-    "new_job_state": "RUNNING_OUTER10",
+    "new_job_state": "RUNNING_OUTER11",
     "node": "ACD1-1"
   },
   "goal_tracking": {
@@ -361,9 +462,9 @@
     "total_outer_budget": 200,
     "observed_training_job_live": true,
     "goal_turn_classification": "progress",
-    "evidence": "Actual outer9 complete, Adam180 each, CP9 boundary file acceptance, outer10 candidates started",
+    "evidence": "Restored outers6-10 all complete, CP10 actor/probe boundary passed, actual probe raw/EMA/Adam/RNG CPU read and stale-wrapper resolution passed; outer11 generating",
     "remaining": [
-      "Follow outer10 three-epoch probe fit and confirm outer11 uses new state",
+      "Confirm actual outer11 scoring with new epoch3 probe reference",
       "Complete200outers and19periodic probe updates",
       "Verify prefix160 boundary100 and remaining fixed512 evaluations",
       "Final51713 evaluation and resource closeout"

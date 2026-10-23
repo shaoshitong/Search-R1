@@ -1,0 +1,64 @@
+{
+  "status": "REAL_PROBE_FILE_AND_STALE_WRAPPER_RESOLUTION_PASS",
+  "outer": 10,
+  "checked_utc": "2026-10-23T12:12:37.581686+00:00",
+  "runtime_commit": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
+  "training_job": 751884,
+  "checkpoint_sha256": "a53346d923dc4be107436ef7f96cf94aeca17a9d9596e37ee8530b516da3078a",
+  "epochs": [
+    {
+      "epoch": 1,
+      "target4variance_MSE": 0.10547628703789087,
+      "actual_questions": 2560,
+      "actual_optimizer_updates": 20,
+      "online_updates": 20,
+      "warmup_updates": 11889,
+      "seconds": 14.06680336385034,
+      "dataset_sha256": "7f154d378a9575dd93abf2a11f40a865e189b45c50cbcf30879677ef2e40204c",
+      "completed_actor_outer": 10,
+      "rollout_actor_outer": 9,
+      "prefix": 80
+    },
+    {
+      "epoch": 2,
+      "target4variance_MSE": 0.09488266564731021,
+      "actual_questions": 2560,
+      "actual_optimizer_updates": 20,
+      "online_updates": 40,
+      "warmup_updates": 11889,
+      "seconds": 13.42559507722035,
+      "dataset_sha256": "7f154d378a9575dd93abf2a11f40a865e189b45c50cbcf30879677ef2e40204c",
+      "completed_actor_outer": 10,
+      "rollout_actor_outer": 9,
+      "prefix": 80
+    },
+    {
+      "epoch": 3,
+      "target4variance_MSE": 0.08238666852848837,
+      "actual_questions": 2560,
+      "actual_optimizer_updates": 20,
+      "online_updates": 60,
+      "warmup_updates": 11889,
+      "seconds": 13.24523060885258,
+      "dataset_sha256": "7f154d378a9575dd93abf2a11f40a865e189b45c50cbcf30879677ef2e40204c",
+      "completed_actor_outer": 10,
+      "rollout_actor_outer": 9,
+      "prefix": 80
+    }
+  ],
+  "actual_Adam_updates": 11949,
+  "warmup_updates": 11889,
+  "online_updates": 60,
+  "EMA_updates": 11949,
+  "Adam_parameter_step_values": [
+    11949
+  ],
+  "RNG_ranks": 4,
+  "raw_and_EMA_state_tensors": 45,
+  "old_wrapper_sha": "712360d21927d9378b339f0ed340aa157147911eeac26449c00504a0bc1456c6",
+  "resolved_new_sha": "a53346d923dc4be107436ef7f96cf94aeca17a9d9596e37ee8530b516da3078a",
+  "stale_wrapper_test": "CPU metadata resolution using actual saved pre-fit wrapper and epoch3 reference",
+  "GPU_reload_performed": false,
+  "production_failure_injected": false,
+  "boundary_publication": "SAME_EPOCH3_REFERENCE"
+}
