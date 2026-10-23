@@ -1,0 +1,446 @@
+{
+  "both_actual_512_by_5_completed_and_exit_zero": true,
+  "both_all4_actual_fa3_prefill_and_decode": true,
+  "causal_full_outer_speedup_proven": false,
+  "comparison": {
+    "baseline_actual_work": {
+      "actual_generation_requests": 7904,
+      "actual_prompt_tokens": 6201697,
+      "actual_raw_generated_tokens": 1059962,
+      "actual_retrieval_calls": 5344
+    },
+    "baseline_result": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022/diagnostics/search-action-stop-r1-20261023/gpu-pair-r1/runs/baseline/candidate/result.json",
+    "baseline_selection": {
+      "candidate_categories": {
+        "all_correct": 238,
+        "all_wrong": 196,
+        "mixed": 78
+      },
+      "candidate_groups": 512,
+      "candidate_mixed_fraction": 0.15234375,
+      "selected_groups": null,
+      "selected_mixed_fraction": null,
+      "selection_performed": false,
+      "selection_status": "STARTUP_CHUNKS_ONLY_NOT_FULL_2560_SELECTION",
+      "training_em": 0.545703125
+    },
+    "causal_full_outer_speedup_proven": false,
+    "covers_entire_training_outer": false,
+    "early_stop_actual_work": {
+      "actual_generation_requests": 7927,
+      "actual_prompt_tokens": 6215671,
+      "actual_raw_generated_tokens": 338192,
+      "actual_retrieval_calls": 5367
+    },
+    "early_stop_over_baseline_work_ratios": {
+      "actual_generation_requests": 1.0029099190283401,
+      "actual_prompt_tokens": 1.0022532542302534,
+      "actual_raw_generated_tokens": 0.3190604946215053,
+      "actual_retrieval_calls": 1.004303892215569
+    },
+    "early_stop_result": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022/diagnostics/search-action-stop-r1-20261023/gpu-pair-r1/runs/early-stop/candidate/result.json",
+    "early_stop_selection": {
+      "candidate_categories": {
+        "all_correct": 239,
+        "all_wrong": 192,
+        "mixed": 81
+      },
+      "candidate_groups": 512,
+      "candidate_mixed_fraction": 0.158203125,
+      "selected_groups": null,
+      "selected_mixed_fraction": null,
+      "selection_performed": false,
+      "selection_status": "STARTUP_CHUNKS_ONLY_NOT_FULL_2560_SELECTION",
+      "training_em": 0.5546875
+    },
+    "same_input_fingerprints": true,
+    "scope": "One512-parent candidate chunk per arm. Search-only stopping changes raw completion lengths and asynchronous RNG consumption; interpret observed wall alongside actual work. No final-quality equivalence or full training-outer gain is proven.",
+    "timings": {
+      "generation_phase_wall_seconds": {
+        "baseline_seconds": 158.19211182184517,
+        "early_stop_seconds": 94.03038753382862,
+        "observed_baseline_over_early_stop_ratio": 1.6823509502705556,
+        "observed_wall_reduction_percent": 40.559370217065585
+      },
+      "pipeline_seconds_including_input_io_score_and_output_save": {
+        "baseline_seconds": 184.047857997939,
+        "early_stop_seconds": 120.84551922697574,
+        "observed_baseline_over_early_stop_ratio": 1.5230010940848762,
+        "observed_wall_reduction_percent": 34.34016535616025
+      }
+    }
+  },
+  "covers_entire_training_outer": false,
+  "epoch": 1792714095.1044674,
+  "evidence_filename": "search-action-stop-results-1792714095083345000.json",
+  "http_called": false,
+  "observation_errors": [],
+  "production_modified": false,
+  "read_only": true,
+  "root": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022/diagnostics/search-action-stop-r1-20261023/gpu-pair-r1",
+  "runner": {
+    "checked_unix": 1792714083.5686507,
+    "completed_children": 2,
+    "completed_questions_per_arm": 512,
+    "stage": "SEARCH_ACTION_STOP_STARTUP_PAIR_COMPLETED"
+  },
+  "runner_failure": null,
+  "schema": "search_action_stop_read_only_results_v1",
+  "slurm_job_id": "750449",
+  "status": "SEARCH_ACTION_STOP_STARTUP_PAIR_COMPLETED",
+  "subprocesses_created": false,
+  "tensor_files_read": false,
+  "timing_scope": "Producer candidate generation/pipeline/process timings retained unchanged. One512-question x5-trajectory chunk per arm; not a full training outer. Search-only stopping can change raw work and asynchronous RNG consumption; no final-quality equivalence or full-outer causal speedup is established.",
+  "variants": {
+    "baseline": {
+      "actual_512_by_5_complete": true,
+      "all4_actual_fa3_prefill_and_decode": true,
+      "candidate_completed_and_exit_zero": true,
+      "candidate_exit_code": 0,
+      "candidate_process_wall_seconds": 216.63306064717472,
+      "candidate_result_present": true,
+      "chunks": [
+        {
+          "actual_generation_requests": 7904,
+          "actual_prompt_tokens": 6201697,
+          "actual_raw_generated_tokens": 1059962,
+          "actual_retrieval_calls": 5344,
+          "chunk": 0,
+          "correct_trajectories": 1397,
+          "generation_seconds": 158.19211182184517,
+          "load_parent_seconds": 3.059517564252019,
+          "mixed_groups": 78,
+          "questions": 512,
+          "retained_model_tokens": 335198,
+          "strict_correctness_sha256": "81c00c4c13526e16d0a545184e7c8189e3a3c012ee397914c03200a244af1677",
+          "strict_score_seconds": 15.798309891484678,
+          "trajectories": 2560
+        }
+      ],
+      "completed_chunk_questions": 512,
+      "completed_chunk_raw_generated_tokens": 1059962,
+      "completed_chunk_retained_model_tokens": 335198,
+      "completed_chunk_trajectories": 2560,
+      "execution_error": {},
+      "failure": null,
+      "per_rank": {
+        "0": {
+          "actual_fa3_prefill_and_decode": true,
+          "actual_work_current_phase": {
+            "generation_requests": 1949,
+            "prompt_tokens": 1499500,
+            "raw_generated_tokens": 258343
+          },
+          "confirmed_search_stops": null,
+          "flash3_calls": {
+            "decode": 154812,
+            "paged_prefill": 0,
+            "prefill": 32900
+          },
+          "latest_completed_chunk": 0,
+          "rank": 0,
+          "search_action_stop": null
+        },
+        "1": {
+          "actual_fa3_prefill_and_decode": true,
+          "actual_work_current_phase": {
+            "generation_requests": 1987,
+            "prompt_tokens": 1580341,
+            "raw_generated_tokens": 268542
+          },
+          "confirmed_search_stops": null,
+          "flash3_calls": {
+            "decode": 146216,
+            "paged_prefill": 0,
+            "prefill": 42056
+          },
+          "latest_completed_chunk": 0,
+          "rank": 1,
+          "search_action_stop": null
+        },
+        "2": {
+          "actual_fa3_prefill_and_decode": true,
+          "actual_work_current_phase": {
+            "generation_requests": 1992,
+            "prompt_tokens": 1574109,
+            "raw_generated_tokens": 264645
+          },
+          "confirmed_search_stops": null,
+          "flash3_calls": {
+            "decode": 149296,
+            "paged_prefill": 0,
+            "prefill": 34020
+          },
+          "latest_completed_chunk": 0,
+          "rank": 2,
+          "search_action_stop": null
+        },
+        "3": {
+          "actual_fa3_prefill_and_decode": true,
+          "actual_work_current_phase": {
+            "generation_requests": 1976,
+            "prompt_tokens": 1547747,
+            "raw_generated_tokens": 268432
+          },
+          "confirmed_search_stops": null,
+          "flash3_calls": {
+            "decode": 139440,
+            "paged_prefill": 0,
+            "prefill": 39312
+          },
+          "latest_completed_chunk": 0,
+          "rank": 3,
+          "search_action_stop": null
+        }
+      },
+      "progress": {
+        "actual_generation_requests": 7904,
+        "actual_retrieval_calls": 5344,
+        "checked_unix": 1792713928.1475708,
+        "completed_chunks": 1,
+        "completed_questions": 512,
+        "generation_phase_wall_seconds": 158.19211182184517,
+        "stage": "REAL_CANDIDATE_PIPELINE_COMPLETED"
+      },
+      "rank_counter_scope": "Latest completed chunk per rank; FA3/stop counters are cumulative engine counters and are not summed across chunks. actual_work is that phase only.",
+      "result": {
+        "actual_fa3_prefill_and_decode": true,
+        "actual_generation_requests": 7904,
+        "actual_prompt_tokens": 6201697,
+        "actual_raw_generated_tokens": 1059962,
+        "actual_retrieval_calls": 5344,
+        "actual_world_size": 4,
+        "completed_chunks": 1,
+        "completed_questions": 512,
+        "completed_trajectories": 2560,
+        "generation_phase_wall_seconds": 158.19211182184517,
+        "input_fingerprints_sha256": "b89824e7e032010732f4875f97d5aba59f2b11823c45bb42bcb2b3068145aab6",
+        "pipeline_seconds_including_input_io_score_and_output_save": 184.047857997939,
+        "selection": {
+          "candidate_categories": {
+            "all_correct": 238,
+            "all_wrong": 196,
+            "mixed": 78
+          },
+          "candidate_groups": 512,
+          "candidate_mixed_fraction": 0.15234375,
+          "selected_groups": null,
+          "selected_mixed_fraction": null,
+          "selection_performed": false,
+          "selection_status": "STARTUP_CHUNKS_ONLY_NOT_FULL_2560_SELECTION",
+          "training_em": 0.545703125
+        },
+        "status": "REAL_CANDIDATE_PIPELINE_COMPLETED"
+      }
+    },
+    "early-stop": {
+      "actual_512_by_5_complete": true,
+      "all4_actual_fa3_prefill_and_decode": true,
+      "candidate_completed_and_exit_zero": true,
+      "candidate_exit_code": 0,
+      "candidate_process_wall_seconds": 151.63382026925683,
+      "candidate_result_present": true,
+      "chunks": [
+        {
+          "actual_generation_requests": 7927,
+          "actual_prompt_tokens": 6215671,
+          "actual_raw_generated_tokens": 338192,
+          "actual_retrieval_calls": 5367,
+          "chunk": 0,
+          "correct_trajectories": 1420,
+          "generation_seconds": 94.03038753382862,
+          "load_parent_seconds": 3.403876919299364,
+          "mixed_groups": 81,
+          "questions": 512,
+          "retained_model_tokens": 335494,
+          "strict_correctness_sha256": "dd56e1eff2a53e84a4383674190f1eaf2b4a21a7e766367652faa836e8fabbe5",
+          "strict_score_seconds": 16.58456208370626,
+          "trajectories": 2560
+        }
+      ],
+      "completed_chunk_questions": 512,
+      "completed_chunk_raw_generated_tokens": 338192,
+      "completed_chunk_retained_model_tokens": 335494,
+      "completed_chunk_trajectories": 2560,
+      "execution_error": {},
+      "failure": null,
+      "per_rank": {
+        "0": {
+          "actual_fa3_prefill_and_decode": true,
+          "actual_work_current_phase": {
+            "generation_requests": 1969,
+            "prompt_tokens": 1534369,
+            "raw_generated_tokens": 83566
+          },
+          "confirmed_search_stops": 1329,
+          "flash3_calls": {
+            "decode": 44100,
+            "paged_prefill": 0,
+            "prefill": 25116
+          },
+          "latest_completed_chunk": 0,
+          "rank": 0,
+          "search_action_stop": {
+            "ambiguous_prefixes": 0,
+            "answer_stop_enabled": false,
+            "confirmation_rejections": 0,
+            "confirmed_search_stops": 1329,
+            "enabled": true,
+            "filter_triggers": 1329,
+            "live_sequence_filters": 0,
+            "native_finished_first": 640,
+            "native_stop_checker_runs_first": true,
+            "piece_cache_entries": 5324,
+            "prefix_confirmations": 1329,
+            "raw_tokens_or_logprobs_mutated": false,
+            "search_only": true,
+            "single_token_decodes": 5324,
+            "stop_reason": "search_action_boundary:</search>",
+            "token_checks": 82926
+          }
+        },
+        "1": {
+          "actual_fa3_prefill_and_decode": true,
+          "actual_work_current_phase": {
+            "generation_requests": 1982,
+            "prompt_tokens": 1551860,
+            "raw_generated_tokens": 84939
+          },
+          "confirmed_search_stops": 1342,
+          "flash3_calls": {
+            "decode": 44324,
+            "paged_prefill": 0,
+            "prefill": 26208
+          },
+          "latest_completed_chunk": 0,
+          "rank": 1,
+          "search_action_stop": {
+            "ambiguous_prefixes": 0,
+            "answer_stop_enabled": false,
+            "confirmation_rejections": 0,
+            "confirmed_search_stops": 1342,
+            "enabled": true,
+            "filter_triggers": 1342,
+            "live_sequence_filters": 0,
+            "native_finished_first": 640,
+            "native_stop_checker_runs_first": true,
+            "piece_cache_entries": 5345,
+            "prefix_confirmations": 1342,
+            "raw_tokens_or_logprobs_mutated": false,
+            "search_only": true,
+            "single_token_decodes": 5345,
+            "stop_reason": "search_action_boundary:</search>",
+            "token_checks": 84299
+          }
+        },
+        "2": {
+          "actual_fa3_prefill_and_decode": true,
+          "actual_work_current_phase": {
+            "generation_requests": 2005,
+            "prompt_tokens": 1596360,
+            "raw_generated_tokens": 84515
+          },
+          "confirmed_search_stops": 1365,
+          "flash3_calls": {
+            "decode": 46060,
+            "paged_prefill": 0,
+            "prefill": 25732
+          },
+          "latest_completed_chunk": 0,
+          "rank": 2,
+          "search_action_stop": {
+            "ambiguous_prefixes": 0,
+            "answer_stop_enabled": false,
+            "confirmation_rejections": 0,
+            "confirmed_search_stops": 1365,
+            "enabled": true,
+            "filter_triggers": 1365,
+            "live_sequence_filters": 0,
+            "native_finished_first": 640,
+            "native_stop_checker_runs_first": true,
+            "piece_cache_entries": 5486,
+            "prefix_confirmations": 1365,
+            "raw_tokens_or_logprobs_mutated": false,
+            "search_only": true,
+            "single_token_decodes": 5486,
+            "stop_reason": "search_action_boundary:</search>",
+            "token_checks": 83875
+          }
+        },
+        "3": {
+          "actual_fa3_prefill_and_decode": true,
+          "actual_work_current_phase": {
+            "generation_requests": 1971,
+            "prompt_tokens": 1533082,
+            "raw_generated_tokens": 85172
+          },
+          "confirmed_search_stops": 1332,
+          "flash3_calls": {
+            "decode": 45724,
+            "paged_prefill": 0,
+            "prefill": 25648
+          },
+          "latest_completed_chunk": 0,
+          "rank": 3,
+          "search_action_stop": {
+            "ambiguous_prefixes": 0,
+            "answer_stop_enabled": false,
+            "confirmation_rejections": 0,
+            "confirmed_search_stops": 1332,
+            "enabled": true,
+            "filter_triggers": 1332,
+            "live_sequence_filters": 0,
+            "native_finished_first": 639,
+            "native_stop_checker_runs_first": true,
+            "piece_cache_entries": 5335,
+            "prefix_confirmations": 1332,
+            "raw_tokens_or_logprobs_mutated": false,
+            "search_only": true,
+            "single_token_decodes": 5335,
+            "stop_reason": "search_action_boundary:</search>",
+            "token_checks": 84533
+          }
+        }
+      },
+      "progress": {
+        "actual_generation_requests": 7927,
+        "actual_retrieval_calls": 5367,
+        "checked_unix": 1792714081.0595405,
+        "completed_chunks": 1,
+        "completed_questions": 512,
+        "generation_phase_wall_seconds": 94.03038753382862,
+        "stage": "REAL_CANDIDATE_PIPELINE_COMPLETED"
+      },
+      "rank_counter_scope": "Latest completed chunk per rank; FA3/stop counters are cumulative engine counters and are not summed across chunks. actual_work is that phase only.",
+      "result": {
+        "actual_fa3_prefill_and_decode": true,
+        "actual_generation_requests": 7927,
+        "actual_prompt_tokens": 6215671,
+        "actual_raw_generated_tokens": 338192,
+        "actual_retrieval_calls": 5367,
+        "actual_world_size": 4,
+        "completed_chunks": 1,
+        "completed_questions": 512,
+        "completed_trajectories": 2560,
+        "generation_phase_wall_seconds": 94.03038753382862,
+        "input_fingerprints_sha256": "b89824e7e032010732f4875f97d5aba59f2b11823c45bb42bcb2b3068145aab6",
+        "pipeline_seconds_including_input_io_score_and_output_save": 120.84551922697574,
+        "selection": {
+          "candidate_categories": {
+            "all_correct": 239,
+            "all_wrong": 192,
+            "mixed": 81
+          },
+          "candidate_groups": 512,
+          "candidate_mixed_fraction": 0.158203125,
+          "selected_groups": null,
+          "selected_mixed_fraction": null,
+          "selection_performed": false,
+          "selection_status": "STARTUP_CHUNKS_ONLY_NOT_FULL_2560_SELECTION",
+          "training_em": 0.5546875
+        },
+        "status": "REAL_CANDIDATE_PIPELINE_COMPLETED"
+      }
+    }
+  }
+}

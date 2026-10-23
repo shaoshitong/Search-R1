@@ -2,7 +2,7 @@
 
 **Current evidence, 2026-10-23:** production750029 completed and sealed
 outer68; all four ranks reached1360 Adam writes/scheduler68. Outer69 has saved
-512 actual candidate questions. CP68 contains23 checkpoint plus7 boundary files,
+2560 actual candidate questions. CP68 contains23 checkpoint plus7 boundary files,
 total91,406,225,038 bytes, manifest SHA
 `fa693236b17c05d7ccaffdcf69bcd5c8b2e1b684c3f43b57f5c56bafce494cec`.
 The five-outer post-restore follow-up61–65 is accepted; overall200 and final
@@ -19,11 +19,15 @@ reduced generation179.024s to165.799s (7.39%). Production has not been cut over
 on the basis of this limited batching gain. See
 [complete full-pool result](evidence/candidate-retrieval-full2560-final-summary.json).
 
-Private16ms service750432 remains READY; startup-only4GPU pair750433 is the
-existing next scheduling attempt. Search-only early-stop pair750449 has been
-submitted separately using the same asynchronous2ms retrieval route on both
-sides. Its real saved-token replay passed, while actual GPU performance remains
-pending. Both probes are independent of training750029 and retriever745198.
+Private16ms pair750433 completed0:0:512-parent generation174.703→159.506s
+(8.70% less). Search-only stop pair750449 also completed0:0 on fourH100:
+generation158.192→94.030s (40.56% less), pipeline184.048→120.846s
+(34.34% less), raw tokens1,059,962→338,192. Both arms used the same async2ms
+retrieval mode. All4 ranks executed FA3 and the enabled arm recorded5368 actual
+search stops. These are candidate-chunk results, not entire training-outer or
+quality acceptance. Formal750029 remains unchanged while an authorized
+boundary continuation is prepared. See
+[actual four-GPU search-stop result](evidence/search-action-stop-live-native4-summary.json).
 
 Both probes use hardlinked frozen HF policy66 and fixed parent chunks. They
 regenerate trajectories; saved parents came from outer66 under pre-update
@@ -42,7 +46,7 @@ The conservative512-query probe750363 onACD1-4 also completed0:0: with E5
 unchanged singleton calls, FAISS batch16 reduced the component median from
 21.363 to4.650 seconds (4.59x); all1536 top3 slots match, max score error2.38e-7.
 Neither called or modified production retriever745198 or training750029.
-Full candidate-phase timing and production integration remain pending. See
+Full candidate-phase timing is now complete; production integration remains pending. See
 [conservative actual512-query result](evidence/retrieval-batching-r2-final-summary.json),
 [natural counter windows](evidence/leanmetrics-natural-retrieval-window-summary.json)
 and [complete phase breakdown](evidence/leanmetrics-phase-breakdown61-65.json).
