@@ -1,5 +1,5 @@
 {
-  "checked_utc": "2026-10-23T12:21:34.322930+00:00",
+  "checked_utc": "2026-10-23T12:29:50.025415+00:00",
   "implementation_commit": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
   "branch": "codex/dynrpo7b-formal-20261023",
   "remote_git_SHA_verified": true,
@@ -387,12 +387,44 @@
       "observer_correction": "Generation snapshot IDs encode target outer and attempt; they are distinct from actor checkpoint IDs."
     },
     "outer11_collection": {
-      "actor_not_complete": true,
+      "actor_not_complete": false,
       "top1024_mixed": 767,
       "top1024_mixed_fraction": 0.7490234375,
       "selected512_mixed": 512,
       "probe_version": "seed1-E9-raw-online-0010",
       "candidate_seconds": 669.6515000942163
+    },
+    "CP11_file_acceptance": {
+      "status": "CP11_PRESERVES_NEW_PROBE_AND_ACTOR_STATE",
+      "actor_producer_files": 16,
+      "fresh_small_files_SHA": 6,
+      "full_model_rehashed": false,
+      "full_Adam_reloaded": false,
+      "Adam_per_rank": [
+        220,
+        220,
+        220,
+        220
+      ],
+      "probe_completed_outer": 10,
+      "probe_online_updates": 60,
+      "probe_sha256": "a53346d923dc4be107436ef7f96cf94aeca17a9d9596e37ee8530b516da3078a"
+    },
+    "outer11": {
+      "status": "DYNRPO7B_ROLLING_READY",
+      "actual_Adam_per_rank": [
+        220,
+        220,
+        220,
+        220
+      ],
+      "weight_syncs_per_rank": 1.0,
+      "candidate_seconds": 669.652,
+      "other_step_seconds": 536.83,
+      "top1024_mixed": 767,
+      "selected512_mixed": 512,
+      "train_EM_rounded": 0.539,
+      "next_outer_started": 12
     }
   },
   "unchanged": [
@@ -483,7 +515,7 @@
     "retriever_retained": 751011,
     "runtime_source": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
     "backup_source": "0f4c3cc092cf7400c929d29a2f076ec4331aa66c",
-    "new_job_state": "RUNNING_OUTER11",
+    "new_job_state": "RUNNING_OUTER12",
     "node": "ACD1-1"
   },
   "goal_tracking": {
@@ -491,7 +523,7 @@
     "total_outer_budget": 200,
     "observed_training_job_live": true,
     "goal_turn_classification": "progress",
-    "evidence": "CP5 resume followup6-10 passed; actual3epoch probe10 and real old-wrapper resolution passed; actual next11 scoring uses new probe; training remains active toward200",
+    "evidence": "First actor outer after probe10 completed normally; CP11 retains exact new probe SHA/online60 and all4actor Adam220; next12 started",
     "remaining": [
       "Continue through200outers including probe updates20..190 and prefix160 from101",
       "Verify remaining complete checkpoints and fixed512 evaluations50/100/150/200",

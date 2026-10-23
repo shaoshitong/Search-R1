@@ -1,13 +1,13 @@
 {
-  "time": 1792758094.32293,
+  "time": 1792758590.0254154,
   "training_job": 751884,
   "retrieval_job": 751011,
   "queue_query_returncode": 0,
-  "queue": "751011 RUNNING 6:28:35 ACD1-51\n751884 RUNNING 1:58:43 ACD1-1",
+  "queue": "751011 RUNNING 6:36:51 ACD1-51\n751884 RUNNING 2:06:59 ACD1-1",
   "pipeline": "DYNRPO7B_GRPO_1_TO_200",
   "trainer": {
-    "bytes": 437126,
-    "mtime": 1792757983.351287,
+    "bytes": 507950,
+    "mtime": 1792758512.82118,
     "error": false
   },
   "recent_collections": [
@@ -75,18 +75,6 @@
   "recent_steps": [
     {
       "infra/rollout/weight_syncs_per_rank": 1.0,
-      "train/perf/em": 0.54,
-      "actor/completed_outer": 7.0,
-      "timing_s/candidate_fill": 659.083,
-      "timing_s/adv": 135.144,
-      "timing_s/update_actor": 94.999,
-      "timing_s/question_probe_update": 0.002,
-      "timing_s/save_checkpoint": 200.669,
-      "timing_s/step": 535.789,
-      "collection_outer": 7
-    },
-    {
-      "infra/rollout/weight_syncs_per_rank": 1.0,
       "train/perf/em": 0.531,
       "actor/completed_outer": 8.0,
       "timing_s/candidate_fill": 646.151,
@@ -120,6 +108,18 @@
       "timing_s/save_checkpoint": 229.962,
       "timing_s/step": 581.522,
       "collection_outer": 10
+    },
+    {
+      "infra/rollout/weight_syncs_per_rank": 1.0,
+      "train/perf/em": 0.539,
+      "actor/completed_outer": 11.0,
+      "timing_s/candidate_fill": 669.652,
+      "timing_s/adv": 144.619,
+      "timing_s/update_actor": 99.75,
+      "timing_s/question_probe_update": 0.001,
+      "timing_s/save_checkpoint": 193.382,
+      "timing_s/step": 536.83,
+      "collection_outer": 11
     }
   ],
   "launcher": {
@@ -128,25 +128,25 @@
     "error": false
   },
   "writes": [
-    200,
-    200,
-    200,
-    200
+    220,
+    220,
+    220,
+    220
   ],
   "checkpoint": {
-    "completed_outer": 10,
+    "completed_outer": 11,
     "status": "DYNRPO7B_ROLLING_READY",
     "source_commit": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
     "rank_saved_writes": [
-      200,
-      200,
-      200,
-      200
+      220,
+      220,
+      220,
+      220
     ],
     "probe": {
       "head_version": "seed1-E9-raw-online-0010",
       "head_sha256": "a53346d923dc4be107436ef7f96cf94aeca17a9d9596e37ee8530b516da3078a",
-      "fit_completed_epochs": 3,
+      "fit_completed_epochs": 0,
       "reference": {
         "path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023-recoveryfix-r6/artifacts/question-probe/update-0010/probe-epoch-03.pt",
         "sha256": "a53346d923dc4be107436ef7f96cf94aeca17a9d9596e37ee8530b516da3078a",
@@ -159,18 +159,18 @@
     "post_callback_rng_captured": true
   },
   "phase": {
-    "completed_actor_outer": 10,
-    "phase": "probe_published",
+    "completed_actor_outer": 11,
+    "phase": "outer_complete",
     "probe_pending": false,
-    "probe_completed_epoch": 3,
-    "probe_effective_from_outer": 11,
+    "probe_completed_epoch": 0,
+    "probe_effective_from_outer": null,
     "grounding_pending": false,
-    "next_outer": 11
+    "next_outer": 12
   },
   "latest_collection_journal": {
-    "name": "outer-0011.json",
-    "stage": "collected",
-    "parts": 3
+    "name": "outer-0012.json",
+    "stage": "candidates",
+    "parts": 1
   },
   "probe_update": {
     "directory": "update-0010",
