@@ -22,12 +22,12 @@ def lean_run(run):
     """Authenticate the manifest-only scope for scheduler and audit readers."""
     if not lean_actor(run):
         return False
-    from reproduction.common8.precision_contract import easy2560_native4
+    from reproduction.common8.precision_contract import native4_7b
     if not (run.get('performance_profile') == LEAN_PROFILE
-            and easy2560_native4(run)
+            and native4_7b(run)
             and run.get('policy_calibration_role', 'production') == 'production'
             and run.get('extra_policy_monitor_forwards') is False):
-        raise ValueError('lean_v1 requires explicit native4 Easy production and no extra monitor forwards')
+        raise ValueError('lean_v1 requires explicit native4 7B production and no extra monitor forwards')
     return True
 
 

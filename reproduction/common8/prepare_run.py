@@ -96,7 +96,7 @@ def verify_model(model, official_path):
     return hashes
 
 
-def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,rollout_memory_utilization=0.1,local_retrieval_assets=None,restore_receipt=None,execution_site=None,actor_micro_batch_per_rank=None,actor_logical_micro_batch_per_rank=None,easy2560_selection=False,easy2560_settings=None):
+def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,rollout_memory_utilization=0.1,local_retrieval_assets=None,restore_receipt=None,execution_site=None,actor_micro_batch_per_rank=None,actor_logical_micro_batch_per_rank=None,easy2560_selection=False,easy2560_settings=None,dynrpo7b_settings=None):
     base,model,official_path=map(Path,(base,model,official_path))
     assert execution_site in (None,'hpc3','h1008')
     target=base/'logs/run-manifest.json'
@@ -123,7 +123,7 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
     from reproduction.easy2560_joint4.model7b import FORMAT as SEVEN_FORMAT, REPO as SEVEN_REPO, REVISION as SEVEN_REVISION
     model_revision = REVISION
     if official.get('format') == SEVEN_FORMAT:
-        assert easy2560_selection and execution_site == 'hpc3'
+        assert (easy2560_selection or dynrpo7b_settings is not None) and execution_site == 'hpc3'
         model_revision = SEVEN_REVISION
         budget.update(model_id=SEVEN_REPO, model_revision=model_revision)
     assert budget['common_manifest_sha256']==data_proof['manifest_sha256']
@@ -156,6 +156,9 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
             result.update(easy2560_settings)
     else:
         assert easy2560_settings is None
+    if dynrpo7b_settings is not None:
+        assert not easy2560_selection and execution_site=='hpc3'
+        result.update(dynrpo7b_settings)
     if execution_site=='h1008':
         from reproduction.common8.precision_contract import NATIVE_BF16_PROFILE
         assert os.environ.get('SEARCH_G1_EXECUTION_PROFILE')==NATIVE_BF16_PROFILE, 'H1008 must bind its BF16/FP32 execution recipe explicitly'
@@ -172,7 +175,7 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
         result.update(precision_profile=profile, behavior_probability_policy=SAMPLING_JOURNAL_POLICY,
             execution_backend='slurm', training_world_size=size, actor_micro_batch_per_rank=4 if execution_site=='h1008' else 2 if size==8 else 4,
             vllm_gpu_memory_utilization=rollout_memory_utilization, followup_checkpoint_required=True)
-        if easy2560_selection:
+        if easy2560_selection or dynrpo7b_settings is not None:
             assert size==4
             result['actor_micro_batch_per_rank']=actor_micro_batch_per_rank
         result['budget'].update(world_size=size,compute_dtype='bfloat16', rollout_dtype='bfloat16', allow_tf32=None)

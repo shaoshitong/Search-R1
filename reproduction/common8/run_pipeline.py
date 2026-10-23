@@ -72,6 +72,11 @@ def assert_initial_state(run):
     assert run['profile']=='common8' and run['completed_updates']==0
     assert run.get('restore_only_role') is None, 'Restore-only execution uses its independent entry'
     restore=run.get('full_state_restore') or {}
+    if restore.get('kind')=='dynrpo7b_native4':
+        from reproduction.dynrpo7b.infra_profile import native4
+        assert native4(run) and 1 <= restore['completed_outer'] <= 200
+        assert run['initial_probe_version']==restore['reward_probe_version']
+        return
     if restore.get('kind')=='easy2560_native4':
         from reproduction.common8.precision_contract import easy2560_native4
         assert easy2560_native4(run) and type(restore['completed_outer']) is int and 1 <= restore['completed_outer'] < 200
@@ -311,6 +316,12 @@ class Pipeline:
         self.wait('final-acceptance',v)
         return 'FINISHED_FULL200_FINAL51713_AND_OWNED_CLEANUP'
     def initial_probe_calibration(self):
+        if self.run.get('dynrpo7b_selection') and not self.run.get('full_state_restore'):
+            from reproduction.dynrpo7b.reward_adapter import adopt
+            receipt=adopt(self.base,self.run)
+            self.stage('DYNRPO7B_REUSED_OFFICIAL_ROUND0_GROUNDING_PROBE',
+                       version=receipt['version'],new_calibration_generated=False)
+            return
         if (self.run.get('easy2560_selection') and not self.run.get('full_state_restore')
                 and self.run.get('initial_reward_probe_source_base')):
             from reproduction.easy2560_joint4.adopt_reward_zero import adopt
@@ -319,6 +330,11 @@ class Pipeline:
                        version=receipt['version'],new_calibration_generated=False)
             return
         if self.run.get('full_state_restore'):
+            if self.run['full_state_restore'].get('kind')=='dynrpo7b_native4':
+                from reproduction.dynrpo7b.reward_adapter import install_restored
+                receipt=install_restored(self.base,self.run)
+                self.stage('DYNRPO7B_RESTORED_GROUNDING_PROBE',version=receipt['version'])
+                return
             if self.run['full_state_restore'].get('kind')=='easy2560_native4':
                 from search_g1.easy2560_restore import install_restored_reward_probe
                 receipt=install_restored_reward_probe(self.base,self.run)
@@ -378,6 +394,8 @@ class Pipeline:
         publish(self.base/'logs/eight-rank-admission.json',dict(accepted=True,run_id=self.run['run_id'],slurm_job_id=os.environ['SLURM_JOB_ID'],mechanics_sha256={str(r):digest(root/f'rank-{r}.json') for r in range(self.world)},model_smoke_sha256=digest(smoke),actual_grpo_updates=0,training_world_size=self.world))
     def execute(self, export_port):
         sampler=None;success=False;finished_stage=None
+        from search_g1.service_ports import ports
+        bound_ports=ports(self.run)
         try:
             supported_execution_role(self.run,self.base)
             sampler=threading.Thread(target=self.sample,daemon=True);sampler.start()
@@ -407,7 +425,7 @@ class Pipeline:
                 self.stage('STARTING_ORIGINAL_FLAT_FAISS')
                 libs=list((self.base/'env/lib/python3.10/site-packages/nvidia').glob('*/lib'))+[self.base/'env/lib/python3.10/site-packages/torch/lib']
                 p=self.start('retriever',[self.python,'-m','reproduction.common8.retriever'],self.retriever_gpus,{'PYTHONPATH':str(self.base/'retriever-gpu-lib')+':'+str(self.repo),'LD_LIBRARY_PATH':':'.join(map(str,libs))})
-            health=self.endpoint('retriever',p,'18010/health')
+            health=self.endpoint('retriever',p,str(bound_ports['retriever'])+'/health')
             assert health['ok'] is True and health['run_id']==self.run['run_id'] and health['shard_count']==len(self.retriever_gpus)
             assert health['slurm_job_id']==os.environ['SLURM_JOB_ID']
             if self.run.get('external_retriever') is not None:
@@ -422,11 +440,11 @@ class Pipeline:
             self.run['probe_logical_ordinal']=self.world-1
             publish(self.base/'logs/run-manifest.json',self.run)
             self.initial_probe_calibration()
-            e=self.start('probe-server',[self.python,'probe_server.py','--manifest',str(self.base/'artifacts/live/manifest.json'),'--port','18012'],self.probe_gpus)
-            health=self.endpoint('probe-server',e,'18012/health');assert health['ok'] is True
-            released=self.endpoint('probe-server',e,'18012/suspend','post',{'version':health['version']})
+            e=self.start('probe-server',[self.python,'probe_server.py','--manifest',str(self.base/'artifacts/live/manifest.json'),'--port',str(bound_ports['probe'])],self.probe_gpus)
+            health=self.endpoint('probe-server',e,str(bound_ports['probe'])+'/health');assert health['ok'] is True
+            released=self.endpoint('probe-server',e,str(bound_ports['probe'])+'/suspend','post',{'version':health['version']})
             assert released['suspended'] is True and released['allocated_bytes_after_release']<256*1024*1024
-            resumed=self.endpoint('probe-server',e,'18012/resume','post',{'version':health['version']})
+            resumed=self.endpoint('probe-server',e,str(bound_ports['probe'])+'/resume','post',{'version':health['version']})
             assert resumed['resumed'] is True and resumed['version']==health['version']
             publish(self.base/'logs/evaluator-release-admission.json',dict(run_id=self.run['run_id'],released=released,resumed=resumed))
             if restoring or guarded_fresh:

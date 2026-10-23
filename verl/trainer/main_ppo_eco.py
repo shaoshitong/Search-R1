@@ -694,7 +694,12 @@ def main(config):
         from reproduction.common8.native_ray import verify as verify_native_ray
         ray_tmp_dir = verify_native_ray(run, ray_tmp_dir)
     ray_env_vars = {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}
-    if run is not None and run.get('easy2560_selection'):
+    if run is not None and run.get('dynrpo7b_selection'):
+        from reproduction.dynrpo7b.infra_profile import configure_ray
+        local_resources=configure_ray(run)
+        if os.environ.get('PYTORCH_CUDA_ALLOC_CONF'):
+            ray_env_vars['PYTORCH_CUDA_ALLOC_CONF']=os.environ['PYTORCH_CUDA_ALLOC_CONF']
+    elif run is not None and run.get('easy2560_selection'):
         from reproduction.easy2560_joint4.native_ray_resources import configure, allocator_env_vars
         local_resources=configure(Path(os.environ['SEARCH_G1_BASE']),run,role='train',phase='ray')
         ray_env_vars.update(allocator_env_vars())

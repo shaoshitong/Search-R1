@@ -17,13 +17,16 @@ def selected(run):
         and not run.get('full_state_restore'))
     easy = (easy2560_native4(run) and run.get('startup_admission_mode') == 'actual_first_five'
         and not run.get('full_state_restore'))
-    return original or prefix20 or easy
+    from reproduction.dynrpo7b.infra_profile import native4
+    dynrpo = (native4(run) and run.get('startup_admission_mode') == 'actual_first_five'
+        and not run.get('full_state_restore'))
+    return original or prefix20 or easy or dynrpo
 
 
 def _native_four(run):
-    from reproduction.common8.precision_contract import easy2560_native4
+    from reproduction.common8.precision_contract import native4_7b
     return (run.get('question_probe', {}).get('probe_architecture') == 'qwen2_prefix20_trajectory_em_v1'
-        or easy2560_native4(run))
+        or native4_7b(run))
 
 
 def verify_probability(base,run,probability,receipts):

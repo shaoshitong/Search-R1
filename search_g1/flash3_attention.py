@@ -234,8 +234,8 @@ def install_flash3_actor(model,run=None,*,backend=None,require_cuda=True,compact
     """Called only for the 7B native4 actor, before FSDP wraps that instance."""
     if run is None:run=json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
     from search_g1.easy7b_infra import flags
-    from reproduction.common8.precision_contract import easy2560_native4
-    _need(flags(run).get('flash_attention_3_actor') is True and easy2560_native4(run),'EXPLICIT_NATIVE4_7B_ACTOR_FLAG_REQUIRED')
+    from reproduction.common8.precision_contract import native4_7b
+    _need(flags(run).get('flash_attention_3_actor') is True and native4_7b(run),'EXPLICIT_NATIVE4_7B_ACTOR_FLAG_REQUIRED')
     config=model.config
     _need(config.model_type=='qwen2' and config.hidden_size==3584 and config.num_hidden_layers==28 and
           config._attn_implementation=='flash_attention_2','PINNED_QWEN7B_HF_FA2_SHELL_REQUIRED')

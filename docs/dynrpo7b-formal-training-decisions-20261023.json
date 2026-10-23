@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "status": "USER_CONFIRMED_PLANNING_CONFIGURATION_NOT_EXECUTED",
+  "confirmed_date": "2026-10-23",
+  "student_total_completed_outer": 200,
+  "selection_prefix_schedule": [
+    {"first_outer": 1, "last_outer": 100, "policy_prefix_tokens": 80},
+    {"first_outer": 101, "last_outer": 200, "policy_prefix_tokens": 160}
+  ],
+  "probe": {
+    "initial_checkpoint": "seed1_epoch09_raw",
+    "initial_checkpoint_sha256": "5f90fb17bee993353f47a7d687bdf2ea235dcd3d2eba287465567f4c286b13d7",
+    "feature_encoder": "official_frozen_qwen25_7b_layers_0_through_14",
+    "loss": "mean_squared_error_of_sigmoid_group_logit_and_4_population_em_variance",
+    "update_completed_outer": [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190],
+    "data": {
+      "source": "reuse_all_update_outer_preselection_completed_G5",
+      "questions": 2560,
+      "trajectories_per_question": 5,
+      "rollout_actor_completed_outer_offset": -1,
+      "new_full_rollouts_for_probe": 0,
+      "fit_epochs": 3,
+      "em_based_resampling": false
+    },
+    "fit_prefix_schedule": [
+      {"first_update_completed_outer": 10, "last_update_completed_outer": 90, "policy_prefix_tokens": 80},
+      {"first_update_completed_outer": 100, "last_update_completed_outer": 190, "policy_prefix_tokens": 160}
+    ],
+    "publish_effective_from_outer_offset": 1,
+    "inherit": ["raw", "ema", "adam", "rng"],
+    "learning_rate": 0.000005,
+    "ema_decay": 0.9995,
+    "selection_state": "raw",
+    "outer100_transition": {
+      "rollout_actor_completed_outer": 99,
+      "selection_prefix_tokens": 80,
+      "save_actor100_before_probe_fit": true,
+      "fit_prefix_tokens": 160,
+      "extract_from_same_completed_trajectories": true,
+      "recompute_frozen_encoder_features": true,
+      "replace_transformer_block_or_head": false,
+      "reset_optimizer": false,
+      "effective_selection_outer": 101
+    },
+    "fit_at_outer200": false
+  },
+  "resources": {
+    "actor_training_gpus": 4,
+    "independent_retrieval_gpus": 2,
+    "total_gpus": 6,
+    "probe_uses_training_allocation": true
+  },
+  "other_recipe_settings": "unchanged_from_dynrpo7b_formal_training_plan_20261023",
+  "training_submitted": false
+}

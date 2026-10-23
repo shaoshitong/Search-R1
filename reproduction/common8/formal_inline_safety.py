@@ -206,14 +206,14 @@ def archive_initial_probe(base, run):
     base=Path(base).resolve()
     live = read(base / 'artifacts/live/manifest.json')
     binding=run.get('full_state_restore') or {}
-    if binding.get('kind') in ('question_probe_pair','easy2560_native4'):
+    if binding.get('kind') in ('question_probe_pair','easy2560_native4','dynrpo7b_native4'):
         from search_g1.full_state_restore import source as read_source
         _,source,_,_,_=read_source(binding['source_receipt'])
         pinned=read(source['reward_probe_manifest']['path'])
         assert live['run_id']==run['run_id'] and live['round']==binding['reward_probe_round']
         assert live['version']==run['initial_probe_version']==binding['reward_probe_version']
         assert live['encoder']==pinned['encoder'] and live['encoder_sha256']==pinned['encoder_sha256']
-        archive=(Path(live['commit']).parent.parent if binding['kind']=='easy2560_native4' else
+        archive=(Path(live['commit']).parent.parent if binding['kind'] in ('easy2560_native4','dynrpo7b_native4') else
                  Path(live['commit']).parent)/'version-manifest.json'
         assert archive.resolve().is_relative_to(base.resolve()) and read(archive)==live
         for key in ('calibration_report','label_proof','head_sha256'):
@@ -242,6 +242,9 @@ def archive_initial_probe(base, run):
     if 'adoption_origin' in live:
         from reproduction.common8.verify_full import verify_a800_adopted_initial_probe
         verify_a800_adopted_initial_probe(base, run, live, archive)
+    elif run.get('dynrpo7b_selection') and 'reused_origin' in live:
+        from reproduction.dynrpo7b.reward_adapter import verify_adopted
+        verify_adopted(base, run, live, archive)
     else:
         assert round_dir.parent == base / 'artifacts' and round_dir.name.startswith('round_0-attempt-')
     assert read(archive) == live
@@ -285,7 +288,7 @@ def verify_plan(base, artifact, run):
     for key, value in FORMAL_SAFEGUARDS.items():
         assert type(artifact[key]) in (int, float) and artifact[key] == value
     binding=run.get('full_state_restore') or {}
-    frozen_writes=(binding['actual_optimizer_writes_per_rank'] if binding.get('kind') in ('question_probe_pair','easy2560_native4') else
+    frozen_writes=(binding['actual_optimizer_writes_per_rank'] if binding.get('kind') in ('question_probe_pair','easy2560_native4','dynrpo7b_native4') else
                    100 if binding else 0)
     assert artifact['actual_optimizer_writes_at_freeze'] == frozen_writes
     assert artifact['optimizer_counting'] == FORMAL_COUNTING
@@ -304,7 +307,7 @@ def verify_plan(base, artifact, run):
     assert digest(archive) == initial['archive_sha256']
     live = read(archive)
     assert live['run_id'] == run['run_id'] and live['version'] == run['initial_probe_version']
-    if binding.get('kind') in ('question_probe_pair','easy2560_native4'):
+    if binding.get('kind') in ('question_probe_pair','easy2560_native4','dynrpo7b_native4'):
         from search_g1.full_state_restore import source as read_source
         _,source,_,_,_=read_source(binding['source_receipt'])
         pinned=read(source['reward_probe_manifest']['path'])

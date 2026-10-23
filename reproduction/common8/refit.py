@@ -23,7 +23,8 @@ encoder_hashes={name:digest(encoder/name) for name in sorted(names)}
 expected=complete['files_sha256'] if args.step else run['initial_model_sha256']
 assert all(encoder_hashes[name]==value for name,value in expected.items() if name in encoder_hashes), 'Encoder changed before calibration'
 round_dir=base/'artifacts'/('round_'+str(args.step)+'-attempt-'+uuid.uuid4().hex);round_dir.mkdir(parents=True,exist_ok=False)
-dump=round_dir/'dumps';heads=round_dir/'heads';env=dict(os.environ,RETRIEVER_URL='http://127.0.0.1:18010/retrieve',NO_PROXY='127.0.0.1,localhost')
+from search_g1.service_ports import retriever_url
+dump=round_dir/'dumps';heads=round_dir/'heads';env=dict(os.environ,RETRIEVER_URL=retriever_url(run),NO_PROXY='127.0.0.1,localhost')
 for k in ['HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','http_proxy','https_proxy','all_proxy']:env.pop(k,None)
 python=str(base/'env/bin/python');repo=base/'repo'
 with evaluator_gpu_lock():

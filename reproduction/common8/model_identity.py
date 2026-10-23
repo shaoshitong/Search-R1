@@ -7,8 +7,8 @@ def identity(run):
     pair = run['budget']['model_id'], run['model_revision']
     assert pair in (THREE, SEVEN), 'Only pinned official model revisions are supported'
     if pair == SEVEN:
-        from reproduction.common8.precision_contract import easy2560_native4
-        assert easy2560_native4(run), '7B adapter is scoped to native4 Easy'
+        from reproduction.common8.precision_contract import native4_7b
+        assert native4_7b(run), '7B adapter requires an explicit native4 7B recipe'
     assert run['budget']['model_revision'] == pair[1]
     return pair
 

@@ -288,7 +288,8 @@ def serve(base):
                     endpoint=external['endpoint'], forwarding_only=True,
                     upstream_statistics=actual.get('statistics'), **forwarder.statistics())
 
-    uvicorn.run(app, host='127.0.0.1', port=18010, workers=1)
+    from search_g1.service_ports import ports
+    uvicorn.run(app, host='127.0.0.1', port=ports(run)['retriever'], workers=1)
 
 
 def main():

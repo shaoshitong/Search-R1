@@ -1,0 +1,29 @@
+{
+  "infrastructure_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+  "probe_source_commit": "7a8ff6ae8a33324846d85f77ffc28e9ab699c028",
+  "algorithm_progressive_postselection": "3c08089fea344cd9084ceb26676644218a45f14c",
+  "backstop_reference": "2d9712395f6c666cd0b53f843f8bc1bfb6e5d11d",
+  "own_recipe": "dynrpo7b_L15_packed_group_variance_v1",
+  "normal_candidates": 5120,
+  "postselection_full_questions": 1024,
+  "actor_questions": 512,
+  "group_size": 5,
+  "probe_update_questions": 2560,
+  "probe_epochs": 3,
+  "probe_update_every": 10,
+  "actor_total": 200,
+  "prefix": {
+    "outer1_to_100": 80,
+    "outer101_to_200": 160
+  },
+  "gpu": {
+    "train": 4,
+    "retrieval": 2
+  },
+  "student_loss_logical_micro": 2,
+  "probe_loss": "MSE(sigmoid(z),4*population_strict_EM_variance)",
+  "probe_ema": 0.9995,
+  "extra_monitor_forwards": false,
+  "continuous_nvidia_smi": false,
+  "synthetic_GPU_qualification": false
+}

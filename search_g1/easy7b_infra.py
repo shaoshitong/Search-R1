@@ -48,12 +48,12 @@ def flags(run=None):
     if identity(run) != SEVEN:
         raise ValueError('Optional infrastructure candidate is scoped to Easy7B')
     if values.get('flash_attention_3_actor'):
-        from reproduction.common8.precision_contract import easy2560_native4
-        if not easy2560_native4(run):raise ValueError('FA3 is scoped to the native4 Easy7B actor')
+        from reproduction.common8.precision_contract import native4_7b
+        if not native4_7b(run):raise ValueError('FA3 requires an explicit native4 7B recipe')
     if set(values) in (lean_fields, search_fields, batched_fields):
         from search_g1.actor_performance import lean_run
         profile = ('fa3-lean-batched-search-stop-v1' if set(values) == batched_fields else
                    'fa3-lean-search-stop-v1' if set(values) == search_fields else 'fa3-lean-v1')
         if values != profile_flags(profile) or not lean_run(run):
-            raise ValueError('FA3 lean flags require the explicit native4 Easy lean_v1 binding')
+            raise ValueError('FA3 lean flags require an explicit native4 7B lean_v1 binding')
     return dict(values)

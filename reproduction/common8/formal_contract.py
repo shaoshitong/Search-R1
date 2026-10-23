@@ -5,7 +5,7 @@ from pathlib import Path
 
 from reproduction.common8.policy_calibration_plan import MATHEMATICS, canonical_bytes
 from reproduction.common8.topology import world_size, actor_global_micro, actor_logical_micro, execution_job_id, monitor_trajectories_per_rank
-from reproduction.common8.precision_contract import bf16_policy, easy2560_native4, remove_padding, verify as verify_precision_config
+from reproduction.common8.precision_contract import bf16_policy, easy2560_native4, native4_7b, remove_padding, verify as verify_precision_config
 
 CONTRACT_KIND = 'fresh200_warmup57'
 TARGET_UPDATES = 200
@@ -36,11 +36,11 @@ def formal_mathematics(run=None):
                   per_rank_log_prob_micro_batch=32 // size,
                   objective_reduction=('original four-row micro masked_mean'
                       if actor_global_micro(run)//size == 4 else 'original two-row micro masked_mean'))
-    if run is not None and run.get('easy2560_selection') is True:
-        assert easy2560_native4(run), 'Easy mathematics requires native4 mixed_first and logical4'
+    if run is not None and (run.get('easy2560_selection') is True or run.get('dynrpo7b_selection') is True):
+        assert native4_7b(run)
         logical = actor_logical_micro(run)
         values.update(per_rank_actor_logical_micro_batch=logical,
-                      objective_reduction='original four-row micro masked_mean')
+                      objective_reduction=('original two-row micro masked_mean' if logical==2 else 'original four-row micro masked_mean'))
     if run is not None and bf16_policy(run):
         values.update(compute_dtype='bfloat16', rollout_dtype='bfloat16', allow_tf32=None)
     return values
@@ -71,7 +71,7 @@ def skip_initial_evaluation(run):
         and run.get('startup_admission_mode') == 'actual_first_five'
         and ((run.get('data_selection_mode') == 'prefix20_probe'
               and run.get('question_probe', {}).get('probe_architecture') == 'qwen2_prefix20_trajectory_em_v1')
-             or easy2560_native4(run))
+             or native4_7b(run))
         and not run.get('full_state_restore')), 'Initial evaluation skip requires explicit fresh native4 Prefix20 or Easy'
     return True
 
@@ -129,6 +129,10 @@ def verify_formal_config(document, run, base):
         exact(actor, dict(ppo_logical_micro_batch_size=4), 'Logical actor objective')
         exact(document['algorithm'], dict(all_correct_virtual_zero=False), 'Easy real-group advantages')
         exact(document['data'], dict(selection_mode='mixed_first'), 'Easy selection')
+    if run.get('dynrpo7b_selection'):
+        exact(actor, dict(ppo_logical_micro_batch_size=2), 'DynRPO virtual micro2 objective')
+        exact(document['algorithm'], dict(all_correct_virtual_zero=True), 'All-correct virtual zero')
+        exact(document['data'], dict(selection_mode='dynrpo7b'), 'DynRPO selection')
     exact(actor['optim'], dict(lr=1e-6, lr_warmup_steps_ratio=0.0,
         lr_warmup_steps=WARMUP_STEPS, warmup_style='constant'), 'Optimizer mathematics')
     verify_precision_config(document, run)
@@ -156,7 +160,7 @@ def verify_formal_config(document, run, base):
     assert reference['fsdp_config']['param_offload'] is True
     exact(document['trainer'], dict(n_gpus_per_node=world_size(run), nnodes=1,
         total_training_steps=TARGET_UPDATES + 1, total_epochs=15,
-        save_freq=(1 if run.get('easy2560_rolling_checkpoint') is True else 50),
+        save_freq=(1 if run.get('easy2560_rolling_checkpoint') is True or run.get('dynrpo7b_selection') is True else 50),
         test_freq=50, acceptance_step=5, val_only=False,
         val_before_train=val_before_train(run)), 'Training horizon')
     assert document['trainer']['default_local_dir'] == run['checkpoint_dir']
@@ -166,7 +170,7 @@ def verify_formal_config(document, run, base):
         assert document['trainer']['full_state_restore_receipt']==restore['source_receipt']
     assert Path(run['checkpoint_dir']).resolve() == base / 'checkpoints/search-g1-common8'
     assert document['max_turns'] == 4 and document['do_search'] is True
-    exact(document['retriever'], dict(url='http://127.0.0.1:18010/retrieve', topk=3), 'Retrieval')
+    exact(document['retriever'], dict(url=('http://127.0.0.1:18110/retrieve' if run.get('dynrpo7b_selection') else 'http://127.0.0.1:18010/retrieve'), topk=3), 'Retrieval')
     policy = actor['policy_safety']
     exact(policy, dict(enabled=True,mode=SAFETY_MODE,dual_clip=FORMAL_SAFEGUARDS['dual_clip'],
         target_old_policy_kl=FORMAL_SAFEGUARDS['target_old_policy_kl'],

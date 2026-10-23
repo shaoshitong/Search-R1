@@ -322,6 +322,13 @@ class ActorRolloutRefWorker(Worker):
         return worker_operation(self, operation, payload)
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def dynrpo7b_probe_operation(self, operation, payload):
+        # Reuse these allocated actor ranks; the driver never creates a CUDA
+        # probe beside Ray or allocates another set of training GPUs.
+        from reproduction.dynrpo7b.probe_worker import worker_operation
+        return worker_operation(self, operation, payload)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def qprobe_operation(self, operation, payload):
         # Driver calls the original allocated rank7 handle directly, so this
         # registered endpoint requires no extra GPU actor or collective call.

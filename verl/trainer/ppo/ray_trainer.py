@@ -841,8 +841,10 @@ class RayPPOTrainer(object):
                     from search_g1.full_state_restore import restore_driver
                     restore_driver(self,restore_receipt)
                     base,run=active_run()
-                    easy_restore=run['full_state_restore'].get('kind')=='easy2560_native4'
-                    if easy_restore:
+                    easy_restore=run['full_state_restore'].get('kind') in ('easy2560_native4','dynrpo7b_native4')
+                    if run['full_state_restore'].get('kind')=='dynrpo7b_native4':
+                        pass
+                    elif easy_restore:
                         from search_g1.easy2560_restore_runtime import record_development_history
                         record_development_history(base,run)
                     else:
@@ -857,7 +859,7 @@ class RayPPOTrainer(object):
                         progress['completed_outer'] if progress['cumulative_writes']==progress['completed_outer']*20 else 0)
                     # Finish only the canonical dev512-after5 that the failed
                     # allocation never reached. Do not repeat initial/stage64.
-                    if run['full_state_restore'].get('kind') in ('question_probe_pair','easy2560_native4'):
+                    if run['full_state_restore'].get('kind') in ('question_probe_pair','easy2560_native4','dynrpo7b_native4'):
                         # The completed pair already has its historical evaluation.
                         # Future validation runs at the normal common8 cadence.
                         pass
@@ -895,16 +897,16 @@ class RayPPOTrainer(object):
 
         mixed_stream = None
         selection_mode = self.config.data.get("selection_mode", "legacy")
-        if selection_mode not in ("legacy", "uniform", "mixed_first", "question_probe", "prefix20_probe"):
+        if selection_mode not in ("legacy", "uniform", "mixed_first", "question_probe", "prefix20_probe", "dynrpo7b"):
             raise ValueError("Unknown training question selection mode: " + selection_mode)
-        if selection_mode in ("question_probe","prefix20_probe") and self.config.data.get("mixed_first_selection", False):
+        if selection_mode in ("question_probe","prefix20_probe","dynrpo7b") and self.config.data.get("mixed_first_selection", False):
             raise ValueError("Question-probe and post-rollout mixed-first are mutually exclusive")
         self.inline_attempt_progress = inline_attempts
         self.qprobe_runtime = None
-        if selection_mode in ("mixed_first", "question_probe", "prefix20_probe") or (
+        if selection_mode in ("mixed_first", "question_probe", "prefix20_probe", "dynrpo7b") or (
                 selection_mode == "legacy" and self.config.data.get("mixed_first_selection", False)):
             from search_g1.mixed_runtime import CandidateStream
-            if selection_mode in ('question_probe','prefix20_probe'):
+            if selection_mode in ('question_probe','prefix20_probe','dynrpo7b'):
                 from search_g1.qprobe_runtime import QProbeCandidateStream
                 stream_cls = QProbeCandidateStream
             else:
@@ -922,19 +924,23 @@ class RayPPOTrainer(object):
                     restored_state=getattr(self,'_restored_candidate_state',None))
             self.mixed_stream = mixed_stream
             assert inline_attempts is not None and self.config.do_search
-            if easy_restore:
+            if easy_restore and selection_mode!='dynrpo7b':
                 from search_g1.easy2560_restore_runtime import verify_reconstructed_stream, finish_pending_refresh
                 verify_reconstructed_stream(self,mixed_stream)
                 # Older milestone saves precede the scheduled grounding refit.
                 # Resume that real callback once, after exact state readback
                 # and before drawing any candidate for the next outer.
                 finish_pending_refresh(self, continuation_k)
-            if selection_mode in ("question_probe","prefix20_probe"):
+            if selection_mode in ("question_probe","prefix20_probe","dynrpo7b"):
                 from pathlib import Path
                 from search_g1.qprobe_runtime import QProbeRuntime
                 run = __import__('json').loads((Path(os.environ['SEARCH_G1_BASE'])/
                                                'logs/run-manifest.json').read_text())
-                if selection_mode == 'prefix20_probe':
+                if selection_mode == 'dynrpo7b':
+                    from reproduction.dynrpo7b.runtime import ProbeRuntime
+                    probe_config=run['question_probe']
+                    self.qprobe_runtime=ProbeRuntime(probe_config,os.environ['SEARCH_G1_BASE'],self.actor_rollout_wg)
+                elif selection_mode == 'prefix20_probe':
                     from search_g1.prefix20_runtime import Prefix20Runtime
                     probe_config=self.config.prefix20_probe
                     self.qprobe_runtime=Prefix20Runtime(probe_config,os.environ['SEARCH_G1_BASE'],self.actor_rollout_wg)
@@ -954,6 +960,16 @@ class RayPPOTrainer(object):
                         publish(Path(os.environ['SEARCH_G1_BASE'])/'logs/prefix20-restored-pair.json',dict(
                             completed_outer=continuation_k,actual_probe_rank_readbacks=self.qprobe_runtime.restore_receipts,
                             actual_selector_rng_equal=True,actual_candidate_stream_equal=True,actual_driver_rng_equal=True))
+                if selection_mode=='dynrpo7b' and getattr(self,'_dynrpo7b_restored_phase',None):
+                    phase=self._dynrpo7b_restored_phase
+                    if phase['probe_pending']:
+                        self.qprobe_runtime.fit_after_checkpoint(self,run['full_state_restore']['source_checkpoint'])
+                    if phase['grounding_pending']:
+                        from reproduction.profile import refresh_after_checkpoint
+                        self.reward_fn.expected_probe_version=refresh_after_checkpoint(continuation_k,run['full_state_restore']['source_checkpoint'])
+                    if phase['probe_pending'] or phase['grounding_pending']:
+                        from reproduction.dynrpo7b.rolling import publish_imported_boundary
+                        publish_imported_boundary(self,run['full_state_restore']['source_receipt'])
                 if self.qprobe_runtime.completed_outer != continuation_k:
                     raise ValueError("Actor and question-probe successful outer counters differ")
                 if selection_mode=='question_probe' and continuation_k == 0 and probe_config.get('teacher_warmup_cache'):
@@ -971,7 +987,9 @@ class RayPPOTrainer(object):
                 attempt_identity=inline_attempts.begin() if inline_attempts is not None else None
 
                 if mixed_stream is not None:
-                    if selection_mode=='prefix20_probe':
+                    if selection_mode=='dynrpo7b':
+                        from reproduction.dynrpo7b.collection import collect
+                    elif selection_mode=='prefix20_probe':
                         from search_g1.prefix20_collection import collect
                     elif self.qprobe_runtime is not None:
                         from search_g1.qprobe_runtime import collect
@@ -988,7 +1006,7 @@ class RayPPOTrainer(object):
                         metrics['selection/selected_mixed_fraction']=mixed_audit['selected_mixed']/mixed_audit['selected_groups']
                         metrics['selection/selected_all_correct_fraction']=mixed_audit['selected_all_correct_fallback']/mixed_audit['selected_groups']
                         metrics['selection/insufficient_pool_retries']=mixed_audit['pool_retry']
-                    if selection_mode=='prefix20_probe':
+                    if selection_mode in ('prefix20_probe','dynrpo7b'):
                         metrics['selection/selected_mixed_fraction']=mixed_audit['selected_mixed_fraction']
                         metrics['selection/completed_selected_trajectories']=mixed_audit['completed_selected_trajectories']
                     elif self.qprobe_runtime is not None:
@@ -1163,7 +1181,7 @@ class RayPPOTrainer(object):
                         response_mask = (batch.batch['loss_mask'] if 'loss_mask' in batch.batch
                             else batch.batch['attention_mask'][:, -response_width:]).bool()
                         rewards = batch.batch['token_level_rewards'].sum(-1)
-                        selection_sources = (('predicted_mixed',) if selection_mode=='prefix20_probe' else
+                        selection_sources = (('predicted_mixed',) if selection_mode in ('prefix20_probe','dynrpo7b') else
                             ('random_exploration','predicted_mixed') if selection_mode=='question_probe' else ('mixed','all_correct_fallback'))
                         for source in selection_sources:
                             rows = torch.as_tensor(sources == source, device=rewards.device)
@@ -1243,6 +1261,10 @@ class RayPPOTrainer(object):
                             from reproduction.profile import checkpoint_complete
                             checkpoint = os.path.join(self.config.trainer.default_local_dir, 'actor', f'global_step_{self.global_steps}')
                             checkpoint_complete(self.global_steps, checkpoint)
+                            if selection_mode=='dynrpo7b':
+                                from reproduction.dynrpo7b.rolling import bind_actor_checkpoint
+                                bind_actor_checkpoint(self,checkpoint)
+                                self.qprobe_runtime.fit_after_checkpoint(self,checkpoint)
 
                 # collect metrics
                 metrics.update(compute_data_metrics(batch=batch, use_critic=self.use_critic))
@@ -1286,10 +1308,13 @@ class RayPPOTrainer(object):
                     from reproduction.profile import refresh_after_checkpoint
                     self.reward_fn.expected_probe_version = refresh_after_checkpoint(self.global_steps, checkpoint)
 
-                if checkpoint is not None and self.qprobe_runtime is not None:
+                if checkpoint is not None and self.qprobe_runtime is not None and selection_mode!='dynrpo7b':
                     from search_g1.qprobe_checkpoint import publish_completed_pair
                     publish_completed_pair(self, checkpoint)
 
+                if checkpoint is not None and selection_mode=='dynrpo7b':
+                    from reproduction.dynrpo7b.rolling import publish_boundary
+                    publish_boundary(self,checkpoint)
                 if checkpoint is not None and self.config.trainer.get('rolling_checkpoint', False):
                     # The full model/Adam snapshot is already on disk. Finish
                     # QA/refit first, then pin the small driver/worker RNG state

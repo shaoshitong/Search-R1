@@ -43,7 +43,11 @@ def ranks(run=None):
 def actor_local_micro(run=None):
     run = _bound_run() if run is None else run
     value = run.get("actor_micro_batch_per_rank", 2) if run is not None else 2
-    allowed = (2, 4, 8, 16, 32) if run is not None and run.get('actor_logical_micro_batch_per_rank') == 4 and world_size(run) == 4 else (2, 4)
+    grouped = (run is not None and world_size(run) == 4 and
+               (run.get('actor_logical_micro_batch_per_rank') == 4 or
+                (run.get('dynrpo7b_selection') is True and
+                 run.get('actor_logical_micro_batch_per_rank') == 2)))
+    allowed = (2, 4, 8, 16, 32) if grouped else (2, 4)
     assert type(value) is int and value in allowed
     assert actor_local_mini(run) % value == 0
     return value
@@ -125,7 +129,11 @@ def validate_base(base, run):
         assert re.fullmatch(r'/data/shaoshitong/Search-G1-a800-fresh200-[A-Za-z0-9._-]+', str(base)), \
             'Local training requires its fresh A800 run namespace'
     elif run.get('execution_site') == 'hpc3':
-        if run.get('easy2560_selection') is True:
+        if run.get('dynrpo7b_selection') is True:
+            from reproduction.dynrpo7b.infra_profile import own_base, native4
+            own_base(base)
+            assert native4(run), 'DynRPO requires its explicit four-rank recipe'
+        elif run.get('easy2560_selection') is True:
             assert re.fullmatch(r'/data/user/jxu957/experiments/easy2560-corollout-[A-Za-z0-9._-]+',str(base)), \
                 'Easy2560 requires its dedicated run namespace'
             assert world_size(run)==4, 'Easy2560 requires four native ranks'

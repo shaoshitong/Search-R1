@@ -11,6 +11,7 @@ import time
 from pathlib import Path
 from reproduction.a800.prepare_run import digest
 from search_g1.signals import validate_probe_reply
+from search_g1.service_ports import probe_url
 
 
 def atomic(path, payload):
@@ -22,7 +23,7 @@ def atomic(path, payload):
 
 def initial_evaluator(run):
     binding=run.get('full_state_restore') or {}
-    if binding.get('kind') in ('question_probe_pair','easy2560_native4'):
+    if binding.get('kind') in ('question_probe_pair','easy2560_native4','dynrpo7b_native4'):
         from search_g1.full_state_restore import source as read_source
         _,receipt,_,_,_=read_source(binding['source_receipt'])
         live=json.loads(Path(receipt['reward_probe_manifest']['path']).read_text())
@@ -59,7 +60,7 @@ def calibrated_version(run, live):
         assert math.isfinite(report[key+'_cv_auc']) and 0<=report[key+'_cv_auc']<=1
     for name,value in run['initial_model_sha256'].items():
         assert digest(Path(run['initial_model'])/name)==value
-    paired=(run.get('full_state_restore') or {}).get('kind') in ('question_probe_pair','easy2560_native4')
+    paired=(run.get('full_state_restore') or {}).get('kind') in ('question_probe_pair','easy2560_native4','dynrpo7b_native4')
     required=set(encoder_hashes) if paired else set(encoder_hashes)-{'vocab.json','merges.txt','generation_config.json'}
     assert set(live['encoder_sha256'])==required, 'Incomplete encoder fingerprint'
     for name,value in live['encoder_sha256'].items():
@@ -82,7 +83,7 @@ def verify_training_gate(base):
     for name,expected in run['source_sha256'].items():assert digest(base/'repo'/name)==expected, 'Source changed since prelaunch admission: '+name
     import requests
     session=requests.Session();session.trust_env=False
-    response=session.get('http://127.0.0.1:18012/health',timeout=60);response.raise_for_status();health=response.json()
+    response=session.get(probe_url('health', run),timeout=60);response.raise_for_status();health=response.json()
     round_id,encoder,_=initial_evaluator(run)
     assert health.get('ok') is True and health.get('round')==round_id and health.get('version')==version and health.get('encoder')==encoder
     return run
@@ -102,13 +103,13 @@ def admit(base):
     for name,expected in run['input_sha256'].items():assert digest(base/'data'/name)==expected
     for name,expected in run['source_sha256'].items():assert digest(base/'repo'/name)==expected
     session=requests.Session();session.trust_env=False
-    health=session.get('http://127.0.0.1:18012/health',timeout=60);health.raise_for_status();health=health.json()
+    health=session.get(probe_url('health', run),timeout=60);health.raise_for_status();health=health.json()
     round_id,_,_=initial_evaluator(run)
     assert health['ok'] is True and health['round']==round_id and health['encoder']==live['encoder'] and health['version']==version
     response='<answer>Paris</answer>'
     items=[dict(id='admission-direct',prompt='Question: What is the capital of France?\n',response=response,model_ranges=[[0,len(response)]]),
            dict(id='admission-invalid',prompt='Question: What is the capital of France?\n',response='',model_ranges=[])]
-    answer=session.post('http://127.0.0.1:18012/judge_probe',json={'items':items},timeout=120);answer.raise_for_status()
+    answer=session.post(probe_url(run=run),json={'items':items},timeout=120);answer.raise_for_status()
     rows,actual=validate_probe_reply(answer.json(),items);assert actual==version
     evidence=dict(run_id=run['run_id'],accepted=True,version=version,live_manifest_sha256=digest(live_path),
                   grouped_calibration_cv=live['calibration_report'],label_proof=live['label_proof'],

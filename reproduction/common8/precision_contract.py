@@ -16,6 +16,14 @@ def easy2560_native4(run):
         and run['actor_logical_micro_batch_per_rank'] == 4)
 
 
+def native4_7b(run):
+    """Shared measured infrastructure; selectors remain independent recipes."""
+    if easy2560_native4(run):
+        return True
+    from reproduction.dynrpo7b.infra_profile import native4
+    return native4(run)
+
+
 def bf16_policy(run):
     profile = run.get('precision_profile')
     assert profile in (None, BF16_PROFILE, NATIVE_BF16_PROFILE, NATIVE4_BF16_PROFILE), 'Unknown policy precision profile'
@@ -33,8 +41,8 @@ def bf16_policy(run):
     if profile == NATIVE4_BF16_PROFILE:
         assert run.get('training_world_size') == 4 and run.get('execution_backend') == 'slurm'
         assert run.get('execution_site') == 'hpc3'
-        if run.get('easy2560_selection') is True:
-            assert easy2560_native4(run), 'Large physical micros require the explicit native4 Easy logical4 scope'
+        if run.get('easy2560_selection') is True or run.get('dynrpo7b_selection') is True:
+            assert native4_7b(run), 'Large physical micros require an explicit native4 recipe'
             micro = run.get('actor_micro_batch_per_rank')
             assert type(micro) is int and micro in (4, 8, 16, 32)
         else:

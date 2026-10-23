@@ -8,6 +8,17 @@ import uuid
 from .control import own_base, publish, sha
 
 
+def _scope(base, run):
+    if run.get('dynrpo7b_selection') is True:
+        from reproduction.dynrpo7b.infra_profile import native4, own_base as dynrpo_base
+        if not native4(run):
+            raise ValueError('DYNRPO7B_GROUNDING_REUSE_SCOPE_DIFFERS')
+        return dynrpo_base(base)
+    if not run.get('easy2560_selection') or run.get('question_probe') is not None:
+        raise ValueError('EASY2560_GROUNDING_REUSE_SCOPE_DIFFERS')
+    return own_base(base)
+
+
 def link_verified(source, target, expected):
     source = Path(source); target = Path(target)
     if not source.is_file() or source.is_symlink() or sha(source) != expected:
@@ -18,8 +29,8 @@ def link_verified(source, target, expected):
 
 
 def adopt(base, run):
-    base = own_base(base); old = Path(run['initial_reward_probe_source_base'])
-    if not run.get('easy2560_selection') or run.get('question_probe') is not None or old == base:
+    base = _scope(base, run); old = Path(run['initial_reward_probe_source_base'])
+    if old == base:
         raise ValueError('EASY2560_GROUNDING_REUSE_SCOPE_DIFFERS')
     previous = json.loads((old / 'logs/run-manifest.json').read_text())
     initial = json.loads((old / 'logs/formal-inline-initial-probe.json').read_text())
@@ -72,9 +83,7 @@ def adopt(base, run):
 
 def verify_adopted(base, run, live, archive):
     """Independently reread the original fitted bytes and this run's rebinding."""
-    base = own_base(base); archive = Path(archive)
-    if not run.get('easy2560_selection') or run.get('question_probe') is not None:
-        raise ValueError('EASY2560_REUSED_ROUND0_VERIFICATION_SCOPE_DIFFERS')
+    base = _scope(base, run); archive = Path(archive)
     receipt = json.loads((base / 'logs/initial-grounding-probe-reuse.json').read_text())
     origin = live['reused_origin']; old = Path(run['initial_reward_probe_source_base'])
     if receipt['reused_origin'] != origin or origin['base'] != str(old):

@@ -55,7 +55,7 @@ def checkpoint_complete(step, checkpoint):
     if qprobe is not None:
         assert qprobe['completed_outer'] == step
         assert qprobe['actor_snapshot_id'] == run['run_id']+':'+str(step)
-        proofs=([qprobe]+qprobe['rank_files'] if qprobe.get('kind')=='prefix20_trajectory_probe'
+        proofs=([qprobe] if qprobe.get('kind')=='dynrpo7b_group_variance' else [qprobe]+qprobe['rank_files'] if qprobe.get('kind')=='prefix20_trajectory_probe'
                 else [qprobe,qprobe['head']])
         for proof in proofs:
             path = Path(proof['path'])
@@ -67,7 +67,13 @@ def checkpoint_complete(step, checkpoint):
             state=torch.load(qprobe['path'],map_location='cpu',weights_only=False)
             validate_saved_state(state,qprobe['path'],qprobe['actor_snapshot_id'])
             assert state['completed_outer']==step and world_size(run)==4
-        result['question_probe'] = dict(completed_outer=step, head_version=qprobe['head_version'],
+        if qprobe.get('kind')=='dynrpo7b_group_variance':
+            reference=qprobe['reference']
+            assert Path(reference['path']).is_file()
+            result['question_probe']=dict(completed_outer=step,head_version=qprobe['head_version'],
+                actor_snapshot_id=qprobe['actor_snapshot_id'],reference=reference)
+        else:
+            result['question_probe'] = dict(completed_outer=step, head_version=qprobe['head_version'],
             actor_snapshot_id=qprobe['actor_snapshot_id'], feature_spec_sha=qprobe['feature_spec_sha'])
     result.update(actual_optimizer_writes_per_rank=writes[0],
         training_state_readback='all rank Adam/scheduler states and actual driver cursor verified; actual restart/reload pending')
@@ -342,6 +348,9 @@ def accept_five_updates(checkpoint, records):
     from safetensors import safe_open
     base = Path(os.environ['SEARCH_G1_BASE'])
     run = json.loads((base/'logs/run-manifest.json').read_text())
+    if run.get('dynrpo7b_selection'):
+        from reproduction.dynrpo7b.acceptance import accept_first_five
+        return accept_first_five(base,checkpoint,records)
     assert_formal_run(run)
     assert run['profile'] == 'common8' and run.get('completed_updates', 0) == 0
     assert run['acceptance_update'] == 5
@@ -435,7 +444,8 @@ def refresh_after_checkpoint(step, checkpoint):
     session = requests.Session()
     session.trust_env = False
     previous = json.loads((base/'artifacts/live/manifest.json').read_text())
-    response = session.post('http://127.0.0.1:18012/suspend',
+    from search_g1.service_ports import probe_url
+    response = session.post(probe_url('suspend', run),
         json={'version':previous['version']},timeout=120)
     response.raise_for_status()
     released = response.json()
@@ -446,7 +456,7 @@ def refresh_after_checkpoint(step, checkpoint):
         '--step',str(step),'--model',str(checkpoint)],env=env,check=True)
     expected = json.loads((base/'artifacts/live/manifest.json').read_text())
     for _ in range(120):
-        status = session.get('http://127.0.0.1:18012/health',timeout=10).json()
+        status = session.get(probe_url('health', run),timeout=10).json()
         if status.get('version') == expected['version'] and status.get('round') == step:
             print('SEARCH_G1_REFIT_ADOPTED='+expected['version'],flush=True)
             return expected['version']

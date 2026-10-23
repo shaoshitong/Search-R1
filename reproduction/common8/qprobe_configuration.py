@@ -16,6 +16,8 @@ FIELDS = frozenset((
 
 def arguments(run, base):
     """Bind all selection controls in the run manifest, never in global env."""
+    if run.get("dynrpo7b_selection"):
+        return []
     settings = run.get("question_probe")
     if settings is None:
         return []
@@ -57,6 +59,10 @@ def arguments(run, base):
 
 
 def validate(config, run, base):
+    if run.get("dynrpo7b_selection"):
+        assert config.data.selection_mode=="dynrpo7b" and not config.data.mixed_first_selection
+        assert config.algorithm.all_correct_virtual_zero is True
+        return
     expected = arguments(run, base)
     if not expected:
         if config.data.get("selection_mode", "legacy") in ("question_probe","prefix20_probe"):

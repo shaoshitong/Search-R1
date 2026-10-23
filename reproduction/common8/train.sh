@@ -11,7 +11,7 @@ export TMPDIR="$BASE/tmp" HF_HOME="$BASE/cache/hf" XDG_CACHE_HOME="$BASE/cache"
 export RAY_TMPDIR="$(python -c 'import json,os; from pathlib import Path; base=Path(os.environ["SEARCH_G1_BASE"]); print(json.loads((base/"logs/run-manifest.json").read_text()).get("ray_tmp_dir",str(base/"ray")))')"
 export HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 OMP_NUM_THREADS=8
 export VLLM_ATTENTION_BACKEND=XFORMERS PYTHONUNBUFFERED=1
-export PROBE_URL=http://127.0.0.1:18012/judge_probe
+export PROBE_URL="${PROBE_URL:-http://127.0.0.1:18012/judge_probe}"
 export ECO_TRUST_VARIANT=balanced ECO_TRUST_SIGNAL=probe ECO_PROBE_GATE=1
 export ECO_BAL_GROUND=0.6 ECO_BAL_NOSEARCH_BONUS=0.5 ECO_W_COST=0.02
 export ECO_WRONG_GROUND_SCALE=0 ECO_PROBE_BASE=0 ECO_PROBE_ALPHA_COST=0 ECO_USE_CF=0

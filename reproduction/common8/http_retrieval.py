@@ -38,7 +38,8 @@ def admit_http(base):
         content=chat[0]['content'];marks=list(re.finditer(r'Question:\s*',content));assert marks
         queries.append(content[marks[-1].end():].strip())
     session=requests.Session();session.trust_env=False
-    response=session.post('http://127.0.0.1:18010/retrieve',json={'queries':queries,'topk':3,'return_scores':True},timeout=300)
+    from search_g1.service_ports import retriever_url
+    response=session.post(retriever_url(run),json={'queries':queries,'topk':3,'return_scores':True},timeout=300)
     response.raise_for_status();hashes=compare_response(response.json(),proof)
     result=dict(accepted=True,run_id=run['run_id'],slurm_job_id=execution_job_id(run),question_ids=ids,stage_sha256=record['sha256'],retrieval_admission_sha256=digest(base/'logs/retrieval-admission.json'),document_sha256=hashes,checked_unix=time.time(),scope='actual localhost HTTP64 document/score equality; not training or model accuracy')
     if run.get('execution_backend')=='ssh_local':

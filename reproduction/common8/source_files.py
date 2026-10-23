@@ -6,6 +6,7 @@ SUFFIXES = ('.py', '.sh', '.yaml', '.yml', '.json')
 
 
 def runtime_files(repo):
+    """Include independent recipe modules and launchers in the normal SHA map."""
     repo = Path(repo)
     for name in VERSION_FILES:
         assert (repo / name).is_file(), 'Incomplete runtime package: ' + name

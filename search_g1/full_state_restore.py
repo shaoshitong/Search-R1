@@ -25,6 +25,9 @@ def digest(path):
 
 def source(receipt_path):
     p=Path(receipt_path).resolve();r=json.loads(p.read_text())
+    if r.get('kind') == 'dynrpo7b_native4':
+        from reproduction.dynrpo7b.restore import source as dynrpo_source
+        return dynrpo_source(p)
     if r.get('status')==FINAL_EASY_STATUS:
         from search_g1.easy2560_final_checkpoint import source as final_easy_source
         return final_easy_source(p)
@@ -69,6 +72,9 @@ def execution_budget_compatible(run, parent):
 
 def bind(run,receipt_path):
     p,r,checkpoint,origin,parent=source(receipt_path)
+    if r.get('kind') == 'dynrpo7b_native4':
+        from reproduction.dynrpo7b.restore import bind as dynrpo_bind
+        return dynrpo_bind(run, receipt_path)
     if r.get('status')==FINAL_EASY_STATUS:
         raise ValueError('EASY2560_FINAL200_RESTORE_ONLY_NOT_A_TRAINING_BIND')
     from search_g1.easy2560_restore import STATUS as EASY_STATUS, bind as easy_bind
@@ -99,6 +105,9 @@ def from_config(config):
     receipt=config.trainer.get('full_state_restore_receipt',None)
     if not receipt:return None
     p,r,checkpoint,origin,parent=source(receipt)
+    if r.get('kind') == 'dynrpo7b_native4':
+        from reproduction.dynrpo7b.restore import from_config as dynrpo_from_config
+        return dynrpo_from_config(config)
     if r.get('status')==FINAL_EASY_STATUS:
         raise ValueError('EASY2560_FINAL200_RESTORE_ONLY_NOT_A_TRAINING_BIND')
     assert Path(config.actor_rollout_ref.model.actor_checkpoint_path).resolve()==checkpoint
@@ -166,6 +175,9 @@ def final_collective_inputs(load):
 
 
 def restore_worker(worker,receipt_path):
+    if json.loads(Path(receipt_path).read_text()).get('kind') == 'dynrpo7b_native4':
+        from reproduction.dynrpo7b.restore import restore_worker as dynrpo_restore_worker
+        return dynrpo_restore_worker(worker, receipt_path)
     # In-memory diagnostics are never part of checkpoint state or restorable.
     worker.actor._invalidate_monitor_forward_cache(model_changed=True)
     import torch,numpy as np
@@ -308,6 +320,9 @@ def bind_restored_probe(trainer,saved,run,live,source_run_id):
 
 
 def restore_driver(trainer,receipt_path):
+    if json.loads(Path(receipt_path).read_text()).get('kind') == 'dynrpo7b_native4':
+        from reproduction.dynrpo7b.restore import restore_driver as dynrpo_restore_driver
+        return dynrpo_restore_driver(trainer, receipt_path)
     if json.loads(Path(receipt_path).read_text()).get('status')==FINAL_EASY_STATUS:
         return restore_final_easy_driver(trainer,receipt_path)
     from search_g1.easy2560_restore import STATUS as EASY_STATUS,restore_driver as restore_easy_driver
@@ -374,7 +389,7 @@ def prepare_guarded_restore(base,run,document,method,initial,receipts):
     base=Path(base);binding=active(run);p,r,cp,origin,parent=source(binding['source_receipt'])
     assert digest(p)==binding['source_receipt_sha256']
     allocation=json.loads((base/'logs/native-allocation-admission.json').read_text())
-    paired=binding.get('kind') in ('question_probe_pair','easy2560_native4')
+    paired=binding.get('kind') in ('question_probe_pair','easy2560_native4','dynrpo7b_native4')
     actual_writes=binding['actual_optimizer_writes_per_rank'] if paired else 100
     step=binding['completed_outer'] if paired else 5
     probability=dict(role='verified_full_state_restore_source',run_id=run['run_id'],
@@ -403,7 +418,7 @@ def verify_guarded_restore(base,run,probability):
     binding=active(run);p,r,cp,origin,parent=source(binding['source_receipt'])
     assert digest(p)==binding['source_receipt_sha256']==probability['source_receipt_sha256']
     assert probability['role']=='verified_full_state_restore_source'
-    if binding.get('kind') in ('question_probe_pair','easy2560_native4'):
+    if binding.get('kind') in ('question_probe_pair','easy2560_native4','dynrpo7b_native4'):
         assert probability['actual_optimizer_writes']==binding['actual_optimizer_writes_per_rank']
         assert probability['source_step']==binding['completed_outer']
     else:assert probability['actual_optimizer_writes']==100 and probability['source_step']==5

@@ -1,0 +1,18 @@
+{
+  "status": "CPU_NUMERICAL_CONTRACTS_PASS",
+  "checked_at_utc": "2026-10-23T05:46:29Z",
+  "command": "python3 -m pytest tests/reproduction/test_dynrpo7b_probe.py -q",
+  "result": {"passed": 5, "seconds": 2.04},
+  "torch_version": "2.8.0",
+  "GPU_used": false,
+  "model_or_tensor_files_created_locally": false,
+  "coverage": [
+    "Exact accepted-warmup Prefix80 token/mask/position/type packing golden, and strict-EM input isolation",
+    "All six G5 population-variance targets and outer100 P80-selection/P160-fitting boundary",
+    "Actual small CPU three-epoch updater, explicit epoch1-resume and automatic durable-epoch discovery yield identical raw and EMA; Adam step11889 to11949",
+    "Position-embedding growth retains old coordinates, Adam moments and step",
+    "Actual driver facade payloads and four-rank score-merge API against a CPU fake worker group"
+  ],
+  "manual_reference_check": "PackedVarianceHead state keys and exact CPU output equal accepted warmup class under identical parameters",
+  "not_claimed": ["7B GPU forward/backward", "CUDA Adam resume equivalence", "live Ray/NCCL worker execution"]
+}

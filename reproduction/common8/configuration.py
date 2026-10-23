@@ -49,7 +49,9 @@ def arguments(base):
             raw=str(val_before_train(run)).lower()
         elif key=='+data.mixed_first_selection' and run.get('question_probe') is not None:
             raw='false'
-        elif key=='trainer.save_freq' and run.get('easy2560_rolling_checkpoint') is True:
+        elif key=='retriever.url' and run.get('dynrpo7b_selection'):
+            raw='http://127.0.0.1:18110/retrieve'
+        elif key=='trainer.save_freq' and (run.get('easy2560_rolling_checkpoint') is True or run.get('dynrpo7b_selection')):
             raw='1'
         assert key not in [x.split('=', 1)[0] for x in overrides], 'Duplicate recipe override'
         if '@BASE@' in raw or '@MODEL@' in raw:
@@ -92,6 +94,10 @@ def arguments(base):
             '+algorithm.all_correct_virtual_zero=false'])
         if run.get('easy2560_rolling_checkpoint') is True:
             overrides.append('+trainer.rolling_checkpoint=true')
+    if run.get('dynrpo7b_selection'):
+        overrides.extend(['data.selection_mode=dynrpo7b',
+            'actor_rollout_ref.actor.ppo_logical_micro_batch_size=2',
+            '+algorithm.all_correct_virtual_zero=true'])
     from reproduction.common8.qprobe_configuration import arguments as qprobe_arguments
     overrides.extend(qprobe_arguments(run, base))
     from search_g1.rollout_phase_contract import hydra_arguments
