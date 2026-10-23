@@ -1,8 +1,8 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
-**Current evidence, 2026-10-23 22:04 CST:** production750491 has completed and
-sealed outer100 on the same four H100; outer101 has saved all2560 candidate questions.
-All4 have2000 actual Adam writes. Runtime remains frozen at dde1452; no restart,
+**Current evidence, 2026-10-23 23:11 CST:** production750491 has completed and
+sealed outer103 on the same four H100; outer104 has saved512 candidate questions.
+All4 have2060 actual Adam writes. Runtime remains frozen at dde1452; no restart,
 new GPU allocation, runtime edit or extra monitor forward was introduced.
 
 Fixed512 evaluation uses the same ordered NQ256/HotpotQA256 occurrences and
@@ -30,8 +30,8 @@ already accepted core SHA. The saved boundary includes post-fixed512/grounding10
 refit RNG and reward version, with callbacks complete. Both original archive
 controllers have completed100 and moved to waiting for150, without failure.
 This byte/state archive acceptance is not actual final CUDA recovery. The same
-training job continues;101 has made all20 writes/rank (cumulative2020), while its
-ordinary checkpoint seal remains pending at this observation.
+training job continues;103 is sealed after all20 writes/rank (cumulative2060), and
+104 has actually saved512 candidate questions. No runtime changes or restart occurred.
 See [full core/boundary/dependency receipts and scope](evidence/milestone100-archive-current-summary.json).
 The200/no201 target, fixed150/200, exact native51713/seven scores, full milestone
 archives and actual final native4 model/Adam/scheduler/RNG/dataequal recovery
@@ -40,6 +40,17 @@ remain required.
 See [all100 training/fixed512 metrics](evidence/training-em-reward-fixed512-through100-20261023.json),
 [through100 wall summary](evidence/combined-through100-summary.json) and
 [actual timing/counter records](evidence/combined-through100-timing.json).
+
+Latest ordinary101/102/103 whole walls are1558.486/1660.493/1749.846s.
+Actor times are140.061/140.436/144.214s; checkpoint write238.306/263.116/320.427s.
+Saved seal metadata places the last payload mtime to seal intervals at125.909/
+194.450/220.273s for effectively equal23-member/91.4GB checkpoints. Write and
+post-payload seal interval growth together account for92.226% of the101→103
+whole-wall increase. This locates the increase in checkpoint paths; SHA/fsync/
+filesystem waiting were not independently timed. It does not establish an FA3
+kernel regression. Training103 EM65.1%/reward0.867 uses changing selected512x5;
+latest fixed512 remains100=280/512. See
+[actual checkpoint timing and timestamp evidence](evidence/combined-ordinary101-103-checkpoint-wall-comparison.json).
 
 ## Historical twenty-outer observation, 2026-10-23 17:12 CST
 
