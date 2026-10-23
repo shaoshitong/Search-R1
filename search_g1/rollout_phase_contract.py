@@ -130,18 +130,28 @@ def scalar_metrics(output):
         ranks=[]
         syncs_per_rank=[0]*4
         snapshot_ids=set()
+        previous=None
         for event in phases:
+            reuse=event.get("snapshot_weight_reuse",False)
+            expected_syncs=(0 if reuse and previous is not None and
+                previous.get("execution_id")==event.get("execution_id") and
+                previous.get("retain_snapshot_weights") else 1)
             receipts=event['phase_metrics']
             if not isinstance(receipts,list) or len(receipts)!=4:
                 raise ValueError('DynRPO actual four-rank phase receipts missing')
             for rank,row in enumerate(receipts):
                 if (row.get('phase_id')!=event['phase_id'] or row.get('aborted') is not False or
                         not row.get('policy_snapshot_id') or
-                        type(row.get('weight_syncs')) is not int or row['weight_syncs']!=1):
+                        type(row.get('weight_syncs')) is not int or row['weight_syncs']!=expected_syncs):
                     raise ValueError('DynRPO phase-close receipt differs from its sampling boundary')
                 syncs_per_rank[rank]+=row['weight_syncs']
                 snapshot_ids.add(row['policy_snapshot_id'])
             ranks.extend(receipts)
+            previous=event
+        if phases[-1].get('snapshot_weight_reuse'):
+            released=phase.get('snapshot_release') or []
+            if len(released)!=4 or any(not r.get('released') or r.get('policy_snapshot_id') not in snapshot_ids for r in released):
+                raise ValueError('DynRPO retained weights were not released before actor work')
         if len(snapshot_ids)!=1 or len(set(syncs_per_rank))!=1:
             raise ValueError('DynRPO sampling snapshot or rank synchronization diverged')
         result['infra/rollout/weight_syncs_per_rank']=syncs_per_rank[0]

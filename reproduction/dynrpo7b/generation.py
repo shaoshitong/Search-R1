@@ -59,6 +59,9 @@ class PrefixCollector:
         self.tool_runner=tool_runner or (lambda text,search:execute_one_action(manager,text,search,retriever))
         self.special=sorted(set(int(x) for x in manager.tokenizer.all_special_ids))
         self.meta={};self.sampling=None;self.phase_events=[];self.captured_records=[]
+        self.execution_id=uuid.uuid4().hex
+        self.release_receipts=None
+        self.raw_generated_policy_tokens=0
 
     def prefix_rows(self,states=None):
         rows=[]
@@ -151,7 +154,8 @@ class PrefixCollector:
         try:
             opened=True
             service.begin(dict(phase_id=phase_id,policy_snapshot_id=identity['policy_snapshot_id'],
-                behavior_identity=copy.deepcopy(identity),expected_trajectory_count=len(states)))
+                behavior_identity=copy.deepcopy(identity),expected_trajectory_count=len(states),
+                snapshot_weight_reuse=True,retain_snapshot_weights=True))
             while remaining:
                 while unstarted and active<limits:
                     state=unstarted.popleft();state.status='ready';ready.append(state);active+=1
@@ -163,6 +167,7 @@ class PrefixCollector:
                              'prefix20_native_single_row_return_changed')
                     record=output.non_tensor_batch['sampling_behavior'][0]
                     self.captured_records.append(copy.deepcopy(record))
+                    self.raw_generated_policy_tokens+=len(record["raw_generated_token_ids"])
                     _require(record['request_id']==value['request_id'] and record['row_id']==state.trajectory_id,
                              'prefix20_native_request_identity_changed')
                     chunk_cut,_=validated_raw_turn(manager,output,0,record,request_tokens=state.request['prompt_token_ids'],
@@ -198,18 +203,24 @@ class PrefixCollector:
             if opened:service.end(abort=True)
             raise
         finally:pool.shutdown(wait=False,cancel_futures=True)
-        event=dict(phase='candidate_prefix' if prefix_only else 'selected_continuation',phase_id=phase_id,
+        event=dict(snapshot_weight_reuse=True,retain_snapshot_weights=True,execution_id=self.execution_id,
+            policy_snapshot_id=identity['policy_snapshot_id'],phase='candidate_prefix' if prefix_only else 'selected_continuation',phase_id=phase_id,
             trajectories=len(states),generation_requests=calls,peak_inflight_trajectories=peak,
             environment_actions=environment_actions,retrieval_concurrency=self.options.retrieval_concurrency,
             phase_elapsed_seconds=time.monotonic()-started,phase_metrics=metrics,actor_updates_during_phase=0)
         self.phase_events.append(event)
         return event
 
+    def release(self):
+        self.release_receipts=self.manager.actor_rollout_wg.release_generation_snapshot(self.identity['policy_snapshot_id'])
+        return self.release_receipts
+
     def output(self,states,identity):
         _require(len(states)>0 and len(states)%5==0 and all(s.status=='complete' for s in states),'dynrpo_complete_G5_required')
         padded=_left_pad([s.prompt for s in states],self.manager.tokenizer.pad_token_id)
         meta=dict(self.meta,async_rollout=dict(role='dynrpo7b_pause_select_continue',
             completed_trajectories=len(states),phases=self.phase_events,actor_updates_during_generation=0,
+            snapshot_release=self.release_receipts,
             generation_requests=sum(e['generation_requests'] for e in self.phase_events),
             environment_actions=sum(e['environment_actions'] for e in self.phase_events),
             peak_inflight_trajectories=max(e['peak_inflight_trajectories'] for e in self.phase_events),

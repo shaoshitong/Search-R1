@@ -52,6 +52,7 @@ with evaluator_gpu_lock():
  payload={'run_id':run['run_id'],'round':args.step,'version':version,'encoder':str(Path(args.model).resolve()),'commit':str(heads/'commit_probe.pkl'),'boundary':str(heads/'boundary_probe.pkl'),'encoder_sha256':encoder_hashes,'head_sha256':{n:hashlib.sha256((heads/n).read_bytes()).hexdigest() for n in ['commit_probe.pkl','boundary_probe.pkl']},'calibration_report':report,'label_proof':proof,'published_unix':time.time()}
  payload['calibration_report_sha256']=digest(heads/'calibration-report.json')
  payload['dump_sha256']={p.name:digest(p) for p in sorted(dump.iterdir()) if p.is_file()}
- with (round_dir/'version-manifest.json').open('x') as f:json.dump(payload,f,indent=2)
+ from reproduction.dynrpo7b.mixed_backstop import _atomic_json
+ _atomic_json(round_dir/'version-manifest.json',payload)
  live=base/'artifacts/live';live.mkdir(exist_ok=True);tmp=live/'manifest.json.tmp';tmp.write_text(json.dumps(payload,indent=2));os.replace(tmp,live/'manifest.json')
  print('SEARCH_G1_BOTH_PROBES_FITTED='+version,flush=True)

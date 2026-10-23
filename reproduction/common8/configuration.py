@@ -96,6 +96,7 @@ def arguments(base):
             overrides.append('+trainer.rolling_checkpoint=true')
     if run.get('dynrpo7b_selection'):
         overrides.extend(['data.selection_mode=dynrpo7b',
+            '+actor_rollout_ref.rollout.reuse_snapshot_weights=true',
             'actor_rollout_ref.actor.ppo_logical_micro_batch_size=2',
             '+algorithm.all_correct_virtual_zero=true'])
     from reproduction.common8.qprobe_configuration import arguments as qprobe_arguments

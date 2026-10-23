@@ -127,15 +127,23 @@ class ProbeRuntime:
                                        head_version=self.version)
         return receipts
 
-    def restore(self,path,expected_actor_snapshot_id):
+    def restore(self,path,expected_actor_snapshot_id,phase=None):
         import torch
         saved=torch.load(path,map_location='cpu',weights_only=False)
+        if saved['actor_snapshot_id'] != expected_actor_snapshot_id:
+            raise ValueError('Probe wrapper belongs to a different actor boundary')
+        if phase is not None:
+            saved = restored_probe_metadata(saved, phase)
         self.initialise()
-        self.rpc('load_state_dict',dict(reference=saved['reference']))
+        self.restore_receipts = self.rpc('load_state_dict',dict(reference=saved['reference']))
+        if phase is not None and phase['probe_completed_epoch'] == 3:
+            if any(row['completed_update_outer'] != saved['completed_outer'] for row in self.restore_receipts):
+                raise ValueError('Published probe tensor state differs from its completed update')
         self._probe_ref=saved['reference']
         self.completed_outer=saved['completed_outer']
         self.version=saved['head_version']
         self.last_rollout_ref=saved.get('last_rollout_ref')
+        self.pending=None
         if saved.get('probe_pending'):
             self.pending=dict(outer=self.completed_outer,fit_groups=saved['fit_groups'],
                 actor_snapshot_id=expected_actor_snapshot_id,
@@ -148,3 +156,23 @@ class ProbeRuntime:
                 old_output=(old.get('question_probe') or {}).get('output_dir',str(self.output_dir))
                 self.pending['fit_output_dir']=str(Path(old_output)/('update-%04d'%self.completed_outer))
         return saved
+
+
+def restored_probe_metadata(saved, phase):
+    """The phase journal can advance beyond the immutable pre-fit wrapper."""
+    result = copy.deepcopy(saved)
+    outer = result['completed_outer']
+    if phase['completed_actor_outer'] != outer:
+        raise ValueError('Probe phase and actor boundary differ')
+    epoch = phase['probe_completed_epoch']
+    if epoch:
+        reference = phase['probe_ref']
+        # A completed boundary publishes a wrapper; epoch journals publish the
+        # tensor receipt directly. Both resolve to the same raw/EMA/Adam/RNG.
+        result['reference'] = reference.get('reference', reference)
+        if epoch == 3:
+            result['head_version'] = 'seed1-E9-raw-online-%04d' % outer
+    if not phase['probe_pending'] and probe_update(outer) and epoch != 3:
+        raise ValueError('Published periodic probe has no completed three-epoch state')
+    result['probe_pending'] = phase['probe_pending']
+    return result

@@ -48,6 +48,19 @@ class DynRPOPhaseMetricsTests(unittest.TestCase):
         self.assertEqual(result['infra/rollout/engine_steps_sum'],150)
         self.assertEqual(result['infra/rollout/completed_requests_sum'],1230)
 
+    def test_one_sync_across_scoring_and_backstop_then_new_execution(self):
+        value=output(continuations=3)
+        events=value.meta_info['async_rollout']['phases']
+        for i,event in enumerate(events):
+            event.update(snapshot_weight_reuse=True,retain_snapshot_weights=True,execution_id='first')
+            for row in event['phase_metrics']:row['weight_syncs']=int(i==0)
+        value.meta_info['async_rollout']['snapshot_release']=[dict(released=True,policy_snapshot_id='actor-0')]*4
+        self.assertEqual(scalar_metrics(value)['infra/rollout/weight_syncs_per_rank'],1)
+        # A replacement process has no resident weights; it must sync once.
+        events[-1]['execution_id']='resumed'
+        for row in events[-1]['phase_metrics']:row['weight_syncs']=1
+        self.assertEqual(scalar_metrics(value)['infra/rollout/weight_syncs_per_rank'],2)
+
     def test_incomplete_or_divergent_receipts_rejected(self):
         for mutation in ('missing_rank','wrong_snapshot','aborted'):
             value=copy.deepcopy(output())

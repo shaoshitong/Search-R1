@@ -25,7 +25,7 @@ def _verify_once(path, expected):
 
 
 def _idle_actor(worker):
-    worker._assert_generation_phase_inactive()
+    worker._assert_generation_phase_inactive(release_snapshot_weights=False)
     # Native4 already offloads these at normal phase boundaries. Repeating
     # the configured offload here is cheap and makes the probe's GPU ownership
     # explicit; actor update/generation restores the existing FSDP shards.

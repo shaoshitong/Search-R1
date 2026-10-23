@@ -143,7 +143,8 @@ def actor_rows(batch):
 def _bindings(identity, sampling):
     return {'expected_' + name: identity[name] for name in
             ('run_id', 'source_sha256', 'slurm_job_id', 'logical_update', 'parent_group_ids',
-             'trajectory_ids', 'policy_snapshot_id')} | {'expected_sampling': sampling}
+             'trajectory_ids', 'policy_snapshot_id')} | {'expected_sampling': sampling} | (
+        {'expected_generation_producers':identity['generation_producers']} if identity.get('generation_producers') else {})
 
 
 def context_before_forward(batch):
@@ -154,6 +155,9 @@ def context_before_forward(batch):
         identity['run_id'], identity['source_sha256'], identity['slurm_job_id'])
     if run.get('execution_backend', 'slurm') == 'ssh_local':
         assert identity['execution_backend'] == 'ssh_local' and identity['execution_id'] == run['execution_id']
+    if identity.get('generation_producers'):
+        from reproduction.dynrpo7b.collection_resume import authenticated_producers
+        authenticated_producers(identity)
     rows = actor_rows(batch)
     ids = identity['trajectory_ids']
     actual_ids = batch.non_tensor_batch['behavior_trajectory_id'].tolist()
@@ -166,6 +170,8 @@ def context_before_forward(batch):
         slurm_job_id=job, logical_update=identity['logical_update'],
         policy_snapshot_id=identity['policy_snapshot_id'], sampling=sampling,
         parent_group_ids=identity['parent_group_ids'], trajectories=trajectories, actor_rows=rows)
+    if identity.get('generation_producers'):
+        trace['generation_producers'] = identity['generation_producers']
     bindings = _bindings(identity, sampling)
     private = write_private_evidence(base, trace,attempt_id=identity.get('attempt_id'))
     assert private['serialization_transformed'] is False

@@ -744,6 +744,17 @@ class ActorRolloutRefWorker(Worker):
                       actor_params_offloaded_during_phase=self._generation_phase_actor_offloaded, aborted=abort)
         return result
 
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def release_generation_snapshot(self, policy_snapshot_id):
+        self._assert_generation_phase_inactive(release_snapshot_weights=False)
+        manager = self.rollout_sharding_manager
+        resident = manager._resident_weight_snapshot
+        if resident not in (None, policy_snapshot_id):
+            raise ValueError('Cannot release another actor snapshot')
+        manager.release_snapshot_weights()
+        return dict(rank=self.rank, policy_snapshot_id=policy_snapshot_id,
+                    released=manager._resident_weight_snapshot is None)
+
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def generate_sequences(self, prompts: DataProto):
         from search_g1.prefix20_restore_only import deny_training
@@ -852,6 +863,11 @@ class ActorRolloutRefWorker(Worker):
         assert self._is_actor and self._is_rollout
         from search_g1.qprobe_teacher_worker import restore_rng
         return restore_rng(self, directory)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def restore_dynrpo7b_collection_rng(self, references):
+        from reproduction.dynrpo7b.collection_resume import restore_worker_rng
+        return restore_worker_rng(self, references)
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def restore_mixed_full_state(self, receipt_path):

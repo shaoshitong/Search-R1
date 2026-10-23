@@ -452,9 +452,19 @@ def refresh_after_checkpoint(step, checkpoint):
     assert released['suspended'] and released['version'] == previous['version']
     assert released['allocated_bytes_after_release'] < 256*1024*1024
     env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(run['probe_visible_device']))
-    subprocess.run([str(base/'env/bin/python'), '-m', 'reproduction.common8.refit',
-        '--step',str(step),'--model',str(checkpoint)],env=env,check=True)
+    fitted = None
+    if run.get('dynrpo7b_selection'):
+        from reproduction.dynrpo7b.reward_adapter import reuse_fitted
+        fitted = reuse_fitted(base, run, step, checkpoint)
+    if fitted is None:
+        subprocess.run([str(base/'env/bin/python'), '-m', 'reproduction.common8.refit',
+            '--step',str(step),'--model',str(checkpoint)],env=env,check=True)
     expected = json.loads((base/'artifacts/live/manifest.json').read_text())
+    if fitted is not None:
+        response = session.post(probe_url('resume', run), json={'version':expected['version']}, timeout=300)
+        response.raise_for_status()
+        if not response.json().get('resumed'):
+            raise RuntimeError('Fitted reward manifest was not adopted')
     for _ in range(120):
         status = session.get(probe_url('health', run),timeout=10).json()
         if status.get('version') == expected['version'] and status.get('round') == step:

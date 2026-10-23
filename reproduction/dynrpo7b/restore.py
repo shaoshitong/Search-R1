@@ -228,7 +228,7 @@ def restore_driver(trainer, receipt_path):
         raise ValueError("Driver and saved actor outers differ")
     for manager in (trainer.reward_fn, getattr(trainer, "val_reward_fn", None)):
         if manager is not None:
-            manager.expected_probe_version = saved["probe_version"]
+            manager.expected_probe_version = phase["grounding_version"]
     torch.set_rng_state(saved["rng"]["torch_cpu"])
     np.random.set_state(saved["rng"]["numpy"])
     random.setstate(saved["rng"]["python"])
@@ -241,6 +241,7 @@ def restore_driver(trainer, receipt_path):
     probe = receipt["question_probe"]
     trainer._restored_qprobe_state = dict(path=probe["path"], actor_snapshot_id=receipt["run_id"] + ":" + str(outer))
     trainer._dynrpo7b_restored_phase = copy.deepcopy(phase)
+    trainer._dynrpo7b_boundary_pending = receipt["status"] != "DYNRPO7B_ROLLING_READY"
     trainer._restored_reward_refresh_pending = phase["grounding_pending"]
     current_base = Path(os.environ["SEARCH_G1_BASE"])
     journal = RuntimeCheckpoint(current_base / "preparation/dynrpo7b-checkpoints", receipt["run_id"])
@@ -249,7 +250,7 @@ def restore_driver(trainer, receipt_path):
     result = dict(kind=KIND, completed_outer=outer, source_checkpoint=str(checkpoint),
                   actual_driver_rng_readback_equal=True,
                   actual_candidate_source_cursor=saved["candidate_stream"]["consumed_source_rows"],
-                  actual_probe_version=saved["probe_version"],
+                  actual_probe_version=phase["grounding_version"],
                   probe_pending=phase["probe_pending"], probe_completed_epoch=phase["probe_completed_epoch"],
                   reward_refresh_pending=phase["grounding_pending"], actor_replayed=False)
     _atomic_json(current_base / "logs/full-state-restored-driver.json", result)

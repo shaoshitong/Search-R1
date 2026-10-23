@@ -103,3 +103,41 @@ def install_restored(base, run):
     publish(directory / 'version-manifest.json', relocated)
     publish(base / 'artifacts/live/manifest.json', relocated)
     return relocated
+
+
+def reuse_fitted(base, run, step, checkpoint):
+    """Publish an already fitted immutable manifest, even across a resume base."""
+    from .mixed_backstop import _atomic_json
+    base, checkpoint = Path(base), Path(checkpoint).resolve()
+    complete = json.loads((checkpoint/'complete.json').read_text())
+    if complete['run_id'] != run['run_id'] or complete['step'] != step:
+        raise ValueError('Grounding refresh actor boundary differs')
+    roots = [base]
+    restore = run.get('full_state_restore', {})
+    if restore.get('source_base'):
+        roots.append(Path(restore['source_base']))
+    # The checkpoint can originate before the immediate resume parent.
+    roots.extend(p for p in checkpoint.parents if (p/'logs/run-manifest.json').is_file())
+    candidates = []
+    for root in dict.fromkeys(roots):
+        candidates.extend((root/'artifacts').glob('round_%d-*/version-manifest.json' % step))
+    for path in sorted(set(candidates)):
+        value = json.loads(path.read_text())
+        if (value.get('run_id') != run['run_id'] or value.get('round') != step or
+                Path(value['encoder']).resolve() != checkpoint):
+            continue
+        if any(complete['files_sha256'].get(name, expected) != expected
+               for name, expected in value['encoder_sha256'].items()):
+            raise ValueError('Fitted reward encoder differs from committed actor')
+        for category, hashes in (('heads', dict(value['head_sha256'], **{
+                'calibration-report.json':value['calibration_report_sha256']})),
+                ('dumps', value['dump_sha256'])):
+            for name, expected in hashes.items():
+                if sha(path.parent/category/name) != expected:
+                    raise ValueError('Fitted reward asset SHA changed: ' + name)
+        _atomic_json(base/'artifacts/live/manifest.json', value)
+        _atomic_json(base/'preparation'/('reward-refit-reused-%04d.json' % step), dict(
+            manifest=str(path), sha256=sha(path), version=value['version'],
+            completed_outer=step, new_rollout=False, refitted=False, pending_adoption=True))
+        return value
+    return None

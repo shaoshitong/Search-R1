@@ -541,8 +541,9 @@ def make_trace(*, run_id, source_sha256, slurm_job_id, logical_update, policy_sn
 
 def _outer(trace, *, expected_run_id, expected_source_sha256, expected_slurm_job_id,
            expected_logical_update, expected_parent_group_ids, expected_trajectory_ids,
-           expected_policy_snapshot_id, expected_sampling, actor_rows=None):
-    _require(type(trace) is dict and set(trace) == _TRACE_FIELDS and
+           expected_policy_snapshot_id, expected_sampling, actor_rows=None, expected_generation_producers=None):
+    fields = _TRACE_FIELDS | ({'generation_producers'} if expected_generation_producers is not None else set())
+    _require(type(trace) is dict and set(trace) == fields and
              type(trace['schema_version']) is int and trace['schema_version'] == SCHEMA_VERSION and trace['role'] == TRACE_ROLE,
              'outer_trace_schema_changed')
     for name, value in (('run_id', expected_run_id), ('slurm_job_id', expected_slurm_job_id),
@@ -576,6 +577,11 @@ def _outer(trace, *, expected_run_id, expected_source_sha256, expected_slurm_job
              'outer_missing_trajectory_or_actor_row')
     by_id = {}
     token_metadata = None
+    producers = expected_generation_producers or [dict(run_id=expected_run_id,
+        slurm_job_id=expected_slurm_job_id, source_map_sha256=document_sha256(expected_source_sha256))]
+    if expected_generation_producers is not None:
+        _require(trace.get('generation_producers') == producers and bool(producers) and
+                 all(p['run_id'] == expected_run_id for p in producers), 'historical_generation_producers_changed')
     for index, trajectory in enumerate(trajectories):
         _require(type(trajectory) is dict and set(trajectory) == {'trajectory_id', 'parent_occurrence_index', 'sample_index', 'turns'} and
                  trajectory['trajectory_id'] == ids[index] and type(trajectory['parent_occurrence_index']) is int and
@@ -588,9 +594,8 @@ def _outer(trace, *, expected_run_id, expected_source_sha256, expected_slurm_job
             for record in provenance_records(turn):
                 if 'effective_stop_provenance' in record:
                     provenance = record['effective_stop_provenance']['generation_config']
-                    _require(provenance['run_id'] == expected_run_id and
-                             provenance['slurm_job_id'] == expected_slurm_job_id and
-                             provenance['source_map_sha256'] == document_sha256(expected_source_sha256),
+                    _require(any(all(provenance[key] == p[key] for key in
+                             ('run_id','slurm_job_id','source_map_sha256')) for p in producers),
                              'effective_stop_run_source_binding_changed')
             current = dict(eos_token_id=turn['eos_token_id'], pad_token_id=turn['pad_token_id'],
                            special_token_ids=sorted(set(_tokens(turn['special_token_ids'], 'special_token_ids'))))

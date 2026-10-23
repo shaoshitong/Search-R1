@@ -951,7 +951,9 @@ class RayPPOTrainer(object):
                 restored = getattr(self, '_restored_qprobe_state', None)
                 snapshot = restored['path'] if restored else probe_config.get("snapshot_path")
                 if snapshot:
-                    restored_state=self.qprobe_runtime.restore(snapshot, run['run_id']+':'+str(continuation_k))
+                    restored_state=self.qprobe_runtime.restore(snapshot, run['run_id']+':'+str(continuation_k),
+                        **({'phase':self._dynrpo7b_restored_phase} if selection_mode=='dynrpo7b' and
+                           getattr(self,'_dynrpo7b_restored_phase',None) else {}))
                     if selection_mode=='prefix20_probe':
                         from search_g1.full_state_restore import equal_tree,publish
                         from search_g1.training_state import compact_stream_state,driver_rng
@@ -967,7 +969,7 @@ class RayPPOTrainer(object):
                     if phase['grounding_pending']:
                         from reproduction.profile import refresh_after_checkpoint
                         self.reward_fn.expected_probe_version=refresh_after_checkpoint(continuation_k,run['full_state_restore']['source_checkpoint'])
-                    if phase['probe_pending'] or phase['grounding_pending']:
+                    if phase['probe_pending'] or phase['grounding_pending'] or getattr(self,'_dynrpo7b_boundary_pending',False):
                         from reproduction.dynrpo7b.rolling import publish_imported_boundary
                         publish_imported_boundary(self,run['full_state_restore']['source_checkpoint'])
                 if self.qprobe_runtime.completed_outer != continuation_k:
@@ -984,7 +986,11 @@ class RayPPOTrainer(object):
                 metrics = {}
                 timing_raw = {}
                 attempt_result=None
-                attempt_identity=inline_attempts.begin() if inline_attempts is not None else None
+                if selection_mode=='dynrpo7b' and inline_attempts is not None:
+                    from reproduction.dynrpo7b.collection_resume import begin_attempt
+                    attempt_identity=begin_attempt(self,inline_attempts)
+                else:
+                    attempt_identity=inline_attempts.begin() if inline_attempts is not None else None
 
                 if mixed_stream is not None:
                     if selection_mode=='dynrpo7b':
