@@ -1,7 +1,7 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
 **Current evidence, 2026-10-23:** healthy production750029 completed and sealed
-outer69; all4 ranks reached1380 Adam writes/scheduler69. It remains running.
+outer69; all4 ranks reached1380 Adam writes/scheduler69. It remains running; outer70 has saved1536 candidate questions.
 Search-only stop reduced512-question generation158.192→94.030s (40.56%)
 with async retrieval, but only180.867→163.918s (9.37%) with the production-like
 serial retrieval path. Both pairs completed0:0 on4H100. Raw tokens fell about68%
@@ -10,7 +10,11 @@ in both, while decode calls barely changed in the serial pair.
 The prepared stop-only target is **superseded and must not be stopped/submitted**.
 Production750029 and745198 remain unchanged while the combination of the already
 tested async CPU proxy, singleton-E5/FAISS16 batching and search-only stop is
-wired into an explicit new profile and separate7day2GPU service. The old prepared
+ready in the explicit new profile. Separate7day2GPU service750471 is READY on
+ACD1-4 and completed actual64-query GPU document/score/hash outputs. The
+combined target is prepared with frozen runtime dde1452 and explicit750471
+binding. No new training job has been submitted; retain the healthy source
+until its latest complete sealed boundary at or after70. The old prepared
 artifact/evidence is retained. Neither candidate result proves whole-outer or
 final-quality acceptance. See
 [serial versus async actual pairs](evidence/search-action-stop-serial-vs-async-summary.json),
@@ -319,3 +323,5 @@ its shared private retriever with the existing full candidate A/B. Actual GPU
 performance remains pending. See
 [real saved-token replay](evidence/search-action-stop-saved-cpu-replay-summary.json)
 and [raw versus retained accounting](evidence/candidate-raw-retained-token-accounting.json).
+
+[Combined target and actual GPU service readiness](evidence/combined-batch-search-stop-prepared-summary.json).

@@ -533,3 +533,19 @@ remain unchanged; the existing continuation entry accepts an explicit new receip
 The28 relevant CPU tests passed. These are wiring tests, not formal CUDA restore
 or complete training-outer speed acceptance. Forward/loss/reward/sampling/four-GPU
 geometry/200-no201 are unchanged.
+
+## Combined target prepared, old production continues
+
+Actual seven-day2H100 service750471 onACD1-4 is READY at08:26CST, with
+64 original stage queries completed and64 rows each of document IDs, scores
+and document SHA. Singleton E5 and true FAISS16/2ms settings are recorded.
+Both new service and training immutable runtime dde1452 have all2007 source
+files/26,475,549 bytes SHA-verified remotely. The combined target passed the
+existing prepare path with explicit750471 receipt at08:27CST.
+
+No source stop or new training submission has occurred. Production750029
+sealed69 and saved1536 questions of70; preserve its current work until a
+complete sealed boundary>=70. Whole-outer gain, actual new native4 restore
+and five completed follow-up outers remain pending. Existing745198 and archive
+consumers remain untouched. See
+[prepared target and actual service result](evidence/combined-batch-search-stop-prepared-summary.json).
