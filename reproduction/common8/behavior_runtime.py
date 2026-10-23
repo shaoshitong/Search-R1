@@ -73,9 +73,19 @@ def prepare_identity(parent_batch, logical_update, *, repeats, validation=False,
     assert type(logical_update) is int and logical_update >= 0
     assert type(candidate_prefix) is bool
     if candidate_prefix:
-        assert not validation and not teacher_warmup and count == 5120 and repeats == 5
-        assert world_size(run) == 4 and run.get('data_selection_mode') == 'prefix20_probe'
-        assert run.get('question_probe',{}).get('probe_architecture') == 'qwen2_prefix20_trajectory_em_v1'
+        assert not validation and not teacher_warmup and repeats == 5
+        assert world_size(run) == 4
+        if run.get('data_selection_mode') == 'dynrpo7b':
+            from reproduction.dynrpo7b.infra_profile import native4
+            from reproduction.dynrpo7b.selection import candidate_budget
+            assert native4(run)
+            assert run['question_probe'].get('probe_architecture') == 'qwen7b_L15_packed_group_variance_v1'
+            # Identity is allocated once for the original full candidate pool.
+            # Continuation and Backstop inherit its exact G5 ID subsets.
+            assert candidate_offset == 0 and count == candidate_budget(logical_update)
+        else:
+            assert count == 5120 and run.get('data_selection_mode') == 'prefix20_probe'
+            assert run.get('question_probe',{}).get('probe_architecture') == 'qwen2_prefix20_trajectory_em_v1'
     else:
         assert repeats == (1 if validation else 5) and (validation or count == 512)
     assert type(teacher_warmup) is bool
