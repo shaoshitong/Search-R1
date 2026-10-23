@@ -51,3 +51,8 @@
 [根控制器](fullP80-selected-root-control/README.md)已将两E9/raw与CPU proof绑定到换序audit并唯一提交**750474**，normal/acd_u、两GPU、绑定SHA `1bca7df0a5ba108758f7082469b2352e260fbc711047382a99ea1f8925a1acdc`。[提交回执](fullP80-selected-root-control/actual-audit-submission.json)及[首读RUNNING元数据](fullP80-selected-root-control/actual-audit-live.json)不等于评分推进或审计通过；仍待真实进度、原顺序数值回放及全部预设顺序结果。
 
 **actual candidate freeze、最终评分和最终确认尚未完成，final4096仍盲。** 当前剩余为audit实测与验收、actual freeze、按原两个固定2048池执行最终确认及资源收尾；不能把family内E9/raw选择或训练/CPU正常完成当成整个goal完成。本次只更新本地既有文档，未访问远端、CP、最终池或修改任务。
+
+
+### 08:36 CST actual audit retry
+
+First owned audit750474 failed during initial CUDA device initialization on the previously avoidedACD1-13, before model loading or prediction. The original entry omitted this known node exclusion; no algorithm/runtime change was needed. Root retained actual FAILED1:0 and both rank failures, verified no live same-name job/free task locks, then uniquely submitted unchanged bound audit750476 excludingACD1-13. Actual retry RUNNING onACD1-11, inference progress/complete pending. See [retry receipt](fullP80-selected-root-control/actual-audit-CUDA-retry-submission.json). Final freeze/scoring remain pending and final4096 remains blind.

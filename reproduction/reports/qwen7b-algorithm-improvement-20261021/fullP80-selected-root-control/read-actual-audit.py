@@ -8,13 +8,13 @@ def command(args):
  r=subprocess.run(args,stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=20)
  return dict(returncode=r.returncode,stdout=r.stdout.strip(),stderr=r.stderr[-700:])
 out=dict(time=time.time(),read_only=True,checkpoint_tensors_loaded=False,final4096_read=False,files={})
-for n in ['audit-submission.json','audit-submit-intent.json']:
+for n in ['audit-submission.json','audit-submit-intent.json','audit-CUDA-retry-submission.json','audit-CUDA-retry-intent.json']:
  p=control/n
  if p.is_file():out['files'][n]=read(p)
 for n in ['controller.json','progress-rank-0.json','progress-rank-1.json','failure-rank-0.json','failure-rank-1.json','complete.json','seed1/complete.json','seed2/complete.json']:
  p=base/n
  if p.is_file():out['files'][n]=read(p)
-sub=out['files'].get('audit-submission.json')
+sub=out['files'].get('audit-CUDA-retry-submission.json')or out['files'].get('audit-submission.json')
 if sub:
  job=str(sub['job_id'])
  out['squeue']=command(['squeue','-h','-j',job,'-o','%i|%T|%M|%R'])
