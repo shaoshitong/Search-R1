@@ -36,5 +36,60 @@
   "extra_GPU_qualification_jobs": 0,
   "source_remote_SHA_verified": true,
   "remote_source_files_SHA_verified": 1941,
-  "previous_goal_turn_classification": "progress"
+  "previous_goal_turn_classification": "progress",
+  "updated_utc": "2026-10-23T06:32:55.630902+00:00",
+  "actual_training_progress": {
+    "completed_outer": 0,
+    "actual_actor_updates": 0,
+    "first_iteration_not_yet_completed": true
+  },
+  "startup_failure_history": [
+    {
+      "job": 751019,
+      "state": "FAILED",
+      "node": "ACD1-59",
+      "failure": "Allocated GPU4 but actual NVIDIA inventory only3 H100, recovery_action Reboot",
+      "actor_updates": 0,
+      "fix": "Exclude ACD1-59"
+    },
+    {
+      "job": 751047,
+      "state": "FAILED",
+      "node": "ACD1-17",
+      "failure": "Restored reward archive omits original calibration dumps",
+      "actor_updates": 0,
+      "fix": "All3 original archive dumps SHA match source manifest; use exact provenance fallback",
+      "fix_commit": "a9913de20040dc92def196984531aae0b61c88c7"
+    },
+    {
+      "job": 751077,
+      "state": "FAILED",
+      "node": "ACD1-21",
+      "actor_updates": 0,
+      "failure": "Old prefix20-only candidate identity assertion in common8.behavior_runtime.prepare_identity before generation"
+    },
+    {
+      "job": 751110,
+      "state": "FAILED",
+      "node": "ACD1-21",
+      "actor_updates": 0,
+      "failure": "Calibration audit exclusive create EEXIST with zero-byte current audit; prior valid derivative was archived"
+    }
+  ],
+  "probe_component_actual_integration": {
+    "job": 751107,
+    "state": "COMPLETED",
+    "exit_code": "0:0",
+    "report": "probe-native-integration-751107.json",
+    "scope": "One H100 inherited probe adapter with8 authentic previously viewed G5; not4rank actor training acceptance",
+    "saved_loaded_representative_state_bitwise_equal": true,
+    "saved_loaded_RNG_bitwise_equal": true,
+    "next_step_loss_equal": true,
+    "temporary_tensors_removed": true
+  },
+  "current_training_status": "751110 terminal failure in calibration audit exclusive create; repair in progress; no actor update/checkpoint exists",
+  "source_versions": {
+    "formal_runtime": "194b7697f84725bd14e17e128dd8cd4bf6dfc007",
+    "helper": "d96c53ad02266156fc6343472c4fbfcd7aaecc2f"
+  }
 }

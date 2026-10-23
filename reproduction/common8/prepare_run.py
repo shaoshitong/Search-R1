@@ -5,6 +5,8 @@ import json
 import os
 import time
 import uuid
+import fcntl
+from contextlib import contextmanager
 from pathlib import Path
 from reproduction.common8.verify_data import digest, probe_question_id, verify
 from reproduction.common8.formal_contract import CONTRACT_KIND, TARGET_UPDATES,SAFETY_MODE, assert_formal_run
@@ -31,7 +33,58 @@ def write_method(base, commit, source, restoration=False):
     return method
 
 
+@contextmanager
+def calibration_lock(base):
+    directory = Path(base) / 'preparation'
+    directory.mkdir(parents=True, exist_ok=True)
+    with (directory / 'calibration-derive.lock').open('a') as handle:
+        fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+
+
+def _empty_calibration_targets(base):
+    for name in ('calibration-300.parquet', 'audit.json'):
+        if (Path(base) / 'data' / name).exists():
+            raise FileExistsError('Existing calibration derivative must not be replaced: ' + name)
+
+
+def _publish_calibration_locked(base, selected, audit, parquet_writer):
+    """Publish complete derivatives; audit is the last committed file."""
+    base = Path(base)
+    _empty_calibration_targets(base)
+    token = uuid.uuid4().hex
+    parquet = base / 'data/calibration-300.parquet'
+    audit_path = base / 'data/audit.json'
+    staged_parquet = parquet.with_name('.calibration-300.' + token + '.partial.parquet')
+    staged_audit = audit_path.with_name('.audit.' + token + '.partial.json')
+    try:
+        parquet_writer(selected, staged_parquet)
+        with staged_parquet.open('rb') as stream:
+            os.fsync(stream.fileno())
+        with staged_audit.open('w') as stream:
+            json.dump(audit, stream, indent=2)
+            stream.flush(); os.fsync(stream.fileno())
+        _empty_calibration_targets(base)
+        os.replace(staged_parquet, parquet)
+        os.replace(staged_audit, audit_path)
+        descriptor = os.open(parquet.parent, os.O_RDONLY)
+        try: os.fsync(descriptor)
+        finally: os.close(descriptor)
+    finally:
+        for path in (staged_parquet, staged_audit):
+            if path.exists(): path.unlink()
+
+
 def derive_calibration(base):
+    with calibration_lock(base):
+        _empty_calibration_targets(base)
+        return _derive_calibration_locked(base)
+
+
+def _derive_calibration_locked(base):
     import numpy as np
     import pyarrow.parquet as pq
     proof=verify(base/'data')
@@ -50,13 +103,10 @@ def derive_calibration(base):
             if count==150:break
         assert count==150
     chosen.sort()
-    path=base/'data/calibration-300.parquet'
-    assert not path.exists(), 'Existing derivative must not be silently replaced'
-    pq.write_table(table.take(chosen),path)
     audit=dict(calibration_count=300,calibration_question_ids=[ids[i] for i in chosen],
         original_train_row_indices=chosen, original_train_sha256=proof['products']['train']['sha256'],
         semantics='train-derived probe fitting subset; every canonical training row retained')
-    with (base/'data/audit.json').open('x') as f:json.dump(audit,f,indent=2)
+    _publish_calibration_locked(base, table.take(chosen), audit, pq.write_table)
     assert verify(base/'data')==proof, 'Canonical shared files changed during derivative creation'
     return audit
 
