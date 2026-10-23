@@ -1,6 +1,6 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
-**Current evidence, 2026-10-23 22:00 CST:** production750491 has completed and
+**Current evidence, 2026-10-23 22:04 CST:** production750491 has completed and
 sealed outer100 on the same four H100; outer101 has saved all2560 candidate questions.
 All4 have2000 actual Adam writes. Runtime remains frozen at dde1452; no restart,
 new GPU allocation, runtime edit or extra monitor forward was introduced.
@@ -22,13 +22,17 @@ average1518.479s (25m18.48s). Whole wall includes checkpoints/seals/inter-outer
 work; validation/checkpoint/inter-outer overhead at100 is not independently
 decomposed. Different policy/data prevent strict same-input timing causality.
 
-The100 core archive has received **all1351 files /121,925,546,599 bytes** on
-HKUST3 and passed independent fresh destination SHA readback and fsync. Actual
-stream growth was measured56.043GB→121.925GB. Fresh source readback and
-post-callback/dependency acceptance are still pending, so the full milestone
-archive is not yet accepted. This is not actual final CUDA recovery. Existing
-core/companion controllers are live without recorded failures; healthy training continues.
-See [archive destination receipt/scope](evidence/milestone100-archive-current-summary.json).
+The100 full archive is accepted: **all1351 core files /121,925,546,599 bytes**
+passed incoming SHA, independent fresh HKUST3 readback/fsync and fresh HPC3 source
+readback. The eight-file post-callback boundary and seven transferred dependency
+files are accepted; the dependency closure covers all manifests and binds the
+already accepted core SHA. The saved boundary includes post-fixed512/grounding100
+refit RNG and reward version, with callbacks complete. Both original archive
+controllers have completed100 and moved to waiting for150, without failure.
+This byte/state archive acceptance is not actual final CUDA recovery. The same
+training job continues;101 has made all20 writes/rank (cumulative2020), while its
+ordinary checkpoint seal remains pending at this observation.
+See [full core/boundary/dependency receipts and scope](evidence/milestone100-archive-current-summary.json).
 The200/no201 target, fixed150/200, exact native51713/seven scores, full milestone
 archives and actual final native4 model/Adam/scheduler/RNG/dataequal recovery
 remain required.
