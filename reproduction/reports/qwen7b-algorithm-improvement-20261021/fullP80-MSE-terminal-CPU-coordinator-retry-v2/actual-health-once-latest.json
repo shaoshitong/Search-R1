@@ -1,2 +1,60 @@
- 
-{"status": "TWO_EXISTING_COORDINATORS_BOUNDED_METADATA_HEALTH_READ", "time": 1792712286.6720066, "workers": [{"job_id": "750189", "version": "v1", "PID": 3336295, "start_ticks": "1408487", "actual_same_identity_live": true, "actual_proc_state": "S", "actual_proc_children": "", "own_coordinator_FLOCK_confirmed": true, "common_CPU_mutex_FD_open": false, "checkpoint_tensor_FD_open": false, "progress": {"CP_or_tensor_opened": false, "accounting": "750189|RUNNING|0:0", "actual_complete": null, "job_id": "750189", "polls": 297, "rank_progress": {"0": {"actual_Adam_updates": 10158, "cursor": 10158, "epoch": 8, "time": 1792712277.4664192}, "1": {"actual_Adam_updates": 10158, "cursor": 10158, "epoch": 8, "time": 1792712277.4674277}}, "shared_CPU_mutex_held": false, "stage": "WAITING_ACTUAL_TERMINAL_NO_CP_OR_COMMON_LOCK_HELD", "time": 1792712278.2423666}, "active_child": null, "complete": null, "failure": null}, {"job_id": "750190", "version": "v2", "PID": 29786, "start_ticks": "1771045", "actual_same_identity_live": true, "actual_proc_state": "S", "actual_proc_children": "", "own_coordinator_FLOCK_confirmed": true, "common_CPU_mutex_FD_open": false, "checkpoint_tensor_FD_open": false, "progress": {"CP_or_tensor_opened": false, "accounting": "750190|RUNNING|0:0", "actual_complete": null, "job_id": "750190", "observation_errors": 0, "polls": 177, "rank_progress": {"0": {"actual_Adam_updates": 12440, "cursor": 12440, "epoch": 10, "time": 1792712285.0484571}, "1": {"actual_Adam_updates": 12440, "cursor": 12440, "epoch": 10, "time": 1792712285.0484707}}, "shared_CPU_mutex_held": false, "stage": "WAITING_ACTUAL_TERMINAL_NO_CP_OR_COMMON_LOCK_HELD", "time": 1792712285.5818095}, "active_child": null, "complete": null, "failure": null}], "CP_tensor_loaded": false, "worker_training_Slurm_changed": false, "storage_quota_repeated": false, "final4096_read": false}
+{
+  "status": "SEED1_ACTIVE_FOLLOWER_METADATA_HEALTH_SEED2_ACCEPTED_EXPECTED_EXIT",
+  "time": 1792713391.0321221,
+  "workers": [
+    {
+      "job_id": "750189",
+      "version": "v1",
+      "PID": 3336295,
+      "start_ticks": "1408487",
+      "actual_same_identity_live": true,
+      "actual_proc_state": "S",
+      "actual_proc_children": "",
+      "own_coordinator_FLOCK_confirmed": true,
+      "common_CPU_mutex_FD_open": false,
+      "checkpoint_tensor_FD_open": false,
+      "progress": {
+        "CP_or_tensor_opened": false,
+        "accounting": "750189|RUNNING|0:0",
+        "actual_complete": null,
+        "job_id": "750189",
+        "polls": 333,
+        "rank_progress": {
+          "0": {
+            "actual_Adam_updates": 11383,
+            "cursor": 11383,
+            "epoch": 9,
+            "time": 1792713362.8099184
+          },
+          "1": {
+            "actual_Adam_updates": 11383,
+            "cursor": 11383,
+            "epoch": 9,
+            "time": 1792713362.8105266
+          }
+        },
+        "shared_CPU_mutex_held": false,
+        "stage": "WAITING_ACTUAL_TERMINAL_NO_CP_OR_COMMON_LOCK_HELD",
+        "time": 1792713363.5466697
+      },
+      "active_child": null,
+      "complete": null,
+      "failure": null
+    }
+  ],
+  "sacct_seed1": {
+    "returncode": 0,
+    "stdout": "750189|RUNNING|0:0|02:51:17|ACD1-20\n750189.batch|RUNNING|0:0|02:51:17|ACD1-20\n750189.extern|RUNNING|0:0|02:51:17|ACD1-20\n750189.0|RUNNING|0:0|02:51:17|ACD1-20\n",
+    "stderr": ""
+  },
+  "seed2": {
+    "job_id": "750190",
+    "status": "TERMINAL_ACCEPTED_EXPECTED_EXIT",
+    "previously_verified_receipt_sha256": "bdf7f863a5f9e93abade669a83473de988349b83524404e861cf14fe914f317d",
+    "no_recheck_or_restart": true
+  },
+  "CP_tensor_loaded": false,
+  "new_CPU_process_started": false,
+  "worker_training_Slurm_changed": false,
+  "final4096_read": false
+}

@@ -13,7 +13,8 @@
         5,
         6,
         7,
-        8
+        8,
+        9
       ],
       "job_id": "750189",
       "source_publication": {
@@ -572,6 +573,62 @@
       "seed": "seed1",
       "selected_QID_SHA256": "0f2dfdc8b354c25261235e91cd7fdfed7404cc3e3f12e0cddcece066f589e6da",
       "selected_nonMixed_questions": 192,
+      "state": "EMA"
+    },
+    {
+      "EM_count_histogram": {
+        "0": 176,
+        "1": 73,
+        "2": 66,
+        "3": 84,
+        "4": 106,
+        "5": 7
+      },
+      "Mixed_fraction": 0.642578125,
+      "Top512": {
+        "Mixed": 329,
+        "all_correct": 7,
+        "all_wrong": 176
+      },
+      "epoch": 9,
+      "error_composition": {
+        "all_correct_fraction": 0.03825136612021858,
+        "all_wrong_fraction": 0.9617486338797814
+      },
+      "evaluation_Top512_exact_match": true,
+      "fixed_pool_identity_SHA256": "0520e04dd7fc6e8eb9f66865299d6345c013ca4222141f794255bc57d9954914",
+      "job_id": "750189",
+      "seed": "seed1",
+      "selected_QID_SHA256": "137d13660e057adad2bfea62218510f18046f39fe0b8f177518b98e85273c4ac",
+      "selected_nonMixed_questions": 183,
+      "state": "raw"
+    },
+    {
+      "EM_count_histogram": {
+        "0": 178,
+        "1": 64,
+        "2": 69,
+        "3": 84,
+        "4": 109,
+        "5": 8
+      },
+      "Mixed_fraction": 0.63671875,
+      "Top512": {
+        "Mixed": 326,
+        "all_correct": 8,
+        "all_wrong": 178
+      },
+      "epoch": 9,
+      "error_composition": {
+        "all_correct_fraction": 0.043010752688172046,
+        "all_wrong_fraction": 0.956989247311828
+      },
+      "evaluation_Top512_exact_match": true,
+      "fixed_pool_identity_SHA256": "0520e04dd7fc6e8eb9f66865299d6345c013ca4222141f794255bc57d9954914",
+      "job_id": "750189",
+      "seed": "seed1",
+      "selected_QID_SHA256": "e6c95d28c654c09d4c1e2c16a195869bc63159a2055807d0ca1049848adb9e4e",
+      "selected_nonMixed_questions": 186,
       "state": "EMA"
     },
     {
@@ -1191,7 +1248,7 @@
       "state": "EMA"
     }
   ],
-  "seconds": 0.41234612464904785,
+  "seconds": 0.6340968608856201,
   "source_proofs": {
     "seed1:epoch00": {
       "evaluation": {
@@ -1299,6 +1356,18 @@
         "bytes": 87379,
         "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/epoch-08-fixed_validation2048_G5-predictions.jsonl.gz",
         "sha256": "6397680e5d64d2a974dd17002d618e86f0829831c70e147dd3739952630a5d32"
+      }
+    },
+    "seed1:epoch09": {
+      "evaluation": {
+        "bytes": 5767,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/evaluation-epoch-09.json",
+        "sha256": "c90413d79c882ca212bdb1deb1174c8c273ae17516a8c027fd5f67f65edc9776"
+      },
+      "predictions": {
+        "bytes": 86926,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/epoch-09-fixed_validation2048_G5-predictions.jsonl.gz",
+        "sha256": "4a72a0ed8c5e28a5680997f5fc2a07aff1802f23794b0fb2a823991e1904f851"
       }
     },
     "seed2:epoch00": {
@@ -1435,6 +1504,6 @@
     }
   },
   "status": "FULL_P80_EXISTING_COMPLETED_DEV_TOP512_CLASS_COMPOSITION_COMPLETE",
-  "time": 1792713056.7554488,
+  "time": 1792713895.5239663,
   "training_changed": false
 }
