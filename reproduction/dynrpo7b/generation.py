@@ -15,8 +15,8 @@ import torch
 
 from search_g1.async_rollout_runtime import AsyncRolloutConfig,RayPhaseService,BoundedRetriever,execute_one_action
 from search_g1.prefix20_split import make_turn,logical_sampling
-from reproduction.common8.behavior_trace import raw_prefix_to_first_closing_tag
-from reproduction.common8.generation_behavior import validated_raw_turn,assemble_output,_left_pad,_observation_ids,_require
+from reproduction.common8.behavior_trace import raw_prefix_to_first_closing_tag,document_sha256
+from reproduction.common8.generation_behavior import validated_raw_turn,prefix_text_decoders,assemble_output,_left_pad,_observation_ids,_require
 from reproduction.common8.context_budget import protocol,final_stage,observation_room
 
 
@@ -84,6 +84,10 @@ class PrefixCollector:
 
     def phase(self,states,identity,*,prefix_only):
         manager=self.manager;tokenizer=manager.tokenizer;budget=self.budget
+        # This identity is immutable for the phase. Keep the per-record stop
+        # proof comparison, without serializing its source map for every row.
+        source_map_sha256=document_sha256(identity['source_sha256'])
+        visible_decode,executor_decode=prefix_text_decoders(tokenizer)
         _require(manager.config.num_gpus==4 and manager.config.max_turns==4,'prefix20_requires_original_four_gpu_recipe')
         phase_id=uuid.uuid4().hex
         service=self.service_factory();opened=False
@@ -161,20 +165,23 @@ class PrefixCollector:
                     self.captured_records.append(copy.deepcopy(record))
                     _require(record['request_id']==value['request_id'] and record['row_id']==state.trajectory_id,
                              'prefix20_native_request_identity_changed')
-                    validated_raw_turn(manager,output,0,record,request_tokens=state.request['prompt_token_ids'],
+                    chunk_cut,_=validated_raw_turn(manager,output,0,record,request_tokens=state.request['prompt_token_ids'],
                         row_id=state.trajectory_id,identity=identity,call_id=state.request['rollout_call_id'],
-                        ordinal=state.ordinal,sampling=record['sampling'])
+                        ordinal=state.ordinal,sampling=record['sampling'],
+                        expected_source_map_sha256=source_map_sha256)
                     policy=logical_sampling(record['sampling'])
                     if self.sampling is None:self.sampling=policy
                     _require(policy==self.sampling,'prefix20_actual_sampling_policy_changed')
                     self.meta.update(output.meta_info)
+                    had_prior_raw=bool(state.current_raw)
                     state.chunks.append(copy.deepcopy(record));state.current_raw.extend(record['raw_generated_token_ids'])
                     stops=record['effective_stop_provenance']['effective_all_stop_token_ids']
-                    state.cut=raw_prefix_to_first_closing_tag(state.current_raw,
-                        lambda ids:tokenizer.decode(ids,skip_special_tokens=False,clean_up_tokenization_spaces=False),
-                        eos_token_id=tokenizer.eos_token_id,pad_token_id=tokenizer.pad_token_id,special_token_ids=self.special,
-                        executor_decode=lambda ids:tokenizer.decode(ids,skip_special_tokens=True,clean_up_tokenization_spaces=False),
-                        effective_stop_token_ids=stops)
+                    if not had_prior_raw and len(state.chunks)==1:
+                        state.cut=chunk_cut
+                    else:
+                        state.cut=raw_prefix_to_first_closing_tag(state.current_raw,visible_decode,
+                            eos_token_id=tokenizer.eos_token_id,pad_token_id=tokenizer.pad_token_id,special_token_ids=self.special,
+                            executor_decode=executor_decode,effective_stop_token_ids=stops)
                     ended=(state.cut['closing_tag'] is not None or record['finish_reason']=='stop' or len(state.current_raw)==500)
                     if not ended:
                         _require(prefix_only and state.policy_count==self.prefix_tokens,'prefix20_native_pause_is_not_action_completion')

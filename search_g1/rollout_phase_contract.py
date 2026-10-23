@@ -118,6 +118,37 @@ def scalar_metrics(output):
             if all(type(r.get(key)) is int for r in receipts):
                 result['infra/rollout/'+key+'_sum']=sum(r[key] for r in receipts)
         return result
+    if phase.get('role')=='dynrpo7b_pause_select_continue':
+        # Prefix selection and each continuation/backstop batch close their own
+        # real four-rank phase; there is no synthetic top-level rank receipt.
+        phases=phase['phases']
+        if (not isinstance(phases,list) or len(phases)<2 or
+                phases[0]['phase']!='candidate_prefix' or
+                any(event['phase']!='selected_continuation' for event in phases[1:]) or
+                len({event['phase_id'] for event in phases})!=len(phases)):
+            raise ValueError('DynRPO requires distinct closed prefix and continuation phases')
+        ranks=[]
+        syncs_per_rank=[0]*4
+        snapshot_ids=set()
+        for event in phases:
+            receipts=event['phase_metrics']
+            if not isinstance(receipts,list) or len(receipts)!=4:
+                raise ValueError('DynRPO actual four-rank phase receipts missing')
+            for rank,row in enumerate(receipts):
+                if (row.get('phase_id')!=event['phase_id'] or row.get('aborted') is not False or
+                        not row.get('policy_snapshot_id') or
+                        type(row.get('weight_syncs')) is not int or row['weight_syncs']!=1):
+                    raise ValueError('DynRPO phase-close receipt differs from its sampling boundary')
+                syncs_per_rank[rank]+=row['weight_syncs']
+                snapshot_ids.add(row['policy_snapshot_id'])
+            ranks.extend(receipts)
+        if len(snapshot_ids)!=1 or len(set(syncs_per_rank))!=1:
+            raise ValueError('DynRPO sampling snapshot or rank synchronization diverged')
+        result['infra/rollout/weight_syncs_per_rank']=syncs_per_rank[0]
+        for key in ('engine_steps','completed_requests'):
+            if all(type(row.get(key)) is int for row in ranks):
+                result['infra/rollout/'+key+'_sum']=sum(row[key] for row in ranks)
+        return result
     ranks=phase['phase_metrics']
     if not isinstance(ranks,list) or not ranks:
         raise ValueError('Missing actual worker phase-close receipts')

@@ -1,0 +1,33 @@
+{
+  "status": "CPU_PREFIX_FASTPATH_ALL_CUT_FIELDS_EQUAL",
+  "GPU_used": false,
+  "model_forward": false,
+  "remote_running_source_modified": false,
+  "real_turns": 40,
+  "real_turns_at_least80": 40,
+  "real_turns_at_least160": 2,
+  "real_cases": 240,
+  "all_cut_fields_equal": 240,
+  "CPU_verification_seconds": 4.198366372846067,
+  "real_raw_reference": {
+    "bytes": 3798416,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/event-B/sampling/shard-03/batches/batch-000003/outers/outer-000001/full/rank-0-full.jsonl.gz",
+    "sha256": "439cad90445244502ee9c41d145eae28105ead0ef9ba7ac5a6680ac63d005244"
+  },
+  "simulated_native_protocol": [
+    {"prefix_budget": 80, "first_chunk_extra_scans": 0, "combined_chunk_extra_scans": 1, "phase_source_hash_calls": 2, "closing_tag_crosses_chunk_boundary": true, "all_cut_fields_equal": true},
+    {"prefix_budget": 160, "first_chunk_extra_scans": 0, "combined_chunk_extra_scans": 1, "phase_source_hash_calls": 2, "closing_tag_crosses_chunk_boundary": true, "all_cut_fields_equal": true}
+  ],
+  "prior_CPU_microtiming": {
+    "actual_G5_questions": 8,
+    "actual_policy_prefixes": 40,
+    "all40_contained_closing_tag": true,
+    "mean_tokens": 75.425,
+    "raw_scan_HF_milliseconds": 5.858844759641215,
+    "raw_scan_backend_milliseconds": 0.3597251954488456,
+    "source_map_entries": 1345,
+    "source_map_canonical_bytes": 176774,
+    "source_map_hash_milliseconds": 1.0844519389793277,
+    "sample_not_claimed_as_main_full_distribution": true
+  }
+}

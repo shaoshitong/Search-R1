@@ -1,0 +1,486 @@
+{
+  "actor_updates_during_generation": 0,
+  "completed_trajectories": 2560,
+  "environment_actions": 36414,
+  "generation_requests": 52299,
+  "peak_inflight_trajectories": 256,
+  "phase_elapsed_seconds": 763.1604793332517,
+  "phases": [
+    {
+      "actor_updates_during_phase": 0,
+      "environment_actions": 32149,
+      "generation_requests": 48034,
+      "peak_inflight_trajectories": 256,
+      "phase": "candidate_prefix",
+      "phase_elapsed_seconds": 651.9382967259735,
+      "phase_id": "43606b5eac084bb3a9d4e14bb1886d16",
+      "phase_metrics": [
+        {
+          "aborted": false,
+          "actor_params_offloaded_during_phase": true,
+          "completed_requests": 12007,
+          "engine_steps": 13246,
+          "flash3_execution": {
+            "calls": {
+              "decode": 211568,
+              "paged_prefill": 0,
+              "prefill": 159348
+            },
+            "checked_unix": 1792738974.7550673,
+            "implementation": "vllm063_process_local_flash3",
+            "installed_environment_modified": false,
+            "provenance": {
+              "compiled_torch_cuda": "12.1",
+              "cudart_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/libcudart.so.12",
+              "cudart_runtime_version": 12060,
+              "cudart_sha256": "095296727cfb5f51e5b3ae69a3cb88cbd7b6592f314ace0fdfc4e1d758c2aa85",
+              "extension_module": "flash_attn_3_cuda",
+              "extension_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+              "extension_sha256": "be3e87f7b0401f71be424916d4ca031f90aa21be70b479eec0c9898763dcb345",
+              "interface_module": "_search_g1_actor_flash3_9bf08de385fa4c2093052c9e7b2176c7",
+              "interface_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/flash_attn_interface.py",
+              "interface_sha256": "a50f564fa1fc4cdd85ffa61f79e913a463c2066e519f9c5e8bc2e5c74457fa38",
+              "interface_version": "3.0.0b1",
+              "source_scope": "private actor interface + explicit extension; no foreign site-packages path",
+              "torch_version": "2.4.0+cu121"
+            }
+          },
+          "phase_id": "43606b5eac084bb3a9d4e14bb1886d16",
+          "policy_snapshot_id": "b57f8d4744e445b49e71bbd885ea2942:1:policy-7f5049424bb143ab827ac2af45702e01",
+          "scheduler_limits": {
+            "max_num_batched_tokens": 8192,
+            "max_num_seqs": 64
+          },
+          "search_action_stop": {
+            "ambiguous_prefixes": 0,
+            "answer_stop_enabled": false,
+            "confirmation_rejections": 0,
+            "confirmed_search_stops": 5584,
+            "enabled": true,
+            "filter_triggers": 5584,
+            "live_sequence_filters": 0,
+            "native_finished_first": 6423,
+            "native_stop_checker_runs_first": true,
+            "piece_cache_entries": 19642,
+            "prefix_confirmations": 5584,
+            "raw_tokens_or_logprobs_mutated": false,
+            "search_only": true,
+            "single_token_decodes": 19642,
+            "stop_reason": "search_action_boundary:</search>",
+            "token_checks": 462827
+          },
+          "weight_syncs": 1
+        },
+        {
+          "aborted": false,
+          "actor_params_offloaded_during_phase": true,
+          "completed_requests": 12055,
+          "engine_steps": 13172,
+          "flash3_execution": {
+            "calls": {
+              "decode": 209944,
+              "paged_prefill": 0,
+              "prefill": 158900
+            },
+            "checked_unix": 1792738974.7551043,
+            "implementation": "vllm063_process_local_flash3",
+            "installed_environment_modified": false,
+            "provenance": {
+              "compiled_torch_cuda": "12.1",
+              "cudart_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/libcudart.so.12",
+              "cudart_runtime_version": 12060,
+              "cudart_sha256": "095296727cfb5f51e5b3ae69a3cb88cbd7b6592f314ace0fdfc4e1d758c2aa85",
+              "extension_module": "flash_attn_3_cuda",
+              "extension_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+              "extension_sha256": "be3e87f7b0401f71be424916d4ca031f90aa21be70b479eec0c9898763dcb345",
+              "interface_module": "_search_g1_actor_flash3_5cb2d5eaea544825928b5d49d613025e",
+              "interface_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/flash_attn_interface.py",
+              "interface_sha256": "a50f564fa1fc4cdd85ffa61f79e913a463c2066e519f9c5e8bc2e5c74457fa38",
+              "interface_version": "3.0.0b1",
+              "source_scope": "private actor interface + explicit extension; no foreign site-packages path",
+              "torch_version": "2.4.0+cu121"
+            }
+          },
+          "phase_id": "43606b5eac084bb3a9d4e14bb1886d16",
+          "policy_snapshot_id": "b57f8d4744e445b49e71bbd885ea2942:1:policy-7f5049424bb143ab827ac2af45702e01",
+          "scheduler_limits": {
+            "max_num_batched_tokens": 8192,
+            "max_num_seqs": 64
+          },
+          "search_action_stop": {
+            "ambiguous_prefixes": 0,
+            "answer_stop_enabled": false,
+            "confirmation_rejections": 0,
+            "confirmed_search_stops": 5651,
+            "enabled": true,
+            "filter_triggers": 5651,
+            "live_sequence_filters": 0,
+            "native_finished_first": 6404,
+            "native_stop_checker_runs_first": true,
+            "piece_cache_entries": 19631,
+            "prefix_confirmations": 5651,
+            "raw_tokens_or_logprobs_mutated": false,
+            "search_only": true,
+            "single_token_decodes": 19631,
+            "stop_reason": "search_action_boundary:</search>",
+            "token_checks": 461423
+          },
+          "weight_syncs": 1
+        },
+        {
+          "aborted": false,
+          "actor_params_offloaded_during_phase": true,
+          "completed_requests": 11995,
+          "engine_steps": 13255,
+          "flash3_execution": {
+            "calls": {
+              "decode": 208684,
+              "paged_prefill": 0,
+              "prefill": 162484
+            },
+            "checked_unix": 1792738974.7551281,
+            "implementation": "vllm063_process_local_flash3",
+            "installed_environment_modified": false,
+            "provenance": {
+              "compiled_torch_cuda": "12.1",
+              "cudart_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/libcudart.so.12",
+              "cudart_runtime_version": 12060,
+              "cudart_sha256": "095296727cfb5f51e5b3ae69a3cb88cbd7b6592f314ace0fdfc4e1d758c2aa85",
+              "extension_module": "flash_attn_3_cuda",
+              "extension_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+              "extension_sha256": "be3e87f7b0401f71be424916d4ca031f90aa21be70b479eec0c9898763dcb345",
+              "interface_module": "_search_g1_actor_flash3_c3e8d3973bb6424695fc9928563cea52",
+              "interface_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/flash_attn_interface.py",
+              "interface_sha256": "a50f564fa1fc4cdd85ffa61f79e913a463c2066e519f9c5e8bc2e5c74457fa38",
+              "interface_version": "3.0.0b1",
+              "source_scope": "private actor interface + explicit extension; no foreign site-packages path",
+              "torch_version": "2.4.0+cu121"
+            }
+          },
+          "phase_id": "43606b5eac084bb3a9d4e14bb1886d16",
+          "policy_snapshot_id": "b57f8d4744e445b49e71bbd885ea2942:1:policy-7f5049424bb143ab827ac2af45702e01",
+          "scheduler_limits": {
+            "max_num_batched_tokens": 8192,
+            "max_num_seqs": 64
+          },
+          "search_action_stop": {
+            "ambiguous_prefixes": 0,
+            "answer_stop_enabled": false,
+            "confirmation_rejections": 0,
+            "confirmed_search_stops": 5576,
+            "enabled": true,
+            "filter_triggers": 5576,
+            "live_sequence_filters": 0,
+            "native_finished_first": 6419,
+            "native_stop_checker_runs_first": true,
+            "piece_cache_entries": 19903,
+            "prefix_confirmations": 5576,
+            "raw_tokens_or_logprobs_mutated": false,
+            "search_only": true,
+            "single_token_decodes": 19903,
+            "stop_reason": "search_action_boundary:</search>",
+            "token_checks": 463463
+          },
+          "weight_syncs": 1
+        },
+        {
+          "aborted": false,
+          "actor_params_offloaded_during_phase": true,
+          "completed_requests": 11977,
+          "engine_steps": 13232,
+          "flash3_execution": {
+            "calls": {
+              "decode": 210924,
+              "paged_prefill": 0,
+              "prefill": 159600
+            },
+            "checked_unix": 1792738974.755072,
+            "implementation": "vllm063_process_local_flash3",
+            "installed_environment_modified": false,
+            "provenance": {
+              "compiled_torch_cuda": "12.1",
+              "cudart_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/libcudart.so.12",
+              "cudart_runtime_version": 12060,
+              "cudart_sha256": "095296727cfb5f51e5b3ae69a3cb88cbd7b6592f314ace0fdfc4e1d758c2aa85",
+              "extension_module": "flash_attn_3_cuda",
+              "extension_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+              "extension_sha256": "be3e87f7b0401f71be424916d4ca031f90aa21be70b479eec0c9898763dcb345",
+              "interface_module": "_search_g1_actor_flash3_c215218e76624174aaaa1e4b2b65de74",
+              "interface_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/flash_attn_interface.py",
+              "interface_sha256": "a50f564fa1fc4cdd85ffa61f79e913a463c2066e519f9c5e8bc2e5c74457fa38",
+              "interface_version": "3.0.0b1",
+              "source_scope": "private actor interface + explicit extension; no foreign site-packages path",
+              "torch_version": "2.4.0+cu121"
+            }
+          },
+          "phase_id": "43606b5eac084bb3a9d4e14bb1886d16",
+          "policy_snapshot_id": "b57f8d4744e445b49e71bbd885ea2942:1:policy-7f5049424bb143ab827ac2af45702e01",
+          "scheduler_limits": {
+            "max_num_batched_tokens": 8192,
+            "max_num_seqs": 64
+          },
+          "search_action_stop": {
+            "ambiguous_prefixes": 0,
+            "answer_stop_enabled": false,
+            "confirmation_rejections": 0,
+            "confirmed_search_stops": 5558,
+            "enabled": true,
+            "filter_triggers": 5558,
+            "live_sequence_filters": 0,
+            "native_finished_first": 6419,
+            "native_stop_checker_runs_first": true,
+            "piece_cache_entries": 19598,
+            "prefix_confirmations": 5558,
+            "raw_tokens_or_logprobs_mutated": false,
+            "search_only": true,
+            "single_token_decodes": 19598,
+            "stop_reason": "search_action_boundary:</search>",
+            "token_checks": 462531
+          },
+          "weight_syncs": 1
+        }
+      ],
+      "retrieval_concurrency": 16,
+      "trajectories": 25600
+    },
+    {
+      "actor_updates_during_phase": 0,
+      "environment_actions": 4265,
+      "generation_requests": 4265,
+      "peak_inflight_trajectories": 256,
+      "phase": "selected_continuation",
+      "phase_elapsed_seconds": 111.22218260727823,
+      "phase_id": "9deba8f9c4774bb3aee8870da058db97",
+      "phase_metrics": [
+        {
+          "aborted": false,
+          "actor_params_offloaded_during_phase": true,
+          "completed_requests": 1055,
+          "engine_steps": 1529,
+          "flash3_execution": {
+            "calls": {
+              "decode": 240744,
+              "paged_prefill": 0,
+              "prefill": 172984
+            },
+            "checked_unix": 1792739316.4858854,
+            "implementation": "vllm063_process_local_flash3",
+            "installed_environment_modified": false,
+            "provenance": {
+              "compiled_torch_cuda": "12.1",
+              "cudart_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/libcudart.so.12",
+              "cudart_runtime_version": 12060,
+              "cudart_sha256": "095296727cfb5f51e5b3ae69a3cb88cbd7b6592f314ace0fdfc4e1d758c2aa85",
+              "extension_module": "flash_attn_3_cuda",
+              "extension_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+              "extension_sha256": "be3e87f7b0401f71be424916d4ca031f90aa21be70b479eec0c9898763dcb345",
+              "interface_module": "_search_g1_actor_flash3_9bf08de385fa4c2093052c9e7b2176c7",
+              "interface_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/flash_attn_interface.py",
+              "interface_sha256": "a50f564fa1fc4cdd85ffa61f79e913a463c2066e519f9c5e8bc2e5c74457fa38",
+              "interface_version": "3.0.0b1",
+              "source_scope": "private actor interface + explicit extension; no foreign site-packages path",
+              "torch_version": "2.4.0+cu121"
+            }
+          },
+          "phase_id": "9deba8f9c4774bb3aee8870da058db97",
+          "policy_snapshot_id": "b57f8d4744e445b49e71bbd885ea2942:1:policy-7f5049424bb143ab827ac2af45702e01",
+          "scheduler_limits": {
+            "max_num_batched_tokens": 8192,
+            "max_num_seqs": 64
+          },
+          "search_action_stop": {
+            "ambiguous_prefixes": 0,
+            "answer_stop_enabled": false,
+            "confirmation_rejections": 0,
+            "confirmed_search_stops": 5922,
+            "enabled": true,
+            "filter_triggers": 5922,
+            "live_sequence_filters": 0,
+            "native_finished_first": 7140,
+            "native_stop_checker_runs_first": true,
+            "piece_cache_entries": 20262,
+            "prefix_confirmations": 5922,
+            "raw_tokens_or_logprobs_mutated": false,
+            "search_only": true,
+            "single_token_decodes": 20262,
+            "stop_reason": "search_action_boundary:</search>",
+            "token_checks": 502953
+          },
+          "weight_syncs": 1
+        },
+        {
+          "aborted": false,
+          "actor_params_offloaded_during_phase": true,
+          "completed_requests": 1010,
+          "engine_steps": 1511,
+          "flash3_execution": {
+            "calls": {
+              "decode": 238308,
+              "paged_prefill": 0,
+              "prefill": 172844
+            },
+            "checked_unix": 1792739316.485857,
+            "implementation": "vllm063_process_local_flash3",
+            "installed_environment_modified": false,
+            "provenance": {
+              "compiled_torch_cuda": "12.1",
+              "cudart_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/libcudart.so.12",
+              "cudart_runtime_version": 12060,
+              "cudart_sha256": "095296727cfb5f51e5b3ae69a3cb88cbd7b6592f314ace0fdfc4e1d758c2aa85",
+              "extension_module": "flash_attn_3_cuda",
+              "extension_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+              "extension_sha256": "be3e87f7b0401f71be424916d4ca031f90aa21be70b479eec0c9898763dcb345",
+              "interface_module": "_search_g1_actor_flash3_5cb2d5eaea544825928b5d49d613025e",
+              "interface_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/flash_attn_interface.py",
+              "interface_sha256": "a50f564fa1fc4cdd85ffa61f79e913a463c2066e519f9c5e8bc2e5c74457fa38",
+              "interface_version": "3.0.0b1",
+              "source_scope": "private actor interface + explicit extension; no foreign site-packages path",
+              "torch_version": "2.4.0+cu121"
+            }
+          },
+          "phase_id": "9deba8f9c4774bb3aee8870da058db97",
+          "policy_snapshot_id": "b57f8d4744e445b49e71bbd885ea2942:1:policy-7f5049424bb143ab827ac2af45702e01",
+          "scheduler_limits": {
+            "max_num_batched_tokens": 8192,
+            "max_num_seqs": 64
+          },
+          "search_action_stop": {
+            "ambiguous_prefixes": 0,
+            "answer_stop_enabled": false,
+            "confirmation_rejections": 0,
+            "confirmed_search_stops": 5962,
+            "enabled": true,
+            "filter_triggers": 5962,
+            "live_sequence_filters": 0,
+            "native_finished_first": 7103,
+            "native_stop_checker_runs_first": true,
+            "piece_cache_entries": 20178,
+            "prefix_confirmations": 5962,
+            "raw_tokens_or_logprobs_mutated": false,
+            "search_only": true,
+            "single_token_decodes": 20178,
+            "stop_reason": "search_action_boundary:</search>",
+            "token_checks": 500155
+          },
+          "weight_syncs": 1
+        },
+        {
+          "aborted": false,
+          "actor_params_offloaded_during_phase": true,
+          "completed_requests": 1114,
+          "engine_steps": 1432,
+          "flash3_execution": {
+            "calls": {
+              "decode": 234612,
+              "paged_prefill": 0,
+              "prefill": 176652
+            },
+            "checked_unix": 1792739316.4858792,
+            "implementation": "vllm063_process_local_flash3",
+            "installed_environment_modified": false,
+            "provenance": {
+              "compiled_torch_cuda": "12.1",
+              "cudart_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/libcudart.so.12",
+              "cudart_runtime_version": 12060,
+              "cudart_sha256": "095296727cfb5f51e5b3ae69a3cb88cbd7b6592f314ace0fdfc4e1d758c2aa85",
+              "extension_module": "flash_attn_3_cuda",
+              "extension_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+              "extension_sha256": "be3e87f7b0401f71be424916d4ca031f90aa21be70b479eec0c9898763dcb345",
+              "interface_module": "_search_g1_actor_flash3_c3e8d3973bb6424695fc9928563cea52",
+              "interface_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/flash_attn_interface.py",
+              "interface_sha256": "a50f564fa1fc4cdd85ffa61f79e913a463c2066e519f9c5e8bc2e5c74457fa38",
+              "interface_version": "3.0.0b1",
+              "source_scope": "private actor interface + explicit extension; no foreign site-packages path",
+              "torch_version": "2.4.0+cu121"
+            }
+          },
+          "phase_id": "9deba8f9c4774bb3aee8870da058db97",
+          "policy_snapshot_id": "b57f8d4744e445b49e71bbd885ea2942:1:policy-7f5049424bb143ab827ac2af45702e01",
+          "scheduler_limits": {
+            "max_num_batched_tokens": 8192,
+            "max_num_seqs": 64
+          },
+          "search_action_stop": {
+            "ambiguous_prefixes": 0,
+            "answer_stop_enabled": false,
+            "confirmation_rejections": 0,
+            "confirmed_search_stops": 5956,
+            "enabled": true,
+            "filter_triggers": 5956,
+            "live_sequence_filters": 0,
+            "native_finished_first": 7153,
+            "native_stop_checker_runs_first": true,
+            "piece_cache_entries": 20530,
+            "prefix_confirmations": 5956,
+            "raw_tokens_or_logprobs_mutated": false,
+            "search_only": true,
+            "single_token_decodes": 20530,
+            "stop_reason": "search_action_boundary:</search>",
+            "token_checks": 504892
+          },
+          "weight_syncs": 1
+        },
+        {
+          "aborted": false,
+          "actor_params_offloaded_during_phase": true,
+          "completed_requests": 1086,
+          "engine_steps": 1425,
+          "flash3_execution": {
+            "calls": {
+              "decode": 237104,
+              "paged_prefill": 0,
+              "prefill": 173320
+            },
+            "checked_unix": 1792739316.4858212,
+            "implementation": "vllm063_process_local_flash3",
+            "installed_environment_modified": false,
+            "provenance": {
+              "compiled_torch_cuda": "12.1",
+              "cudart_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/libcudart.so.12",
+              "cudart_runtime_version": 12060,
+              "cudart_sha256": "095296727cfb5f51e5b3ae69a3cb88cbd7b6592f314ace0fdfc4e1d758c2aa85",
+              "extension_module": "flash_attn_3_cuda",
+              "extension_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+              "extension_sha256": "be3e87f7b0401f71be424916d4ca031f90aa21be70b479eec0c9898763dcb345",
+              "interface_module": "_search_g1_actor_flash3_c215218e76624174aaaa1e4b2b65de74",
+              "interface_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/flash3-runtime/flash_attn_interface.py",
+              "interface_sha256": "a50f564fa1fc4cdd85ffa61f79e913a463c2066e519f9c5e8bc2e5c74457fa38",
+              "interface_version": "3.0.0b1",
+              "source_scope": "private actor interface + explicit extension; no foreign site-packages path",
+              "torch_version": "2.4.0+cu121"
+            }
+          },
+          "phase_id": "9deba8f9c4774bb3aee8870da058db97",
+          "policy_snapshot_id": "b57f8d4744e445b49e71bbd885ea2942:1:policy-7f5049424bb143ab827ac2af45702e01",
+          "scheduler_limits": {
+            "max_num_batched_tokens": 8192,
+            "max_num_seqs": 64
+          },
+          "search_action_stop": {
+            "ambiguous_prefixes": 0,
+            "answer_stop_enabled": false,
+            "confirmation_rejections": 0,
+            "confirmed_search_stops": 5889,
+            "enabled": true,
+            "filter_triggers": 5889,
+            "live_sequence_filters": 0,
+            "native_finished_first": 7174,
+            "native_stop_checker_runs_first": true,
+            "piece_cache_entries": 20178,
+            "prefix_confirmations": 5889,
+            "raw_tokens_or_logprobs_mutated": false,
+            "search_only": true,
+            "single_token_decodes": 20178,
+            "stop_reason": "search_action_boundary:</search>",
+            "token_checks": 503607
+          },
+          "weight_syncs": 1
+        }
+      ],
+      "retrieval_concurrency": 16,
+      "trajectories": 5120
+    }
+  ],
+  "retrieval_concurrency": 16,
+  "role": "dynrpo7b_pause_select_continue"
+}

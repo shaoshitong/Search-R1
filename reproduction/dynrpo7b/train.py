@@ -41,6 +41,36 @@ def prepare_only(base, commit, actor_micro=8):
     return value
 
 
+def validate_retriever_scope(base, external, restore_receipt=None):
+    """A resumed run can retain its own original2-GPU producer unchanged.
+
+    external_binding already verifies the real producer ready/stage64 bytes.
+    This reads only the small restore header; bind_run subsequently validates
+    the full native4 restore receipt. Fresh runs still require a local service.
+    """
+    ready=Path(external['service_ready_path'])
+    if ready.is_relative_to(Path(base)/'retrieval'):
+        return external
+    if restore_receipt:
+        header=json.loads(Path(restore_receipt).read_text())
+        if (header.get('kind')=='dynrpo7b_native4' and header.get('status') in (
+                'DYNRPO7B_ROLLING_READY','DYNRPO7B_ACTOR_SAVED_CALLBACKS_PENDING')):
+            origin=Path(header['source_base'])
+            if origin.is_absolute() and ready.is_relative_to(origin/'retrieval'):
+                return external
+            if origin.is_absolute():
+                # A second resume's direct parent may itself reuse the first
+                # producer. Preserve that parent's exact binding, rather than
+                # pretending the producer's READY moved into the new base.
+                parent_path=origin/'logs/run-manifest.json'
+                if parent_path.is_file():
+                    expected=json.loads(parent_path.read_text()).get('external_retriever',{})
+                    keys=('service_ready_path','service_job_id','service_ready_sha256','endpoint')
+                    if all(expected.get(key)==external.get(key) and key in expected for key in keys):
+                        return external
+    raise ValueError('Use this run\'s independent retrieval service or its bound restore source producer')
+
+
 def prepare(base, commit, actor_micro=8, restore_receipt=None,
             external_retriever_receipt=None):
     base = own_base(base)
@@ -60,8 +90,7 @@ def prepare(base, commit, actor_micro=8, restore_receipt=None,
         publish(manifest, expected())
     from reproduction.easy2560_joint4.retrieval_proxy import external_binding
     external = external_binding(external_retriever_receipt)
-    if not Path(external['service_ready_path']).is_relative_to(base / 'retrieval'):
-        raise ValueError('Use this run\'s independent retrieval service')
+    validate_retriever_scope(base,external,restore_receipt)
     values = run_settings(base, actor_micro)
     values['external_retriever'] = external
     from reproduction.easy2560_joint4.flash3_runtime import binding

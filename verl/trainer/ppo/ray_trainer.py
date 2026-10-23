@@ -969,7 +969,7 @@ class RayPPOTrainer(object):
                         self.reward_fn.expected_probe_version=refresh_after_checkpoint(continuation_k,run['full_state_restore']['source_checkpoint'])
                     if phase['probe_pending'] or phase['grounding_pending']:
                         from reproduction.dynrpo7b.rolling import publish_imported_boundary
-                        publish_imported_boundary(self,run['full_state_restore']['source_receipt'])
+                        publish_imported_boundary(self,run['full_state_restore']['source_checkpoint'])
                 if self.qprobe_runtime.completed_outer != continuation_k:
                     raise ValueError("Actor and question-probe successful outer counters differ")
                 if selection_mode=='question_probe' and continuation_k == 0 and probe_config.get('teacher_warmup_cache'):

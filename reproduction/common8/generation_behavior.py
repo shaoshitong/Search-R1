@@ -84,7 +84,8 @@ def generate_padded(manager, active, captured_records=None):
                 meta_info=copy.deepcopy(result.meta_info))
 
 
-def validated_raw_turn(manager, output, local, record, *, request_tokens, row_id, identity, call_id, ordinal, sampling):
+def validated_raw_turn(manager, output, local, record, *, request_tokens, row_id, identity, call_id, ordinal, sampling,
+                       expected_source_map_sha256=None):
     """Shared native-token/probability/stop checks for batch and independent requests."""
     tokenizer = manager.tokenizer
     pad, eos = tokenizer.pad_token_id, tokenizer.eos_token_id
@@ -121,7 +122,8 @@ def validated_raw_turn(manager, output, local, record, *, request_tokens, row_id
     _require(proof['rollout_call_id'] == call_id and proof['row_id'] == row_id and
              config_proof['run_id'] == identity['run_id'] and
              config_proof['slurm_job_id'] == identity['slurm_job_id'] and
-             config_proof['source_map_sha256'] == document_sha256(identity['source_sha256']),
+             config_proof['source_map_sha256'] == (document_sha256(identity['source_sha256'])
+                 if expected_source_map_sha256 is None else expected_source_map_sha256),
              'actual_group_stop_identity_changed')
     visible_decode, executor_decode = prefix_text_decoders(tokenizer)
     cut = raw_prefix_to_first_closing_tag(record['raw_generated_token_ids'], visible_decode,

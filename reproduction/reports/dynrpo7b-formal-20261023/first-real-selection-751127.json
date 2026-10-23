@@ -1,0 +1,30 @@
+{
+  "status": "FIRST_AUTHENTIC_TRAINING_SELECTION_COMPLETE_ACTOR_NOT_UPDATED",
+  "checked_utc": "2026-10-23T07:17:50.639756+00:00",
+  "slurm_job": "751127",
+  "source_commit": "688cc58edc1245864fdd4a90eece05b01083d79f",
+  "source_run_id": "b57f8d4744e445b49e71bbd885ea2942",
+  "scope": "Actual first outer training-pool selection, not independent dev/final or warmup checkpoint-selection evaluation",
+  "remote_base": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023",
+  "rollout": {
+    "attempt": "7f5049424bb143ab827ac2af45702e01",
+    "prefix": 80,
+    "candidates": 5120,
+    "generated_trajectories": 25600,
+    "generated_policy_tokens": 2040177,
+    "top1024_mixed": 795,
+    "top1024_all_correct": 33,
+    "top1024_all_wrong": 196,
+    "top1024_mixed_fraction": 0.7763671875,
+    "selected_questions": 512,
+    "selected_mixed": 512,
+    "selected_mixed_fraction": 1.0,
+    "backstop_added_questions": 0,
+    "candidate_fill_seconds": 1071.5588021930307,
+    "archive": "artifacts/question-probe/attempts/7f5049424bb143ab827ac2af45702e01"
+  },
+  "completed_actor_outer": 0,
+  "actual_actor_Adam_writes": 0,
+  "failure": "First complete selected rollout returned; scalar_metrics expects one-phase phase_metrics but DynRPO returns multiplephases",
+  "temporary_restart_policy": "No actor update occurred; old real rollouts retained with original provenance; do not relabel them as new-job generation"
+}
