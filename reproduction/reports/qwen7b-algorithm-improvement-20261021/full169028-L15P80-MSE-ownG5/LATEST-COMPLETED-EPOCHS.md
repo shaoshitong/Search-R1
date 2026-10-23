@@ -1,57 +1,66 @@
 # Full L15/P80 MSE: all completed epoch diagnostics
 
+## Actual family selection: development only
+
+Both full training jobs750189/750190 completed10 epochs/13210 updates with successful Slurm exit. The published seed1-only family selector has now selected **E9/raw**: seed1 **329/512 (64.2578125%)**, and the identical E9/raw state applied to seed2 gives **321/512 (62.6953125%)**. The rule remains highest seed1 development Top512 count, then earliest epoch, then EMA for an exact tie; seed2 did not choose the epoch/state. Rows marked Selected E9/raw record that actual selection; every historical metric above/below is unchanged.
+
+Both selected E9 checkpoints have independent CPU SHA/model/Adam/two-rank RNG/plan/physical-input acceptance at11889 updates. These CPU proofs do not claim a GPU next-update restore test. Their original small receipts are `full169028-L15P80-MSE-CPU-acceptance/seed1-actual-selected-E09-accepted.json` and `seed2-actual-selected-E09-accepted.json`; selector source is `full169028-P80-MSE-family-selection/actual-run.json` (remote selector receipt SHA `0db5e48b4ee7f06ed44c111f67fac2f7615ca08b087e4b799ecdcd3f6dce878f`).
+
+This is **repeatedly viewed NQ development selection**, not unseen-question confirmation. This annotation does not claim the order audit, actual final candidate freeze or final4096 confirmation is complete. Root owns the existing audit → freeze → final execution. No new inference, checkpoint load or final4096 access was performed for this local update.
+
+
 Same fixed trainB2048 and viewed development2048 ownG5. Both raw/EMA and all completed epochs reported. These are development results; final4096 is still blind.
 
-| Seed | Epoch | State | TrainB BA | TrainB Mixed@512 | Dev BA | Dev Mixed@512 | Dev variance MSE |
-|---|---:|---|---:|---:|---:|---:|---:|
-| seed1 | 1 | raw | 67.33% | 359/512 (70.12%) | 66.55% | 284/512 (55.47%) | 0.00745031 |
-| seed1 | 1 | EMA | 56.30% | 307/512 (59.96%) | 56.36% | 248/512 (48.44%) | 0.00834641 |
-| seed1 | 2 | raw | 68.57% | 381/512 (74.41%) | 67.16% | 310/512 (60.55%) | 0.00687763 |
-| seed1 | 2 | EMA | 62.65% | 353/512 (68.95%) | 61.93% | 274/512 (53.52%) | 0.00764121 |
-| seed1 | 3 | raw | 71.42% | 389/512 (75.98%) | 69.09% | 318/512 (62.11%) | 0.00681917 |
-| seed1 | 3 | EMA | 67.63% | 373/512 (72.85%) | 66.07% | 298/512 (58.20%) | 0.00705294 |
-| seed1 | 4 | raw | 72.15% | 394/512 (76.95%) | 70.19% | 312/512 (60.94%) | 0.00679006 |
-| seed1 | 4 | EMA | 70.39% | 389/512 (75.98%) | 68.18% | 313/512 (61.13%) | 0.00680714 |
-| seed1 | 5 | raw | 70.19% | 402/512 (78.52%) | 67.79% | 314/512 (61.33%) | 0.00667131 |
-| seed1 | 5 | EMA | 71.60% | 397/512 (77.54%) | 69.28% | 312/512 (60.94%) | 0.00669189 |
-| seed1 | 6 | raw | 73.20% | 415/512 (81.05%) | 69.49% | 320/512 (62.50%) | 0.00661398 |
-| seed1 | 6 | EMA | 72.90% | 397/512 (77.54%) | 69.99% | 315/512 (61.52%) | 0.00660866 |
-| seed1 | 7 | raw | 75.88% | 427/512 (83.40%) | 70.74% | 320/512 (62.50%) | 0.00659949 |
-| seed1 | 7 | EMA | 74.40% | 408/512 (79.69%) | 70.99% | 316/512 (61.72%) | 0.00656033 |
-| seed1 | 8 | raw | 77.33% | 435/512 (84.96%) | 71.14% | 318/512 (62.11%) | 0.00687541 |
-| seed1 | 8 | EMA | 75.27% | 421/512 (82.23%) | 71.28% | 320/512 (62.50%) | 0.00653171 |
-| seed1 | 9 | raw | 77.43% | 443/512 (86.52%) | 70.11% | 329/512 (64.26%) | 0.00673657 |
-| seed1 | 9 | EMA | 76.35% | 433/512 (84.57%) | 71.12% | 326/512 (63.67%) | 0.00654653 |
-| seed1 | 10 | raw | 80.30% | 456/512 (89.06%) | 71.28% | 324/512 (63.28%) | 0.00681183 |
-| seed1 | 10 | EMA | 77.92% | 448/512 (87.50%) | 70.55% | 329/512 (64.26%) | 0.00660164 |
-| seed2 | 1 | raw | 66.67% | 367/512 (71.68%) | 66.04% | 286/512 (55.86%) | 0.00714388 |
-| seed2 | 1 | EMA | 62.27% | 316/512 (61.72%) | 60.52% | 249/512 (48.63%) | 0.00850443 |
-| seed2 | 2 | raw | 71.56% | 383/512 (74.80%) | 68.89% | 310/512 (60.55%) | 0.00685546 |
-| seed2 | 2 | EMA | 63.32% | 358/512 (69.92%) | 61.83% | 281/512 (54.88%) | 0.00757876 |
-| seed2 | 3 | raw | 73.21% | 402/512 (78.52%) | 70.23% | 317/512 (61.91%) | 0.00676982 |
-| seed2 | 3 | EMA | 68.36% | 380/512 (74.22%) | 66.41% | 304/512 (59.38%) | 0.00696118 |
-| seed2 | 4 | raw | 73.16% | 410/512 (80.08%) | 70.31% | 318/512 (62.11%) | 0.00662176 |
-| seed2 | 4 | EMA | 71.43% | 396/512 (77.34%) | 68.42% | 317/512 (61.91%) | 0.00675485 |
-| seed2 | 5 | raw | 71.46% | 408/512 (79.69%) | 67.99% | 320/512 (62.50%) | 0.00666226 |
-| seed2 | 5 | EMA | 72.78% | 405/512 (79.10%) | 69.37% | 319/512 (62.30%) | 0.00662849 |
-| seed2 | 6 | raw | 74.64% | 408/512 (79.69%) | 70.95% | 325/512 (63.48%) | 0.00658111 |
-| seed2 | 6 | EMA | 73.78% | 410/512 (80.08%) | 70.53% | 325/512 (63.48%) | 0.00654615 |
-| seed2 | 7 | raw | 75.09% | 418/512 (81.64%) | 70.90% | 318/512 (62.11%) | 0.00657380 |
-| seed2 | 7 | EMA | 74.39% | 413/512 (80.66%) | 71.05% | 328/512 (64.06%) | 0.00649732 |
-| seed2 | 8 | raw | 76.92% | 423/512 (82.62%) | 71.16% | 322/512 (62.89%) | 0.00662364 |
-| seed2 | 8 | EMA | 75.49% | 421/512 (82.23%) | 71.14% | 328/512 (64.06%) | 0.00647231 |
-| seed2 | 9 | raw | 76.96% | 438/512 (85.55%) | 71.33% | 321/512 (62.70%) | 0.00658942 |
-| seed2 | 9 | EMA | 76.39% | 427/512 (83.40%) | 71.46% | 332/512 (64.84%) | 0.00647050 |
-| seed2 | 10 | raw | 77.61% | 444/512 (86.72%) | 70.21% | 317/512 (61.91%) | 0.00675887 |
-| seed2 | 10 | EMA | 77.40% | 436/512 (85.16%) | 72.46% | 331/512 (64.65%) | 0.00649855 |
+| Seed | Epoch | State | TrainB BA | TrainB Mixed@512 | Dev BA | Dev Mixed@512 | Dev variance MSE | Actual family selection |
+|---|---:|---|---:|---:|---:|---:|---:|---|
+| seed1 | 1 | raw | 67.33% | 359/512 (70.12%) | 66.55% | 284/512 (55.47%) | 0.00745031 | — |
+| seed1 | 1 | EMA | 56.30% | 307/512 (59.96%) | 56.36% | 248/512 (48.44%) | 0.00834641 | — |
+| seed1 | 2 | raw | 68.57% | 381/512 (74.41%) | 67.16% | 310/512 (60.55%) | 0.00687763 | — |
+| seed1 | 2 | EMA | 62.65% | 353/512 (68.95%) | 61.93% | 274/512 (53.52%) | 0.00764121 | — |
+| seed1 | 3 | raw | 71.42% | 389/512 (75.98%) | 69.09% | 318/512 (62.11%) | 0.00681917 | — |
+| seed1 | 3 | EMA | 67.63% | 373/512 (72.85%) | 66.07% | 298/512 (58.20%) | 0.00705294 | — |
+| seed1 | 4 | raw | 72.15% | 394/512 (76.95%) | 70.19% | 312/512 (60.94%) | 0.00679006 | — |
+| seed1 | 4 | EMA | 70.39% | 389/512 (75.98%) | 68.18% | 313/512 (61.13%) | 0.00680714 | — |
+| seed1 | 5 | raw | 70.19% | 402/512 (78.52%) | 67.79% | 314/512 (61.33%) | 0.00667131 | — |
+| seed1 | 5 | EMA | 71.60% | 397/512 (77.54%) | 69.28% | 312/512 (60.94%) | 0.00669189 | — |
+| seed1 | 6 | raw | 73.20% | 415/512 (81.05%) | 69.49% | 320/512 (62.50%) | 0.00661398 | — |
+| seed1 | 6 | EMA | 72.90% | 397/512 (77.54%) | 69.99% | 315/512 (61.52%) | 0.00660866 | — |
+| seed1 | 7 | raw | 75.88% | 427/512 (83.40%) | 70.74% | 320/512 (62.50%) | 0.00659949 | — |
+| seed1 | 7 | EMA | 74.40% | 408/512 (79.69%) | 70.99% | 316/512 (61.72%) | 0.00656033 | — |
+| seed1 | 8 | raw | 77.33% | 435/512 (84.96%) | 71.14% | 318/512 (62.11%) | 0.00687541 | — |
+| seed1 | 8 | EMA | 75.27% | 421/512 (82.23%) | 71.28% | 320/512 (62.50%) | 0.00653171 | — |
+| seed1 | 9 | raw | 77.43% | 443/512 (86.52%) | 70.11% | 329/512 (64.26%) | 0.00673657 | **Selected E9/raw** |
+| seed1 | 9 | EMA | 76.35% | 433/512 (84.57%) | 71.12% | 326/512 (63.67%) | 0.00654653 | — |
+| seed1 | 10 | raw | 80.30% | 456/512 (89.06%) | 71.28% | 324/512 (63.28%) | 0.00681183 | — |
+| seed1 | 10 | EMA | 77.92% | 448/512 (87.50%) | 70.55% | 329/512 (64.26%) | 0.00660164 | — |
+| seed2 | 1 | raw | 66.67% | 367/512 (71.68%) | 66.04% | 286/512 (55.86%) | 0.00714388 | — |
+| seed2 | 1 | EMA | 62.27% | 316/512 (61.72%) | 60.52% | 249/512 (48.63%) | 0.00850443 | — |
+| seed2 | 2 | raw | 71.56% | 383/512 (74.80%) | 68.89% | 310/512 (60.55%) | 0.00685546 | — |
+| seed2 | 2 | EMA | 63.32% | 358/512 (69.92%) | 61.83% | 281/512 (54.88%) | 0.00757876 | — |
+| seed2 | 3 | raw | 73.21% | 402/512 (78.52%) | 70.23% | 317/512 (61.91%) | 0.00676982 | — |
+| seed2 | 3 | EMA | 68.36% | 380/512 (74.22%) | 66.41% | 304/512 (59.38%) | 0.00696118 | — |
+| seed2 | 4 | raw | 73.16% | 410/512 (80.08%) | 70.31% | 318/512 (62.11%) | 0.00662176 | — |
+| seed2 | 4 | EMA | 71.43% | 396/512 (77.34%) | 68.42% | 317/512 (61.91%) | 0.00675485 | — |
+| seed2 | 5 | raw | 71.46% | 408/512 (79.69%) | 67.99% | 320/512 (62.50%) | 0.00666226 | — |
+| seed2 | 5 | EMA | 72.78% | 405/512 (79.10%) | 69.37% | 319/512 (62.30%) | 0.00662849 | — |
+| seed2 | 6 | raw | 74.64% | 408/512 (79.69%) | 70.95% | 325/512 (63.48%) | 0.00658111 | — |
+| seed2 | 6 | EMA | 73.78% | 410/512 (80.08%) | 70.53% | 325/512 (63.48%) | 0.00654615 | — |
+| seed2 | 7 | raw | 75.09% | 418/512 (81.64%) | 70.90% | 318/512 (62.11%) | 0.00657380 | — |
+| seed2 | 7 | EMA | 74.39% | 413/512 (80.66%) | 71.05% | 328/512 (64.06%) | 0.00649732 | — |
+| seed2 | 8 | raw | 76.92% | 423/512 (82.62%) | 71.16% | 322/512 (62.89%) | 0.00662364 | — |
+| seed2 | 8 | EMA | 75.49% | 421/512 (82.23%) | 71.14% | 328/512 (64.06%) | 0.00647231 | — |
+| seed2 | 9 | raw | 76.96% | 438/512 (85.55%) | 71.33% | 321/512 (62.70%) | 0.00658942 | **Selected E9/raw** |
+| seed2 | 9 | EMA | 76.39% | 427/512 (83.40%) | 71.46% | 332/512 (64.84%) | 0.00647050 | — |
+| seed2 | 10 | raw | 77.61% | 444/512 (86.72%) | 70.21% | 317/512 (61.91%) | 0.00675887 | — |
+| seed2 | 10 | EMA | 77.40% | 436/512 (85.16%) | 72.46% | 331/512 (64.65%) | 0.00649855 | — |
 
-Seed1 E3→E4/raw: Top512 **318→312**, while BA **69.0950%→70.1886%**. The saved Top512 composition check reports all-wrong191→197 (net+6), Mixed318→312 (net−6), all-correct3→3; these are net class-count changes, not six identified question swaps. Ranking and the fixed-threshold BA need not move together. No epoch/state is selected from this partial-run change.
+Seed1 E3→E4/raw: Top512 **318→312**, while BA **69.0950%→70.1886%**. The saved Top512 composition check reports all-wrong191→197 (net+6), Mixed318→312 (net−6), all-correct3→3; these are net class-count changes, not six identified question swaps. Ranking and the fixed-threshold BA need not move together. No epoch/state was selected from this partial-run change.
 
 Seed2 E4→E5/raw: Top512318→320, BA70.3088%→67.9876%, Mixed recall63.6501%→51.2821%, nonMixed FPR23.0325%→15.3069%. Thresholded predictions became more conservative while the ranking count slightly improved. The primary selection rule remains seed1 development Top512 over all20 completed epoch/state choices, then the same epoch/state on seed2. No early selection or optimization change uses seed2.
 
 Seed2 E6/raw and EMA both select325/512 (63.4765625%) Mixed. Their fixed-dev BA values are70.9539% and70.5254%. These are already completed development diagnostics; no seed2-based epoch/state selection is made. Local live snapshot `1792708398.986121`.
 
-Population-variance diagnostic threshold0.08 corresponds to raw4v score0.32 and is not a calibrated Mixed probability. Full10E/13210 budget per seed, selected CP acceptance, order audit, actual freeze and independent final confirmation remain required.
+Population-variance diagnostic threshold0.08 corresponds to raw4v score0.32 and is not a calibrated Mixed probability. Both full10E/13210 training budgets and selected E9 CPU acceptance are complete. Order audit, actual candidate freeze and independent final confirmation are separate stages whose completion is not claimed by this local annotation.
 
 ## Seed1 E4: complete fixed trainB/development diagnostics
 
