@@ -1,0 +1,45 @@
+{
+  "status": "REAL_PROBE_FILE_AND_STALE_WRAPPER_RESOLUTION_PASS",
+  "outer": 40,
+  "checkpoint_sha256": "07f27188d37b498ddc74c840685c40139b5f4a80db12c6ed6b0496741584a9be",
+  "epochs": [
+    {
+      "epoch": 1,
+      "loss": 0.09268051184958495,
+      "questions": 2560,
+      "online_updates": 200,
+      "seconds": 13.315622258931398
+    },
+    {
+      "epoch": 2,
+      "loss": 0.08207741615042323,
+      "questions": 2560,
+      "online_updates": 220,
+      "seconds": 13.188399642007425
+    },
+    {
+      "epoch": 3,
+      "loss": 0.07454556628435967,
+      "questions": 2560,
+      "online_updates": 240,
+      "seconds": 13.126896422123536
+    }
+  ],
+  "actual_Adam_updates": 12129,
+  "warmup_updates": 11889,
+  "online_updates": 240,
+  "previous_online_updates": 180,
+  "inherited_exactly_60_new_Adam_updates": true,
+  "EMA_updates": 12129,
+  "Adam_parameter_step_values": [
+    12129
+  ],
+  "RNG_ranks": 4,
+  "raw_and_EMA_parameters": 45,
+  "old_wrapper_sha": "d20afc17d10c56cece8ad50deb4cf3f3793d8b17dc1a8197787ada7bd887b113",
+  "resolved_new_sha": "07f27188d37b498ddc74c840685c40139b5f4a80db12c6ed6b0496741584a9be",
+  "stale_wrapper_test": "CPU metadata resolution using actual saved pre-fit wrapper and epoch3 reference",
+  "GPU_reload_performed": false,
+  "production_failure_injected": false,
+  "boundary_publication": "SAME_EPOCH3_REFERENCE"
+}
