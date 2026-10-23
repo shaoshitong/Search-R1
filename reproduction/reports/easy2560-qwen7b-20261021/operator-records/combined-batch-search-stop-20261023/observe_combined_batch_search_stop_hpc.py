@@ -4,6 +4,7 @@ sys.path.insert(0,'/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7
 from reproduction.operations.easy7b_20261021.observe_lean_transition_hpc import observe
 base=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023')
 r=observe(str(base),'dde1452d2ec65fb3f4a0464d4beacf3b8136414c')
+if r.get('actual_runtime_commit') is None:r['source_job']=None
 job=r['job'];jobs='745198'+(','+job if job else '')
 r['queue']=subprocess.run(['squeue','-h','-j',jobs,'-o','%i|%u|%T|%N|%R'],capture_output=True,text=True,timeout=12).stdout
 r['candidate_progress']=[]
@@ -24,7 +25,7 @@ for p in (base/'artifacts/mixed-selection').glob('*.json'):
    r['search_stop_phase_observations'].append({'step':v.get('step'),'phase_count':len(phases),'rank_order':'phase_metrics native worker-group order','ranks':{str(i):{key:row.get(key) for key in ('search_action_stop','flash3_execution','weight_syncs','actual_work')} for i,row in enumerate(last)}})
  except json.JSONDecodeError:pass
 r['transition_documents']={}
-for name in ['lean-transition-retrieval-launch-claim.json','lean-transition-retrieval-launched.json','lean-transition-retrieval-exit.json','fa3-source-stop-result.json','fa3-transition-source-ready.json','fa3-transition-submitted.json','training-submission.json']:
+for name in ['lean-transition-retrieval-launch-claim.json','lean-transition-retrieval-launched.json','lean-transition-retrieval-exit.json','fa3-transition-prepared.json','external-retriever-receipt.json','fa3-source-stop-result.json','fa3-transition-source-ready.json','fa3-transition-submitted.json','training-submission.json']:
  p=base/'preparation'/name
  if p.exists():
   try:r['transition_documents'][name]=json.loads(p.read_text())
