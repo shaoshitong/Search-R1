@@ -1,0 +1,53 @@
+{
+  "checked_unix": 1792716769.772379,
+  "receipt": {
+    "actual_cuda_restore_accepted": false,
+    "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/fa3-full-state-source-receipt.json",
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "sha256": "ee930bcec127ad7d61627032e2627a6197313ac081f1470ceefd1f16892c9440",
+    "status": "EASY2560_NATIVE4_FULL_SHA_CPU_STATES_PASS",
+    "step": 70,
+    "world_size": 4
+  },
+  "source_summary": {
+    "actual_optimizer_writes_per_rank": 1400,
+    "attempt_progress": {
+      "aborted_attempts": 0,
+      "attempt_index": 70,
+      "completed_outer": 70,
+      "cumulative_writes": 1400,
+      "full_budget_outer": 70
+    },
+    "candidate_cursor": 10752,
+    "next_outer": 71,
+    "preserved_source_cursor_not_reset": true,
+    "reward_probe_manifest": {
+      "bytes": 540955,
+      "device": 48,
+      "full_read_sha256": "679a423fd7f2258291d4d6f8aa94fe28802c154885bac71454a72dc9c6fe6ead",
+      "inode": 11192892583,
+      "mtime_ns": 1792716394642502000,
+      "observed_source_bytes": 540955,
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/preparation/rolling-checkpoints/global_step_70/boundary/reward-probe-manifest.json",
+      "prefix_only": false,
+      "relative_path": "grounding/version-manifest.json",
+      "uid": 14090
+    },
+    "reward_probe_round": 50,
+    "reward_probe_version": "232f20e112ac4a978c5aba52a0367195:50:b1db8e2465254ae7894d9d682428bfec",
+    "source_consumed": 179200,
+    "source_model_optimizer_scheduler_rng_data_real_readback_pending": true,
+    "source_step": 70
+  },
+  "source_terminal": {
+    "accounting_returncode": 0,
+    "accounting_stdout": "750029|jxu957|CANCELLED by 14090|0:0\n",
+    "checked_unix": 1792716550.75516,
+    "observed_source_exit_code": "0:0",
+    "observed_source_state": "CANCELLED by 14090",
+    "queue_returncode": 0,
+    "queue_stdout": "",
+    "source_job": "750029"
+  },
+  "status": "FULL_SOURCE_CPU_AUDIT_READY"
+}

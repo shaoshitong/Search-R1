@@ -1,0 +1,49 @@
+{
+  "observed_unix": 1792716805.8434567,
+  "job": "750491",
+  "queue": "750491|jxu957|RUNNING|ACD1-14|ACD1-14\n745198|jxu957|RUNNING|ACD1-26|ACD1-26\n",
+  "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+  "restore_receipt_sha256": "ee930bcec127ad7d61627032e2627a6197313ac081f1470ceefd1f16892c9440",
+  "source_summary": {
+    "actual_optimizer_writes_per_rank": 1400,
+    "attempt_progress": {
+      "aborted_attempts": 0,
+      "attempt_index": 70,
+      "completed_outer": 70,
+      "cumulative_writes": 1400,
+      "full_budget_outer": 70
+    },
+    "candidate_cursor": 10752,
+    "next_outer": 71,
+    "preserved_source_cursor_not_reset": true,
+    "reward_probe_manifest": {
+      "bytes": 540955,
+      "device": 48,
+      "full_read_sha256": "679a423fd7f2258291d4d6f8aa94fe28802c154885bac71454a72dc9c6fe6ead",
+      "inode": 11192892583,
+      "mtime_ns": 1792716394642502000,
+      "observed_source_bytes": 540955,
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/preparation/rolling-checkpoints/global_step_70/boundary/reward-probe-manifest.json",
+      "prefix_only": false,
+      "relative_path": "grounding/version-manifest.json",
+      "uid": 14090
+    },
+    "reward_probe_round": 50,
+    "reward_probe_version": "232f20e112ac4a978c5aba52a0367195:50:b1db8e2465254ae7894d9d682428bfec",
+    "source_consumed": 179200,
+    "source_model_optimizer_scheduler_rng_data_real_readback_pending": true,
+    "source_step": 70
+  },
+  "cpu_audit_exit": {
+    "actual_cuda_restore_accepted": false,
+    "automatic_retry": false,
+    "finished_unix": 1792716792.093089,
+    "log": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/lean-transition-retrieval-cpu-audit.log",
+    "returncode": 0,
+    "status": "CPU_AUDIT_AND_TRANSITION_COMMAND_EXITED",
+    "submission_result_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/fa3-transition-submitted.json"
+  },
+  "actual_cuda_restore_accepted": false,
+  "evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792716805939795000.json",
+  "goal_remains_active": true
+}
