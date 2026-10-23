@@ -1,10 +1,10 @@
 {
-  "checked_utc": "2026-10-23T09:38:31.307549+00:00",
-  "implementation_commit": "3f1650d477daa5c4f3bbae568175bf8638b9d831",
+  "checked_utc": "2026-10-23T10:22:05.526668+00:00",
+  "implementation_commit": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
   "branch": "codex/dynrpo7b-formal-20261023",
   "remote_git_SHA_verified": true,
-  "remote_runtime_files_SHA_verified": 1958,
-  "runtime_base": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023-recoveryfix-r5",
+  "remote_runtime_files_SHA_verified": 1960,
+  "runtime_base": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023-recoveryfix-r6",
   "scope": [
     "Restore phase-journal published probe raw/EMA/Adam/RNG instead of stale wrapper",
     "Resume production candidate/prefix/continuation and committed Backstop batches with original producer provenance",
@@ -21,7 +21,7 @@
     "subsequent_change": "Removed duplicate Hydra snapshot-cache override already supplied by mature profile",
     "production_collection_cpu_injection": "Exit after first committed128 Backstop questions; resume only next128. Candidate order, attempt, labels and saved batches retained.",
     "real_four_rank_recovery": {
-      "status": "PASS_IN_R3_AND_R4; R5_PENDING",
+      "status": "PASS",
       "source_outer": 3,
       "Adam_per_rank": [
         60,
@@ -44,7 +44,15 @@
       "driver_rng_readback_equal": true,
       "candidate_source_cursor": 15360,
       "first_resumed_outer": 4,
-      "first_resumed_outer_completed": false
+      "first_resumed_outer_completed": true,
+      "completed_outer": 4,
+      "actual_Adam_per_rank": [
+        80,
+        80,
+        80,
+        80
+      ],
+      "next_outer_started": 5
     },
     "real_weight_sync_once_per_rank": {
       "status": "PASS",
@@ -100,6 +108,58 @@
       "tensor_source": "R4 retained real rollout",
       "trace_sha256": "a85e177eb180c71eca07b156f8ee87a2ca44577c6601682d4316f32368aec3fb",
       "GPU_used": false
+    },
+    "post_restore_five_outer_followup": {
+      "required": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "completed": [],
+      "next_outer_to_confirm": 11,
+      "status": "WAITING_R6_ALLOCATION"
+    },
+    "scheduler_production_update": {
+      "status": "PASS",
+      "job": 751562,
+      "completed_outer": 4,
+      "new_writes_each_rank": 20,
+      "cumulative_writes_each_rank": 80,
+      "actual_update_seconds": 96.883
+    },
+    "CP4": {
+      "status": "DYNRPO7B_ROLLING_READY",
+      "all_referenced_files_present": true,
+      "rank_model_Adam_scheduler_RNG_driver_probe_saved": true,
+      "serialized_state_readback": true,
+      "fresh_CP4_GPU_reload_performed": false
+    },
+    "CP5": {
+      "status": "DYNRPO7B_ROLLING_READY",
+      "actual_Adam_per_rank": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "model_Adam_scheduler_RNG_driver_probe_saved": true,
+      "serialized_state_readback": true,
+      "fresh_CP5_GPU_reload_performed": false,
+      "QA512": {
+        "EM": 0.37109375,
+        "F1": 0.4668833112180756,
+        "NQ_correct": 86,
+        "HotpotQA_correct": 104
+      }
+    },
+    "snapshot_serialization": {
+      "status": "REAL_PREFIX_SNAPSHOT_FIELDS_AND_RELOAD_IDENTICAL",
+      "samples": 16,
+      "asdict_seconds": 0.0410076139960438,
+      "field_snapshot_seconds": 0.00011811312288045883,
+      "training_throughput_improvement_not_yet_measured": true
     }
   },
   "unchanged": [
@@ -119,16 +179,16 @@
     "allow_reset_or_replay_committed_actor": false,
     "new_job": 751562,
     "old_job_terminal": "CANCELLED after verified full CP3",
-    "partition": "acd_ue",
+    "partition": "emergency_acd",
     "retriever_retained": 751011,
-    "new_job_state": "SUBMITTED",
-    "node": "ACD1-64",
+    "new_job_state": "RUNNING_OUTER5",
+    "node": "ACD1-31",
     "step": 3,
     "actual_Adam_per_rank": [
-      60,
-      60,
-      60,
-      60
+      80,
+      80,
+      80,
+      80
     ],
     "restore_receipt": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/dynrpo7b-checkpoints/global_step_3/boundary.json"
   },
@@ -167,5 +227,28 @@
       "error": "behavior_probability.verify signature omitted authenticated historical generation producers",
       "fix_commit": "3f1650d477daa5c4f3bbae568175bf8638b9d831"
     }
-  ]
+  ],
+  "priority_change": {
+    "job": 751562,
+    "from": "acd_ue",
+    "to": "emergency_acd",
+    "reason": "Middle queue estimated1hour after ordinary queue already tried; same4GPU job, one step escalation",
+    "preemption_command_issued": false
+  },
+  "serialization_handoff": {
+    "old_job": 751562,
+    "new_job": 751884,
+    "source_outer": 5,
+    "actual_Adam_per_rank": [
+      100,
+      100,
+      100,
+      100
+    ],
+    "old_job_terminal": "CANCELLED at verified full CP5",
+    "committed_actor_replayed": false,
+    "retriever_retained": 751011,
+    "runtime_source": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
+    "backup_source": "0f4c3cc092cf7400c929d29a2f076ec4331aa66c"
+  }
 }
