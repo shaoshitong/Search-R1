@@ -1,31 +1,16 @@
 {
-  "time": 1792757557.5816865,
+  "time": 1792758094.32293,
   "training_job": 751884,
   "retrieval_job": 751011,
   "queue_query_returncode": 0,
-  "queue": "751011 RUNNING 6:19:38 ACD1-51\n751884 RUNNING 1:49:46 ACD1-1",
+  "queue": "751011 RUNNING 6:28:35 ACD1-51\n751884 RUNNING 1:58:43 ACD1-1",
   "pipeline": "DYNRPO7B_GRPO_1_TO_200",
   "trainer": {
-    "bytes": 433524,
-    "mtime": 1792757297.924497,
+    "bytes": 437126,
+    "mtime": 1792757983.351287,
     "error": false
   },
   "recent_collections": [
-    {
-      "step": 7,
-      "candidate_fill_seconds": 659.0832874281332,
-      "probe_top_group_counts": {
-        "questions": 1024,
-        "all_correct": 42,
-        "all_wrong": 192,
-        "mixed": 790,
-        "mixed_fraction": 0.771484375
-      },
-      "selected_mixed": 512,
-      "selected_mixed_fraction": 1.0,
-      "attempt_id": "ede6f85dbe4f4f38953cb55abac4b83f",
-      "question_probe_version": "seed1-E9-raw"
-    },
     {
       "step": 8,
       "candidate_fill_seconds": 646.1512716340367,
@@ -70,6 +55,21 @@
       "selected_mixed_fraction": 1.0,
       "attempt_id": "6727eb02d2b44f64998526f447afb343",
       "question_probe_version": "seed1-E9-raw"
+    },
+    {
+      "step": 11,
+      "candidate_fill_seconds": 669.6515000942163,
+      "probe_top_group_counts": {
+        "questions": 1024,
+        "all_correct": 63,
+        "all_wrong": 194,
+        "mixed": 767,
+        "mixed_fraction": 0.7490234375
+      },
+      "selected_mixed": 512,
+      "selected_mixed_fraction": 1.0,
+      "attempt_id": "7953f45f49f2455c9206ef2ba7d66b98",
+      "question_probe_version": "seed1-E9-raw-online-0010"
     }
   ],
   "recent_steps": [
@@ -169,8 +169,8 @@
   },
   "latest_collection_journal": {
     "name": "outer-0011.json",
-    "stage": "candidates",
-    "parts": 1
+    "stage": "collected",
+    "parts": 3
   },
   "probe_update": {
     "directory": "update-0010",

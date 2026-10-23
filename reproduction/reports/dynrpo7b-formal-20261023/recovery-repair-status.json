@@ -1,5 +1,5 @@
 {
-  "checked_utc": "2026-10-23T12:12:37.581686+00:00",
+  "checked_utc": "2026-10-23T12:21:34.322930+00:00",
   "implementation_commit": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
   "branch": "codex/dynrpo7b-formal-20261023",
   "remote_git_SHA_verified": true,
@@ -125,9 +125,9 @@
         10
       ],
       "next_outer_to_confirm": 11,
-      "status": "FIVE_COMPLETE_OUTERS_PASS_NEXT11_GENERATING",
+      "status": "PASS_FIVE_COMPLETE_AND_NEXT11_NEW_PROBE_SCORING",
       "next_outer_started": 11,
-      "actual_next11_probe_scoring": "PENDING"
+      "actual_next11_probe_scoring": "PASS"
     },
     "scheduler_production_update": {
       "status": "PASS",
@@ -364,6 +364,35 @@
       "next_outer_started": 11,
       "probe_fit_epochs": 3,
       "probe_fit_epoch_seconds_total": 40.73762904992327
+    },
+    "outer11_actual_new_probe_scoring": {
+      "status": "OUTER11_ACTUAL_SCORING_USES_UPDATED_PROBE",
+      "checked_unix": 1792758038.3037038,
+      "outer": 11,
+      "actor_version": "5ca52a958a7c41ec8b98a2685d3f9300:11:policy-7953f45f49f2455c9206ef2ba7d66b98",
+      "actor_prior_writes": 200,
+      "probe_version": "seed1-E9-raw-online-0010",
+      "prefix": 80,
+      "candidate_questions": 5120,
+      "finite_scores": 5120,
+      "minimum_score": 0.0027149852830916643,
+      "maximum_score": 0.9230391979217529,
+      "score_semantics": "4*predicted_population_variance",
+      "probe_checkpoint_sha256": "a53346d923dc4be107436ef7f96cf94aeca17a9d9596e37ee8530b516da3078a",
+      "scores_sha256": "03ec4aa67b3c926990b3ef011714462a42bd38dc339b0b181a04caf2160f11b3",
+      "score_path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023-recoveryfix-r6/artifacts/question-probe/attempts/7953f45f49f2455c9206ef2ba7d66b98/scores.json",
+      "stage": "collected",
+      "GPU_scoring_produced": true,
+      "GPU_restore_fault_injected": false,
+      "observer_correction": "Generation snapshot IDs encode target outer and attempt; they are distinct from actor checkpoint IDs."
+    },
+    "outer11_collection": {
+      "actor_not_complete": true,
+      "top1024_mixed": 767,
+      "top1024_mixed_fraction": 0.7490234375,
+      "selected512_mixed": 512,
+      "probe_version": "seed1-E9-raw-online-0010",
+      "candidate_seconds": 669.6515000942163
     }
   },
   "unchanged": [
@@ -462,12 +491,11 @@
     "total_outer_budget": 200,
     "observed_training_job_live": true,
     "goal_turn_classification": "progress",
-    "evidence": "Restored outers6-10 all complete, CP10 actor/probe boundary passed, actual probe raw/EMA/Adam/RNG CPU read and stale-wrapper resolution passed; outer11 generating",
+    "evidence": "CP5 resume followup6-10 passed; actual3epoch probe10 and real old-wrapper resolution passed; actual next11 scoring uses new probe; training remains active toward200",
     "remaining": [
-      "Confirm actual outer11 scoring with new epoch3 probe reference",
-      "Complete200outers and19periodic probe updates",
-      "Verify prefix160 boundary100 and remaining fixed512 evaluations",
-      "Final51713 evaluation and resource closeout"
+      "Continue through200outers including probe updates20..190 and prefix160 from101",
+      "Verify remaining complete checkpoints and fixed512 evaluations50/100/150/200",
+      "Complete final51713 evaluation, final acceptance and task resource closeout"
     ]
   }
 }
