@@ -1,13 +1,21 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
-**Current evidence, 2026-10-23:** production750029 completed and sealed
-outer68; all four ranks reached1360 Adam writes/scheduler68. Outer69 has saved
-2560 actual candidate questions. CP68 contains23 checkpoint plus7 boundary files,
-total91,406,225,038 bytes, manifest SHA
-`fa693236b17c05d7ccaffdcf69bcd5c8b2e1b684c3f43b57f5c56bafce494cec`.
-The five-outer post-restore follow-up61–65 is accepted; overall200 and final
-acceptance remain incomplete. See
-[CP68 seal and actual69 progress](evidence/leanmetrics-outer68-sealed69-progress-summary.json).
+**Current evidence, 2026-10-23:** healthy production750029 completed and sealed
+outer69; all4 ranks reached1380 Adam writes/scheduler69. It remains running.
+Search-only stop reduced512-question generation158.192→94.030s (40.56%)
+with async retrieval, but only180.867→163.918s (9.37%) with the production-like
+serial retrieval path. Both pairs completed0:0 on4H100. Raw tokens fell about68%
+in both, while decode calls barely changed in the serial pair.
+
+The prepared stop-only target is **superseded and must not be stopped/submitted**.
+Production750029 and745198 remain unchanged while the combination of the already
+tested async CPU proxy, singleton-E5/FAISS16 batching and search-only stop is
+wired into an explicit new profile and separate7day2GPU service. The old prepared
+artifact/evidence is retained. Neither candidate result proves whole-outer or
+final-quality acceptance. See
+[serial versus async actual pairs](evidence/search-action-stop-serial-vs-async-summary.json),
+[superseded stop-only decision](evidence/search-stop-only-target-r1-superseded-decision.json)
+and [actual CP69 seal](evidence/leanmetrics-outer69-sealed-summary.json).
 
 The full native4 candidate A/B750423 completed0:0. For all2560 parents and
 12800 trajectories, generation893.886s became841.931s (5.81% less time), and
@@ -25,8 +33,8 @@ generation158.192→94.030s (40.56% less), pipeline184.048→120.846s
 (34.34% less), raw tokens1,059,962→338,192. Both arms used the same async2ms
 retrieval mode. All4 ranks executed FA3 and the enabled arm recorded5368 actual
 search stops. These are candidate-chunk results, not entire training-outer or
-quality acceptance. Formal750029 remains unchanged while an authorized
-boundary continuation is prepared. See
+quality acceptance. Formal750029 remains unchanged. The prepared stop-only target is superseded;
+a combined async/batched continuation is being prepared. See
 [actual four-GPU search-stop result](evidence/search-action-stop-live-native4-summary.json).
 
 Both probes use hardlinked frozen HF policy66 and fixed parent chunks. They

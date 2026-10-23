@@ -1,0 +1,791 @@
+{
+  "schema": "search_action_stop_serial_vs_async_candidate_pairs_v1",
+  "scope": "Two separate baseline-to-search-only-stop pairs, each arm512 questions x5 trajectories on four TP1 FA3 workers; no actor optimizer, complete2560-candidate selection or whole outer.",
+  "inputs": {
+    "all_four_arms_have_same_parent_fingerprint": true,
+    "fingerprint": "b89824e7e032010732f4875f97d5aba59f2b11823c45bb42bcb2b3068145aab6",
+    "order_in_each_pair": [
+      "baseline",
+      "early-stop"
+    ]
+  },
+  "pairs": {
+    "serial_legacy_proxy": {
+      "source_evidence": "search-action-stop-legacy-results-1792714651900715000.json",
+      "source_evidence_sha256": "2d0a4b44cd6b6974032b9fd9e7be88c39a8e252e99cc8aa5f5bcd9cd2de74e9f",
+      "observed_unix": 1792714651.9228408,
+      "slurm_job_id": "750454",
+      "status": "SEARCH_ACTION_STOP_STARTUP_PAIR_COMPLETED",
+      "both_actual_512_by_5_completed_and_exit_zero": true,
+      "both_all4_actual_fa3_prefill_and_decode": true,
+      "same_input_fingerprints_within_pair": true,
+      "producer_paired_timings": {
+        "generation_phase_wall_seconds": {
+          "baseline_seconds": 180.86678963154554,
+          "early_stop_seconds": 163.91751090437174,
+          "observed_baseline_over_early_stop_ratio": 1.1034012695389321,
+          "observed_wall_reduction_percent": 9.371139257628325
+        },
+        "pipeline_seconds_including_input_io_score_and_output_save": {
+          "baseline_seconds": 207.7075300961733,
+          "early_stop_seconds": 190.82200257945806,
+          "observed_baseline_over_early_stop_ratio": 1.0884883676329942,
+          "observed_wall_reduction_percent": 8.129472970429552
+        }
+      },
+      "observed_saved_seconds": {
+        "generation_phase_wall_seconds": 16.949278727173805,
+        "pipeline_seconds_including_input_io_score_and_output_save": 16.88552751671523
+      },
+      "baseline": {
+        "completed_questions": 512,
+        "completed_trajectories": 2560,
+        "actual_world_size": 4,
+        "candidate_exit_code": 0,
+        "actual_512_by_5_complete": true,
+        "all4_actual_fa3_prefill_and_decode": true,
+        "input_fingerprints_sha256": "b89824e7e032010732f4875f97d5aba59f2b11823c45bb42bcb2b3068145aab6",
+        "actual_work": {
+          "actual_raw_generated_tokens": 1050464,
+          "retained_model_tokens": 332190,
+          "actual_generation_requests": 7891,
+          "actual_prompt_tokens": 6153126,
+          "actual_retrieval_calls": 5331
+        },
+        "raw_minus_retained_model_tokens": 718274,
+        "selection": {
+          "candidate_categories": {
+            "all_correct": 238,
+            "all_wrong": 190,
+            "mixed": 84
+          },
+          "candidate_groups": 512,
+          "candidate_mixed_fraction": 0.1640625,
+          "selected_groups": null,
+          "selected_mixed_fraction": null,
+          "selection_performed": false,
+          "selection_status": "STARTUP_CHUNKS_ONLY_NOT_FULL_2560_SELECTION",
+          "training_em": 0.553515625
+        },
+        "strict_correctness_sha256": "6437e5ec8bc45cdcb8da5e99a4d66761a9aae2b14212aff8fa3cfb75d5898a7c",
+        "producer_timings_seconds": {
+          "generation_phase": 180.86678963154554,
+          "pipeline_including_input_io_score_and_output_save": 207.7075300961733,
+          "candidate_process": 238.02300177048892
+        },
+        "per_rank": {
+          "0": {
+            "actual_fa3_prefill_and_decode": true,
+            "flash3_calls": {
+              "decode": 189252,
+              "paged_prefill": 0,
+              "prefill": 32704
+            },
+            "actual_work_current_phase": {
+              "generation_requests": 1955,
+              "prompt_tokens": 1511409,
+              "raw_generated_tokens": 257099
+            },
+            "confirmed_search_stops": null,
+            "search_action_stop": null
+          },
+          "1": {
+            "actual_fa3_prefill_and_decode": true,
+            "flash3_calls": {
+              "decode": 177324,
+              "paged_prefill": 0,
+              "prefill": 32452
+            },
+            "actual_work_current_phase": {
+              "generation_requests": 1983,
+              "prompt_tokens": 1554518,
+              "raw_generated_tokens": 264503
+            },
+            "confirmed_search_stops": null,
+            "search_action_stop": null
+          },
+          "2": {
+            "actual_fa3_prefill_and_decode": true,
+            "flash3_calls": {
+              "decode": 191912,
+              "paged_prefill": 0,
+              "prefill": 33376
+            },
+            "actual_work_current_phase": {
+              "generation_requests": 1974,
+              "prompt_tokens": 1542236,
+              "raw_generated_tokens": 263489
+            },
+            "confirmed_search_stops": null,
+            "search_action_stop": null
+          },
+          "3": {
+            "actual_fa3_prefill_and_decode": true,
+            "flash3_calls": {
+              "decode": 191968,
+              "paged_prefill": 0,
+              "prefill": 33488
+            },
+            "actual_work_current_phase": {
+              "generation_requests": 1979,
+              "prompt_tokens": 1544963,
+              "raw_generated_tokens": 265373
+            },
+            "confirmed_search_stops": null,
+            "search_action_stop": null
+          }
+        },
+        "aggregate_rank_kernel_call_counts": {
+          "prefill": 132020,
+          "paged_prefill": 0,
+          "decode": 750456
+        },
+        "aggregate_stop_counts": null,
+        "counter_scope": "One completed chunk per fresh four-engine arm. Kernel and stop counts are counts, not GPU time or decoded-token counts. Missing baseline stop reports remain null."
+      },
+      "early_stop": {
+        "completed_questions": 512,
+        "completed_trajectories": 2560,
+        "actual_world_size": 4,
+        "candidate_exit_code": 0,
+        "actual_512_by_5_complete": true,
+        "all4_actual_fa3_prefill_and_decode": true,
+        "input_fingerprints_sha256": "b89824e7e032010732f4875f97d5aba59f2b11823c45bb42bcb2b3068145aab6",
+        "actual_work": {
+          "actual_raw_generated_tokens": 335516,
+          "retained_model_tokens": 332796,
+          "actual_generation_requests": 7898,
+          "actual_prompt_tokens": 6189512,
+          "actual_retrieval_calls": 5338
+        },
+        "raw_minus_retained_model_tokens": 2720,
+        "selection": {
+          "candidate_categories": {
+            "all_correct": 233,
+            "all_wrong": 192,
+            "mixed": 87
+          },
+          "candidate_groups": 512,
+          "candidate_mixed_fraction": 0.169921875,
+          "selected_groups": null,
+          "selected_mixed_fraction": null,
+          "selection_performed": false,
+          "selection_status": "STARTUP_CHUNKS_ONLY_NOT_FULL_2560_SELECTION",
+          "training_em": 0.549609375
+        },
+        "strict_correctness_sha256": "cb9fa4d1fea14f24674b35b41ca7449485db5b001ee47ec2b7b2273ad1a92013",
+        "producer_timings_seconds": {
+          "generation_phase": 163.91751090437174,
+          "pipeline_including_input_io_score_and_output_save": 190.82200257945806,
+          "candidate_process": 223.3080645184964
+        },
+        "per_rank": {
+          "0": {
+            "actual_fa3_prefill_and_decode": true,
+            "flash3_calls": {
+              "decode": 185192,
+              "paged_prefill": 0,
+              "prefill": 31612
+            },
+            "actual_work_current_phase": {
+              "generation_requests": 1969,
+              "prompt_tokens": 1537619,
+              "raw_generated_tokens": 83582
+            },
+            "confirmed_search_stops": 1332,
+            "search_action_stop": {
+              "ambiguous_prefixes": 0,
+              "answer_stop_enabled": false,
+              "confirmation_rejections": 0,
+              "confirmed_search_stops": 1332,
+              "enabled": true,
+              "filter_triggers": 1332,
+              "live_sequence_filters": 0,
+              "native_finished_first": 637,
+              "native_stop_checker_runs_first": true,
+              "piece_cache_entries": 5350,
+              "prefix_confirmations": 1332,
+              "raw_tokens_or_logprobs_mutated": false,
+              "search_only": true,
+              "single_token_decodes": 5350,
+              "stop_reason": "search_action_boundary:</search>",
+              "token_checks": 82945
+            }
+          },
+          "1": {
+            "actual_fa3_prefill_and_decode": true,
+            "flash3_calls": {
+              "decode": 191884,
+              "paged_prefill": 0,
+              "prefill": 33208
+            },
+            "actual_work_current_phase": {
+              "generation_requests": 1976,
+              "prompt_tokens": 1552964,
+              "raw_generated_tokens": 84386
+            },
+            "confirmed_search_stops": 1338,
+            "search_action_stop": {
+              "ambiguous_prefixes": 0,
+              "answer_stop_enabled": false,
+              "confirmation_rejections": 0,
+              "confirmed_search_stops": 1338,
+              "enabled": true,
+              "filter_triggers": 1338,
+              "live_sequence_filters": 0,
+              "native_finished_first": 638,
+              "native_stop_checker_runs_first": true,
+              "piece_cache_entries": 5430,
+              "prefix_confirmations": 1338,
+              "raw_tokens_or_logprobs_mutated": false,
+              "search_only": true,
+              "single_token_decodes": 5430,
+              "stop_reason": "search_action_boundary:</search>",
+              "token_checks": 83748
+            }
+          },
+          "2": {
+            "actual_fa3_prefill_and_decode": true,
+            "flash3_calls": {
+              "decode": 178388,
+              "paged_prefill": 0,
+              "prefill": 33040
+            },
+            "actual_work_current_phase": {
+              "generation_requests": 1995,
+              "prompt_tokens": 1584648,
+              "raw_generated_tokens": 84397
+            },
+            "confirmed_search_stops": 1355,
+            "search_action_stop": {
+              "ambiguous_prefixes": 0,
+              "answer_stop_enabled": false,
+              "confirmation_rejections": 0,
+              "confirmed_search_stops": 1355,
+              "enabled": true,
+              "filter_triggers": 1355,
+              "live_sequence_filters": 0,
+              "native_finished_first": 640,
+              "native_stop_checker_runs_first": true,
+              "piece_cache_entries": 5317,
+              "prefix_confirmations": 1355,
+              "raw_tokens_or_logprobs_mutated": false,
+              "search_only": true,
+              "single_token_decodes": 5317,
+              "stop_reason": "search_action_boundary:</search>",
+              "token_checks": 83757
+            }
+          },
+          "3": {
+            "actual_fa3_prefill_and_decode": true,
+            "flash3_calls": {
+              "decode": 195748,
+              "paged_prefill": 0,
+              "prefill": 33712
+            },
+            "actual_work_current_phase": {
+              "generation_requests": 1958,
+              "prompt_tokens": 1514281,
+              "raw_generated_tokens": 83151
+            },
+            "confirmed_search_stops": 1319,
+            "search_action_stop": {
+              "ambiguous_prefixes": 0,
+              "answer_stop_enabled": false,
+              "confirmation_rejections": 0,
+              "confirmed_search_stops": 1319,
+              "enabled": true,
+              "filter_triggers": 1319,
+              "live_sequence_filters": 0,
+              "native_finished_first": 639,
+              "native_stop_checker_runs_first": true,
+              "piece_cache_entries": 5228,
+              "prefix_confirmations": 1319,
+              "raw_tokens_or_logprobs_mutated": false,
+              "search_only": true,
+              "single_token_decodes": 5228,
+              "stop_reason": "search_action_boundary:</search>",
+              "token_checks": 82512
+            }
+          }
+        },
+        "aggregate_rank_kernel_call_counts": {
+          "prefill": 131572,
+          "paged_prefill": 0,
+          "decode": 751212
+        },
+        "aggregate_stop_counts": {
+          "confirmed_search_stops": 5344,
+          "token_checks": 332962,
+          "filter_triggers": 5344,
+          "prefix_confirmations": 5344,
+          "confirmation_rejections": 0,
+          "ambiguous_prefixes": 0,
+          "native_finished_first": 2554
+        },
+        "counter_scope": "One completed chunk per fresh four-engine arm. Kernel and stop counts are counts, not GPU time or decoded-token counts. Missing baseline stop reports remain null."
+      },
+      "actual_work_change": {
+        "actual_raw_generated_tokens": {
+          "baseline": 1050464,
+          "early_stop": 335516,
+          "early_stop_minus_baseline": -714948,
+          "early_stop_over_baseline_ratio": 0.319397904164255,
+          "observed_reduction_percent": 68.0602095835745
+        },
+        "retained_model_tokens": {
+          "baseline": 332190,
+          "early_stop": 332796,
+          "early_stop_minus_baseline": 606,
+          "early_stop_over_baseline_ratio": 1.0018242572022036,
+          "observed_reduction_percent": -0.1824257202203583
+        },
+        "actual_generation_requests": {
+          "baseline": 7891,
+          "early_stop": 7898,
+          "early_stop_minus_baseline": 7,
+          "early_stop_over_baseline_ratio": 1.0008870865543025,
+          "observed_reduction_percent": -0.08870865543024742
+        },
+        "actual_prompt_tokens": {
+          "baseline": 6153126,
+          "early_stop": 6189512,
+          "early_stop_minus_baseline": 36386,
+          "early_stop_over_baseline_ratio": 1.0059134170176265,
+          "observed_reduction_percent": -0.5913417017626488
+        },
+        "actual_retrieval_calls": {
+          "baseline": 5331,
+          "early_stop": 5338,
+          "early_stop_minus_baseline": 7,
+          "early_stop_over_baseline_ratio": 1.0013130744700807,
+          "observed_reduction_percent": -0.13130744700806662
+        }
+      },
+      "kernel_call_count_change": {
+        "prefill": {
+          "baseline": 132020,
+          "early_stop": 131572,
+          "early_stop_minus_baseline": -448,
+          "early_stop_over_baseline_ratio": 0.9966065747613998,
+          "observed_reduction_percent": 0.33934252386002006
+        },
+        "decode": {
+          "baseline": 750456,
+          "early_stop": 751212,
+          "early_stop_minus_baseline": 756,
+          "early_stop_over_baseline_ratio": 1.001007387508395,
+          "observed_reduction_percent": -0.1007387508394908
+        }
+      },
+      "observation_errors": [],
+      "runner_failure": null,
+      "covers_entire_training_outer": false,
+      "final_quality_equivalence_proven": false
+    },
+    "async_proxy_faiss_batch": {
+      "source_evidence": "search-action-stop-results-1792714095083345000.json",
+      "source_evidence_sha256": "8821ead52bcf98966d3e7609e40da1cd981c0fad16913628477aafa198402ee0",
+      "observed_unix": 1792714095.1044674,
+      "slurm_job_id": "750449",
+      "status": "SEARCH_ACTION_STOP_STARTUP_PAIR_COMPLETED",
+      "both_actual_512_by_5_completed_and_exit_zero": true,
+      "both_all4_actual_fa3_prefill_and_decode": true,
+      "same_input_fingerprints_within_pair": true,
+      "producer_paired_timings": {
+        "generation_phase_wall_seconds": {
+          "baseline_seconds": 158.19211182184517,
+          "early_stop_seconds": 94.03038753382862,
+          "observed_baseline_over_early_stop_ratio": 1.6823509502705556,
+          "observed_wall_reduction_percent": 40.559370217065585
+        },
+        "pipeline_seconds_including_input_io_score_and_output_save": {
+          "baseline_seconds": 184.047857997939,
+          "early_stop_seconds": 120.84551922697574,
+          "observed_baseline_over_early_stop_ratio": 1.5230010940848762,
+          "observed_wall_reduction_percent": 34.34016535616025
+        }
+      },
+      "observed_saved_seconds": {
+        "generation_phase_wall_seconds": 64.16172428801656,
+        "pipeline_seconds_including_input_io_score_and_output_save": 63.20233877096325
+      },
+      "baseline": {
+        "completed_questions": 512,
+        "completed_trajectories": 2560,
+        "actual_world_size": 4,
+        "candidate_exit_code": 0,
+        "actual_512_by_5_complete": true,
+        "all4_actual_fa3_prefill_and_decode": true,
+        "input_fingerprints_sha256": "b89824e7e032010732f4875f97d5aba59f2b11823c45bb42bcb2b3068145aab6",
+        "actual_work": {
+          "actual_raw_generated_tokens": 1059962,
+          "retained_model_tokens": 335198,
+          "actual_generation_requests": 7904,
+          "actual_prompt_tokens": 6201697,
+          "actual_retrieval_calls": 5344
+        },
+        "raw_minus_retained_model_tokens": 724764,
+        "selection": {
+          "candidate_categories": {
+            "all_correct": 238,
+            "all_wrong": 196,
+            "mixed": 78
+          },
+          "candidate_groups": 512,
+          "candidate_mixed_fraction": 0.15234375,
+          "selected_groups": null,
+          "selected_mixed_fraction": null,
+          "selection_performed": false,
+          "selection_status": "STARTUP_CHUNKS_ONLY_NOT_FULL_2560_SELECTION",
+          "training_em": 0.545703125
+        },
+        "strict_correctness_sha256": "81c00c4c13526e16d0a545184e7c8189e3a3c012ee397914c03200a244af1677",
+        "producer_timings_seconds": {
+          "generation_phase": 158.19211182184517,
+          "pipeline_including_input_io_score_and_output_save": 184.047857997939,
+          "candidate_process": 216.63306064717472
+        },
+        "per_rank": {
+          "0": {
+            "actual_fa3_prefill_and_decode": true,
+            "flash3_calls": {
+              "decode": 154812,
+              "paged_prefill": 0,
+              "prefill": 32900
+            },
+            "actual_work_current_phase": {
+              "generation_requests": 1949,
+              "prompt_tokens": 1499500,
+              "raw_generated_tokens": 258343
+            },
+            "confirmed_search_stops": null,
+            "search_action_stop": null
+          },
+          "1": {
+            "actual_fa3_prefill_and_decode": true,
+            "flash3_calls": {
+              "decode": 146216,
+              "paged_prefill": 0,
+              "prefill": 42056
+            },
+            "actual_work_current_phase": {
+              "generation_requests": 1987,
+              "prompt_tokens": 1580341,
+              "raw_generated_tokens": 268542
+            },
+            "confirmed_search_stops": null,
+            "search_action_stop": null
+          },
+          "2": {
+            "actual_fa3_prefill_and_decode": true,
+            "flash3_calls": {
+              "decode": 149296,
+              "paged_prefill": 0,
+              "prefill": 34020
+            },
+            "actual_work_current_phase": {
+              "generation_requests": 1992,
+              "prompt_tokens": 1574109,
+              "raw_generated_tokens": 264645
+            },
+            "confirmed_search_stops": null,
+            "search_action_stop": null
+          },
+          "3": {
+            "actual_fa3_prefill_and_decode": true,
+            "flash3_calls": {
+              "decode": 139440,
+              "paged_prefill": 0,
+              "prefill": 39312
+            },
+            "actual_work_current_phase": {
+              "generation_requests": 1976,
+              "prompt_tokens": 1547747,
+              "raw_generated_tokens": 268432
+            },
+            "confirmed_search_stops": null,
+            "search_action_stop": null
+          }
+        },
+        "aggregate_rank_kernel_call_counts": {
+          "prefill": 148288,
+          "paged_prefill": 0,
+          "decode": 589764
+        },
+        "aggregate_stop_counts": null,
+        "counter_scope": "One completed chunk per fresh four-engine arm. Kernel and stop counts are counts, not GPU time or decoded-token counts. Missing baseline stop reports remain null."
+      },
+      "early_stop": {
+        "completed_questions": 512,
+        "completed_trajectories": 2560,
+        "actual_world_size": 4,
+        "candidate_exit_code": 0,
+        "actual_512_by_5_complete": true,
+        "all4_actual_fa3_prefill_and_decode": true,
+        "input_fingerprints_sha256": "b89824e7e032010732f4875f97d5aba59f2b11823c45bb42bcb2b3068145aab6",
+        "actual_work": {
+          "actual_raw_generated_tokens": 338192,
+          "retained_model_tokens": 335494,
+          "actual_generation_requests": 7927,
+          "actual_prompt_tokens": 6215671,
+          "actual_retrieval_calls": 5367
+        },
+        "raw_minus_retained_model_tokens": 2698,
+        "selection": {
+          "candidate_categories": {
+            "all_correct": 239,
+            "all_wrong": 192,
+            "mixed": 81
+          },
+          "candidate_groups": 512,
+          "candidate_mixed_fraction": 0.158203125,
+          "selected_groups": null,
+          "selected_mixed_fraction": null,
+          "selection_performed": false,
+          "selection_status": "STARTUP_CHUNKS_ONLY_NOT_FULL_2560_SELECTION",
+          "training_em": 0.5546875
+        },
+        "strict_correctness_sha256": "dd56e1eff2a53e84a4383674190f1eaf2b4a21a7e766367652faa836e8fabbe5",
+        "producer_timings_seconds": {
+          "generation_phase": 94.03038753382862,
+          "pipeline_including_input_io_score_and_output_save": 120.84551922697574,
+          "candidate_process": 151.63382026925683
+        },
+        "per_rank": {
+          "0": {
+            "actual_fa3_prefill_and_decode": true,
+            "flash3_calls": {
+              "decode": 44100,
+              "paged_prefill": 0,
+              "prefill": 25116
+            },
+            "actual_work_current_phase": {
+              "generation_requests": 1969,
+              "prompt_tokens": 1534369,
+              "raw_generated_tokens": 83566
+            },
+            "confirmed_search_stops": 1329,
+            "search_action_stop": {
+              "ambiguous_prefixes": 0,
+              "answer_stop_enabled": false,
+              "confirmation_rejections": 0,
+              "confirmed_search_stops": 1329,
+              "enabled": true,
+              "filter_triggers": 1329,
+              "live_sequence_filters": 0,
+              "native_finished_first": 640,
+              "native_stop_checker_runs_first": true,
+              "piece_cache_entries": 5324,
+              "prefix_confirmations": 1329,
+              "raw_tokens_or_logprobs_mutated": false,
+              "search_only": true,
+              "single_token_decodes": 5324,
+              "stop_reason": "search_action_boundary:</search>",
+              "token_checks": 82926
+            }
+          },
+          "1": {
+            "actual_fa3_prefill_and_decode": true,
+            "flash3_calls": {
+              "decode": 44324,
+              "paged_prefill": 0,
+              "prefill": 26208
+            },
+            "actual_work_current_phase": {
+              "generation_requests": 1982,
+              "prompt_tokens": 1551860,
+              "raw_generated_tokens": 84939
+            },
+            "confirmed_search_stops": 1342,
+            "search_action_stop": {
+              "ambiguous_prefixes": 0,
+              "answer_stop_enabled": false,
+              "confirmation_rejections": 0,
+              "confirmed_search_stops": 1342,
+              "enabled": true,
+              "filter_triggers": 1342,
+              "live_sequence_filters": 0,
+              "native_finished_first": 640,
+              "native_stop_checker_runs_first": true,
+              "piece_cache_entries": 5345,
+              "prefix_confirmations": 1342,
+              "raw_tokens_or_logprobs_mutated": false,
+              "search_only": true,
+              "single_token_decodes": 5345,
+              "stop_reason": "search_action_boundary:</search>",
+              "token_checks": 84299
+            }
+          },
+          "2": {
+            "actual_fa3_prefill_and_decode": true,
+            "flash3_calls": {
+              "decode": 46060,
+              "paged_prefill": 0,
+              "prefill": 25732
+            },
+            "actual_work_current_phase": {
+              "generation_requests": 2005,
+              "prompt_tokens": 1596360,
+              "raw_generated_tokens": 84515
+            },
+            "confirmed_search_stops": 1365,
+            "search_action_stop": {
+              "ambiguous_prefixes": 0,
+              "answer_stop_enabled": false,
+              "confirmation_rejections": 0,
+              "confirmed_search_stops": 1365,
+              "enabled": true,
+              "filter_triggers": 1365,
+              "live_sequence_filters": 0,
+              "native_finished_first": 640,
+              "native_stop_checker_runs_first": true,
+              "piece_cache_entries": 5486,
+              "prefix_confirmations": 1365,
+              "raw_tokens_or_logprobs_mutated": false,
+              "search_only": true,
+              "single_token_decodes": 5486,
+              "stop_reason": "search_action_boundary:</search>",
+              "token_checks": 83875
+            }
+          },
+          "3": {
+            "actual_fa3_prefill_and_decode": true,
+            "flash3_calls": {
+              "decode": 45724,
+              "paged_prefill": 0,
+              "prefill": 25648
+            },
+            "actual_work_current_phase": {
+              "generation_requests": 1971,
+              "prompt_tokens": 1533082,
+              "raw_generated_tokens": 85172
+            },
+            "confirmed_search_stops": 1332,
+            "search_action_stop": {
+              "ambiguous_prefixes": 0,
+              "answer_stop_enabled": false,
+              "confirmation_rejections": 0,
+              "confirmed_search_stops": 1332,
+              "enabled": true,
+              "filter_triggers": 1332,
+              "live_sequence_filters": 0,
+              "native_finished_first": 639,
+              "native_stop_checker_runs_first": true,
+              "piece_cache_entries": 5335,
+              "prefix_confirmations": 1332,
+              "raw_tokens_or_logprobs_mutated": false,
+              "search_only": true,
+              "single_token_decodes": 5335,
+              "stop_reason": "search_action_boundary:</search>",
+              "token_checks": 84533
+            }
+          }
+        },
+        "aggregate_rank_kernel_call_counts": {
+          "prefill": 102704,
+          "paged_prefill": 0,
+          "decode": 180208
+        },
+        "aggregate_stop_counts": {
+          "confirmed_search_stops": 5368,
+          "token_checks": 335633,
+          "filter_triggers": 5368,
+          "prefix_confirmations": 5368,
+          "confirmation_rejections": 0,
+          "ambiguous_prefixes": 0,
+          "native_finished_first": 2559
+        },
+        "counter_scope": "One completed chunk per fresh four-engine arm. Kernel and stop counts are counts, not GPU time or decoded-token counts. Missing baseline stop reports remain null."
+      },
+      "actual_work_change": {
+        "actual_raw_generated_tokens": {
+          "baseline": 1059962,
+          "early_stop": 338192,
+          "early_stop_minus_baseline": -721770,
+          "early_stop_over_baseline_ratio": 0.3190604946215053,
+          "observed_reduction_percent": 68.09395053784947
+        },
+        "retained_model_tokens": {
+          "baseline": 335198,
+          "early_stop": 335494,
+          "early_stop_minus_baseline": 296,
+          "early_stop_over_baseline_ratio": 1.000883060161457,
+          "observed_reduction_percent": -0.08830601614568945
+        },
+        "actual_generation_requests": {
+          "baseline": 7904,
+          "early_stop": 7927,
+          "early_stop_minus_baseline": 23,
+          "early_stop_over_baseline_ratio": 1.0029099190283401,
+          "observed_reduction_percent": -0.29099190283401466
+        },
+        "actual_prompt_tokens": {
+          "baseline": 6201697,
+          "early_stop": 6215671,
+          "early_stop_minus_baseline": 13974,
+          "early_stop_over_baseline_ratio": 1.0022532542302534,
+          "observed_reduction_percent": -0.22532542302533543
+        },
+        "actual_retrieval_calls": {
+          "baseline": 5344,
+          "early_stop": 5367,
+          "early_stop_minus_baseline": 23,
+          "early_stop_over_baseline_ratio": 1.004303892215569,
+          "observed_reduction_percent": -0.43038922155689274
+        }
+      },
+      "kernel_call_count_change": {
+        "prefill": {
+          "baseline": 148288,
+          "early_stop": 102704,
+          "early_stop_minus_baseline": -45584,
+          "early_stop_over_baseline_ratio": 0.6925981873111783,
+          "observed_reduction_percent": 30.74018126888217
+        },
+        "decode": {
+          "baseline": 589764,
+          "early_stop": 180208,
+          "early_stop_minus_baseline": -409556,
+          "early_stop_over_baseline_ratio": 0.30555951194036934,
+          "observed_reduction_percent": 69.44404880596306
+        }
+      },
+      "observation_errors": [],
+      "runner_failure": null,
+      "covers_entire_training_outer": false,
+      "final_quality_equivalence_proven": false
+    }
+  },
+  "cross_pair_observations": {
+    "serial_generation_saved_seconds": 16.949278727173805,
+    "async_generation_saved_seconds": 64.16172428801656,
+    "observed_generation_savings_difference_seconds": 47.21244556084275,
+    "serial_pipeline_saved_seconds": 16.88552751671523,
+    "async_pipeline_saved_seconds": 63.20233877096325,
+    "serial_raw_token_reduction_percent": 68.0602095835745,
+    "async_raw_token_reduction_percent": 68.09395053784947,
+    "serial_decode_kernel_call_reduction_percent": -0.1007387508394908,
+    "async_decode_kernel_call_reduction_percent": 69.44404880596306,
+    "strict_cross_pair_causality_proven": false,
+    "interpretation": "两组raw token都减少约68%，但生产串行legacy模式的候选generation只减少9.37%，async模式减少40.56%。串行模式decode内核调用数基本不降，async模式则明显下降；结果支持当前生产串行检索等待／背压吞掉大部分可实现收益的判断。等待时间本身未在这两份报告中单独计时，不能把跨pair的差额严格归因给单一机制。"
+  },
+  "limits": [
+    "各pair内部原始parents fingerprint相同，但early stop改变raw长度、异步事件顺序和随机数消耗；实际生成、检索请求、prompt与正确性输出存在差异，并非逐轨迹配对相等。",
+    "两次pair是独立调度运行，未做跨pair反平衡或重复测量；相同parents不使跨pair时间差成为严格因果证明。",
+    "保留producer generation/pipeline/process三个原始计时边界；未将rank wall相加、未外推整轮速度倍率。",
+    "各arm仅512题，selection_performed=false；训练EM和混合组数量不是固定验证性能或最终QA等价证明。",
+    "baseline没有search-only checker报告，stopcounts保留null，不冒充已测零；kernel调用数不等于token数。"
+  ],
+  "operational_conclusion": {
+    "stop_only_target_prepared": true,
+    "activate_stop_only_target_now": false,
+    "recommendation": "不应仅为search-only stop切换健康生产。先将async proxy与FAISS batch组合验证，再测完整候选池和whole outer的实际壁钟、工作量与数值／行为边界；现有准备不等于已激活。",
+    "production_modified_by_this_summary": false,
+    "next_required_measurement": "Combined async proxy + FAISS batching + search-only stop, followed by actual whole-outer measurement."
+  },
+  "causal_full_outer_speedup_proven": false,
+  "final_quality_equivalence_proven": false,
+  "tensor_files_read": false,
+  "remote_operations": false
+}
