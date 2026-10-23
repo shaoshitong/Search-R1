@@ -21,7 +21,10 @@ def retry(base,commit,*,exclude):
     archive.mkdir(parents=True,exist_ok=False)
     moves=['logs','job.id','preparation/train-submit-claim.json','preparation/train-submission.json',
            'preparation/formal-inline-method.json','preparation/dynrpo7b-configured.json',
-           'data/calibration-300.parquet','data/audit.json']
+           'data/calibration-300.parquet','data/audit.json',
+           # Reward publication is once-only, including a pre-actor attempt.
+           # Keep its complete pointer in the retired attempt before rebinding.
+           'artifacts/live']
     for name in moves:
         source=base/name
         if source.exists():
