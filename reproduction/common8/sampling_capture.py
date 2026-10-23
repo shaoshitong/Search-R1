@@ -128,9 +128,18 @@ def generation_source(model_config, loader, *, run=None):
         original_raw = _read(Path(run['initial_model']) / 'generation_config.json')
         _require(hashlib.sha256(original_raw).hexdigest() ==
                  run['initial_model_sha256']['generation_config.json'], 'original generation file changed')
-        saved = next(value for value in verified['files']
-                     if value['relative_path'] == 'generation_config.json')
-        _require(sha == saved['full_read_sha256'], 'saved generation file changed')
+        if verified.get('kind') == 'dynrpo7b_native4':
+            # Native producer receipts hash model/state files, not necessarily
+            # save_pretrained's generation metadata. Authenticate every sampling
+            # field against the pinned official file below; do not invent a
+            # historical producer hash for an older native checkpoint.
+            saved_sha = verified['actor_ref']['files_sha256'].get('generation_config.json')
+            if saved_sha is not None:
+                _require(sha == saved_sha, 'saved generation file changed')
+        else:
+            saved = next(value for value in verified['files']
+                         if value['relative_path'] == 'generation_config.json')
+            _require(sha == saved['full_read_sha256'], 'saved generation file changed')
         # save_pretrained updates this serialization-version field. Every
         # actual sampling field, including EOS IDs, must remain exactly equal.
         original_fields = _json(original_raw)

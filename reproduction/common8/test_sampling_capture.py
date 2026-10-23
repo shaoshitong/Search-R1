@@ -489,6 +489,30 @@ class ActualGroupCaptureTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'sampling fields changed'):
                 stop_capture.generation_source(S(model=str(checkpoint)), fixture_loader, run=run)
 
+    def test_native_dynrpo_generation_metadata_matches_official_without_legacy_file_list(self):
+        checkpoint = self.model.parent / 'checkpoint3'; checkpoint.mkdir()
+        path = checkpoint / 'generation_config.json'
+        saved = dict(self.document, transformers_version='4.46.3')
+        path.write_text(json.dumps(saved))
+        run = copy.deepcopy(self.run)
+        run['full_state_restore'] = dict(source_receipt='/cpu-fixture/native.json',
+            source_receipt_sha256='e'*64, source_checkpoint=str(checkpoint))
+        verified = dict(kind='dynrpo7b_native4', actor_ref=dict(files_sha256={}))
+        bound = (Path('/cpu-fixture/native.json'), verified, checkpoint, self.model.parent, self.run)
+        with patch.dict(os.environ, {'SLURM_JOB_ID':'12345'}), \
+             patch('search_g1.full_state_restore.source', return_value=bound), \
+             patch('search_g1.full_state_restore.digest', return_value='e'*64):
+            document, record = stop_capture.generation_source(S(model=str(checkpoint)), fixture_loader, run=run)
+            self.assertEqual(document, saved)
+            self.assertEqual(record['generation_config_sha256'], hashlib.sha256(path.read_bytes()).hexdigest())
+            path.write_text(json.dumps(dict(saved, eos_token_id=[7,10])))
+            with self.assertRaisesRegex(ValueError, 'sampling fields changed'):
+                stop_capture.generation_source(S(model=str(checkpoint)), fixture_loader, run=run)
+            path.write_text(json.dumps(saved))
+            verified['actor_ref']['files_sha256']['generation_config.json'] = 'f'*64
+            with self.assertRaisesRegex(ValueError, 'saved generation file changed'):
+                stop_capture.generation_source(S(model=str(checkpoint)), fixture_loader, run=run)
+
     def test_generation_metadata_symlink_and_oversized_files_reject(self):
         target = self.model / 'other.json'; target.write_text('{}')
         self.path.unlink(); self.path.symlink_to(target)
