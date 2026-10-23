@@ -1,10 +1,10 @@
 {
-  "checked_utc": "2026-10-23T09:23:50.207970+00:00",
-  "implementation_commit": "a287335d453a8fd0116f46a8378f69dd44e0bf47",
+  "checked_utc": "2026-10-23T09:38:31.307549+00:00",
+  "implementation_commit": "3f1650d477daa5c4f3bbae568175bf8638b9d831",
   "branch": "codex/dynrpo7b-formal-20261023",
   "remote_git_SHA_verified": true,
   "remote_runtime_files_SHA_verified": 1958,
-  "runtime_base": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023-recoveryfix-r4",
+  "runtime_base": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023-recoveryfix-r5",
   "scope": [
     "Restore phase-journal published probe raw/EMA/Adam/RNG instead of stale wrapper",
     "Resume production candidate/prefix/continuation and committed Backstop batches with original producer provenance",
@@ -21,7 +21,7 @@
     "subsequent_change": "Removed duplicate Hydra snapshot-cache override already supplied by mature profile",
     "production_collection_cpu_injection": "Exit after first committed128 Backstop questions; resume only next128. Candidate order, attempt, labels and saved batches retained.",
     "real_four_rank_recovery": {
-      "status": "PASS",
+      "status": "PASS_IN_R3_AND_R4; R5_PENDING",
       "source_outer": 3,
       "Adam_per_rank": [
         60,
@@ -78,7 +78,28 @@
       "origin_base": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023-recoveryfix-r3",
       "outer": 4,
       "pointer_sha256": "d436d8243082934ccd083c8f40d8e97b5804dfc93c7f43a3588846ff552570f2",
-      "runtime_replay_verified": false
+      "runtime_replay_verified": true,
+      "same_attempt": true,
+      "same_all_3_parts": true,
+      "original_collection_seconds": 794.0639433246106,
+      "restored_collection_seconds": 30.177898962050676,
+      "actual_new_generations": 0
+    },
+    "remote_additional_scheduler_recovery_cpu": {
+      "passed": 6,
+      "skipped": 0
+    },
+    "probability_regression_tests": {
+      "passed": 14
+    },
+    "real_retained_probability": {
+      "status": "PASS",
+      "outer": 4,
+      "trajectories": 2560,
+      "included_actor_tokens": 234008,
+      "tensor_source": "R4 retained real rollout",
+      "trace_sha256": "a85e177eb180c71eca07b156f8ee87a2ca44577c6601682d4316f32368aec3fb",
+      "GPU_used": false
     }
   },
   "unchanged": [
@@ -96,7 +117,7 @@
     "waiting_for_complete_outer": 3,
     "preserve_model_Adam_scheduler_RNG_driver_probe": true,
     "allow_reset_or_replay_committed_actor": false,
-    "new_job": 751532,
+    "new_job": 751562,
     "old_job_terminal": "CANCELLED after verified full CP3",
     "partition": "acd_ue",
     "retriever_retained": 751011,
@@ -137,6 +158,14 @@
       "retained": "Full CP3 and complete outer4 collection",
       "error": "Shared scheduler type dispatch omitted dynrpo7b_native4 and asserted legacy CP5/Adam100",
       "fix_commit": "a287335d453a8fd0116f46a8378f69dd44e0bf47"
+    },
+    {
+      "job": 751532,
+      "terminal_state": "FAILED",
+      "new_Adam_writes": 0,
+      "retained": "Full CP3 and same complete outer4 collection",
+      "error": "behavior_probability.verify signature omitted authenticated historical generation producers",
+      "fix_commit": "3f1650d477daa5c4f3bbae568175bf8638b9d831"
     }
   ]
 }
