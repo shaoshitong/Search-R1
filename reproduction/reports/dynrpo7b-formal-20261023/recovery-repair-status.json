@@ -1,5 +1,5 @@
 {
-  "checked_utc": "2026-10-23T10:22:05.526668+00:00",
+  "checked_utc": "2026-10-23T11:12:39.030093+00:00",
   "implementation_commit": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
   "branch": "codex/dynrpo7b-formal-20261023",
   "remote_git_SHA_verified": true,
@@ -117,9 +117,12 @@
         9,
         10
       ],
-      "completed": [],
+      "completed": [
+        6,
+        7
+      ],
       "next_outer_to_confirm": 11,
-      "status": "WAITING_R6_ALLOCATION"
+      "status": "RUNNING_OUTER8"
     },
     "scheduler_production_update": {
       "status": "PASS",
@@ -146,7 +149,7 @@
       ],
       "model_Adam_scheduler_RNG_driver_probe_saved": true,
       "serialized_state_readback": true,
-      "fresh_CP5_GPU_reload_performed": false,
+      "fresh_CP5_GPU_reload_performed": true,
       "QA512": {
         "EM": 0.37109375,
         "F1": 0.4668833112180756,
@@ -160,6 +163,47 @@
       "asdict_seconds": 0.0410076139960438,
       "field_snapshot_seconds": 0.00011811312288045883,
       "training_throughput_improvement_not_yet_measured": true
+    },
+    "R6_CP5_restore": {
+      "all4_Adam": 100,
+      "all4_scheduler": 5,
+      "all4_Adam_scheduler_rng_readback_equal": true,
+      "driver_cursor": 25600,
+      "driver_rng_equal": true,
+      "committed_actor_replayed": false
+    },
+    "outer6": {
+      "status": "DYNRPO7B_ROLLING_READY",
+      "actual_Adam_per_rank": [
+        120,
+        120,
+        120,
+        120
+      ],
+      "weight_syncs_per_rank": 1,
+      "candidate_seconds": 630.7988168678712,
+      "adv_seconds": 134.291,
+      "actor_seconds": 93.661,
+      "save_seconds": 202.499,
+      "top1024_mixed": 832,
+      "selected512_mixed": 512,
+      "next_outer_started": 7
+    },
+    "outer7": {
+      "status": "DYNRPO7B_ROLLING_READY",
+      "actual_Adam_per_rank": [
+        140,
+        140,
+        140,
+        140
+      ],
+      "weight_syncs_per_rank": 1,
+      "candidate_seconds": 659.0832874281332,
+      "other_step_seconds": 535.789,
+      "top1024_mixed": 790,
+      "selected512_mixed": 512,
+      "train_EM_rounded": 0.54,
+      "next_outer_started": 8
     }
   },
   "unchanged": [
@@ -249,6 +293,8 @@
     "committed_actor_replayed": false,
     "retriever_retained": 751011,
     "runtime_source": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
-    "backup_source": "0f4c3cc092cf7400c929d29a2f076ec4331aa66c"
+    "backup_source": "0f4c3cc092cf7400c929d29a2f076ec4331aa66c",
+    "new_job_state": "RUNNING_OUTER8",
+    "node": "ACD1-1"
   }
 }
