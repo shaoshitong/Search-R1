@@ -1,0 +1,160 @@
+{
+  "schema": "checkpoint105_sampled_memory_and_timing_v1",
+  "job": "750491",
+  "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+  "baseline_evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/job750491-node-memory-baseline-20261023.json",
+  "baseline_sha256": "f5e0a3cff87c7303ef0088fda55e41978e490684ec1bc3ad28228a14448b19fc",
+  "baseline_memory_bytes": [
+    340751196160,
+    340573782016
+  ],
+  "trigger_bindings_sha256": "80b144f81589fdbf06827a7859cdfaa5fa29439373195291490feed9a6dbca60",
+  "samples": [
+    {
+      "phase": "checkpoint_save",
+      "evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/job750491-checkpoint105-node-memory-io-1792770970053735000.json",
+      "sha256": "e0a8fba21ab7106bd2ace92f67ed53ab7473bdf2ab9ee5445e6d91e29c259eb4",
+      "epoch": 1792770970.401835,
+      "job_memory_bytes": 350001721344,
+      "job_cgroup_limit_bytes": 659706974208,
+      "total_rss_bytes": 118530031616,
+      "total_cache_bytes": 229830733824,
+      "total_shared_memory_bytes": 228860039168,
+      "total_swap_bytes": 0,
+      "memory_failcnt": 0,
+      "total_major_faults": 102910,
+      "node_mem_available": "1642946448 kB",
+      "all_worker_births_match": true,
+      "worker_swap": {
+        "198924": "0 kB",
+        "200330": "0 kB",
+        "200331": "0 kB",
+        "200332": "0 kB"
+      },
+      "srun_returncode": 0,
+      "trigger_evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792770968573042000.json",
+      "trigger_complete": 104,
+      "trigger_sealed": 104,
+      "trigger_writes_per_rank": 2100
+    },
+    {
+      "phase": "checkpoint_save",
+      "evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/job750491-checkpoint105-node-memory-io-1792771066511818000.json",
+      "sha256": "c95170aebdd242c81a8963f2a402c39dfe347490af7e6080389f16ca90b0cf6b",
+      "epoch": 1792771066.8254952,
+      "job_memory_bytes": 381009158144,
+      "job_cgroup_limit_bytes": 659706974208,
+      "total_rss_bytes": 118996140032,
+      "total_cache_bytes": 260301918208,
+      "total_shared_memory_bytes": 228860039168,
+      "total_swap_bytes": 0,
+      "memory_failcnt": 0,
+      "total_major_faults": 103905,
+      "node_mem_available": "1637401764 kB",
+      "all_worker_births_match": true,
+      "worker_swap": {
+        "198924": "0 kB",
+        "200330": "0 kB",
+        "200331": "0 kB",
+        "200332": "0 kB"
+      },
+      "srun_returncode": 0,
+      "trigger_evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792771065146833000.json",
+      "trigger_complete": 104,
+      "trigger_sealed": 104,
+      "trigger_writes_per_rank": 2100
+    },
+    {
+      "phase": "post_checkpoint_next_candidate",
+      "evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/job750491-post-checkpoint105-node-memory-io-1792771533442677000.json",
+      "sha256": "9a22d12e607717448bc108a572088bc210051f12b293e4ccb6091865bfe76b7b",
+      "epoch": 1792771533.734241,
+      "job_memory_bytes": 350415896576,
+      "job_cgroup_limit_bytes": 659706974208,
+      "total_rss_bytes": 88456097792,
+      "total_cache_bytes": 260306403328,
+      "total_shared_memory_bytes": 228860039168,
+      "total_swap_bytes": 0,
+      "memory_failcnt": 0,
+      "total_major_faults": 103906,
+      "node_mem_available": "1671439512 kB",
+      "all_worker_births_match": true,
+      "worker_swap": {
+        "198924": "0 kB",
+        "200330": "0 kB",
+        "200331": "0 kB",
+        "200332": "0 kB"
+      },
+      "srun_returncode": 0
+    }
+  ],
+  "max_observed_checkpoint_save_memory_bytes": 381009158144,
+  "continuous_peak_observed": false,
+  "ordinary101_105_timing": [
+    {
+      "step": 101,
+      "full_outer_seconds": 1558.4856269359589,
+      "candidate_fill_seconds": 683.7792213240173,
+      "actor_update_seconds": 140.061,
+      "advantage_seconds": 193.439,
+      "checkpoint_write_seconds": 238.306,
+      "training_em_rounded": 0.67,
+      "training_reward_mean_rounded": 0.885
+    },
+    {
+      "step": 102,
+      "full_outer_seconds": 1660.4927179813385,
+      "candidate_fill_seconds": 694.262417208869,
+      "actor_update_seconds": 140.436,
+      "advantage_seconds": 192.406,
+      "checkpoint_write_seconds": 263.116,
+      "training_em_rounded": 0.669,
+      "training_reward_mean_rounded": 0.894
+    },
+    {
+      "step": 103,
+      "full_outer_seconds": 1749.8460230827332,
+      "candidate_fill_seconds": 689.6633288851008,
+      "actor_update_seconds": 144.214,
+      "advantage_seconds": 196.225,
+      "checkpoint_write_seconds": 320.427,
+      "training_em_rounded": 0.651,
+      "training_reward_mean_rounded": 0.867
+    },
+    {
+      "step": 104,
+      "full_outer_seconds": 1825.1550838947296,
+      "candidate_fill_seconds": 705.3303642680403,
+      "actor_update_seconds": 146.79,
+      "advantage_seconds": 205.276,
+      "checkpoint_write_seconds": 383.092,
+      "training_em_rounded": 0.647,
+      "training_reward_mean_rounded": 0.876
+    },
+    {
+      "step": 105,
+      "full_outer_seconds": 1565.0526750087738,
+      "candidate_fill_seconds": 682.5109462910332,
+      "actor_update_seconds": 146.26,
+      "advantage_seconds": 197.641,
+      "checkpoint_write_seconds": 208.713,
+      "training_em_rounded": 0.663,
+      "training_reward_mean_rounded": 0.879
+    }
+  ],
+  "latest5_ordinary_mean_seconds": 1671.8064253807067,
+  "interpretation": [
+    "Two snapshots triggered after all4 actual writes2100, before105 completed/save seal, followed by a post-seal candidate snapshot. This is sampled memory, not a continuous maximum.",
+    "Checkpoint samples350.002GB and381.009GB are below the observed659.707GB hard cgroup limit; swap and memory.failcnt are0 at both and after the checkpoint.",
+    "Cgroup total_rss rose from candidate baseline~88.4GB to~119.0GB and returned~88.5GB after105; shared memory stayed228.860GB. File cache is part of cgroup usage, not extra unique worker RSS.",
+    "No sustained anonymous-memory accumulation or swap/limit failure is observed across this checkpoint. This does not rule out an unobserved short memory peak or independently separate filesystem/CPU/checksum causes.",
+    "Same frozen runtime105 whole26m05.053s vs10430m25.155s; checkpoint write208.713 vs383.092s, actor146.260 vs146.790s. Current timing varies strongly in checkpoint paths without a runtime switch."
+  ],
+  "cpu_diagnostic_steps": 3,
+  "extra_gpu_allocations": 0,
+  "tensor_files_read": false,
+  "model_loaded": false,
+  "gpu_forward_triggered": false,
+  "training_modified": false,
+  "goal_complete": false
+}

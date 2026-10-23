@@ -1,8 +1,8 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
-**Current evidence, 2026-10-23 23:11 CST:** production750491 has completed and
-sealed outer103 on the same four H100; outer104 has saved512 candidate questions.
-All4 have2060 actual Adam writes. Runtime remains frozen at dde1452; no restart,
+**Current evidence through 2026-10-24 00:05 CST:** production750491 has completed and
+sealed outer105 on the same four H100; outer106 has saved512 candidate questions.
+All4 have2100 actual Adam writes. Runtime remains frozen at dde1452; no restart,
 new GPU allocation, runtime edit or extra monitor forward was introduced.
 
 Fixed512 evaluation uses the same ordered NQ256/HotpotQA256 occurrences and
@@ -30,8 +30,8 @@ already accepted core SHA. The saved boundary includes post-fixed512/grounding10
 refit RNG and reward version, with callbacks complete. Both original archive
 controllers have completed100 and moved to waiting for150, without failure.
 This byte/state archive acceptance is not actual final CUDA recovery. The same
-training job continues;103 is sealed after all20 writes/rank (cumulative2060), and
-104 has actually saved512 candidate questions. No runtime changes or restart occurred.
+training job continues;105 is sealed after all20 writes/rank (cumulative2100), and
+106 has actually saved512 candidate questions. No runtime changes or restart occurred.
 See [full core/boundary/dependency receipts and scope](evidence/milestone100-archive-current-summary.json).
 The200/no201 target, fixed150/200, exact native51713/seven scores, full milestone
 archives and actual final native4 model/Adam/scheduler/RNG/dataequal recovery
@@ -41,7 +41,7 @@ See [all100 training/fixed512 metrics](evidence/training-em-reward-fixed512-thro
 [through100 wall summary](evidence/combined-through100-summary.json) and
 [actual timing/counter records](evidence/combined-through100-timing.json).
 
-Latest ordinary101/102/103 whole walls are1558.486/1660.493/1749.846s.
+Observed ordinary101/102/103 whole walls are1558.486/1660.493/1749.846s.
 Actor times are140.061/140.436/144.214s; checkpoint write238.306/263.116/320.427s.
 Saved seal metadata places the last payload mtime to seal intervals at125.909/
 194.450/220.273s for effectively equal23-member/91.4GB checkpoints. Write and
@@ -51,6 +51,19 @@ filesystem waiting were not independently timed. It does not establish an FA3
 kernel regression. Training103 EM65.1%/reward0.867 uses changing selected512x5;
 latest fixed512 remains100=280/512. See
 [actual checkpoint timing and timestamp evidence](evidence/combined-ordinary101-103-checkpoint-wall-comparison.json).
+
+Ordinary104/105 whole wall is1825.155/1565.053s (30m25.16s→26m05.05s),
+checkpoint write383.092/208.713s and actor146.790/146.260s on the same frozen
+runtime. The latest five ordinary101–105 average1671.806s (27m51.81s).
+Two actual checkpoint105 save-phase one-CPU/no-GPU observations measured350.002
+and381.009GB cgroup usage against659.707GB hard limit; swap and memory.failcnt
+were0. A post-seal observation is350.416GB. Cgroup total_rss returned from~119.0GB
+to~88.5GB, close to the candidate baseline~88.4GB; shared memory stayed228.860GB.
+These sampled points show no swap/limit failure or sustained anonymous-memory
+accumulation across105; they are not a continuous memory maximum or an independent
+SHA/fsync/filesystem profiler. No extra training forward, model reload or runtime
+edit was introduced. See [actual sampled memory/timing](evidence/checkpoint105-sampled-memory-and-timing-20261024.json)
+and [actual save-phase trigger bindings](evidence/checkpoint105-memory-trigger-bindings.json).
 
 ## Historical twenty-outer observation, 2026-10-23 17:12 CST
 
