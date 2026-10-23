@@ -1,12 +1,13 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
-**Current evidence, 2026-10-23 11:03CST:** production750491 on ACD1-14/fourH100
-completed and sealed **all five outers71–75**, and outer76 has saved512 candidate
-questions. Whole-outer wall mean is **1396.749s (23m16.75)** versus the prior65–69
-mean 1846.455s (30m46.45): **24.355% less elapsed time / 1.3220x speed**.
-Every measurement uses adjacent actual before-generation boundaries, includes
-checkpoint/seal/inter-outer work, and excludes startup restore. Different policy
-and data make this an observational production comparison. Final quality is pending.
+**Current evidence, 2026-10-23 13:01 CST:** production750491 on ACD1-14/four H100
+completed and sealed **all ten outers71–80**; outer81 has saved512 candidate
+questions. Whole-outer wall mean is **1414.101s (23m34.10s)** versus prior65–69
+mean1846.455s (30m46.45s): **23.415% less elapsed time / 1.3057x speed**.
+All ten complete outers are included, including slower checkpoint writing/sealing
+in79/80. Measurements use adjacent actual before-generation boundaries, include
+checkpoint/seal/inter-outer work and exclude startup restore. Different policy/data
+make this an observational production comparison; final quality remains pending.
 
 | Completed outer | Whole wall, seconds | Candidate fill, seconds |
 | --- | ---: | ---: |
@@ -15,30 +16,41 @@ and data make this an observational production comparison. Final quality is pend
 | 73 | 1405.625 | 662.507 |
 | 74 | 1399.299 | 650.532 |
 | 75 | 1379.569 | 649.508 |
+| 76 | 1378.740 | 635.872 |
+| 77 | 1402.034 | 655.441 |
+| 78 | 1361.076 | 635.968 |
+| 79 | 1509.812 | 640.881 |
+| 80 | 1505.601 | 669.349 |
 
 Actual all4 model/Adam/scheduler/RNG, driver and reconstructed-stream readbacks
-passed from CP70. All4 now reached1500 Adam writes/scheduler75: each completed
-outer performed20 actual updates, zero extra monitor forwards, compact actor
-FA3 Q28/KV4, and one weight sync across five candidate phases. Native4 checkpoint
-seals were observed at every outer71–75; the rolling latest is75.
+passed from CP70. All4 now reached1600 Adam writes/scheduler80: every completed
+outer performed20 actual updates and zero extra monitor forwards, used compact
+actor FA3 Q28/KV4, and synchronized weights once across five candidate phases.
+Native4 checkpoint seals were observed at every outer71–80; rolling latest is80.
 
-Candidate fill mean is654.486s versus the old1075.965s mean. Natural
-GPU retrieval service750471 handled91676 actual requests with0 failed requests.
-The100/150/200 core+companion archive consumers retain their original process births
-and are waiting for100. Legacy745198 and prior archives remain untouched.
+Candidate fill mean is650.994s versus old1075.965s. Actor mean is147.806s;
+adv205.265s and checkpoint write165.130s. These component values must not be
+summed to substitute for whole wall. Checkpoint writing was220.376/198.193s
+in79/80 versus roughly150–157s earlier; residual sealing/inter-outer time is
+not independently decomposed. No exclusive causal attribution is claimed.
 
-The weighted selected mixed fraction was85.273% across these five training
-pools (prior65–69:91.094%). These are different policy/data pools;
-this is not held-out accuracy and does not establish a validation-quality change.
-No claim of final accuracy equivalence is made.
+Natural GPU retrieval service750471 completed178509 actual requests with0 failures
+at its last observation. Both original archive-controller process births remain
+live waiting for100, with no recorded failures. Legacy745198 remains untouched.
+Selected mixed fraction across these ten training pools is83.105%;
+this is not heldout accuracy. Current fixed512 tests remain5=193/512(37.6953%)
+and50=259/512(50.5859%), on identical ordered questions;100 has not run.
 
-The run remains active toward **200/no update201**. Fixed validation, exact ordered
-native51713/seven-source metrics, final full archive and actual final native4
-model/Adam/scheduler/RNG/dataequal recovery remain required. This five-outer
-follow-up is an operational acceptance point, not goal completion.
+The run remains active toward **200/no update201**. Fixed100/150/200 validation,
+exact ordered native51713/seven-source metrics, final full archives and actual
+final native4 model/Adam/scheduler/RNG/dataequal recovery remain required. Ten
+complete post-restore outers are an operational acceptance point, not goal completion.
 
-See [five complete outer evidence](evidence/combined-five-complete-outers-summary.json)
-and [all timing/counter records](evidence/combined-five-complete-outers-timing.json).
+See [ten complete outer evidence](evidence/combined-ten-complete-outers-summary.json),
+[all timing/counter records](evidence/combined-ten-complete-outers-timing.json),
+and [training EM/reward and fixed512](evidence/training-em-reward-fixed512-through78-20261023.json).
+The earlier [five-outer evidence](evidence/combined-five-complete-outers-summary.json)
+remains historical evidence.
 
 The following candidate-only tests are historical qualification evidence.
 

@@ -1,0 +1,242 @@
+{
+  "status": "TEN_COMPLETE_NATIVE4_OUTERS71_TO80_AND81_ACTUAL512",
+  "observed_unix": 1792731674.4808648,
+  "training_job": "750491",
+  "training_runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+  "checkpoint80": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/checkpoints/search-g1-common8/actor/global_step_80",
+    "manager": "easy2560_per_outer_full_state_v1",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/rolling-checkpoints/global_step_80/full-manifest.json",
+    "manifest_sha256": "0d0b068f6f3ff5279b0dc962c526713335c51eeebdf313b1cc7debae4d6031cd",
+    "published_unix": 1792731519.913634,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+    "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+    "step": 80
+  },
+  "actual_restoration": {
+    "all4_worker_model_adam_scheduler_rng_readback_equal": true,
+    "driver_readback_equal": true,
+    "reconstructed_stream_readback_equal": true,
+    "combined_actual_restore_observed": true,
+    "actual_worker_cuda_uuids": [
+      "GPU-833670ad-82a4-f70d-f953-3648630f79af",
+      "GPU-962b1f8b-613f-cb23-9c1a-0a23054859b5",
+      "GPU-826c1f8f-d970-11ef-256e-a7ebcf64423c",
+      "GPU-9dc7b482-7801-b413-0802-a403ffd8ff07"
+    ],
+    "rank0_model_tensor_readback_count": 339,
+    "expected_source_writes_per_rank": 1400,
+    "actual_driver_cursor": 179200,
+    "actual_stream_cursor": 179200
+  },
+  "complete_outers": [
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80
+  ],
+  "next_actual_outer": 81,
+  "next_actual_candidate_questions": 512,
+  "actual_adam_writes_per_rank": {
+    "0": 1600,
+    "1": 1600,
+    "2": 1600,
+    "3": 1600
+  },
+  "whole_outer_seconds_mean": 1414.1011152982712,
+  "baseline65_to69_seconds_mean": 1846.4548518180848,
+  "elapsed_reduction_percent": 23.41534297977027,
+  "baseline_over_new_speed_ratio": 1.3057445693539522,
+  "selected_mixed_fraction": 0.8310546875,
+  "per_outer_native4_evidence": [
+    {
+      "step": 71,
+      "checkpoint_manifest_sha256": "ae04ebe5cbff19156d66bac3fffd4742197b1a549114fb9b19076b5b5d30b873",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_actual_candidate_fa3_decode_counts_increase": true,
+      "all4_adam_writes_equal_twenty_times_outer": true,
+      "all4_scheduler_epoch_matches_outer": true
+    },
+    {
+      "step": 72,
+      "checkpoint_manifest_sha256": "74d1e599b828cf6f217e8a9a23b1dfa478ba828de45e913ac7a38cedca694f45",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_actual_candidate_fa3_decode_counts_increase": true,
+      "all4_adam_writes_equal_twenty_times_outer": true,
+      "all4_scheduler_epoch_matches_outer": true
+    },
+    {
+      "step": 73,
+      "checkpoint_manifest_sha256": "ab7ceb50543394b03114ca93d67f0cb1c1fc0537dd0335ab296830721ac3292c",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_actual_candidate_fa3_decode_counts_increase": true,
+      "all4_adam_writes_equal_twenty_times_outer": true,
+      "all4_scheduler_epoch_matches_outer": true
+    },
+    {
+      "step": 74,
+      "checkpoint_manifest_sha256": "b05aac12e82d66bc5705b7d0868ab1c8be2b69c63295f21859d4b09b83d8254a",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_actual_candidate_fa3_decode_counts_increase": true,
+      "all4_adam_writes_equal_twenty_times_outer": true,
+      "all4_scheduler_epoch_matches_outer": true
+    },
+    {
+      "step": 75,
+      "checkpoint_manifest_sha256": "7a74b71197d3cf4ebedc89f8b09eef106b16d454679af76851b7b8e1e9748864",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_actual_candidate_fa3_decode_counts_increase": true,
+      "all4_adam_writes_equal_twenty_times_outer": true,
+      "all4_scheduler_epoch_matches_outer": true
+    },
+    {
+      "step": 76,
+      "checkpoint_manifest_sha256": "ab3f0a325e5209ad2e4a5f12f0c27f9ace3f7f0ef6f6a0a9a28b5e705a5797d1",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_actual_candidate_fa3_decode_counts_increase": true,
+      "all4_adam_writes_equal_twenty_times_outer": true,
+      "all4_scheduler_epoch_matches_outer": true
+    },
+    {
+      "step": 77,
+      "checkpoint_manifest_sha256": "4c5d761b7576b767ddc5017868e01703f47bb192f4ad46f4a48d0eb1edab3109",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_actual_candidate_fa3_decode_counts_increase": true,
+      "all4_adam_writes_equal_twenty_times_outer": true,
+      "all4_scheduler_epoch_matches_outer": true
+    },
+    {
+      "step": 78,
+      "checkpoint_manifest_sha256": "32121bf5ef264cc4bb7d7290196ba33fdcd02f4f7f87d606641bee2d7663acc4",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_actual_candidate_fa3_decode_counts_increase": true,
+      "all4_adam_writes_equal_twenty_times_outer": true,
+      "all4_scheduler_epoch_matches_outer": true
+    },
+    {
+      "step": 79,
+      "checkpoint_manifest_sha256": "0688a8945ad63d8c9afa5134e0b95ea2602305b6ed8234102a908d3ab2978ecb",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_actual_candidate_fa3_decode_counts_increase": true,
+      "all4_adam_writes_equal_twenty_times_outer": true,
+      "all4_scheduler_epoch_matches_outer": true
+    },
+    {
+      "step": 80,
+      "checkpoint_manifest_sha256": "0d0b068f6f3ff5279b0dc962c526713335c51eeebdf313b1cc7debae4d6031cd",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_actual_candidate_fa3_decode_counts_increase": true,
+      "all4_adam_writes_equal_twenty_times_outer": true,
+      "all4_scheduler_epoch_matches_outer": true
+    }
+  ],
+  "actual_errors": {
+    "training": [],
+    "trainer": [],
+    "pipeline": [],
+    "slurm": []
+  },
+  "observation_errors": [],
+  "latest_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792731675440045000.json",
+  "retrieval_health_observed_unix": 1792731577.596839,
+  "retrieval_completed_requests": 178509,
+  "retrieval_failed_requests": 0,
+  "archive_controller_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-hk-archive-observe-1792731576395826000.json",
+  "source_chain_training_fixed512_report": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/training-em-reward-fixed512-through78-20261023.json",
+  "training_quality_equivalence_proven": false,
+  "same_input_speed_causality_proven": false,
+  "target_outer": 200,
+  "update201_allowed": false,
+  "final_native51713_and_archives_and_actual_native4_restore_pending": true,
+  "goal_complete": false,
+  "training_modified": false,
+  "new_slurm_jobs_submitted": 0
+}
