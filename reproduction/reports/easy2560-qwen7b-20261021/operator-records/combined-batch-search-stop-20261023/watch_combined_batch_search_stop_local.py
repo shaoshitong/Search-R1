@@ -28,6 +28,7 @@ def main():
             'source_job', 'source_completed_outer', 'restoration_observed',
             'latest_completed_outer', 'post_restore_completed_outer_count',
             'optimizer_ranks', 'candidate_progress', 'selection_summary',
+            'candidate_phase_observations', 'search_stop_phase_observations',
             'transition_documents', 'actual_error_lines', 'observation_errors')
     result = {key: snapshot.get(key) for key in keys}
     result['evidence'] = str(receipt)

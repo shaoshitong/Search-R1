@@ -1,0 +1,593 @@
+{
+  "schema": "easy7b_pre_combined_native4_recent_five_baseline_v1",
+  "job": "750029",
+  "runtime_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+  "latest_source_evidence": "leanmetrics-transition-live-1792715435688157000.json",
+  "observed_unix": 1792715435.1732116,
+  "latest_completed_outer_observed": 69,
+  "complete_measured_outers": [
+    65,
+    66,
+    67,
+    68,
+    69
+  ],
+  "selection_rule": "Latest five consecutive complete outers with both actual before-generation boundaries present in the latest local observation. No estimate substitutes for a missing next boundary.",
+  "next_outer_boundary": 70,
+  "next_outer_generated_questions_observed": 1536,
+  "whole_wall_definition": "mtime(outer+1 first0-before-generation.pt) - mtime(outer first0-before-generation.pt). Includes candidate generation, training, callbacks, complete checkpoint write/seal and inter-outer work; excludes initial startup/restore. No rank walls are added and candidate+post-candidate step is not used as whole wall.",
+  "source_evidence_scope": "Existing local JSON observations and captured checkpoint receipts only; no remote access or tensors read.",
+  "per_outer": [
+    {
+      "step": 65,
+      "full_outer_seconds": 1849.3928360939026,
+      "start_before_generation_mtime": 1792705320.053032,
+      "next_before_generation_mtime": 1792707169.445868,
+      "boundary_evidence": "leanmetrics-transition-live-1792715435688157000.json",
+      "boundary_field": "candidate_progress[step].first_before_generation",
+      "candidate_fill_seconds": 1082.9921958709601,
+      "actor_update_seconds": 153.46,
+      "advantage_seconds": 220.192,
+      "checkpoint_write_seconds": 152.235,
+      "producer_post_candidate_step_seconds": 697.608,
+      "training_em_rounded": 0.543,
+      "training_reward_mean_rounded": 0.712,
+      "selected_mixed_questions": 487,
+      "selected_questions": 512,
+      "selected_mixed_fraction": 0.951171875,
+      "selected_trajectories": 2560,
+      "candidate_questions": 2560,
+      "candidate_trajectories": 12800,
+      "producer_raw_generated_policy_tokens": 1702705,
+      "actual_retrieval_calls": 27408,
+      "full_update_record": {
+        "step": 65,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "attempt_id": "2b9e0ec5be244d33a495d0ceef86c62f",
+        "attempt_index": 65,
+        "update_status": "complete",
+        "full_budget_complete": true,
+        "actual_optimizer_writes": 20,
+        "optimizer_writes_before": 1280,
+        "optimizer_writes_after": 1300,
+        "opportunities_processed": 20,
+        "opportunities_unattempted": 0
+      },
+      "optimizer_budget_by_rank": {
+        "0": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1300,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        },
+        "1": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1300,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        },
+        "2": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1300,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        },
+        "3": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1300,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        }
+      },
+      "scheduler_completion_by_rank": {
+        "0": {
+          "scheduler_advances": 1,
+          "writes_after": 1300,
+          "scheduler_last_epoch_after": 65
+        },
+        "1": {
+          "scheduler_advances": 1,
+          "writes_after": 1300,
+          "scheduler_last_epoch_after": 65
+        },
+        "2": {
+          "scheduler_advances": 1,
+          "writes_after": 1300,
+          "scheduler_last_epoch_after": 65
+        },
+        "3": {
+          "scheduler_advances": 1,
+          "writes_after": 1300,
+          "scheduler_last_epoch_after": 65
+        }
+      },
+      "captured_checkpoint_seal": {
+        "value": {
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+          "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/checkpoints/search-g1-common8/actor/global_step_65",
+          "manager": "easy2560_per_outer_full_state_v1",
+          "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/preparation/rolling-checkpoints/global_step_65/full-manifest.json",
+          "manifest_sha256": "1bb578ccd19217265e6046656920a30dac972d668b5f7bc5574e02a025a5501c",
+          "published_unix": 1792707164.588694,
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+          "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+          "step": 65
+        },
+        "evidence": "leanmetrics-transition-live-1792709007976342000.json",
+        "observed_unix": 1792709007.6694736
+      },
+      "segmentation_source": {
+        "evidence": "leanmetrics-transition-live-1792708697108314000.json",
+        "log": "training",
+        "log_mtime": 1792708689.83505,
+        "observed_unix": 1792708696.5783641
+      },
+      "segmentation_precision": "Actor/adv/checkpoint/EM/reward are producer log rounded values; candidate_fill comes from selection_summary. Missing segments remain null."
+    },
+    {
+      "step": 66,
+      "full_outer_seconds": 1866.2561309337616,
+      "start_before_generation_mtime": 1792707169.445868,
+      "next_before_generation_mtime": 1792709035.701999,
+      "boundary_evidence": "leanmetrics-transition-live-1792715435688157000.json",
+      "boundary_field": "candidate_progress[step].first_before_generation",
+      "candidate_fill_seconds": 1085.879656573059,
+      "actor_update_seconds": 159.732,
+      "advantage_seconds": 217.058,
+      "checkpoint_write_seconds": 151.45,
+      "producer_post_candidate_step_seconds": 707.483,
+      "training_em_rounded": 0.568,
+      "training_reward_mean_rounded": 0.737,
+      "selected_mixed_questions": 459,
+      "selected_questions": 512,
+      "selected_mixed_fraction": 0.896484375,
+      "selected_trajectories": 2560,
+      "candidate_questions": 2560,
+      "candidate_trajectories": 12800,
+      "producer_raw_generated_policy_tokens": 1680812,
+      "actual_retrieval_calls": 27049,
+      "full_update_record": {
+        "step": 66,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "attempt_id": "59158d8abce546f8b2c35b19bafd93ad",
+        "attempt_index": 66,
+        "update_status": "complete",
+        "full_budget_complete": true,
+        "actual_optimizer_writes": 20,
+        "optimizer_writes_before": 1300,
+        "optimizer_writes_after": 1320,
+        "opportunities_processed": 20,
+        "opportunities_unattempted": 0
+      },
+      "optimizer_budget_by_rank": {
+        "0": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1320,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        },
+        "1": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1320,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        },
+        "2": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1320,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        },
+        "3": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1320,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        }
+      },
+      "scheduler_completion_by_rank": {
+        "0": {
+          "scheduler_advances": 1,
+          "writes_after": 1320,
+          "scheduler_last_epoch_after": 66
+        },
+        "1": {
+          "scheduler_advances": 1,
+          "writes_after": 1320,
+          "scheduler_last_epoch_after": 66
+        },
+        "2": {
+          "scheduler_advances": 1,
+          "writes_after": 1320,
+          "scheduler_last_epoch_after": 66
+        },
+        "3": {
+          "scheduler_advances": 1,
+          "writes_after": 1320,
+          "scheduler_last_epoch_after": 66
+        }
+      },
+      "captured_checkpoint_seal": {
+        "value": {
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+          "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/checkpoints/search-g1-common8/actor/global_step_66",
+          "manager": "easy2560_per_outer_full_state_v1",
+          "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/preparation/rolling-checkpoints/global_step_66/full-manifest.json",
+          "manifest_sha256": "16f35596a5b89354e89d6ded00a1d036434d1e0cffe9f1f3708e7a22b1b3a64a",
+          "published_unix": 1792709028.9168375,
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+          "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+          "step": 66
+        },
+        "evidence": "leanmetrics-transition-live-1792710753328265000.json",
+        "observed_unix": 1792710752.4156399
+      },
+      "segmentation_source": {
+        "evidence": "leanmetrics-transition-live-1792710244343476000.json",
+        "log": "training",
+        "log_mtime": 1792710069.935111,
+        "observed_unix": 1792710243.5244493
+      },
+      "segmentation_precision": "Actor/adv/checkpoint/EM/reward are producer log rounded values; candidate_fill comes from selection_summary. Missing segments remain null."
+    },
+    {
+      "step": 67,
+      "full_outer_seconds": 1807.093997001648,
+      "start_before_generation_mtime": 1792709035.701999,
+      "next_before_generation_mtime": 1792710842.795996,
+      "boundary_evidence": "leanmetrics-transition-live-1792715435688157000.json",
+      "boundary_field": "candidate_progress[step].first_before_generation",
+      "candidate_fill_seconds": 1043.7798802449834,
+      "actor_update_seconds": 154.066,
+      "advantage_seconds": 210.351,
+      "checkpoint_write_seconds": 155.566,
+      "producer_post_candidate_step_seconds": 693.922,
+      "training_em_rounded": 0.55,
+      "training_reward_mean_rounded": 0.72,
+      "selected_mixed_questions": 473,
+      "selected_questions": 512,
+      "selected_mixed_fraction": 0.923828125,
+      "selected_trajectories": 2560,
+      "candidate_questions": 2560,
+      "candidate_trajectories": 12800,
+      "producer_raw_generated_policy_tokens": 1654279,
+      "actual_retrieval_calls": 26425,
+      "full_update_record": {
+        "step": 67,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "attempt_id": "72c3ca4bba254855b118226000b96d7b",
+        "attempt_index": 67,
+        "update_status": "complete",
+        "full_budget_complete": true,
+        "actual_optimizer_writes": 20,
+        "optimizer_writes_before": 1320,
+        "optimizer_writes_after": 1340,
+        "opportunities_processed": 20,
+        "opportunities_unattempted": 0
+      },
+      "optimizer_budget_by_rank": {
+        "0": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1340,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        },
+        "1": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1340,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        },
+        "2": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1340,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        },
+        "3": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1340,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        }
+      },
+      "scheduler_completion_by_rank": {
+        "0": {
+          "scheduler_advances": 1,
+          "writes_after": 1340,
+          "scheduler_last_epoch_after": 67
+        },
+        "1": {
+          "scheduler_advances": 1,
+          "writes_after": 1340,
+          "scheduler_last_epoch_after": 67
+        },
+        "2": {
+          "scheduler_advances": 1,
+          "writes_after": 1340,
+          "scheduler_last_epoch_after": 67
+        },
+        "3": {
+          "scheduler_advances": 1,
+          "writes_after": 1340,
+          "scheduler_last_epoch_after": 67
+        }
+      },
+      "captured_checkpoint_seal": {
+        "value": {
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+          "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/checkpoints/search-g1-common8/actor/global_step_67",
+          "manager": "easy2560_per_outer_full_state_v1",
+          "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/preparation/rolling-checkpoints/global_step_67/full-manifest.json",
+          "manifest_sha256": "d77c09e2a5c5bd8d59305faeca5e01447e56eea3118e7ae1f08095faad52d123",
+          "published_unix": 1792710835.7067213,
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+          "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+          "step": 67
+        },
+        "evidence": "leanmetrics-transition-live-1792712615201513000.json",
+        "observed_unix": 1792712614.6611087
+      },
+      "segmentation_source": {
+        "evidence": "leanmetrics-transition-live-1792712348407247000.json",
+        "log": "training",
+        "log_mtime": 1792712347.226341,
+        "observed_unix": 1792712347.780708
+      },
+      "segmentation_precision": "Actor/adv/checkpoint/EM/reward are producer log rounded values; candidate_fill comes from selection_summary. Missing segments remain null."
+    },
+    {
+      "step": 68,
+      "full_outer_seconds": 1836.7161719799042,
+      "start_before_generation_mtime": 1792710842.795996,
+      "next_before_generation_mtime": 1792712679.512168,
+      "boundary_evidence": "leanmetrics-transition-live-1792715435688157000.json",
+      "boundary_field": "candidate_progress[step].first_before_generation",
+      "candidate_fill_seconds": 1072.5897658618633,
+      "actor_update_seconds": 151.64,
+      "advantage_seconds": 211.358,
+      "checkpoint_write_seconds": 154.435,
+      "producer_post_candidate_step_seconds": 696.388,
+      "training_em_rounded": 0.6,
+      "training_reward_mean_rounded": 0.775,
+      "selected_mixed_questions": 431,
+      "selected_questions": 512,
+      "selected_mixed_fraction": 0.841796875,
+      "selected_trajectories": 2560,
+      "candidate_questions": 2560,
+      "candidate_trajectories": 12800,
+      "producer_raw_generated_policy_tokens": 1662318,
+      "actual_retrieval_calls": 26998,
+      "full_update_record": {
+        "step": 68,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "attempt_id": "3e19411e7c7f4da0a67041a01b81fd3f",
+        "attempt_index": 68,
+        "update_status": "complete",
+        "full_budget_complete": true,
+        "actual_optimizer_writes": 20,
+        "optimizer_writes_before": 1340,
+        "optimizer_writes_after": 1360,
+        "opportunities_processed": 20,
+        "opportunities_unattempted": 0
+      },
+      "optimizer_budget_by_rank": {
+        "0": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1360,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        },
+        "1": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1360,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        },
+        "2": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1360,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        },
+        "3": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1360,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        }
+      },
+      "scheduler_completion_by_rank": {
+        "0": {
+          "scheduler_advances": 1,
+          "writes_after": 1360,
+          "scheduler_last_epoch_after": 68
+        },
+        "1": {
+          "scheduler_advances": 1,
+          "writes_after": 1360,
+          "scheduler_last_epoch_after": 68
+        },
+        "2": {
+          "scheduler_advances": 1,
+          "writes_after": 1360,
+          "scheduler_last_epoch_after": 68
+        },
+        "3": {
+          "scheduler_advances": 1,
+          "writes_after": 1360,
+          "scheduler_last_epoch_after": 68
+        }
+      },
+      "captured_checkpoint_seal": {
+        "value": {
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+          "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/checkpoints/search-g1-common8/actor/global_step_68",
+          "manager": "easy2560_per_outer_full_state_v1",
+          "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/preparation/rolling-checkpoints/global_step_68/full-manifest.json",
+          "manifest_sha256": "fa693236b17c05d7ccaffdcf69bcd5c8b2e1b684c3f43b57f5c56bafce494cec",
+          "published_unix": 1792712673.267353,
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+          "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+          "step": 68
+        },
+        "evidence": "leanmetrics-transition-live-1792714535037141000.json",
+        "observed_unix": 1792714534.5619707
+      },
+      "segmentation_source": {
+        "evidence": "leanmetrics-transition-live-1792714207995623000.json",
+        "log": "training",
+        "log_mtime": 1792714202.561245,
+        "observed_unix": 1792714207.2028952
+      },
+      "segmentation_precision": "Actor/adv/checkpoint/EM/reward are producer log rounded values; candidate_fill comes from selection_summary. Missing segments remain null."
+    },
+    {
+      "step": 69,
+      "full_outer_seconds": 1872.8151230812073,
+      "start_before_generation_mtime": 1792712679.512168,
+      "next_before_generation_mtime": 1792714552.327291,
+      "boundary_evidence": "leanmetrics-transition-live-1792715435688157000.json",
+      "boundary_field": "candidate_progress[step].first_before_generation",
+      "candidate_fill_seconds": 1094.5812204692047,
+      "actor_update_seconds": 156.232,
+      "advantage_seconds": 218.47,
+      "checkpoint_write_seconds": 153.694,
+      "producer_post_candidate_step_seconds": 707.303,
+      "training_em_rounded": 0.552,
+      "training_reward_mean_rounded": 0.729,
+      "selected_mixed_questions": 482,
+      "selected_questions": 512,
+      "selected_mixed_fraction": 0.94140625,
+      "selected_trajectories": 2560,
+      "candidate_questions": 2560,
+      "candidate_trajectories": 12800,
+      "producer_raw_generated_policy_tokens": 1704853,
+      "actual_retrieval_calls": 27336,
+      "full_update_record": {
+        "step": 69,
+        "run_id": "232f20e112ac4a978c5aba52a0367195",
+        "attempt_id": "ee73c391c0d84473b62f9bb2f1a2627e",
+        "attempt_index": 69,
+        "update_status": "complete",
+        "full_budget_complete": true,
+        "actual_optimizer_writes": 20,
+        "optimizer_writes_before": 1360,
+        "optimizer_writes_after": 1380,
+        "opportunities_processed": 20,
+        "opportunities_unattempted": 0
+      },
+      "optimizer_budget_by_rank": {
+        "0": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1380,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        },
+        "1": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1380,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        },
+        "2": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1380,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        },
+        "3": {
+          "optimizer_writes": 20,
+          "cumulative_writes": 1380,
+          "full_budget_complete": true,
+          "actual_monitor_forward_count": 0
+        }
+      },
+      "scheduler_completion_by_rank": {
+        "0": {
+          "scheduler_advances": 1,
+          "writes_after": 1380,
+          "scheduler_last_epoch_after": 69
+        },
+        "1": {
+          "scheduler_advances": 1,
+          "writes_after": 1380,
+          "scheduler_last_epoch_after": 69
+        },
+        "2": {
+          "scheduler_advances": 1,
+          "writes_after": 1380,
+          "scheduler_last_epoch_after": 69
+        },
+        "3": {
+          "scheduler_advances": 1,
+          "writes_after": 1380,
+          "scheduler_last_epoch_after": 69
+        }
+      },
+      "captured_checkpoint_seal": {
+        "value": {
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+          "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/checkpoints/search-g1-common8/actor/global_step_69",
+          "manager": "easy2560_per_outer_full_state_v1",
+          "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/preparation/rolling-checkpoints/global_step_69/full-manifest.json",
+          "manifest_sha256": "382c0a1c2fd1ae238ab7c08e90fea471d1a9a475f0225cdc55e2c1179e8d384f",
+          "published_unix": 1792714545.073107,
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+          "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+          "step": 69
+        },
+        "evidence": "leanmetrics-transition-live-1792715435688157000.json",
+        "observed_unix": 1792715435.1732116
+      },
+      "segmentation_source": {
+        "evidence": "leanmetrics-transition-live-1792715435688157000.json",
+        "log": "training",
+        "log_mtime": 1792715417.541298,
+        "observed_unix": 1792715435.1732116
+      },
+      "segmentation_precision": "Actor/adv/checkpoint/EM/reward are producer log rounded values; candidate_fill comes from selection_summary. Missing segments remain null."
+    }
+  ],
+  "aggregate": {
+    "full_outer_seconds": {
+      "mean": 1846.4548518180848,
+      "observed_count": 5,
+      "expected_count": 5
+    },
+    "candidate_fill_seconds": {
+      "mean": 1075.964543804014,
+      "observed_count": 5,
+      "expected_count": 5
+    },
+    "actor_update_seconds": {
+      "mean": 155.026,
+      "observed_count": 5,
+      "expected_count": 5
+    },
+    "advantage_seconds": {
+      "mean": 215.4858,
+      "observed_count": 5,
+      "expected_count": 5
+    },
+    "checkpoint_write_seconds": {
+      "mean": 153.47599999999997,
+      "observed_count": 5,
+      "expected_count": 5
+    }
+  },
+  "weighted_selected_mixed_fraction": 0.9109375,
+  "phase_time_scope": "checkpoint_write_seconds is the logged write phase, not the entire seal/retention duration. Segment times need not sum to whole wall; unreported time is not assigned to a component.",
+  "model_metric_scope": "EM/reward and mixed selection refer to actual training data, not fixed QA/native51713 validation. Producer raw_generated_policy_tokens are retained policy tokens and must not be called actual untruncated decoder work.",
+  "checkpoint_scope": "Per-outer seals are historical receipts captured when that checkpoint was latest; ordinary older tensors may have been retired.",
+  "causal_scope": "An explicit pre-combined observational baseline. Later outers have different policy/data and workload; direct speed differences do not isolate async retrieval, stopping, batching or any individual mechanism.",
+  "goal_complete": false,
+  "remote_operations": false,
+  "tensor_files_read": false
+}

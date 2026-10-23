@@ -14,9 +14,14 @@ for p in (base/'artifacts/mixed-candidate-pools').glob('*/progress.json'):
  except json.JSONDecodeError:pass
 r['candidate_start_boundaries']=[{'pool':p.parent.name,'mtime':p.stat().st_mtime,'bytes':p.stat().st_size} for p in (base/'artifacts/mixed-candidate-pools').glob('*/0-before-generation.pt')]
 r['selection_summary']=[]
+r['search_stop_phase_observations']=[]
 for p in (base/'artifacts/mixed-selection').glob('*.json'):
  try:
   v=json.loads(p.read_text());r['selection_summary'].append({k:v.get(k) for k in ('step','candidate_fill_seconds','selected_mixed','raw_generated_trajectories','raw_generated_policy_tokens','raw_actual_retrieval_calls')})
+  phases=v.get('candidate_generation_phases',[])
+  if phases:
+   last=phases[-1].get('phase_metrics',[])
+   r['search_stop_phase_observations'].append({'step':v.get('step'),'phase_count':len(phases),'rank_order':'phase_metrics native worker-group order','ranks':{str(i):{key:row.get(key) for key in ('search_action_stop','flash3_execution','weight_syncs','actual_work')} for i,row in enumerate(last)}})
  except json.JSONDecodeError:pass
 r['transition_documents']={}
 for name in ['lean-transition-retrieval-launch-claim.json','lean-transition-retrieval-launched.json','lean-transition-retrieval-exit.json','fa3-source-stop-result.json','fa3-transition-source-ready.json','fa3-transition-submitted.json','training-submission.json']:
