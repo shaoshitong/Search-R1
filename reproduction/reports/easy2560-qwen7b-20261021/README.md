@@ -1,25 +1,34 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
-**Current evidence, 2026-10-23:** healthy production750029 completed and sealed
-outer69; all4 ranks reached1380 Adam writes/scheduler69. It remains running; outer70 has saved1536 candidate questions.
+**Current evidence, 2026-10-23 08:49CST:** production750029 completed and sealed
+outer70; all4 ranks reached1400 Adam writes/scheduler70. It was then cancelled
+under the existing qualified-switch authorization, and actual terminal state was
+confirmed. The combined target's once-only CPU source reader is running inside
+the existing745198 allocation; replacement submission and actual CUDA restore
+are still pending. Source CP70 manifest SHA is
+`99867a907ef969655e6996c18edc23437a51981f5dff0bc856759bd90992f0f8`.
 Search-only stop reduced512-question generation158.192→94.030s (40.56%)
 with async retrieval, but only180.867→163.918s (9.37%) with the production-like
 serial retrieval path. Both pairs completed0:0 on4H100. Raw tokens fell about68%
 in both, while decode calls barely changed in the serial pair.
 
 The prepared stop-only target is **superseded and must not be stopped/submitted**.
-Production750029 and745198 remain unchanged while the combination of the already
-tested async CPU proxy, singleton-E5/FAISS16 batching and search-only stop is
-ready in the explicit new profile. Separate7day2GPU service750471 is READY on
+The combination of the tested async CPU proxy, singleton-E5/FAISS16 batching
+and search-only stop is prepared in the explicit new profile. The legacy
+retrieval745198 remains running. Separate7day2GPU service750471 is READY on
 ACD1-4 and completed actual64-query GPU document/score/hash outputs. The
 combined target is prepared with frozen runtime dde1452 and explicit750471
-binding. No new training job has been submitted; retain the healthy source
-until its latest complete sealed boundary at or after70. The old prepared
+binding. No new training job has been submitted at this observation; the source
+has now reached the required sealed70 boundary. The old prepared
 artifact/evidence is retained. Neither candidate result proves whole-outer or
 final-quality acceptance. See
 [serial versus async actual pairs](evidence/search-action-stop-serial-vs-async-summary.json),
 [superseded stop-only decision](evidence/search-stop-only-target-r1-superseded-decision.json)
-and [actual CP69 seal](evidence/leanmetrics-outer69-sealed-summary.json).
+and [actual CP70 transition](evidence/combined-cp70-transition-summary.json).
+
+The candidate results below are historical diagnostics. Idle private services
+750396 and750432 were released after all their consumers completed; no files
+were deleted. See [actual release](evidence/private-diagnostic-services-release-summary.json).
 
 The full native4 candidate A/B750423 completed0:0. For all2560 parents and
 12800 trajectories, generation893.886s became841.931s (5.81% less time), and

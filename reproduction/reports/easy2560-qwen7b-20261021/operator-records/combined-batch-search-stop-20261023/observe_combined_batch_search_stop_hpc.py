@@ -25,7 +25,7 @@ for p in (base/'artifacts/mixed-selection').glob('*.json'):
    r['search_stop_phase_observations'].append({'step':v.get('step'),'phase_count':len(phases),'rank_order':'phase_metrics native worker-group order','ranks':{str(i):{key:row.get(key) for key in ('search_action_stop','flash3_execution','weight_syncs','actual_work')} for i,row in enumerate(last)}})
  except json.JSONDecodeError:pass
 r['transition_documents']={}
-for name in ['lean-transition-retrieval-launch-claim.json','lean-transition-retrieval-launched.json','lean-transition-retrieval-exit.json','fa3-transition-prepared.json','external-retriever-receipt.json','fa3-source-stop-result.json','fa3-transition-source-ready.json','fa3-transition-submitted.json','training-submission.json']:
+for name in ['lean-transition-retrieval-launch-claim.json','lean-transition-retrieval-launched.json','lean-transition-retrieval-supervisor.json','lean-transition-retrieval-srun-process.json','lean-transition-retrieval-exit.json','fa3-transition-prepared.json','external-retriever-receipt.json','fa3-source-stop-result.json','fa3-transition-source-ready.json','fa3-transition-submitted.json','training-submission.json']:
  p=base/'preparation'/name
  if p.exists():
   try:r['transition_documents'][name]=json.loads(p.read_text())
