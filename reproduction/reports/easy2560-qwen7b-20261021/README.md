@@ -1,13 +1,13 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
-**Current evidence, 2026-10-23 13:01 CST:** production750491 on ACD1-14/four H100
-completed and sealed **all ten outers71–80**; outer81 has saved512 candidate
-questions. Whole-outer wall mean is **1414.101s (23m34.10s)** versus prior65–69
-mean1846.455s (30m46.45s): **23.415% less elapsed time / 1.3057x speed**.
-All ten complete outers are included, including slower checkpoint writing/sealing
-in79/80. Measurements use adjacent actual before-generation boundaries, include
-checkpoint/seal/inter-outer work and exclude startup restore. Different policy/data
-make this an observational production comparison; final quality remains pending.
+**Current evidence, 2026-10-23 17:12 CST:** production750491 on ACD1-14/four H100
+completed and sealed **all twenty outers71–90**; outer91 has saved512 candidate
+questions. Whole-outer wall mean is **1459.074s (24m19.07s)** versus prior65–69
+mean1846.455s (30m46.45s): **20.980% less elapsed time / 1.2655x speed**.
+All twenty consecutive outers are included. Measurements use adjacent actual
+before-generation boundaries, include checkpoint/seal/inter-outer work and exclude
+startup restore. Different policy/data make this an observational production
+comparison; final quality remains pending.
 
 | Completed outer | Whole wall, seconds | Candidate fill, seconds |
 | --- | ---: | ---: |
@@ -21,36 +21,50 @@ make this an observational production comparison; final quality remains pending.
 | 78 | 1361.076 | 635.968 |
 | 79 | 1509.812 | 640.881 |
 | 80 | 1505.601 | 669.349 |
+| 81 | 1539.334 | 670.684 |
+| 82 | 1515.201 | 662.940 |
+| 83 | 1472.430 | 647.380 |
+| 84 | 1477.304 | 645.458 |
+| 85 | 1487.279 | 639.741 |
+| 86 | 1499.351 | 649.223 |
+| 87 | 1519.126 | 659.902 |
+| 88 | 1517.174 | 647.489 |
+| 89 | 1489.827 | 665.544 |
+| 90 | 1523.447 | 674.058 |
 
 Actual all4 model/Adam/scheduler/RNG, driver and reconstructed-stream readbacks
-passed from CP70. All4 now reached1600 Adam writes/scheduler80: every completed
+passed from CP70. All4 now reached1800 Adam writes/scheduler90: every completed
 outer performed20 actual updates and zero extra monitor forwards, used compact
 actor FA3 Q28/KV4, and synchronized weights once across five candidate phases.
-Native4 checkpoint seals were observed at every outer71–80; rolling latest is80.
+Native4 checkpoint seals were observed at every outer71–90; rolling latest is90.
 
-Candidate fill mean is650.994s versus old1075.965s. Actor mean is147.806s;
-adv205.265s and checkpoint write165.130s. These component values must not be
-summed to substitute for whole wall. Checkpoint writing was220.376/198.193s
-in79/80 versus roughly150–157s earlier; residual sealing/inter-outer time is
-not independently decomposed. No exclusive causal attribution is claimed.
+Candidate fill mean is653.618s versus old1075.965s.
+Actor mean is144.216s; adv199.701s and
+checkpoint write191.086s. These component values must not
+be summed to substitute for whole wall. The latest ten outers81–90 averaged
+1504.047s (25m04.05s); checkpoint writing averaged217.041s,
+versus165.130s in71–80. Residual sealing/inter-outer time is not independently
+decomposed, so the recent slower wall is not attributed exclusively to writing.
 
-Natural GPU retrieval service750471 completed178509 actual requests with0 failures
+Natural GPU retrieval service750471 completed341803 actual requests with0 failures
 at its last observation. Both original archive-controller process births remain
 live waiting for100, with no recorded failures. Legacy745198 remains untouched.
-Selected mixed fraction across these ten training pools is83.105%;
-this is not heldout accuracy. Current fixed512 tests remain5=193/512(37.6953%)
-and50=259/512(50.5859%), on identical ordered questions;100 has not run.
+Selected mixed fraction across these twenty training pools is80.840%; this is
+not heldout accuracy. Training81–90 mean EM is62.64% and reward0.8214,
+from the changing selected512x5 pre-update trajectories. Current fixed512 tests
+remain5=193/512(37.6953%) and50=259/512(50.5859%) on identical ordered questions;
+100 has not run, and no new quality-equivalence claim is made.
 
 The run remains active toward **200/no update201**. Fixed100/150/200 validation,
 exact ordered native51713/seven-source metrics, final full archives and actual
-final native4 model/Adam/scheduler/RNG/dataequal recovery remain required. Ten
-complete post-restore outers are an operational acceptance point, not goal completion.
+final native4 model/Adam/scheduler/RNG/dataequal recovery remain required. Twenty
+complete post-restore outers are an operational milestone, not goal completion.
 
-See [ten complete outer evidence](evidence/combined-ten-complete-outers-summary.json),
-[all timing/counter records](evidence/combined-ten-complete-outers-timing.json),
-and [training EM/reward and fixed512](evidence/training-em-reward-fixed512-through78-20261023.json).
-The earlier [five-outer evidence](evidence/combined-five-complete-outers-summary.json)
-remains historical evidence.
+See [twenty complete outer evidence](evidence/combined-twenty-complete-outers-summary.json),
+[all timing/counter records](evidence/combined-twenty-complete-outers-timing.json),
+and [training EM/reward and fixed512](evidence/training-em-reward-fixed512-through90-20261023.json).
+The earlier [ten-outer evidence](evidence/combined-ten-complete-outers-summary.json)
+and [five-outer evidence](evidence/combined-five-complete-outers-summary.json) remain historical evidence.
 
 The following candidate-only tests are historical qualification evidence.
 
@@ -59,7 +73,7 @@ with async retrieval, but only180.867→163.918s (9.37%) with the production-lik
 serial retrieval path. Both pairs completed0:0 on4H100. Raw tokens fell about68%
 in both, while decode calls barely changed in the serial pair.
 
-The prepared stop-only target is **superseded and must not be stopped/submitted**.
+The prepared stop-only target is **superseded and must not be activated/submitted**.
 The combination of the tested async CPU proxy, singleton-E5/FAISS16 batching
 and search-only stop is active in the explicit new profile. The legacy
 retrieval745198 remains running. Separate7day2GPU service750471 is READY on

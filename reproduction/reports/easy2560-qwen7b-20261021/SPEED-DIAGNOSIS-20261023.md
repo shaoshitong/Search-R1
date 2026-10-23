@@ -1,11 +1,11 @@
 # 7B Easy2560 四卡训练：整轮速度归因
 
-2026-10-23 13:01 CST：正式作业750491在ACD1-14使用四张H100，已连续完成并封存
-第71—80轮，第81轮已实际保存512道候选题。十轮整轮均值 **1414.101秒（23分34.10秒）**，
-旧65—69轮均值1846.455秒（30分46.45秒），**耗时减少23.415%，速度约1.3057倍**。
-包含全部十轮，也包含79/80轮断点写入及封存较慢的耗时。整轮按相邻真实
-before-generation边界计算，包含完整断点及轮间工作，不含启动恢复。不同policy/数据
-下的生产观察不能当作严格同输入因果实验，最终质量尚待验证。
+2026-10-23 17:12 CST：正式作业750491在ACD1-14使用四张H100，已连续完成并封存
+第71—90轮，第91轮已实际保存512道候选题。二十轮整轮均值 **1459.074秒（24分19.07秒）**，
+旧65—69轮均值1846.455秒（30分46.45秒），**耗时减少20.980%，速度约1.2655倍**。
+包含全部二十轮。整轮按相邻真实before-generation边界计算，包含完整断点及轮间
+工作，不含启动恢复。不同policy/数据下的生产观察不能当作严格同输入因果实验，
+最终质量尚待验证。
 
 | 完整轮次 | 整轮秒数 | 候选填充秒数 |
 | --- | ---: | ---: |
@@ -19,31 +19,44 @@ before-generation边界计算，包含完整断点及轮间工作，不含启动
 | 78 | 1361.076 | 635.968 |
 | 79 | 1509.812 | 640.881 |
 | 80 | 1505.601 | 669.349 |
+| 81 | 1539.334 | 670.684 |
+| 82 | 1515.201 | 662.940 |
+| 83 | 1472.430 | 647.380 |
+| 84 | 1477.304 | 645.458 |
+| 85 | 1487.279 | 639.741 |
+| 86 | 1499.351 | 649.223 |
+| 87 | 1519.126 | 659.902 |
+| 88 | 1517.174 | 647.489 |
+| 89 | 1489.827 | 665.544 |
+| 90 | 1523.447 | 674.058 |
 
-十轮候选填充均值650.994秒，旧1075.965秒；actor147.806秒，adv205.265秒，
-checkpoint写入165.130秒。分段值不能相加替代整轮壁钟。79/80轮checkpoint写入
-220.376/198.193秒，此前约150—157秒；封存及轮间余量未独立分解，不能把所有
-额外耗时唯一归因于某一个分段。
+二十轮候选填充均值653.618秒，旧1075.965秒；actor144.216秒，
+adv199.701秒，checkpoint写入191.086秒。分段值不能相加替代整轮壁钟。
+最近81—90轮整轮均值1504.047秒（25分04.05秒），checkpoint写入均值217.041秒，
+此前71—80轮写入均值165.130秒；封存及轮间余量未独立分解，不能将最近整轮
+变慢全部归因于checkpoint写入。
 
 从完整CP70恢复时，四卡model/Adam/scheduler/RNG、driver及重建数据流实际读回一致。
-现在四卡各累计1600次Adam、scheduler80；十轮每卡每轮实际20次更新、额外监控
-前向均0、实际FA3 Q28/KV4，每轮五段候选只有一次权重同步。71—80轮完整断点
-封存均有实际证据。双卡检索750471最近一次观测完成178509次真实请求，失败0；
+现在四卡各累计1800次Adam、scheduler90；二十轮每卡每轮实际20次更新、额外监控
+前向均0、实际FA3 Q28/KV4，每轮五段候选只有一次权重同步。71—90轮完整断点
+封存均有实际证据。双卡检索750471最近一次观测完成341803次真实请求，失败0；
 两个归档控制器原进程正常等待100，旧共享检索745198保持不动。
 
-这十轮选中混合组加权比例为83.105%，不能当作验证准确率。固定512题及
-顺序相同，5轮193/512=37.6953%，50轮259/512=50.5859%；100轮尚未运行。
+这二十轮选中混合组加权比例为80.840%，不能当作验证准确率。81—90轮训练EM均值
+62.64%、Reward均值0.8214，来自每轮变化的选中512题×5条更新前轨迹。
+固定512题及顺序相同，5轮193/512=37.6953%，50轮259/512=50.5859%；100轮尚未运行。
 优化后的训练EM变化不能单独证明测试效果等价。
 
 目标仍为200轮，不允许update201；100/150/200固定验证、最终native51713七源分数、
 完整归档和最终真实native4 model/Adam/scheduler/RNG/dataequal恢复仍未完成。
-十轮跟进通过后保持同一作业继续，不在80轮停训或宣告goal完成。
-见[十轮实际证据](evidence/combined-ten-complete-outers-summary.json)、
-[完整计时计数](evidence/combined-ten-complete-outers-timing.json)及
-[训练EM/Reward与固定512](evidence/training-em-reward-fixed512-through78-20261023.json)。
-此前[五轮证据](evidence/combined-five-complete-outers-summary.json)保留。
+二十轮跟进通过后保持同一作业继续，不在90轮停训或宣告goal完成。
+见[二十轮实际证据](evidence/combined-twenty-complete-outers-summary.json)、
+[完整计时计数](evidence/combined-twenty-complete-outers-timing.json)及
+[训练EM/Reward与固定512](evidence/training-em-reward-fixed512-through90-20261023.json)。
+此前[十轮证据](evidence/combined-ten-complete-outers-summary.json)及
+[五轮证据](evidence/combined-five-complete-outers-summary.json)保留。
 
-以下为此前的恢复与诊断记录。
+以下为历史恢复与诊断记录；其中“当前”“尚未切换”“继续运行”等均指各段原始观测时点，现状以上方带时间戳的摘要为准。
 
 此前正式750029已完成并封存70轮，四卡各1400次
 Adam及scheduler70；按已有授权正常取消后已确认终态。组合版使用runtime
@@ -188,7 +201,7 @@ CPU组件速度比17.787倍。37,907条实际action的截断和保留token全部
 actor为Q28／KV4；每卡五个候选阶段的权重同步次数为 `[1,0,0,0,0]`；每卡额外
 监控前向为0。没有在健康生产进程里增加新的性能监控前向。
 
-## 继续定位候选阶段：串行单条检索
+## 历史诊断／组合版启用前（2026-10-23）：串行单条检索
 
 从61—65轮现有日志进一步拆分，整轮均值1789.97秒中：候选1032.85秒、
 actor152.31秒、adv210.54秒、checkpoint写入154.92秒；其余239.36秒尚未
@@ -410,7 +423,7 @@ model／forward／NCCL；此结果保留，不改变正式750029对该节点的�
 checkpoint、optimizer、完整rollout和模型始终保留远端，本地只保存代码与小型审计结果。
 
 
-## 私有完整候选对照的启动记录（2026-10-23）
+## 历史启动记录／组合版启用前（2026-10-23）：私有完整候选对照
 
 正式750029及检索745198持续运行。私有双卡服务750396在ACD1-4加载原始
 21,015,324条索引与文档后READY，保留逐题E5，仅将FAISS向量合批16。
@@ -520,7 +533,7 @@ prompt token多0.434%，逻辑检索5288→5319，后端失败均为0。
 也不能宣布16ms相对2ms的严格因果增益。正式训练未改动。见
 [16ms完整结果摘要](evidence/candidate-retrieval-wait16-completed-summary.json)。
 
-## Search提前停止的显式正式配置（尚未切换）
+## 历史配置记录／组合版启用前（2026-10-23）：Search提前停止（当时尚未切换）
 
 新增可选 `fa3-lean-search-stop-v1`，继承旧lean全部设置，仅增加
 `actor_rollout_ref.rollout.search_action_boundary_stop=true`。现有prepare、
@@ -551,7 +564,7 @@ CPU旧token回放的逐项精确性与此处实际GPU速度是两份不同证据
 正式续训保留现有745198检索配置，整轮收益须在恢复后的完整outer实测。见
 [实际四卡停止计数和完整A/B](evidence/search-action-stop-live-native4-summary.json)。
 
-## 为什么不能只把提前停止直接搬进当前串行检索训练
+## 历史决策记录／组合版启用前（2026-10-23）：为什么不单独切换串行检索的提前停止
 
 匹配生产串行代理的独立750454也已完成：ACD1-20四H100，
 `COMPLETED / 0:0`，共7分46秒。相同policy66和512题，两组都完成2560轨迹。
@@ -569,7 +582,7 @@ CPU旧token回放的逐项精确性与此处实际GPU速度是两份不同证据
 再在后续实际恢复后的完整outer测壁钟，避免再次为小组件收益交出健康allocation。
 见[两次实际pair完整口径](evidence/search-action-stop-serial-vs-async-summary.json)。
 
-## Combined production integration (formal CUDA restore and whole-outer timing pending)
+## Historical record / before activation (2026-10-23): Combined production integration (CUDA restore and whole-outer timing pending at that time)
 
 The explicit fa3-lean-batched-search-stop-v1 profile inherits the measured
 search-stop settings and adds only the async CPU retrieval proxy. The candidate
@@ -586,7 +599,7 @@ The28 relevant CPU tests passed. These are wiring tests, not formal CUDA restore
 or complete training-outer speed acceptance. Forward/loss/reward/sampling/four-GPU
 geometry/200-no201 are unchanged.
 
-## Combined target prepared, old production continues
+## Historical record / before activation (2026-10-23 08:26–08:27 CST): Combined target prepared; old production continued
 
 Actual seven-day2H100 service750471 onACD1-4 is READY at08:26CST, with
 64 original stage queries completed and64 rows each of document IDs, scores

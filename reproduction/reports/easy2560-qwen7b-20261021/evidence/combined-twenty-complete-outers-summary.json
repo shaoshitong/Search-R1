@@ -1,0 +1,618 @@
+{
+  "status": "TWENTY_COMPLETE_NATIVE4_OUTERS71_TO90_AND91_ACTUAL512",
+  "observed_unix": 1792746742.3110592,
+  "training_job": "750491",
+  "training_runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+  "checkpoint90": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/checkpoints/search-g1-common8/actor/global_step_90",
+    "manager": "easy2560_per_outer_full_state_v1",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/rolling-checkpoints/global_step_90/full-manifest.json",
+    "manifest_sha256": "9d4db94f5819305ddd8449b00fa2085de832b296a12eef6228b8eb4c96085368",
+    "published_unix": 1792746560.2185903,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+    "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+    "step": 90
+  },
+  "actual_restoration": {
+    "all4_worker_model_adam_scheduler_rng_readback_equal": true,
+    "driver_readback_equal": true,
+    "reconstructed_stream_readback_equal": true,
+    "combined_actual_restore_observed": true,
+    "actual_worker_cuda_uuids": [
+      "GPU-833670ad-82a4-f70d-f953-3648630f79af",
+      "GPU-962b1f8b-613f-cb23-9c1a-0a23054859b5",
+      "GPU-826c1f8f-d970-11ef-256e-a7ebcf64423c",
+      "GPU-9dc7b482-7801-b413-0802-a403ffd8ff07"
+    ],
+    "rank0_model_tensor_readback_count": 339,
+    "expected_source_writes_per_rank": 1400,
+    "actual_driver_cursor": 179200,
+    "actual_stream_cursor": 179200
+  },
+  "complete_outers": [
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90
+  ],
+  "next_actual_outer": 91,
+  "next_actual_candidate_questions": 512,
+  "actual_adam_writes_per_rank": {
+    "0": 1800,
+    "1": 1800,
+    "2": 1800,
+    "3": 1800
+  },
+  "whole_outer_seconds_mean": 1459.07406334877,
+  "baseline65_to69_seconds_mean": 1846.4548518180848,
+  "elapsed_reduction_percent": 20.979705411582948,
+  "baseline_over_new_speed_ratio": 1.265497686649452,
+  "selected_mixed_fraction": 0.8083984375,
+  "per_outer_native4_evidence": [
+    {
+      "step": 71,
+      "checkpoint_manifest_sha256": "ae04ebe5cbff19156d66bac3fffd4742197b1a549114fb9b19076b5b5d30b873",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    },
+    {
+      "step": 72,
+      "checkpoint_manifest_sha256": "74d1e599b828cf6f217e8a9a23b1dfa478ba828de45e913ac7a38cedca694f45",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    },
+    {
+      "step": 73,
+      "checkpoint_manifest_sha256": "ab7ceb50543394b03114ca93d67f0cb1c1fc0537dd0335ab296830721ac3292c",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    },
+    {
+      "step": 74,
+      "checkpoint_manifest_sha256": "b05aac12e82d66bc5705b7d0868ab1c8be2b69c63295f21859d4b09b83d8254a",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    },
+    {
+      "step": 75,
+      "checkpoint_manifest_sha256": "7a74b71197d3cf4ebedc89f8b09eef106b16d454679af76851b7b8e1e9748864",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    },
+    {
+      "step": 76,
+      "checkpoint_manifest_sha256": "ab3f0a325e5209ad2e4a5f12f0c27f9ace3f7f0ef6f6a0a9a28b5e705a5797d1",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    },
+    {
+      "step": 77,
+      "checkpoint_manifest_sha256": "4c5d761b7576b767ddc5017868e01703f47bb192f4ad46f4a48d0eb1edab3109",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    },
+    {
+      "step": 78,
+      "checkpoint_manifest_sha256": "32121bf5ef264cc4bb7d7290196ba33fdcd02f4f7f87d606641bee2d7663acc4",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    },
+    {
+      "step": 79,
+      "checkpoint_manifest_sha256": "0688a8945ad63d8c9afa5134e0b95ea2602305b6ed8234102a908d3ab2978ecb",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    },
+    {
+      "step": 80,
+      "checkpoint_manifest_sha256": "0d0b068f6f3ff5279b0dc962c526713335c51eeebdf313b1cc7debae4d6031cd",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    },
+    {
+      "step": 81,
+      "checkpoint_manifest_sha256": "637c9e11455edec38474172f56c02ad6b564012fb71709ec80d7fbfd9399b23e",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    },
+    {
+      "step": 82,
+      "checkpoint_manifest_sha256": "122fb8a10814193dd0f17839625b9fc51dc82e235a7113af0527efa6e5bbfcd5",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    },
+    {
+      "step": 83,
+      "checkpoint_manifest_sha256": "eb3416319ac6d7738fc5340e72b8eb03d885553217824dfb1c14bb0e05cdf7c5",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    },
+    {
+      "step": 84,
+      "checkpoint_manifest_sha256": "8ad445ba5ffe83eb24cda4314f4bea966f3ee99c3d07faef62302308e0d5dec2",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    },
+    {
+      "step": 85,
+      "checkpoint_manifest_sha256": "3b5aedcf42cf3ec931234583eba186893a56f0d56bf51db6de75ea019d37a854",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    },
+    {
+      "step": 86,
+      "checkpoint_manifest_sha256": "780fa983818a807b8ad6bf06268732f023a22bc4a299e9dbf58ee8fdb585615f",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    },
+    {
+      "step": 87,
+      "checkpoint_manifest_sha256": "18e9ec7c886523d8532a4a4adfaca6f87740f8aebadd6ee1120b46b00f4a604d",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    },
+    {
+      "step": 88,
+      "checkpoint_manifest_sha256": "b328feca1aeaff2533a591ebff72f825c8e5dd322eb51038769592c5ba230798",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    },
+    {
+      "step": 89,
+      "checkpoint_manifest_sha256": "9a408d79dee198289d1de16a5c1b035d32e4a7ce5a1e5e8e7e7af5542aeebd39",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    },
+    {
+      "step": 90,
+      "checkpoint_manifest_sha256": "9d4db94f5819305ddd8449b00fa2085de832b296a12eef6228b8eb4c96085368",
+      "all4_actual_writes20_and_extra_monitors0": true,
+      "all4_scheduler_epoch_matches_outer": true,
+      "all4_actual_actor_fa3_q28_kv4": true,
+      "all4_phase_weight_syncs": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "all4_actual_candidate_fa3_decode_counts_increase": true
+    }
+  ],
+  "source_checkpoint70_restore_receipt_sha256": "ee930bcec127ad7d61627032e2627a6197313ac081f1470ceefd1f16892c9440",
+  "retrieval_health": {
+    "observed_unix": 1792746777.0250251,
+    "health_url": "http://ACD1-4:18026/health",
+    "health": {
+      "ok": true,
+      "service_job_id": "750471",
+      "service_run_id": "a8ddc12aec1840d898e4d9cfcabc17c1",
+      "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+      "request_rebatching_enabled": true,
+      "singleton_e5": true,
+      "faiss_batch_size": 16,
+      "faiss_max_wait_ms": 2.0,
+      "physical_gpu_count": 2,
+      "logical_shards": 4,
+      "observed_unix": 1792746777.0216086,
+      "statistics": {
+        "logical_requests": 341803,
+        "logical_queries": 341866,
+        "completed_requests": 341803,
+        "completed_queries": 341866,
+        "failed_requests": 0,
+        "backend_seconds": 8290.388649314642,
+        "last_completed_unix": 1792746777.0208642,
+        "batch_attempts": 169665,
+        "batch_input_queries": 341802,
+        "max_batch_input_queries": 14
+      }
+    },
+    "retrieval_queries_sent": 0,
+    "gpu_forward_triggered": false
+  },
+  "archive_controller_observation": {
+    "epoch": 1792746775.375617,
+    "job": "750491",
+    "controllers": {
+      "core": {
+        "records": {
+          "claim.json": {
+            "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+            "birth": {
+              "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+              "pid": 2001174,
+              "start_ticks": 1050855824,
+              "uid": 1002
+            },
+            "checked_unix": 1792716830.5616617,
+            "controller_suffix": null,
+            "credentials_persisted": false,
+            "recovery_parent": null,
+            "requested_steps": [
+              100,
+              150,
+              200
+            ],
+            "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+            "source_job": "750491",
+            "source_ssh_route": {
+              "automatic_fallback": false,
+              "host_key_alias": "hpc3login.hpc.hkust-gz.edu.cn",
+              "hpc_identity": {
+                "boot_id": "a27512a3-24a0-4ca3-aa92-98d2a5256d9a",
+                "hostname": "ACD-Login-1",
+                "pid_namespace": "pid:[4026531836]"
+              },
+              "known_hosts": "/backup/shaoshitong/topd-hf-migration-20261009/hpc3-known-hosts",
+              "ssh_peer": "jxu957@10.120.48.31"
+            }
+          },
+          "progress.json": {
+            "phase": "WAITING_CHECKPOINT",
+            "source_job": "750491",
+            "step": 100,
+            "actual_job_state": "RUNNING",
+            "completed_steps": [],
+            "checked_unix": 1792746746.2675307
+          }
+        },
+        "pid": 2001174,
+        "expected_start_ticks": 1050855824,
+        "state": "S",
+        "actual_start_ticks": 1050855824,
+        "same_process_birth": true
+      },
+      "companion": {
+        "records": {
+          "claim.json": {
+            "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+            "birth": {
+              "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+              "hostname": "xielab3",
+              "pid": 2001175,
+              "start_ticks": 1050855826,
+              "state": "R",
+              "uid": 1002
+            },
+            "checked_unix": 1792716830.7528853,
+            "controller_commit": "b8df9cc12904ae6729768107ff4aa529cff666af",
+            "credentials_persisted": false,
+            "first_step": 100,
+            "historical_CP5_replayed": false,
+            "jobs_submitted": 0,
+            "old_controllers_modified": false,
+            "requested_steps": [
+              100,
+              150,
+              200
+            ],
+            "run_id": "232f20e112ac4a978c5aba52a0367195",
+            "source_job": "750491",
+            "source_ssh_route": {
+              "automatic_fallback": false,
+              "host_key_alias": "hpc3login.hpc.hkust-gz.edu.cn",
+              "hpc_identity": {
+                "boot_id": "a27512a3-24a0-4ca3-aa92-98d2a5256d9a",
+                "hostname": "ACD-Login-1",
+                "pid_namespace": "pid:[4026531836]"
+              },
+              "known_hosts": "/backup/shaoshitong/topd-hf-migration-20261009/hpc3-known-hosts",
+              "ssh_peer": "jxu957@10.120.48.31"
+            },
+            "training_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+            "training_modified": false
+          },
+          "progress.json": {
+            "checked_unix": 1792746760.5102458,
+            "completed_steps": [],
+            "core_controller": {
+              "birth": {
+                "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+                "pid": 2001174,
+                "start_ticks": 1050855824,
+                "uid": 1002
+              },
+              "process": {
+                "actual": {
+                  "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+                  "pid": 2001174,
+                  "start_ticks": 1050855824,
+                  "state": "S",
+                  "uid": 1002
+                },
+                "same_birth": true,
+                "state": "LIVE"
+              },
+              "records": {
+                "claim.json": {
+                  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+                  "birth": {
+                    "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae",
+                    "pid": 2001174,
+                    "start_ticks": 1050855824,
+                    "uid": 1002
+                  },
+                  "checked_unix": 1792716830.5616617,
+                  "controller_suffix": null,
+                  "credentials_persisted": false,
+                  "recovery_parent": null,
+                  "requested_steps": [
+                    100,
+                    150,
+                    200
+                  ],
+                  "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+                  "source_job": "750491",
+                  "source_ssh_route": {
+                    "automatic_fallback": false,
+                    "host_key_alias": "hpc3login.hpc.hkust-gz.edu.cn",
+                    "hpc_identity": {
+                      "boot_id": "a27512a3-24a0-4ca3-aa92-98d2a5256d9a",
+                      "hostname": "ACD-Login-1",
+                      "pid_namespace": "pid:[4026531836]"
+                    },
+                    "known_hosts": "/backup/shaoshitong/topd-hf-migration-20261009/hpc3-known-hosts",
+                    "ssh_peer": "jxu957@10.120.48.31"
+                  }
+                },
+                "progress.json": {
+                  "actual_job_state": "RUNNING",
+                  "checked_unix": 1792746746.2675307,
+                  "completed_steps": [],
+                  "phase": "WAITING_CHECKPOINT",
+                  "source_job": "750491",
+                  "step": 100
+                }
+              },
+              "state": "LIVE"
+            },
+            "healthy_controller_modified": false,
+            "jobs_submitted": 0,
+            "phase": "WAITING_CORE_ACTUAL_ACK",
+            "run_id": "232f20e112ac4a978c5aba52a0367195",
+            "source_job": "750491",
+            "source_ssh_called": false,
+            "step": 100,
+            "training_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+            "training_modified": false
+          }
+        },
+        "pid": 2001175,
+        "expected_start_ticks": 1050855826,
+        "state": "S",
+        "actual_start_ticks": 1050855826,
+        "same_process_birth": true
+      }
+    }
+  },
+  "training_metrics_file": "training-em-reward-fixed512-through90-20261023.json",
+  "fixed512_validation": [
+    {
+      "step": 5,
+      "correct": 193,
+      "questions": 512,
+      "em": 0.376953125,
+      "nq_correct": 88,
+      "nq_questions": 256,
+      "hotpot_correct": 105,
+      "hotpot_questions": 256
+    },
+    {
+      "step": 50,
+      "correct": 259,
+      "questions": 512,
+      "em": 0.505859375,
+      "nq_correct": 115,
+      "nq_questions": 256,
+      "hotpot_correct": 144,
+      "hotpot_questions": 256
+    }
+  ],
+  "fixed100_pending": true,
+  "full200_no201_pending": true,
+  "final_native51713_seven_source_metrics_pending": true,
+  "final_full_archive_pending": true,
+  "actual_final_native4_recovery_pending": true,
+  "same_input_causality_proven": false,
+  "whole_wall_scope": "Only adjacent actual before-generation mtimes establish whole wall; includes checkpoint/seal/inter-outer work and excludes startup. No rank wall sum or candidate+step substitution. Missing next boundary means null.",
+  "actual_errors": {
+    "training": [],
+    "trainer": [],
+    "pipeline": [],
+    "slurm": []
+  },
+  "observation_errors": [],
+  "training_modified": false,
+  "evaluation_run": false,
+  "goal_complete": false
+}
