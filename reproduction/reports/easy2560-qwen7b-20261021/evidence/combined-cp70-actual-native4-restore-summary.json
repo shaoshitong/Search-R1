@@ -1,0 +1,31 @@
+{
+  "observed_unix": 1792717435.6477597,
+  "job": "750491",
+  "node": "ACD1-14",
+  "training_world_size": 4,
+  "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+  "source_completed_outer": 70,
+  "expected_optimizer_writes_per_rank": 1400,
+  "expected_scheduler_last_epoch": 70,
+  "restore_receipt_sha256": "ee930bcec127ad7d61627032e2627a6197313ac081f1470ceefd1f16892c9440",
+  "actual_restore": {
+    "all4_worker_model_adam_scheduler_rng_readback_equal": true,
+    "driver_readback_equal": true,
+    "reconstructed_stream_readback_equal": true,
+    "combined_actual_restore_observed": true,
+    "actual_worker_cuda_uuids": [
+      "GPU-833670ad-82a4-f70d-f953-3648630f79af",
+      "GPU-962b1f8b-613f-cb23-9c1a-0a23054859b5",
+      "GPU-826c1f8f-d970-11ef-256e-a7ebcf64423c",
+      "GPU-9dc7b482-7801-b413-0802-a403ffd8ff07"
+    ],
+    "rank0_model_tensor_readback_count": 339,
+    "expected_source_writes_per_rank": 1400,
+    "actual_driver_cursor": 179200,
+    "actual_stream_cursor": 179200
+  },
+  "evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792717435803758000.json",
+  "first_complete_new_outer_pending": true,
+  "whole_outer_speedup_accepted": false,
+  "goal_remains_active": true
+}

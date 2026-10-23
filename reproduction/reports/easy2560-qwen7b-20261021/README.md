@@ -1,11 +1,14 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
-**Current evidence, 2026-10-23 08:54CST:** production750029 completed and sealed
+**Current evidence, 2026-10-23 09:06CST:** production750029 completed and sealed
 outer70; all4 ranks reached1400 Adam writes/scheduler70. It was then cancelled
 under the existing qualified-switch authorization, and actual terminal state was
 confirmed. Its complete native4 CPU readback passed and the replacement750491
-is RUNNING on ACD1-14/fourH100 with actual runtime dde1452. Actual CUDA restore
-and first full outer remain pending. The new100/150/200 core+companion archive
+is RUNNING on ACD1-14/fourH100 with actual runtime dde1452. Actual all4
+model/Adam/scheduler/RNG, driver and reconstructed-stream readbacks passed.
+Outer71 has saved512 candidate questions; first512 pipeline was133.708s.
+The first complete training outer and whole-outer gain remain pending.
+The new100/150/200 core+companion archive
 controllers have been launched and their exact process births observed.
 Source CP70 manifest SHA is
 `99867a907ef969655e6996c18edc23437a51981f5dff0bc856759bd90992f0f8`.
@@ -20,8 +23,8 @@ and search-only stop is prepared in the explicit new profile. The legacy
 retrieval745198 remains running. Separate7day2GPU service750471 is READY on
 ACD1-4 and completed actual64-query GPU document/score/hash outputs. The
 combined target is prepared with frozen runtime dde1452 and explicit750471
-binding. Replacement750491 resumes from the sealed70 boundary; actual restored
-model/Adam/scheduler/RNG/driver/data and whole-outer gains remain pending. The old prepared
+binding. Replacement750491 resumes from the sealed70 boundary; actual
+recovery is accepted and whole-outer gains remain pending. The old prepared
 artifact/evidence is retained. Neither candidate result proves whole-outer or
 final-quality acceptance. See
 [serial versus async actual pairs](evidence/search-action-stop-serial-vs-async-summary.json),
