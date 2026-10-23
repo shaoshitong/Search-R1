@@ -587,6 +587,8 @@ def optimizer_construction_config(config,model_path):
         assert r['status']==FINAL_EASY_STATUS and r['step']==200 and r['restore_only'] is True
     elif binding.get('kind')=='easy2560_native4':
         assert type(r['step']) is int and 1 <= r['step'] < 200
+    elif binding.get('kind')=='dynrpo7b_native4':
+        assert type(r['step']) is int and 1 <= r['step'] <= 200
     elif binding.get('kind')!='question_probe_pair':assert r['step']==5
     assert Path(model_path).resolve()==checkpoint
     construction=copy.deepcopy(dict(config));construction['completed_updates']=0
