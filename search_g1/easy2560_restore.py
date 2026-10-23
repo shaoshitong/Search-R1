@@ -657,6 +657,13 @@ def bind(run, receipt_path):
             post_callback_rng_captured=receipt['post_callback_rng_captured'], same_job_continuation=False,
             followup_acceptance_outer=min(receipt['step'] + 5, 200)),
         optimizer_semantics='actual saved native4 HF/Adam/scheduler/RNG/data stream; cross-job prefix kept as history; CUDA readback pending')
+    source_stop = parent.get('infra_optimizations', {}).get('search_action_boundary_stop', False)
+    target_stop = run.get('infra_optimizations', {}).get('search_action_boundary_stop', False)
+    if source_stop or target_stop:
+        run['full_state_restore']['search_action_stop_transition'] = dict(
+            source_enabled=source_stop, target_enabled=target_stop,
+            target_infra_profile=run.get('infra_profile', 'baseline'),
+            binding='target explicit infra profile; source scheduler/rollout geometry retained unchanged')
     return run
 
 

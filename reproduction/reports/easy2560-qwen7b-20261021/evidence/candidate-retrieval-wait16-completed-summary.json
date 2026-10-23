@@ -1,0 +1,193 @@
+{
+  "input": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/candidate-wait16-results-1792713858789257000.json",
+  "observed_epoch": 1792713858.7861311,
+  "pairs": {
+    "full": {
+      "both_complete": false,
+      "covers_entire_training_outer": false,
+      "scope": "2560-parent full candidate pool"
+    },
+    "startup": {
+      "async_over_legacy_work_ratios": {
+        "actual_generation_requests": 1.0039500509683996,
+        "actual_prompt_tokens": 1.0043407503793282,
+        "actual_raw_generated_tokens": 0.9980364525686813,
+        "actual_retrieval_calls": 1.0058623298033282
+      },
+      "both_complete": true,
+      "causal_speedup_proven": false,
+      "covers_entire_training_outer": false,
+      "interpretation": "Observed candidate-stage timing. Same parents/policy can produce different stochastic asynchronous trajectories; assess work ratios alongside wall reduction.",
+      "same_input_fingerprints": true,
+      "scope": "512-parent startup candidates",
+      "timings": {
+        "generation_phase_wall_seconds": {
+          "async_seconds": 159.50568719860166,
+          "legacy_seconds": 174.70293041039258,
+          "observed_legacy_over_async_ratio": 1.0952771244630841,
+          "observed_wall_reduction_percent": 8.69890572304154
+        },
+        "pipeline_seconds_including_input_io_score_and_output_save": {
+          "async_seconds": 186.42117436416447,
+          "legacy_seconds": 200.53524012863636,
+          "observed_legacy_over_async_ratio": 1.075710636480064,
+          "observed_wall_reduction_percent": 7.038197254217371
+        }
+      },
+      "work_counts_equal": false
+    }
+  },
+  "runner": {
+    "checked_unix": 1792713711.1974761,
+    "comparison_scope": "startup_512_questions",
+    "completed_children": 2,
+    "stage": "STARTUP_PAIR_COMPLETED",
+    "startup_actual_work_counts_equal": false,
+    "startup_observed_generation_wall_ratio": 1.0952771244630841,
+    "startup_only": true
+  },
+  "scope": "Independent candidate generation, retrieval and selection only; no full training-outer speedup or final-quality equivalence proven. Missing batch counters remain null.",
+  "source_root": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fastpath-probe-20261022/diagnostics/candidate-retrieval-wait16-r1-20261023/attempt-r1",
+  "transport_exits": [
+    {
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "variants": {
+    "full-async": {
+      "actual_fa3_prefill_and_decode": null,
+      "actual_generation_requests": null,
+      "actual_mean_faiss_batch": null,
+      "actual_prompt_tokens": null,
+      "actual_raw_generated_tokens": null,
+      "actual_retrieval_calls": null,
+      "candidate_complete": false,
+      "candidate_exit_code": null,
+      "completed_questions": null,
+      "completed_trajectories": null,
+      "faiss_batch_attempts": null,
+      "faiss_batch_input_queries": null,
+      "generation_phase_wall_seconds": null,
+      "input_fingerprints_sha256": null,
+      "pipeline_seconds_including_input_io_score_and_output_save": null,
+      "proxy": {
+        "backend_exceptions": null,
+        "backend_requests": null,
+        "cache_hit_fraction": null,
+        "cache_hits": null,
+        "failed_requests": null,
+        "logical_requests": null
+      },
+      "selection": null,
+      "status": null
+    },
+    "full-legacy": {
+      "actual_fa3_prefill_and_decode": null,
+      "actual_generation_requests": null,
+      "actual_mean_faiss_batch": null,
+      "actual_prompt_tokens": null,
+      "actual_raw_generated_tokens": null,
+      "actual_retrieval_calls": null,
+      "candidate_complete": false,
+      "candidate_exit_code": null,
+      "completed_questions": null,
+      "completed_trajectories": null,
+      "faiss_batch_attempts": null,
+      "faiss_batch_input_queries": null,
+      "generation_phase_wall_seconds": null,
+      "input_fingerprints_sha256": null,
+      "pipeline_seconds_including_input_io_score_and_output_save": null,
+      "proxy": {
+        "backend_exceptions": null,
+        "backend_requests": null,
+        "cache_hit_fraction": null,
+        "cache_hits": null,
+        "failed_requests": null,
+        "logical_requests": null
+      },
+      "selection": null,
+      "status": null
+    },
+    "startup-async": {
+      "actual_fa3_prefill_and_decode": true,
+      "actual_generation_requests": 7879,
+      "actual_mean_faiss_batch": 1.9735849056603774,
+      "actual_prompt_tokens": 6130047,
+      "actual_raw_generated_tokens": 1049603,
+      "actual_retrieval_calls": 5319,
+      "candidate_complete": true,
+      "candidate_exit_code": 0,
+      "completed_questions": 512,
+      "completed_trajectories": 2560,
+      "faiss_batch_attempts": 1855,
+      "faiss_batch_input_queries": 3661,
+      "generation_phase_wall_seconds": 159.50568719860166,
+      "input_fingerprints_sha256": "b89824e7e032010732f4875f97d5aba59f2b11823c45bb42bcb2b3068145aab6",
+      "pipeline_seconds_including_input_io_score_and_output_save": 186.42117436416447,
+      "proxy": {
+        "backend_exceptions": 0,
+        "backend_requests": 3661,
+        "cache_hit_fraction": 0.3117127279563828,
+        "cache_hits": 1658,
+        "failed_requests": 0,
+        "logical_requests": 5319
+      },
+      "selection": {
+        "candidate_categories": {
+          "all_correct": 234,
+          "all_wrong": 191,
+          "mixed": 87
+        },
+        "candidate_groups": 512,
+        "candidate_mixed_fraction": 0.169921875,
+        "selected_groups": null,
+        "selected_mixed_fraction": null,
+        "selection_performed": false,
+        "selection_status": "STARTUP_CHUNKS_ONLY_NOT_FULL_2560_SELECTION",
+        "training_em": 0.54609375
+      },
+      "status": "REAL_CANDIDATE_PIPELINE_COMPLETED"
+    },
+    "startup-legacy": {
+      "actual_fa3_prefill_and_decode": true,
+      "actual_generation_requests": 7848,
+      "actual_mean_faiss_batch": null,
+      "actual_prompt_tokens": 6103553,
+      "actual_raw_generated_tokens": 1051668,
+      "actual_retrieval_calls": 5288,
+      "candidate_complete": true,
+      "candidate_exit_code": 0,
+      "completed_questions": 512,
+      "completed_trajectories": 2560,
+      "faiss_batch_attempts": 0,
+      "faiss_batch_input_queries": 0,
+      "generation_phase_wall_seconds": 174.70293041039258,
+      "input_fingerprints_sha256": "b89824e7e032010732f4875f97d5aba59f2b11823c45bb42bcb2b3068145aab6",
+      "pipeline_seconds_including_input_io_score_and_output_save": 200.53524012863636,
+      "proxy": {
+        "backend_exceptions": 0,
+        "backend_requests": 3556,
+        "cache_hit_fraction": 0.3275340393343419,
+        "cache_hits": 1732,
+        "failed_requests": 0,
+        "logical_requests": 5288
+      },
+      "selection": {
+        "candidate_categories": {
+          "all_correct": 237,
+          "all_wrong": 193,
+          "mixed": 82
+        },
+        "candidate_groups": 512,
+        "candidate_mixed_fraction": 0.16015625,
+        "selected_groups": null,
+        "selected_mixed_fraction": null,
+        "selection_performed": false,
+        "selection_status": "STARTUP_CHUNKS_ONLY_NOT_FULL_2560_SELECTION",
+        "training_em": 0.55078125
+      },
+      "status": "REAL_CANDIDATE_PIPELINE_COMPLETED"
+    }
+  }
+}

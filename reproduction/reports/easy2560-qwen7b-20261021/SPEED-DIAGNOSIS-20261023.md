@@ -453,3 +453,29 @@ Easy选中的混合组分别为438／512（85.55%）与422／512（82.42%）。�
 另有[真实token的CPU search-stop回放](evidence/search-action-stop-saved-cpu-replay-summary.json)：
 15,832个实际action、591,019个保留LP精确一致，可避免原raw token的68.39%；
 这是固定已存token的CPU结果，独立GPU实验750449当时仍待完成，不是GPU提速验收。
+
+## 16毫秒合批窗口的实际候选测试
+
+独立作业750433在ACD1-20四张H100完成，`COMPLETED / 0:0`，共8分36秒。
+两个fresh进程读取同一policy66、同一512题及相同采样配置，均完成2560条轨迹；
+仅第二组使用16ms等待窗口的私有异步检索。候选生成174.703→159.506秒，
+实测少8.699%；含输入读写和评分200.535→186.421秒，少7.038%。实际FAISS
+平均batch1.974，最大13；raw token为1,051,668→1,049,603，少0.196%，
+prompt token多0.434%，逻辑检索5288→5319，后端失败均为0。
+
+等待16ms使平均合批量比之前2ms约1.49有所提高，但仍远小于上限16。
+这是512题启动块测量，节点和轨迹与2ms实验不同，不能将其外推为正式整轮收益，
+也不能宣布16ms相对2ms的严格因果增益。正式训练未改动。见
+[16ms完整结果摘要](evidence/candidate-retrieval-wait16-completed-summary.json)。
+
+## Search提前停止的显式正式配置（尚未切换）
+
+新增可选 `fa3-lean-search-stop-v1`，继承旧lean全部设置，仅增加
+`actor_rollout_ref.rollout.search_action_boundary_stop=true`。现有prepare、
+CPU恢复、四卡提交入口透传此profile；旧默认保持。wrapper安装在每个vLLM
+实例构造后，正常FSDP权重同步或KV cache释放不会重建该实例。仅在现有phase
+日志附加轻量停止计数，无额外forward、梯度扫描或监控进程。
+
+共23项独立CPU测试已通过，包括实际启动argv除新flag外一致、新旧profile、
+四卡/200轮/batch参数、原StopChecker优先级和同一恢复入口透传。本机没有
+Hydra/CUDA，以上不是正式GPU新profile验收；当前750449独立四卡实测仍待完成。

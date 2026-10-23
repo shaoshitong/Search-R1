@@ -78,6 +78,8 @@ def arguments(base):
                       '+actor_rollout_ref.rollout.reuse_snapshot_weights='+str(infra['reuse_snapshot_weights']).lower(),
                       '+actor_rollout_ref.rollout.flash_attention_3='+str(infra['flash_attention_3_rollout']).lower(),
                       '+actor_rollout_ref.rollout.block_size=256']
+        if infra.get('search_action_boundary_stop', False):
+            overrides.append('+actor_rollout_ref.rollout.search_action_boundary_stop=true')
     if run.get('easy2560_selection'):
         from reproduction.common8.precision_contract import easy2560_native4
         assert easy2560_native4(run)

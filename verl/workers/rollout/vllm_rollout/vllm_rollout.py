@@ -152,6 +152,10 @@ class vLLMRollout(BaseRollout):
                                     max_model_len=config.prompt_length + config.response_length,
                                     load_format=config.load_format,
                                     **scheduler_options)
+        self._search_g1_action_stop = None
+        if config.get('search_action_boundary_stop', False) is True:
+            from search_g1.search_action_stop import install_search_action_stop
+            self._search_g1_action_stop = install_search_action_stop(self.inference_engine.llm_engine, tokenizer)
         scheduler = self.inference_engine.llm_engine.scheduler_config
         for field, value in scheduler_options.items():
             if field == 'block_size':
@@ -284,6 +288,8 @@ class vLLMRollout(BaseRollout):
         result['scheduler_limits'] = copy.deepcopy(self.generation_scheduler_limits)
         if getattr(self, '_search_g1_flash3_functions', None) is not None:
             result['flash3_execution'] = self._search_g1_flash3_functions.report()
+        if getattr(self, '_search_g1_action_stop', None) is not None:
+            result['search_action_stop'] = self._search_g1_action_stop.report()
         self.inference_engine.llm_engine._common8_stop_capture = None
         if self._generation_cache_setup_started:
             self.inference_engine.free_cache_engine()

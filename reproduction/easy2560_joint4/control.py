@@ -170,12 +170,13 @@ def bootstrap(base, commit, predecessor=PREDECESSOR):
 
 def submit(base, commit, actor_micro=8, predecessor=PREDECESSOR, restore_receipt=None, infra_profile='baseline',
            external_retriever_receipt=None):
+    from search_g1.easy7b_infra import FA3_PROFILES
     base = own_base(base); bootstrap(base, commit, predecessor)
     claim = base / 'preparation/training-submit-claim.json'
     receipt = base / 'preparation/training-submission.json'
     if any(p.exists() for p in (claim, receipt, base / 'job.id', base / 'logs/run-manifest.json')):
         raise ValueError('EASY2560_SUBMISSION_ALREADY_ATTEMPTED_INSPECT_ACTUAL_JOB')
-    if infra_profile in ('fa3-exact-cache-v1', 'fa3-lean-v1'):
+    if infra_profile in FA3_PROFILES:
         from .flash3_runtime import prepare as prepare_flash3_runtime
         prepare_flash3_runtime(base)
     restoration = restore_binding(restore_receipt)

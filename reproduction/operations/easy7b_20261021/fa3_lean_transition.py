@@ -20,7 +20,8 @@ TARGET_BASE = '/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa
 
 
 @contextmanager
-def source_binding(*, source_base, source_job, source_commit, authorization, minimum_outer=50):
+def source_binding(*, source_base, source_job, source_commit, authorization, minimum_outer=50,
+                   infra_profile='fa3-lean-v1'):
     """Parameterize the historical helper only inside this private process."""
     source = transition.control.own_base(source_base)
     source_run = json.loads((source / 'logs/run-manifest.json').read_text())
@@ -47,7 +48,7 @@ def source_binding(*, source_base, source_job, source_commit, authorization, min
     transition.SOURCE_JOB = str(source_job)
     transition.SOURCE_COMMIT = source_commit
     transition.RUN_ID = source_run['run_id']
-    transition.PROFILE = 'fa3-lean-v1'
+    transition.PROFILE = infra_profile
     transition.MINIMUM_OUTER = minimum_outer
     transition.AUTHORIZATION = authorization
     transition._consumers = consumers
@@ -67,13 +68,15 @@ def main(argv=None):
     parser.add_argument('--source-job', default=SOURCE_JOB)
     parser.add_argument('--source-commit', default=SOURCE_COMMIT)
     parser.add_argument('--minimum-outer', type=int, default=50)
+    from search_g1.easy7b_infra import LEAN_PROFILES
+    parser.add_argument('--infra-profile', choices=LEAN_PROFILES, default='fa3-lean-v1')
     parser.add_argument('--authorization-json', required=True,
                         help='Existing current user authorization and measured qualification decision record')
     args = parser.parse_args(argv)
     authorization = json.loads(Path(args.authorization_json).read_text())
     with source_binding(source_base=args.source_base, source_job=args.source_job,
                         source_commit=args.source_commit, authorization=authorization,
-                        minimum_outer=args.minimum_outer) as bound:
+                        minimum_outer=args.minimum_outer, infra_profile=args.infra_profile) as bound:
         result = (bound.prepare if args.mode == 'prepare' else bound.submit)(args.base, args.commit)
     print(json.dumps(result, sort_keys=True, allow_nan=False), flush=True)
     return result

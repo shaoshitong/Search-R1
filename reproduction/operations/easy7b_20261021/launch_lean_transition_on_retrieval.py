@@ -43,15 +43,17 @@ def process_identity(pid):
     return value
 
 
-def source_arguments(source_base=None, source_job=None, source_commit=None, minimum_outer=None):
+def source_arguments(source_base=None, source_job=None, source_commit=None, minimum_outer=None,
+                     infra_profile=None):
     values = (('source-base', source_base), ('source-job', source_job),
-              ('source-commit', source_commit), ('minimum-outer', minimum_outer))
+              ('source-commit', source_commit), ('minimum-outer', minimum_outer),
+              ('infra-profile', infra_profile))
     return [argument for name, value in values if value is not None
             for argument in ('--'+name, str(value))]
 
 
 def command(base, commit, authorization_path, allocation_job=ALLOCATION_JOB, *,
-            source_base=None, source_job=None, source_commit=None, minimum_outer=None):
+            source_base=None, source_job=None, source_commit=None, minimum_outer=None, infra_profile=None):
     base = own_base(base)
     # Explicitly use the prepared target's immutable runtime, not this newer
     # operator's source for the CPU tensor reader or the training submission.
@@ -62,7 +64,7 @@ def command(base, commit, authorization_path, allocation_job=ALLOCATION_JOB, *,
             'reproduction.operations.easy7b_20261021.fa3_lean_transition', 'submit',
             '--base', str(base), '--commit', commit,
             '--authorization-json', str(authorization_path),
-            *source_arguments(source_base, source_job, source_commit, minimum_outer)]
+            *source_arguments(source_base, source_job, source_commit, minimum_outer, infra_profile)]
     # A node that failed actual CUDA initialization can be excluded from this
     # new allocation without changing the prepared immutable training runtime.
     # The wrapper runs only in the CPU submit process, from target/repo, so all
@@ -94,7 +96,7 @@ def existing(p):
 
 
 def launch(base, commit, authorization_path=None, allocation_job=ALLOCATION_JOB, *,
-           source_base=None, source_job=None, source_commit=None, minimum_outer=None):
+           source_base=None, source_job=None, source_commit=None, minimum_outer=None, infra_profile=None):
     p = paths(base)
     authorization_path = Path(authorization_path) if authorization_path else (
         p['base']/'preparation/fastpath-transition-qualified-authorization.json')
@@ -104,10 +106,10 @@ def launch(base, commit, authorization_path=None, allocation_job=ALLOCATION_JOB,
     runner = [sys.executable, '-B', str(Path(__file__).resolve()), 'worker',
               '--base', str(p['base']), '--commit', commit,
               '--authorization-json', str(authorization_path), '--allocation-job', str(allocation_job)]
-    runner.extend(source_arguments(source_base, source_job, source_commit, minimum_outer))
+    runner.extend(source_arguments(source_base, source_job, source_commit, minimum_outer, infra_profile))
     argv = command(p['base'], commit, authorization_path, allocation_job,
                    source_base=source_base, source_job=source_job,
-                   source_commit=source_commit, minimum_outer=minimum_outer)
+                   source_commit=source_commit, minimum_outer=minimum_outer, infra_profile=infra_profile)
     publish(p['claim'], dict(created_unix=time.time(), base=str(p['base']), target_runtime_commit=commit,
         authorization_json=str(authorization_path), runner=runner, srun_command=argv,
         existing_allocation_job=str(allocation_job), cpu_memory_bytes=128*1024**3,
@@ -135,7 +137,7 @@ def launch(base, commit, authorization_path=None, allocation_job=ALLOCATION_JOB,
 
 
 def worker(base, commit, authorization_path=None, allocation_job=ALLOCATION_JOB, *,
-           source_base=None, source_job=None, source_commit=None, minimum_outer=None):
+           source_base=None, source_job=None, source_commit=None, minimum_outer=None, infra_profile=None):
     p = paths(base)
     if p['worker'].exists() or p['result'].exists():
         return existing(p)
@@ -144,7 +146,7 @@ def worker(base, commit, authorization_path=None, allocation_job=ALLOCATION_JOB,
         p['base']/'preparation/fastpath-transition-qualified-authorization.json')
     argv = command(p['base'], commit, authorization_path, allocation_job,
                    source_base=source_base, source_job=source_job,
-                   source_commit=source_commit, minimum_outer=minimum_outer)
+                   source_commit=source_commit, minimum_outer=minimum_outer, infra_profile=infra_profile)
     if claim['srun_command'] != argv:
         raise ValueError('Supervisor arguments differ from the existing launch claim')
     publish(p['worker'], dict(supervisor=process_identity(os.getpid()), command=argv,
@@ -178,11 +180,13 @@ def main(argv=None):
     parser.add_argument('--source-job')
     parser.add_argument('--source-commit')
     parser.add_argument('--minimum-outer', type=int)
+    from search_g1.easy7b_infra import LEAN_PROFILES
+    parser.add_argument('--infra-profile', choices=LEAN_PROFILES)
     args = parser.parse_args(argv)
     result = (launch if args.mode == 'launch' else worker)(
         args.base, args.commit, args.authorization_json, args.allocation_job,
         source_base=args.source_base, source_job=args.source_job,
-        source_commit=args.source_commit, minimum_outer=args.minimum_outer)
+        source_commit=args.source_commit, minimum_outer=args.minimum_outer, infra_profile=args.infra_profile)
     print(json.dumps(result, sort_keys=True), flush=True)
     if args.mode == 'worker':
         return result.get('returncode', 1 if result['status'] == 'CPU_AUDIT_COMMAND_FAILED_OR_UNKNOWN' else 0)

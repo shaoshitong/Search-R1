@@ -6,6 +6,7 @@ from pathlib import Path
 import time
 
 from .control import BASE, MODEL, PREDECESSOR, MICROS, own_base, publish, restore_binding
+from search_g1.easy7b_infra import LEAN_PROFILES, FA3_PROFILES
 
 
 def selection_settings(predecessor, physical, restoring=False, infra_profile='baseline'):
@@ -28,7 +29,7 @@ def selection_settings(predecessor, physical, restoring=False, infra_profile='ba
     # 7B must fit its own official-actor round0 labels. No inherited 3B heads.
     if infra_profile != 'baseline':
         settings['infra_optimizations'] = infra
-    if infra_profile == 'fa3-lean-v1':
+    if infra_profile in LEAN_PROFILES:
         settings.update(performance_profile='lean_v1', extra_policy_monitor_forwards=False,
                         infra_profile=infra_profile)
     return settings
@@ -58,7 +59,7 @@ def prepare(base, commit, actor_micro=8, restore_receipt=None, infra_profile='ba
         from .model7b import create
         create(Path(MODEL), manifest)
     settings = selection_settings(predecessor, actor_micro, restoring=bool(restore_receipt), infra_profile=infra_profile)
-    if infra_profile in ('fa3-exact-cache-v1', 'fa3-lean-v1'):
+    if infra_profile in FA3_PROFILES:
         from .flash3_runtime import binding as flash3_binding
         settings['infra_flash_attention_3'] = flash3_binding(base)
     if external is not None:

@@ -1,6 +1,6 @@
-"""Opt-in search-only action stopping for an independent vLLM0.6.3 probe.
+"""Opt-in search-only action stopping for a vLLM0.6.3 engine instance.
 
-Never installed by production. The original StopChecker runs first. This
+Disabled by default. The original StopChecker runs first. This
 wrapper may stop only after a complete sampled token closes </search>; it never
 stops on </answer>, retokenizes output, edits token IDs/logprobs, or invents EOS.
 Single-token decoded fragments are only a cheap trigger. The original dual

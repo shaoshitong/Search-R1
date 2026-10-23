@@ -59,6 +59,7 @@ def _consumers(base,commit,job=None):
 
 def prepare(base,commit):
     """All small assets/runtime are ready before the parent stops the source."""
+    from search_g1.easy7b_infra import LEAN_PROFILES
     base=_target(base);source_run=_source();ready=base/'preparation/fa3-transition-prepared.json'
     if ready.exists():
         result=_json(ready)
@@ -89,10 +90,10 @@ def prepare(base,commit):
         external_retriever_service_job=external['service_job_id'],private_flash3_runtime=runtime,
         actor_micro_batch_per_rank=8,actor_logical_micro_batch_per_rank=4,training_world_size=4,
         authorization=AUTHORIZATION,historical_FA2_rejections_preserved=True,
-        actor_FA3_only=PROFILE!='fa3-lean-v1',grounding_SDPA_unchanged=True,
-        rollout_backend_unchanged=PROFILE!='fa3-lean-v1',
-        compact_gqa=PROFILE=='fa3-lean-v1',
-        performance_profile='lean_v1' if PROFILE=='fa3-lean-v1' else 'legacy',
+        actor_FA3_only=PROFILE not in LEAN_PROFILES,grounding_SDPA_unchanged=True,
+        rollout_backend_unchanged=PROFILE not in LEAN_PROFILES,
+        compact_gqa=PROFILE in LEAN_PROFILES,
+        performance_profile='lean_v1' if PROFILE in LEAN_PROFILES else 'legacy',
         archive_consumer_plan=_consumers(base,commit),source_job_stopped_here=False,
         training_submitted=False,actual_cuda_restore_accepted=False,checked_unix=time.time())
     control.publish(ready,result)
