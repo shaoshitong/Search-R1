@@ -1,0 +1,58 @@
+{
+  "user_message_id": "01a163d2-2b6c-7913-b548-c71fc308bbd3",
+  "original_utc": "2026-10-22T13:34:40.492Z",
+  "thread_id": "01a163ab-97c3-7831-9d1d-41be25280063",
+  "user_text": "对的，核心就是你测试完了之后速度变快了,然后那么我们就可以就是替换到原来的一个训练。",
+  "scope": "Qualified optional search-only action boundary stopping; stop only owned750029 at latest sealed native4 full-state boundary >=69, restore all4 model/Adam/scheduler/RNG/data, keep existing745198 retrieval and all archive consumers untouched.",
+  "source_job": "750029",
+  "source_base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+  "source_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+  "source_run_id": "232f20e112ac4a978c5aba52a0367195",
+  "target_base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-searchstop-r1-20261023",
+  "target_runtime_commit": "06c5f91772d03358c703dbfc0c2ed935c1784153",
+  "infra_profile": "fa3-lean-search-stop-v1",
+  "minimum_completed_outer": 69,
+  "transition_boundary_minimum_outer": 69,
+  "production_stop_qualified_at_or_after_minimum": true,
+  "training_submit_allowed_after_source_terminal": true,
+  "sbatch_exclude_node": "ACD1-13",
+  "qualification": {
+    "cpu_saved_turns": 15832,
+    "pointwise_retained_ids_text_logprobs_equal": true,
+    "live_gpu_job": "750449",
+    "live_gpu_state": "COMPLETED",
+    "live_gpu_exit": "0:0",
+    "same_policy_and_parent_fingerprints": true,
+    "actual_questions_per_arm": 512,
+    "actual_trajectories_per_arm": 2560,
+    "all4_actual_fa3": true,
+    "confirmed_stops_by_rank": [
+      1329,
+      1342,
+      1365,
+      1332
+    ],
+    "candidate_generation_seconds": [
+      158.19211182184517,
+      94.03038753382862
+    ],
+    "candidate_generation_time_reduction_percent": 40.559370217065585,
+    "raw_generated_tokens": [
+      1059962,
+      338192
+    ],
+    "candidate_pair_retrieval_mode": "Both arms async2ms; target retains original production745198 serial retrieval; separate legacy-mode measurement in progress",
+    "full_training_outer_speedup_proven": false,
+    "final_quality_equivalence_proven": false
+  },
+  "preserve": [
+    "native4/physical8/logical4/mini128",
+    "2560 choose512 and5 trajectories",
+    "original actor loss/reward/advantage/forward",
+    "200/no201/fixed milestones/native51713/seven metrics/final actual restore",
+    "full source checkpoint plus native4 post-restore five complete outers",
+    "production745198 and existing archive consumers"
+  ],
+  "source_job_stopped_here": false,
+  "recorded_unix": 1792714202.036951
+}
