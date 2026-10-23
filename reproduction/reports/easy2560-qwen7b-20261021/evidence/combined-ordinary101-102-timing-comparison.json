@@ -1,0 +1,274 @@
+{
+  "schema": "combined_ordinary101_102_actual_wall_comparison_v1",
+  "job": "750491",
+  "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+  "sources": {
+    "101": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-continuation101-complete-next102.json",
+      "sha256": "8fb63fa9f57210a2a756049a0c88a39e2f29dc668694d61a40ed777945f9a910",
+      "actual_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792764696895836000.json"
+    },
+    "102": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-continuation102-complete-next103.json",
+      "sha256": "20742de061bec1f20e1bc506a90e5e74e4f8bc49353e452f872d58c9e0c82109",
+      "actual_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792766339099900000.json"
+    }
+  },
+  "rows": {
+    "101": {
+      "step": 101,
+      "full_outer_seconds": 1558.4856269359589,
+      "candidate_fill_seconds": 683.7792213240173,
+      "actor_update_seconds": 140.061,
+      "advantage_seconds": 193.439,
+      "checkpoint_write_seconds": 238.306,
+      "producer_post_candidate_step_seconds": 746.335,
+      "selected_mixed_questions": 355,
+      "retained_policy_tokens": 1504085,
+      "actual_retrieval_calls": 26488,
+      "unassigned_wall_residual_seconds": 128.37140561194155,
+      "all4_20writes_zero_extra_monitor": true,
+      "actual_actor_compact_fa3": {
+        "0": {
+          "actual_flash3_training_executed": true,
+          "compact_gqa_enabled": true,
+          "cumulative_forward_returns": {
+            "dense": 0,
+            "varlen": 138880
+          },
+          "cumulative_backward_returns": 69440,
+          "cumulative_qkv_gradient_returns": 69440,
+          "observed_qkv_geometry": [
+            {
+              "dtype": "torch.bfloat16",
+              "q_heads": 28,
+              "kv_heads": 4,
+              "head_dim": 128
+            }
+          ]
+        },
+        "1": {
+          "actual_flash3_training_executed": true,
+          "compact_gqa_enabled": true,
+          "cumulative_forward_returns": {
+            "dense": 0,
+            "varlen": 138880
+          },
+          "cumulative_backward_returns": 69440,
+          "cumulative_qkv_gradient_returns": 69440,
+          "observed_qkv_geometry": [
+            {
+              "dtype": "torch.bfloat16",
+              "q_heads": 28,
+              "kv_heads": 4,
+              "head_dim": 128
+            }
+          ]
+        },
+        "2": {
+          "actual_flash3_training_executed": true,
+          "compact_gqa_enabled": true,
+          "cumulative_forward_returns": {
+            "dense": 0,
+            "varlen": 138880
+          },
+          "cumulative_backward_returns": 69440,
+          "cumulative_qkv_gradient_returns": 69440,
+          "observed_qkv_geometry": [
+            {
+              "dtype": "torch.bfloat16",
+              "q_heads": 28,
+              "kv_heads": 4,
+              "head_dim": 128
+            }
+          ]
+        },
+        "3": {
+          "actual_flash3_training_executed": true,
+          "compact_gqa_enabled": true,
+          "cumulative_forward_returns": {
+            "dense": 0,
+            "varlen": 138880
+          },
+          "cumulative_backward_returns": 69440,
+          "cumulative_qkv_gradient_returns": 69440,
+          "observed_qkv_geometry": [
+            {
+              "dtype": "torch.bfloat16",
+              "q_heads": 28,
+              "kv_heads": 4,
+              "head_dim": 128
+            }
+          ]
+        }
+      },
+      "rollout_phase_weight_syncs": {
+        "0": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "1": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "2": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "3": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "102": {
+      "step": 102,
+      "full_outer_seconds": 1660.4927179813385,
+      "candidate_fill_seconds": 694.262417208869,
+      "actor_update_seconds": 140.436,
+      "advantage_seconds": 192.406,
+      "checkpoint_write_seconds": 263.116,
+      "producer_post_candidate_step_seconds": 769.212,
+      "selected_mixed_questions": 359,
+      "retained_policy_tokens": 1469078,
+      "actual_retrieval_calls": 26074,
+      "unassigned_wall_residual_seconds": 197.0183007724695,
+      "all4_20writes_zero_extra_monitor": true,
+      "actual_actor_compact_fa3": {
+        "0": {
+          "actual_flash3_training_executed": true,
+          "compact_gqa_enabled": true,
+          "cumulative_forward_returns": {
+            "dense": 0,
+            "varlen": 143360
+          },
+          "cumulative_backward_returns": 71680,
+          "cumulative_qkv_gradient_returns": 71680,
+          "observed_qkv_geometry": [
+            {
+              "dtype": "torch.bfloat16",
+              "q_heads": 28,
+              "kv_heads": 4,
+              "head_dim": 128
+            }
+          ]
+        },
+        "1": {
+          "actual_flash3_training_executed": true,
+          "compact_gqa_enabled": true,
+          "cumulative_forward_returns": {
+            "dense": 0,
+            "varlen": 143360
+          },
+          "cumulative_backward_returns": 71680,
+          "cumulative_qkv_gradient_returns": 71680,
+          "observed_qkv_geometry": [
+            {
+              "dtype": "torch.bfloat16",
+              "q_heads": 28,
+              "kv_heads": 4,
+              "head_dim": 128
+            }
+          ]
+        },
+        "2": {
+          "actual_flash3_training_executed": true,
+          "compact_gqa_enabled": true,
+          "cumulative_forward_returns": {
+            "dense": 0,
+            "varlen": 143360
+          },
+          "cumulative_backward_returns": 71680,
+          "cumulative_qkv_gradient_returns": 71680,
+          "observed_qkv_geometry": [
+            {
+              "dtype": "torch.bfloat16",
+              "q_heads": 28,
+              "kv_heads": 4,
+              "head_dim": 128
+            }
+          ]
+        },
+        "3": {
+          "actual_flash3_training_executed": true,
+          "compact_gqa_enabled": true,
+          "cumulative_forward_returns": {
+            "dense": 0,
+            "varlen": 143360
+          },
+          "cumulative_backward_returns": 71680,
+          "cumulative_qkv_gradient_returns": 71680,
+          "observed_qkv_geometry": [
+            {
+              "dtype": "torch.bfloat16",
+              "q_heads": 28,
+              "kv_heads": 4,
+              "head_dim": 128
+            }
+          ]
+        }
+      },
+      "rollout_phase_weight_syncs": {
+        "0": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "1": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "2": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "3": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "delta102_minus101": {
+    "full_outer_seconds": 102.00709104537964,
+    "candidate_fill_seconds": 10.483195884851739,
+    "actor_update_seconds": 0.375,
+    "advantage_seconds": -1.032999999999987,
+    "checkpoint_write_seconds": 24.809999999999974,
+    "producer_post_candidate_step_seconds": 22.876999999999953,
+    "unassigned_wall_residual_seconds": 68.64689516052795
+  },
+  "interpretation": [
+    "Whole102 is102.007s longer than101; actor140.436 vs140.061s is nearly unchanged.",
+    "Recorded checkpoint write is24.810s longer and candidate fill10.483s longer.",
+    "Arithmetic unassigned wall residual increased68.647s. This is not an independently timed storage/seal component and cannot prove the cause of all residual time.",
+    "Producer post-candidate step overlaps its actor/advantage/checkpoint components; do not add these twice.",
+    "Different selected trajectories and policy prevent strict same-input speed causality; these observations do not establish an attention-kernel regression."
+  ],
+  "training_modified": false,
+  "extra_gpu_queries": 0,
+  "goal_complete": false
+}
