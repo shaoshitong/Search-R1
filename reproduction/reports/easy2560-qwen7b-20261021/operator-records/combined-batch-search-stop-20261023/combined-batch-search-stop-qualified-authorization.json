@@ -1,0 +1,56 @@
+{
+  "user_message_id": "01a163d2-2b6c-7913-b548-c71fc308bbd3",
+  "original_utc": "2026-10-22T13:34:40.492Z",
+  "thread_id": "01a163ab-97c3-7831-9d1d-41be25280063",
+  "user_text": "对的，核心就是你测试完了之后速度变快了,然后那么我们就可以就是替换到原来的一个训练。",
+  "scope": "Apply the qualified combined async CPU retrieval proxy, singleton-E5/FAISS16/2ms batching and search-only boundary stopping at a complete native4 source checkpoint; keep original actor mathematics and all actual recovery/final requirements.",
+  "source_job": "750029",
+  "source_base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+  "source_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+  "source_run_id": "232f20e112ac4a978c5aba52a0367195",
+  "target_base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+  "target_runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+  "infra_profile": "fa3-lean-batched-search-stop-v1",
+  "minimum_completed_outer": 70,
+  "transition_boundary_minimum_outer": 70,
+  "production_stop_qualified_at_or_after_minimum": true,
+  "training_submit_allowed_after_source_terminal": true,
+  "sbatch_exclude_node": "ACD1-13",
+  "qualification": {
+    "actual_async_stop_pair_job": "750449",
+    "actual_legacy_stop_pair_job": "750454",
+    "both_completed_exit_zero": true,
+    "async_candidate_generation_seconds": [
+      158.19211182184517,
+      94.03038753382862
+    ],
+    "serial_candidate_generation_seconds": [
+      180.86678963154554,
+      163.91751090437174
+    ],
+    "why_combined": "Serial retrieval erases most raw-token saving; do not activate the superseded stop-only target.",
+    "saved_turn_replay_exact": 15832,
+    "all4_actual_fa3": true,
+    "same_shared_async_implementation_AST": true,
+    "cpu_wiring_tests": 28,
+    "real_module_entry_upstream503_test": true,
+    "retrieval_conservative_gpu_probe": "750363: singleton E5,1536 matching top3 slots, maxscore2.384185791e-7",
+    "whole_training_outer_speedup_proven": false,
+    "final_accuracy_equivalence_proven": false
+  },
+  "new_retriever_service_job": "750471",
+  "new_retriever_service_base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-retrieval-batch-production-r1-20261023",
+  "new_retriever_runtime": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+  "legacy_retriever_untouched": "745198",
+  "preserve": [
+    "fourH100/physical8/logical4/mini128",
+    "2560 choose512/5 trajectories",
+    "actor forward/loss/reward/advantage/sampling",
+    "model/Adam/scheduler/RNG/driver/data actual recovery",
+    "200/no201/fixed validation/native51713/seven metrics",
+    "five complete post-restore outers and final full checkpoint actual native4 restore",
+    "old source archives and existing745198"
+  ],
+  "source_job_stopped_here": false,
+  "recorded_unix": 1792715158.710222
+}
