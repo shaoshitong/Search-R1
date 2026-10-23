@@ -39,6 +39,8 @@ assert all(state['raw'][key].shape==state['EMA'][key].shape for key in state['ra
 wrapper=b/'checkpoints/search-g1-common8/actor'/('global_step_%d'%OUTER)/'training_state/question-probe-state.pt'
 old=torch.load(wrapper,map_location='cpu',weights_only=False)
 assert old['completed_outer']==OUTER
+assert state['warmup_cursor']==old['reference']['warmup_updates']
+assert state['online_updates']==old['reference']['online_updates']+60
 assert len(old['fit_groups'])==len({str(g['qid']) for g in old['fit_groups']})==2560
 phase=dict(completed_actor_outer=OUTER,probe_completed_epoch=3,probe_pending=False,probe_ref=ref)
 resolved=restored_probe_metadata(old,phase)
@@ -46,11 +48,13 @@ assert resolved['reference']==ref and resolved['probe_pending'] is False
 assert resolved['head_version']=='seed1-E9-raw-online-%04d'%OUTER
 assert old['reference']['sha256']!=ref['sha256']
 steps=sorted(set(int(v['step']) for v in state['Adam']['state'].values() if 'step' in v))
+assert steps==[state['actual_Adam_updates']]
 r=dict(status='REAL_PROBE_FILE_AND_STALE_WRAPPER_RESOLUTION_PASS',outer=OUTER,
  checkpoint_sha256=ref['sha256'],epochs=[dict(epoch=x['epoch'],loss=x['target4variance_MSE'],
  questions=x['actual_questions'],online_updates=x['online_updates'],seconds=x['seconds']) for x in epochs],
  actual_Adam_updates=state['actual_Adam_updates'],warmup_updates=state['warmup_cursor'],
- online_updates=state['online_updates'],EMA_updates=state['EMA_updates'],Adam_parameter_step_values=steps,
+ online_updates=state['online_updates'],previous_online_updates=old['reference']['online_updates'],
+ inherited_exactly_60_new_Adam_updates=True,EMA_updates=state['EMA_updates'],Adam_parameter_step_values=steps,
  RNG_ranks=len(state['RNG_by_rank']),raw_and_EMA_parameters=len(state['raw']),
  old_wrapper_sha=old['reference']['sha256'],resolved_new_sha=resolved['reference']['sha256'],
  stale_wrapper_test='CPU metadata resolution using actual saved pre-fit wrapper and epoch3 reference',
