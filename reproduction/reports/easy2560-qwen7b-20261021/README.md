@@ -1,14 +1,19 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
-**Current evidence, 2026-10-23 09:06CST:** production750029 completed and sealed
-outer70; all4 ranks reached1400 Adam writes/scheduler70. It was then cancelled
-under the existing qualified-switch authorization, and actual terminal state was
-confirmed. Its complete native4 CPU readback passed and the replacement750491
-is RUNNING on ACD1-14/fourH100 with actual runtime dde1452. Actual all4
-model/Adam/scheduler/RNG, driver and reconstructed-stream readbacks passed.
-Outer71 has saved512 candidate questions; first512 pipeline was133.708s.
-The first complete training outer and whole-outer gain remain pending.
-The new100/150/200 core+companion archive
+**Current evidence, 2026-10-23 09:29CST:** native4 production750491 completed
+and sealed outer71, and outer72 has saved512 candidate questions. The first
+complete whole-outer wall is **1410.022s (23m30.02)** versus the prior65–69 mean
+1846.455s (30m46.45): **23.636% less elapsed time / 1.3095x speed**. This uses
+adjacent actual before-generation boundaries and includes checkpoint/seal work.
+Candidate fill was652.194s versus the prior1075.965s mean. This is one observed
+outer with different policy/data; five-outer stability and final quality remain pending.
+See [complete first-outer evidence](evidence/combined-first-complete-outer71-summary.json).
+
+The replacement is RUNNING on ACD1-14/fourH100 with actual runtime dde1452.
+Actual all4 model/Adam/scheduler/RNG, driver and reconstructed-stream readbacks
+passed from CP70; all4 now reached1420 Adam writes/scheduler71. Actual actor
+FA3 uses Q28/KV4, extra monitor forwards are0, and each rank's five candidate
+phases synchronize weights only once. The new100/150/200 core+companion archive
 controllers have been launched and their exact process births observed.
 Source CP70 manifest SHA is
 `99867a907ef969655e6996c18edc23437a51981f5dff0bc856759bd90992f0f8`.
@@ -24,16 +29,17 @@ retrieval745198 remains running. Separate7day2GPU service750471 is READY on
 ACD1-4 and completed actual64-query GPU document/score/hash outputs. The
 combined target is prepared with frozen runtime dde1452 and explicit750471
 binding. Replacement750491 resumes from the sealed70 boundary; actual
-recovery is accepted and whole-outer gains remain pending. The old prepared
-artifact/evidence is retained. Neither candidate result proves whole-outer or
-final-quality acceptance. See
+recovery and one full-outer measurement are accepted. The old prepared
+artifact/evidence is retained. Candidate-only pairs are separate from the
+new whole-outer evidence and do not prove final-quality equivalence. See
 [serial versus async actual pairs](evidence/search-action-stop-serial-vs-async-summary.json),
 [superseded stop-only decision](evidence/search-stop-only-target-r1-superseded-decision.json)
 and [actual CP70 transition](evidence/combined-cp70-transition-summary.json).
 
 The candidate results below are historical diagnostics. Idle private services
-750396 and750432 were released after all their consumers completed; no files
-were deleted. See [actual release](evidence/private-diagnostic-services-release-summary.json).
+750396 and750432 were released after all their consumers completed; checkpoint,
+model, source and saved-result deletion was not requested. See
+[actual release](evidence/private-diagnostic-services-release-summary.json).
 
 The full native4 candidate A/B750423 completed0:0. For all2560 parents and
 12800 trajectories, generation893.886s became841.931s (5.81% less time), and

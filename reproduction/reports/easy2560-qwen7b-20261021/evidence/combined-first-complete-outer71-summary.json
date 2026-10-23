@@ -1,0 +1,76 @@
+{
+  "observed_unix": 1792718949.1314442,
+  "job": "750491",
+  "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+  "complete_outer": 71,
+  "next_outer": 72,
+  "next_outer_saved_questions": 512,
+  "full_outer_seconds": 1410.0217909812927,
+  "baseline65_69_whole_outer_mean_seconds": 1846.4548518180848,
+  "wall_ratio": 1.3095222099603583,
+  "elapsed_reduction_fraction": 0.23636270359227285,
+  "includes_checkpoint_seal_and_inter_outer": true,
+  "excludes_startup_restore": true,
+  "same_input_causality_proven": false,
+  "selected_mixed_questions": 471,
+  "selected_questions": 512,
+  "optimizer_writes_per_rank": 1420,
+  "scheduler_last_epoch": 71,
+  "extra_monitor_forward_count_per_rank": 0,
+  "actor_actual_fa3_compact_q28_kv4_all4": true,
+  "checkpoint": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/checkpoints/search-g1-common8/actor/global_step_71",
+    "manager": "easy2560_per_outer_full_state_v1",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/rolling-checkpoints/global_step_71/full-manifest.json",
+    "manifest_sha256": "ae04ebe5cbff19156d66bac3fffd4742197b1a549114fb9b19076b5b5d30b873",
+    "published_unix": 1792718786.3848922,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+    "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+    "step": 71
+  },
+  "candidate_fill_seconds": 652.1940178109799,
+  "actor_update_seconds": 158.451,
+  "advantage_seconds": 211.025,
+  "checkpoint_write_seconds": 153.001,
+  "candidate_actual_search_stops_by_rank": {
+    "0": 6728,
+    "1": 6744,
+    "2": 6804,
+    "3": 6785
+  },
+  "five_phase_weightsync_by_rank": {
+    "0": [
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "1": [
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "2": [
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "3": [
+      1,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792718949331294000.json",
+  "five_complete_followup_and_next_begin_still_pending": true,
+  "goal_remains_active": true
+}

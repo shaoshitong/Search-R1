@@ -1,0 +1,116 @@
+{
+  "observed_unix": 1792718033.789339,
+  "job": "750491",
+  "outer": 71,
+  "questions": 2560,
+  "trajectories": 12800,
+  "candidate_fill_seconds": 652.1940178109799,
+  "candidate_first_before_to_last_saved_seconds": 644.6025228500366,
+  "retained_policy_tokens": 1677478,
+  "retained_policy_tokens_source_field_is_misnamed": "raw_generated_policy_tokens",
+  "actual_decoder_raw_tokens_whole_outer": null,
+  "selected_mixed": 471,
+  "selected_questions": 512,
+  "selected_mixed_fraction": 0.919921875,
+  "candidate_fa3_and_sync": {
+    "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/artifacts/mixed-selection/1ac099939cf1499192ca3ceb2d19e9e1.json",
+    "step": 71,
+    "pool_retry": 0,
+    "phase_count": 5,
+    "rank_order": "phase_metrics list order from native worker group",
+    "ranks": {
+      "0": {
+        "phase_weight_syncs": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "total_weight_syncs": 1,
+        "five_phases_one_sync_observed": true,
+        "latest_cumulative_rollout_fa3_calls": {
+          "prefill": 132076,
+          "paged_prefill": 0,
+          "decode": 213052
+        },
+        "rollout_counter_scope": "cumulative actual adapter successful returns; not summed across phases",
+        "rollout_counter_location": "candidate_generation_phases[].phase_metrics[].flash3_execution.calls"
+      },
+      "1": {
+        "phase_weight_syncs": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "total_weight_syncs": 1,
+        "five_phases_one_sync_observed": true,
+        "latest_cumulative_rollout_fa3_calls": {
+          "prefill": 130928,
+          "paged_prefill": 0,
+          "decode": 213024
+        },
+        "rollout_counter_scope": "cumulative actual adapter successful returns; not summed across phases",
+        "rollout_counter_location": "candidate_generation_phases[].phase_metrics[].flash3_execution.calls"
+      },
+      "2": {
+        "phase_weight_syncs": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "total_weight_syncs": 1,
+        "five_phases_one_sync_observed": true,
+        "latest_cumulative_rollout_fa3_calls": {
+          "prefill": 130564,
+          "paged_prefill": 0,
+          "decode": 217924
+        },
+        "rollout_counter_scope": "cumulative actual adapter successful returns; not summed across phases",
+        "rollout_counter_location": "candidate_generation_phases[].phase_metrics[].flash3_execution.calls"
+      },
+      "3": {
+        "phase_weight_syncs": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "total_weight_syncs": 1,
+        "five_phases_one_sync_observed": true,
+        "latest_cumulative_rollout_fa3_calls": {
+          "prefill": 128856,
+          "paged_prefill": 0,
+          "decode": 217224
+        },
+        "rollout_counter_scope": "cumulative actual adapter successful returns; not summed across phases",
+        "rollout_counter_location": "candidate_generation_phases[].phase_metrics[].flash3_execution.calls"
+      }
+    },
+    "rollout_fa3_counter_available": true
+  },
+  "search_stop_confirmed_by_rank": {
+    "0": 6728,
+    "1": 6744,
+    "2": 6804,
+    "3": 6785
+  },
+  "search_stop_rejections_by_rank": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0
+  },
+  "pre_combined_baseline_candidate_mean_seconds": 1075.964543804014,
+  "observational_candidate_elapsed_reduction_fraction": 0.3938517569499238,
+  "whole_training_outer_measured": false,
+  "whole_training_outer_speedup_accepted": false,
+  "evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792718033987451000.json",
+  "goal_remains_active": true,
+  "pre_combined_baseline_evidence": "pre-combined-native4-baseline-latest-five.json"
+}
