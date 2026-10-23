@@ -1,5 +1,47 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
+**Current evidence, 2026-10-23 22:00 CST:** production750491 has completed and
+sealed outer100 on the same four H100; outer101 has saved all2560 candidate questions.
+All4 have2000 actual Adam writes. Runtime remains frozen at dde1452; no restart,
+new GPU allocation, runtime edit or extra monitor forward was introduced.
+
+Fixed512 evaluation uses the same ordered NQ256/HotpotQA256 occurrences and
+parquet SHA across milestones: **5=193/512 (37.6953%),50=259/512 (50.5859%),
+100=280/512 (54.6875%)**. At100 NQ is119/256 (46.4844%) and HotpotQA161/256
+(62.8906%):21 more correct than50, or4.1016 percentage points. All100 accepted
+training log rows are present;91–100 mean training EM64.82%, sequence reward0.8448.
+These changing selected512x5 pre-update samples are distinct from fixed512 tests.
+No claim of final-quality equivalence or attribution to an individual optimization
+follows from these curves.
+
+All29 ordinary outers71–99 average **1493.029s (24m53.03s)**, versus old65–69
+1846.455s:19.141% less elapsed time /1.2367x. Outer100 includes fixed512 validation
+and its full adjacent-boundary wall is2256.530s (37m36.53s); do not silently mix
+that milestone into ordinary-outer timing. All30 outers71–100, including100,
+average1518.479s (25m18.48s). Whole wall includes checkpoints/seals/inter-outer
+work; validation/checkpoint/inter-outer overhead at100 is not independently
+decomposed. Different policy/data prevent strict same-input timing causality.
+
+The100 core archive has received **all1351 files /121,925,546,599 bytes** on
+HKUST3 and passed independent fresh destination SHA readback and fsync. Actual
+stream growth was measured56.043GB→121.925GB. Fresh source readback and
+post-callback/dependency acceptance are still pending, so the full milestone
+archive is not yet accepted. This is not actual final CUDA recovery. Existing
+core/companion controllers are live without recorded failures; healthy training continues.
+See [archive destination receipt/scope](evidence/milestone100-archive-current-summary.json).
+The200/no201 target, fixed150/200, exact native51713/seven scores, full milestone
+archives and actual final native4 model/Adam/scheduler/RNG/dataequal recovery
+remain required.
+
+See [all100 training/fixed512 metrics](evidence/training-em-reward-fixed512-through100-20261023.json),
+[through100 wall summary](evidence/combined-through100-summary.json) and
+[actual timing/counter records](evidence/combined-through100-timing.json).
+
+## Historical twenty-outer observation, 2026-10-23 17:12 CST
+
+The following dated observations retain their original scope. Statements about
+pending100 or a running older job describe that historical point, not current state.
+
 **Current evidence, 2026-10-23 17:12 CST:** production750491 on ACD1-14/four H100
 completed and sealed **all twenty outers71–90**; outer91 has saved512 candidate
 questions. Whole-outer wall mean is **1459.074s (24m19.07s)** versus prior65–69
