@@ -2,10 +2,13 @@
 import asyncio
 import json
 from pathlib import Path
+import runpy
+import sys
 import tempfile
 import threading
 import unittest
 from unittest.mock import patch
+import warnings
 
 from reproduction.easy2560_joint4 import retrieval_proxy as proxy
 from reproduction.easy2560_joint4.async_retrieval_proxy import AsyncProxyForwarder, PrivateHTTPBackend
@@ -107,6 +110,12 @@ class AsyncProductionHTTPTests(unittest.TestCase):
     tearDown = legacy_tests.MockHTTPTests.tearDown
 
     def test_real_handlers_keep_cache_on_owner_loop_offload_only_http_and_preserve_health(self):
+        self._exercise_handlers()
+
+    def test_real_module_entry_preserves_upstream_http_errors(self):
+        self._exercise_handlers(module_entry=True)
+
+    def _exercise_handlers(self, module_entry=False):
         from starlette.requests import Request
         from search_g1.test_search_action_stop_wiring import SearchStopWiringTests
         with tempfile.TemporaryDirectory() as td:
@@ -157,7 +166,12 @@ class AsyncProductionHTTPTests(unittest.TestCase):
                     'reproduction.common8.topology.execution_job_id', return_value='5678'), patch.object(
                     proxy, 'forwarding_components', side_effect=components), patch.object(
                     PrivateHTTPBackend, 'request', tracked_request):
-                proxy.serve(base)
+                if module_entry:
+                    with patch.object(sys, 'argv', ['retrieval_proxy', '--base', str(base)]), warnings.catch_warnings():
+                        warnings.filterwarnings('ignore', message='.*found in sys.modules.*', category=RuntimeWarning)
+                        runpy.run_module('reproduction.easy2560_joint4.retrieval_proxy', run_name='__main__')
+                else:
+                    proxy.serve(base)
             self.assertEqual(request_threads[0], threading.get_ident())  # startup identity check
             self.assertTrue(all(ident != threading.get_ident() for ident in request_threads[1:]))
             self.assertEqual(len(self.calls), 3)  # one successful miss and two uncached errors

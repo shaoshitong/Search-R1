@@ -1,0 +1,51 @@
+{
+  "checked_unix": 1792714868.115499,
+  "command": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "reproduction.easy2560_joint4.test_async_retrieval_proxy",
+    "reproduction.operations.easy7b_20261021.test_candidate_proxy_benchmark",
+    "reproduction.easy2560_joint4.test_retrieval_proxy",
+    "search_g1.test_easy7b_infra",
+    "search_g1.test_search_action_stop_wiring",
+    "-v"
+  ],
+  "returncode": 0,
+  "log": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/async-batched-search-stop-production-cpu-tests-20261023.log",
+  "shared_measured_implementations_ast_equal_to_prior_candidate": {
+    "private_urls": true,
+    "PrivateHTTPBackend": true,
+    "AsyncProxyForwarder": true
+  },
+  "bash_syntax_exit": 0,
+  "remote_operations_executed": false,
+  "gpu_tests_claimed": false,
+  "files": [
+    {
+      "path": "search_g1/easy7b_infra.py",
+      "sha256": "57905981a8aab401140f52e4cb9f6ef8b8af1496a62ff8ad7404f7d00b99903a"
+    },
+    {
+      "path": "reproduction/easy2560_joint4/retrieval_proxy.py",
+      "sha256": "5a9844fbc59f7e1d2c6755ec849f6fedd29e3fcdfd397d5d8baec01bca99c4e8"
+    },
+    {
+      "path": "reproduction/easy2560_joint4/async_retrieval_proxy.py",
+      "sha256": "8883d225d06b801297e4872a226168a116eb02e8ce3e75580d1e2cba079a82e5"
+    },
+    {
+      "path": "reproduction/easy2560_joint4/train.sh",
+      "sha256": "67f0c79a4f55d9550ce88644d7e886062c7107c50839692909a4c610a038d418"
+    },
+    {
+      "path": "reproduction/easy2560_joint4/test_async_retrieval_proxy.py",
+      "sha256": "51ee778692883edf900b52f9952371d57fcd6350fe7e17048f506ab3688381f3"
+    },
+    {
+      "path": "reproduction/operations/easy7b_20261021/candidate_proxy_benchmark.py",
+      "sha256": "856b1e33bfe8e2b51715bbe6aa0ae22f676e2f1399afad4cfb95d2a1ddf69d9b"
+    }
+  ]
+}

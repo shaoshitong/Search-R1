@@ -301,4 +301,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # Shared async backend imports this canonical module; use its exception
+    # identity as well when Python initially loaded this file as __main__.
+    from reproduction.easy2560_joint4.retrieval_proxy import main as canonical_main
+    canonical_main()

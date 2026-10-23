@@ -1,0 +1,28 @@
+{
+  "checked_unix": 1792714961.9576151,
+  "command": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "reproduction.easy2560_joint4.test_async_retrieval_proxy.AsyncProductionHTTPTests.test_real_module_entry_preserves_upstream_http_errors",
+    "-v"
+  ],
+  "returncode": 0,
+  "log": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/async-production-module-entry-cpu-regression-20261023.log",
+  "real_runpy_module_entry": true,
+  "real_asgi_handlers": true,
+  "mock_loopback_upstream": true,
+  "expected_upstream_error_status": 503,
+  "remote_operations_executed": false,
+  "files": [
+    {
+      "path": "reproduction/easy2560_joint4/retrieval_proxy.py",
+      "sha256": "6ebe141fc177783fdc56ca444343869feeafdafba6e14cace9d2c8f338815a52"
+    },
+    {
+      "path": "reproduction/easy2560_joint4/test_async_retrieval_proxy.py",
+      "sha256": "1d20bbaca2fd678f84f66ab94c543fc443e1c0f0c62f359e5a4c047f17065645"
+    }
+  ]
+}

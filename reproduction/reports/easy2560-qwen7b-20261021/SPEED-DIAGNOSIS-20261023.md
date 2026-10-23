@@ -516,3 +516,20 @@ CPU旧token回放的逐项精确性与此处实际GPU速度是两份不同证据
 750029/745198，组合接入已测async CPU代理和单条E5＋FAISS16/2ms服务，
 再在后续实际恢复后的完整outer测壁钟，避免再次为小组件收益交出健康allocation。
 见[两次实际pair完整口径](evidence/search-action-stop-serial-vs-async-summary.json)。
+
+## Combined production integration (formal CUDA restore and whole-outer timing pending)
+
+The explicit fa3-lean-batched-search-stop-v1 profile inherits the measured
+search-stop settings and adds only the async CPU retrieval proxy. The candidate
+benchmark and production now share the same independent-opener HTTP and owner-loop
+completed-cache implementations. Their three implementation ASTs match the
+measured candidate code; no in-flight request merging or GPU work runs on HTTP threads.
+
+A separate two-H1007day service reuses the existing environment/E5/index/corpus,
+keeps singleton E5, and batches only FAISS16/2ms. It publishes actual stage64 and
+READY evidence with truthful rebatching=True. Existing745198 and default profiles
+remain unchanged; the existing continuation entry accepts an explicit new receipt.
+
+The28 relevant CPU tests passed. These are wiring tests, not formal CUDA restore
+or complete training-outer speed acceptance. Forward/loss/reward/sampling/four-GPU
+geometry/200-no201 are unchanged.
