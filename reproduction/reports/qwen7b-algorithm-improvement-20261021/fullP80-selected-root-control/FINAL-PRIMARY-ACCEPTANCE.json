@@ -1,0 +1,231 @@
+{
+  "status": "FROZEN_FINAL_PRIMARY_TOP512_CONFIRMATION_PASSED",
+  "local_verification_time": 1792716422.0947788,
+  "job_id": "750481",
+  "actual_accounting": "750481|COMPLETED|0:0|00:04:54|ACD1-4",
+  "frozen_epoch": 9,
+  "frozen_state": "raw",
+  "configuration_family": "full169028_L15_P80_MSE_ownG5",
+  "freeze": {
+    "bytes": 10475,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/fullP80-selected-root-control-20261023-v1/candidate-freeze.json",
+    "sha256": "2606a04636e282df2e011c962fe47c29c00be4460f3581f3fc03b58fd5d428ca"
+  },
+  "prospective_rule_SHA256": "8f4fead8f40a7e14f7ddaffb2950bea3f3e405d435c544388519c507e7ce3a27",
+  "primary_metric": "Top512_true_Mixed_fraction",
+  "four_individual_seed_pool_point_differences": [
+    0.2578125,
+    0.23828125,
+    0.23046875,
+    0.2421875
+  ],
+  "all_four_point_differences_strictly_positive": true,
+  "both_pool_paired_CI_lowers_strictly_positive": true,
+  "pools": {
+    "confirmation2048": {
+      "questions": 2048,
+      "pool_classes": {
+        "Mixed": 686,
+        "all_wrong": 1024,
+        "all_correct": 338
+      },
+      "models": {
+        "E1_EMA": {
+          "Top512_Mixed": 209,
+          "Top512_fraction": 0.408203125,
+          "Top512_minus_E1_fraction": 0.0,
+          "BA": 0.5380303789231238,
+          "Mixed_recall": 0.24052478134110788,
+          "Mixed_false_negative": 521,
+          "all_wrong_false_Mixed_count": 135,
+          "all_wrong_questions": 1024,
+          "all_wrong_FPR": 0.1318359375,
+          "all_correct_false_Mixed_count": 89,
+          "all_correct_questions": 338,
+          "all_correct_FPR": 0.26331360946745563,
+          "confusion": {
+            "fn": 521,
+            "fp": 224,
+            "tn": 1138,
+            "tp": 165
+          }
+        },
+        "seed1::raw": {
+          "Top512_Mixed": 341,
+          "Top512_fraction": 0.666015625,
+          "Top512_minus_E1_fraction": 0.2578125,
+          "BA": 0.7059449959971402,
+          "Mixed_recall": 0.6005830903790087,
+          "Mixed_false_negative": 274,
+          "all_wrong_false_Mixed_count": 245,
+          "all_wrong_questions": 1024,
+          "all_wrong_FPR": 0.2392578125,
+          "all_correct_false_Mixed_count": 12,
+          "all_correct_questions": 338,
+          "all_correct_FPR": 0.03550295857988166,
+          "confusion": {
+            "fn": 274,
+            "fp": 257,
+            "tn": 1105,
+            "tp": 412
+          }
+        },
+        "seed2::raw": {
+          "Top512_Mixed": 331,
+          "Top512_fraction": 0.646484375,
+          "Top512_minus_E1_fraction": 0.23828125,
+          "BA": 0.7167709122667317,
+          "Mixed_recall": 0.6516034985422741,
+          "Mixed_false_negative": 239,
+          "all_wrong_false_Mixed_count": 283,
+          "all_wrong_questions": 1024,
+          "all_wrong_FPR": 0.2763671875,
+          "all_correct_false_Mixed_count": 14,
+          "all_correct_questions": 338,
+          "all_correct_FPR": 0.04142011834319527,
+          "confusion": {
+            "fn": 239,
+            "fp": 297,
+            "tn": 1065,
+            "tp": 447
+          }
+        }
+      },
+      "two_seed_mean_Top512_fraction": 0.65625,
+      "two_seed_mean_minus_E1_fraction": 0.248046875,
+      "paired_question_percentile95_CI": [
+        0.201171875,
+        0.2919921875
+      ],
+      "each_seed_point_difference_positive": true,
+      "paired_CI_lower_strictly_positive": true,
+      "bootstrap": {
+        "repeats": 2000,
+        "reselect_Top512": true,
+        "seed": 20261023,
+        "training_seed_CI_not_claimed": true,
+        "unit": "paired_question_same_indices_all_seeds"
+      },
+      "original_fixed_G5_sha256": "e27cebfe1e426b228d84f5ab366f44f10a0f245979c50097e56a47968c9f5f2b",
+      "paired_prediction_proof": {
+        "bytes": 71065,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozen-final4096-full169028-L15P80-MSE-20261023-v2/confirmation2048-paired-predictions.jsonl.gz",
+        "sha256": "8c621c7e99014921fd2a199a7dcde7d7f85ca826a573bd735d8925bc2c56ba64"
+      }
+    },
+    "stability2048": {
+      "questions": 2048,
+      "pool_classes": {
+        "Mixed": 675,
+        "all_wrong": 1006,
+        "all_correct": 367
+      },
+      "models": {
+        "E1_EMA": {
+          "Top512_Mixed": 221,
+          "Top512_fraction": 0.431640625,
+          "Top512_minus_E1_fraction": 0.0,
+          "BA": 0.543223004504869,
+          "Mixed_recall": 0.2474074074074074,
+          "Mixed_false_negative": 508,
+          "all_wrong_false_Mixed_count": 136,
+          "all_wrong_questions": 1006,
+          "all_wrong_FPR": 0.13518886679920478,
+          "all_correct_false_Mixed_count": 85,
+          "all_correct_questions": 367,
+          "all_correct_FPR": 0.23160762942779292,
+          "confusion": {
+            "fn": 508,
+            "fp": 221,
+            "tn": 1152,
+            "tp": 167
+          }
+        },
+        "seed1::raw": {
+          "Top512_Mixed": 339,
+          "Top512_fraction": 0.662109375,
+          "Top512_minus_E1_fraction": 0.23046875,
+          "BA": 0.7289708936904857,
+          "Mixed_recall": 0.6414814814814814,
+          "Mixed_false_negative": 242,
+          "all_wrong_false_Mixed_count": 236,
+          "all_wrong_questions": 1006,
+          "all_wrong_FPR": 0.2345924453280318,
+          "all_correct_false_Mixed_count": 16,
+          "all_correct_questions": 367,
+          "all_correct_FPR": 0.043596730245231606,
+          "confusion": {
+            "fn": 242,
+            "fp": 252,
+            "tn": 1121,
+            "tp": 433
+          }
+        },
+        "seed2::raw": {
+          "Top512_Mixed": 345,
+          "Top512_fraction": 0.673828125,
+          "Top512_minus_E1_fraction": 0.2421875,
+          "BA": 0.7265706347279545,
+          "Mixed_recall": 0.6592592592592592,
+          "Mixed_false_negative": 230,
+          "all_wrong_false_Mixed_count": 266,
+          "all_wrong_questions": 1006,
+          "all_wrong_FPR": 0.2644135188866799,
+          "all_correct_false_Mixed_count": 17,
+          "all_correct_questions": 367,
+          "all_correct_FPR": 0.04632152588555858,
+          "confusion": {
+            "fn": 230,
+            "fp": 283,
+            "tn": 1090,
+            "tp": 445
+          }
+        }
+      },
+      "two_seed_mean_Top512_fraction": 0.66796875,
+      "two_seed_mean_minus_E1_fraction": 0.236328125,
+      "paired_question_percentile95_CI": [
+        0.1952880859375,
+        0.283203125
+      ],
+      "each_seed_point_difference_positive": true,
+      "paired_CI_lower_strictly_positive": true,
+      "bootstrap": {
+        "repeats": 2000,
+        "reselect_Top512": true,
+        "seed": 20261023,
+        "training_seed_CI_not_claimed": true,
+        "unit": "paired_question_same_indices_all_seeds"
+      },
+      "original_fixed_G5_sha256": "96918d21d48d86dd7df0167d5eda00be39779d330b9706d71d55699738451276",
+      "paired_prediction_proof": {
+        "bytes": 70850,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozen-final4096-full169028-L15P80-MSE-20261023-v2/stability2048-paired-predictions.jsonl.gz",
+        "sha256": "24f7772008d1aaa658678338a8ca25456c3e49c5c5dec157670a46aae0804451"
+      }
+    }
+  },
+  "bootstrap_intervals_recomputed_from_rows": false,
+  "verification_scope": "Local raw completion SHA and aggregate arithmetic, freeze/two-seed/CPU acceptance/source identities and saved paired CI settings; no prediction rows or CP opened",
+  "interval_is_paired_question_not_training_seed_uncertainty": true,
+  "no_ensemble_or_best_seed": true,
+  "no_threshold_fitting": true,
+  "BA_secondary_not_used_for_acceptance": true,
+  "final_pools_now_used_and_unavailable_for_further_tuning": true,
+  "whole_goal_completion_claimed": false,
+  "remaining_whole_goal_evidence_owned_by_root": [
+    "source_backup_publication",
+    "resource_cleanup",
+    "remaining_goal_evidence"
+  ],
+  "source_complete_proof": {
+    "bytes": 82378,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozen-final4096-full169028-L15P80-MSE-20261023-v2/complete.json",
+    "sha256": "c7b747427b1fafe89c90afcd4f41ee2794ea8d7252b336658cd889386bb20622"
+  },
+  "local_raw_complete_SHA256": "c7b747427b1fafe89c90afcd4f41ee2794ea8d7252b336658cd889386bb20622",
+  "local_live_SHA256": "7d8b66c2838b8150b2f004fd352e0d5a1c6b9246255de118eae128295ca6bfff",
+  "new_experiment_or_remote_action": false,
+  "checkpoint_or_individual_predictions_read": false,
+  "attribution_boundary": "Overall frozen full169028 L15/P80/MSE configuration versus E1; no isolated causal claim for MSE/layer/Prefix80/window. WINDOW2018 separate matched CI touches0 and this result is not window evidence."
+}

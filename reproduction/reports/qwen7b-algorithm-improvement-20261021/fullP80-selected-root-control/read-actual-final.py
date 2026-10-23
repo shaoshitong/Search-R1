@@ -14,7 +14,10 @@ for n in('final-submission.json','final-submit-intent.json'):
  if p.is_file():out['files'][n]=read(p)
 for n in('controller.json','progress-rank-0.json','progress-rank-1.json','failure-rank-0.json','failure-rank-1.json','final-use-started.json','confirmation2048-complete.json','stability2048-complete.json','complete.json'):
  p=B/n
- if p.is_file():out['files'][n]=read(p)
+ if p.is_file():
+  out['files'][n]=read(p)
+  if n=='complete.json':
+   data=p.read_bytes();out['actual_complete_raw_b64']=base64.b64encode(data).decode();out['actual_complete_proof']=dict(path=str(p),bytes=len(data),sha256=hashlib.sha256(data).hexdigest())
 sub=out['files']['final-submission.json'];job=str(sub['job_id']);assert job=='750481'
 out['squeue']=command(['squeue','-h','-j',job,'-o','%i|%T|%M|%R'])
 out['sacct']=command(['sacct','-X','-n','-P','-j',job,'--format=JobIDRaw,State,ExitCode,Elapsed,NodeList'])
