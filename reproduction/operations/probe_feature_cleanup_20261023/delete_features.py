@@ -3,6 +3,7 @@
 Run remotely after inventory.py completes. No model/tensor deserialization.
 Full per-file audit stays remote; stdout contains only a small summary.
 """
+from concurrent.futures import ThreadPoolExecutor
 import fcntl
 import hashlib
 import json
@@ -34,23 +35,25 @@ def main():
     queue = subprocess.check_output(
         ['squeue', '-u', 'mou176,jxu957', '-h', '-o', '%i'], universal_newlines=True)
     assert set(queue.split()) <= {'751011', '751884'}, 'Inspect new jobs before deleting shared features'
-    for record in inventory['protected_weights_and_pt']:
+    def check_weight(record):
         assert unchanged(Path(record['path']), record), 'A protected weight changed'
-    files = inventory['files']
-    assert len({r['path'] for r in files}) == len(files)
-    manifests = {}
-    for record in files:
+    def check_feature(record):
         path = Path(record['path'])
         assert path.name in NAMES and not path.is_symlink()
         assert os.path.commonpath([str(ROOT), str(path.resolve())]) == str(ROOT)
         assert unchanged(path, record), 'Feature changed since inventory'
-        manifest = Path(record['manifest'])
-        assert manifest.parent == path.parent
-        if str(manifest) not in manifests:
-            value = json.loads(manifest.read_text())
-            assert value['status'] in ('LOSSLESS_NATIVE_FEATURES_COMPLETE',
-                                       'LOSSLESS_HF_REPLAY_FEATURES_COMPLETE')
-            manifests[str(manifest)] = value
+        assert Path(record['manifest']).parent == path.parent
+    files = inventory['files']
+    assert len({r['path'] for r in files}) == len(files)
+    manifests = sorted({r['manifest'] for r in files})
+    def check_manifest(name):
+        value = json.loads(Path(name).read_text())
+        assert value['status'] in ('LOSSLESS_NATIVE_FEATURES_COMPLETE',
+                                   'LOSSLESS_HF_REPLAY_FEATURES_COMPLETE')
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        list(pool.map(check_weight, inventory['protected_weights_and_pt']))
+        list(pool.map(check_feature, files))
+        list(pool.map(check_manifest, manifests))
     summary = dict(status='DELETING_AUTHORIZED_RETIRED_FEATURE_PAYLOADS',
                    inventory_sha256=hashlib.sha256(raw).hexdigest(),
                    started=time.time(), deleted_files=0, deleted_logical_bytes=0,
@@ -58,28 +61,30 @@ def main():
                    expected_files=len(files), source_manifests_preserved=True)
     (AUDIT / 'delete-controller.json').write_text(json.dumps(dict(pid=os.getpid(), **summary)))
     last = 0
-    with (AUDIT / 'deleted.jsonl').open('x') as audit:
-        for record in files:
-            path = Path(record['path'])
-            assert unchanged(path, record) and not path.is_symlink()
-            stat = path.stat()
-            event = dict(record, device=stat.st_dev, nlink_before=stat.st_nlink)
-            path.unlink()
+    def delete_one(record):
+        path = Path(record['path'])
+        assert unchanged(path, record) and not path.is_symlink()
+        stat = path.stat()
+        event = dict(record, device=stat.st_dev, nlink_before=stat.st_nlink)
+        path.unlink()
+        return event
+    with (AUDIT / 'deleted.jsonl').open('x') as audit, ThreadPoolExecutor(max_workers=8) as pool:
+        for event in pool.map(delete_one, files):
             audit.write(json.dumps(event) + '\n')
             summary['deleted_files'] += 1
-            summary['deleted_logical_bytes'] += record['bytes']
+            summary['deleted_logical_bytes'] += event['bytes']
             if time.time() - last > 5:
                 audit.flush()
                 (AUDIT / 'delete-progress.json').write_text(json.dumps(dict(time=time.time(), **summary)))
                 last = time.time()
         audit.flush()
         os.fsync(audit.fileno())
-    for record in files:
+    def check_absent(record):
         assert not Path(record['path']).exists()
-    for record in inventory['protected_weights_and_pt']:
-        assert unchanged(Path(record['path']), record)
-    for manifest in manifests:
-        assert Path(manifest).exists()
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        list(pool.map(check_absent, files))
+        list(pool.map(check_weight, inventory['protected_weights_and_pt']))
+        list(pool.map(check_manifest, manifests))
     summary.update(status='AUTHORIZED_FEATURE_PAYLOAD_CLEANUP_VERIFIED',
                    finished=time.time(), all_listed_payloads_absent=True,
                    all_protected_weights_metadata_unchanged=True,
