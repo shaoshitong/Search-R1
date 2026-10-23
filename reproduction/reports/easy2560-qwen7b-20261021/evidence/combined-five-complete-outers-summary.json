@@ -1,0 +1,173 @@
+{
+  "schema": "native4_combined_five_complete_outer_followup_v1",
+  "observed_unix": 1792724568.1508868,
+  "job": "750491",
+  "node": "ACD1-14",
+  "training_world_size": 4,
+  "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+  "completed_outers": [
+    71,
+    72,
+    73,
+    74,
+    75
+  ],
+  "whole_outer_seconds": [
+    1410.0217909812927,
+    1389.2320439815521,
+    1405.6252269744873,
+    1399.2989618778229,
+    1379.5691452026367
+  ],
+  "whole_outer_seconds_mean": 1396.7494338035583,
+  "whole_outer_seconds_min": 1379.5691452026367,
+  "whole_outer_seconds_max": 1410.0217909812927,
+  "whole_outer_seconds_population_std": 11.073470359511418,
+  "baseline_outers": [
+    65,
+    66,
+    67,
+    68,
+    69
+  ],
+  "baseline_whole_outer_seconds_mean": 1846.4548518180848,
+  "elapsed_reduction_fraction": 0.24355072509448616,
+  "speed_ratio": 1.3219657063256587,
+  "whole_scope": "Only adjacent actual before-generation mtimes establish whole wall; includes checkpoint/seal/inter-outer work and excludes startup. No rank wall sum or candidate+step substitution. Missing next boundary means null.",
+  "same_input_causality_proven": false,
+  "candidate_fill_seconds_mean": 654.486310684029,
+  "baseline_candidate_fill_seconds_mean": 1075.964543804014,
+  "actor_update_seconds_mean": 148.7052,
+  "advantage_seconds_mean": 208.5126,
+  "checkpoint_write_seconds_mean": 153.9074,
+  "selected_mixed_questions_by_outer": {
+    "71": 471,
+    "72": 429,
+    "73": 426,
+    "74": 457,
+    "75": 400
+  },
+  "selected_mixed_fraction_weighted": 0.852734375,
+  "actor_actual_fa3_compact_q28_kv4_all4": true,
+  "all4_each_outer_twenty_actual_writes_zero_extra_monitor_forwards": true,
+  "all4_each_outer_one_scheduler_advance": true,
+  "all5_native4_full_checkpoints_observed_sealed": true,
+  "each_rank_five_candidate_phases_only_one_weight_sync": true,
+  "actual_source70_native4_model_adam_scheduler_rng_driver_dataequal": true,
+  "source_restore_summary": "combined-cp70-actual-native4-restore-summary.json",
+  "actual_adam_writes_per_rank": {
+    "0": 1500,
+    "1": 1500,
+    "2": 1500,
+    "3": 1500
+  },
+  "next_outer": 76,
+  "next_outer_saved_questions": 512,
+  "next_outer_first_before_generation": 1792724368.303929,
+  "five_outer_followup_and_next_begin_accepted": true,
+  "latest_checkpoint": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/checkpoints/search-g1-common8/actor/global_step_75",
+    "manager": "easy2560_per_outer_full_state_v1",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/rolling-checkpoints/global_step_75/full-manifest.json",
+    "manifest_sha256": "7a74b71197d3cf4ebedc89f8b09eef106b16d454679af76851b7b8e1e9748864",
+    "published_unix": 1792724362.4672258,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+    "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+    "step": 75
+  },
+  "native4_checkpoint_seals": {
+    "71": {
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/checkpoints/search-g1-common8/actor/global_step_71",
+      "manager": "easy2560_per_outer_full_state_v1",
+      "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/rolling-checkpoints/global_step_71/full-manifest.json",
+      "manifest_sha256": "ae04ebe5cbff19156d66bac3fffd4742197b1a549114fb9b19076b5b5d30b873",
+      "published_unix": 1792718786.3848922,
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+      "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+      "step": 71
+    },
+    "72": {
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/checkpoints/search-g1-common8/actor/global_step_72",
+      "manager": "easy2560_per_outer_full_state_v1",
+      "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/rolling-checkpoints/global_step_72/full-manifest.json",
+      "manifest_sha256": "74d1e599b828cf6f217e8a9a23b1dfa478ba828de45e913ac7a38cedca694f45",
+      "published_unix": 1792720178.5730479,
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+      "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+      "step": 72
+    },
+    "73": {
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/checkpoints/search-g1-common8/actor/global_step_73",
+      "manager": "easy2560_per_outer_full_state_v1",
+      "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/rolling-checkpoints/global_step_73/full-manifest.json",
+      "manifest_sha256": "ab7ceb50543394b03114ca93d67f0cb1c1fc0537dd0335ab296830721ac3292c",
+      "published_unix": 1792721585.2478507,
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+      "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+      "step": 73
+    },
+    "74": {
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/checkpoints/search-g1-common8/actor/global_step_74",
+      "manager": "easy2560_per_outer_full_state_v1",
+      "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/rolling-checkpoints/global_step_74/full-manifest.json",
+      "manifest_sha256": "b05aac12e82d66bc5705b7d0868ab1c8be2b69c63295f21859d4b09b83d8254a",
+      "published_unix": 1792722984.0570889,
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+      "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+      "step": 74
+    },
+    "75": {
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/checkpoints/search-g1-common8/actor/global_step_75",
+      "manager": "easy2560_per_outer_full_state_v1",
+      "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/rolling-checkpoints/global_step_75/full-manifest.json",
+      "manifest_sha256": "7a74b71197d3cf4ebedc89f8b09eef106b16d454679af76851b7b8e1e9748864",
+      "published_unix": 1792724362.4672258,
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+      "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+      "step": 75
+    }
+  },
+  "health_evidence": "combined-retrieval-production-health-1792723986164236000.json",
+  "retrieval_service_job": "750471",
+  "actual_retrieval_completed_requests": 91676,
+  "actual_retrieval_failed_requests": 0,
+  "archive_observation": "combined-batch-search-stop-hk-archive-observe-1792723985126468000.json",
+  "archive_controller_births_unchanged": true,
+  "archive_steps_remaining": [
+    100,
+    150,
+    200
+  ],
+  "slurm_accounting": "750491|jxu957|RUNNING|0:0|02:09:37|ACD1-14\n",
+  "errors": {
+    "training": [],
+    "trainer": [],
+    "pipeline": [],
+    "slurm": []
+  },
+  "observation_errors": [],
+  "goal_remains_active": true,
+  "total_outer": 200,
+  "update201_allowed": false,
+  "native51713_final_seven_metrics_archive_and_actual_final_native4_restore_complete": false,
+  "evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792724568474824000.json",
+  "complete_outer_evidence": {
+    "71": "outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792718949331294000.json",
+    "72": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792720391420859000.json",
+    "73": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792721869110306000.json",
+    "74": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792723207905493000.json",
+    "75": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792724568474824000.json"
+  }
+}

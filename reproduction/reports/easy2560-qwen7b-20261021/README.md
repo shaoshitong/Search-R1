@@ -1,22 +1,47 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
-**Current evidence, 2026-10-23 09:29CST:** native4 production750491 completed
-and sealed outer71, and outer72 has saved512 candidate questions. The first
-complete whole-outer wall is **1410.022s (23m30.02)** versus the prior65–69 mean
-1846.455s (30m46.45): **23.636% less elapsed time / 1.3095x speed**. This uses
-adjacent actual before-generation boundaries and includes checkpoint/seal work.
-Candidate fill was652.194s versus the prior1075.965s mean. This is one observed
-outer with different policy/data; five-outer stability and final quality remain pending.
-See [complete first-outer evidence](evidence/combined-first-complete-outer71-summary.json).
+**Current evidence, 2026-10-23 11:03CST:** production750491 on ACD1-14/fourH100
+completed and sealed **all five outers71–75**, and outer76 has saved512 candidate
+questions. Whole-outer wall mean is **1396.749s (23m16.75)** versus the prior65–69
+mean 1846.455s (30m46.45): **24.355% less elapsed time / 1.3220x speed**.
+Every measurement uses adjacent actual before-generation boundaries, includes
+checkpoint/seal/inter-outer work, and excludes startup restore. Different policy
+and data make this an observational production comparison. Final quality is pending.
 
-The replacement is RUNNING on ACD1-14/fourH100 with actual runtime dde1452.
+| Completed outer | Whole wall, seconds | Candidate fill, seconds |
+| --- | ---: | ---: |
+| 71 | 1410.022 | 652.194 |
+| 72 | 1389.232 | 657.690 |
+| 73 | 1405.625 | 662.507 |
+| 74 | 1399.299 | 650.532 |
+| 75 | 1379.569 | 649.508 |
+
 Actual all4 model/Adam/scheduler/RNG, driver and reconstructed-stream readbacks
-passed from CP70; all4 now reached1420 Adam writes/scheduler71. Actual actor
-FA3 uses Q28/KV4, extra monitor forwards are0, and each rank's five candidate
-phases synchronize weights only once. The new100/150/200 core+companion archive
-controllers have been launched and their exact process births observed.
-Source CP70 manifest SHA is
-`99867a907ef969655e6996c18edc23437a51981f5dff0bc856759bd90992f0f8`.
+passed from CP70. All4 now reached1500 Adam writes/scheduler75: each completed
+outer performed20 actual updates, zero extra monitor forwards, compact actor
+FA3 Q28/KV4, and one weight sync across five candidate phases. Native4 checkpoint
+seals were observed at every outer71–75; the rolling latest is75.
+
+Candidate fill mean is654.486s versus the old1075.965s mean. Natural
+GPU retrieval service750471 handled91676 actual requests with0 failed requests.
+The100/150/200 core+companion archive consumers retain their original process births
+and are waiting for100. Legacy745198 and prior archives remain untouched.
+
+The weighted selected mixed fraction was85.273% across these five training
+pools (prior65–69:91.094%). These are different policy/data pools;
+this is not held-out accuracy and does not establish a validation-quality change.
+No claim of final accuracy equivalence is made.
+
+The run remains active toward **200/no update201**. Fixed validation, exact ordered
+native51713/seven-source metrics, final full archive and actual final native4
+model/Adam/scheduler/RNG/dataequal recovery remain required. This five-outer
+follow-up is an operational acceptance point, not goal completion.
+
+See [five complete outer evidence](evidence/combined-five-complete-outers-summary.json)
+and [all timing/counter records](evidence/combined-five-complete-outers-timing.json).
+
+The following candidate-only tests are historical qualification evidence.
+
 Search-only stop reduced512-question generation158.192→94.030s (40.56%)
 with async retrieval, but only180.867→163.918s (9.37%) with the production-like
 serial retrieval path. Both pairs completed0:0 on4H100. Raw tokens fell about68%
@@ -24,12 +49,12 @@ in both, while decode calls barely changed in the serial pair.
 
 The prepared stop-only target is **superseded and must not be stopped/submitted**.
 The combination of the tested async CPU proxy, singleton-E5/FAISS16 batching
-and search-only stop is prepared in the explicit new profile. The legacy
+and search-only stop is active in the explicit new profile. The legacy
 retrieval745198 remains running. Separate7day2GPU service750471 is READY on
 ACD1-4 and completed actual64-query GPU document/score/hash outputs. The
-combined target is prepared with frozen runtime dde1452 and explicit750471
+combined target runs frozen runtime dde1452 and explicit750471
 binding. Replacement750491 resumes from the sealed70 boundary; actual
-recovery and one full-outer measurement are accepted. The old prepared
+recovery and five full-outer follow-up measurements are accepted. The old prepared
 artifact/evidence is retained. Candidate-only pairs are separate from the
 new whole-outer evidence and do not prove final-quality equivalence. See
 [serial versus async actual pairs](evidence/search-action-stop-serial-vs-async-summary.json),
