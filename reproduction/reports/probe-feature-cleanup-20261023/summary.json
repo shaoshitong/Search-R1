@@ -1,0 +1,65 @@
+{
+  "status": "AUTHORIZED_CLEANUP_VERIFIED",
+  "updated_at": 1792773109.229762,
+  "local_git_cleanup": {
+    "status": "AUTHORIZED_STALE_TEMP_PACK_CLEANUP_COMPLETE",
+    "time": 1792772062.4688718,
+    "deleted_count": 1221,
+    "deleted_bytes": 84378007868,
+    "deleted_allocated_bytes": 84382994432,
+    "skipped_count": 55,
+    "formal_pack_and_index_files_preserved": 6,
+    "disk_available_before": 38756110336,
+    "disk_available_after": 122616987648
+  },
+  "weights_preserved": true,
+  "remote_feature_deletion_started": true,
+  "training_unchanged": true,
+  "remote_audit": "/data/user/jxu957/experiments/probe-feature-cleanup-20261023",
+  "hkust_pure_features_found": 0,
+  "hkust_mixed_archives_preserved": true,
+  "remote_cleanup_pid": 3131761,
+  "remote_inventory": {
+    "files": 40370,
+    "logical_bytes": 563252135695,
+    "protected_weights_and_pt": 1121
+  },
+  "cleanup_source_commit": "6a123de678d7afde9e0a6ecb60620fb885f9a5e7",
+  "remote_feature_cleanup": {
+    "status": "AUTHORIZED_FEATURE_PAYLOAD_CLEANUP_VERIFIED",
+    "inventory_sha256": "6a3f67166ade078e4d04b1aaafdb12aaa9ca0574c3f267b6f12f53f8ec2935af",
+    "started": 1792773004.6466484,
+    "deleted_files": 40370,
+    "deleted_logical_bytes": 563252135695,
+    "protected_weights_and_pt": 1121,
+    "expected_files": 40370,
+    "source_manifests_preserved": true,
+    "finished": 1792773045.9485867,
+    "all_listed_payloads_absent": true,
+    "all_protected_weights_metadata_unchanged": true,
+    "full_weights_rehashed": false,
+    "logical_bytes_not_claimed_as_unique_physical_space": true
+  },
+  "local_disk_current": {
+    "total_bytes": 494384795648,
+    "used_bytes": 377842425856,
+    "available_bytes": 116542369792
+  },
+  "training_postcheck": {
+    "time": 1792773059.386846,
+    "jobs": "751011 RUNNING 10:38:00 ACD1-51\n751884 RUNNING 6:08:08 ACD1-1",
+    "completed_outer": 22,
+    "rank_Adam": [
+      440,
+      440,
+      440,
+      440
+    ],
+    "next_collection": {
+      "name": "outer-0023.json",
+      "stage": "collected",
+      "parts": 3
+    },
+    "trainer_error": false
+  }
+}
