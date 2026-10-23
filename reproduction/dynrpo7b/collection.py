@@ -13,6 +13,7 @@ from .recipe import G, SELECTED, probe_update, prefix_tokens
 from .generation import PrefixCollector, PrefixState
 from .selection import Candidate, select_top_prefix, select_actual_mixed, group_counts
 from .mixed_backstop import BackstopLedger
+from .collection_resume import snapshot_states
 
 
 def sub_identity(identity, ordinals):
@@ -89,7 +90,7 @@ def collect(trainer, manager, stream, attempt_identity):
         states = [PrefixState(i, identity['trajectory_ids'][i], questions[i//G].qid, i%G, prompts[i//G])
                   for i in range(count*G)]
         collector = PrefixCollector(manager, identity, states, prefix_tokens=prefix_tokens(outer))
-        part = journal.part(parents=parents,identity=identity,states=[asdict(s) for s in states])
+        part = journal.part(parents=parents,identity=identity,states=snapshot_states(states))
         journal.commit('candidates',stream,collector,part=part)
 
     def finish(ordinals):
@@ -104,7 +105,7 @@ def collect(trainer, manager, stream, attempt_identity):
         for i,vector in zip(missing,vectors):
             labels[i] = vector
             completed[i] = replace(frozen[i], strict_em=tuple(vector))
-        ref = journal.part(ordinals=missing,states=[asdict(s) for s in selected_states],
+        ref = journal.part(ordinals=missing,states=snapshot_states(selected_states),
                            labels=dict(zip(missing,vectors)))
         refs.update({frozen[i].question_id:ref for i in missing})
         return [completed[i] for i in ordinals], ref
@@ -118,7 +119,7 @@ def collect(trainer, manager, stream, attempt_identity):
             _write_json(directory/'scores.json', dict(outer=outer,actor_version=identity['policy_snapshot_id'],
                 probe_version=runtime.version,prefix_tokens=prefix_tokens(outer),
                 scores=[dict(qid=c.question_id,ordinal=c.ordinal,score=c.score) for c in frozen]))
-            part = journal.part(states=[asdict(s) for s in states],scores=[asdict(c) for c in frozen])
+            part = journal.part(states=snapshot_states(states),scores=[asdict(c) for c in frozen])
             journal.commit('prefix_scored',stream,collector,part=part)
         first = frozen if periodic else select_top_prefix(frozen,1024)
         full, part = finish([r.ordinal for r in first])
@@ -172,7 +173,7 @@ def collect(trainer, manager, stream, attempt_identity):
         return repeated,output,selected_identity,audit
     except BaseException as error:
         atomic_save(directory/('failure-'+__import__('uuid').uuid4().hex+'.pt'),dict(error=repr(error),identity=identity,
-            states=[asdict(s) for s in states],strict_em=labels,
+            states=snapshot_states(states),strict_em=labels,
             worker_rng=trainer.actor_rollout_wg.capture_mixed_state(str(directory/'failure-worker-rng')),
             stream=compact_stream_state(stream.state()),rng=driver_rng(),actor_update_started=False))
         raise

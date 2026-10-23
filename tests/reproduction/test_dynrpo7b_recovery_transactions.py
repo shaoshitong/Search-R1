@@ -14,6 +14,28 @@ from reproduction.dynrpo7b.collection_resume import begin_attempt
 
 
 class RecoveryTransactions(unittest.TestCase):
+    def test_state_snapshot_preserves_values_and_is_frozen_after_sync_save(self):
+        import io
+        from dataclasses import dataclass,asdict
+        import torch
+        from reproduction.dynrpo7b.collection_resume import snapshot_states
+        @dataclass
+        class State:
+            index:int
+            tokens:list
+            native:dict
+        native={'source':{'file':'a'*64},'sampling':{'temperature':1.0}}
+        states=[State(i,[1,2,3],native) for i in range(2)]
+        expected=[asdict(s) for s in states]
+        payload=snapshot_states(states)
+        self.assertEqual(payload,expected)
+        self.assertIs(payload[0]['native'],payload[1]['native'])
+        stream=io.BytesIO();torch.save(payload,stream)
+        states[0].tokens.append(99);native['sampling']['temperature']=2.0
+        stream.seek(0);loaded=torch.load(stream,weights_only=False)
+        self.assertEqual(loaded,expected)
+        self.assertEqual([asdict(State(**row)) for row in loaded],expected)
+
     def test_pinned_collection_origin_checks_actual_writer_logs(self):
         import hashlib
         from reproduction.dynrpo7b.collection_resume import find_resume

@@ -5,12 +5,25 @@ Backstop ledger, driver/worker RNG and probe state. In-flight work after the
 last commit may be replayed; committed questions are never sampled again.
 """
 import copy
+from dataclasses import fields
 import hashlib
 import json
 import os
 from pathlib import Path
 import random
 import uuid
+
+
+def snapshot_states(states):
+    """Serialize fields synchronously without recursively copying native tokens.
+
+    PrefixState fields contain ordinary lists/dicts/scalars. The caller passes
+    this directly to atomic_save, which finishes serialization before the
+    collector can mutate another state. Preserve shared immutable provenance
+    objects for the pickle memo rather than cloning them once per trajectory.
+    """
+    return [{field.name: getattr(state, field.name) for field in fields(state)}
+            for state in states]
 
 from .mixed_backstop import _atomic_json
 
