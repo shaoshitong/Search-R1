@@ -87,7 +87,7 @@ def verify(hf_old_log_probs, sampling_log_probs, actor_mask, attention_mask, *,
            trace, actor_rows, audit, expected_run_id, expected_source_sha256,
            expected_slurm_job_id, expected_logical_update, expected_parent_group_ids,
            expected_trajectory_ids, expected_policy_snapshot_id, expected_sampling,
-           require_hf_parity=True):
+           require_hf_parity=True, expected_generation_producers=None):
     """Audit every actual token, with the original .05 HF gate by default.
 
     ``actor_rows`` are the current complete padded rows used by the actor.
@@ -129,7 +129,8 @@ def verify(hf_old_log_probs, sampling_log_probs, actor_mask, attention_mask, *,
                           expected_parent_group_ids=expected_parent_group_ids,
                           expected_trajectory_ids=expected_trajectory_ids,
                           expected_policy_snapshot_id=expected_policy_snapshot_id,
-                          expected_sampling=expected_sampling, actor_rows=actor_rows)
+                          expected_sampling=expected_sampling, actor_rows=actor_rows,
+                          expected_generation_producers=expected_generation_producers)
     rebuilt = projected['audit']
     _require(canonical_bytes(rebuilt) == canonical_bytes(audit),
              'supplied audit differs from the reconstructed actual context audit')

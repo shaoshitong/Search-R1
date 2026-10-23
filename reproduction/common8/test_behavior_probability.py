@@ -136,6 +136,24 @@ class WholeOuterProbabilityTests(unittest.TestCase):
         with self.assertRaisesRegex(BehaviorProbabilityError, 'original0.05'):
             verify(*tensors, **evidence)
 
+    def test_restored_collection_producers_reach_probability_trace_rebuild(self):
+        from reproduction.common8.behavior_trace import project_sampling_logprobs, BehaviorTraceError
+        from reproduction.common8.policy_calibration_plan import document_sha256
+        tensors,evidence=self.inputs()
+        producers=[dict(run_id=evidence['expected_run_id'],
+                        slurm_job_id=evidence['expected_slurm_job_id'],
+                        source_map_sha256=document_sha256(evidence['expected_source_sha256']))]
+        evidence['expected_generation_producers']=producers
+        evidence['trace']['generation_producers']=copy.deepcopy(producers)
+        bindings={k:v for k,v in evidence.items() if k.startswith('expected_')}
+        evidence['audit']=project_sampling_logprobs(evidence['trace'],actor_rows=evidence['actor_rows'],**bindings)['audit']
+        proof=verify(None,*tensors[1:],require_hf_parity=False,**evidence)
+        self.assertTrue(proof['accepted'])
+        self.assertFalse(proof['hf_recomputation_performed'])
+        evidence['trace']['generation_producers'][0]['slurm_job_id']='unbound-job'
+        with self.assertRaises(BehaviorTraceError):
+            verify(None,*tensors[1:],require_hf_parity=False,**evidence)
+
     def test_original_tolerance_accepts_small_discrepancy(self):
         tensors, evidence = self.inputs()
         tensors[0][:, 0] -= .04
