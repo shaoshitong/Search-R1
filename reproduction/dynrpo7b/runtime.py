@@ -33,6 +33,9 @@ class ProbeRuntime:
     def score_groups(self,groups,*,prefix):
         self.initialise()
         receipts=self.rpc('predict',dict(groups=groups,prefix=prefix))
+        if any(row.get('position_capacity_changed') for row in receipts):
+            self._probe_ref=None
+            self.version += '-positions-%d'%max(row['position_capacity'] for row in receipts)
         predicted={row['qid']:float(row['score']) for receipt in receipts for row in receipt['predictions']}
         scores=[predicted.get(g['qid']) for g in groups]
         if any(value is None for value in scores):
@@ -60,7 +63,7 @@ class ProbeRuntime:
         from search_g1.training_state import atomic_save
         self.initialise()
         directory=Path(directory)
-        path=self.output_dir/'initial-probe-state.pt'
+        path=self.output_dir/('probe-state-outer-%04d.pt'%completed_outer)
         if self._probe_ref is None:
             receipts=self.rpc('state_dict',dict(path=str(path)))
             self._probe_ref=receipts[0]['reference']

@@ -473,6 +473,9 @@ def accept_resumed_five(records):
 
 def verified_runtime_prefix(base,run):
     """Require actual restored worker/driver readbacks before auditing a suffix."""
+    if (active(run) or {}).get('kind')=='dynrpo7b_native4':
+        from reproduction.dynrpo7b.restore import verified_runtime_prefix as dynrpo_prefix
+        return dynrpo_prefix(base,run)
     if (active(run) or {}).get('kind')=='easy2560_native4':
         from search_g1.easy2560_restore_runtime import verified_runtime_prefix as easy_prefix
         return easy_prefix(base,run)
