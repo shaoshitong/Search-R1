@@ -168,6 +168,7 @@ class SelectionTests(unittest.TestCase):
             actual = checkpoint / "rank0.pt"
             actual.write_bytes(b"actual persisted state")
             actor = dict(file_bytes={"rank0.pt": actual.stat().st_size},
+                         files_sha256={"rank0.pt":__import__('hashlib').sha256(actual.read_bytes()).hexdigest()},
                          file_mtime_ns={"rank0.pt": actual.stat().st_mtime_ns},
                          worker_files=[dict(rank=rank, actual_optimizer_writes=197) for rank in range(4)])
             phase = dict(run_id="r", completed_actor_outer=10, probe_pending=True,

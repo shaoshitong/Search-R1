@@ -32,7 +32,11 @@ def is_receipt(path):
 
 
 def digest(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    h = hashlib.sha256()
+    with Path(path).open('rb') as f:
+        for block in iter(lambda:f.read(8*1024*1024),b''):
+            h.update(block)
+    return h.hexdigest()
 
 
 def _check_files(actor, checkpoint):
@@ -41,8 +45,14 @@ def _check_files(actor, checkpoint):
         if not path.is_relative_to(checkpoint):
             raise ValueError("Restored state escapes its checkpoint")
         info = path.stat()
-        if info.st_size != size or info.st_mtime_ns != actor["file_mtime_ns"][name]:
+        if info.st_size != size:
             raise ValueError("A committed checkpoint file changed after producer hashing")
+        if info.st_mtime_ns != actor["file_mtime_ns"][name]:
+            # Shared filesystems can normalize timestamps after close. Only
+            # exact producer SHA permits this slow-path; changed bytes fail.
+            expected = actor.get("files_sha256", {}).get(name)
+            if expected is None or digest(path) != expected:
+                raise ValueError("A committed checkpoint file changed after producer hashing")
 
 
 def source(receipt_path):

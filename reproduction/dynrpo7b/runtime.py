@@ -143,6 +143,7 @@ class ProbeRuntime:
         self.completed_outer=saved['completed_outer']
         self.version=saved['head_version']
         self.last_rollout_ref=saved.get('last_rollout_ref')
+        self.rollout_checkpoint_reference=self.last_rollout_ref
         self.pending=None
         if saved.get('probe_pending'):
             self.pending=dict(outer=self.completed_outer,fit_groups=saved['fit_groups'],
