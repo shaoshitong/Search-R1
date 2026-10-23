@@ -68,6 +68,10 @@ def main(argv=None):
     parser.add_argument('--source-job', default=SOURCE_JOB)
     parser.add_argument('--source-commit', default=SOURCE_COMMIT)
     parser.add_argument('--minimum-outer', type=int, default=50)
+    parser.add_argument('--external-receipt',
+                        help='Prepare: explicit new GPU service receipt; submit reuses the frozen target receipt')
+    parser.add_argument('--expected-service-job', default='745198',
+                        help='Prepare: actual service job; default preserves the existing745198 binding')
     from search_g1.easy7b_infra import LEAN_PROFILES
     parser.add_argument('--infra-profile', choices=LEAN_PROFILES, default='fa3-lean-v1')
     parser.add_argument('--authorization-json', required=True,
@@ -77,7 +81,9 @@ def main(argv=None):
     with source_binding(source_base=args.source_base, source_job=args.source_job,
                         source_commit=args.source_commit, authorization=authorization,
                         minimum_outer=args.minimum_outer, infra_profile=args.infra_profile) as bound:
-        result = (bound.prepare if args.mode == 'prepare' else bound.submit)(args.base, args.commit)
+        result = (bound.prepare(args.base, args.commit, external_receipt=args.external_receipt,
+                               expected_service_job=args.expected_service_job) if args.mode == 'prepare'
+                  else bound.submit(args.base, args.commit))
     print(json.dumps(result, sort_keys=True, allow_nan=False), flush=True)
     return result
 

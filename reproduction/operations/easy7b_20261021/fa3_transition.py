@@ -57,7 +57,7 @@ def _consumers(base,commit,job=None):
         final_update=200,update201_allowed=False,archive_processes_started_here=False)
 
 
-def prepare(base,commit):
+def prepare(base,commit,*,external_receipt=None,expected_service_job='745198'):
     """All small assets/runtime are ready before the parent stops the source."""
     from search_g1.easy7b_infra import LEAN_PROFILES
     base=_target(base);source_run=_source();ready=base/'preparation/fa3-transition-prepared.json'
@@ -65,16 +65,19 @@ def prepare(base,commit):
         result=_json(ready)
         _need(result.get('status')=='READY_FOR_AUTHORIZED_BOUNDARY_TRANSITION' and result.get('commit')==commit and
               result.get('target_base')==str(base) and result.get('source_job')==SOURCE_JOB and
-              result.get('source_base')==str(SOURCE_BASE),'EXISTING_PREPARATION_DIFFERS')
+              result.get('source_base')==str(SOURCE_BASE) and
+              result.get('external_retriever_service_job')==str(expected_service_job),
+              'EXISTING_PREPARATION_DIFFERS')
         return result
     _need(not any((base/name).exists() for name in ('job.id','logs/run-manifest.json',
           'preparation/training-submit-claim.json')),'TARGET_ALREADY_SUBMITTED')
     bootstrap=control.bootstrap(base,commit,predecessor=str(SOURCE_BASE))
     from reproduction.easy2560_joint4.retrieval_proxy import external_binding
-    original=Path(source_run.get('external_retriever',{}).get('receipt_path') or
-                  SOURCE_BASE/'preparation/external-retriever-receipt.json')
+    original=Path(external_receipt) if external_receipt is not None else Path(
+        source_run.get('external_retriever',{}).get('receipt_path') or
+        SOURCE_BASE/'preparation/external-retriever-receipt.json')
     original_binding=external_binding(original)
-    _need(original_binding['service_job_id']=='745198','EXISTING_RETRIEVER745198_REQUIRED')
+    _need(original_binding['service_job_id']==str(expected_service_job),'EXPLICIT_RETRIEVER_SERVICE_JOB_DIFFERS')
     external_path=base/'preparation/external-retriever-receipt.json';document=_json(original)
     if external_path.exists():_need(_json(external_path)==document,'EXTERNAL_RECEIPT_ALREADY_DIFFERS')
     else:control.publish(external_path,document)
@@ -87,6 +90,7 @@ def prepare(base,commit):
         actual_source_checkpoint_not_chosen_until_source_terminal=True,
         environment=bootstrap['environment'],immutable_source_commit=commit,
         external_retriever_receipt=str(external_path),external_retriever_receipt_sha256=control.sha(external_path),
+        external_retriever_source_receipt=str(original),
         external_retriever_service_job=external['service_job_id'],private_flash3_runtime=runtime,
         actor_micro_batch_per_rank=8,actor_logical_micro_batch_per_rank=4,training_world_size=4,
         authorization=AUTHORIZATION,historical_FA2_rejections_preserved=True,
@@ -164,8 +168,14 @@ def submit(base,commit):
 def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('mode',choices=('prepare','submit'));parser.add_argument('--base',default=BASE)
-    parser.add_argument('--commit',required=True);args=parser.parse_args(argv)
-    print(json.dumps((prepare if args.mode=='prepare' else submit)(args.base,args.commit),sort_keys=True),flush=True)
+    parser.add_argument('--commit',required=True)
+    parser.add_argument('--external-receipt',help='Prepare: explicit new GPU service receipt; default retains the source binding')
+    parser.add_argument('--expected-service-job',default='745198',help='Prepare: actual service job named by that receipt')
+    args=parser.parse_args(argv)
+    result=(prepare(args.base,args.commit,external_receipt=args.external_receipt,
+                    expected_service_job=args.expected_service_job) if args.mode=='prepare'
+            else submit(args.base,args.commit))
+    print(json.dumps(result,sort_keys=True),flush=True)
 
 
 if __name__=='__main__':main()

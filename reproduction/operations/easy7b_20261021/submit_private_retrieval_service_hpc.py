@@ -1,4 +1,8 @@
-"""Submit one private two-GPU service; leave production services untouched."""
+"""Submit one independent two-GPU service; leave existing services untouched.
+
+JSON stdin optionally supplies time_limit (e.g. 7-00:00:00), stage_parquet and
+training_run_id. Existing private callers retain their four-hour defaults.
+"""
 import json
 import os
 from pathlib import Path
@@ -42,10 +46,15 @@ def main():
         '--encoder', str(service / 'assets/e5-base-v2'),
         '--port', str(request.get('port', 18022)), '--faiss-batch-size', '16',
         '--faiss-max-wait-ms', str(request.get('faiss_max_wait_ms', 2))]
+    for key, option in (('stage_parquet', '--stage-parquet'), ('training_run_id', '--training-run-id')):
+        if request.get(key) is not None:
+            program.extend((option, str(request[key])))
+    time_limit = request.get('time_limit', '04:00:00')
     argv = ['sbatch', '--parsable', '--partition=emergency_acd', '--qos=formal-user',
         '--account=jxu957', '--nodes=1', '--ntasks=1', '--gres=gpu:2',
-        '--cpus-per-task=24', '--mem=384G', '--time=04:00:00', '--exclude=ACD1-13',
-        '--job-name=easy7b-private-retrieval-batch', '--export=NONE', '--chdir=' + str(source),
+        '--cpus-per-task=24', '--mem=384G', '--time=' + time_limit, '--exclude=ACD1-13',
+        '--job-name=' + request.get('job_name', 'easy7b-private-retrieval-batch'),
+        '--export=NONE', '--chdir=' + str(source),
         '--output=' + str(base / 'logs/service-%j.log'), '--error=' + str(base / 'logs/service-%j.log'),
         '--wrap=exec ' + shlex.join(program)]
     with claim.open('x') as stream:
@@ -56,6 +65,8 @@ def main():
     result = subprocess.run(argv, capture_output=True, text=True, timeout=30)
     receipt = dict(base=str(base), source_commit=request['commit'], service_run_id=run_id,
         port=request.get('port', 18022), faiss_max_wait_ms=request.get('faiss_max_wait_ms', 2),
+        time_limit=time_limit, stage_parquet=request.get('stage_parquet'),
+        training_run_id=request.get('training_run_id'),
         returncode=result.returncode, stdout=result.stdout, stderr=result.stderr,
         checked_unix=time.time(), production_modified=False)
     if result.returncode == 0:

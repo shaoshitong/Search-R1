@@ -25,6 +25,18 @@ RECEIPT_KEYS = {'service_ready_path', 'service_ready_sha256', 'source_commit',
                 'service_job_id', 'endpoint'}
 
 
+def retrieval_mode_fields(ready):
+    """Keep old services, or bind the explicitly measured singleton/FAISS mode."""
+    if ready.get('request_rebatching_enabled') is False:
+        return ('request_rebatching_enabled',)
+    if (ready.get('request_rebatching_enabled') is True and
+            ready.get('singleton_e5') is True and
+            type(ready.get('faiss_batch_size')) is int and ready['faiss_batch_size'] == 16 and
+            type(ready.get('faiss_max_wait_ms')) in (int, float) and ready['faiss_max_wait_ms'] == 2):
+        return ('request_rebatching_enabled', 'singleton_e5', 'faiss_batch_size', 'faiss_max_wait_ms')
+    raise ValueError('External retriever ready evidence differs from the measured retrieval modes')
+
+
 def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -75,13 +87,13 @@ def external_binding(receipt_path):
         raise ValueError('External retriever receipt must name the actual service Slurm job')
     endpoint_urls(receipt['endpoint'])
     ready, ready_sha = read_document(receipt['service_ready_path'])
+    mode_fields = retrieval_mode_fields(ready)
     if (ready_sha != receipt['service_ready_sha256'] or ready.get('ready') is not True or
             any(ready.get(key) != receipt[key] for key in ('source_commit', 'service_job_id', 'endpoint')) or
             ready.get('slurm_job_id') != receipt['service_job_id'] or
             ready.get('physical_gpu_count') != 2 or ready.get('logical_shards') != 4 or
             ready.get('logical_to_physical_gpu') != [0, 1, 0, 1] or
-            ready.get('exact_query_cache_enabled') is not False or
-            ready.get('request_rebatching_enabled') is not False):
+            ready.get('exact_query_cache_enabled') is not False):
         raise ValueError('External retriever ready evidence differs from the submitted service')
     for name, key in (('e5_Flat.index', 'index_sha256'), ('wiki-18.jsonl', 'corpus_sha256')):
         if ready.get(key) != ASSETS[name]['sha256']:
@@ -97,7 +109,7 @@ def external_binding(receipt_path):
             any(stage.get(key) != ready.get(key) for key in (
                 'service_run_id', 'service_job_id', 'source_commit', 'endpoint',
                 'index_sha256', 'corpus_sha256', 'encoder_manifest_sha256',
-                'physical_gpu_count', 'logical_shards', 'logical_to_physical_gpu'))):
+                'physical_gpu_count', 'logical_shards', 'logical_to_physical_gpu', *mode_fields))):
         raise ValueError('External retriever actual stage64 producer proof differs')
     if (len(stage.get('question_ids', [])) != 64 or
             any(len(stage.get(key, [])) != 64 for key in
@@ -210,17 +222,29 @@ class ProxyForwarder:
 
 def validate_live_health(health, external):
     ready = external['service_ready']
+    mode_fields = retrieval_mode_fields(ready)
     if (health.get('ok') is not True or any(health.get(key) != ready.get(key) for key in (
             'service_run_id', 'service_job_id', 'source_commit', 'endpoint',
             'physical_gpu_count', 'logical_shards', 'logical_to_physical_gpu',
-            'index_sha256', 'corpus_sha256', 'encoder_manifest_sha256')) or
+            'index_sha256', 'corpus_sha256', 'encoder_manifest_sha256', *mode_fields)) or
             health.get('admission_sha256') != external['stage64_sha256']):
         raise ValueError('External retrieval live service identity differs from its frozen receipt')
+
+
+def forwarding_components(external, infra):
+    """Select the shared measured async path only under the explicit new flag."""
+    if infra.get('async_retrieval_proxy') is True:
+        from .async_retrieval_proxy import AsyncProxyForwarder, PrivateHTTPBackend
+        backend = PrivateHTTPBackend(external['endpoint'])
+        return backend, AsyncProxyForwarder(backend, external['service_ready'])
+    backend = HTTPBackend(external['endpoint'])
+    return backend, ProxyForwarder(backend, external, cache_enabled=infra['exact_retrieval_cache'])
 
 
 def serve(base):
     # Imported only inside the CPU server entry, never during binding/tests.
     import uvicorn
+    import asyncio
     from fastapi import FastAPI, Request as FastAPIRequest
     from fastapi.responses import JSONResponse
     from reproduction.a800.owned_processes import publish
@@ -231,7 +255,9 @@ def serve(base):
     external = run['external_retriever']
     if external_binding(external['receipt_path']) != external:
         raise ValueError('External retrieval evidence changed after training preparation')
-    backend = HTTPBackend(external['endpoint'])
+    infra = flags(run)
+    async_enabled = infra.get('async_retrieval_proxy') is True
+    backend, forwarder = forwarding_components(external, infra)
     validate_live_health(backend.request(health=True), external)
     job = execution_job_id(run)
     proof = admission_for_run(run, external, job)
@@ -239,19 +265,20 @@ def serve(base):
     if target.exists():
         raise ValueError('Local retrieval admission already exists; inspect the existing proxy')
     publish(target, proof)
-    forwarder = ProxyForwarder(backend, external, cache_enabled=flags(run)['exact_retrieval_cache'])
     app = FastAPI()
 
     @app.post('/retrieve')
     async def retrieve(request: FastAPIRequest):
         try:
-            return JSONResponse(forwarder.retrieve(await request.json()))
+            payload = await request.json()
+            result = await forwarder.retrieve(payload) if async_enabled else forwarder.retrieve(payload)
+            return JSONResponse(result)
         except UpstreamHTTPError as error:
             return JSONResponse(error.body, status_code=error.status)
 
     @app.get('/health')
     async def health():
-        actual = backend.request(health=True)
+        actual = (await asyncio.to_thread(backend.request, health=True)) if async_enabled else backend.request(health=True)
         validate_live_health(actual, external)
         return dict(ok=True, run_id=run['run_id'], slurm_job_id=job,
                     admission_sha256=digest(target), ntotal=proof['ntotal'],
