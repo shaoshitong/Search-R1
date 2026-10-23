@@ -1,5 +1,5 @@
 {
-  "checked_utc": "2026-10-23T11:12:39.030093+00:00",
+  "checked_utc": "2026-10-23T11:31:44.040589+00:00",
   "implementation_commit": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
   "branch": "codex/dynrpo7b-formal-20261023",
   "remote_git_SHA_verified": true,
@@ -119,10 +119,11 @@
       ],
       "completed": [
         6,
-        7
+        7,
+        8
       ],
       "next_outer_to_confirm": 11,
-      "status": "RUNNING_OUTER8"
+      "status": "RUNNING_OUTER9"
     },
     "scheduler_production_update": {
       "status": "PASS",
@@ -180,13 +181,12 @@
         120,
         120
       ],
-      "weight_syncs_per_rank": 1,
+      "weight_syncs_per_rank": 1.0,
       "candidate_seconds": 630.7988168678712,
-      "adv_seconds": 134.291,
-      "actor_seconds": 93.661,
-      "save_seconds": 202.499,
+      "other_step_seconds": 530.452,
       "top1024_mixed": 832,
       "selected512_mixed": 512,
+      "train_EM_rounded": 0.527,
       "next_outer_started": 7
     },
     "outer7": {
@@ -197,13 +197,29 @@
         140,
         140
       ],
-      "weight_syncs_per_rank": 1,
+      "weight_syncs_per_rank": 1.0,
       "candidate_seconds": 659.0832874281332,
       "other_step_seconds": 535.789,
       "top1024_mixed": 790,
       "selected512_mixed": 512,
       "train_EM_rounded": 0.54,
       "next_outer_started": 8
+    },
+    "outer8": {
+      "status": "DYNRPO7B_ROLLING_READY",
+      "actual_Adam_per_rank": [
+        160,
+        160,
+        160,
+        160
+      ],
+      "weight_syncs_per_rank": 1.0,
+      "candidate_seconds": 646.1512716340367,
+      "other_step_seconds": 534.148,
+      "top1024_mixed": 822,
+      "selected512_mixed": 512,
+      "train_EM_rounded": 0.531,
+      "next_outer_started": 9
     }
   },
   "unchanged": [
@@ -294,7 +310,20 @@
     "retriever_retained": 751011,
     "runtime_source": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
     "backup_source": "0f4c3cc092cf7400c929d29a2f076ec4331aa66c",
-    "new_job_state": "RUNNING_OUTER8",
+    "new_job_state": "RUNNING_OUTER9",
     "node": "ACD1-1"
+  },
+  "goal_tracking": {
+    "status": "active",
+    "total_outer_budget": 200,
+    "observed_training_job_live": true,
+    "goal_turn_classification": "progress",
+    "evidence": "New complete outer8, four-rank Adam140->160, full boundary receipt, next outer9 candidates",
+    "remaining": [
+      "Follow restored outers9/10 and new probe use in11",
+      "Complete200outers and19periodic probe updates",
+      "Verify prefix160 boundary100 and remaining fixed512 evaluations",
+      "Final51713 evaluation and resource closeout"
+    ]
   }
 }
