@@ -2,13 +2,22 @@
 
 This is a separate post-training tool. It does not change the pinned production
 allocation, continue training, generate answers, or execute update201. The source
-is the actual outer200 checkpoint from the CP5-restored Easy2560 run.
+is the actual outer200 checkpoint from the authenticated Easy2560 continuation.
+Schema2 receipts recursively retain every full-state restore edge and its real
+execution segment; the implementation is not limited to a single CP5 restart.
 
 The existing CPU final consumer must first be able to authenticate all five
-fixed512 boundaries, the ordered native51713 result, original outers1–5 plus the
-actual 6–200 suffix, and the five complete remote checkpoint archives. The
-publisher calls that consumer directly; a second preliminary invocation is not
+fixed512 boundaries, the ordered native51713 result, the complete authenticated
+outers1–200 across all source segments, and the five complete remote checkpoint
+archives at5/50/100/150/200. Historical archives and evaluation rows are resolved
+to their actual ancestor bases rather than required in the newest base. For
+current job750491, the inherited prefix is1–70 and its new suffix is71–200;
+its new archive consumers cover100/150/200 while5/50 remain ancestor evidence. The publisher calls that consumer directly; a second preliminary invocation is not
 needed. CPU publication alone is not a CUDA recovery pass.
+
+Current job750491 must finish with4000 actual Adam writes on every one of its
+four ranks, scheduler last_epoch200 and no write4001/outer201. Scheduler
+_step_count201 includes its initialization call and is not an update201.
 
 ## Produce the source receipt
 
