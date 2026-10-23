@@ -151,7 +151,8 @@ class ReceiptTests(unittest.TestCase):
             return {'actor/optimizer_steps_this_update':999}  # Deliberately not trusted.
         actor.update_policy=update_policy
         worker=SimpleNamespace(_is_actor=True,_is_offload_param=False,_is_offload_optimizer=False,
-            ulysses_sharding_manager=Manager(),actor=actor,actor_optimizer=self.optimizer,
+            _assert_generation_phase_inactive=lambda:None,
+            ulysses_sharding_manager=Manager(),actor=actor,actor_module=SimpleNamespace(),actor_optimizer=self.optimizer,
             actor_lr_scheduler=self.scheduler,config=SimpleNamespace(actor=SimpleNamespace(ppo_epochs=1)),
             flops_counter=SimpleNamespace(estimate_flops=lambda *args:(1.,1.)),world_size=8)
         original_append=OuterSchedulerEvidence._append

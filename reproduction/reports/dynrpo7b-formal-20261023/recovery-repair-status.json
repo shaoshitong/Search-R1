@@ -1,10 +1,10 @@
 {
-  "checked_utc": "2026-10-23T08:32:40.680464+00:00",
-  "implementation_commit": "6dbb341eacd0b34e3fa2eb8c57372d36c9f46738",
+  "checked_utc": "2026-10-23T09:23:50.207970+00:00",
+  "implementation_commit": "a287335d453a8fd0116f46a8378f69dd44e0bf47",
   "branch": "codex/dynrpo7b-formal-20261023",
   "remote_git_SHA_verified": true,
-  "remote_runtime_files_SHA_verified": 1955,
-  "runtime_base": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023-recoveryfix-r1",
+  "remote_runtime_files_SHA_verified": 1958,
+  "runtime_base": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023-recoveryfix-r4",
   "scope": [
     "Restore phase-journal published probe raw/EMA/Adam/RNG instead of stale wrapper",
     "Resume production candidate/prefix/continuation and committed Backstop batches with original producer provenance",
@@ -20,10 +20,66 @@
     },
     "subsequent_change": "Removed duplicate Hydra snapshot-cache override already supplied by mature profile",
     "production_collection_cpu_injection": "Exit after first committed128 Backstop questions; resume only next128. Candidate order, attempt, labels and saved batches retained.",
-    "real_four_rank_recovery": "PENDING",
-    "real_weight_sync_once_per_rank": "PENDING",
+    "real_four_rank_recovery": {
+      "status": "PASS",
+      "source_outer": 3,
+      "Adam_per_rank": [
+        60,
+        60,
+        60,
+        60
+      ],
+      "Adam_scheduler_readback_equal": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "RNG_readback_equal": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "driver_rng_readback_equal": true,
+      "candidate_source_cursor": 15360,
+      "first_resumed_outer": 4,
+      "first_resumed_outer_completed": false
+    },
+    "real_weight_sync_once_per_rank": {
+      "status": "PASS",
+      "job": 751448,
+      "outer": 4,
+      "candidate_prefix": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "selected_continuation": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "actor_not_completed": true
+    },
     "inflight_phase_replay": "Only work after last atomic collection commit may replay; committed batches do not repeat.",
-    "actual_CP3_source_binding": "PASS; actor3 Adam60 each, probe/reward pending=false"
+    "actual_CP3_source_binding": "PASS; actor3 Adam60 each, probe/reward pending=false",
+    "scheduler_and_recovery_cpu": {
+      "run": 28,
+      "passed": 27,
+      "skipped": 1,
+      "skip": "production collector needs remote tensordict; original remote production fixture already passed",
+      "scope": "Includes real CPU Adam60->80 and scheduler3->4, pin origin and later-writes rejection. Four legacy mock worker fields updated."
+    },
+    "collection_reuse_binding": {
+      "origin_job": 751448,
+      "origin_base": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023-recoveryfix-r3",
+      "outer": 4,
+      "pointer_sha256": "d436d8243082934ccd083c8f40d8e97b5804dfc93c7f43a3588846ff552570f2",
+      "runtime_replay_verified": false
+    }
   },
   "unchanged": [
     "GRPO loss and logical micro2 weighting",
@@ -40,11 +96,11 @@
     "waiting_for_complete_outer": 3,
     "preserve_model_Adam_scheduler_RNG_driver_probe": true,
     "allow_reset_or_replay_committed_actor": false,
-    "new_job": 751389,
+    "new_job": 751532,
     "old_job_terminal": "CANCELLED after verified full CP3",
     "partition": "acd_ue",
     "retriever_retained": 751011,
-    "new_job_state": "RUNNING_STARTUP",
+    "new_job_state": "SUBMITTED",
     "node": "ACD1-64",
     "step": 3,
     "actual_Adam_per_rank": [
@@ -54,5 +110,33 @@
       60
     ],
     "restore_receipt": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023/preparation/dynrpo7b-checkpoints/global_step_3/boundary.json"
-  }
+  },
+  "repair_startup_failures": [
+    {
+      "job": 751389,
+      "terminal_state": "FAILED",
+      "new_Adam_writes": 0,
+      "checkpoint_used": "Original CP3 each rankAdam60 retained",
+      "error": "Shared optimizer_construction_config incorrectly required legacy CP5",
+      "fix_commit": "c623fe207d4f4de7abae8bba24a167eb348167d2",
+      "actual_CP3_constructor_retested": true
+    },
+    {
+      "job": 751426,
+      "terminal_state": "FAILED",
+      "new_Adam_writes": 0,
+      "checkpoint_used": "Original CP3 each rankAdam60 retained",
+      "error": "generation_source expected legacy files array absent in native4 receipt",
+      "fix_commit": "60510fd506fb9235b5134d387e9d9327692f571a",
+      "actual_CP3_generation_fields_retested": true
+    },
+    {
+      "job": 751448,
+      "terminal_state": "FAILED",
+      "new_Adam_writes": 0,
+      "retained": "Full CP3 and complete outer4 collection",
+      "error": "Shared scheduler type dispatch omitted dynrpo7b_native4 and asserted legacy CP5/Adam100",
+      "fix_commit": "a287335d453a8fd0116f46a8378f69dd44e0bf47"
+    }
+  ]
 }
