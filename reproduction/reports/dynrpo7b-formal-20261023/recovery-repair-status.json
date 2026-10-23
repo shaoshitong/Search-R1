@@ -1,5 +1,5 @@
 {
-  "checked_utc": "2026-10-23T11:31:44.040589+00:00",
+  "checked_utc": "2026-10-23T11:50:03.650440+00:00",
   "implementation_commit": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
   "branch": "codex/dynrpo7b-formal-20261023",
   "remote_git_SHA_verified": true,
@@ -120,10 +120,11 @@
       "completed": [
         6,
         7,
-        8
+        8,
+        9
       ],
       "next_outer_to_confirm": 11,
-      "status": "RUNNING_OUTER9"
+      "status": "RUNNING_OUTER10"
     },
     "scheduler_production_update": {
       "status": "PASS",
@@ -233,6 +234,35 @@
         160,
         160
       ]
+    },
+    "CP9_file_acceptance": {
+      "status": "CP9_PRODUCER_METADATA_AND_SMALL_BOUNDARY_SHA_PASS",
+      "actor_producer_files": 16,
+      "fresh_small_files_SHA": 6,
+      "full_model_rehashed": false,
+      "full_Adam_reloaded": false,
+      "Adam_per_rank": [
+        180,
+        180,
+        180,
+        180
+      ]
+    },
+    "outer9": {
+      "status": "DYNRPO7B_ROLLING_READY",
+      "actual_Adam_per_rank": [
+        180,
+        180,
+        180,
+        180
+      ],
+      "weight_syncs_per_rank": 1,
+      "candidate_seconds": 645.6514198039658,
+      "other_step_seconds": 513.416,
+      "top1024_mixed": 785,
+      "selected512_mixed": 512,
+      "train_EM_rounded": 0.541,
+      "next_outer_started": 10
     }
   },
   "unchanged": [
@@ -323,7 +353,7 @@
     "retriever_retained": 751011,
     "runtime_source": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
     "backup_source": "0f4c3cc092cf7400c929d29a2f076ec4331aa66c",
-    "new_job_state": "RUNNING_OUTER9",
+    "new_job_state": "RUNNING_OUTER10",
     "node": "ACD1-1"
   },
   "goal_tracking": {
@@ -331,9 +361,9 @@
     "total_outer_budget": 200,
     "observed_training_job_live": true,
     "goal_turn_classification": "progress",
-    "evidence": "New complete outer8, four-rank Adam140->160, full boundary receipt, next outer9 candidates",
+    "evidence": "Actual outer9 complete, Adam180 each, CP9 boundary file acceptance, outer10 candidates started",
     "remaining": [
-      "Follow restored outers9/10 and new probe use in11",
+      "Follow outer10 three-epoch probe fit and confirm outer11 uses new state",
       "Complete200outers and19periodic probe updates",
       "Verify prefix160 boundary100 and remaining fixed512 evaluations",
       "Final51713 evaluation and resource closeout"

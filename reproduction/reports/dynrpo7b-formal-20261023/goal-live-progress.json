@@ -1,13 +1,13 @@
 {
-  "time": 1792755104.0405886,
+  "time": 1792756203.6504397,
   "training_job": 751884,
   "retrieval_job": 751011,
   "queue_query_returncode": 0,
-  "queue": "751011 RUNNING 5:38:45 ACD1-51\n751884 RUNNING 1:08:53 ACD1-1",
+  "queue": "751011 RUNNING 5:57:04 ACD1-51\n751884 RUNNING 1:27:12 ACD1-1",
   "pipeline": "DYNRPO7B_GRPO_1_TO_200",
   "trainer": {
-    "bytes": 276492,
-    "mtime": 1792754956.135122,
+    "bytes": 350715,
+    "mtime": 1792756124.082483,
     "error": false
   },
   "recent_collections": [
@@ -55,6 +55,21 @@
       "selected_mixed_fraction": 1.0,
       "attempt_id": "a02565d3ab314e648723d713a7270f61",
       "question_probe_version": "seed1-E9-raw"
+    },
+    {
+      "step": 9,
+      "candidate_fill_seconds": 645.6514198039658,
+      "probe_top_group_counts": {
+        "questions": 1024,
+        "all_correct": 46,
+        "all_wrong": 193,
+        "mixed": 785,
+        "mixed_fraction": 0.7666015625
+      },
+      "selected_mixed": 512,
+      "selected_mixed_fraction": 1.0,
+      "attempt_id": "87ee0b63a4614748b5fab154a49f2465",
+      "question_probe_version": "seed1-E9-raw"
     }
   ],
   "recent_steps": [
@@ -93,6 +108,18 @@
       "timing_s/save_checkpoint": 192.696,
       "timing_s/step": 534.148,
       "collection_outer": 8
+    },
+    {
+      "infra/rollout/weight_syncs_per_rank": 1.0,
+      "train/perf/em": 0.541,
+      "actor/completed_outer": 9.0,
+      "timing_s/candidate_fill": 645.651,
+      "timing_s/adv": 137.759,
+      "timing_s/update_actor": 97.454,
+      "timing_s/question_probe_update": 0.001,
+      "timing_s/save_checkpoint": 179.589,
+      "timing_s/step": 513.416,
+      "collection_outer": 9
     }
   ],
   "launcher": {
@@ -101,20 +128,20 @@
     "error": false
   },
   "writes": [
-    160,
-    160,
-    160,
-    160
+    180,
+    180,
+    180,
+    180
   ],
   "checkpoint": {
-    "completed_outer": 8,
+    "completed_outer": 9,
     "status": "DYNRPO7B_ROLLING_READY",
     "source_commit": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
     "rank_saved_writes": [
-      160,
-      160,
-      160,
-      160
+      180,
+      180,
+      180,
+      180
     ],
     "probe": {
       "head_version": "seed1-E9-raw",
@@ -132,16 +159,16 @@
     "post_callback_rng_captured": true
   },
   "phase": {
-    "completed_actor_outer": 8,
+    "completed_actor_outer": 9,
     "phase": "outer_complete",
     "probe_pending": false,
     "probe_completed_epoch": 0,
     "probe_effective_from_outer": null,
     "grounding_pending": false,
-    "next_outer": 9
+    "next_outer": 10
   },
   "latest_collection_journal": {
-    "name": "outer-0009.json",
+    "name": "outer-0010.json",
     "stage": "candidates",
     "parts": 1
   }
