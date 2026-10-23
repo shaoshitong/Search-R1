@@ -1,0 +1,178 @@
+{
+  "status": "BOTH_SELECTED_EPOCH9_CPU_ACCEPTED_ORIGINAL_SEQUENTIAL_WORKER_COMPLETED",
+  "observed_time": 1792715481.6647227,
+  "complete": {
+    "Slurm_mutated": false,
+    "final4096_read": false,
+    "results": [
+      {
+        "accepted": {
+          "bytes": 58702,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-terminal-CPU-acceptance-20261023-v1/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/epoch-09/accepted.json",
+          "sha256": "2b2be91c7df977762d9889cb7c969e1f66a13811ad5c5ec55e1c79ad66942d96"
+        },
+        "checkpoint": {
+          "bytes": 3777401748,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/checkpoint-epoch-09.pt",
+          "sha256": "5f90fb17bee993353f47a7d687bdf2ea235dcd3d2eba287465567f4c286b13d7"
+        },
+        "job_id": "750189",
+        "seed": 9137
+      },
+      {
+        "accepted": {
+          "bytes": 58708,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-terminal-CPU-acceptance-20261023-v1/full169028-L15P80-MSE-ownG5-physical-seed19137-plan2026102302-20261023-v3/epoch-09/accepted.json",
+          "sha256": "b00c8cad06b1eee0e135ca890aaebb00beea913866ba3bce62367ac6e1024d40"
+        },
+        "checkpoint": {
+          "bytes": 3777401684,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed19137-plan2026102302-20261023-v3/checkpoint-epoch-09.pt",
+          "sha256": "4203a480330b5f64def9dcf641ad6e66067c1810a46c113b778b6c79cdc90145"
+        },
+        "job_id": "750190",
+        "seed": 19137
+      }
+    ],
+    "selected_epoch": 9,
+    "selection": {
+      "bytes": 21259,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-P80-MSE-actual-family-selection-20261023-v1/actual-family-selection-and-paired.json",
+      "sha256": "0db5e48b4ee7f06ed44c111f67fac2f7615ca08b087e4b799ecdcd3f6dce878f"
+    },
+    "state": "raw",
+    "status": "BOTH_ACTUAL_SELECTED_EPOCH9_CPU_ACCEPTED",
+    "time": 1792715476.0337276,
+    "training_changed": false
+  },
+  "parent_final_observation": {
+    "pid": 2030996,
+    "start_ticks": "2602370",
+    "actual_same_identity_live": false
+  },
+  "failure": null,
+  "earlier_actual_proc_lock_observations": [
+    {
+      "time": 1792715343.4022713,
+      "parent_pid": 2030996,
+      "parent_start_ticks": "2602370",
+      "parent_actual_live": true,
+      "parent_own_FLOCK": true,
+      "child_pid": 2031249,
+      "child_start_ticks": "2602390",
+      "child_actual_live": true,
+      "child_state": "R",
+      "child_holds_common_CPU_FLOCK": true,
+      "seed": 9137
+    },
+    {
+      "time": 1792715421.8510056,
+      "parent_pid": 2030996,
+      "parent_start_ticks": "2602370",
+      "parent_actual_live": true,
+      "parent_own_FLOCK": true,
+      "child_pid": 2046747,
+      "child_start_ticks": "2611284",
+      "child_actual_live": true,
+      "child_state": "R",
+      "child_holds_common_CPU_FLOCK": true,
+      "seed": 19137
+    }
+  ],
+  "child_successful_wait_before_wrapper_complete": true,
+  "receipts": [
+    {
+      "seed": "seed1",
+      "job_id": "750189",
+      "remote_receipt": {
+        "bytes": 58702,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-terminal-CPU-acceptance-20261023-v1/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/epoch-09/accepted.json",
+        "sha256": "2b2be91c7df977762d9889cb7c969e1f66a13811ad5c5ec55e1c79ad66942d96"
+      },
+      "local_receipt": {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/full169028-L15P80-MSE-CPU-acceptance/seed1-actual-selected-E09-accepted.json",
+        "bytes": 58702,
+        "sha256": "2b2be91c7df977762d9889cb7c969e1f66a13811ad5c5ec55e1c79ad66942d96"
+      },
+      "checkpoint": {
+        "bytes": 3777401748,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed9137-plan2026102227-20261023-v3/checkpoint-epoch-09.pt",
+        "sha256": "5f90fb17bee993353f47a7d687bdf2ea235dcd3d2eba287465567f4c286b13d7"
+      },
+      "Adam_updates": 11889,
+      "EMA_updates": 11889,
+      "Adam_parameter_states": 45,
+      "epoch_plan_count": 10,
+      "raw_EMA_tensors": {
+        "EMA": 45,
+        "raw": 45
+      },
+      "two_rank_RNG": [
+        {
+          "CPU_states_restored": true,
+          "CUDA_runtime_restore_tested": false,
+          "CUDA_serialized_bytes": 16,
+          "rank": 0
+        },
+        {
+          "CPU_states_restored": true,
+          "CUDA_runtime_restore_tested": false,
+          "CUDA_serialized_bytes": 16,
+          "rank": 1
+        }
+      ],
+      "seconds": 82.15487861633301,
+      "peak_RSS_bytes": 4830117888,
+      "CPU_only": true,
+      "GPU_next_update_restore_tested": false
+    },
+    {
+      "seed": "seed2",
+      "job_id": "750190",
+      "remote_receipt": {
+        "bytes": 58708,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-terminal-CPU-acceptance-20261023-v1/full169028-L15P80-MSE-ownG5-physical-seed19137-plan2026102302-20261023-v3/epoch-09/accepted.json",
+        "sha256": "b00c8cad06b1eee0e135ca890aaebb00beea913866ba3bce62367ac6e1024d40"
+      },
+      "local_receipt": {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/full169028-L15P80-MSE-CPU-acceptance/seed2-actual-selected-E09-accepted.json",
+        "bytes": 58708,
+        "sha256": "b00c8cad06b1eee0e135ca890aaebb00beea913866ba3bce62367ac6e1024d40"
+      },
+      "checkpoint": {
+        "bytes": 3777401684,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/full169028-L15P80-MSE-ownG5-physical-seed19137-plan2026102302-20261023-v3/checkpoint-epoch-09.pt",
+        "sha256": "4203a480330b5f64def9dcf641ad6e66067c1810a46c113b778b6c79cdc90145"
+      },
+      "Adam_updates": 11889,
+      "EMA_updates": 11889,
+      "Adam_parameter_states": 45,
+      "epoch_plan_count": 10,
+      "raw_EMA_tensors": {
+        "EMA": 45,
+        "raw": 45
+      },
+      "two_rank_RNG": [
+        {
+          "CPU_states_restored": true,
+          "CUDA_runtime_restore_tested": false,
+          "CUDA_serialized_bytes": 16,
+          "rank": 0
+        },
+        {
+          "CPU_states_restored": true,
+          "CUDA_runtime_restore_tested": false,
+          "CUDA_serialized_bytes": 16,
+          "rank": 1
+        }
+      ],
+      "seconds": 88.42288088798523,
+      "peak_RSS_bytes": 3808165888,
+      "CPU_only": true,
+      "GPU_next_update_restore_tested": false
+    }
+  ],
+  "CP_loader_started_by_observer": false,
+  "Slurm_or_training_changed": false,
+  "final4096_read": false
+}
