@@ -1,0 +1,27 @@
+{
+  "time": 1792883930.2287788,
+  "assets": [
+    {
+      "path": "artifacts/round_100-attempt-e36e3b75ba354e3dba961163f2d4c175/calibration.log",
+      "bytes": 4462,
+      "mtime": 1792883814.734637
+    }
+  ],
+  "retriever_bytes": 179127713,
+  "retriever_mtime": 1792883916.679055,
+  "boundary100_exists": false,
+  "phase": {
+    "completed_actor_outer": 100,
+    "phase": "actor_complete_probe_pending",
+    "probe_pending": true,
+    "grounding_pending": true,
+    "next_outer": 101
+  },
+  "calibration_tail": [
+    ":16:33.565948421 CUDAAllocatorConfig.h:28] Warning: expandable_segments not supported on this platform (function operator())\nINFO 10-25 07:16:34 model_runner.py:1060] Starting to load model /data/user/jxu957/experiments/dynrpo7b-formal-20261023-recoveryfix-r6/checkpoints/search-g1-common8/actor/global_step_100...\nINFO 10-25 07:16:34 selector.py:115] Using XFormers backend.\n\nLoading safetensors checkpoint shards:   0% Completed | 0/7 [00:00<?, ?it/s]\n\nLoading safetensors checkpoint shards:  14% Completed | 1/7 [00:00<00:04,  1.47it/s]\n\nLoading safetensors checkpoint shards:  29% Completed | 2/7 [00:01<00:03,  1.58it/s]\n\nLoading safetensors checkpoint shards:  43% Completed | 3/7 [00:02<00:02,  1.42it/s]\n\nLoading safetensors checkpoint shards:  57% Completed | 4/7 [00:02<00:02,  1.27it/s]\n\nLoading safetensors checkpoint shards:  71% Completed | 5/7 [00:03<00:01,  1.32it/s]\n\nLoading safetensors checkpoint shards:  86% Completed | 6/7 [00:04<00:00,  1.28it/s]\n\nLoading safetensors checkpoint shards: 100% Completed | 7/7 [00:05<00:00,  1.22it/s]\n\nLoading safetensors checkpoint shards: 100% Completed | 7/7 [00:05<00:00,  1.29it/s]\n\nINFO 10-25 07:16:40 model_runner.py:1071] Loading model weights took 14.1930 GB\nINFO 10-25 07:16:42 gpu_executor.py:122] # GPU blocks: 4596, # CPU blocks: 4681\nINFO 10-25 07:16:42 gpu_executor.py:126] Maximum concurrency for 4608 tokens per request: 15.96x\n[dump] vLLM loaded; HF extraction will follow generation\n[dump] closed-book done (1s) cb_rate=0.187\n"
+  ],
+  "first_grounding_observed_unix": 1792883851.569232,
+  "first_retriever_bytes": 179125883,
+  "retriever_bytes_delta": 1830,
+  "training_restarted": false
+}
