@@ -1,5 +1,37 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
+**New completed full evaluation, checkpoint100:** the separate two-H100 job760313
+has evaluated all51,713 canonical occurrences with greedy original Co rollout.
+**Weighted EM50.803473% (26,272/51,713), seven-source macro EM47.066265%.**
+Weighted F1 is58.018952%; macro F1 is55.407578%. Independent remote CPU recomputation
+validated every ordered question/source occurrence, canonical parquet SHA, all EM/F1
+values, counts, per-source and macro/weighted aggregates against the saved result.
+Repeated questions remain, with809 saved batches and a final one-question batch.
+The17,924,894-byte scalar-row ledger and raw trajectories remain remote; no model,
+optimizer, GPU or retrieval was used by the independent score consumer.
+
+| Source | Correct/count | EM |
+|---|---:|---:|
+| 2wikimultihopqa | 5795/12576 | 46.0798% |
+| bamboogle | 58/125 | 46.4000% |
+| hotpotqa | 3562/7405 | 48.1026% |
+| musique | 539/2417 | 22.3004% |
+| nq | 1846/3610 | 51.1357% |
+| popqa | 6818/14267 | 47.7886% |
+| triviaqa | 7654/11313 | 67.6567% |
+
+Checkpoint150 evaluation is still running in the same separate native2 allocation
+(10,560→10,688 saved questions in two observations). No150 full score is asserted.
+Main training750491 remains unchanged at frozenDDE;159 is sealed, four ranks each
+have3180 actual writes, and160 has saved1536 candidate questions. Its production
+200/final51713/archive/actual-native4-restore goal remains incomplete. The fixed512
+scores are a different measurement set; do not read this full100 score as a change
+from the fixed512100 score54.6875%.
+
+See [full100 verified score and provenance](evidence/checkpoint100-full51713-verified.json).
+
+**Earlier milestone/archive observations:**
+
 **Latest archive acceptance: 2026-10-24 07:46 PDT /22:46 CST.** The150 full archive
 is now accepted: **1370 core files /152,467,526,855 bytes** passed incoming SHA,
 independent fresh destination SHA/fsync and fresh source readback. The eight-file
