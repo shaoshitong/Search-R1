@@ -1,6 +1,37 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
-**Current evidence through 2026-10-24 00:05 CST:** production750491 has completed and
+**Current evidence: 2026-10-24 07:18 PDT / 22:18 CST.** Job750491 has completed and
+sealed outer150; outer151 candidate output increased from512 to1024 questions in
+two observations. All four ranks have3000 actual Adam writes. Runtime remains
+dde1452d2ec65fb3f4a0464d4beacf3b8136414c; no restart or training edits occurred.
+
+Fixed512 EM: **5:193/512=37.6953%;50:259/512=50.5859%;100:280/512=54.6875%;
+150:277/512=54.1016%.** The150 result is three correct answers lower than100
+(-0.58594 percentage points): NQ116/256=45.3125% versus119/256, while HotpotQA
+remains161/256=62.890625%. Ordered question/source identities and validation
+parquet SHA match across these milestones. This single512-question difference
+does not establish its cause. All150 training scalar rows are retained; outer150
+selected-trajectory EM0.707/reward0.946 uses a changing pre-update sample and is
+not the held-out score.
+
+Outer150 whole wall is2694.389s (44m54.39s), including the fixed evaluation and
+checkpoint/boundary work; it is not an ordinary-outer timing sample. The150
+checkpoint is sealed, but full source/archive SHA and post-callback archive
+acceptance are still pending. Existing archive controllers retain their original
+process identities, with no recorded failure. Two destination metadata samples
+showed871,366,784 bytes growth over16.05s; this transfer progress does not
+constitute full archive acceptance. See [archive byte observations](evidence/milestone150-archive-current-summary.json). No new jobs were submitted. Target200,
+fixed200, final native51713/seven-source metrics, full milestone archives and
+actual final native4 full-state/dataequal recovery remain outstanding; no actual
+update201 is permitted.
+
+See [verified fixed/training metrics](evidence/training-em-reward-fixed512-through150-20261024.json),
+[150 completion and151 continuation](evidence/combined-continuation150-complete-next151.json),
+[through150 timings](evidence/combined-production-timing-through150.json).
+
+**Historical observation through105 (2026-10-24 00:05 CST):**
+
+Production snapshot: production750491 has completed and
 sealed outer105 on the same four H100; outer106 has saved512 candidate questions.
 All4 have2100 actual Adam writes. Runtime remains frozen at dde1452; no restart,
 new GPU allocation, runtime edit or extra monitor forward was introduced.

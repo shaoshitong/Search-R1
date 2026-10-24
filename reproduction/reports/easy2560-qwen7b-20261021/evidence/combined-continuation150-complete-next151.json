@@ -1,0 +1,365 @@
+{
+  "schema": "combined_continuation150_complete_next151_v1",
+  "observed_unix": 1792851496.8584385,
+  "evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792851499584430000.json",
+  "latest_completed_outer": 150,
+  "post_restore_completed_outers": 80,
+  "rolling_step": 150,
+  "candidate_step": 151,
+  "saved_questions": 1024,
+  "actual_errors": {
+    "training": [],
+    "trainer": [],
+    "pipeline": [],
+    "slurm": []
+  },
+  "observation_errors": [],
+  "job": "750491",
+  "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+  "checkpoint_seal": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/checkpoints/search-g1-common8/actor/global_step_150",
+    "manager": "easy2560_per_outer_full_state_v1",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/rolling-checkpoints/global_step_150/full-manifest.json",
+    "manifest_sha256": "bdf0769073c633db2583c817c2272a5cc3c4e1f418abc925ca14f94e2319987a",
+    "published_unix": 1792851053.7874744,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+    "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+    "step": 150
+  },
+  "next_candidate": {
+    "step": 151,
+    "complete_questions": 1024,
+    "source_consumed": 386560,
+    "first_before_generation": 1792851064.186616,
+    "saved_chunks": [
+      {
+        "name": "512.pt",
+        "bytes": 663174280,
+        "mtime": 1792851412.092285
+      },
+      {
+        "name": "0.pt",
+        "bytes": 656507006,
+        "mtime": 1792851235.702565
+      }
+    ]
+  },
+  "latest_outer_timing": {
+    "step": 150,
+    "full_outer_seconds": 2694.388844013214,
+    "before_generation_mtime": 1792848369.797772,
+    "next_before_generation_mtime": 1792851064.186616,
+    "boundary_sources": [
+      "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792851499584430000.json",
+      "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792851499584430000.json"
+    ],
+    "checkpoint_seal": {
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/checkpoints/search-g1-common8/actor/global_step_150",
+      "manager": "easy2560_per_outer_full_state_v1",
+      "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/rolling-checkpoints/global_step_150/full-manifest.json",
+      "manifest_sha256": "bdf0769073c633db2583c817c2272a5cc3c4e1f418abc925ca14f94e2319987a",
+      "published_unix": 1792851053.7874744,
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+      "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+      "step": 150
+    },
+    "candidate_fill_seconds": 856.8994896281511,
+    "retained_policy_tokens": 1701565,
+    "retained_token_source": "selection_summary.raw_generated_policy_tokens (producer name; retained, not untruncated raw)",
+    "actual_raw_generated_tokens_full_outer": null,
+    "raw_token_scope": "Null unless an explicit full-outer actual_raw_generated_tokens counter exists. Latest-phase work/stop counters cannot reconstruct all five phases or untruncated raw output.",
+    "candidate_trajectories": 12800,
+    "actual_retrieval_calls": 32488,
+    "selected_mixed_questions": 312,
+    "selected_questions": 512,
+    "optimizer_by_rank": {
+      "0": {
+        "optimizer_writes": 20,
+        "cumulative_writes": 3000,
+        "actual_monitor_forward_count": 0,
+        "full_budget_complete": true
+      },
+      "1": {
+        "optimizer_writes": 20,
+        "cumulative_writes": 3000,
+        "actual_monitor_forward_count": 0,
+        "full_budget_complete": true
+      },
+      "2": {
+        "optimizer_writes": 20,
+        "cumulative_writes": 3000,
+        "actual_monitor_forward_count": 0,
+        "full_budget_complete": true
+      },
+      "3": {
+        "optimizer_writes": 20,
+        "cumulative_writes": 3000,
+        "actual_monitor_forward_count": 0,
+        "full_budget_complete": true
+      }
+    },
+    "scheduler_by_rank": {
+      "0": {
+        "scheduler_advances": 1,
+        "writes_after": 3000,
+        "scheduler_last_epoch_after": 150
+      },
+      "1": {
+        "scheduler_advances": 1,
+        "writes_after": 3000,
+        "scheduler_last_epoch_after": 150
+      },
+      "2": {
+        "scheduler_advances": 1,
+        "writes_after": 3000,
+        "scheduler_last_epoch_after": 150
+      },
+      "3": {
+        "scheduler_advances": 1,
+        "writes_after": 3000,
+        "scheduler_last_epoch_after": 150
+      }
+    },
+    "actor_fa3_by_rank": {
+      "0": {
+        "actual_flash3_training_executed": true,
+        "compact_gqa_enabled": true,
+        "cumulative_forward_returns": {
+          "dense": 0,
+          "varlen": 358400
+        },
+        "cumulative_backward_returns": 179200,
+        "cumulative_qkv_gradient_returns": 179200,
+        "observed_qkv_geometry": [
+          {
+            "dtype": "torch.bfloat16",
+            "q_heads": 28,
+            "kv_heads": 4,
+            "head_dim": 128
+          }
+        ]
+      },
+      "1": {
+        "actual_flash3_training_executed": true,
+        "compact_gqa_enabled": true,
+        "cumulative_forward_returns": {
+          "dense": 0,
+          "varlen": 358400
+        },
+        "cumulative_backward_returns": 179200,
+        "cumulative_qkv_gradient_returns": 179200,
+        "observed_qkv_geometry": [
+          {
+            "dtype": "torch.bfloat16",
+            "q_heads": 28,
+            "kv_heads": 4,
+            "head_dim": 128
+          }
+        ]
+      },
+      "2": {
+        "actual_flash3_training_executed": true,
+        "compact_gqa_enabled": true,
+        "cumulative_forward_returns": {
+          "dense": 0,
+          "varlen": 358400
+        },
+        "cumulative_backward_returns": 179200,
+        "cumulative_qkv_gradient_returns": 179200,
+        "observed_qkv_geometry": [
+          {
+            "dtype": "torch.bfloat16",
+            "q_heads": 28,
+            "kv_heads": 4,
+            "head_dim": 128
+          }
+        ]
+      },
+      "3": {
+        "actual_flash3_training_executed": true,
+        "compact_gqa_enabled": true,
+        "cumulative_forward_returns": {
+          "dense": 0,
+          "varlen": 358400
+        },
+        "cumulative_backward_returns": 179200,
+        "cumulative_qkv_gradient_returns": 179200,
+        "observed_qkv_geometry": [
+          {
+            "dtype": "torch.bfloat16",
+            "q_heads": 28,
+            "kv_heads": 4,
+            "head_dim": 128
+          }
+        ]
+      }
+    },
+    "rollout_by_rank": {
+      "0": {
+        "phase_weight_syncs": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "total_weight_syncs": 1,
+        "cumulative_fa3_calls": {
+          "prefill": 10276924,
+          "paged_prefill": 0,
+          "decode": 15817368
+        },
+        "cumulative_search_action_stop": {
+          "enabled": true,
+          "search_only": true,
+          "answer_stop_enabled": false,
+          "stop_reason": "search_action_boundary:</search>",
+          "native_stop_checker_runs_first": true,
+          "raw_tokens_or_logprobs_mutated": false,
+          "piece_cache_entries": 49002,
+          "live_sequence_filters": 0,
+          "token_checks": 31094474,
+          "single_token_decodes": 49002,
+          "filter_triggers": 555877,
+          "prefix_confirmations": 555877,
+          "confirmed_search_stops": 555877,
+          "confirmation_rejections": 0,
+          "ambiguous_prefixes": 0,
+          "native_finished_first": 255832
+        },
+        "actual_work_latest_phase_only": null
+      },
+      "1": {
+        "phase_weight_syncs": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "total_weight_syncs": 1,
+        "cumulative_fa3_calls": {
+          "prefill": 10207092,
+          "paged_prefill": 0,
+          "decode": 16033304
+        },
+        "cumulative_search_action_stop": {
+          "enabled": true,
+          "search_only": true,
+          "answer_stop_enabled": false,
+          "stop_reason": "search_action_boundary:</search>",
+          "native_stop_checker_runs_first": true,
+          "raw_tokens_or_logprobs_mutated": false,
+          "piece_cache_entries": 49235,
+          "live_sequence_filters": 0,
+          "token_checks": 31086200,
+          "single_token_decodes": 49235,
+          "filter_triggers": 555784,
+          "prefix_confirmations": 555784,
+          "confirmed_search_stops": 555784,
+          "confirmation_rejections": 0,
+          "ambiguous_prefixes": 0,
+          "native_finished_first": 255858
+        },
+        "actual_work_latest_phase_only": null
+      },
+      "2": {
+        "phase_weight_syncs": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "total_weight_syncs": 1,
+        "cumulative_fa3_calls": {
+          "prefill": 10300500,
+          "paged_prefill": 0,
+          "decode": 15691480
+        },
+        "cumulative_search_action_stop": {
+          "enabled": true,
+          "search_only": true,
+          "answer_stop_enabled": false,
+          "stop_reason": "search_action_boundary:</search>",
+          "native_stop_checker_runs_first": true,
+          "raw_tokens_or_logprobs_mutated": false,
+          "piece_cache_entries": 48914,
+          "live_sequence_filters": 0,
+          "token_checks": 31088437,
+          "single_token_decodes": 48914,
+          "filter_triggers": 555777,
+          "prefix_confirmations": 555777,
+          "confirmed_search_stops": 555777,
+          "confirmation_rejections": 0,
+          "ambiguous_prefixes": 0,
+          "native_finished_first": 255855
+        },
+        "actual_work_latest_phase_only": null
+      },
+      "3": {
+        "phase_weight_syncs": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "total_weight_syncs": 1,
+        "cumulative_fa3_calls": {
+          "prefill": 10157840,
+          "paged_prefill": 0,
+          "decode": 16119180
+        },
+        "cumulative_search_action_stop": {
+          "enabled": true,
+          "search_only": true,
+          "answer_stop_enabled": false,
+          "stop_reason": "search_action_boundary:</search>",
+          "native_stop_checker_runs_first": true,
+          "raw_tokens_or_logprobs_mutated": false,
+          "piece_cache_entries": 49110,
+          "live_sequence_filters": 0,
+          "token_checks": 31060614,
+          "single_token_decodes": 49110,
+          "filter_triggers": 555299,
+          "prefix_confirmations": 555299,
+          "confirmed_search_stops": 555299,
+          "confirmation_rejections": 0,
+          "ambiguous_prefixes": 0,
+          "native_finished_first": 255839
+        },
+        "actual_work_latest_phase_only": null
+      }
+    },
+    "rollout_counter_scope": "Latest completed phase records contain cumulative engine counters, not per-outer deltas; phase_weight_syncs is the explicit full phase sequence. Never sum cumulative phases or rank wall times.",
+    "actor_update_seconds": 162.491,
+    "advantage_seconds": 217.33,
+    "checkpoint_write_seconds": 273.915,
+    "producer_post_candidate_step_seconds": 969.193,
+    "training_em_rounded": 0.707,
+    "training_reward_mean_rounded": 0.946,
+    "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792851499584430000.json"
+  },
+  "target_outer": 200,
+  "update201_allowed": false,
+  "fixed100_pending": false,
+  "final_native51713_seven_metrics_pending": true,
+  "final_native4_actual_recovery_pending": true,
+  "new_jobs_submitted": 0,
+  "training_modified": false,
+  "goal_complete": false,
+  "retrieval_latest_health_observation": {
+    "evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-retrieval-production-health-1792851374050814000.json",
+    "observed_unix": 1792851374.2236722,
+    "service_job": "750471",
+    "completed_queries": 1456914,
+    "failed_requests": 0,
+    "gpu_forward_triggered": false
+  },
+  "archive_consumer_latest_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-hk-archive-observe-1792851373173662000.json"
+}

@@ -1,0 +1,2294 @@
+{
+  "schema": "combined_production_local_timing_summary_v1",
+  "old": {
+    "job": "750029",
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+    "runtime_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+    "latest_observed_unix": 1792716509.8872964,
+    "latest_observation": "outputs/easy2560-qwen7b-20261021/leanmetrics-transition-live-1792716510245388000.json",
+    "latest_completed_outer": 70,
+    "rows": [
+      {
+        "step": 66,
+        "full_outer_seconds": 1866.2561309337616,
+        "before_generation_mtime": 1792707169.445868,
+        "next_before_generation_mtime": 1792709035.701999,
+        "boundary_sources": [
+          "outputs/easy2560-qwen7b-20261021/leanmetrics-transition-live-1792716510245388000.json",
+          "outputs/easy2560-qwen7b-20261021/leanmetrics-transition-live-1792716510245388000.json"
+        ],
+        "checkpoint_seal": {
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+          "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/checkpoints/search-g1-common8/actor/global_step_66",
+          "manager": "easy2560_per_outer_full_state_v1",
+          "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/preparation/rolling-checkpoints/global_step_66/full-manifest.json",
+          "manifest_sha256": "16f35596a5b89354e89d6ded00a1d036434d1e0cffe9f1f3708e7a22b1b3a64a",
+          "published_unix": 1792709028.9168375,
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+          "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+          "step": 66
+        },
+        "candidate_fill_seconds": 1085.879656573059,
+        "retained_policy_tokens": 1680812,
+        "retained_token_source": "selection_summary.raw_generated_policy_tokens (producer name; retained, not untruncated raw)",
+        "actual_raw_generated_tokens_full_outer": null,
+        "raw_token_scope": "Null unless an explicit full-outer actual_raw_generated_tokens counter exists. Latest-phase work/stop counters cannot reconstruct all five phases or untruncated raw output.",
+        "candidate_trajectories": 12800,
+        "actual_retrieval_calls": 27049,
+        "selected_mixed_questions": 459,
+        "selected_questions": 512,
+        "optimizer_by_rank": {
+          "0": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1320,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "1": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1320,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "2": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1320,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "3": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1320,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          }
+        },
+        "scheduler_by_rank": {
+          "0": {
+            "scheduler_advances": 1,
+            "writes_after": 1320,
+            "scheduler_last_epoch_after": 66
+          },
+          "1": {
+            "scheduler_advances": 1,
+            "writes_after": 1320,
+            "scheduler_last_epoch_after": 66
+          },
+          "2": {
+            "scheduler_advances": 1,
+            "writes_after": 1320,
+            "scheduler_last_epoch_after": 66
+          },
+          "3": {
+            "scheduler_advances": 1,
+            "writes_after": 1320,
+            "scheduler_last_epoch_after": 66
+          }
+        },
+        "actor_fa3_by_rank": null,
+        "rollout_by_rank": {},
+        "rollout_counter_scope": "Latest completed phase records contain cumulative engine counters, not per-outer deltas; phase_weight_syncs is the explicit full phase sequence. Never sum cumulative phases or rank wall times.",
+        "actor_update_seconds": 159.732,
+        "advantage_seconds": 217.058,
+        "checkpoint_write_seconds": 151.45,
+        "producer_post_candidate_step_seconds": 707.483,
+        "training_em_rounded": 0.568,
+        "training_reward_mean_rounded": 0.737,
+        "source": "saved_baseline"
+      },
+      {
+        "step": 67,
+        "full_outer_seconds": 1807.093997001648,
+        "before_generation_mtime": 1792709035.701999,
+        "next_before_generation_mtime": 1792710842.795996,
+        "boundary_sources": [
+          "outputs/easy2560-qwen7b-20261021/leanmetrics-transition-live-1792716510245388000.json",
+          "outputs/easy2560-qwen7b-20261021/leanmetrics-transition-live-1792716510245388000.json"
+        ],
+        "checkpoint_seal": {
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+          "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/checkpoints/search-g1-common8/actor/global_step_67",
+          "manager": "easy2560_per_outer_full_state_v1",
+          "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/preparation/rolling-checkpoints/global_step_67/full-manifest.json",
+          "manifest_sha256": "d77c09e2a5c5bd8d59305faeca5e01447e56eea3118e7ae1f08095faad52d123",
+          "published_unix": 1792710835.7067213,
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+          "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+          "step": 67
+        },
+        "candidate_fill_seconds": 1043.7798802449834,
+        "retained_policy_tokens": 1654279,
+        "retained_token_source": "selection_summary.raw_generated_policy_tokens (producer name; retained, not untruncated raw)",
+        "actual_raw_generated_tokens_full_outer": null,
+        "raw_token_scope": "Null unless an explicit full-outer actual_raw_generated_tokens counter exists. Latest-phase work/stop counters cannot reconstruct all five phases or untruncated raw output.",
+        "candidate_trajectories": 12800,
+        "actual_retrieval_calls": 26425,
+        "selected_mixed_questions": 473,
+        "selected_questions": 512,
+        "optimizer_by_rank": {
+          "0": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1340,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "1": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1340,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "2": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1340,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "3": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1340,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          }
+        },
+        "scheduler_by_rank": {
+          "0": {
+            "scheduler_advances": 1,
+            "writes_after": 1340,
+            "scheduler_last_epoch_after": 67
+          },
+          "1": {
+            "scheduler_advances": 1,
+            "writes_after": 1340,
+            "scheduler_last_epoch_after": 67
+          },
+          "2": {
+            "scheduler_advances": 1,
+            "writes_after": 1340,
+            "scheduler_last_epoch_after": 67
+          },
+          "3": {
+            "scheduler_advances": 1,
+            "writes_after": 1340,
+            "scheduler_last_epoch_after": 67
+          }
+        },
+        "actor_fa3_by_rank": null,
+        "rollout_by_rank": {},
+        "rollout_counter_scope": "Latest completed phase records contain cumulative engine counters, not per-outer deltas; phase_weight_syncs is the explicit full phase sequence. Never sum cumulative phases or rank wall times.",
+        "actor_update_seconds": 154.066,
+        "advantage_seconds": 210.351,
+        "checkpoint_write_seconds": 155.566,
+        "producer_post_candidate_step_seconds": 693.922,
+        "training_em_rounded": 0.55,
+        "training_reward_mean_rounded": 0.72,
+        "source": "saved_baseline"
+      },
+      {
+        "step": 68,
+        "full_outer_seconds": 1836.7161719799042,
+        "before_generation_mtime": 1792710842.795996,
+        "next_before_generation_mtime": 1792712679.512168,
+        "boundary_sources": [
+          "outputs/easy2560-qwen7b-20261021/leanmetrics-transition-live-1792716510245388000.json",
+          "outputs/easy2560-qwen7b-20261021/leanmetrics-transition-live-1792716510245388000.json"
+        ],
+        "checkpoint_seal": {
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+          "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/checkpoints/search-g1-common8/actor/global_step_68",
+          "manager": "easy2560_per_outer_full_state_v1",
+          "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/preparation/rolling-checkpoints/global_step_68/full-manifest.json",
+          "manifest_sha256": "fa693236b17c05d7ccaffdcf69bcd5c8b2e1b684c3f43b57f5c56bafce494cec",
+          "published_unix": 1792712673.267353,
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+          "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+          "step": 68
+        },
+        "candidate_fill_seconds": 1072.5897658618633,
+        "retained_policy_tokens": 1662318,
+        "retained_token_source": "selection_summary.raw_generated_policy_tokens (producer name; retained, not untruncated raw)",
+        "actual_raw_generated_tokens_full_outer": null,
+        "raw_token_scope": "Null unless an explicit full-outer actual_raw_generated_tokens counter exists. Latest-phase work/stop counters cannot reconstruct all five phases or untruncated raw output.",
+        "candidate_trajectories": 12800,
+        "actual_retrieval_calls": 26998,
+        "selected_mixed_questions": 431,
+        "selected_questions": 512,
+        "optimizer_by_rank": {
+          "0": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1360,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "1": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1360,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "2": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1360,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "3": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1360,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          }
+        },
+        "scheduler_by_rank": {
+          "0": {
+            "scheduler_advances": 1,
+            "writes_after": 1360,
+            "scheduler_last_epoch_after": 68
+          },
+          "1": {
+            "scheduler_advances": 1,
+            "writes_after": 1360,
+            "scheduler_last_epoch_after": 68
+          },
+          "2": {
+            "scheduler_advances": 1,
+            "writes_after": 1360,
+            "scheduler_last_epoch_after": 68
+          },
+          "3": {
+            "scheduler_advances": 1,
+            "writes_after": 1360,
+            "scheduler_last_epoch_after": 68
+          }
+        },
+        "actor_fa3_by_rank": null,
+        "rollout_by_rank": {},
+        "rollout_counter_scope": "Latest completed phase records contain cumulative engine counters, not per-outer deltas; phase_weight_syncs is the explicit full phase sequence. Never sum cumulative phases or rank wall times.",
+        "actor_update_seconds": 151.64,
+        "advantage_seconds": 211.358,
+        "checkpoint_write_seconds": 154.435,
+        "producer_post_candidate_step_seconds": 696.388,
+        "training_em_rounded": 0.6,
+        "training_reward_mean_rounded": 0.775,
+        "source": "saved_baseline"
+      },
+      {
+        "step": 69,
+        "full_outer_seconds": 1872.8151230812073,
+        "before_generation_mtime": 1792712679.512168,
+        "next_before_generation_mtime": 1792714552.327291,
+        "boundary_sources": [
+          "outputs/easy2560-qwen7b-20261021/leanmetrics-transition-live-1792716510245388000.json",
+          "outputs/easy2560-qwen7b-20261021/leanmetrics-transition-live-1792716510245388000.json"
+        ],
+        "checkpoint_seal": {
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+          "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/checkpoints/search-g1-common8/actor/global_step_69",
+          "manager": "easy2560_per_outer_full_state_v1",
+          "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/preparation/rolling-checkpoints/global_step_69/full-manifest.json",
+          "manifest_sha256": "382c0a1c2fd1ae238ab7c08e90fea471d1a9a475f0225cdc55e2c1179e8d384f",
+          "published_unix": 1792714545.073107,
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+          "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+          "step": 69
+        },
+        "candidate_fill_seconds": 1094.5812204692047,
+        "retained_policy_tokens": 1704853,
+        "retained_token_source": "selection_summary.raw_generated_policy_tokens (producer name; retained, not untruncated raw)",
+        "actual_raw_generated_tokens_full_outer": null,
+        "raw_token_scope": "Null unless an explicit full-outer actual_raw_generated_tokens counter exists. Latest-phase work/stop counters cannot reconstruct all five phases or untruncated raw output.",
+        "candidate_trajectories": 12800,
+        "actual_retrieval_calls": 27336,
+        "selected_mixed_questions": 482,
+        "selected_questions": 512,
+        "optimizer_by_rank": {
+          "0": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1380,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "1": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1380,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "2": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1380,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "3": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1380,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          }
+        },
+        "scheduler_by_rank": {
+          "0": {
+            "scheduler_advances": 1,
+            "writes_after": 1380,
+            "scheduler_last_epoch_after": 69
+          },
+          "1": {
+            "scheduler_advances": 1,
+            "writes_after": 1380,
+            "scheduler_last_epoch_after": 69
+          },
+          "2": {
+            "scheduler_advances": 1,
+            "writes_after": 1380,
+            "scheduler_last_epoch_after": 69
+          },
+          "3": {
+            "scheduler_advances": 1,
+            "writes_after": 1380,
+            "scheduler_last_epoch_after": 69
+          }
+        },
+        "actor_fa3_by_rank": null,
+        "rollout_by_rank": {
+          "0": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 1519420,
+              "paged_prefill": 0,
+              "decode": 7035616
+            },
+            "cumulative_search_action_stop": null,
+            "actual_work_latest_phase_only": null
+          },
+          "1": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 1553580,
+              "paged_prefill": 0,
+              "decode": 6765024
+            },
+            "cumulative_search_action_stop": null,
+            "actual_work_latest_phase_only": null
+          },
+          "2": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 1532188,
+              "paged_prefill": 0,
+              "decode": 6923140
+            },
+            "cumulative_search_action_stop": null,
+            "actual_work_latest_phase_only": null
+          },
+          "3": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 1558760,
+              "paged_prefill": 0,
+              "decode": 6782412
+            },
+            "cumulative_search_action_stop": null,
+            "actual_work_latest_phase_only": null
+          }
+        },
+        "rollout_counter_scope": "Latest completed phase records contain cumulative engine counters, not per-outer deltas; phase_weight_syncs is the explicit full phase sequence. Never sum cumulative phases or rank wall times.",
+        "actor_update_seconds": 156.232,
+        "advantage_seconds": 218.47,
+        "checkpoint_write_seconds": 153.694,
+        "producer_post_candidate_step_seconds": 707.303,
+        "training_em_rounded": 0.552,
+        "training_reward_mean_rounded": 0.729,
+        "source": "saved_baseline"
+      },
+      {
+        "step": 70,
+        "full_outer_seconds": null,
+        "before_generation_mtime": 1792714552.327291,
+        "next_before_generation_mtime": null,
+        "boundary_sources": [
+          "outputs/easy2560-qwen7b-20261021/leanmetrics-transition-live-1792716510245388000.json",
+          null
+        ],
+        "checkpoint_seal": {
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+          "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/checkpoints/search-g1-common8/actor/global_step_70",
+          "manager": "easy2560_per_outer_full_state_v1",
+          "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/preparation/rolling-checkpoints/global_step_70/full-manifest.json",
+          "manifest_sha256": "99867a907ef969655e6996c18edc23437a51981f5dff0bc856759bd90992f0f8",
+          "published_unix": 1792716463.4755187,
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_commit": "2d5183455551145c52d1783a38663e2fcf170ceb",
+          "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+          "step": 70
+        },
+        "candidate_fill_seconds": 1132.3521311809309,
+        "retained_policy_tokens": 1751128,
+        "retained_token_source": "selection_summary.raw_generated_policy_tokens (producer name; retained, not untruncated raw)",
+        "actual_raw_generated_tokens_full_outer": null,
+        "raw_token_scope": "Null unless an explicit full-outer actual_raw_generated_tokens counter exists. Latest-phase work/stop counters cannot reconstruct all five phases or untruncated raw output.",
+        "candidate_trajectories": 12800,
+        "actual_retrieval_calls": 27711,
+        "selected_mixed_questions": 505,
+        "selected_questions": 512,
+        "optimizer_by_rank": {
+          "0": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1400,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "1": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1400,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "2": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1400,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "3": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 1400,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          }
+        },
+        "scheduler_by_rank": {
+          "0": {
+            "scheduler_advances": 1,
+            "writes_after": 1400,
+            "scheduler_last_epoch_after": 70
+          },
+          "1": {
+            "scheduler_advances": 1,
+            "writes_after": 1400,
+            "scheduler_last_epoch_after": 70
+          },
+          "2": {
+            "scheduler_advances": 1,
+            "writes_after": 1400,
+            "scheduler_last_epoch_after": 70
+          },
+          "3": {
+            "scheduler_advances": 1,
+            "writes_after": 1400,
+            "scheduler_last_epoch_after": 70
+          }
+        },
+        "actor_fa3_by_rank": {
+          "0": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 44800
+            },
+            "cumulative_backward_returns": 22400,
+            "cumulative_qkv_gradient_returns": 22400,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          },
+          "1": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 44800
+            },
+            "cumulative_backward_returns": 22400,
+            "cumulative_qkv_gradient_returns": 22400,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          },
+          "2": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 44800
+            },
+            "cumulative_backward_returns": 22400,
+            "cumulative_qkv_gradient_returns": 22400,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          },
+          "3": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 44800
+            },
+            "cumulative_backward_returns": 22400,
+            "cumulative_qkv_gradient_returns": 22400,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          }
+        },
+        "rollout_by_rank": {
+          "0": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 1693132,
+              "paged_prefill": 0,
+              "decode": 7908740
+            },
+            "cumulative_search_action_stop": null,
+            "actual_work_latest_phase_only": null
+          },
+          "1": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 1729224,
+              "paged_prefill": 0,
+              "decode": 7579068
+            },
+            "cumulative_search_action_stop": null,
+            "actual_work_latest_phase_only": null
+          },
+          "2": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 1727964,
+              "paged_prefill": 0,
+              "decode": 7723800
+            },
+            "cumulative_search_action_stop": null,
+            "actual_work_latest_phase_only": null
+          },
+          "3": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 1754256,
+              "paged_prefill": 0,
+              "decode": 7580748
+            },
+            "cumulative_search_action_stop": null,
+            "actual_work_latest_phase_only": null
+          }
+        },
+        "rollout_counter_scope": "Latest completed phase records contain cumulative engine counters, not per-outer deltas; phase_weight_syncs is the explicit full phase sequence. Never sum cumulative phases or rank wall times.",
+        "actor_update_seconds": 159.842,
+        "advantage_seconds": 221.198,
+        "checkpoint_write_seconds": 153.429,
+        "producer_post_candidate_step_seconds": 715.1,
+        "training_em_rounded": 0.534,
+        "training_reward_mean_rounded": 0.707,
+        "source": "outputs/easy2560-qwen7b-20261021/leanmetrics-transition-live-1792716510245388000.json"
+      }
+    ],
+    "aggregate": {
+      "full_outer_seconds": {
+        "mean": 1845.7203557491302,
+        "observed_count": 4,
+        "completed_outer_count": 5
+      },
+      "candidate_fill_seconds": {
+        "mean": 1085.8365308660082,
+        "observed_count": 5,
+        "completed_outer_count": 5
+      },
+      "actor_update_seconds": {
+        "mean": 156.30239999999998,
+        "observed_count": 5,
+        "completed_outer_count": 5
+      },
+      "advantage_seconds": {
+        "mean": 215.68700000000004,
+        "observed_count": 5,
+        "completed_outer_count": 5
+      },
+      "checkpoint_write_seconds": {
+        "mean": 153.7148,
+        "observed_count": 5,
+        "completed_outer_count": 5
+      }
+    },
+    "actual_errors": {
+      "training": [],
+      "trainer": [],
+      "pipeline": [],
+      "slurm": []
+    },
+    "observation_errors": [],
+    "read_errors": []
+  },
+  "new": {
+    "job": "750491",
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+    "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+    "latest_observed_unix": 1792851496.8584385,
+    "latest_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792851499584430000.json",
+    "latest_completed_outer": 150,
+    "rows": [
+      {
+        "step": 146,
+        "full_outer_seconds": 1800.9282479286194,
+        "before_generation_mtime": 1792841012.329854,
+        "next_before_generation_mtime": 1792842813.258102,
+        "boundary_sources": [
+          "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792851499584430000.json",
+          "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792851499584430000.json"
+        ],
+        "checkpoint_seal": {
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+          "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/checkpoints/search-g1-common8/actor/global_step_146",
+          "manager": "easy2560_per_outer_full_state_v1",
+          "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/rolling-checkpoints/global_step_146/full-manifest.json",
+          "manifest_sha256": "f686718dfcce402bd4e712ed006d3fd23bf70f84cff1d88f0c41c6cf4f6bf603",
+          "published_unix": 1792842804.3346615,
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+          "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+          "step": 146
+        },
+        "candidate_fill_seconds": 831.201651336858,
+        "retained_policy_tokens": 1635527,
+        "retained_token_source": "selection_summary.raw_generated_policy_tokens (producer name; retained, not untruncated raw)",
+        "actual_raw_generated_tokens_full_outer": null,
+        "raw_token_scope": "Null unless an explicit full-outer actual_raw_generated_tokens counter exists. Latest-phase work/stop counters cannot reconstruct all five phases or untruncated raw output.",
+        "candidate_trajectories": 12800,
+        "actual_retrieval_calls": 31551,
+        "selected_mixed_questions": 271,
+        "selected_questions": 512,
+        "optimizer_by_rank": {
+          "0": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 2920,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "1": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 2920,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "2": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 2920,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "3": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 2920,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          }
+        },
+        "scheduler_by_rank": {
+          "0": {
+            "scheduler_advances": 1,
+            "writes_after": 2920,
+            "scheduler_last_epoch_after": 146
+          },
+          "1": {
+            "scheduler_advances": 1,
+            "writes_after": 2920,
+            "scheduler_last_epoch_after": 146
+          },
+          "2": {
+            "scheduler_advances": 1,
+            "writes_after": 2920,
+            "scheduler_last_epoch_after": 146
+          },
+          "3": {
+            "scheduler_advances": 1,
+            "writes_after": 2920,
+            "scheduler_last_epoch_after": 146
+          }
+        },
+        "actor_fa3_by_rank": {
+          "0": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 340480
+            },
+            "cumulative_backward_returns": 170240,
+            "cumulative_qkv_gradient_returns": 170240,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          },
+          "1": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 340480
+            },
+            "cumulative_backward_returns": 170240,
+            "cumulative_qkv_gradient_returns": 170240,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          },
+          "2": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 340480
+            },
+            "cumulative_backward_returns": 170240,
+            "cumulative_qkv_gradient_returns": 170240,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          },
+          "3": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 340480
+            },
+            "cumulative_backward_returns": 170240,
+            "cumulative_qkv_gradient_returns": 170240,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          }
+        },
+        "rollout_by_rank": {
+          "0": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 9711884,
+              "paged_prefill": 0,
+              "decode": 14995624
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 48745,
+              "live_sequence_filters": 0,
+              "token_checks": 29410803,
+              "single_token_decodes": 48745,
+              "filter_triggers": 523592,
+              "prefix_confirmations": 523592,
+              "confirmed_search_stops": 523592,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 243043
+            },
+            "actual_work_latest_phase_only": null
+          },
+          "1": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 9652692,
+              "paged_prefill": 0,
+              "decode": 15195572
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 49020,
+              "live_sequence_filters": 0,
+              "token_checks": 29404300,
+              "single_token_decodes": 49020,
+              "filter_triggers": 523477,
+              "prefix_confirmations": 523477,
+              "confirmed_search_stops": 523477,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 243068
+            },
+            "actual_work_latest_phase_only": null
+          },
+          "2": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 9741200,
+              "paged_prefill": 0,
+              "decode": 14853468
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 48682,
+              "live_sequence_filters": 0,
+              "token_checks": 29411188,
+              "single_token_decodes": 48682,
+              "filter_triggers": 523585,
+              "prefix_confirmations": 523585,
+              "confirmed_search_stops": 523585,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 243062
+            },
+            "actual_work_latest_phase_only": null
+          },
+          "3": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 9597448,
+              "paged_prefill": 0,
+              "decode": 15290716
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 48835,
+              "live_sequence_filters": 0,
+              "token_checks": 29378646,
+              "single_token_decodes": 48835,
+              "filter_triggers": 522981,
+              "prefix_confirmations": 522981,
+              "confirmed_search_stops": 522981,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 243054
+            },
+            "actual_work_latest_phase_only": null
+          }
+        },
+        "rollout_counter_scope": "Latest completed phase records contain cumulative engine counters, not per-outer deltas; phase_weight_syncs is the explicit full phase sequence. Never sum cumulative phases or rank wall times.",
+        "actor_update_seconds": null,
+        "advantage_seconds": null,
+        "checkpoint_write_seconds": null,
+        "producer_post_candidate_step_seconds": null,
+        "training_em_rounded": null,
+        "training_reward_mean_rounded": null,
+        "source": null
+      },
+      {
+        "step": 147,
+        "full_outer_seconds": 1881.1642999649048,
+        "before_generation_mtime": 1792842813.258102,
+        "next_before_generation_mtime": 1792844694.422402,
+        "boundary_sources": [
+          "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792851499584430000.json",
+          "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792851499584430000.json"
+        ],
+        "checkpoint_seal": {
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+          "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/checkpoints/search-g1-common8/actor/global_step_147",
+          "manager": "easy2560_per_outer_full_state_v1",
+          "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/rolling-checkpoints/global_step_147/full-manifest.json",
+          "manifest_sha256": "97ea073df97aad741674a8981e5e76710fd4af3ce36a565fa4686e76584a5708",
+          "published_unix": 1792844683.1141808,
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+          "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+          "step": 147
+        },
+        "candidate_fill_seconds": 847.793849484995,
+        "retained_policy_tokens": 1659221,
+        "retained_token_source": "selection_summary.raw_generated_policy_tokens (producer name; retained, not untruncated raw)",
+        "actual_raw_generated_tokens_full_outer": null,
+        "raw_token_scope": "Null unless an explicit full-outer actual_raw_generated_tokens counter exists. Latest-phase work/stop counters cannot reconstruct all five phases or untruncated raw output.",
+        "candidate_trajectories": 12800,
+        "actual_retrieval_calls": 32173,
+        "selected_mixed_questions": 293,
+        "selected_questions": 512,
+        "optimizer_by_rank": {
+          "0": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 2940,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "1": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 2940,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "2": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 2940,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "3": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 2940,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          }
+        },
+        "scheduler_by_rank": {
+          "0": {
+            "scheduler_advances": 1,
+            "writes_after": 2940,
+            "scheduler_last_epoch_after": 147
+          },
+          "1": {
+            "scheduler_advances": 1,
+            "writes_after": 2940,
+            "scheduler_last_epoch_after": 147
+          },
+          "2": {
+            "scheduler_advances": 1,
+            "writes_after": 2940,
+            "scheduler_last_epoch_after": 147
+          },
+          "3": {
+            "scheduler_advances": 1,
+            "writes_after": 2940,
+            "scheduler_last_epoch_after": 147
+          }
+        },
+        "actor_fa3_by_rank": {
+          "0": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 344960
+            },
+            "cumulative_backward_returns": 172480,
+            "cumulative_qkv_gradient_returns": 172480,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          },
+          "1": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 344960
+            },
+            "cumulative_backward_returns": 172480,
+            "cumulative_qkv_gradient_returns": 172480,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          },
+          "2": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 344960
+            },
+            "cumulative_backward_returns": 172480,
+            "cumulative_qkv_gradient_returns": 172480,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          },
+          "3": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 344960
+            },
+            "cumulative_backward_returns": 172480,
+            "cumulative_qkv_gradient_returns": 172480,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          }
+        },
+        "rollout_by_rank": {
+          "0": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 9852332,
+              "paged_prefill": 0,
+              "decode": 15199576
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 48799,
+              "live_sequence_filters": 0,
+              "token_checks": 29826696,
+              "single_token_decodes": 48799,
+              "filter_triggers": 531664,
+              "prefix_confirmations": 531664,
+              "confirmed_search_stops": 531664,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 246241
+            },
+            "actual_work_latest_phase_only": null
+          },
+          "1": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 9791852,
+              "paged_prefill": 0,
+              "decode": 15399888
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 49072,
+              "live_sequence_filters": 0,
+              "token_checks": 29819140,
+              "single_token_decodes": 49072,
+              "filter_triggers": 531528,
+              "prefix_confirmations": 531528,
+              "confirmed_search_stops": 531528,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 246266
+            },
+            "actual_work_latest_phase_only": null
+          },
+          "2": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 9879184,
+              "paged_prefill": 0,
+              "decode": 15059436
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 48756,
+              "live_sequence_filters": 0,
+              "token_checks": 29823844,
+              "single_token_decodes": 48756,
+              "filter_triggers": 531583,
+              "prefix_confirmations": 531583,
+              "confirmed_search_stops": 531583,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 246258
+            },
+            "actual_work_latest_phase_only": null
+          },
+          "3": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 9736804,
+              "paged_prefill": 0,
+              "decode": 15497412
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 48917,
+              "live_sequence_filters": 0,
+              "token_checks": 29794478,
+              "single_token_decodes": 48917,
+              "filter_triggers": 531045,
+              "prefix_confirmations": 531045,
+              "confirmed_search_stops": 531045,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 246250
+            },
+            "actual_work_latest_phase_only": null
+          }
+        },
+        "rollout_counter_scope": "Latest completed phase records contain cumulative engine counters, not per-outer deltas; phase_weight_syncs is the explicit full phase sequence. Never sum cumulative phases or rank wall times.",
+        "actor_update_seconds": 163.015,
+        "advantage_seconds": 213.717,
+        "checkpoint_write_seconds": 292.837,
+        "producer_post_candidate_step_seconds": 865.907,
+        "training_em_rounded": 0.74,
+        "training_reward_mean_rounded": 0.987,
+        "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792846029079898000.json"
+      },
+      {
+        "step": 148,
+        "full_outer_seconds": 1818.660373210907,
+        "before_generation_mtime": 1792844694.422402,
+        "next_before_generation_mtime": 1792846513.082775,
+        "boundary_sources": [
+          "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792851499584430000.json",
+          "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792851499584430000.json"
+        ],
+        "checkpoint_seal": {
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+          "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/checkpoints/search-g1-common8/actor/global_step_148",
+          "manager": "easy2560_per_outer_full_state_v1",
+          "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/rolling-checkpoints/global_step_148/full-manifest.json",
+          "manifest_sha256": "f177d126d67a5c1d961aa20ed2a1883a22e7721e5046b8c5e7574356ec5b43ce",
+          "published_unix": 1792846503.3797722,
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+          "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+          "step": 148
+        },
+        "candidate_fill_seconds": 851.8215822780039,
+        "retained_policy_tokens": 1679880,
+        "retained_token_source": "selection_summary.raw_generated_policy_tokens (producer name; retained, not untruncated raw)",
+        "actual_raw_generated_tokens_full_outer": null,
+        "raw_token_scope": "Null unless an explicit full-outer actual_raw_generated_tokens counter exists. Latest-phase work/stop counters cannot reconstruct all five phases or untruncated raw output.",
+        "candidate_trajectories": 12800,
+        "actual_retrieval_calls": 32093,
+        "selected_mixed_questions": 302,
+        "selected_questions": 512,
+        "optimizer_by_rank": {
+          "0": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 2960,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "1": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 2960,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "2": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 2960,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "3": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 2960,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          }
+        },
+        "scheduler_by_rank": {
+          "0": {
+            "scheduler_advances": 1,
+            "writes_after": 2960,
+            "scheduler_last_epoch_after": 148
+          },
+          "1": {
+            "scheduler_advances": 1,
+            "writes_after": 2960,
+            "scheduler_last_epoch_after": 148
+          },
+          "2": {
+            "scheduler_advances": 1,
+            "writes_after": 2960,
+            "scheduler_last_epoch_after": 148
+          },
+          "3": {
+            "scheduler_advances": 1,
+            "writes_after": 2960,
+            "scheduler_last_epoch_after": 148
+          }
+        },
+        "actor_fa3_by_rank": {
+          "0": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 349440
+            },
+            "cumulative_backward_returns": 174720,
+            "cumulative_qkv_gradient_returns": 174720,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          },
+          "1": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 349440
+            },
+            "cumulative_backward_returns": 174720,
+            "cumulative_qkv_gradient_returns": 174720,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          },
+          "2": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 349440
+            },
+            "cumulative_backward_returns": 174720,
+            "cumulative_qkv_gradient_returns": 174720,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          },
+          "3": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 349440
+            },
+            "cumulative_backward_returns": 174720,
+            "cumulative_qkv_gradient_returns": 174720,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          }
+        },
+        "rollout_by_rank": {
+          "0": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 9993396,
+              "paged_prefill": 0,
+              "decode": 15403780
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 48866,
+              "live_sequence_filters": 0,
+              "token_checks": 30248094,
+              "single_token_decodes": 48866,
+              "filter_triggers": 539689,
+              "prefix_confirmations": 539689,
+              "confirmed_search_stops": 539689,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 249436
+            },
+            "actual_work_latest_phase_only": null
+          },
+          "1": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 9928996,
+              "paged_prefill": 0,
+              "decode": 15610644
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 49125,
+              "live_sequence_filters": 0,
+              "token_checks": 30240332,
+              "single_token_decodes": 49125,
+              "filter_triggers": 539583,
+              "prefix_confirmations": 539583,
+              "confirmed_search_stops": 539583,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 249463
+            },
+            "actual_work_latest_phase_only": null
+          },
+          "2": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 10016468,
+              "paged_prefill": 0,
+              "decode": 15271256
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 48811,
+              "live_sequence_filters": 0,
+              "token_checks": 30240755,
+              "single_token_decodes": 48811,
+              "filter_triggers": 539560,
+              "prefix_confirmations": 539560,
+              "confirmed_search_stops": 539560,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 249455
+            },
+            "actual_work_latest_phase_only": null
+          },
+          "3": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 9876916,
+              "paged_prefill": 0,
+              "decode": 15702932
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 48975,
+              "live_sequence_filters": 0,
+              "token_checks": 30214857,
+              "single_token_decodes": 48975,
+              "filter_triggers": 539105,
+              "prefix_confirmations": 539105,
+              "confirmed_search_stops": 539105,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 249444
+            },
+            "actual_work_latest_phase_only": null
+          }
+        },
+        "rollout_counter_scope": "Latest completed phase records contain cumulative engine counters, not per-outer deltas; phase_weight_syncs is the explicit full phase sequence. Never sum cumulative phases or rank wall times.",
+        "actor_update_seconds": 161.305,
+        "advantage_seconds": 213.45,
+        "checkpoint_write_seconds": 293.808,
+        "producer_post_candidate_step_seconds": 865.324,
+        "training_em_rounded": 0.717,
+        "training_reward_mean_rounded": 0.953,
+        "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792847850616639000.json"
+      },
+      {
+        "step": 149,
+        "full_outer_seconds": 1856.7149968147278,
+        "before_generation_mtime": 1792846513.082775,
+        "next_before_generation_mtime": 1792848369.797772,
+        "boundary_sources": [
+          "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792851499584430000.json",
+          "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792851499584430000.json"
+        ],
+        "checkpoint_seal": {
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+          "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/checkpoints/search-g1-common8/actor/global_step_149",
+          "manager": "easy2560_per_outer_full_state_v1",
+          "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/rolling-checkpoints/global_step_149/full-manifest.json",
+          "manifest_sha256": "4e3dd608c95363fff7e9e7fac11d8391fe2ee00a0d74597e5b8c82ad1890810c",
+          "published_unix": 1792848360.4176953,
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+          "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+          "step": 149
+        },
+        "candidate_fill_seconds": 866.4153293129057,
+        "retained_policy_tokens": 1684062,
+        "retained_token_source": "selection_summary.raw_generated_policy_tokens (producer name; retained, not untruncated raw)",
+        "actual_raw_generated_tokens_full_outer": null,
+        "raw_token_scope": "Null unless an explicit full-outer actual_raw_generated_tokens counter exists. Latest-phase work/stop counters cannot reconstruct all five phases or untruncated raw output.",
+        "candidate_trajectories": 12800,
+        "actual_retrieval_calls": 32294,
+        "selected_mixed_questions": 318,
+        "selected_questions": 512,
+        "optimizer_by_rank": {
+          "0": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 2980,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "1": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 2980,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "2": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 2980,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "3": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 2980,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          }
+        },
+        "scheduler_by_rank": {
+          "0": {
+            "scheduler_advances": 1,
+            "writes_after": 2980,
+            "scheduler_last_epoch_after": 149
+          },
+          "1": {
+            "scheduler_advances": 1,
+            "writes_after": 2980,
+            "scheduler_last_epoch_after": 149
+          },
+          "2": {
+            "scheduler_advances": 1,
+            "writes_after": 2980,
+            "scheduler_last_epoch_after": 149
+          },
+          "3": {
+            "scheduler_advances": 1,
+            "writes_after": 2980,
+            "scheduler_last_epoch_after": 149
+          }
+        },
+        "actor_fa3_by_rank": {
+          "0": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 353920
+            },
+            "cumulative_backward_returns": 176960,
+            "cumulative_qkv_gradient_returns": 176960,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          },
+          "1": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 353920
+            },
+            "cumulative_backward_returns": 176960,
+            "cumulative_qkv_gradient_returns": 176960,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          },
+          "2": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 353920
+            },
+            "cumulative_backward_returns": 176960,
+            "cumulative_qkv_gradient_returns": 176960,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          },
+          "3": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 353920
+            },
+            "cumulative_backward_returns": 176960,
+            "cumulative_qkv_gradient_returns": 176960,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          }
+        },
+        "rollout_by_rank": {
+          "0": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 10136728,
+              "paged_prefill": 0,
+              "decode": 15608264
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 48925,
+              "live_sequence_filters": 0,
+              "token_checks": 30670115,
+              "single_token_decodes": 48925,
+              "filter_triggers": 547779,
+              "prefix_confirmations": 547779,
+              "confirmed_search_stops": 547779,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 252636
+            },
+            "actual_work_latest_phase_only": null
+          },
+          "1": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 10068324,
+              "paged_prefill": 0,
+              "decode": 15819524
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 49175,
+              "live_sequence_filters": 0,
+              "token_checks": 30660903,
+              "single_token_decodes": 49175,
+              "filter_triggers": 547663,
+              "prefix_confirmations": 547663,
+              "confirmed_search_stops": 547663,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 252660
+            },
+            "actual_work_latest_phase_only": null
+          },
+          "2": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 10158792,
+              "paged_prefill": 0,
+              "decode": 15481760
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 48861,
+              "live_sequence_filters": 0,
+              "token_checks": 30662105,
+              "single_token_decodes": 48861,
+              "filter_triggers": 547641,
+              "prefix_confirmations": 547641,
+              "confirmed_search_stops": 547641,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 252658
+            },
+            "actual_work_latest_phase_only": null
+          },
+          "3": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 10018064,
+              "paged_prefill": 0,
+              "decode": 15909572
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 49039,
+              "live_sequence_filters": 0,
+              "token_checks": 30634977,
+              "single_token_decodes": 49039,
+              "filter_triggers": 547156,
+              "prefix_confirmations": 547156,
+              "confirmed_search_stops": 547156,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 252640
+            },
+            "actual_work_latest_phase_only": null
+          }
+        },
+        "rollout_counter_scope": "Latest completed phase records contain cumulative engine counters, not per-outer deltas; phase_weight_syncs is the explicit full phase sequence. Never sum cumulative phases or rank wall times.",
+        "actor_update_seconds": 161.555,
+        "advantage_seconds": 214.053,
+        "checkpoint_write_seconds": 272.256,
+        "producer_post_candidate_step_seconds": 843.641,
+        "training_em_rounded": 0.698,
+        "training_reward_mean_rounded": 0.927,
+        "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792849643039015000.json"
+      },
+      {
+        "step": 150,
+        "full_outer_seconds": 2694.388844013214,
+        "before_generation_mtime": 1792848369.797772,
+        "next_before_generation_mtime": 1792851064.186616,
+        "boundary_sources": [
+          "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792851499584430000.json",
+          "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792851499584430000.json"
+        ],
+        "checkpoint_seal": {
+          "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+          "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/checkpoints/search-g1-common8/actor/global_step_150",
+          "manager": "easy2560_per_outer_full_state_v1",
+          "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/rolling-checkpoints/global_step_150/full-manifest.json",
+          "manifest_sha256": "bdf0769073c633db2583c817c2272a5cc3c4e1f418abc925ca14f94e2319987a",
+          "published_unix": 1792851053.7874744,
+          "run_id": "232f20e112ac4a978c5aba52a0367195",
+          "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+          "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+          "step": 150
+        },
+        "candidate_fill_seconds": 856.8994896281511,
+        "retained_policy_tokens": 1701565,
+        "retained_token_source": "selection_summary.raw_generated_policy_tokens (producer name; retained, not untruncated raw)",
+        "actual_raw_generated_tokens_full_outer": null,
+        "raw_token_scope": "Null unless an explicit full-outer actual_raw_generated_tokens counter exists. Latest-phase work/stop counters cannot reconstruct all five phases or untruncated raw output.",
+        "candidate_trajectories": 12800,
+        "actual_retrieval_calls": 32488,
+        "selected_mixed_questions": 312,
+        "selected_questions": 512,
+        "optimizer_by_rank": {
+          "0": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 3000,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "1": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 3000,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "2": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 3000,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          },
+          "3": {
+            "optimizer_writes": 20,
+            "cumulative_writes": 3000,
+            "actual_monitor_forward_count": 0,
+            "full_budget_complete": true
+          }
+        },
+        "scheduler_by_rank": {
+          "0": {
+            "scheduler_advances": 1,
+            "writes_after": 3000,
+            "scheduler_last_epoch_after": 150
+          },
+          "1": {
+            "scheduler_advances": 1,
+            "writes_after": 3000,
+            "scheduler_last_epoch_after": 150
+          },
+          "2": {
+            "scheduler_advances": 1,
+            "writes_after": 3000,
+            "scheduler_last_epoch_after": 150
+          },
+          "3": {
+            "scheduler_advances": 1,
+            "writes_after": 3000,
+            "scheduler_last_epoch_after": 150
+          }
+        },
+        "actor_fa3_by_rank": {
+          "0": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 358400
+            },
+            "cumulative_backward_returns": 179200,
+            "cumulative_qkv_gradient_returns": 179200,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          },
+          "1": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 358400
+            },
+            "cumulative_backward_returns": 179200,
+            "cumulative_qkv_gradient_returns": 179200,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          },
+          "2": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 358400
+            },
+            "cumulative_backward_returns": 179200,
+            "cumulative_qkv_gradient_returns": 179200,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          },
+          "3": {
+            "actual_flash3_training_executed": true,
+            "compact_gqa_enabled": true,
+            "cumulative_forward_returns": {
+              "dense": 0,
+              "varlen": 358400
+            },
+            "cumulative_backward_returns": 179200,
+            "cumulative_qkv_gradient_returns": 179200,
+            "observed_qkv_geometry": [
+              {
+                "dtype": "torch.bfloat16",
+                "q_heads": 28,
+                "kv_heads": 4,
+                "head_dim": 128
+              }
+            ]
+          }
+        },
+        "rollout_by_rank": {
+          "0": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 10276924,
+              "paged_prefill": 0,
+              "decode": 15817368
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 49002,
+              "live_sequence_filters": 0,
+              "token_checks": 31094474,
+              "single_token_decodes": 49002,
+              "filter_triggers": 555877,
+              "prefix_confirmations": 555877,
+              "confirmed_search_stops": 555877,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 255832
+            },
+            "actual_work_latest_phase_only": null
+          },
+          "1": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 10207092,
+              "paged_prefill": 0,
+              "decode": 16033304
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 49235,
+              "live_sequence_filters": 0,
+              "token_checks": 31086200,
+              "single_token_decodes": 49235,
+              "filter_triggers": 555784,
+              "prefix_confirmations": 555784,
+              "confirmed_search_stops": 555784,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 255858
+            },
+            "actual_work_latest_phase_only": null
+          },
+          "2": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 10300500,
+              "paged_prefill": 0,
+              "decode": 15691480
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 48914,
+              "live_sequence_filters": 0,
+              "token_checks": 31088437,
+              "single_token_decodes": 48914,
+              "filter_triggers": 555777,
+              "prefix_confirmations": 555777,
+              "confirmed_search_stops": 555777,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 255855
+            },
+            "actual_work_latest_phase_only": null
+          },
+          "3": {
+            "phase_weight_syncs": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "total_weight_syncs": 1,
+            "cumulative_fa3_calls": {
+              "prefill": 10157840,
+              "paged_prefill": 0,
+              "decode": 16119180
+            },
+            "cumulative_search_action_stop": {
+              "enabled": true,
+              "search_only": true,
+              "answer_stop_enabled": false,
+              "stop_reason": "search_action_boundary:</search>",
+              "native_stop_checker_runs_first": true,
+              "raw_tokens_or_logprobs_mutated": false,
+              "piece_cache_entries": 49110,
+              "live_sequence_filters": 0,
+              "token_checks": 31060614,
+              "single_token_decodes": 49110,
+              "filter_triggers": 555299,
+              "prefix_confirmations": 555299,
+              "confirmed_search_stops": 555299,
+              "confirmation_rejections": 0,
+              "ambiguous_prefixes": 0,
+              "native_finished_first": 255839
+            },
+            "actual_work_latest_phase_only": null
+          }
+        },
+        "rollout_counter_scope": "Latest completed phase records contain cumulative engine counters, not per-outer deltas; phase_weight_syncs is the explicit full phase sequence. Never sum cumulative phases or rank wall times.",
+        "actor_update_seconds": 162.491,
+        "advantage_seconds": 217.33,
+        "checkpoint_write_seconds": 273.915,
+        "producer_post_candidate_step_seconds": 969.193,
+        "training_em_rounded": 0.707,
+        "training_reward_mean_rounded": 0.946,
+        "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792851499584430000.json"
+      }
+    ],
+    "aggregate": {
+      "full_outer_seconds": {
+        "mean": 2010.3713523864747,
+        "observed_count": 5,
+        "completed_outer_count": 5
+      },
+      "candidate_fill_seconds": {
+        "mean": 850.8263804081828,
+        "observed_count": 5,
+        "completed_outer_count": 5
+      },
+      "actor_update_seconds": {
+        "mean": 162.0915,
+        "observed_count": 4,
+        "completed_outer_count": 5
+      },
+      "advantage_seconds": {
+        "mean": 214.63750000000002,
+        "observed_count": 4,
+        "completed_outer_count": 5
+      },
+      "checkpoint_write_seconds": {
+        "mean": 283.204,
+        "observed_count": 4,
+        "completed_outer_count": 5
+      }
+    },
+    "actual_errors": {
+      "training": [],
+      "trainer": [],
+      "pipeline": [],
+      "slurm": []
+    },
+    "observation_errors": [],
+    "read_errors": []
+  },
+  "fixed_baseline": {
+    "file": "outputs/easy2560-qwen7b-20261021/pre-combined-native4-baseline-latest-five.json",
+    "outers": [
+      65,
+      66,
+      67,
+      68,
+      69
+    ],
+    "whole_outer_seconds_mean": 1846.4548518180848,
+    "phase_aggregates": {
+      "full_outer_seconds": {
+        "mean": 1846.4548518180848,
+        "observed_count": 5,
+        "expected_count": 5
+      },
+      "candidate_fill_seconds": {
+        "mean": 1075.964543804014,
+        "observed_count": 5,
+        "expected_count": 5
+      },
+      "actor_update_seconds": {
+        "mean": 155.026,
+        "observed_count": 5,
+        "expected_count": 5
+      },
+      "advantage_seconds": {
+        "mean": 215.4858,
+        "observed_count": 5,
+        "expected_count": 5
+      },
+      "checkpoint_write_seconds": {
+        "mean": 153.47599999999997,
+        "observed_count": 5,
+        "expected_count": 5
+      }
+    }
+  },
+  "observational_comparison": {
+    "baseline_over_new_wall_ratio": 0.9184645660744182,
+    "new_whole_wall_observations": 5,
+    "same_input_causality_proven": false
+  },
+  "wall_scope": "Only adjacent actual before-generation mtimes establish whole wall; includes checkpoint/seal/inter-outer work and excludes startup. No rank wall sum or candidate+step substitution. Missing next boundary means null.",
+  "phase_scope": "Producer rounded log phases are preserved; checkpoint write is not all sealing time; segments need not sum to whole. Training EM/reward are not fixed-validation metrics.",
+  "counter_scope": "FA3 and stop reports are actual cumulative counters per rank. Raw and retained token counts are kept distinct; null is not zero. Different policy/data/requests prevent strict speed causality.",
+  "remote_operations": false,
+  "tensor_files_read": false,
+  "training_modified": false,
+  "goal_complete": false
+}
