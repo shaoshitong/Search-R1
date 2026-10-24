@@ -1,5 +1,22 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
+**Both independently verified full evaluations are complete.** Same ordered51,713
+canonical occurrences, separate two-H100 job760313 COMPLETED0:0; its GPU allocation
+has ended. Checkpoint100 weighted EM **50.803473% (26,272 correct)**; checkpoint150
+**51.983060% (26,882 correct)**, +610 correct/+1.179587 percentage points. Seven-source
+macro EM **47.066265%→47.846044%**, +0.779779 points. Six sources improve; Bamboogle
+58→55/125. Weighted F1 is58.018952%→59.131771%; macro F1 is55.407578%→56.571241%.
+Independent CPU recomputation validated both full ordered ledgers, canonical SHA,
+source counts, EM/F1, and every per-source/macro/weighted aggregate, with809 saved
+batches each and the final single occurrence retained. No tensor/model/GPU/retrieval
+was used by the score consumer. Main training continues unchanged; the200/final
+native4-recovery target remains incomplete. Do not repeat these accepted evaluations.
+
+[Full seven-source comparison](FULL51713-CHECKPOINT100-vs150.md) and
+[small score/identity/hash receipts](evidence/checkpoint100-vs150-full51713-verified.json).
+
+**Earlier observations (150-in-progress descriptions below are historical):**
+
 **New completed full evaluation, checkpoint100:** the separate two-H100 job760313
 has evaluated all51,713 canonical occurrences with greedy original Co rollout.
 **Weighted EM50.803473% (26,272/51,713), seven-source macro EM47.066265%.**

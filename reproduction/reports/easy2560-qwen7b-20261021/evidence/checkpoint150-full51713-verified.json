@@ -1,0 +1,105 @@
+{
+  "checkpoint_step": 150,
+  "verification": {
+    "status": "INDEPENDENT_CPU_ORDERED51713_SCORES_VERIFIED",
+    "scores": {
+      "step": 150,
+      "question_count": 51713,
+      "counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "correct": 26882,
+      "per_source": {
+        "2wikimultihopqa": {
+          "count": 12576,
+          "correct": 5977,
+          "em": 0.4752703562340967,
+          "f1": 0.5411225409990565
+        },
+        "bamboogle": {
+          "count": 125,
+          "correct": 55,
+          "em": 0.44,
+          "f1": 0.5672
+        },
+        "hotpotqa": {
+          "count": 7405,
+          "correct": 3702,
+          "em": 0.499932478055368,
+          "f1": 0.6240090218811253
+        },
+        "musique": {
+          "count": 2417,
+          "correct": 572,
+          "em": 0.23665701282581714,
+          "f1": 0.33557897194441616
+        },
+        "nq": {
+          "count": 3610,
+          "correct": 1908,
+          "em": 0.5285318559556786,
+          "f1": 0.610001998616957
+        },
+        "popqa": {
+          "count": 14267,
+          "correct": 6979,
+          "em": 0.4891708137660335,
+          "f1": 0.529675168954625
+        },
+        "triviaqa": {
+          "count": 11313,
+          "correct": 7689,
+          "em": 0.6796605674887298,
+          "f1": 0.7523991734113571
+        }
+      },
+      "weighted_em": 0.519830603523292,
+      "weighted_f1": 0.5913177142519106,
+      "macro_em": 0.4784604406179605,
+      "macro_f1": 0.5657124108296482,
+      "canonical_occurrences_retained": true,
+      "deduplicated": false
+    },
+    "validation_sha256": "55d515e116a4c6aa63b45282f9bc87202b030156be41be60420c38a9d3ff0ed1",
+    "ordered_question_ids_sha256": "fc85a32c0ab3a931badf19d3c70ae7bdd8379f3240c118caaf144080c4c91121",
+    "result": {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-milestone100-150-native2-eval-20261025/eval-150/result.json",
+      "bytes": 1974,
+      "sha256": "fdb29ed954d218df34578d003e9c714c58fd9957e330391178d3dc93ef29d2e7"
+    },
+    "launch": {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-milestone100-150-native2-eval-20261025/eval-150/launch.json",
+      "bytes": 3459,
+      "sha256": "ac1afd49cb770fd6d15600dc262b6de1d0ae1e19cb29d88d6e08f89357658590"
+    },
+    "workers": {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-milestone100-150-native2-eval-20261025/eval-150/workers.json",
+      "bytes": 4281,
+      "sha256": "b6ccd44923c99524acd65f9f2b9389744a6e900721869ceaec0c7e96fb3b380d"
+    },
+    "rows": {
+      "path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-milestone100-150-native2-eval-20261025/eval-150/rows.jsonl",
+      "bytes": 17937376,
+      "sha256": "eaaaabc028f02a637ffb2af93f3aa312b40ad98ce0aabfe61ff3a196b93c5cdd",
+      "rows": 51713
+    },
+    "raw_batches": 809,
+    "last_batch_expected_questions": 1,
+    "raw_tensors_loaded": false,
+    "retrieval_queries_sent": 0,
+    "model_loaded": false,
+    "gpu_allocated": false,
+    "torch_imported": false,
+    "training_modified": false
+  },
+  "verification_evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/milestone100-150-native2-cpu-verification-1792876635983782000.json",
+  "training_modified": false,
+  "production_final200_evaluation_complete": false,
+  "goal_complete": false
+}
