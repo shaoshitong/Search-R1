@@ -1,0 +1,508 @@
+{
+  "automation_id": "7b-dynrpo",
+  "decision": "DONT_NOTIFY",
+  "first_observation": {
+    "time": 1792851364.6784923,
+    "training_job": 751884,
+    "retrieval_job": 751011,
+    "queue_query_returncode": 0,
+    "queue": "751011 RUNNING 1-08:23:05 ACD1-51\n751884 RUNNING 1-03:53:13 ACD1-1",
+    "pipeline": "DYNRPO7B_GRPO_1_TO_200",
+    "trainer": {
+      "bytes": 5488788,
+      "mtime": 1792850858.761868,
+      "error": false
+    },
+    "recent_collections": [
+      {
+        "step": 74,
+        "candidate_fill_seconds": 824.9717353719752,
+        "probe_top_group_counts": {
+          "questions": 1024,
+          "all_correct": 364,
+          "all_wrong": 345,
+          "mixed": 315,
+          "mixed_fraction": 0.3076171875
+        },
+        "selected_mixed": 315,
+        "selected_mixed_fraction": 0.615234375,
+        "attempt_id": "d67de72a046d4a36b541530ee5166935",
+        "question_probe_version": "seed1-E9-raw-online-0070"
+      },
+      {
+        "step": 75,
+        "candidate_fill_seconds": 797.9709723428823,
+        "probe_top_group_counts": {
+          "questions": 1024,
+          "all_correct": 350,
+          "all_wrong": 353,
+          "mixed": 321,
+          "mixed_fraction": 0.3134765625
+        },
+        "selected_mixed": 321,
+        "selected_mixed_fraction": 0.626953125,
+        "attempt_id": "b6e0d928224744ae90c34c0176b6bb0d",
+        "question_probe_version": "seed1-E9-raw-online-0070"
+      },
+      {
+        "step": 76,
+        "candidate_fill_seconds": 792.6364006379154,
+        "probe_top_group_counts": {
+          "questions": 1024,
+          "all_correct": 406,
+          "all_wrong": 318,
+          "mixed": 300,
+          "mixed_fraction": 0.29296875
+        },
+        "selected_mixed": 300,
+        "selected_mixed_fraction": 0.5859375,
+        "attempt_id": "c26f381831a448e18d8d4b6aa6565d92",
+        "question_probe_version": "seed1-E9-raw-online-0070"
+      },
+      {
+        "step": 77,
+        "candidate_fill_seconds": 764.7059598600026,
+        "probe_top_group_counts": {
+          "questions": 1024,
+          "all_correct": 350,
+          "all_wrong": 365,
+          "mixed": 309,
+          "mixed_fraction": 0.3017578125
+        },
+        "selected_mixed": 309,
+        "selected_mixed_fraction": 0.603515625,
+        "attempt_id": "0aa8bd5a8427407e8dceb6806ceeb7a1",
+        "question_probe_version": "seed1-E9-raw-online-0070"
+      }
+    ],
+    "recent_steps": [
+      {
+        "infra/rollout/weight_syncs_per_rank": 1.0,
+        "train/perf/em": 0.507,
+        "actor/completed_outer": 74.0,
+        "timing_s/candidate_fill": 824.972,
+        "timing_s/adv": 240.088,
+        "timing_s/update_actor": 181.037,
+        "timing_s/question_probe_update": 0.001,
+        "timing_s/save_checkpoint": 308.239,
+        "timing_s/step": 848.649,
+        "collection_outer": 74
+      },
+      {
+        "infra/rollout/weight_syncs_per_rank": 1.0,
+        "train/perf/em": 0.544,
+        "actor/completed_outer": 75.0,
+        "timing_s/candidate_fill": 797.971,
+        "timing_s/adv": 212.215,
+        "timing_s/update_actor": 179.776,
+        "timing_s/question_probe_update": 0.001,
+        "timing_s/save_checkpoint": 288.261,
+        "timing_s/step": 784.606,
+        "collection_outer": 75
+      },
+      {
+        "infra/rollout/weight_syncs_per_rank": 1.0,
+        "train/perf/em": 0.557,
+        "actor/completed_outer": 76.0,
+        "timing_s/candidate_fill": 792.636,
+        "timing_s/adv": 201.895,
+        "timing_s/update_actor": 136.354,
+        "timing_s/question_probe_update": 0.001,
+        "timing_s/save_checkpoint": 286.668,
+        "timing_s/step": 734.164,
+        "collection_outer": 76
+      },
+      {
+        "infra/rollout/weight_syncs_per_rank": 1.0,
+        "train/perf/em": 0.516,
+        "actor/completed_outer": 77.0,
+        "timing_s/candidate_fill": 764.706,
+        "timing_s/adv": 208.001,
+        "timing_s/update_actor": 138.803,
+        "timing_s/question_probe_update": 0.001,
+        "timing_s/save_checkpoint": 269.711,
+        "timing_s/step": 734.273,
+        "collection_outer": 77
+      }
+    ],
+    "launcher": {
+      "bytes": 0,
+      "mtime": 1792750972.479454,
+      "error": false
+    },
+    "writes": [
+      1540,
+      1540,
+      1540,
+      1540
+    ],
+    "checkpoint": {
+      "completed_outer": 77,
+      "status": "DYNRPO7B_ROLLING_READY",
+      "source_commit": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
+      "rank_saved_writes": [
+        1540,
+        1540,
+        1540,
+        1540
+      ],
+      "probe": {
+        "head_version": "seed1-E9-raw-online-0070",
+        "head_sha256": "5f9a8abda80e66c86f9e179a09bf12af22d9a2026516085f5769018073e2763b",
+        "fit_completed_epochs": 0,
+        "reference": {
+          "path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023-recoveryfix-r6/artifacts/question-probe/update-0070/probe-epoch-03.pt",
+          "sha256": "5f9a8abda80e66c86f9e179a09bf12af22d9a2026516085f5769018073e2763b",
+          "warmup_updates": 11889,
+          "online_updates": 420,
+          "completed_update_outer": 70,
+          "current_prefix": 80
+        }
+      },
+      "post_callback_rng_captured": true
+    },
+    "phase": {
+      "completed_actor_outer": 77,
+      "phase": "outer_complete",
+      "probe_pending": false,
+      "probe_completed_epoch": 0,
+      "probe_effective_from_outer": null,
+      "grounding_pending": false,
+      "next_outer": 78
+    },
+    "latest_collection_journal": {
+      "name": "outer-0078.json",
+      "stage": "candidates",
+      "parts": 1
+    },
+    "probe_update": {
+      "directory": "update-0070",
+      "epochs": [
+        {
+          "epoch": 1,
+          "target4variance_MSE": 0.07202928379501827,
+          "actual_questions": 2560,
+          "actual_optimizer_updates": 20,
+          "online_updates": 380,
+          "warmup_updates": 11889,
+          "seconds": 13.471233421005309,
+          "dataset_sha256": "e56d952c84a8f7c5f74ec1e9a8605d14325ecbbed4d77ccc9fb2f7598f98e7c4",
+          "completed_actor_outer": 70,
+          "rollout_actor_outer": 69,
+          "prefix": 80
+        },
+        {
+          "epoch": 2,
+          "target4variance_MSE": 0.06766040595503,
+          "actual_questions": 2560,
+          "actual_optimizer_updates": 20,
+          "online_updates": 400,
+          "warmup_updates": 11889,
+          "seconds": 13.264905783114955,
+          "dataset_sha256": "e56d952c84a8f7c5f74ec1e9a8605d14325ecbbed4d77ccc9fb2f7598f98e7c4",
+          "completed_actor_outer": 70,
+          "rollout_actor_outer": 69,
+          "prefix": 80
+        },
+        {
+          "epoch": 3,
+          "target4variance_MSE": 0.060636956546841245,
+          "actual_questions": 2560,
+          "actual_optimizer_updates": 20,
+          "online_updates": 420,
+          "warmup_updates": 11889,
+          "seconds": 21.624659738969058,
+          "dataset_sha256": "e56d952c84a8f7c5f74ec1e9a8605d14325ecbbed4d77ccc9fb2f7598f98e7c4",
+          "completed_actor_outer": 70,
+          "rollout_actor_outer": 69,
+          "prefix": 80
+        }
+      ],
+      "publication": {
+        "status": "PROBE_UPDATE_PUBLISHED",
+        "online_updates": 420,
+        "dataset_sha256": "e56d952c84a8f7c5f74ec1e9a8605d14325ecbbed4d77ccc9fb2f7598f98e7c4",
+        "completed_actor_outer": 70,
+        "rollout_actor_outer": 69,
+        "effective_state": "raw",
+        "prefix": 80,
+        "checkpoint_sha256": "5f9a8abda80e66c86f9e179a09bf12af22d9a2026516085f5769018073e2763b"
+      }
+    }
+  },
+  "last_observation": {
+    "time": 1792851446.143442,
+    "training_job": 751884,
+    "retrieval_job": 751011,
+    "queue_query_returncode": 0,
+    "queue": "751011 RUNNING 1-08:24:27 ACD1-51\n751884 RUNNING 1-03:54:35 ACD1-1",
+    "pipeline": "DYNRPO7B_GRPO_1_TO_200",
+    "trainer": {
+      "bytes": 5488788,
+      "mtime": 1792850858.761868,
+      "error": false
+    },
+    "recent_collections": [
+      {
+        "step": 74,
+        "candidate_fill_seconds": 824.9717353719752,
+        "probe_top_group_counts": {
+          "questions": 1024,
+          "all_correct": 364,
+          "all_wrong": 345,
+          "mixed": 315,
+          "mixed_fraction": 0.3076171875
+        },
+        "selected_mixed": 315,
+        "selected_mixed_fraction": 0.615234375,
+        "attempt_id": "d67de72a046d4a36b541530ee5166935",
+        "question_probe_version": "seed1-E9-raw-online-0070"
+      },
+      {
+        "step": 75,
+        "candidate_fill_seconds": 797.9709723428823,
+        "probe_top_group_counts": {
+          "questions": 1024,
+          "all_correct": 350,
+          "all_wrong": 353,
+          "mixed": 321,
+          "mixed_fraction": 0.3134765625
+        },
+        "selected_mixed": 321,
+        "selected_mixed_fraction": 0.626953125,
+        "attempt_id": "b6e0d928224744ae90c34c0176b6bb0d",
+        "question_probe_version": "seed1-E9-raw-online-0070"
+      },
+      {
+        "step": 76,
+        "candidate_fill_seconds": 792.6364006379154,
+        "probe_top_group_counts": {
+          "questions": 1024,
+          "all_correct": 406,
+          "all_wrong": 318,
+          "mixed": 300,
+          "mixed_fraction": 0.29296875
+        },
+        "selected_mixed": 300,
+        "selected_mixed_fraction": 0.5859375,
+        "attempt_id": "c26f381831a448e18d8d4b6aa6565d92",
+        "question_probe_version": "seed1-E9-raw-online-0070"
+      },
+      {
+        "step": 77,
+        "candidate_fill_seconds": 764.7059598600026,
+        "probe_top_group_counts": {
+          "questions": 1024,
+          "all_correct": 350,
+          "all_wrong": 365,
+          "mixed": 309,
+          "mixed_fraction": 0.3017578125
+        },
+        "selected_mixed": 309,
+        "selected_mixed_fraction": 0.603515625,
+        "attempt_id": "0aa8bd5a8427407e8dceb6806ceeb7a1",
+        "question_probe_version": "seed1-E9-raw-online-0070"
+      }
+    ],
+    "recent_steps": [
+      {
+        "infra/rollout/weight_syncs_per_rank": 1.0,
+        "train/perf/em": 0.507,
+        "actor/completed_outer": 74.0,
+        "timing_s/candidate_fill": 824.972,
+        "timing_s/adv": 240.088,
+        "timing_s/update_actor": 181.037,
+        "timing_s/question_probe_update": 0.001,
+        "timing_s/save_checkpoint": 308.239,
+        "timing_s/step": 848.649,
+        "collection_outer": 74
+      },
+      {
+        "infra/rollout/weight_syncs_per_rank": 1.0,
+        "train/perf/em": 0.544,
+        "actor/completed_outer": 75.0,
+        "timing_s/candidate_fill": 797.971,
+        "timing_s/adv": 212.215,
+        "timing_s/update_actor": 179.776,
+        "timing_s/question_probe_update": 0.001,
+        "timing_s/save_checkpoint": 288.261,
+        "timing_s/step": 784.606,
+        "collection_outer": 75
+      },
+      {
+        "infra/rollout/weight_syncs_per_rank": 1.0,
+        "train/perf/em": 0.557,
+        "actor/completed_outer": 76.0,
+        "timing_s/candidate_fill": 792.636,
+        "timing_s/adv": 201.895,
+        "timing_s/update_actor": 136.354,
+        "timing_s/question_probe_update": 0.001,
+        "timing_s/save_checkpoint": 286.668,
+        "timing_s/step": 734.164,
+        "collection_outer": 76
+      },
+      {
+        "infra/rollout/weight_syncs_per_rank": 1.0,
+        "train/perf/em": 0.516,
+        "actor/completed_outer": 77.0,
+        "timing_s/candidate_fill": 764.706,
+        "timing_s/adv": 208.001,
+        "timing_s/update_actor": 138.803,
+        "timing_s/question_probe_update": 0.001,
+        "timing_s/save_checkpoint": 269.711,
+        "timing_s/step": 734.273,
+        "collection_outer": 77
+      }
+    ],
+    "launcher": {
+      "bytes": 0,
+      "mtime": 1792750972.479454,
+      "error": false
+    },
+    "writes": [
+      1540,
+      1540,
+      1540,
+      1540
+    ],
+    "checkpoint": {
+      "completed_outer": 77,
+      "status": "DYNRPO7B_ROLLING_READY",
+      "source_commit": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
+      "rank_saved_writes": [
+        1540,
+        1540,
+        1540,
+        1540
+      ],
+      "probe": {
+        "head_version": "seed1-E9-raw-online-0070",
+        "head_sha256": "5f9a8abda80e66c86f9e179a09bf12af22d9a2026516085f5769018073e2763b",
+        "fit_completed_epochs": 0,
+        "reference": {
+          "path": "/data/user/jxu957/experiments/dynrpo7b-formal-20261023-recoveryfix-r6/artifacts/question-probe/update-0070/probe-epoch-03.pt",
+          "sha256": "5f9a8abda80e66c86f9e179a09bf12af22d9a2026516085f5769018073e2763b",
+          "warmup_updates": 11889,
+          "online_updates": 420,
+          "completed_update_outer": 70,
+          "current_prefix": 80
+        }
+      },
+      "post_callback_rng_captured": true
+    },
+    "phase": {
+      "completed_actor_outer": 77,
+      "phase": "outer_complete",
+      "probe_pending": false,
+      "probe_completed_epoch": 0,
+      "probe_effective_from_outer": null,
+      "grounding_pending": false,
+      "next_outer": 78
+    },
+    "latest_collection_journal": {
+      "name": "outer-0078.json",
+      "stage": "prefix_scored",
+      "parts": 2
+    },
+    "probe_update": {
+      "directory": "update-0070",
+      "epochs": [
+        {
+          "epoch": 1,
+          "target4variance_MSE": 0.07202928379501827,
+          "actual_questions": 2560,
+          "actual_optimizer_updates": 20,
+          "online_updates": 380,
+          "warmup_updates": 11889,
+          "seconds": 13.471233421005309,
+          "dataset_sha256": "e56d952c84a8f7c5f74ec1e9a8605d14325ecbbed4d77ccc9fb2f7598f98e7c4",
+          "completed_actor_outer": 70,
+          "rollout_actor_outer": 69,
+          "prefix": 80
+        },
+        {
+          "epoch": 2,
+          "target4variance_MSE": 0.06766040595503,
+          "actual_questions": 2560,
+          "actual_optimizer_updates": 20,
+          "online_updates": 400,
+          "warmup_updates": 11889,
+          "seconds": 13.264905783114955,
+          "dataset_sha256": "e56d952c84a8f7c5f74ec1e9a8605d14325ecbbed4d77ccc9fb2f7598f98e7c4",
+          "completed_actor_outer": 70,
+          "rollout_actor_outer": 69,
+          "prefix": 80
+        },
+        {
+          "epoch": 3,
+          "target4variance_MSE": 0.060636956546841245,
+          "actual_questions": 2560,
+          "actual_optimizer_updates": 20,
+          "online_updates": 420,
+          "warmup_updates": 11889,
+          "seconds": 21.624659738969058,
+          "dataset_sha256": "e56d952c84a8f7c5f74ec1e9a8605d14325ecbbed4d77ccc9fb2f7598f98e7c4",
+          "completed_actor_outer": 70,
+          "rollout_actor_outer": 69,
+          "prefix": 80
+        }
+      ],
+      "publication": {
+        "status": "PROBE_UPDATE_PUBLISHED",
+        "online_updates": 420,
+        "dataset_sha256": "e56d952c84a8f7c5f74ec1e9a8605d14325ecbbed4d77ccc9fb2f7598f98e7c4",
+        "completed_actor_outer": 70,
+        "rollout_actor_outer": 69,
+        "effective_state": "raw",
+        "prefix": 80,
+        "checkpoint_sha256": "5f9a8abda80e66c86f9e179a09bf12af22d9a2026516085f5769018073e2763b"
+      }
+    }
+  },
+  "checkpoint_acceptance": {
+    "status": "CP77_METADATA_SMALL_SHA_AND_RUNTIME_PASS",
+    "checked_unix": 1792851387.2271938,
+    "completed_outer": 77,
+    "actor_files_metadata_verified": 16,
+    "fresh_small_SHA_verified": 6,
+    "full_model_rehashed": false,
+    "full_Adam_reloaded": false,
+    "rank_Adam": [
+      1540,
+      1540,
+      1540,
+      1540
+    ],
+    "all_rank_Adam_finite": true,
+    "probe_SHA": "5f9a8abda80e66c86f9e179a09bf12af22d9a2026516085f5769018073e2763b",
+    "post_callback_rng_captured": true,
+    "next_outer": 78,
+    "next_outer_stage": "candidates",
+    "next_outer_probe_same_published_SHA": true,
+    "retriever_bytes": 135544342,
+    "retriever_mtime": 1792851346.052234,
+    "retriever_recent_error": false,
+    "job_identity": [
+      "JobId=751884",
+      "UserId=mou176(21930)",
+      "JobState=RUNNING",
+      "NodeList=ACD1-1",
+      "Command=/data/user/jxu957/experiments/dynrpo7b-formal-20261023-recoveryfix-r6/repo/reproduction/dynrpo7b/train.sh",
+      "WorkDir=/data/user/jxu957/experiments/dynrpo7b-formal-20261023-recoveryfix-r6/repo"
+    ],
+    "process_lock_returncode": 0,
+    "process_lock": "[{\"pid\": \"489021\", \"command\": \"pt_main_thread\", \"path\": \"/data/user/jxu957/experiments/dynrpo7b-formal-20261023-recoveryfix-r6/gpu-job.lock\", \"cwd\": \"/data/user/jxu957/experiments/dynrpo7b-formal-20261023-recoveryfix-r6/repo\"}]",
+    "process_lock_error": ""
+  },
+  "live_progress": {
+    "checked_unix": 1792851447.4283197,
+    "retriever_bytes": 135632854,
+    "retriever_mtime": 1792851447.3945704,
+    "outer": 78,
+    "stage": "prefix_scored",
+    "parts": 2,
+    "retriever_bytes_delta": 88512,
+    "real_progress_confirmed": true
+  },
+  "training_restarted": false
+}
