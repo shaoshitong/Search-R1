@@ -1,38 +1,129 @@
 {
-  "first": {
-    "epoch": 1792851746.7272298,
-    "path": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_150",
-    "exists": true,
-    "files": 41,
-    "bytes": 121020647678,
-    "latest_mtime": 1792851746.7004397,
-    "progress": {
-      "accepted_bytes": 119711515383,
-      "accepted_files": 38,
-      "checked_unix": 1792851735.1182225,
-      "phase": "RECEIVING",
+  "observed_unix": 1792853197.0069263,
+  "core_archive_destination_verified": true,
+  "source_fresh_readback_pending": false,
+  "post_callback_and_dependencies_pending": false,
+  "full_milestone150_archive_accepted": true,
+  "actual_cuda_restore_accepted": false,
+  "actual_model_optimizer_rng_dataequal_accepted": false,
+  "receipt": {
+    "actual_cuda_restore_accepted": false,
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+    "checked_unix": 1792852620.4902096,
+    "destination_fsynced": true,
+    "file_count": 1370,
+    "fresh_destination_sha_verified": true,
+    "fresh_source_after_archive_sha_verified": true,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "snapshot_sha256": "edfddf6d135a4abd6cf88717781bf6574450df0c8d421daf10ff61adf35e432d",
+    "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+    "source_snapshot": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/checkpoint-archives/global_step_150/source-snapshot.json",
+    "status": "EASY2560_FULL_CHECKPOINT_SOURCE_ARCHIVE_SHA_PASS",
+    "step": 150,
+    "total_bytes": 152467526855
+  },
+  "boundary_receipt": {
+    "actual_cuda_restore_accepted": false,
+    "actual_model_optimizer_rng_dataequal_accepted": false,
+    "binding": {
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "core_archive": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_150",
+      "core_archive_receipt_sha256": "6b5d09f2ae42d1d2527b1752dec8855f39b2272756f65db80d1ae255e51a5005",
+      "core_checkpoint_complete_sha256": "91ea5c2211a83806971ffc1e9db30285b228576d7c941202c318a886adda51be",
+      "core_source_acceptance_sha256": "c6187424db869e230e0cbb8a76041feedf604e77c2e7190e0258f12348c7a171",
+      "core_source_snapshot_sha256": "edfddf6d135a4abd6cf88717781bf6574450df0c8d421daf10ff61adf35e432d",
       "run_id": "232f20e112ac4a978c5aba52a0367195",
-      "started_unix": 1792850488.37895,
+      "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
       "step": 150
+    },
+    "checked_unix": 1792852664.5118144,
+    "core_payload_unmodified": true,
+    "destination": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_150/post-callback-boundary",
+    "destination_fsynced": true,
+    "file_count": 8,
+    "files": {
+      "boundary/driver.pt": {
+        "bytes": 1039452,
+        "sha256": "e95398fb44c311fd383cc105e57f312a9609c61ec2dfe7eb60a8d43edbda214b"
+      },
+      "boundary/manifest.json": {
+        "bytes": 2713,
+        "sha256": "91e6145ee627dea8bd41bee8ec15370798034a19a78cebf5b339d5e1846912be"
+      },
+      "boundary/rank-0.pt": {
+        "bytes": 22544,
+        "sha256": "ec286d3d423661a0d3fce34c458dc408d478b6f667e5134183c536686f4e00e0"
+      },
+      "boundary/rank-1.pt": {
+        "bytes": 22544,
+        "sha256": "169762f0b227aa6e031696e962bde3c414d37e6089acc3d57505547ce86ebd28"
+      },
+      "boundary/rank-2.pt": {
+        "bytes": 22544,
+        "sha256": "f8e05082e6ade5fa8792f3ac46e0d81187eed1605ddfc4b2b9d732fe6110f5f1"
+      },
+      "boundary/rank-3.pt": {
+        "bytes": 22544,
+        "sha256": "e6f30baed127ed2b3336a5da919fad006f78a642e97451c2c9472000d1832708"
+      },
+      "boundary/reward-probe-manifest.json": {
+        "bytes": 640570,
+        "sha256": "823f04e796fd5c8777f16a84bd069fdd09fee4699fa651a7673f5e66904b8c67"
+      },
+      "rolling-full-manifest.json": {
+        "bytes": 16599,
+        "sha256": "bdf0769073c633db2583c817c2272a5cc3c4e1f418abc925ca14f94e2319987a"
+      }
+    },
+    "fresh_destination_sha_verified": true,
+    "phase": {
+      "callbacks_complete": true,
+      "final51713_pending_at_boundary": false,
+      "post_callback_rng_captured": true,
+      "probe_round": 150,
+      "reward_refresh_pending": false,
+      "sampling_rng_stage": "post_fixed512_and_grounding_refit"
+    },
+    "scope": "Preserved producer post-callback bytes; no actual reload performed",
+    "source_snapshot_sha256": "4fb38fb550ba324f86a9690e3a053e68f8d8eb6366f18af108f39531937fa4e8",
+    "status": "EASY2560_POST_CALLBACK_BOUNDARY_ARCHIVE_SHA_FSYNC_PASS",
+    "total_bytes": 1789510
+  },
+  "dependency_summary": {
+    "all_manifest_dependencies_covered": true,
+    "fresh_transferred_dependency_sha_checked": true,
+    "covered_core_sha_ack_verified": true,
+    "core_covered_payload_rehashed": false,
+    "encoder_file_count": 11,
+    "transfer_file_count": 7,
+    "transfer_bytes": 53993081,
+    "reward_round": 150,
+    "reward_version": "232f20e112ac4a978c5aba52a0367195:150:535fd3e32d6b4da59169b83f95fb48fa"
+  },
+  "record_hashes": {
+    "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_150/archive-receipt.json": {
+      "sha256": "6b5d09f2ae42d1d2527b1752dec8855f39b2272756f65db80d1ae255e51a5005",
+      "bytes": 594
+    },
+    "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_150/source-acceptance.json": {
+      "sha256": "c6187424db869e230e0cbb8a76041feedf604e77c2e7190e0258f12348c7a171",
+      "bytes": 836
+    },
+    "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_150/post-callback-boundary/boundary-archive-receipt.json": {
+      "sha256": "c5535aac1960188a17384ebb2c9129ac18083fed16bc6c51eabd0394218e10b6",
+      "bytes": 2950
+    },
+    "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/232f20e112ac4a978c5aba52a0367195/global_step_150/post-callback-dependencies/dependency-archive-receipt.json": {
+      "sha256": "178acb2cb4d2eac206c72a991f1a6372cf6ef495ddca21e8127bf99f9e0ccb1c",
+      "bytes": 15977
+    },
+    "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/post-callback-boundary-control/job-750491/future-100-200/global_step_150/result.json": {
+      "sha256": "da4349c24f4aaf4124fca8b9bfbc3c7fb540cc143c6f1125ab05e1414bef4dcb",
+      "bytes": 37480
     }
   },
-  "second": {
-    "epoch": 1792851762.7808578,
-    "files": 41,
-    "bytes": 121892014462,
-    "latest_mtime": 1792851754.6207035,
-    "progress": {
-      "accepted_bytes": 119711515383,
-      "accepted_files": 38,
-      "checked_unix": 1792851735.1182225,
-      "phase": "RECEIVING",
-      "run_id": "232f20e112ac4a978c5aba52a0367195",
-      "started_unix": 1792850488.37895,
-      "step": 150
-    }
-  },
-  "bytes_delta": 871366784,
-  "elapsed_seconds": 16.053627967834473,
-  "full_archive_accepted": false,
-  "source_and_post_callback_acceptance_pending": true
+  "observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/milestone150-core-and-supplements-accepted-1792853196813060000.json",
+  "observation_sha256": "f55f061c2d6756cfaa7e5290c2884a20895b836849b91129a3a729522ccc9453",
+  "training_modified": false,
+  "goal_complete": false
 }

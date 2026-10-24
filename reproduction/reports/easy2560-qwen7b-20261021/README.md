@@ -1,5 +1,30 @@
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
+**Latest archive acceptance: 2026-10-24 07:46 PDT /22:46 CST.** The150 full archive
+is now accepted: **1370 core files /152,467,526,855 bytes** passed incoming SHA,
+independent fresh destination SHA/fsync and fresh source readback. The eight-file
+post-callback boundary (1,789,510 bytes) and seven transferred dependency files
+(53,993,081 bytes) are accepted, with the eleven encoder files covered by the
+verified core acknowledgment. All receipt hashes and run/commit/step bindings
+match. This is byte/state archive acceptance; actual final native4 CUDA
+model/Adam/scheduler/RNG/dataequal recovery is still pending at200.
+
+The original core and companion controllers have completed100/150 and wait for200;
+process birth identities match, no failure or duplicate controller was observed.
+Production750491 has completed and sealed151, all four ranks have3020 actual Adam
+writes, and152 has saved512 candidate questions. Ordinary151 whole wall is1930.393s
+(32m10.39s); selected pre-update train EM0.711/reward0.869 is separate from fixed512.
+Retrieval750471 health reports zero failed requests; health inspection sent no
+retrieval queries or GPU forwards. Training runtime remains frozen atdde1452,
+without restart or edits. Fixed150 remains277/512=54.1016%;200/final51713/seven-source
+metrics and actual final recovery remain outstanding; no actual update201.
+
+See [full150 archive acceptance](evidence/milestone150-archive-current-summary.json),
+[receipt provenance](evidence/milestone150-core-and-supplements-accepted-1792853196813060000.json),
+[151 completion and152 beginning](evidence/combined-continuation151-complete-next152.json).
+
+**Previous observation, before archive acceptance:**
+
 **Current evidence: 2026-10-24 07:18 PDT / 22:18 CST.** Job750491 has completed and
 sealed outer150; outer151 candidate output increased from512 to1024 questions in
 two observations. All four ranks have3000 actual Adam writes. Runtime remains
