@@ -56,15 +56,17 @@ def select_top_prefix(candidates: Iterable[Candidate], k: int = 1024):
     return sorted(rows, key=score_order)[:k]
 
 
-def select_actual_mixed(candidates: Iterable[Candidate], k: int = 512):
+def select_actual_mixed(candidates: Iterable[Candidate], k: int = 512, *, allow_all_wrong=True):
     """Mixed first; all-correct and all-wrong form one score-ranked fill pool.
 
     This applies to both ordinary Top1024 and all2560 periodic full rollouts.
     The caller retains the entire periodic pool for the later probe fit.
     """
     rows = _unique(candidates)
+    if not allow_all_wrong:
+        rows = [row for row in rows if row.outcome != "all_wrong"]
     if not 0 <= k <= len(rows):
-        raise ValueError("Actor selection exceeds its completed pool")
+        raise ValueError("Actor selection exceeds its eligible completed pool")
     return sorted(rows, key=lambda row: (row.outcome != "mixed", *score_order(row)))[:k]
 
 

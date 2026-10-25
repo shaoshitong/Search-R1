@@ -130,8 +130,9 @@ def verify_formal_config(document, run, base):
         exact(document['algorithm'], dict(all_correct_virtual_zero=False), 'Easy real-group advantages')
         exact(document['data'], dict(selection_mode='mixed_first'), 'Easy selection')
     if run.get('dynrpo7b_selection'):
-        exact(actor, dict(ppo_logical_micro_batch_size=2), 'DynRPO virtual micro2 objective')
-        exact(document['algorithm'], dict(all_correct_virtual_zero=True), 'All-correct virtual zero')
+        exact(actor, dict(ppo_logical_micro_batch_size=run['actor_logical_micro_batch_per_rank']), 'DynRPO logical objective')
+        exact(document['algorithm'], dict(all_correct_virtual_zero=run['all_correct_virtual_zero']), 'All-correct baseline')
+        exact(document['algorithm'], dict(all_correct_reward_one=run.get('all_correct_reward_one',False)), 'All-correct reward')
         exact(document['data'], dict(selection_mode='dynrpo7b'), 'DynRPO selection')
     exact(actor['optim'], dict(lr=1e-6, lr_warmup_steps_ratio=0.0,
         lr_warmup_steps=WARMUP_STEPS, warmup_style='constant'), 'Optimizer mathematics')

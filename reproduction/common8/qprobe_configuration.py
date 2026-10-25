@@ -61,7 +61,8 @@ def arguments(run, base):
 def validate(config, run, base):
     if run.get("dynrpo7b_selection"):
         assert config.data.selection_mode=="dynrpo7b" and not config.data.mixed_first_selection
-        assert config.algorithm.all_correct_virtual_zero is True
+        assert config.algorithm.all_correct_virtual_zero is run['all_correct_virtual_zero']
+        assert config.algorithm.all_correct_reward_one is run.get('all_correct_reward_one',False)
         return
     expected = arguments(run, base)
     if not expected:

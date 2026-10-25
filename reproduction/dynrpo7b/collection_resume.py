@@ -61,7 +61,10 @@ def find_resume(base, run, outer, prior_writes):
             raise ValueError('Pinned collection origin changed')
         roots.append(root)
     binding = run.get('full_state_restore', {})
-    if binding.get('source_base'):
+    fork = run.get('objective_transition', {})
+    skip_parent_suffix = (fork.get('old_run_suffix_not_imported') is True and
+                          fork.get('source_base') == binding.get('source_base'))
+    if binding.get('source_base') and not skip_parent_suffix:
         roots.append(Path(binding['source_base']))
     for root in roots:
         pointer = root/'preparation/dynrpo7b-collection'/('outer-%04d.json' % outer)

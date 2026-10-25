@@ -96,8 +96,9 @@ def arguments(base):
             overrides.append('+trainer.rolling_checkpoint=true')
     if run.get('dynrpo7b_selection'):
         overrides.extend(['data.selection_mode=dynrpo7b',
-            'actor_rollout_ref.actor.ppo_logical_micro_batch_size=2',
-            '+algorithm.all_correct_virtual_zero=true'])
+            'actor_rollout_ref.actor.ppo_logical_micro_batch_size='+str(run['actor_logical_micro_batch_per_rank']),
+            '+algorithm.all_correct_virtual_zero='+str(run['all_correct_virtual_zero']).lower(),
+            '+algorithm.all_correct_reward_one='+str(run.get('all_correct_reward_one',False)).lower()])
     from reproduction.common8.qprobe_configuration import arguments as qprobe_arguments
     overrides.extend(qprobe_arguments(run, base))
     from search_g1.rollout_phase_contract import hydra_arguments

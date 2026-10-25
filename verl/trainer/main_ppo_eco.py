@@ -94,12 +94,13 @@ class EcoRewardManager():
     D_AMBIGUOUS = 0.6    # answer didn't change but also wrong on fake docs
     # D_PARAM_HALL = floor (answer unchanged & still correct on fake docs)
 
-    def __init__(self, tokenizer, num_examine, format_score=0., reward_mode='eco'):
+    def __init__(self, tokenizer, num_examine, format_score=0., reward_mode='eco', all_correct_reward_one=False):
         import os
         self.tokenizer = tokenizer
         self.num_examine = num_examine
         self.format_score = format_score
         self.reward_mode = reward_mode
+        self.all_correct_reward_one = all_correct_reward_one
         self.floor = float(os.environ.get("ECO_FLOOR", "0.3"))
         self.alpha = float(os.environ.get("ECO_ALPHA", str(self.ALPHA_INIT)))
         self.alpha_max = float(os.environ.get("ECO_ALPHA_MAX", str(self.ALPHA_MAX)))
@@ -446,14 +447,19 @@ class EcoRewardManager():
                 for (ridx, _), res in zip(cf_reqs, results):
                     cf_map[ridx] = res
 
-        # ---- Phase 2b: Search-G1 readouts (all rollouts, including wrong ones) ----
+        constant_rows = set()
+        if self.reward_mode == 'eco' and self.all_correct_reward_one:
+            from reproduction.dynrpo7b.objective_revision import all_correct_rows
+            constant_rows = all_correct_rows(data.non_tensor_batch['uid'], [r['correct'] for r in rows])
+        # ---- Phase 2b: Soft Reward for groups that are not all-correct ----
         probe_map = {}
         if self.reward_mode == 'eco' and self.trust_signal == 'probe':
-            pres = self._probe_call([{"id": str(idx), "prompt": r['prompt'], "response": r['resp'],
-                                      "model_ranges": r['model_ranges']}
-                                     for idx, r in enumerate(rows)])
+            probe_indices = [idx for idx in range(len(rows)) if idx not in constant_rows]
+            pres = self._probe_call([{"id": str(idx), "prompt": rows[idx]['prompt'], "response": rows[idx]['resp'],
+                                      "model_ranges": rows[idx]['model_ranges']}
+                                     for idx in probe_indices]) if probe_indices else []
             if pres is not None:
-                probe_map = {idx: pres[idx] for idx in range(len(pres))}
+                probe_map = dict(zip(probe_indices, pres))
 
         # ---- Phase 3: score ----
         # MONITORING uses cf judge uniformly (same yardstick for all methods).
@@ -463,7 +469,9 @@ class EcoRewardManager():
         cf_true = cf_hall = cf_amb = 0
         for ridx, row in enumerate(rows):
             # --- reward (method-specific, unchanged) ---
-            if self.reward_mode == 'eco':
+            if ridx in constant_rows:
+                score = 1.0
+            elif self.reward_mode == 'eco':
                 if self.trust_signal == 'probe':
                     score, _reward_trust, _reward_cls = self._score_probe(row, probe_map.get(ridx))
                 else:
@@ -569,6 +577,8 @@ class EcoRewardManager():
                       f"hall_rate={hall_rate:.2f}]") if cf_tot else "cf[none]"
             self.last_metrics = {
                 'perf/em': float(em),
+                'reward/all_correct_constant_groups': len(constant_rows)/5,
+                'reward/all_correct_constant_rows': len(constant_rows),
                 'trust/trust_at_correct': float(trust_at_correct),
                 'trust/trust_at_searched_correct': float(trust_at_searched_correct),
                 'trust/trust_all_mean': float(trust_all_mean),
@@ -760,7 +770,8 @@ def main_task(config):
         role_worker_mapping[Role.RewardModel] = ray.remote(RewardModelWorker)
         mapping[Role.RewardModel] = global_pool_id
 
-    reward_fn = EcoRewardManager(tokenizer=tokenizer, num_examine=0, reward_mode='eco')
+    reward_fn = EcoRewardManager(tokenizer=tokenizer, num_examine=0, reward_mode='eco',
+        all_correct_reward_one=config.algorithm.get('all_correct_reward_one', False))
     val_reward_fn = EcoRewardManager(tokenizer=tokenizer, num_examine=1, reward_mode='eval')
 
     resource_pool_manager = ResourcePoolManager(resource_pool_spec=resource_pool_spec, mapping=mapping)

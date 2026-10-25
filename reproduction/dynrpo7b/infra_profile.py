@@ -26,7 +26,7 @@ def native4(run):
         and run.get('execution_backend', 'slurm') == 'slurm'
         and run.get('training_world_size') == 4
         and run.get('data_selection_mode') == 'dynrpo7b'
-        and run.get('actor_logical_micro_batch_per_rank') == 2
+        and run.get('actor_logical_micro_batch_per_rank') in (2, 4)
         and isinstance(run.get('question_probe'), dict)
         and bool(run['question_probe'])
         and not run.get('easy2560_selection', False))
@@ -37,10 +37,10 @@ def settings(actor_micro=8):
     from search_g1.easy7b_infra import profile_flags
     from search_g1.rollout_phase_contract import DEFAULT_ROLLOUT_PHASE
     if actor_micro not in (4, 8, 16, 32):
-        raise ValueError('Actor physical micro must contain complete logical2 micros')
+        raise ValueError('Actor physical micro must contain complete logical4 micros')
     return dict(dynrpo7b_selection=True, easy2560_selection=False,
         data_selection_mode='dynrpo7b', actor_micro_batch_per_rank=actor_micro,
-        actor_logical_micro_batch_per_rank=2, infra_profile=PROFILE,
+        actor_logical_micro_batch_per_rank=4, infra_profile=PROFILE,
         performance_profile='lean_v1', extra_policy_monitor_forwards=False,
         infra_optimizations=profile_flags(PROFILE),
         infra_rollout=dict(DEFAULT_ROLLOUT_PHASE),

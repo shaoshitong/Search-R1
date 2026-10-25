@@ -13,7 +13,9 @@ def run_settings(base, actor_micro=8):
     from reproduction.common8.formal_contract import SKIP_INITIAL_EVALUATION_POLICY
     value = settings(actor_micro)
     value.update(question_probe=recipe.probe_settings(base),
-        mixed_first_selection=False, all_correct_virtual_zero=True,
+        mixed_first_selection=False, all_correct_virtual_zero=False,
+        objective_revision="cp50_mathfix_v1", all_correct_reward_one=True,
+        selection_allow_all_wrong=False,
         selection_candidate_questions=recipe.CANDIDATES,
         selection_selected_questions=recipe.SELECTED,
         selection_fixed_candidate_budget=True,
@@ -102,7 +104,7 @@ def prepare(base, commit, actor_micro=8, restore_receipt=None,
     run = bind_run(base, Path(MODEL), manifest, commit,
         rollout_memory_utilization=.1, local_retrieval_assets=WIKI,
         execution_site='hpc3', actor_micro_batch_per_rank=actor_micro,
-        actor_logical_micro_batch_per_rank=2, dynrpo7b_settings=values,
+        actor_logical_micro_batch_per_rank=4, dynrpo7b_settings=values,
         restore_receipt=restore_receipt)
     # A CPU Hydra resolution catches inconsistent recipe overrides before model
     # initialization, while avoiding synthetic CUDA/gradient comparison jobs.
@@ -111,7 +113,7 @@ def prepare(base, commit, actor_micro=8, restore_receipt=None,
     publish(base / 'preparation/dynrpo7b-configured.json', dict(
         run_id=run['run_id'], source_commit=commit,
         infra_profile=PROFILE, training_gpus=4, retrieval_gpus=2,
-        actor_physical_micro=actor_micro, actor_logical_micro=2,
+        actor_physical_micro=actor_micro, actor_logical_micro=4,
         prefix_tokens=[80, 160], prefix_switch_after_outer=100,
         probe_every=10, probe_epochs=3, prepared=True,
         actual_training_progress_pending=True))

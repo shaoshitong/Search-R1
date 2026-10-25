@@ -104,7 +104,9 @@ def source(receipt_path):
 
 def bind(run, receipt_path):
     path, receipt, checkpoint, origin, parent = source(receipt_path)
-    for key in ("input_sha256", "initial_model_sha256", "budget"):
+    from .objective_revision import bind_transition
+    bind_transition(run, parent, receipt)
+    for key in ("input_sha256", "initial_model_sha256"):
         if key in run and key in parent and run[key] != parent[key]:
             raise ValueError("A restore cannot change the scientific " + key)
     if run.get("training_world_size", 4) != 4 or parent.get("training_world_size", 4) != 4:

@@ -43,6 +43,8 @@ def collect(trainer, manager, stream, attempt_identity):
     from search_g1.mixed_runtime import subset, strict_vectors
     from search_g1.training_state import atomic_save, compact_stream_state, driver_rng
 
+    run = json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
+    allow_all_wrong = run.get('selection_allow_all_wrong', True)
     runtime = trainer.qprobe_runtime
     outer = int(trainer.global_steps)
     periodic = probe_update(outer)
@@ -123,7 +125,25 @@ def collect(trainer, manager, stream, attempt_identity):
             journal.commit('prefix_scored',stream,collector,part=part)
         first = frozen if periodic else select_top_prefix(frozen,1024)
         full, part = finish([r.ordinal for r in first])
-        initial = select_actual_mixed(full,SELECTED)
+        if not allow_all_wrong:
+            if part is not None:
+                journal.commit('initial_eligible_continuation',stream,collector,part=part)
+                part = None
+            # Extend the same frozen pool, committing each completed128 batch.
+            # On resume completed contains the durable fill labels already.
+            while sum(c.outcome != 'all_wrong' for c in completed.values()) < SELECTED:
+                remaining = [c for c in select_top_prefix(frozen, len(frozen)) if c.ordinal not in completed]
+                if not remaining:
+                    raise RuntimeError('DYNRPO_ELIGIBLE_POOL_EXHAUSTED: cannot fill512 without all-wrong groups')
+                _, fill_part = finish([c.ordinal for c in remaining[:128]])
+                journal.commit('eligible_fill',stream,collector,part=fill_part)
+            full = list(completed.values())
+        if saved and saved.get('ledger'):
+            initial_ids = set(saved['ledger']['binding']['initial_selected'])
+            initial = [completed[c.ordinal] for c in frozen if c.question_id in initial_ids]
+            initial.sort(key=lambda c: saved['ledger']['binding']['initial_selected'].index(c.question_id))
+        else:
+            initial = select_actual_mixed(full,SELECTED,allow_all_wrong=allow_all_wrong)
         outcome_pool = [completed.get(c.ordinal,c) for c in frozen]
         ledger = BackstopLedger(directory/'backstop',outcome_pool,initial,outer=outer,
             actor_version=identity['policy_snapshot_id'],probe_version=runtime.version)
@@ -159,6 +179,7 @@ def collect(trainer, manager, stream, attempt_identity):
             candidate_fill_seconds=time.monotonic()-started,pool_retry=0,step=outer,attempt_id=tag,
             probe_top_group_counts=top_counts,backstop=ledger.summary(),
             selected_mixed_fraction=counts['mixed']/SELECTED,question_probe_version=runtime.version,
+            selection_allow_all_wrong=allow_all_wrong,eligible_fill_questions=max(0,len(completed)-len(first)),
             policy_snapshot_id=identity['policy_snapshot_id'],prefix_tokens=prefix_tokens(outer),
             completed_candidate_groups=len(completed),**_contracts(trainer,output,run))
         _write_json(directory/'rollout-audit.json',audit)

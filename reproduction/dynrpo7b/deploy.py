@@ -148,7 +148,7 @@ def prepare(base, commit, predecessor=ENV_SOURCE):
 
 def launch_command(base, commit, role='train', *, partition='acd_u',
                    qos='formal-user', account='jxu957', time_limit='7-00:00:00',
-                   restore_receipt=None, external_retriever_receipt=None):
+                   restore_receipt=None, external_retriever_receipt=None, exclude_nodes=None):
     base = own_base(base)
     if role not in ('train', 'retrieval'):
         raise ValueError('Unknown allocation role')
@@ -162,6 +162,8 @@ def launch_command(base, commit, role='train', *, partition='acd_u',
         '--job-name=dynrpo7b-' + role, '--export=NONE', '--chdir=' + str(base / 'repo'),
         '--output=' + str(logs / (role + '-%j.log')),
         '--error=' + str(logs / (role + '-%j.log')), str(entry), str(base), commit]
+    if exclude_nodes:
+        command.insert(2, '--exclude='+','.join(exclude_nodes))
     if train:
         command += [str(restore_receipt or ''), str(external_retriever_receipt or '')]
     # Deliberately no afterok dependency on another experiment.
