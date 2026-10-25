@@ -1,0 +1,13 @@
+{
+  "instruction": "停掉现在的训练吧",
+  "original_message_timestamp": "not supplied by client; received in current live turn",
+  "recorded_before_action_utc": "2026-10-25T06:41:08Z",
+  "target": "current Qwen2.5-7B Easy2560+Co rollout training; resolve job.id before cancelling",
+  "expected_job": "750491",
+  "scope": "stop current training and pause its automatic recovery monitor; retain all checkpoints/logs/results; no deletion or new training",
+  "prior_authorization": "200outer and abnormal-exit auto recovery; last automatic replay2026-10-25T06:16:23.754Z predates this live human stop",
+  "later_manual_resume_authorization": null,
+  "decision": "latest explicit live user stop supersedes auto recovery for this current job; user stop distinct from failure",
+  "publication_head": "a3f55f8e488afae5208e8ee4263feafa9afe317a",
+  "status": "AUTHORIZED_STOP_PENDING_EXECUTION"
+}
