@@ -1,0 +1,735 @@
+{
+  "validation": [
+    {
+      "step": 5,
+      "question_count": 512,
+      "counts": {
+        "nq": 256,
+        "hotpotqa": 256
+      },
+      "correct": 193,
+      "per_source": {
+        "hotpotqa": {
+          "count": 256,
+          "correct": 105,
+          "em": 0.41015625,
+          "f1": 0.47302396239999034
+        },
+        "nq": {
+          "count": 256,
+          "correct": 88,
+          "em": 0.34375,
+          "f1": 0.47581812328630135
+        }
+      },
+      "weighted_em": 0.376953125,
+      "weighted_f1": 0.47442104284314585,
+      "macro_em": 0.376953125,
+      "macro_f1": 0.47442104284314585,
+      "canonical_occurrences_retained": true,
+      "deduplicated": false
+    },
+    {
+      "step": 50,
+      "question_count": 512,
+      "counts": {
+        "nq": 256,
+        "hotpotqa": 256
+      },
+      "correct": 259,
+      "per_source": {
+        "hotpotqa": {
+          "count": 256,
+          "correct": 144,
+          "em": 0.5625,
+          "f1": 0.6194568452380952
+        },
+        "nq": {
+          "count": 256,
+          "correct": 115,
+          "em": 0.44921875,
+          "f1": 0.5596788194444444
+        }
+      },
+      "weighted_em": 0.505859375,
+      "weighted_f1": 0.5895678323412699,
+      "macro_em": 0.505859375,
+      "macro_f1": 0.5895678323412699,
+      "canonical_occurrences_retained": true,
+      "deduplicated": false
+    },
+    {
+      "step": 100,
+      "question_count": 512,
+      "counts": {
+        "nq": 256,
+        "hotpotqa": 256
+      },
+      "correct": 280,
+      "per_source": {
+        "hotpotqa": {
+          "count": 256,
+          "correct": 161,
+          "em": 0.62890625,
+          "f1": 0.6852771577380953
+        },
+        "nq": {
+          "count": 256,
+          "correct": 119,
+          "em": 0.46484375,
+          "f1": 0.5708085317460317
+        }
+      },
+      "weighted_em": 0.546875,
+      "weighted_f1": 0.6280428447420635,
+      "macro_em": 0.546875,
+      "macro_f1": 0.6280428447420635,
+      "canonical_occurrences_retained": true,
+      "deduplicated": false
+    },
+    {
+      "step": 150,
+      "question_count": 512,
+      "counts": {
+        "nq": 256,
+        "hotpotqa": 256
+      },
+      "correct": 277,
+      "per_source": {
+        "hotpotqa": {
+          "count": 256,
+          "correct": 161,
+          "em": 0.62890625,
+          "f1": 0.6960666937229437
+        },
+        "nq": {
+          "count": 256,
+          "correct": 116,
+          "em": 0.453125,
+          "f1": 0.5659598214285714
+        }
+      },
+      "weighted_em": 0.541015625,
+      "weighted_f1": 0.6310132575757575,
+      "macro_em": 0.541015625,
+      "macro_f1": 0.6310132575757575,
+      "canonical_occurrences_retained": true,
+      "deduplicated": false
+    }
+  ],
+  "validation_SHA": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+  "training": [
+    {
+      "step": 50,
+      "training_em": 0.518,
+      "reward": 0.676,
+      "score_mean": 0.676,
+      "selected_mixed_trajectories": 2560.0,
+      "actor_seconds": 295.523,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43"
+    },
+    {
+      "step": 51,
+      "training_em": 0.533,
+      "reward": 0.699,
+      "score_mean": 0.699,
+      "selected_mixed_trajectories": 2555.0,
+      "actor_seconds": 284.939,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43"
+    },
+    {
+      "step": 52,
+      "training_em": 0.529,
+      "reward": 0.687,
+      "score_mean": 0.687,
+      "selected_mixed_trajectories": 2560.0,
+      "actor_seconds": 288.139,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-cp34-oom-r1-20261022",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "b76d7a05245a5eb7adc75385e2db803c67acce43"
+    },
+    {
+      "step": 53,
+      "training_em": 0.525,
+      "reward": 0.682,
+      "score_mean": 0.682,
+      "selected_mixed_trajectories": 2540.0,
+      "actor_seconds": 165.714,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-lean-r1-20261022/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-lean-r1-20261022",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "48b87a7399a25f78b4fcf077e946a5a2b75ecace"
+    },
+    {
+      "step": 54,
+      "training_em": 0.526,
+      "reward": 0.685,
+      "score_mean": 0.685,
+      "selected_mixed_trajectories": 2535.0,
+      "actor_seconds": 163.538,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-lean-r1-20261022/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-lean-r1-20261022",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "48b87a7399a25f78b4fcf077e946a5a2b75ecace"
+    },
+    {
+      "step": 55,
+      "training_em": 0.565,
+      "reward": 0.727,
+      "score_mean": 0.727,
+      "selected_mixed_trajectories": 2320.0,
+      "actor_seconds": 157.305,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-nativeprefix-r2-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-nativeprefix-r2-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "c7976da3afc863a1c20b99daa7cc99de3bb61f15"
+    },
+    {
+      "step": 56,
+      "training_em": 0.56,
+      "reward": 0.725,
+      "score_mean": 0.725,
+      "selected_mixed_trajectories": 2425.0,
+      "actor_seconds": 145.983,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-nativeprefix-r2-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-nativeprefix-r2-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "c7976da3afc863a1c20b99daa7cc99de3bb61f15"
+    },
+    {
+      "step": 57,
+      "training_em": 0.581,
+      "reward": 0.753,
+      "score_mean": 0.753,
+      "selected_mixed_trajectories": 2215.0,
+      "actor_seconds": 144.034,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-nativeprefix-r2-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-nativeprefix-r2-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "c7976da3afc863a1c20b99daa7cc99de3bb61f15"
+    },
+    {
+      "step": 58,
+      "training_em": 0.562,
+      "reward": 0.735,
+      "score_mean": 0.735,
+      "selected_mixed_trajectories": 2400.0,
+      "actor_seconds": 148.111,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-nativeprefix-r2-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-nativeprefix-r2-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "c7976da3afc863a1c20b99daa7cc99de3bb61f15"
+    },
+    {
+      "step": 59,
+      "training_em": 0.539,
+      "reward": 0.697,
+      "score_mean": 0.697,
+      "selected_mixed_trajectories": 2450.0,
+      "actor_seconds": 154.797,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-nativeprefix-r2-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-nativeprefix-r2-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "c7976da3afc863a1c20b99daa7cc99de3bb61f15"
+    },
+    {
+      "step": 60,
+      "training_em": 0.548,
+      "reward": 0.721,
+      "score_mean": 0.721,
+      "selected_mixed_trajectories": 2390.0,
+      "actor_seconds": 149.994,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-nativeprefix-r2-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-nativeprefix-r2-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "c7976da3afc863a1c20b99daa7cc99de3bb61f15"
+    },
+    {
+      "step": 61,
+      "training_em": 0.563,
+      "reward": 0.732,
+      "score_mean": 0.732,
+      "selected_mixed_trajectories": 2320.0,
+      "actor_seconds": 165.098,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "2d5183455551145c52d1783a38663e2fcf170ceb"
+    },
+    {
+      "step": 62,
+      "training_em": 0.553,
+      "reward": 0.731,
+      "score_mean": 0.731,
+      "selected_mixed_trajectories": 2360.0,
+      "actor_seconds": 148.878,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "2d5183455551145c52d1783a38663e2fcf170ceb"
+    },
+    {
+      "step": 63,
+      "training_em": 0.571,
+      "reward": 0.747,
+      "score_mean": 0.747,
+      "selected_mixed_trajectories": 2335.0,
+      "actor_seconds": 145.977,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "2d5183455551145c52d1783a38663e2fcf170ceb"
+    },
+    {
+      "step": 64,
+      "training_em": 0.567,
+      "reward": 0.751,
+      "score_mean": 0.751,
+      "selected_mixed_trajectories": 2345.0,
+      "actor_seconds": 148.158,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "2d5183455551145c52d1783a38663e2fcf170ceb"
+    },
+    {
+      "step": 65,
+      "training_em": 0.543,
+      "reward": 0.712,
+      "score_mean": 0.712,
+      "selected_mixed_trajectories": 2435.0,
+      "actor_seconds": 153.46,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "2d5183455551145c52d1783a38663e2fcf170ceb"
+    },
+    {
+      "step": 66,
+      "training_em": 0.568,
+      "reward": 0.737,
+      "score_mean": 0.737,
+      "selected_mixed_trajectories": 2295.0,
+      "actor_seconds": 159.732,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "2d5183455551145c52d1783a38663e2fcf170ceb"
+    },
+    {
+      "step": 67,
+      "training_em": 0.55,
+      "reward": 0.72,
+      "score_mean": 0.72,
+      "selected_mixed_trajectories": 2365.0,
+      "actor_seconds": 154.066,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "2d5183455551145c52d1783a38663e2fcf170ceb"
+    },
+    {
+      "step": 68,
+      "training_em": 0.6,
+      "reward": 0.775,
+      "score_mean": 0.775,
+      "selected_mixed_trajectories": 2155.0,
+      "actor_seconds": 151.64,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "2d5183455551145c52d1783a38663e2fcf170ceb"
+    },
+    {
+      "step": 69,
+      "training_em": 0.552,
+      "reward": 0.729,
+      "score_mean": 0.729,
+      "selected_mixed_trajectories": 2410.0,
+      "actor_seconds": 156.232,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "2d5183455551145c52d1783a38663e2fcf170ceb"
+    },
+    {
+      "step": 70,
+      "training_em": 0.534,
+      "reward": 0.707,
+      "score_mean": 0.707,
+      "selected_mixed_trajectories": 2525.0,
+      "actor_seconds": 159.842,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-leanmetrics-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "2d5183455551145c52d1783a38663e2fcf170ceb"
+    },
+    {
+      "step": 71,
+      "training_em": 0.566,
+      "reward": 0.749,
+      "score_mean": 0.749,
+      "selected_mixed_trajectories": 2355.0,
+      "actor_seconds": 158.451,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 72,
+      "training_em": 0.604,
+      "reward": 0.792,
+      "score_mean": 0.792,
+      "selected_mixed_trajectories": 2145.0,
+      "actor_seconds": 148.035,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 73,
+      "training_em": 0.607,
+      "reward": 0.79,
+      "score_mean": 0.79,
+      "selected_mixed_trajectories": 2130.0,
+      "actor_seconds": 147.114,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 74,
+      "training_em": 0.573,
+      "reward": 0.762,
+      "score_mean": 0.762,
+      "selected_mixed_trajectories": 2285.0,
+      "actor_seconds": 145.994,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 75,
+      "training_em": 0.617,
+      "reward": 0.807,
+      "score_mean": 0.807,
+      "selected_mixed_trajectories": 2000.0,
+      "actor_seconds": 143.932,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 76,
+      "training_em": 0.616,
+      "reward": 0.814,
+      "score_mean": 0.814,
+      "selected_mixed_trajectories": 2185.0,
+      "actor_seconds": 148.947,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 77,
+      "training_em": 0.62,
+      "reward": 0.809,
+      "score_mean": 0.809,
+      "selected_mixed_trajectories": 2080.0,
+      "actor_seconds": 149.015,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 78,
+      "training_em": 0.605,
+      "reward": 0.794,
+      "score_mean": 0.794,
+      "selected_mixed_trajectories": 2090.0,
+      "actor_seconds": 144.311,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 79,
+      "training_em": 0.628,
+      "reward": 0.806,
+      "score_mean": 0.806,
+      "selected_mixed_trajectories": 2010.0,
+      "actor_seconds": 144.612,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 80,
+      "training_em": 0.617,
+      "reward": 0.807,
+      "score_mean": 0.807,
+      "selected_mixed_trajectories": 1995.0,
+      "actor_seconds": 147.652,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 81,
+      "training_em": 0.625,
+      "reward": 0.805,
+      "score_mean": 0.805,
+      "selected_mixed_trajectories": 2000.0,
+      "actor_seconds": 143.042,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 82,
+      "training_em": 0.659,
+      "reward": 0.851,
+      "score_mean": 0.851,
+      "selected_mixed_trajectories": 1860.0,
+      "actor_seconds": 139.72,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 83,
+      "training_em": 0.612,
+      "reward": 0.807,
+      "score_mean": 0.807,
+      "selected_mixed_trajectories": 2040.0,
+      "actor_seconds": 142.814,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 84,
+      "training_em": 0.616,
+      "reward": 0.82,
+      "score_mean": 0.82,
+      "selected_mixed_trajectories": 2155.0,
+      "actor_seconds": 136.441,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 85,
+      "training_em": 0.638,
+      "reward": 0.828,
+      "score_mean": 0.828,
+      "selected_mixed_trajectories": 1975.0,
+      "actor_seconds": 139.422,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 86,
+      "training_em": 0.614,
+      "reward": 0.807,
+      "score_mean": 0.807,
+      "selected_mixed_trajectories": 2060.0,
+      "actor_seconds": 139.241,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 87,
+      "training_em": 0.639,
+      "reward": 0.851,
+      "score_mean": 0.851,
+      "selected_mixed_trajectories": 1975.0,
+      "actor_seconds": 141.504,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 88,
+      "training_em": 0.63,
+      "reward": 0.828,
+      "score_mean": 0.828,
+      "selected_mixed_trajectories": 2015.0,
+      "actor_seconds": 144.35,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 89,
+      "training_em": 0.611,
+      "reward": 0.81,
+      "score_mean": 0.81,
+      "selected_mixed_trajectories": 2090.0,
+      "actor_seconds": 142.022,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 90,
+      "training_em": 0.62,
+      "reward": 0.807,
+      "score_mean": 0.807,
+      "selected_mixed_trajectories": 1945.0,
+      "actor_seconds": 137.693,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 91,
+      "training_em": 0.648,
+      "reward": 0.847,
+      "score_mean": 0.847,
+      "selected_mixed_trajectories": 1900.0,
+      "actor_seconds": 140.387,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 92,
+      "training_em": 0.636,
+      "reward": 0.828,
+      "score_mean": 0.828,
+      "selected_mixed_trajectories": 1895.0,
+      "actor_seconds": 145.119,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 93,
+      "training_em": 0.671,
+      "reward": 0.876,
+      "score_mean": 0.876,
+      "selected_mixed_trajectories": 1795.0,
+      "actor_seconds": 138.487,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 94,
+      "training_em": 0.654,
+      "reward": 0.847,
+      "score_mean": 0.847,
+      "selected_mixed_trajectories": 1855.0,
+      "actor_seconds": 147.45,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 95,
+      "training_em": 0.637,
+      "reward": 0.832,
+      "score_mean": 0.832,
+      "selected_mixed_trajectories": 1940.0,
+      "actor_seconds": 144.869,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 96,
+      "training_em": 0.651,
+      "reward": 0.845,
+      "score_mean": 0.845,
+      "selected_mixed_trajectories": 1945.0,
+      "actor_seconds": 149.17,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 97,
+      "training_em": 0.654,
+      "reward": 0.853,
+      "score_mean": 0.853,
+      "selected_mixed_trajectories": 1845.0,
+      "actor_seconds": 146.378,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 98,
+      "training_em": 0.641,
+      "reward": 0.848,
+      "score_mean": 0.848,
+      "selected_mixed_trajectories": 1980.0,
+      "actor_seconds": 151.405,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 99,
+      "training_em": 0.649,
+      "reward": 0.838,
+      "score_mean": 0.838,
+      "selected_mixed_trajectories": 1810.0,
+      "actor_seconds": 145.649,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    },
+    {
+      "step": 100,
+      "training_em": 0.641,
+      "reward": 0.834,
+      "score_mean": 0.834,
+      "selected_mixed_trajectories": 1890.0,
+      "actor_seconds": 141.873,
+      "log_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/logs/search-g1-common8-training.log",
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+      "run_id": "232f20e112ac4a978c5aba52a0367195",
+      "runtime_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c"
+    }
+  ]
+}
