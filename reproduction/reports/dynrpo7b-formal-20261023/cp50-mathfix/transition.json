@@ -1,5 +1,5 @@
 {
-  "status": "NEW_JOB_SUBMITTED_OLD_CONTINUES",
+  "status": "ORDERED_HANDOFF_COMPLETE_NEW_OUTER52_RUNNING",
   "observed_user_instruction_unix": 1792909980.890452,
   "original_message_timestamp": "unavailable; live human instructions after CP115 heartbeat",
   "human_instructions": [
@@ -12,8 +12,8 @@
   "retriever_job": 751011,
   "new_base": "/data/user/jxu957/experiments/dynrpo7b-formal-20261025-cp50-mathfix-r1",
   "stop_old_only_after": "new job actual restore verified, complete outer51, next outer progressing",
-  "old_job_stop_authorized_but_condition_not_met": true,
-  "old_job_stopped": false,
+  "old_job_stop_authorized_but_condition_not_met": false,
+  "old_job_stopped": true,
   "new_job": 761991,
   "new_runtime_commit": "7cfef2495d6e82e6a5af7a88d9029ec1c7beba70",
   "submission_unix": 1792910744.2863784,
@@ -27,5 +27,44 @@
     1000,
     1000
   ],
-  "updated_unix": 1792910762.689213
+  "updated_unix": 1792913092.211437,
+  "new_node": "ACD1-36",
+  "configured_flags_verified": true,
+  "actual_restore_verified": true,
+  "actual_rank_Adam": [
+    1000,
+    1000,
+    1000,
+    1000
+  ],
+  "driver_RNG_equal": true,
+  "first_live_collection": {
+    "outer": 51,
+    "stage": "prefix_scored",
+    "parts": 2,
+    "first_proxy_bytes": 271648,
+    "later_proxy_bytes": 1587982
+  },
+  "new_rank_Adam": [
+    1020,
+    1020,
+    1020,
+    1020
+  ],
+  "old_source_before_release": {
+    "source_commit": "ee74bfa3c6d1141859abb19e882b65c93ea6f0ba",
+    "source_files_fresh_SHA_verified": 1960,
+    "differences": [],
+    "checked_unix": 1792912664.3547332,
+    "reachable_from_pushed_branch": true
+  },
+  "stop_gate_satisfied": true,
+  "stop_gate_evidence": [
+    "cp50-new-cp51-acceptance.json",
+    "cp50-new-outer52-progress.json"
+  ],
+  "old_terminal_state": "CANCELLED by 21930",
+  "old_writer_lock_free": true,
+  "new_completed_outer": 51,
+  "new_next_outer": 52
 }
