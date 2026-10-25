@@ -1,0 +1,65 @@
+{
+  "instruction": "停掉现在的训练吧",
+  "original_message_timestamp": "not supplied by client; received in current live turn",
+  "recorded_before_action_utc": "2026-10-25T06:41:08Z",
+  "target": "current Qwen2.5-7B Easy2560+Co rollout training; resolve job.id before cancelling",
+  "expected_job": "750491",
+  "scope": "stop current training and pause its automatic recovery monitor; retain all checkpoints/logs/results; no deletion or new training",
+  "prior_authorization": "200outer and abnormal-exit auto recovery; last automatic replay2026-10-25T06:16:23.754Z predates this live human stop",
+  "later_manual_resume_authorization": null,
+  "decision": "latest explicit live user stop supersedes auto recovery for this current job; user stop distinct from failure",
+  "publication_head": "a3f55f8e488afae5208e8ee4263feafa9afe317a",
+  "status": "USER_STOP_VERIFIED",
+  "stop_receipt": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/user-stop750491-1792910548977693000.json",
+  "two_actual_terminal_checks": [
+    {
+      "evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792910591358843000.json",
+      "sha256": "c71f9b9ed435e5fa09562f5ab415158dffc0d6db89b69843052562e9108e0cc1",
+      "observed_unix": 1792910587.5086532,
+      "accounting": "750491|jxu957|CANCELLED by 14090|0:0|2-05:49:17|ACD1-14\n",
+      "training_job_absent_from_queue": true,
+      "latest_actual_completed_outer": 179,
+      "latest_sealed_checkpoint_step": 179,
+      "actual_adam_writes_per_rank": {
+        "0": 3581,
+        "1": 3581,
+        "2": 3581,
+        "3": 3581
+      }
+    },
+    {
+      "evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/combined-batch-search-stop-transition-live-1792910640609270000.json",
+      "sha256": "10bb9e7a7b89795a0b03c2fa479fa5440e080dacbbb77ab7588e20f9222d4d9b",
+      "observed_unix": 1792910638.226621,
+      "accounting": "750491|jxu957|CANCELLED by 14090|0:0|2-05:49:17|ACD1-14\n",
+      "training_job_absent_from_queue": true,
+      "latest_actual_completed_outer": 179,
+      "latest_sealed_checkpoint_step": 179,
+      "actual_adam_writes_per_rank": {
+        "0": 3581,
+        "1": 3581,
+        "2": 3581,
+        "3": 3581
+      }
+    }
+  ],
+  "latest_complete_checkpoint": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/checkpoints/search-g1-common8/actor/global_step_179",
+    "manager": "easy2560_per_outer_full_state_v1",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/rolling-checkpoints/global_step_179/full-manifest.json",
+    "manifest_sha256": "ec705389cfe6ae0d49db00ab85b02d8a607ec45b0f67325dae7740b8d4f86bc5",
+    "published_unix": 1792909107.3588355,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+    "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+    "step": 179
+  },
+  "current_outer180_incomplete": true,
+  "automatic_resume_allowed": false,
+  "monitor_status": "PAUSED",
+  "training_job_gpu_allocation_ended": true,
+  "checkpoints_logs_and_results_preserved": true,
+  "goal_complete": false,
+  "other_jobs_cancelled": false
+}

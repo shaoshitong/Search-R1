@@ -1,3 +1,5 @@
+> 用户最新停训：2026-10-25 14:42（北京时间），作业750491按明确人工要求取消，自动恢复监控已暂停。最后完整断点179；180仅部分更新。已有日志、断点和100/150全量评测保留，200目标未完成。未经新的人工授权不得自动重启。
+
 # Easy2560 + Co rollout: official Qwen2.5-7B-Instruct
 
 **Both independently verified full evaluations are complete.** Same ordered51,713

@@ -1,0 +1,73 @@
+{
+  "reason": "explicit live human stop, not failure",
+  "instruction": "停掉现在的训练吧",
+  "authorization_recorded_utc": "2026-10-25T06:41:08Z",
+  "job": "750491",
+  "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+  "run_id": "232f20e112ac4a978c5aba52a0367195",
+  "observed_unix": 1792910548.9482107,
+  "before_queue": {
+    "args": [
+      "squeue",
+      "-h",
+      "-j",
+      "750491",
+      "-o",
+      "%i|%u|%T|%N"
+    ],
+    "returncode": 0,
+    "stdout": "750491|jxu957|RUNNING|ACD1-14\n",
+    "stderr": ""
+  },
+  "latest_durable_seal": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023",
+    "checkpoint": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/checkpoints/search-g1-common8/actor/global_step_179",
+    "manager": "easy2560_per_outer_full_state_v1",
+    "manifest_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-qwen7b-fa3-batch-searchstop-r1-20261023/preparation/rolling-checkpoints/global_step_179/full-manifest.json",
+    "manifest_sha256": "ec705389cfe6ae0d49db00ab85b02d8a607ec45b0f67325dae7740b8d4f86bc5",
+    "published_unix": 1792909107.3588355,
+    "run_id": "232f20e112ac4a978c5aba52a0367195",
+    "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+    "status": "EASY2560_ROLLING_CHECKPOINT_READY",
+    "step": 179
+  },
+  "training_resume_allowed": false,
+  "checkpoints_deleted": false,
+  "scancel": {
+    "args": [
+      "scancel",
+      "750491"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "after_queue": {
+    "args": [
+      "squeue",
+      "-h",
+      "-j",
+      "750491",
+      "-o",
+      "%i|%u|%T|%N"
+    ],
+    "returncode": 0,
+    "stdout": "750491|jxu957|COMPLETING|ACD1-14\n",
+    "stderr": ""
+  },
+  "after_accounting": {
+    "args": [
+      "sacct",
+      "-j",
+      "750491",
+      "--noheader",
+      "--parsable2",
+      "-o",
+      "JobIDRaw,User,State,ExitCode,Elapsed,NodeList"
+    ],
+    "returncode": 0,
+    "stdout": "750491|jxu957|CANCELLED by 14090|0:0|2-05:49:17|ACD1-14\n750491.batch||CANCELLED|0:0|2-05:49:17|ACD1-14\n750491.extern||CANCELLED|0:0|2-05:49:17|ACD1-14\n750491.0||COMPLETED|0:0|00:00:00|ACD1-14\n750491.1||COMPLETED|0:0|00:00:00|ACD1-14\n750491.2||COMPLETED|0:0|00:00:00|ACD1-14\n750491.3||COMPLETED|0:0|00:00:00|ACD1-14\n750491.4||COMPLETED|0:0|00:00:00|ACD1-14\n",
+    "stderr": ""
+  },
+  "checked_unix": 1792910549.0802267
+}
