@@ -1,0 +1,167 @@
+{
+  "checked_unix": 1792913338.0412908,
+  "services": [
+    {
+      "job": "745198",
+      "before_queue": {
+        "args": [
+          "squeue",
+          "-h",
+          "-j",
+          "745198",
+          "-o",
+          "%i|%u|%j|%T|%N"
+        ],
+        "returncode": 0,
+        "stdout": "745198|jxu957|easy7b-retrieval2|RUNNING|ACD1-26\n",
+        "stderr": ""
+      },
+      "authorization": "explicit user coordination request; both threads confirm no remaining consumers",
+      "must_keep_jobs": [
+        "751011",
+        "761991"
+      ],
+      "checked_unix": 1792913337.908368,
+      "files_deleted": false,
+      "health_before": {
+        "service_job_id": "745198",
+        "service_run_id": "976e20f47ae14f9aa9c65010a0ec0b97",
+        "source_commit": "262428b0ecce045a60b2d2cd054e3b906673df8c",
+        "endpoint": "http://ACD1-26:18020/retrieve",
+        "physical_gpu_count": 2,
+        "statistics": {
+          "logical_requests": 1091597,
+          "logical_queries": 1094682,
+          "completed_requests": 1091597,
+          "completed_queries": 1094682,
+          "failed_requests": 0,
+          "backend_seconds": 45643.40440110676,
+          "last_completed_unix": 1792716498.1009493
+        }
+      },
+      "scancel": {
+        "args": [
+          "scancel",
+          "745198"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "after_queue": {
+        "args": [
+          "squeue",
+          "-h",
+          "-j",
+          "745198",
+          "-o",
+          "%i|%u|%T|%N"
+        ],
+        "returncode": 0,
+        "stdout": "745198|jxu957|COMPLETING|ACD1-26\n",
+        "stderr": ""
+      },
+      "accounting": {
+        "args": [
+          "sacct",
+          "-j",
+          "745198",
+          "-nP",
+          "-o",
+          "JobIDRaw,User,State,ExitCode,Elapsed,NodeList"
+        ],
+        "returncode": 0,
+        "stdout": "745198|jxu957|CANCELLED by 14090|0:0|3-20:49:07|ACD1-26\n745198.batch||CANCELLED|0:0|3-20:49:07|ACD1-26\n745198.extern||CANCELLED|0:0|3-20:49:07|ACD1-26\n745198.0||COMPLETED|0:0|00:00:22|ACD1-26\n745198.1||COMPLETED|0:0|00:05:32|ACD1-26\n745198.2||COMPLETED|0:0|00:00:01|ACD1-26\n745198.3||COMPLETED|0:0|00:00:01|ACD1-26\n745198.4||COMPLETED|0:0|00:00:01|ACD1-26\n745198.5||COMPLETED|0:0|00:03:43|ACD1-26\n745198.6||COMPLETED|0:0|00:00:01|ACD1-26\n745198.7||COMPLETED|0:0|00:02:08|ACD1-26\n745198.8||COMPLETED|0:0|00:00:46|ACD1-26\n745198.9||COMPLETED|0:0|00:01:25|ACD1-26\n745198.10||COMPLETED|0:0|00:03:46|ACD1-26\n745198.11||COMPLETED|0:0|00:00:01|ACD1-26\n745198.12||COMPLETED|0:0|00:04:38|ACD1-26\n745198.13||COMPLETED|0:0|00:00:01|ACD1-26\n745198.14||COMPLETED|0:0|00:00:01|ACD1-26\n745198.15||COMPLETED|0:0|00:00:00|ACD1-26\n745198.16||COMPLETED|0:0|00:04:03|ACD1-26\n",
+        "stderr": ""
+      }
+    },
+    {
+      "job": "750471",
+      "before_queue": {
+        "args": [
+          "squeue",
+          "-h",
+          "-j",
+          "750471",
+          "-o",
+          "%i|%u|%j|%T|%N"
+        ],
+        "returncode": 0,
+        "stdout": "750471|jxu957|easy7b-retrieval-batch16|RUNNING|ACD1-4\n",
+        "stderr": ""
+      },
+      "authorization": "explicit user coordination request; both threads confirm no remaining consumers",
+      "must_keep_jobs": [
+        "751011",
+        "761991"
+      ],
+      "checked_unix": 1792913338.0394676,
+      "files_deleted": false,
+      "health_before": {
+        "service_job_id": "750471",
+        "service_run_id": "a8ddc12aec1840d898e4d9cfcabc17c1",
+        "source_commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+        "endpoint": "http://ACD1-4:18026/retrieve",
+        "physical_gpu_count": 2,
+        "statistics": {
+          "logical_requests": 2399388,
+          "logical_queries": 2405909,
+          "completed_requests": 2399388,
+          "completed_queries": 2405909,
+          "failed_requests": 0,
+          "backend_seconds": 57739.549182743765,
+          "last_completed_unix": 1792910057.7937977,
+          "batch_attempts": 1170065,
+          "batch_input_queries": 2399175,
+          "max_batch_input_queries": 16
+        }
+      },
+      "scancel": {
+        "args": [
+          "scancel",
+          "750471"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "after_queue": {
+        "args": [
+          "squeue",
+          "-h",
+          "-j",
+          "750471",
+          "-o",
+          "%i|%u|%T|%N"
+        ],
+        "returncode": 0,
+        "stdout": "750471|jxu957|COMPLETING|ACD1-4\n",
+        "stderr": ""
+      },
+      "accounting": {
+        "args": [
+          "sacct",
+          "-j",
+          "750471",
+          "-nP",
+          "-o",
+          "JobIDRaw,User,State,ExitCode,Elapsed,NodeList"
+        ],
+        "returncode": 0,
+        "stdout": "750471|jxu957|CANCELLED by 14090|0:0|2-07:04:35|ACD1-4\n750471.batch||CANCELLED|0:0|2-07:04:35|ACD1-4\n750471.extern||CANCELLED|0:0|2-07:04:35|ACD1-4\n",
+        "stderr": ""
+      }
+    }
+  ],
+  "cancelled_job_ids": [
+    "745198",
+    "750471"
+  ],
+  "must_keep_untouched": [
+    "751011",
+    "761991"
+  ],
+  "files_deleted": false,
+  "retrieval_queries_sent": 0,
+  "gpu_forward_triggered": false
+}

@@ -1,0 +1,134 @@
+{
+  "status": "COORDINATED_IDLE_RETRIEVALS_STOPPED_VERIFIED",
+  "cancelled_jobs": [
+    "745198",
+    "750471"
+  ],
+  "released": {
+    "h100": 4,
+    "cpu_cores": 48,
+    "requested_memory_gib": 768
+  },
+  "two_actual_post_stop_checks": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/coordinated-idle-retrieval-post-stop-1792913362662059000.json",
+      "sha256": "94f98d3d2fdbe7f04cdc32d33293d09acd1d60bd332fc92f9bd602a335c60f9c",
+      "observation": {
+        "observed_unix": 1792913362.7446787,
+        "queue": {
+          "command": [
+            "squeue",
+            "-h",
+            "-u",
+            "jxu957",
+            "-o",
+            "%i|%u|%j|%T|%N|%b|%C|%m"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        "accounting": {
+          "command": [
+            "sacct",
+            "-j",
+            "745198,750471",
+            "-nP",
+            "-o",
+            "JobIDRaw,User,State,ExitCode,Elapsed,NodeList"
+          ],
+          "returncode": 0,
+          "stdout": "745198|jxu957|CANCELLED by 14090|0:0|3-20:49:07|ACD1-26\n745198.batch||CANCELLED|0:15|3-20:49:09|ACD1-26\n745198.extern||COMPLETED|0:0|3-20:49:07|ACD1-26\n745198.0||COMPLETED|0:0|00:00:22|ACD1-26\n745198.1||COMPLETED|0:0|00:05:32|ACD1-26\n745198.2||COMPLETED|0:0|00:00:01|ACD1-26\n745198.3||COMPLETED|0:0|00:00:01|ACD1-26\n745198.4||COMPLETED|0:0|00:00:01|ACD1-26\n745198.5||COMPLETED|0:0|00:03:43|ACD1-26\n745198.6||COMPLETED|0:0|00:00:01|ACD1-26\n745198.7||COMPLETED|0:0|00:02:08|ACD1-26\n745198.8||COMPLETED|0:0|00:00:46|ACD1-26\n745198.9||COMPLETED|0:0|00:01:25|ACD1-26\n745198.10||COMPLETED|0:0|00:03:46|ACD1-26\n745198.11||COMPLETED|0:0|00:00:01|ACD1-26\n745198.12||COMPLETED|0:0|00:04:38|ACD1-26\n745198.13||COMPLETED|0:0|00:00:01|ACD1-26\n745198.14||COMPLETED|0:0|00:00:01|ACD1-26\n745198.15||COMPLETED|0:0|00:00:00|ACD1-26\n745198.16||COMPLETED|0:0|00:04:03|ACD1-26\n750471|jxu957|CANCELLED by 14090|0:0|2-07:04:35|ACD1-4\n750471.batch||CANCELLED|0:15|2-07:04:38|ACD1-4\n750471.extern||COMPLETED|0:0|2-07:04:36|ACD1-4\n",
+          "stderr": ""
+        },
+        "read_only": true
+      }
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/coordinated-idle-retrieval-post-stop-1792913393279400000.json",
+      "sha256": "dd364998a227156caf044f48df89749f274cfe2e427402e6526825128bbc622b",
+      "observation": {
+        "observed_unix": 1792913393.3617136,
+        "queue": {
+          "command": [
+            "squeue",
+            "-h",
+            "-u",
+            "jxu957",
+            "-o",
+            "%i|%u|%j|%T|%N|%b|%C|%m"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        "accounting": {
+          "command": [
+            "sacct",
+            "-j",
+            "745198,750471",
+            "-nP",
+            "-o",
+            "JobIDRaw,User,State,ExitCode,Elapsed,NodeList"
+          ],
+          "returncode": 0,
+          "stdout": "745198|jxu957|CANCELLED by 14090|0:0|3-20:49:07|ACD1-26\n745198.batch||CANCELLED|0:15|3-20:49:09|ACD1-26\n745198.extern||COMPLETED|0:0|3-20:49:07|ACD1-26\n745198.0||COMPLETED|0:0|00:00:22|ACD1-26\n745198.1||COMPLETED|0:0|00:05:32|ACD1-26\n745198.2||COMPLETED|0:0|00:00:01|ACD1-26\n745198.3||COMPLETED|0:0|00:00:01|ACD1-26\n745198.4||COMPLETED|0:0|00:00:01|ACD1-26\n745198.5||COMPLETED|0:0|00:03:43|ACD1-26\n745198.6||COMPLETED|0:0|00:00:01|ACD1-26\n745198.7||COMPLETED|0:0|00:02:08|ACD1-26\n745198.8||COMPLETED|0:0|00:00:46|ACD1-26\n745198.9||COMPLETED|0:0|00:01:25|ACD1-26\n745198.10||COMPLETED|0:0|00:03:46|ACD1-26\n745198.11||COMPLETED|0:0|00:00:01|ACD1-26\n745198.12||COMPLETED|0:0|00:04:38|ACD1-26\n745198.13||COMPLETED|0:0|00:00:01|ACD1-26\n745198.14||COMPLETED|0:0|00:00:01|ACD1-26\n745198.15||COMPLETED|0:0|00:00:00|ACD1-26\n745198.16||COMPLETED|0:0|00:04:03|ACD1-26\n750471|jxu957|CANCELLED by 14090|0:0|2-07:04:35|ACD1-4\n750471.batch||CANCELLED|0:15|2-07:04:38|ACD1-4\n750471.extern||COMPLETED|0:0|2-07:04:36|ACD1-4\n",
+          "stderr": ""
+        },
+        "read_only": true
+      }
+    }
+  ],
+  "source_preservation": [
+    {
+      "job": "745198",
+      "commit": "262428b0ecce045a60b2d2cd054e3b906673df8c",
+      "reachable_from_fresh_pushed_branch": true,
+      "files": [
+        {
+          "path": "reproduction/easy2560_joint4/retrieval_service.py",
+          "sha256": "1fa43822ef4ad8ca78a334b854d5a1164524677fad35fdd47c7107cd8ce7aa33"
+        },
+        {
+          "path": "search_r1/search/retrieval_server.py",
+          "sha256": "b0e70e06bbd7d4d820ff7c550142fa6b22725789711f927bdc4960dcdc766ca1"
+        },
+        {
+          "path": "reproduction/common8/encoder-assets.json",
+          "sha256": "0e51c42039045a324717bdf5ecab00a2bbe94e3a34648d9e7be5923447edac38"
+        }
+      ]
+    },
+    {
+      "job": "750471",
+      "commit": "dde1452d2ec65fb3f4a0464d4beacf3b8136414c",
+      "reachable_from_fresh_pushed_branch": true,
+      "files": [
+        {
+          "path": "reproduction/easy2560_joint4/retrieval_service.py",
+          "sha256": "d7a3b052fb52177f1d6c64f7b41c4f6a0ddf5abdd46a3d297fe52924cf6fac97"
+        },
+        {
+          "path": "search_r1/search/retrieval_server.py",
+          "sha256": "b0e70e06bbd7d4d820ff7c550142fa6b22725789711f927bdc4960dcdc766ca1"
+        },
+        {
+          "path": "reproduction/common8/encoder-assets.json",
+          "sha256": "0e51c42039045a324717bdf5ecab00a2bbe94e3a34648d9e7be5923447edac38"
+        },
+        {
+          "path": "search_g1/singleton_faiss_batcher.py",
+          "sha256": "63b627c735a6fe3eed21987ad14e5d3d47601ff898828e29b05a4a4d4816055c"
+        }
+      ]
+    }
+  ],
+  "other_thread_kept_jobs": [
+    "751011",
+    "761991"
+  ],
+  "data_deleted": false,
+  "training_restarted": false,
+  "automatic_restart_allowed": false,
+  "stop_receipt": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-qwen7b-20261021/coordinated-idle-retrieval-stop-1792913337890885000.json"
+}
