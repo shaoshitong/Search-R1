@@ -1,4 +1,4 @@
-"""Read-only live R6 monitor; return small summaries, never model/rollout tensors.
+"""Read-only live DynRPO monitor; return small summaries, never model/rollout tensors.
 
 This observer does not change the running source or submit work. A saved receipt
 is reported as evidence, not treated as a fresh full model hash/load validation.
@@ -105,5 +105,21 @@ if updates:
 print(json.dumps(result))
 '''
 
+def observation_script(base=None, training_job=751884, retrieval_job=751011):
+    from reproduction.dynrpo7b.infra_profile import own_base
+    text = SCRIPT
+    if base is not None:
+        text = text.replace('/data/user/jxu957/experiments/dynrpo7b-formal-20261023-recoveryfix-r6', str(own_base(base)))
+    if not str(training_job).isdecimal() or not str(retrieval_job).isdecimal():
+        raise ValueError('Slurm job IDs must be decimal')
+    return text.replace('751884',str(training_job)).replace('751011',str(retrieval_job))
+
+
 if __name__ == '__main__':
-    remote(SCRIPT)
+    import argparse
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--base')
+    parser.add_argument('--training-job',type=int,default=751884)
+    parser.add_argument('--retrieval-job',type=int,default=751011)
+    args=parser.parse_args()
+    remote(observation_script(args.base,args.training_job,args.retrieval_job))
