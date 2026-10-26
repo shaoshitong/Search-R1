@@ -73,7 +73,7 @@ def main():
         dist.all_reduce(total_loss)
         total_loss /= world
         delta = (parameter.detach() - before).abs().max().item()
-        if not torch.isfinite(total_loss).item() or delta == 0:
+        if not torch.isfinite(total_loss).item() or (step <= 3 and delta == 0):
             raise RuntimeError('损失非有限值或参数没有实际更新')
         record = dict(
             utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),

@@ -51,6 +51,7 @@ def main():
         '--setenv=CUDA_VISIBLE_DEVICES=' + ','.join(uuids),
         '--setenv=CUDA_DEVICE_ORDER=PCI_BUS_ID', '--setenv=PYTHONUNBUFFERED=1',
         '--setenv=OMP_NUM_THREADS=4', '--setenv=MKL_NUM_THREADS=4',
+        '--setenv=NCCL_P2P_DISABLE=1',
         '--setenv=TORCH_NCCL_ASYNC_ERROR_HANDLING=1',
         a.python, '-m', 'torch.distributed.run', '--standalone', '--nnodes=1',
         '--nproc_per_node=' + str(len(wanted)), str(script),
