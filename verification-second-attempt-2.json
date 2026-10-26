@@ -1,0 +1,103 @@
+[
+  {
+    "host": 2,
+    "exit": 0,
+    "status": {
+      "time": "2026-10-26T09:34:49.887266+00:00",
+      "unit": "resnet50-noise-20261026-lab_4090_2-093218.service",
+      "systemd": "TimeoutStopUSec=1min 30s\nRuntimeMaxUSec=infinity\nMainPID=0\nResult=success\nNRestarts=0\nExecMainStatus=0\nKillMode=control-group\nActiveState=inactive\nSubState=dead\nActiveEnterTimestamp=\n",
+      "systemd_exit": 0,
+      "progress": [],
+      "log_tail": "",
+      "gpu": "4, 100, 23485, 24564\n5, 100, 23485, 24564\n",
+      "gpu_exit": 0
+    }
+  },
+  {
+    "host": 3,
+    "exit": 0,
+    "status": {
+      "time": "2026-10-26T09:34:50.333510+00:00",
+      "unit": "resnet50-noise-20261026-lab_4090_3-093218.service",
+      "systemd": "TimeoutStopUSec=15s\nRuntimeMaxUSec=1d\nMainPID=92050\nResult=success\nNRestarts=0\nExecMainStatus=0\nKillMode=control-group\nActiveState=active\nSubState=running\nActiveEnterTimestamp=Mon 2026-10-26 09:32:31 UTC\n",
+      "systemd_exit": 0,
+      "progress": [
+        {
+          "utc": "2026-10-26T09:34:50.219914+00:00",
+          "pid": 92065,
+          "uid": 0,
+          "rank": 0,
+          "world_size": 4,
+          "step": 860,
+          "optimizer_steps": 860,
+          "effective_batch_size": 1024,
+          "micro_batch_per_gpu": 64,
+          "accumulation_steps": 4,
+          "loss": 6.9715576171875,
+          "parameter_max_abs_update": 0.0015009194612503052,
+          "step_seconds": 0.1553,
+          "elapsed_seconds": 134.912,
+          "allocated_MiB": 453.6,
+          "reserved_MiB": 3576.0
+        },
+        {
+          "utc": "2026-10-26T09:34:50.219919+00:00",
+          "pid": 92066,
+          "uid": 0,
+          "rank": 1,
+          "world_size": 4,
+          "step": 860,
+          "optimizer_steps": 860,
+          "effective_batch_size": 1024,
+          "micro_batch_per_gpu": 64,
+          "accumulation_steps": 4,
+          "loss": 6.9715576171875,
+          "parameter_max_abs_update": 0.0015009194612503052,
+          "step_seconds": 0.1553,
+          "elapsed_seconds": 134.913,
+          "allocated_MiB": 453.6,
+          "reserved_MiB": 3576.0
+        },
+        {
+          "utc": "2026-10-26T09:34:50.220043+00:00",
+          "pid": 92067,
+          "uid": 0,
+          "rank": 2,
+          "world_size": 4,
+          "step": 860,
+          "optimizer_steps": 860,
+          "effective_batch_size": 1024,
+          "micro_batch_per_gpu": 64,
+          "accumulation_steps": 4,
+          "loss": 6.9715576171875,
+          "parameter_max_abs_update": 0.0015009194612503052,
+          "step_seconds": 0.1554,
+          "elapsed_seconds": 134.913,
+          "allocated_MiB": 453.6,
+          "reserved_MiB": 3576.0
+        },
+        {
+          "utc": "2026-10-26T09:34:50.220013+00:00",
+          "pid": 92068,
+          "uid": 0,
+          "rank": 3,
+          "world_size": 4,
+          "step": 860,
+          "optimizer_steps": 860,
+          "effective_batch_size": 1024,
+          "micro_batch_per_gpu": 64,
+          "accumulation_steps": 4,
+          "loss": 6.9715576171875,
+          "parameter_max_abs_update": 0.0015009194612503052,
+          "step_seconds": 0.1554,
+          "elapsed_seconds": 134.912,
+          "allocated_MiB": 453.6,
+          "reserved_MiB": 3576.0
+        }
+      ],
+      "log_tail": "_size\": 4, \"step\": 740, \"optimizer_steps\": 740, \"effective_batch_size\": 1024, \"micro_batch_per_gpu\": 64, \"accumulation_steps\": 4, \"loss\": 6.9603271484375, \"parameter_max_abs_update\": 0.002168416976928711, \"step_seconds\": 0.1547, \"elapsed_seconds\": 116.254, \"allocated_MiB\": 453.6, \"reserved_MiB\": 3576.0}\n{\"utc\": \"2026-10-26T09:34:33.116226+00:00\", \"pid\": 92065, \"uid\": 0, \"rank\": 0, \"world_size\": 4, \"step\": 750, \"optimizer_steps\": 750, \"effective_batch_size\": 1024, \"micro_batch_per_gpu\": 64, \"accumulation_steps\": 4, \"loss\": 6.949798583984375, \"parameter_max_abs_update\": 0.00224294513463974, \"step_seconds\": 0.1549, \"elapsed_seconds\": 117.808, \"allocated_MiB\": 453.6, \"reserved_MiB\": 3576.0}\n{\"utc\": \"2026-10-26T09:34:34.672267+00:00\", \"pid\": 92065, \"uid\": 0, \"rank\": 0, \"world_size\": 4, \"step\": 760, \"optimizer_steps\": 760, \"effective_batch_size\": 1024, \"micro_batch_per_gpu\": 64, \"accumulation_steps\": 4, \"loss\": 6.9468994140625, \"parameter_max_abs_update\": 0.0021181851625442505, \"step_seconds\": 0.155, \"elapsed_seconds\": 119.365, \"allocated_MiB\": 453.6, \"reserved_MiB\": 3576.0}\n{\"utc\": \"2026-10-26T09:34:36.227076+00:00\", \"pid\": 92065, \"uid\": 0, \"rank\": 0, \"world_size\": 4, \"step\": 770, \"optimizer_steps\": 770, \"effective_batch_size\": 1024, \"micro_batch_per_gpu\": 64, \"accumulation_steps\": 4, \"loss\": 6.951202392578125, \"parameter_max_abs_update\": 0.0020257681608200073, \"step_seconds\": 0.1552, \"elapsed_seconds\": 120.919, \"allocated_MiB\": 453.6, \"reserved_MiB\": 3576.0}\n{\"utc\": \"2026-10-26T09:34:37.782618+00:00\", \"pid\": 92065, \"uid\": 0, \"rank\": 0, \"world_size\": 4, \"step\": 780, \"optimizer_steps\": 780, \"effective_batch_size\": 1024, \"micro_batch_per_gpu\": 64, \"accumulation_steps\": 4, \"loss\": 6.9576416015625, \"parameter_max_abs_update\": 0.0019383355975151062, \"step_seconds\": 0.1549, \"elapsed_seconds\": 122.475, \"allocated_MiB\": 453.6, \"reserved_MiB\": 3576.0}\n{\"utc\": \"2026-10-26T09:34:39.336886+00:00\", \"pid\": 92065, \"uid\": 0, \"rank\": 0, \"world_size\": 4, \"step\": 790, \"optimizer_steps\": 790, \"effective_batch_size\": 1024, \"micro_batch_per_gpu\": 64, \"accumulation_steps\": 4, \"loss\": 6.970123291015625, \"parameter_max_abs_update\": 0.0019596517086029053, \"step_seconds\": 0.1551, \"elapsed_seconds\": 124.029, \"allocated_MiB\": 453.6, \"reserved_MiB\": 3576.0}\n{\"utc\": \"2026-10-26T09:34:40.890974+00:00\", \"pid\": 92065, \"uid\": 0, \"rank\": 0, \"world_size\": 4, \"step\": 800, \"optimizer_steps\": 800, \"effective_batch_size\": 1024, \"micro_batch_per_gpu\": 64, \"accumulation_steps\": 4, \"loss\": 6.951751708984375, \"parameter_max_abs_update\": 0.0017598215490579605, \"step_seconds\": 0.1549, \"elapsed_seconds\": 125.583, \"allocated_MiB\": 453.6, \"reserved_MiB\": 3576.0}\n{\"utc\": \"2026-10-26T09:34:42.445647+00:00\", \"pid\": 92065, \"uid\": 0, \"rank\": 0, \"world_size\": 4, \"step\": 810, \"optimizer_steps\": 810, \"effective_batch_size\": 1024, \"micro_batch_per_gpu\": 64, \"accumulation_steps\": 4, \"loss\": 6.9522705078125, \"parameter_max_abs_update\": 0.0019900500774383545, \"step_seconds\": 0.1551, \"elapsed_seconds\": 127.138, \"allocated_MiB\": 453.6, \"reserved_MiB\": 3576.0}\n{\"utc\": \"2026-10-26T09:34:43.999892+00:00\", \"pid\": 92065, \"uid\": 0, \"rank\": 0, \"world_size\": 4, \"step\": 820, \"optimizer_steps\": 820, \"effective_batch_size\": 1024, \"micro_batch_per_gpu\": 64, \"accumulation_steps\": 4, \"loss\": 6.9625244140625, \"parameter_max_abs_update\": 0.001811964437365532, \"step_seconds\": 0.1547, \"elapsed_seconds\": 128.692, \"allocated_MiB\": 453.6, \"reserved_MiB\": 3576.0}\n{\"utc\": \"2026-10-26T09:34:45.555053+00:00\", \"pid\": 92065, \"uid\": 0, \"rank\": 0, \"world_size\": 4, \"step\": 830, \"optimizer_steps\": 830, \"effective_batch_size\": 1024, \"micro_batch_per_gpu\": 64, \"accumulation_steps\": 4, \"loss\": 6.970855712890625, \"parameter_max_abs_update\": 0.00177687406539917, \"step_seconds\": 0.1552, \"elapsed_seconds\": 130.247, \"allocated_MiB\": 453.6, \"reserved_MiB\": 3576.0}\n{\"utc\": \"2026-10-26T09:34:47.110884+00:00\", \"pid\": 92065, \"uid\": 0, \"rank\": 0, \"world_size\": 4, \"step\": 840, \"optimizer_steps\": 840, \"effective_batch_size\": 1024, \"micro_batch_per_gpu\": 64, \"accumulation_steps\": 4, \"loss\": 6.96343994140625, \"parameter_max_abs_update\": 0.0016498379409313202, \"step_seconds\": 0.155, \"elapsed_seconds\": 131.803, \"allocated_MiB\": 453.6, \"reserved_MiB\": 3576.0}\n{\"utc\": \"2026-10-26T09:34:48.664907+00:00\", \"pid\": 92065, \"uid\": 0, \"rank\": 0, \"world_size\": 4, \"step\": 850, \"optimizer_steps\": 850, \"effective_batch_size\": 1024, \"micro_batch_per_gpu\": 64, \"accumulation_steps\": 4, \"loss\": 6.947021484375, \"parameter_max_abs_update\": 0.0015320461243391037, \"step_seconds\": 0.1552, \"elapsed_seconds\": 133.357, \"allocated_MiB\": 453.6, \"reserved_MiB\": 3576.0}\n{\"utc\": \"2026-10-26T09:34:50.219914+00:00\", \"pid\": 92065, \"uid\": 0, \"rank\": 0, \"world_size\": 4, \"step\": 860, \"optimizer_steps\": 860, \"effective_batch_size\": 1024, \"micro_batch_per_gpu\": 64, \"accumulation_steps\": 4, \"loss\": 6.9715576171875, \"parameter_max_abs_update\": 0.0015009194612503052, \"step_seconds\": 0.1553, \"elapsed_seconds\": 134.912, \"allocated_MiB\": 453.6, \"reserved_MiB\": 3576.0}\n",
+      "gpu": "4, 99, 4193, 24564\n5, 98, 4193, 24564\n6, 99, 4193, 24564\n7, 99, 4193, 24564\n",
+      "gpu_exit": 0
+    }
+  }
+]

@@ -1,0 +1,41 @@
+{
+  "run_id": "093218",
+  "source_commit": "71d69dc719140484a1bb1ef7e1c9a7d243a7ffe5",
+  "sha256": {
+    "train.py": "8120a6b48dfdf9c90e695df8fc161154e94442d42f52a1f2a0047623cd9ae26a",
+    "launch.py": "25dacc0a6b87ce721dafa75ac6392f9a52ebe79c6a6ef41b07a7697d233f8fa3",
+    "README.md": "976a10d39d3978efc001cdc6e25591d7d4f50ec81dc036b7c3f0f31b15fc7c9f"
+  },
+  "nodes": {
+    "2": {
+      "directory": "/home/shaoshitong/resnet50-noise-20261026-hkust2-093218",
+      "unit": "resnet50-noise-20261026-hkust2-093218",
+      "python": "/home/shaoshitong/anaconda3/envs/vllm_cuda128/bin/python",
+      "gpus": "4,5"
+    },
+    "3": {
+      "directory": "/home/shaoshitong/resnet50-noise-20261026-hkust3-093218",
+      "unit": "resnet50-noise-20261026-hkust3-093218",
+      "python": "/home/shaoshitong/anaconda3/envs/video_dit_xc/bin/python",
+      "gpus": "4,5,6,7"
+    }
+  },
+  "deployment_verification": [
+    {
+      "host": 2,
+      "verified_sha256": {
+        "train.py": "8120a6b48dfdf9c90e695df8fc161154e94442d42f52a1f2a0047623cd9ae26a",
+        "launch.py": "25dacc0a6b87ce721dafa75ac6392f9a52ebe79c6a6ef41b07a7697d233f8fa3",
+        "README.md": "976a10d39d3978efc001cdc6e25591d7d4f50ec81dc036b7c3f0f31b15fc7c9f"
+      }
+    },
+    {
+      "host": 3,
+      "verified_sha256": {
+        "train.py": "8120a6b48dfdf9c90e695df8fc161154e94442d42f52a1f2a0047623cd9ae26a",
+        "launch.py": "25dacc0a6b87ce721dafa75ac6392f9a52ebe79c6a6ef41b07a7697d233f8fa3",
+        "README.md": "976a10d39d3978efc001cdc6e25591d7d4f50ec81dc036b7c3f0f31b15fc7c9f"
+      }
+    }
+  ]
+}
