@@ -26,7 +26,8 @@ def within(path, root):
 
 def eligible(path, size):
     name = Path(path).name.lower()
-    cached_corpus = name == 'wiki_dump.jsonl' and 'cache' in Path(path).parts
+    cached_corpus = (name in ('wiki_dump.jsonl', 'wiki-18.jsonl')
+                     and any(part in Path(path).parts for part in ('cache', 'assets-root')))
     if size < 1048576 or (name.endswith(TEXT_SUFFIXES) and not cached_corpus):
         return False
     if any(x in name for x in ('credential', 'private-key', 'id_rsa', 'id_ed25519')):
