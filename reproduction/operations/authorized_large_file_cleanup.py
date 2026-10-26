@@ -26,13 +26,14 @@ def within(path, root):
 
 def eligible(path, size):
     name = Path(path).name.lower()
-    if size < 1048576 or name.endswith(TEXT_SUFFIXES):
+    cached_corpus = name == 'wiki_dump.jsonl' and 'cache' in Path(path).parts
+    if size < 1048576 or (name.endswith(TEXT_SUFFIXES) and not cached_corpus):
         return False
     if any(x in name for x in ('credential', 'private-key', 'id_rsa', 'id_ed25519')):
         return False
     if '.git' in Path(path).parts or '.ssh' in Path(path).parts:
         return False
-    if name.endswith(BINARY_SUFFIXES) or '.so.' in name:
+    if cached_corpus or name.endswith(BINARY_SUFFIXES) or '.so.' in name:
         return True
     # Unknown extensions: retain text (including logs without a suffix).
     with open(path, 'rb') as stream:
