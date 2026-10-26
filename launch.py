@@ -7,6 +7,7 @@ import io
 import json
 import os
 from pathlib import Path
+import socket
 import subprocess
 
 
@@ -41,6 +42,10 @@ def main():
     uuids = [rows[i][1] for i in wanted]
     output = root / 'progress'
     output.mkdir(exist_ok=True)
+    # 单机静态 rendezvous，避开旧版 elastic/c10d 与 Python 3.12 的崩溃。
+    with socket.socket() as sock:
+        sock.bind(('127.0.0.1', 0))
+        master_port = sock.getsockname()[1]
     command = [
         'systemd-run', '--unit=' + a.unit, '--service-type=exec',
         '--property=RuntimeMaxSec=86400', '--property=TimeoutStopSec=15',
@@ -53,7 +58,8 @@ def main():
         '--setenv=OMP_NUM_THREADS=4', '--setenv=MKL_NUM_THREADS=4',
         '--setenv=NCCL_P2P_DISABLE=1',
         '--setenv=TORCH_NCCL_ASYNC_ERROR_HANDLING=1',
-        a.python, '-m', 'torch.distributed.run', '--standalone', '--nnodes=1',
+        a.python, '-m', 'torch.distributed.run', '--nnodes=1', '--node-rank=0',
+        '--rdzv-backend=static', '--master-addr=127.0.0.1', '--master-port=' + str(master_port),
         '--nproc_per_node=' + str(len(wanted)), str(script),
         '--batch-size=1024', '--micro-batch=64', '--seconds=86400', '--output=' + str(output),
     ]
