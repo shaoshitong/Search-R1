@@ -16,7 +16,8 @@ import time
 PAYLOAD_SUFFIXES = ('.pt', '.pth', '.safetensors', '.bin', '.npy', '.npz',
                     '.pkl', '.pickle', '.arrow', '.parquet', '.jsonl',
                     '.jsonl.gz', '.tar', '.tar.gz', '.tgz', '.zip',
-                    '.h5', '.hdf5', '.tensor', '.fvecs', '.ivf', '.index')
+                    '.h5', '.hdf5', '.tensor', '.fvecs', '.ivf', '.index',
+                    '.ckpt', '.tar.zst', '.tar.xz', '.jsonl.zst')
 SKIP_DIRS = {'.git', 'code', 'repo', 'env', 'environment', 'node_modules',
              'site-packages', '.ssh'}
 
