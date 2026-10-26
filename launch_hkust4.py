@@ -45,6 +45,8 @@ def main():
     gate = json.loads(gate_text)
     if gate.get('status') != 'accepted':
         raise RuntimeError('Wan 尚未验收通过，禁止启动')
+    assert gate.get('gpu_indices') == list(EXPECTED), '交接卡号不符'
+    assert gate.get('gpu_uuids') == list(EXPECTED.values()), '交接 UUID 不符'
     state = subprocess.check_output(['systemctl', 'show', a.unit, '-p', 'LoadState', '--value'], text=True).strip()
     if state != 'not-found':
         raise RuntimeError('服务已存在，拒绝重复启动：' + a.unit)

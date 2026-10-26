@@ -27,11 +27,11 @@ for target in [meta['directory'],meta['source_backup']]:
   p=root/name;p.write_bytes(base64.b64decode(data));p.chmod(0o644)
   assert hashlib.sha256(p.read_bytes()).hexdigest()==meta['sha256'][name]
  (root/'deployment-hkust4.json').write_text(json.dumps(meta,indent=2)+'\\n')
-print('VERIFIED_SHA256:'+json.dumps(meta['sha256']))
+print('VERIFIED_SHA256:'+json.dumps(sorted(meta['sha256'].values())))
 '''.replace('META', repr(meta)).replace('FILES', repr(files))
 r = subprocess.run(['python3', CONTROLLER, 'run', '--timeout', '25', 'lab_4090_4', '--', 'python3', '-c', code], capture_output=True, text=True, timeout=35)
 assert r.returncode == 0, r.stderr
 checks = [json.loads(s.split(':', 1)[1]) for s in r.stdout.splitlines() if s.startswith('VERIFIED_SHA256:')]
-assert checks == [sha], r.stdout
+assert checks == [sorted(sha.values())], r.stdout
 (ROOT / 'deployment-hkust4.json').write_text(json.dumps(meta, indent=2) + '\n')
 print(json.dumps(meta, indent=2))
