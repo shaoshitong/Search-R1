@@ -1,0 +1,93 @@
+{
+  "utc": "2026-10-26T16:38:03.877976+00:00",
+  "progress": [
+    {
+      "utc": "2026-10-26T16:38:03.369712+00:00",
+      "pid": 3538281,
+      "uid": 1001,
+      "rank": 0,
+      "world_size": 4,
+      "step": 30,
+      "optimizer_steps": 30,
+      "effective_batch_size": 2048,
+      "micro_batch_per_gpu": 128,
+      "accumulation_steps": 4,
+      "loss": 6.92626953125,
+      "parameter_max_abs_update": 0.00758037343621254,
+      "step_seconds": 0.3125,
+      "elapsed_seconds": 11.322,
+      "allocated_MiB": 489.8,
+      "reserved_MiB": 6642.0
+    },
+    {
+      "utc": "2026-10-26T16:38:03.369739+00:00",
+      "pid": 3538282,
+      "uid": 1001,
+      "rank": 1,
+      "world_size": 4,
+      "step": 30,
+      "optimizer_steps": 30,
+      "effective_batch_size": 2048,
+      "micro_batch_per_gpu": 128,
+      "accumulation_steps": 4,
+      "loss": 6.92626953125,
+      "parameter_max_abs_update": 0.00758037343621254,
+      "step_seconds": 0.3126,
+      "elapsed_seconds": 11.324,
+      "allocated_MiB": 489.8,
+      "reserved_MiB": 6642.0
+    },
+    {
+      "utc": "2026-10-26T16:38:03.369664+00:00",
+      "pid": 3538283,
+      "uid": 1001,
+      "rank": 2,
+      "world_size": 4,
+      "step": 30,
+      "optimizer_steps": 30,
+      "effective_batch_size": 2048,
+      "micro_batch_per_gpu": 128,
+      "accumulation_steps": 4,
+      "loss": 6.92626953125,
+      "parameter_max_abs_update": 0.00758037343621254,
+      "step_seconds": 0.3125,
+      "elapsed_seconds": 11.324,
+      "allocated_MiB": 489.8,
+      "reserved_MiB": 6642.0
+    },
+    {
+      "utc": "2026-10-26T16:38:03.369683+00:00",
+      "pid": 3538284,
+      "uid": 1001,
+      "rank": 3,
+      "world_size": 4,
+      "step": 30,
+      "optimizer_steps": 30,
+      "effective_batch_size": 2048,
+      "micro_batch_per_gpu": 128,
+      "accumulation_steps": 4,
+      "loss": 6.92626953125,
+      "parameter_max_abs_update": 0.00758037343621254,
+      "step_seconds": 0.3125,
+      "elapsed_seconds": 11.324,
+      "allocated_MiB": 489.8,
+      "reserved_MiB": 6642.0
+    }
+  ],
+  "service": {
+    "exit": 0,
+    "out": "RuntimeMaxUSec=1d\nMainPID=3536189\nResult=success\nNRestarts=0\nExecMainStatus=0\nUser=[user]\nKillMode=control-group\nActiveState=active\nSubState=running\nActiveEnterTimestamp=Tue 2026-10-27 00:37:26 CST\n",
+    "err": ""
+  },
+  "gpu": {
+    "exit": 0,
+    "out": "2, GPU-f2fa94d1-ac5e-9497-7d90-d41d5057c234, 7274, 90\n3, GPU-3649579c-dac9-4462-06e1-0c4c03ce9fab, 7274, 97\n5, GPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2, 7274, 98\n6, GPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f, 7274, 100\n",
+    "err": ""
+  },
+  "processes": {
+    "exit": 0,
+    "out": "GPU-0e270334-547f-d793-ec52-dbec6ef2e19a, 1142957, 710\nGPU-0e270334-547f-d793-ec52-dbec6ef2e19a, 2370781, 21864\nGPU-0e270334-547f-d793-ec52-dbec6ef2e19a, 4148328, 5220\nGPU-0e270334-547f-d793-ec52-dbec6ef2e19a, 1745743, 4278\nGPU-0e270334-547f-d793-ec52-dbec6ef2e19a, 929149, 1798\nGPU-0e270334-547f-d793-ec52-dbec6ef2e19a, 2209968, 6932\nGPU-0e270334-547f-d793-ec52-dbec6ef2e19a, 2306847, 2742\nGPU-52bc599a-9665-83a5-351b-69cfc6a0b667, 2207627, 43538\nGPU-f2fa94d1-ac5e-9497-7d90-d41d5057c234, 3538281, 7256\nGPU-3649579c-dac9-4462-06e1-0c4c03ce9fab, 3538282, 7256\nGPU-ed24344f-9cd8-6d29-e8b9-d7582a8cfd65, 2989627, 2204\nGPU-79de0d51-c2a2-897e-f76a-ec84f03b38e2, 3538283, 7256\nGPU-3a89b647-73fb-27bc-c8a8-e9f663b96d5f, 3538284, 7256\nGPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3, 1749337, 718\n",
+    "err": ""
+  },
+  "log_tail": "{\"utc\": \"2026-10-26T16:37:54.236181+00:00\", \"pid\": 3538281, \"uid\": 1001, \"rank\": 0, \"world_size\": 4, \"step\": 1, \"optimizer_steps\": 1, \"effective_batch_size\": 2048, \"micro_batch_per_gpu\": 128, \"accumulation_steps\": 4, \"loss\": 7.0511322021484375, \"parameter_max_abs_update\": 0.003672683611512184, \"step_seconds\": 2.1877, \"elapsed_seconds\": 2.188, \"allocated_MiB\": 488.8, \"reserved_MiB\": 6642.0}\n{\"utc\": \"2026-10-26T16:37:54.568889+00:00\", \"pid\": 3538281, \"uid\": 1001, \"rank\": 0, \"world_size\": 4, \"step\": 2, \"optimizer_steps\": 2, \"effective_batch_size\": 2048, \"micro_batch_per_gpu\": 128, \"accumulation_steps\": 4, \"loss\": 7.0753021240234375, \"parameter_max_abs_update\": 0.005019562318921089, \"step_seconds\": 0.3271, \"elapsed_seconds\": 2.521, \"allocated_MiB\": 489.8, \"reserved_MiB\": 6642.0}\n{\"utc\": \"2026-10-26T16:37:54.888746+00:00\", \"pid\": 3538281, \"uid\": 1001, \"rank\": 0, \"world_size\": 4, \"step\": 3, \"optimizer_steps\": 3, \"effective_batch_size\": 2048, \"micro_batch_per_gpu\": 128, \"accumulation_steps\": 4, \"loss\": 7.0825653076171875, \"parameter_max_abs_update\": 0.005925725679844618, \"step_seconds\": 0.3121, \"elapsed_seconds\": 2.841, \"allocated_MiB\": 489.8, \"reserved_MiB\": 6642.0}\n{\"utc\": \"2026-10-26T16:37:57.090410+00:00\", \"pid\": 3538281, \"uid\": 1001, \"rank\": 0, \"world_size\": 4, \"step\": 10, \"optimizer_steps\": 10, \"effective_batch_size\": 2048, \"micro_batch_per_gpu\": 128, \"accumulation_steps\": 4, \"loss\": 6.993621826171875, \"parameter_max_abs_update\": 0.009688809514045715, \"step_seconds\": 0.3126, \"elapsed_seconds\": 5.043, \"allocated_MiB\": 489.8, \"reserved_MiB\": 6642.0}\n{\"utc\": \"2026-10-26T16:38:00.228272+00:00\", \"pid\": 3538281, \"uid\": 1001, \"rank\": 0, \"world_size\": 4, \"step\": 20, \"optimizer_steps\": 20, \"effective_batch_size\": 2048, \"micro_batch_per_gpu\": 128, \"accumulation_steps\": 4, \"loss\": 6.931610107421875, \"parameter_max_abs_update\": 0.008680593222379684, \"step_seconds\": 0.3124, \"elapsed_seconds\": 8.18, \"allocated_MiB\": 489.8, \"reserved_MiB\": 6642.0}\n{\"utc\": \"2026-10-26T16:38:03.369712+00:00\", \"pid\": 3538281, \"uid\": 1001, \"rank\": 0, \"world_size\": 4, \"step\": 30, \"optimizer_steps\": 30, \"effective_batch_size\": 2048, \"micro_batch_per_gpu\": 128, \"accumulation_steps\": 4, \"loss\": 6.92626953125, \"parameter_max_abs_update\": 0.00758037343621254, \"step_seconds\": 0.3125, \"elapsed_seconds\": 11.322, \"allocated_MiB\": 489.8, \"reserved_MiB\": 6642.0}\n"
+}
