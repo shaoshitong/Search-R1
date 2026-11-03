@@ -17,7 +17,11 @@ export XDG_CACHE_HOME="$TASK_ROOT/cache"
 export TRITON_CACHE_DIR="$TASK_ROOT/cache/triton"
 export TORCHINDUCTOR_CACHE_DIR="$TASK_ROOT/cache/torchinductor"
 export HF_HOME="$TASK_ROOT/cache/huggingface"
-export TMPDIR="$TASK_ROOT/tmp"
+# Unix IPC sun_path is limited to 107 bytes. Keep only ephemeral task-owned
+# temporary files under a short unique shared-storage path; logs stay TASK_ROOT.
+export TMPDIR
+TMPDIR=$(mktemp -d "/data/user/mou176/vq3-${SLURM_JOB_ID}-XXXXXX")
+trap 'rm -rf -- "$TMPDIR"' EXIT
 export OMP_NUM_THREADS=8 TOKENIZERS_PARALLELISM=false
 export VLLM_USE_V1=1 PYTHONUNBUFFERED=1
 export PYTHONPYCACHEPREFIX="$TASK_ROOT/cache/pycache"
