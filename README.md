@@ -26,3 +26,16 @@ The completed snapshot has 327,138 rows before duplicate image IDs are removed. 
 - `docs/`: model assumptions, proofs, research plan and source bibliography.
 
 Data and large intermediate files remain on the remote host. The repository contains source and necessary documentation only. AI tools assisted with literature discovery and model review; all quantitative claims must be tied to the corresponding output, and all theoretical claims to the stated assumptions.
+
+## V2: measurement robustness and exact integer games
+
+`docs/CURRENT_THEORY_ZH_V2.md` explains the current model and its identification limits in Chinese. `docs/V2_DATA_AND_VALIDATION.md` reports the expanded Civitai snapshot, independent DiffusionDB metadata, a separate 2026 model-version background source, and exact-integer mechanism checks. Small source receipts and aggregate results are in `docs/V2_AUDIT/`; all raw data remain on HKUST3.
+
+Run the V2 data commands in `src/v2/data/README.md` from a directory containing the three V2 data scripts, or substitute their full paths. Reproduce the account-label audit with `python src/v2/data/audit_account_labels.py /data/shaoshitong/ai_creator_game_20261104/v2`. It uses the V1 raw snapshot in the parent directory.
+
+```bash
+python src/v2/finite_market.py --output /data/shaoshitong/ai_creator_game_20261104/v2/theory/finite_market_results.json
+python src/v2/check_strictness.py --output /data/shaoshitong/ai_creator_game_20261104/v2/theory/reproduced_strictness.json
+```
+
+These finite-game calculations are not human behavioral experiments. In particular, the hypothetical two-account gain near 41.4% under square-root scoring follows largely from the scoring formula, not from a fitted real-world effect. The expanded public metadata do not identify actual impressions, economic ownership, cost shocks, or a deployed recommendation exponent.

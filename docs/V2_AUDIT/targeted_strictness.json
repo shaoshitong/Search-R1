@@ -1,0 +1,116 @@
+{
+  "purpose": "Exploratory targeted supplement to the original 12 conditions; no grid expansion or changes to original results.",
+  "parameters": {
+    "R": 12,
+    "tau": 1,
+    "alpha": 0.5,
+    "rule": "account_concave"
+  },
+  "source_sha256": "ea014cf75fc2d2d1c201b3870bd3c4482b274dcd467e2a37d932a84dc3cd95cb",
+  "conditions": [
+    {
+      "c": 0.95,
+      "action_count_per_player": 91,
+      "pure_equilibrium_count_including_player_exchange": 1,
+      "strictness_checks": [
+        {
+          "equilibrium": [
+            {
+              "n": 2,
+              "k": 2
+            },
+            {
+              "n": 2,
+              "k": 2
+            }
+          ],
+          "players": [
+            {
+              "current_action": {
+                "n": 2,
+                "k": 2
+              },
+              "current_payoff": 3.1,
+              "best_distinct_alternative": {
+                "n": 2,
+                "k": 1
+              },
+              "best_distinct_alternative_payoff": 3.070562748477142,
+              "strict_payoff_margin": 0.029437251522858254,
+              "strict_best_response": true,
+              "distinct_actions_checked": 90
+            },
+            {
+              "current_action": {
+                "n": 2,
+                "k": 2
+              },
+              "current_payoff": 3.1,
+              "best_distinct_alternative": {
+                "n": 2,
+                "k": 1
+              },
+              "best_distinct_alternative_payoff": 3.070562748477142,
+              "strict_payoff_margin": 0.029437251522858254,
+              "strict_best_response": true,
+              "distinct_actions_checked": 90
+            }
+          ],
+          "strict_pure_equilibrium": true
+        }
+      ]
+    },
+    {
+      "c": 0.5,
+      "action_count_per_player": 325,
+      "pure_equilibrium_count_including_player_exchange": 1,
+      "strictness_checks": [
+        {
+          "equilibrium": [
+            {
+              "n": 3,
+              "k": 1
+            },
+            {
+              "n": 3,
+              "k": 1
+            }
+          ],
+          "players": [
+            {
+              "current_action": {
+                "n": 3,
+                "k": 1
+              },
+              "current_payoff": 4.500000000000001,
+              "best_distinct_alternative": {
+                "n": 3,
+                "k": 2
+              },
+              "best_distinct_alternative_payoff": 4.487147987595057,
+              "strict_payoff_margin": 0.012852012404944269,
+              "strict_best_response": true,
+              "distinct_actions_checked": 324
+            },
+            {
+              "current_action": {
+                "n": 3,
+                "k": 1
+              },
+              "current_payoff": 4.500000000000001,
+              "best_distinct_alternative": {
+                "n": 3,
+                "k": 2
+              },
+              "best_distinct_alternative_payoff": 4.487147987595057,
+              "strict_payoff_margin": 0.012852012404944269,
+              "strict_best_response": true,
+              "distinct_actions_checked": 324
+            }
+          ],
+          "strict_pure_equilibrium": true
+        }
+      ]
+    }
+  ]
+}

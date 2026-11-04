@@ -1,0 +1,106 @@
+{
+  "source": "hanruijiang/civitai-stable-diffusion-2.5m",
+  "record_unit": "posted image entry",
+  "raw_rows": 2548726,
+  "unique_image_ids": 2548726,
+  "duplicate_image_ids": 0,
+  "schema": "id: int64\nusername: string\ncreatedAt: string\nnsfw: bool\nnsfwLevel: string\nprompt: string\nreactions: int64\nstats_json: string",
+  "license": "Apache-2.0 declared in dataset card",
+  "profiles": [
+    {
+      "label": "all/unique_image_units",
+      "records": 2548726,
+      "accounts": 55303,
+      "missing_or_deleted_account_records": 32396,
+      "missing_prompt_records": 312784,
+      "missing_timestamp_records": 0,
+      "date_min": "2022-11-09 17:39:48.137000+00:00",
+      "date_max": "2023-11-14 10:19:00.184000+00:00",
+      "per_account_record_quantiles": {
+        "0.0": 1.0,
+        "0.25": 2.0,
+        "0.5": 5.0,
+        "0.75": 17.0,
+        "0.9": 63.0,
+        "0.95": 149.0,
+        "0.99": 723.0,
+        "1.0": 22049.0
+      },
+      "top_10pct_accounts_record_share": 0.8189116689782342,
+      "top_share_denominator": "records with known account identifier",
+      "nonempty_prompt_records": 2235942,
+      "global_prompt_duplicate_excess_fraction": 0.34823130474761865,
+      "within_account_nonempty_prompt_records": 2206949,
+      "within_account_prompt_duplicate_excess_fraction": 0.33695703888037287
+    },
+    {
+      "label": "source_nsfw_false/unique_image_units",
+      "records": 1288746,
+      "accounts": 40669,
+      "missing_or_deleted_account_records": 14998,
+      "missing_prompt_records": 162345,
+      "missing_timestamp_records": 0,
+      "date_min": "2022-11-09 17:39:48.137000+00:00",
+      "date_max": "2023-11-14 10:18:59.324000+00:00",
+      "per_account_record_quantiles": {
+        "0.0": 1.0,
+        "0.25": 1.0,
+        "0.5": 4.0,
+        "0.75": 13.0,
+        "0.9": 44.0,
+        "0.95": 102.0,
+        "0.99": 490.3199999999997,
+        "1.0": 13147.0
+      },
+      "top_10pct_accounts_record_share": 0.8048774168830883,
+      "top_share_denominator": "records with known account identifier",
+      "nonempty_prompt_records": 1126401,
+      "global_prompt_duplicate_excess_fraction": 0.30691201446021443,
+      "within_account_nonempty_prompt_records": 1113553,
+      "within_account_prompt_duplicate_excess_fraction": 0.29602183281801586
+    }
+  ],
+  "nsfw_counts": {
+    "False": 1288746,
+    "True": 1259980
+  },
+  "nsfw_level_counts": {
+    "None": 1288746,
+    "X": 459696,
+    "Soft": 407708,
+    "Mature": 392576
+  },
+  "v1_overlap": {
+    "images": 297088,
+    "v1_unique_images": 325599,
+    "fraction_of_v1": 0.9124352347519494,
+    "joint_nonempty_prompts": 249874,
+    "normalized_prompt_agreement_both_nonempty": 0.9994877418218783,
+    "normalized_prompt_agreement_including_empty": 0.9994143149504524,
+    "joint_known_accounts": 292756,
+    "username_agreement_both_known": 0.922993892524833,
+    "reactions_unchanged": 184485,
+    "reactions_increased": 112562,
+    "reactions_decreased": 41,
+    "reaction_delta_quantiles": {
+      "0.0": -4.0,
+      "0.25": 0.0,
+      "0.5": 0.0,
+      "0.75": 1.0,
+      "0.9": 3.0,
+      "0.99": 20.0,
+      "1.0": 2673.0
+    },
+    "new_image_ids": 2251638,
+    "new_id_date_min": "2022-12-04 22:39:25.580000+00:00",
+    "new_id_date_max": "2023-11-14 10:19:00.184000+00:00"
+  },
+  "limitations": [
+    "Filename labels a 2023-11-14 source snapshot; exact per-record engagement capture times are not provided.",
+    "Cross-snapshot reaction changes are not daily engagement increments or a causal policy panel.",
+    "Same platform and overlapping image IDs; not an independent platform sample.",
+    "Account username is not economic identity; account ownership, impressions, costs and ranking alpha remain unobserved.",
+    "Original API coverage and selection are not independently established."
+  ],
+  "completed_utc": "2026-11-04T16:44:23.753311+00:00"
+}

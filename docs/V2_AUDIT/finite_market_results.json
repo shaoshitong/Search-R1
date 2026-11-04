@@ -1,0 +1,626 @@
+{
+  "purpose": "Exact finite-action mechanism calculation, not a human experiment or an estimate of Civitai behavior.",
+  "source_sha256": "ea014cf75fc2d2d1c201b3870bd3c4482b274dcd467e2a37d932a84dc3cd95cb",
+  "equilibrium_tolerance": 1e-10,
+  "reporting": "Asymmetric profiles are included once; exchanging the two players gives the companion equilibrium.",
+  "conditions": [
+    {
+      "rule": "account_linear",
+      "alpha": 1.0,
+      "parameters": {
+        "R": 12.0,
+        "c": 0.25,
+        "tau": 1.0
+      },
+      "maximum_n_from_dominance": 49,
+      "action_count_per_player": 1225,
+      "pure_equilibrium_count_including_player_exchange": 1,
+      "pure_equilibria_up_to_player_exchange": [
+        {
+          "actions": [
+            {
+              "n": 12,
+              "k": 1
+            },
+            {
+              "n": 12,
+              "k": 1
+            }
+          ],
+          "payoffs": [
+            3.0,
+            3.0
+          ],
+          "maximum_unilateral_deviation_gain": 0.0,
+          "difference_from_continuous_benchmark": [
+            {
+              "n": 0.0,
+              "k": 0.0
+            },
+            {
+              "n": 0.0,
+              "k": 0.0
+            }
+          ]
+        }
+      ],
+      "continuous_benchmark": {
+        "n_per_creator": 12.0,
+        "k_per_creator": 1.0,
+        "payoff_per_creator": 3.0
+      },
+      "minimum_maximum_unilateral_deviation_gain": 0.0
+    },
+    {
+      "rule": "account_linear",
+      "alpha": 1.0,
+      "parameters": {
+        "R": 12.0,
+        "c": 0.5,
+        "tau": 1.0
+      },
+      "maximum_n_from_dominance": 25,
+      "action_count_per_player": 325,
+      "pure_equilibrium_count_including_player_exchange": 1,
+      "pure_equilibria_up_to_player_exchange": [
+        {
+          "actions": [
+            {
+              "n": 6,
+              "k": 1
+            },
+            {
+              "n": 6,
+              "k": 1
+            }
+          ],
+          "payoffs": [
+            3.0,
+            3.0
+          ],
+          "maximum_unilateral_deviation_gain": 0.0,
+          "difference_from_continuous_benchmark": [
+            {
+              "n": 0.0,
+              "k": 0.0
+            },
+            {
+              "n": 0.0,
+              "k": 0.0
+            }
+          ]
+        }
+      ],
+      "continuous_benchmark": {
+        "n_per_creator": 6.0,
+        "k_per_creator": 1.0,
+        "payoff_per_creator": 3.0
+      },
+      "minimum_maximum_unilateral_deviation_gain": 0.0
+    },
+    {
+      "rule": "account_linear",
+      "alpha": 1.0,
+      "parameters": {
+        "R": 12.0,
+        "c": 1.0,
+        "tau": 1.0
+      },
+      "maximum_n_from_dominance": 13,
+      "action_count_per_player": 91,
+      "pure_equilibrium_count_including_player_exchange": 1,
+      "pure_equilibria_up_to_player_exchange": [
+        {
+          "actions": [
+            {
+              "n": 3,
+              "k": 1
+            },
+            {
+              "n": 3,
+              "k": 1
+            }
+          ],
+          "payoffs": [
+            3.0,
+            3.0
+          ],
+          "maximum_unilateral_deviation_gain": 0.0,
+          "difference_from_continuous_benchmark": [
+            {
+              "n": 0.0,
+              "k": 0.0
+            },
+            {
+              "n": 0.0,
+              "k": 0.0
+            }
+          ]
+        }
+      ],
+      "continuous_benchmark": {
+        "n_per_creator": 3.0,
+        "k_per_creator": 1.0,
+        "payoff_per_creator": 3.0
+      },
+      "minimum_maximum_unilateral_deviation_gain": 0.0
+    },
+    {
+      "rule": "account_linear",
+      "alpha": 1.0,
+      "parameters": {
+        "R": 12.0,
+        "c": 2.0,
+        "tau": 1.0
+      },
+      "maximum_n_from_dominance": 7,
+      "action_count_per_player": 28,
+      "pure_equilibrium_count_including_player_exchange": 4,
+      "pure_equilibria_up_to_player_exchange": [
+        {
+          "actions": [
+            {
+              "n": 1,
+              "k": 1
+            },
+            {
+              "n": 1,
+              "k": 1
+            }
+          ],
+          "payoffs": [
+            4.0,
+            4.0
+          ],
+          "maximum_unilateral_deviation_gain": 0.0,
+          "difference_from_continuous_benchmark": [
+            {
+              "n": -0.5,
+              "k": 0.0
+            },
+            {
+              "n": -0.5,
+              "k": 0.0
+            }
+          ]
+        },
+        {
+          "actions": [
+            {
+              "n": 1,
+              "k": 1
+            },
+            {
+              "n": 2,
+              "k": 1
+            }
+          ],
+          "payoffs": [
+            2.0,
+            4.0
+          ],
+          "maximum_unilateral_deviation_gain": 0.0,
+          "difference_from_continuous_benchmark": [
+            {
+              "n": -0.5,
+              "k": 0.0
+            },
+            {
+              "n": 0.5,
+              "k": 0.0
+            }
+          ]
+        },
+        {
+          "actions": [
+            {
+              "n": 2,
+              "k": 1
+            },
+            {
+              "n": 2,
+              "k": 1
+            }
+          ],
+          "payoffs": [
+            2.0,
+            2.0
+          ],
+          "maximum_unilateral_deviation_gain": 0.0,
+          "difference_from_continuous_benchmark": [
+            {
+              "n": 0.5,
+              "k": 0.0
+            },
+            {
+              "n": 0.5,
+              "k": 0.0
+            }
+          ]
+        }
+      ],
+      "continuous_benchmark": {
+        "n_per_creator": 1.5,
+        "k_per_creator": 1.0,
+        "payoff_per_creator": 3.0
+      },
+      "minimum_maximum_unilateral_deviation_gain": 0.0
+    },
+    {
+      "rule": "account_concave",
+      "alpha": 0.5,
+      "parameters": {
+        "R": 12.0,
+        "c": 0.25,
+        "tau": 1.0
+      },
+      "maximum_n_from_dominance": 49,
+      "action_count_per_player": 1225,
+      "pure_equilibrium_count_including_player_exchange": 1,
+      "pure_equilibria_up_to_player_exchange": [
+        {
+          "actions": [
+            {
+              "n": 6,
+              "k": 2
+            },
+            {
+              "n": 6,
+              "k": 2
+            }
+          ],
+          "payoffs": [
+            3.500000000000001,
+            3.500000000000001
+          ],
+          "maximum_unilateral_deviation_gain": 0.0,
+          "difference_from_continuous_benchmark": [
+            {
+              "n": 0.0,
+              "k": 0.5
+            },
+            {
+              "n": 0.0,
+              "k": 0.5
+            }
+          ]
+        }
+      ],
+      "continuous_benchmark": {
+        "n_per_creator": 6.0,
+        "k_per_creator": 1.5,
+        "payoff_per_creator": 4.0
+      },
+      "minimum_maximum_unilateral_deviation_gain": 0.0
+    },
+    {
+      "rule": "account_concave",
+      "alpha": 0.5,
+      "parameters": {
+        "R": 12.0,
+        "c": 0.5,
+        "tau": 1.0
+      },
+      "maximum_n_from_dominance": 25,
+      "action_count_per_player": 325,
+      "pure_equilibrium_count_including_player_exchange": 1,
+      "pure_equilibria_up_to_player_exchange": [
+        {
+          "actions": [
+            {
+              "n": 3,
+              "k": 1
+            },
+            {
+              "n": 3,
+              "k": 1
+            }
+          ],
+          "payoffs": [
+            4.500000000000001,
+            4.500000000000001
+          ],
+          "maximum_unilateral_deviation_gain": 0.0,
+          "difference_from_continuous_benchmark": [
+            {
+              "n": 0.0,
+              "k": -0.5
+            },
+            {
+              "n": 0.0,
+              "k": -0.5
+            }
+          ]
+        }
+      ],
+      "continuous_benchmark": {
+        "n_per_creator": 3.0,
+        "k_per_creator": 1.5,
+        "payoff_per_creator": 4.0
+      },
+      "minimum_maximum_unilateral_deviation_gain": 0.0
+    },
+    {
+      "rule": "account_concave",
+      "alpha": 0.5,
+      "parameters": {
+        "R": 12.0,
+        "c": 1.0,
+        "tau": 1.0
+      },
+      "maximum_n_from_dominance": 13,
+      "action_count_per_player": 91,
+      "pure_equilibrium_count_including_player_exchange": 1,
+      "pure_equilibria_up_to_player_exchange": [
+        {
+          "actions": [
+            {
+              "n": 2,
+              "k": 2
+            },
+            {
+              "n": 2,
+              "k": 2
+            }
+          ],
+          "payoffs": [
+            3.0,
+            3.0
+          ],
+          "maximum_unilateral_deviation_gain": 0.0,
+          "difference_from_continuous_benchmark": [
+            {
+              "n": 0.5,
+              "k": 0.5
+            },
+            {
+              "n": 0.5,
+              "k": 0.5
+            }
+          ]
+        }
+      ],
+      "continuous_benchmark": {
+        "n_per_creator": 1.5,
+        "k_per_creator": 1.5,
+        "payoff_per_creator": 4.0
+      },
+      "minimum_maximum_unilateral_deviation_gain": 0.0
+    },
+    {
+      "rule": "account_concave",
+      "alpha": 0.5,
+      "parameters": {
+        "R": 12.0,
+        "c": 2.0,
+        "tau": 1.0
+      },
+      "maximum_n_from_dominance": 7,
+      "action_count_per_player": 28,
+      "pure_equilibrium_count_including_player_exchange": 1,
+      "pure_equilibria_up_to_player_exchange": [
+        {
+          "actions": [
+            {
+              "n": 1,
+              "k": 1
+            },
+            {
+              "n": 1,
+              "k": 1
+            }
+          ],
+          "payoffs": [
+            4.0,
+            4.0
+          ],
+          "maximum_unilateral_deviation_gain": 0.0,
+          "difference_from_continuous_benchmark": [
+            {
+              "n": 0.0,
+              "k": 0.0
+            },
+            {
+              "n": 0.0,
+              "k": 0.0
+            }
+          ]
+        }
+      ],
+      "continuous_benchmark": {
+        "n_per_creator": 1.0,
+        "k_per_creator": 1.0,
+        "payoff_per_creator": 4.0
+      },
+      "minimum_maximum_unilateral_deviation_gain": 0.0
+    },
+    {
+      "rule": "owner_aggregated_concave",
+      "alpha": 0.5,
+      "parameters": {
+        "R": 12.0,
+        "c": 0.25,
+        "tau": 1.0
+      },
+      "maximum_n_from_dominance": 49,
+      "action_count_per_player": 1225,
+      "pure_equilibrium_count_including_player_exchange": 1,
+      "pure_equilibria_up_to_player_exchange": [
+        {
+          "actions": [
+            {
+              "n": 6,
+              "k": 1
+            },
+            {
+              "n": 6,
+              "k": 1
+            }
+          ],
+          "payoffs": [
+            4.5,
+            4.5
+          ],
+          "maximum_unilateral_deviation_gain": 0.0,
+          "difference_from_continuous_benchmark": [
+            {
+              "n": 0.0,
+              "k": 0.0
+            },
+            {
+              "n": 0.0,
+              "k": 0.0
+            }
+          ]
+        }
+      ],
+      "continuous_benchmark": {
+        "n_per_creator": 6.0,
+        "k_per_creator": 1.0,
+        "payoff_per_creator": 4.5
+      },
+      "minimum_maximum_unilateral_deviation_gain": 0.0
+    },
+    {
+      "rule": "owner_aggregated_concave",
+      "alpha": 0.5,
+      "parameters": {
+        "R": 12.0,
+        "c": 0.5,
+        "tau": 1.0
+      },
+      "maximum_n_from_dominance": 25,
+      "action_count_per_player": 325,
+      "pure_equilibrium_count_including_player_exchange": 1,
+      "pure_equilibria_up_to_player_exchange": [
+        {
+          "actions": [
+            {
+              "n": 3,
+              "k": 1
+            },
+            {
+              "n": 3,
+              "k": 1
+            }
+          ],
+          "payoffs": [
+            4.500000000000001,
+            4.500000000000001
+          ],
+          "maximum_unilateral_deviation_gain": 0.0,
+          "difference_from_continuous_benchmark": [
+            {
+              "n": 0.0,
+              "k": 0.0
+            },
+            {
+              "n": 0.0,
+              "k": 0.0
+            }
+          ]
+        }
+      ],
+      "continuous_benchmark": {
+        "n_per_creator": 3.0,
+        "k_per_creator": 1.0,
+        "payoff_per_creator": 4.5
+      },
+      "minimum_maximum_unilateral_deviation_gain": 0.0
+    },
+    {
+      "rule": "owner_aggregated_concave",
+      "alpha": 0.5,
+      "parameters": {
+        "R": 12.0,
+        "c": 1.0,
+        "tau": 1.0
+      },
+      "maximum_n_from_dominance": 13,
+      "action_count_per_player": 91,
+      "pure_equilibrium_count_including_player_exchange": 1,
+      "pure_equilibria_up_to_player_exchange": [
+        {
+          "actions": [
+            {
+              "n": 2,
+              "k": 1
+            },
+            {
+              "n": 2,
+              "k": 1
+            }
+          ],
+          "payoffs": [
+            4.0,
+            4.0
+          ],
+          "maximum_unilateral_deviation_gain": 0.0,
+          "difference_from_continuous_benchmark": [
+            {
+              "n": 0.5,
+              "k": 0.0
+            },
+            {
+              "n": 0.5,
+              "k": 0.0
+            }
+          ]
+        }
+      ],
+      "continuous_benchmark": {
+        "n_per_creator": 1.5,
+        "k_per_creator": 1.0,
+        "payoff_per_creator": 4.5
+      },
+      "minimum_maximum_unilateral_deviation_gain": 0.0
+    },
+    {
+      "rule": "owner_aggregated_concave",
+      "alpha": 0.5,
+      "parameters": {
+        "R": 12.0,
+        "c": 2.0,
+        "tau": 1.0
+      },
+      "maximum_n_from_dominance": 7,
+      "action_count_per_player": 28,
+      "pure_equilibrium_count_including_player_exchange": 1,
+      "pure_equilibria_up_to_player_exchange": [
+        {
+          "actions": [
+            {
+              "n": 1,
+              "k": 1
+            },
+            {
+              "n": 1,
+              "k": 1
+            }
+          ],
+          "payoffs": [
+            4.0,
+            4.0
+          ],
+          "maximum_unilateral_deviation_gain": 0.0,
+          "difference_from_continuous_benchmark": [
+            {
+              "n": 0.0,
+              "k": 0.0
+            },
+            {
+              "n": 0.0,
+              "k": 0.0
+            }
+          ]
+        }
+      ],
+      "continuous_benchmark": {
+        "n_per_creator": 1.0,
+        "k_per_creator": 1.0,
+        "payoff_per_creator": 4.0
+      },
+      "minimum_maximum_unilateral_deviation_gain": 0.0
+    }
+  ]
+}

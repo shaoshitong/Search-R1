@@ -1,0 +1,155 @@
+{
+  "source": "Shiba-2-shiba/civitai-model-version-trends",
+  "record_unit": "model version, not generated image",
+  "license": "not declared",
+  "uncompressed_bytes": 1143967744,
+  "schema": [
+    [
+      "models",
+      "CREATE TABLE models (\n            model_id integer primary key,\n            first_seen_at text not null,\n            first_seen_date text not null,\n            last_seen_at text not null,\n            name text,\n            model_type text not null,\n            creator_username text,\n            nsfw integer,\n            mode text,\n            initial_base_model_raw text,\n            raw_json text\n        )"
+    ],
+    [
+      "model_versions",
+      "CREATE TABLE model_versions (\n            version_id integer primary key,\n            model_id integer not null,\n            first_seen_at text not null,\n            first_seen_date text not null,\n            last_seen_at text not null,\n            created_at text,\n            version_name text,\n            model_type text not null,\n            base_model_raw text,\n            raw_json text, published_at text,\n            foreign key(model_id) references models(model_id)\n        )"
+    ],
+    [
+      "daily_counts",
+      "CREATE TABLE daily_counts (\n            observed_date text not null,\n            model_type text not null,\n            base_model_raw text not null,\n            new_version_count integer not null,\n            new_model_count integer not null,\n            active_total integer,\n            collected_at text not null,\n            primary key(observed_date, model_type, base_model_raw)\n        )"
+    ],
+    [
+      "collection_runs",
+      "CREATE TABLE collection_runs (\n            run_id text primary key,\n            started_at text not null,\n            finished_at text,\n            observed_date text not null,\n            status text not null,\n            pages_fetched integer default 0,\n            models_seen integer default 0,\n            versions_seen integer default 0,\n            error_message text\n        , coverage_started_at text, coverage_finished_at text, known_version_stop integer, execution_status text)"
+    ],
+    [
+      "collection_errors",
+      "CREATE TABLE collection_errors (\n            id integer primary key autoincrement,\n            observed_at text not null,\n            observed_date text not null,\n            scope text not null,\n            url text,\n            http_status integer,\n            message text not null\n        , run_id text)"
+    ],
+    [
+      "sqlite_sequence",
+      "CREATE TABLE sqlite_sequence(name,seq)"
+    ],
+    [
+      "collection_run_types",
+      "CREATE TABLE collection_run_types (\n            run_id text not null, model_type text not null, query_json text not null,\n            query_kind text not null default 'normal',\n            stop_reason text not null, pages_fetched integer not null,\n            models_seen integer not null, versions_seen integer not null,\n            new_models integer not null, new_versions integer not null,\n            error_count integer not null, requested_started_at text,\n            requested_finished_at text, fetch_finished_at text not null,\n            coverage_status text not null,\n            primary key(run_id, model_type, query_json),\n            foreign key(run_id) references collection_runs(run_id))"
+    ],
+    [
+      "active_total_history",
+      "CREATE TABLE active_total_history (\n            observed_at text not null, model_type text not null,\n            base_model_raw text not null, active_total integer not null,\n            source_url text, run_id text,\n            primary key(observed_at, model_type, base_model_raw))"
+    ],
+    [
+      "migration_audit",
+      "CREATE TABLE migration_audit (\n            schema_version integer primary key, applied_at text not null,\n            inferred_first_seen_dates integer not null default 0)"
+    ]
+  ],
+  "query_results": {
+    "models": [
+      [
+        73020,
+        9792,
+        75,
+        "2026-05-18T07:41:54+00:00",
+        "2026-11-03T20:40:31+00:00"
+      ]
+    ],
+    "versions": [
+      [
+        124835,
+        72911,
+        null,
+        null,
+        "2022-11-27T22:29:29.401Z",
+        "2026-11-03T20:35:14.560Z",
+        124835,
+        76
+      ]
+    ],
+    "run_status": [
+      [
+        "success",
+        null,
+        181
+      ],
+      [
+        "success",
+        "completed",
+        16
+      ]
+    ],
+    "coverage_status": [
+      [
+        "partial",
+        32
+      ]
+    ],
+    "daily_counts": [
+      [
+        4461,
+        "2026-05-18",
+        "2026-11-03",
+        "2026-11-03T20:40:31+00:00",
+        "2026-11-03T20:40:31+00:00"
+      ]
+    ],
+    "active_total_history": [
+      [
+        0,
+        0,
+        null,
+        null
+      ]
+    ],
+    "model_types": [
+      [
+        "Checkpoint",
+        9361
+      ],
+      [
+        "LORA",
+        63659
+      ]
+    ]
+  },
+  "version_json_fields": [
+    "availability",
+    "baseModel",
+    "baseModelType",
+    "description",
+    "downloadUrl",
+    "files",
+    "flags",
+    "id",
+    "images",
+    "index",
+    "name",
+    "nsfwLevel",
+    "publishedAt",
+    "stats",
+    "supportsGeneration",
+    "trainedWords",
+    "vaeId"
+  ],
+  "version_stats_fields": [
+    "downloadCount",
+    "thumbsDownCount",
+    "thumbsUpCount"
+  ],
+  "per_account_version_quantiles": {
+    "0.0": 1.0,
+    "0.25": 1.0,
+    "0.5": 2.0,
+    "0.75": 7.0,
+    "0.9": 24.0,
+    "0.95": 49.0,
+    "0.99": 159.28000000000065,
+    "1.0": 3144.0
+  },
+  "top_10pct_accounts_version_share": 0.7167407454950979,
+  "limitations": [
+    "LoRA and Checkpoint supply are different product units from posted image content.",
+    "All retained per-type coverage rows are partial; absent coverage is not a verified zero.",
+    "created_at is missing; published_at is the usable publication field.",
+    "First-seen/last-seen fields do not provide historical per-version engagement snapshots.",
+    "No economic-person account mapping, recommendation share, cost shock or known ranking alpha."
+  ],
+  "completed_utc": "2026-11-04T16:43:05.873032+00:00"
+}

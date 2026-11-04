@@ -1,0 +1,68 @@
+{
+  "completed_utc": "2026-11-04T16:46:05.575509+00:00",
+  "overlap_images_with_both_account_labels": 292756,
+  "exact_agreement_fraction": 0.922993892524833,
+  "casefold_agreement_fraction": 0.9313079834401344,
+  "changed_label_image_records": 22544,
+  "changed_label_distinct_old_labels": 1128,
+  "changed_label_distinct_new_labels": 1129,
+  "changed_label_distinct_pairs": 1132,
+  "old_labels_mapping_to_multiple_new_labels": 1,
+  "new_labels_receiving_multiple_old_labels": 3,
+  "ten_largest_label_transitions_fraction_of_changed_images": 0.3382718239886444,
+  "v1_profiles_same_definitions": [
+    {
+      "label": "v1/all_unique_image_units",
+      "records": 325599,
+      "accounts": 17677,
+      "missing_or_deleted_account_records": 1621,
+      "missing_prompt_records": 53553,
+      "missing_timestamp_records": 0,
+      "date_min": "2022-11-09 17:39:48.137000+00:00",
+      "date_max": "2023-04-12 16:21:19.952000+00:00",
+      "per_account_record_quantiles": {
+        "0.0": 1.0,
+        "0.25": 2.0,
+        "0.5": 4.0,
+        "0.75": 12.0,
+        "0.9": 35.0,
+        "0.95": 68.0,
+        "0.99": 240.0,
+        "1.0": 5419.0
+      },
+      "top_10pct_accounts_record_share": 0.6813147806332529,
+      "top_share_denominator": "records with known account identifier",
+      "nonempty_prompt_records": 272046,
+      "global_prompt_duplicate_excess_fraction": 0.3019562868044375,
+      "within_account_nonempty_prompt_records": 270760,
+      "within_account_prompt_duplicate_excess_fraction": 0.28794135027330475
+    },
+    {
+      "label": "v1/source_nsfw_false_unique_image_units",
+      "records": 185004,
+      "accounts": 12910,
+      "missing_or_deleted_account_records": 932,
+      "missing_prompt_records": 32464,
+      "missing_timestamp_records": 0,
+      "date_min": "2022-11-09 17:39:48.137000+00:00",
+      "date_max": "2023-04-12 16:20:43.631000+00:00",
+      "per_account_record_quantiles": {
+        "0.0": 1.0,
+        "0.25": 1.0,
+        "0.5": 3.0,
+        "0.75": 9.0,
+        "0.9": 28.0,
+        "0.95": 54.0,
+        "0.99": 180.72999999999956,
+        "1.0": 5259.0
+      },
+      "top_10pct_accounts_record_share": 0.6733234821156938,
+      "top_share_denominator": "records with known account identifier",
+      "nonempty_prompt_records": 152540,
+      "global_prompt_duplicate_excess_fraction": 0.28617411826406186,
+      "within_account_nonempty_prompt_records": 151833,
+      "within_account_prompt_duplicate_excess_fraction": 0.27324099504060384
+    }
+  ],
+  "interpretation": "Observed usernames change across snapshots for identical image IDs. This can reflect renaming or source/attribution changes; it is not evidence of account splitting or common ownership. No users are linked into economic-person identities."
+}
