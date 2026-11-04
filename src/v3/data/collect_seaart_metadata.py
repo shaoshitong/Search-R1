@@ -6,8 +6,8 @@ from datetime import datetime, timezone
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 import time
-import urllib.request
 
 REPO = "lehduong/seaart-hq"
 COMMIT = "4321a586faf084ddfa6ab415caae4073af13aa67"
@@ -33,27 +33,39 @@ def download(entry, raw_root):
     url = source.replace("https://huggingface.co/", "https://hf-mirror.com/")
     path = raw_root / name
     partial = path.with_suffix(".parquet.part")
-    digest = hashlib.sha256()
-    observations = [{"utc": utc(), "bytes": 0}]
-    size = 0
+    if path.exists() and path.stat().st_size == expected_bytes:
+        actual_sha = hashlib.sha256(path.read_bytes()).hexdigest()
+        if actual_sha == expected_sha:
+            print(json.dumps({"file": name, "reused_verified_file": True, "bytes": expected_bytes}), flush=True)
+            return {"filename": name, "source_url": source, "download_url": url,
+                    "bytes": expected_bytes, "expected_bytes": expected_bytes,
+                    "sha256": actual_sha, "expected_lfs_sha256": expected_sha,
+                    "verified": True, "reused_verified_file": True}
+    observations = []
     started = time.monotonic()
-    request = urllib.request.Request(url, headers={"User-Agent": "AI-Creator-Game-Metadata-Research/1.0"})
-    with urllib.request.urlopen(request, timeout=60) as response, partial.open("wb") as output:
-        status = response.status
-        for block in iter(lambda: response.read(256 * 1024), b""):
-            output.write(block)
-            digest.update(block)
-            size += len(block)
-            if size // (1024 * 1024) > observations[-1]["bytes"] // (1024 * 1024):
-                point = {"utc": utc(), "bytes": size}
-                observations.append(point)
-                print(json.dumps({"file": name, "progress": point}), flush=True)
+    process = subprocess.Popen([
+        "curl", "-q", "-4", "-fL", "--connect-timeout", "8", "--max-time", "90",
+        "--retry", "2", "--retry-delay", "1", "--silent", "--show-error",
+        "--output", str(partial), "--write-out", "%{http_code}", url,
+    ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    while process.poll() is None:
+        size = partial.stat().st_size if partial.exists() else 0
+        point = {"utc": utc(), "bytes": size}
+        observations.append(point)
+        if len(observations) == 1 or size != observations[-2]["bytes"]:
+            print(json.dumps({"file": name, "progress": point}), flush=True)
+        time.sleep(0.5)
+    status, stderr = process.communicate()
+    if process.returncode:
+        raise RuntimeError(f"curl failed for {name}, exit {process.returncode}: {stderr}")
+    size = partial.stat().st_size
     observations.append({"utc": utc(), "bytes": size})
-    actual_sha = digest.hexdigest()
+    actual_sha = hashlib.sha256(partial.read_bytes()).hexdigest()
     verified = size == expected_bytes and actual_sha == expected_sha
     receipt = {
         "filename": name, "source_url": source, "download_url": url,
-        "http_status": status, "expected_bytes": expected_bytes, "bytes": size,
+        "http_status": int(status), "curl_exit_code": process.returncode,
+        "expected_bytes": expected_bytes, "bytes": size,
         "expected_lfs_sha256": expected_sha, "sha256": actual_sha,
         "verified": verified, "progress": observations,
         "elapsed_seconds": round(time.monotonic() - started, 3),

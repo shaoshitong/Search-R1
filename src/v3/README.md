@@ -42,3 +42,10 @@ The public Civitai probe is diagnostic only: HTTP000/TLS/connection failures did
 not yield live snapshots. Account-ID auditing uses the existing 2026 SQLite source,
 not credentials or inferred economic ownership. See the Chinese V3 report and data
 catalog in `docs/` for exact scope and source attribution.
+
+SeaArt's eight metadata-only Parquets are collected by
+`data/collect_seaart_metadata.py ROOT/seaart` and summarized by
+`data/summarize_seaart_metadata.py ROOT/seaart`. Each file is pinned and checked
+against LFS SHA256. The source has no author IDs, no verified recommendation
+impressions, no per-item AI/HGC labels and no declared license. Like counters often
+exceed view counters; no like/view probability, game fit or media download is made.

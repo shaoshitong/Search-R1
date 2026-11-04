@@ -33,7 +33,7 @@ KuaiRec：[官方完整ZIP](https://zenodo.org/records/18164998/files/KuaiRec.zi
 | [KuaiSAR-small官网](https://kuaisar.github.io/)／[488.1 MB ZIP](https://zenodo.org/records/8181109/files/KuaiSAR.zip) | `item_features.csv`有`author_id/upload_time`；`rec_inter.csv`有推荐分发时间、观看时长及正负反馈，`src_inter.csv`有搜索展示及点击。2023-05-22至05-31，25,877名同时用过搜索与推荐的观看者。不是随机曝光或全平台样本；不保证完整平台曝光总体。[字段文档](https://kuaisar.github.io/detailed_statistics.html)；官网明确CC BY-NC-SA 4.0 |
 | [MIND-small官方说明](https://learn.microsoft.com/en-us/azure/open-datasets/dataset-microsoft-news)／[约30 MB验证集](https://mind201910small.blob.core.windows.net/release/MINDsmall_dev.zip) | `behaviors.tsv`含真实展示列表的clicked/nonclicked标记和时间；50,000观看者抽样。新闻表没有创作者账号ID，用户ID是读者；不能直接研究作者产量与拆号。使用[Microsoft Research条款](https://msnews.github.io/)，不是CC许可 |
 | [Adressa官方页](https://reclab.idi.ntnu.no/dataset/) | light版最小仍为1.4 GB；[官方字段文档](https://reclab.idi.ntnu.no/dataset/cxdataset_v5.pdf)列`author/publishTime`及用户页面访问。2017年点击/访问记录，缺未点击曝光分母，作者字符串也不是稳定经济身份。CC BY-NC-SA 4.0 |
-| [Netzschleuder的KuaiRand转换版](https://networks.skewed.de/net/kuairand)／[Pure CSV ZIP](https://networks.skewed.de/net/kuairand/files/pure.csv.zip) | 2026-10-28加入的37.1 MiB转换版；2,622,668条曝光边，节点保留`author_id/upload_time`，边保留时间、随机标记与反馈。可作下载备用，但不是原始六CSV或原包hash，不与官方源混称；本轮官方采集推进后未重复下载 |
+| [Netzschleuder的KuaiRand转换版](https://networks.skewed.de/net/kuairand)／[Pure CSV ZIP](https://networks.skewed.de/net/kuairand/files/pure.csv.zip) | 2026-10-28加入的37.1 MiB转换版；2,622,668条曝光边，节点保留`author_id/upload_time`，边保留时间、随机标记与反馈。可作下载备用，但不是原始六CSV或原包hash，不与官方源混称；本轮官方包验收成功，未重复下载转换版 |
 | [Civistash公开卡](https://huggingface.co/datasets/Hyphonical/Civistash) | 近期按日归档热门Civitai内容，有账号名、发帖时间、反应及抓取时刻，但媒体和JSON混装；没有可用的独立元数据parquet转换。本轮不下载大包。跨日期按ID去重，不能直接当同作品反复观测面板；按热门反应采样，也不是全平台。数据受Civitai及逐作品条款约束；工具MIT许可不等于数据MIT |
 
 HF的[numberbeat6/kuairand](https://huggingface.co/datasets/numberbeat6/kuairand/tree/main)只见1K版日志和用户表，缺所需基础作者表；[salmon1802/KuaiRand](https://huggingface.co/datasets/salmon1802/KuaiRand)是已处理训练表，不能当完整Pure原始镜像。
@@ -69,7 +69,9 @@ KuaiRand与KuaiRec补上了“真实曝光”这个缺口；Shiba原始JSON补�
 
 ## 补充：AI平台浏览计数与Pixiv的views口径
 
-[SeaArt-HQ](https://huggingface.co/datasets/lehduong/seaart-hq)是公开、非gated的纯元数据候选。固定commit `4321a586faf084ddfa6ab415caae4073af13aa67`的8个Parquet合计16,904,683字节，字段含作品`id`、`created_at`、`num_of_view/num_of_like/num_of_collection/num_of_task`、`nsfw/rating`、prompt和媒体URL；不含嵌入图像。本轮只读取ID、时间、数值与编码列，不访问媒体URL。卡没有声明许可，也没有作者ID或逐作品AI/HGC标签；平台来源不能代替独立验证的AI标签。完整下载与汇总状态见V3审计。
+[SeaArt-HQ](https://huggingface.co/datasets/lehduong/seaart-hq)是公开、非gated的纯元数据来源。固定commit `4321a586faf084ddfa6ab415caae4073af13aa67`的8个Parquet合计16,904,683字节，已全部在HKUST3取得并逐文件通过源LFS SHA256校验。字段含作品`id`、`created_at`、`num_of_view/num_of_like/num_of_collection/num_of_task`、`nsfw/rating`、prompt和媒体URL；不含嵌入图像。本轮只读取ID、时间、数值与编码列，不访问媒体URL。卡没有声明许可，也没有作者ID或逐作品AI/HGC标签；平台来源不能代替独立验证的AI标签。原始文件仅保留在远端`/data/shaoshitong/ai_creator_game_20261104/v3/seaart/raw/`，本地仅保留脚本与小型审计。
+
+实际共57,856行、57,851个不同作品ID；5条重复超额记录的计数、时间和NSFW编码一致。按ID保留首次记录后，views与likes均无缺失；17,387个作品views为零，33,303个作品likes大于views，likes均至少为2。按Unix毫秒解释的`created_at`覆盖2023-09-05至2024-06-24；全部原始行`nsfw=2`、`rating=0`，编码含义未说明。采样规则未说明，样本没有零赞或一赞记录，不能据此描述全平台的点赞分布。详情见[下载审计](/Users/shaoshitong/Documents/Codex/2026-11-04/cha-k/outputs/V3_AUDIT/seaart_download_receipt.json)与[全量元数据摘要](/Users/shaoshitong/Documents/Codex/2026-11-04/cha-k/outputs/V3_AUDIT/seaart_metadata_summary.json)。
 
 `num_of_view`只能称来源的浏览计数，没有文档证明它是推荐impressions；`created_at`按Unix毫秒解释，也没有足够文档区分上传和抓取时间。NSFW编码不作SFW解释。views与likes可能有不同计数范围或更新时间，尤其likes大于views的记录不能直接计算为“点赞概率”。本轮只汇总计数与异常口径，不作like/view概率或回归。
 

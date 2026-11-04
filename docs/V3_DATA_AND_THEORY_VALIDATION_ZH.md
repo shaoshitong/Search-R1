@@ -11,6 +11,7 @@
 | [KuaiRand-Pure](https://kuairand.com/) | 官方47,432,272字节压缩包；7,583视频、6,510创作者账号；全部日志共2,622,668条，其中随机日志1,186,059条 | 有稳定作者账号ID、时间、真实记录的常规/随机曝光及观看反馈；可以做时间留出预测 |
 | [KuaiRec逐日特征](https://github.com/chongminggao/KuaiRec) | 343,341条独立视频×日期记录、10,728视频、8,369账号，2020-07-05至09-05共63天 | `show_cnt`补上逐视频日曝光；不再把点赞当曝光 |
 | [Civitai 2026模型版本快照](https://huggingface.co/datasets/Shiba-2-shiba/civitai-model-version-trends) | 从既有原始JSON恢复9,681个稳定`userId`，关联72,949模型、124,653模型版本 | 减少显示用户名改名的误差；121个稳定ID对应多个用户名，但仍不能识别跨账号真人owner |
+| [SeaArt-HQ](https://huggingface.co/datasets/lehduong/seaart-hq) | 新取得8份纯元数据Parquet，共57,856行、57,851个独立作品ID；全部通过固定版本LFS SHA256 | 补到AI平台来源的作品浏览计数，但没有作者ID或逐作品AI/HGC标签；不能检验账号产量与拆分 |
 
 KuaiRand官方包通过[官方Zenodo记录](https://zenodo.org/records/10439422)给定MD5 `0820331067a3784d9691136f772b35a7`，实测SHA256为`c814bf6f3624c0cfae83c57de3df26b2ed206e5c57bab4c4dcbfabbabe20cbf0`。直连单流两次传输失败后，以支持的HTTP Range续传完成；保留失败记录，没有把partial当成数据。
 
@@ -93,7 +94,7 @@ w_{ad}=n_a^{\alpha-1}\sum_{v\in a}q_v^\beta(1+\mathrm{age}_{vd})^{-\gamma},
 
 ## 5. 对当前博弈理论的影响
 
-原理论的玩家、策略和收益仍是：平台先设alpha与验证成本v，两个创作者选择内容量n与账号数k，账号等分时分数为k^(1−alpha)n^alpha，收益为R乘曝光份额，扣除cn与tau(k−1)。tau=tau0+v。连续内点的n*=R alpha/(4c)、k*=max{1,R(1−alpha)/(4tau)}，以及V2的可行域/整数修正，都是**在这些假设下的数学结论**。
+原理论的玩家、策略和收益仍是：平台先设alpha与验证成本v，两个创作者选择内容量n与账号数k，账号等分时分数为k^(1−alpha)n^alpha，收益为R乘曝光份额，扣除cn与tau(k−1)。tau=tau0+v。保留k≥1、先忽略n≥k约束时，连续松弛解为n*=R alpha/(4c)、k*=max{1,R(1−alpha)/(4tau)}；仅在它满足物理约束时直接使用，否则采用V2的可行域/整数修正。这些都是**在既定假设下的数学结论**。
 
 本轮数据检验的是上述曝光分数的一个必要现实近似，没有识别以下关键对象：
 
@@ -112,6 +113,8 @@ w_{ad}=n_a^{\alpha-1}\sum_{v\in a}q_v^\beta(1+\mathrm{age}_{vd})^{-\gamma},
 ## 6. 开源数据与爬虫结论
 
 已找到并实际使用公开数据，所以先走可复现的公开元数据路线。另检索到的AI平台浏览计数源及不完整候选，见[公开数据目录](V3_OPEN_DATA_CATALOG.md)和对应审计；浏览计数不能自动当推荐impressions。
+
+SeaArt的8个纯元数据文件合计16,904,683字节，固定commit为`4321a586faf084ddfa6ab415caae4073af13aa67`；没有下载媒体或访问元数据中的媒体URL。按作品ID去重后57,851行，其中33,303行的like计数大于view计数，17,387行view=0但like>0；所有like至少为2，不能排除选择性收集。由此不能把like/view当概率。该浏览计数没有文档支持其等于推荐曝光；`created_at`按Unix毫秒解析为2023-09-05至2024-06-24，但上传/采集语义未核实。全部NSFW编码为2，映射未说明，不宣布SFW。数据卡没有声明许可，仍只分发小型汇总。该源提供AI平台背景材料，未增强作者博弈的直接识别。
 
 核验了Civitai官方公开images/posts/users文档、官方CLI与第三方采集器。Mac侧TLS失败，HKUST3侧连接超时，状态均为HTTP000；没有取得首批live数据或两次快照，也没有读到robots内容。这里不能说收到403/429，更不能说已确认允许抓取。官方images接口文档也没有提供推荐曝光分母；即使访问恢复，重复采集反应计数仍不能直接补出曝光。
 
