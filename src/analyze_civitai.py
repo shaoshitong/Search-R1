@@ -61,7 +61,7 @@ def main():
     parser.add_argument("output", type=Path)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
-    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9,
+    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 10.5,
                          "axes.spines.top": False, "axes.spines.right": False,
                          "figure.dpi": 160, "savefig.bbox": "tight"})
 
@@ -111,16 +111,18 @@ def main():
         replay.append({"alpha": float(alpha), **concentration(p),
                        "two_account_eligible_accounts": int(eligible.sum()),
                        "unilateral_split_gain_median": float(np.median(gains)),
+                       "relative_split_gain_median": float(np.median(gains / p[eligible])),
                        "unilateral_split_gain_p90": float(np.quantile(gains, .9)),
                        "unilateral_split_gain_max": float(gains.max())})
     summary["replay"] = replay
     summary["replay_interpretation"] = "Allocation of a fixed observed pool; not the real recommender and not a post-policy equilibrium. Split gains are fractions of a normalized reward pool before account costs."
 
     fig, ax = plt.subplots(1, 2, figsize=(9.6, 3.0), constrained_layout=True)
-    sorted_counts = np.sort(n)
-    ax[0].step(sorted_counts, 1 - np.arange(len(n)) / len(n), where="post", color="#245a81")
+    unique_counts, multiplicity = np.unique(n, return_counts=True)
+    survival = np.cumsum(multiplicity[::-1])[::-1] / len(n)
+    ax[0].step(unique_counts, survival, where="pre", color="#245a81")
     ax[0].set(xscale="log", yscale="log", xlabel="Records per account in the snapshot",
-              ylabel="Fraction of accounts with at least x records", title="A  Observed account activity")
+              ylabel="Accounts with at least x records (fraction)", title="A  Observed account activity")
     bin_edges = [0, 1, 4, 9, 24, 99, np.inf]
     labels = ["1", "2-4", "5-9", "10-24", "25-99", "100+"]
     prompt_stats = valid.groupby("username").agg(rows=("id", "size"), unique=("prompt_norm", "nunique"))
@@ -137,10 +139,10 @@ def main():
     xs = [x["alpha"] for x in replay]
     ax[0].plot(xs, [100 * x["top_10pct_share"] for x in replay], color="#245a81", marker="o", markersize=3)
     ax[0].set(xlabel="Within-account quantity elasticity, alpha",
-              ylabel="Share allocated to the top 10% of accounts (%)", title="A  Concentration under fixed-pool replay")
+              ylabel="Allocation to top 10% of accounts (%)", title="A  Concentration under fixed-pool replay")
     ax[1].plot(xs, [1e4 * x["unilateral_split_gain_median"] for x in replay], color="#c87537", label="Median")
     ax[1].plot(xs, [1e4 * x["unilateral_split_gain_p90"] for x in replay], color="#245a81", linestyle="--", label="90th percentile")
-    ax[1].set(xlabel="Within-account quantity elasticity, alpha", ylabel="Two-account gain (basis points of reward pool)",
+    ax[1].set(xlabel="Within-account quantity elasticity, alpha", ylabel="Split gain (basis points of reward pool)",
               title="B  A unilateral identity-split deviation")
     ax[1].legend(frameon=False)
     fig.savefig(args.output / "mechanism_replay.png")
@@ -155,8 +157,8 @@ def main():
     for a in ax:
         a.axvline(.84, color="black", linestyle=":", linewidth=.9)
         a.set_xlabel("Within-account quantity elasticity, alpha")
-    ax[0].set(ylabel="Equilibrium content quantity, n", title="A  Quantity with n >= k >= 1")
-    ax[1].set(ylabel="Equilibrium account count, k (relaxation)", title="B  Identity and production become complements")
+    ax[0].set(ylabel="Content quantity, n", title="A  Quantity with n >= k >= 1")
+    ax[1].set(ylabel="Account count, k (relaxed)", title="B  Identity and production are complements")
     ax[0].legend(frameon=False)
     fig.savefig(args.output / "constrained_equilibria.png")
     plt.close(fig)
