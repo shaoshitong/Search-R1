@@ -1,0 +1,78 @@
+{
+  "recorded_utc": "2026-11-04T17:25:55.682899+00:00",
+  "official_docs_commit": "7ae23923c333688ad70a7a4b3ee49afd62e60f82",
+  "official_interfaces": {
+    "images": {
+      "url": "https://github.com/civitai/civitai-developer-docs/blob/7ae23923c333688ad70a7a4b3ee49afd62e60f82/site/reference/images.md",
+      "auth": "public anonymous",
+      "fields": "image/post IDs, createdAt, username, prompt metadata, reactions/comments, cursor",
+      "impressions_in_documented_schema": false
+    },
+    "posts": {
+      "url": "https://github.com/civitai/civitai-developer-docs/blob/7ae23923c333688ad70a7a4b3ee49afd62e60f82/site/reference/posts.md",
+      "auth": "public anonymous",
+      "stable_account_id": "user.id",
+      "rate_limit_note": "Respect Retry-After; 300-second edge cache"
+    },
+    "users": {
+      "url": "https://github.com/civitai/civitai-developer-docs/blob/7ae23923c333688ad70a7a4b3ee49afd62e60f82/site/reference/users.md",
+      "auth": "public lookup by ids or username query",
+      "economic_owner_map": false
+    }
+  },
+  "open_source_collectors": [
+    {
+      "url": "https://github.com/civitai/cli",
+      "license": "Apache-2.0",
+      "route": "public read/search with --anon --json; no install/execution performed",
+      "reason_preferred": "direct anonymous public metadata output"
+    },
+    {
+      "url": "https://github.com/moonwhaler/CivitScraper",
+      "license": "AGPL-3.0",
+      "route": "model-file hash metadata scanner; optional media download can be disabled",
+      "acquired_data": false,
+      "reason_not_used": "not a direct posted-image panel and does not solve current network failure"
+    }
+  ],
+  "mm2024": {
+    "paper": "https://tysong.github.io/files/MM24-Civitai.pdf",
+    "arxiv": "https://arxiv.org/abs/2407.12876",
+    "documented_collection": "REST API plus Selenium WebDriver",
+    "documented_fields_include": [
+      "views",
+      "tips",
+      "reactions",
+      "creator follower/followee lists"
+    ],
+    "public_dataset_or_dedicated_collector_found": false,
+    "search_scope": [
+      "full paper PDF and arXiv HTML",
+      "author linked publication page",
+      "author public GitHub repository list",
+      "title-based repository search"
+    ],
+    "limitation": "No located open download is not proof that none exists; views are not automatically recommendation impressions."
+  },
+  "pixiv_2026_candidate": {
+    "paper": "https://arxiv.org/abs/2607.10538",
+    "dataset": "https://huggingface.co/datasets/Wei-Yiluo/Pixiv-AI-generation-metadata",
+    "commit": "a03b7fea9f43bf3a532d3e51ff6c58bdbb693d9d",
+    "gated": "auto",
+    "requires_sharing_hf_information": true,
+    "files_downloaded": false,
+    "declared_license": "CC-BY-NC-ND-4.0",
+    "card_coverage": "2023-01-01 to 2026-01-01",
+    "files": {
+      "artworks.feather": 342770434,
+      "images.feather": 22644745610
+    },
+    "exclusion_reason": "Current task explicitly excludes accepting information-sharing conditions or bypassing file gating."
+  },
+  "current_live_civitai_records": 0,
+  "live_access_audit": "civitai_live_access_audit.json",
+  "actual_stable_account_id_extraction_audit": "civitai_account_id_summary.json",
+  "no_media_downloads": true,
+  "no_credentials_or_cookies_used": true,
+  "no_network_settings_changed": true
+}

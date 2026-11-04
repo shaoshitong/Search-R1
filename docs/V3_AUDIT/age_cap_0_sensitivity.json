@@ -1,0 +1,394 @@
+{
+  "completed_utc": "2026-11-04T17:29:20.479576+00:00",
+  "protocol": {
+    "freeze_date": "all uploads before 2022-04-22",
+    "training": "2022-04-22..26",
+    "validation": "2022-04-27..28",
+    "test": "2022-04-29..2022-05-08",
+    "tabs": "up to three largest by ordinary training exposure count",
+    "future_monthly_features_used": false,
+    "test_outcomes_used_to_fit_parameters": false,
+    "quantity_alpha_bounds": "concave .05..1; unrestricted-positive .05..2 (does not test nonpositive alpha)",
+    "score": "n_a^(alpha-1) sum_v q_v^beta (1+age_vd)^(-gamma)",
+    "age_exponent_cap": 0.0
+  },
+  "metadata_summary": {
+    "files": {
+      "video_features_statistic_pure.csv": {
+        "bytes": 6559217
+      },
+      "user_features_pure.csv": {
+        "bytes": 3519028
+      },
+      "log_random_4_22_to_5_08_pure.csv": {
+        "bytes": 87086116
+      },
+      "video_features_basic_pure.csv": {
+        "bytes": 626669
+      },
+      "log_standard_4_08_to_4_21_pure.csv": {
+        "bytes": 83961282
+      },
+      "log_standard_4_22_to_5_08_pure.csv": {
+        "bytes": 21765075
+      }
+    },
+    "basic_columns": [
+      "video_id",
+      "author_id",
+      "video_type",
+      "upload_dt",
+      "upload_type",
+      "visible_status",
+      "video_duration",
+      "server_width",
+      "server_height",
+      "music_id",
+      "music_type",
+      "tag"
+    ],
+    "basic_rows": 7583,
+    "unparseable_upload_dates": 0,
+    "raw_upload_examples": [
+      "2022-04-10",
+      "2022-04-10",
+      "2022-04-09",
+      "2022-04-11",
+      "2022-04-09"
+    ],
+    "parsed_upload_examples": [
+      "2022-04-10",
+      "2022-04-10",
+      "2022-04-09",
+      "2022-04-11",
+      "2022-04-09"
+    ],
+    "eligible_fixed_pool_rows": 7583,
+    "standard_rows_before_pool_filter": 295497,
+    "random_rows_before_pool_filter": 1186059,
+    "standard_date_range": [
+      20220422,
+      20220508
+    ],
+    "random_date_range": [
+      20220422,
+      20220508
+    ],
+    "standard_is_rand_counts": {
+      "0": 295497
+    },
+    "random_is_rand_counts": {
+      "1": 1186059
+    }
+  },
+  "tabs": [
+    {
+      "tab": 1,
+      "status": "complete",
+      "pool_videos": 7583,
+      "pool_author_accounts": 6510,
+      "author_inventory_quantiles": {
+        "0": 1.0,
+        "0.5": 1.0,
+        "0.9": 2.0,
+        "0.99": 3.0,
+        "1": 26.0
+      },
+      "single_item_author_fraction": 0.8695852534562212,
+      "multi_item_author_fraction": 0.1304147465437788,
+      "standard_train_rows": 72137,
+      "standard_validation_rows": 20535,
+      "standard_test_rows": 130841,
+      "test_days": [
+        20220429,
+        20220430,
+        20220501,
+        20220502,
+        20220503,
+        20220504,
+        20220505,
+        20220506,
+        20220507,
+        20220508
+      ],
+      "zero_test_exposure_authors": 1878,
+      "random_demand_proxy": {
+        "selected_shrinkage": 50,
+        "random_validation_log_loss": 0.2709415615281331,
+        "random_training_rows": 203601,
+        "random_validation_rows": 81528,
+        "random_validation_global_prior_log_loss": 0.27964021098655545,
+        "random_validation_duration_prior_log_loss": 0.27897347164767433,
+        "pool_videos_with_zero_random_training_exposures": 71,
+        "random_training_global_long_view": 0.0815811317233216,
+        "candidates": [
+          {
+            "shrinkage": 10,
+            "validation_log_loss": 0.2724474616569518
+          },
+          {
+            "shrinkage": 50,
+            "validation_log_loss": 0.2709415615281331
+          },
+          {
+            "shrinkage": 200,
+            "validation_log_loss": 0.275106616769218
+          }
+        ]
+      },
+      "validation_selected_model": "historical_share",
+      "models": [
+        {
+          "model": "uniform_accounts",
+          "parameters": [],
+          "parameter_bounds": [],
+          "convergence": {
+            "success": true,
+            "message": "fixed baseline"
+          },
+          "parameters_at_bound": [],
+          "training_log_loss": 8.781094735202615,
+          "validation_log_loss": 8.781094735202615,
+          "test_log_loss": 8.781094735202615,
+          "test_share_total_variation": 0.6485379488343934
+        },
+        {
+          "model": "linear_quantity",
+          "parameters": [
+            1.0
+          ],
+          "parameter_bounds": [
+            [
+              1.0,
+              1.0
+            ]
+          ],
+          "convergence": {
+            "success": true,
+            "message": "fixed baseline"
+          },
+          "parameters_at_bound": [],
+          "training_log_loss": 8.760179331721886,
+          "validation_log_loss": 8.753460597894135,
+          "test_log_loss": 8.762219755963384,
+          "test_share_total_variation": 0.6384356197636156
+        },
+        {
+          "model": "concave_quantity",
+          "parameters": [
+            0.7010268007303659
+          ],
+          "parameter_bounds": [
+            [
+              0.05,
+              1.0
+            ]
+          ],
+          "convergence": {
+            "success": true,
+            "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+          },
+          "parameters_at_bound": [],
+          "training_log_loss": 8.753403951962541,
+          "validation_log_loss": 8.748693939482314,
+          "test_log_loss": 8.75483434404069,
+          "test_share_total_variation": 0.6400226167781942
+        },
+        {
+          "model": "free_quantity",
+          "parameters": [
+            0.7011069700353783
+          ],
+          "parameter_bounds": [
+            [
+              0.05,
+              2.0
+            ]
+          ],
+          "convergence": {
+            "success": true,
+            "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+          },
+          "parameters_at_bound": [],
+          "training_log_loss": 8.753403952280427,
+          "validation_log_loss": 8.748693401163978,
+          "test_log_loss": 8.754834507937968,
+          "test_share_total_variation": 0.6400218771335858
+        },
+        {
+          "model": "linear_demand_age",
+          "parameters": [
+            1.0,
+            2.014792787748756,
+            0.0
+          ],
+          "parameter_bounds": [
+            [
+              1.0,
+              1.0
+            ],
+            [
+              0.0,
+              4.0
+            ],
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "convergence": {
+            "success": true,
+            "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+          },
+          "parameters_at_bound": [],
+          "training_log_loss": 8.558340877068895,
+          "validation_log_loss": 8.571316981636539,
+          "test_log_loss": 8.55351553083229,
+          "test_share_total_variation": 0.5948040362342593
+        },
+        {
+          "model": "concave_demand_age",
+          "parameters": [
+            0.7311933951532728,
+            2.002166453666903,
+            0.0
+          ],
+          "parameter_bounds": [
+            [
+              0.05,
+              1.0
+            ],
+            [
+              0.0,
+              4.0
+            ],
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "convergence": {
+            "success": true,
+            "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+          },
+          "parameters_at_bound": [],
+          "training_log_loss": 8.552928298861604,
+          "validation_log_loss": 8.567594773987674,
+          "test_log_loss": 8.547598595300087,
+          "test_share_total_variation": 0.5954514812290035
+        },
+        {
+          "model": "free_demand_age",
+          "parameters": [
+            0.7312510682090176,
+            2.0022114099695845,
+            0.0
+          ],
+          "parameter_bounds": [
+            [
+              0.05,
+              2.0
+            ],
+            [
+              0.0,
+              4.0
+            ],
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "convergence": {
+            "success": true,
+            "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+          },
+          "parameters_at_bound": [],
+          "training_log_loss": 8.552928298560078,
+          "validation_log_loss": 8.567594798147091,
+          "test_log_loss": 8.547598555577387,
+          "test_share_total_variation": 0.5954506686005016
+        },
+        {
+          "model": "historical_share",
+          "parameters": [],
+          "parameter_bounds": [],
+          "convergence": {
+            "success": true,
+            "message": "fixed baseline"
+          },
+          "parameters_at_bound": [],
+          "training_log_loss": 7.416355991467757,
+          "validation_log_loss": 7.553949106842248,
+          "test_log_loss": 7.615061116313522,
+          "test_share_total_variation": 0.25554725826948826
+        }
+      ],
+      "comparisons": [
+        {
+          "model": "concave_quantity",
+          "baseline": "linear_quantity",
+          "test_delta_log_loss": -0.0073854119226931005,
+          "day_block_bootstrap_95_interval": [
+            -0.008598723518646696,
+            -0.005964535244559195
+          ],
+          "interpretation": "Negative means lower held-out loss; exploratory day-block uncertainty, not causal inference."
+        },
+        {
+          "model": "free_quantity",
+          "baseline": "linear_quantity",
+          "test_delta_log_loss": -0.007385248025413561,
+          "day_block_bootstrap_95_interval": [
+            -0.008574724060293734,
+            -0.005947580321823998
+          ],
+          "interpretation": "Negative means lower held-out loss; exploratory day-block uncertainty, not causal inference."
+        },
+        {
+          "model": "concave_demand_age",
+          "baseline": "linear_demand_age",
+          "test_delta_log_loss": -0.005916935532202311,
+          "day_block_bootstrap_95_interval": [
+            -0.007048169146612311,
+            -0.004727410667364117
+          ],
+          "interpretation": "Negative means lower held-out loss; exploratory day-block uncertainty, not causal inference."
+        },
+        {
+          "model": "free_demand_age",
+          "baseline": "linear_demand_age",
+          "test_delta_log_loss": -0.0059169752549036985,
+          "day_block_bootstrap_95_interval": [
+            -0.0069980334963074264,
+            -0.004683887942134137
+          ],
+          "interpretation": "Negative means lower held-out loss; exploratory day-block uncertainty, not causal inference."
+        }
+      ],
+      "inventory_definition": "Number of fixed candidate-pool videos uploaded by 2022-04-21; not complete creator production."
+    },
+    {
+      "tab": 0,
+      "status": "insufficient_rows",
+      "counts": {
+        "random_train": 0,
+        "random_validation": 0,
+        "standard_train": 10992,
+        "standard_validation": 2734,
+        "standard_test": 14348
+      }
+    },
+    {
+      "tab": 4,
+      "status": "insufficient_rows",
+      "counts": {
+        "random_train": 0,
+        "random_validation": 0,
+        "standard_train": 6088,
+        "standard_validation": 1789,
+        "standard_test": 9764
+      }
+    }
+  ],
+  "scope": "Held-out conditional exposure prediction on historical non-AIGC Kuaishou data. Does not identify AI cost effects, latent owners, creator best responses, or a causal platform alpha."
+}

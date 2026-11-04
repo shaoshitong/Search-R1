@@ -1,0 +1,195 @@
+{
+  "completed_utc": "2026-11-04T17:23:15.834427+00:00",
+  "protocol": {
+    "panel": "Retrospective fixed items observed on all 63 dates, uploaded by first date; absent rows never imputed as zero.",
+    "training_dates": [
+      20200705,
+      20200803
+    ],
+    "validation_dates": [
+      20200804,
+      20200815
+    ],
+    "test_dates": [
+      20200816,
+      20200905
+    ],
+    "future_outcomes_used_for_fitting": false,
+    "future_row_presence_used_for_sample_definition": true,
+    "demand_proxy": "training long_time_play_cnt / show_cnt with 50-exposure shrinkage",
+    "bounds": "alpha .05..1 or .05..2; beta 0..4; gamma 0..2"
+  },
+  "sample": {
+    "source_rows": 343341,
+    "balanced_rows": 58275,
+    "videos": 925,
+    "authors": 867,
+    "dates": 63,
+    "single_item_author_fraction": 0.9469434832756632,
+    "multi_item_authors": 46,
+    "inventory_max": 4,
+    "exposure_totals": {
+      "training": 2390965853,
+      "validation": 214664933,
+      "test": 187688987
+    },
+    "nonpositive_training_inventory_shows": 0,
+    "training_proxy_before_clip_outside_0_1": 0
+  },
+  "models": [
+    {
+      "model": "uniform_accounts",
+      "parameters": [],
+      "convergence": {
+        "success": true,
+        "message": "fixed baseline"
+      },
+      "training_log_loss": 6.7650389767805414,
+      "validation_log_loss": 6.765038976780541,
+      "test_log_loss": 6.765038976780541,
+      "test_share_total_variation": 0.7904845592631566
+    },
+    {
+      "model": "linear_quantity",
+      "parameters": [
+        1.0
+      ],
+      "convergence": {
+        "success": true,
+        "message": "fixed baseline"
+      },
+      "training_log_loss": 6.5883293180450675,
+      "validation_log_loss": 6.747136022707296,
+      "test_log_loss": 6.70880195365984,
+      "test_share_total_variation": 0.7688074865013761
+    },
+    {
+      "model": "concave_quantity",
+      "parameters": [
+        1.0
+      ],
+      "convergence": {
+        "success": true,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+      },
+      "training_log_loss": 6.5883293180450675,
+      "validation_log_loss": 6.747136022707296,
+      "test_log_loss": 6.70880195365984,
+      "test_share_total_variation": 0.7688074865013761
+    },
+    {
+      "model": "free_quantity",
+      "parameters": [
+        2.0
+      ],
+      "convergence": {
+        "success": true,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+      },
+      "training_log_loss": 6.49155007209033,
+      "validation_log_loss": 6.809163481414786,
+      "test_log_loss": 6.732495343319877,
+      "test_share_total_variation": 0.7484669961513011
+    },
+    {
+      "model": "linear_demand_age",
+      "parameters": [
+        1.0,
+        1.9356050743552586,
+        0.888317766879345
+      ],
+      "convergence": {
+        "success": true,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+      },
+      "training_log_loss": 6.143326628370579,
+      "validation_log_loss": 7.925229750265677,
+      "test_log_loss": 7.281277624967118,
+      "test_share_total_variation": 0.7299340585115706
+    },
+    {
+      "model": "concave_demand_age",
+      "parameters": [
+        1.0,
+        1.9355896557240804,
+        0.8883368648465201
+      ],
+      "convergence": {
+        "success": true,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+      },
+      "training_log_loss": 6.143326628470584,
+      "validation_log_loss": 7.925222174334655,
+      "test_log_loss": 7.281271629914646,
+      "test_share_total_variation": 0.7299340059867503
+    },
+    {
+      "model": "free_demand_age",
+      "parameters": [
+        1.6201781637131192,
+        1.7849966591478295,
+        0.8541666769160153
+      ],
+      "convergence": {
+        "success": true,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+      },
+      "training_log_loss": 6.113433239693695,
+      "validation_log_loss": 7.874919937634586,
+      "test_log_loss": 7.249097697406166,
+      "test_share_total_variation": 0.725631321823953
+    },
+    {
+      "model": "historical_share",
+      "parameters": [],
+      "convergence": {
+        "success": true,
+        "message": "fixed baseline"
+      },
+      "training_log_loss": 5.290965382308147,
+      "validation_log_loss": 5.267326706285114,
+      "test_log_loss": 5.214343486800665,
+      "test_share_total_variation": 0.5468277689266636
+    }
+  ],
+  "comparisons": [
+    {
+      "model": "concave_quantity",
+      "baseline": "linear_quantity",
+      "test_delta_log_loss": 0.0,
+      "day_block_bootstrap_95_interval": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "model": "free_quantity",
+      "baseline": "linear_quantity",
+      "test_delta_log_loss": 0.02369338966003576,
+      "day_block_bootstrap_95_interval": [
+        0.005521073924348477,
+        0.03688798890155972
+      ]
+    },
+    {
+      "model": "concave_demand_age",
+      "baseline": "linear_demand_age",
+      "test_delta_log_loss": -5.995052472876934e-06,
+      "day_block_bootstrap_95_interval": [
+        -6.884670213515742e-06,
+        -4.876581875977814e-06
+      ]
+    },
+    {
+      "model": "free_demand_age",
+      "baseline": "linear_demand_age",
+      "test_delta_log_loss": -0.032179927560953454,
+      "day_block_bootstrap_95_interval": [
+        -0.03672139626608959,
+        -0.02652446175362342
+      ]
+    }
+  ],
+  "validation_selected_model": "historical_share",
+  "scope": "Conditional descriptive exposure prediction in a selected historical non-AI panel; no causal alpha, AI adoption effect, full production, owner mapping or Nash equilibrium identified."
+}

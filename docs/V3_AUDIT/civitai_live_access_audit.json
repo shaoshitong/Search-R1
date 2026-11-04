@@ -1,0 +1,53 @@
+{
+  "recorded_utc": "2026-11-04T17:23:08.593252+00:00",
+  "request_utc_was_embedded": false,
+  "timestamp_note": "Actual probe commands in this round did not embed exact UTC; recorded_utc is archival time, not a fabricated request time. Tool-call chunk IDs retain the original execution record.",
+  "records_obtained": 0,
+  "first_live_snapshot_created": false,
+  "second_live_snapshot_created": false,
+  "network_changes": false,
+  "credentials_or_cookies_used": false,
+  "additional_retries_after_root_stop": false,
+  "probes": [
+    {
+      "surface": "hkust3",
+      "url": "https://civitai.com/robots.txt",
+      "curl_exit": 28,
+      "http_code": "000",
+      "download_bytes": 0,
+      "seconds": 8.001525,
+      "stderr": "Connection timed out after 8001 milliseconds",
+      "tool_chunk_id": "45ea1c"
+    },
+    {
+      "surface": "hkust3",
+      "url": "https://civitai.com/api/v1/images?limit=3&browsingLevel=1&sort=Newest&withMeta=true&type=image",
+      "curl_exit": 28,
+      "http_code": "000",
+      "download_bytes": 0,
+      "seconds": 8.001336,
+      "stderr": "Connection timed out after 8001 milliseconds",
+      "tool_chunk_id": "01c538"
+    },
+    {
+      "surface": "Mac",
+      "url": "https://civitai.com/robots.txt",
+      "curl_exit": 35,
+      "http_code": "000",
+      "download_bytes": 0,
+      "seconds": 0.252291,
+      "stderr": "LibreSSL SSL_connect: SSL_ERROR_SYSCALL in connection to civitai.com:443",
+      "tool_chunk_id": "8e6247"
+    },
+    {
+      "surface": "Mac",
+      "url": "https://civitai.com/api/v1/images?limit=3&browsingLevel=1&sort=Newest&withMeta=true&type=image",
+      "curl_exit": 35,
+      "http_code": "000",
+      "download_bytes": 0,
+      "seconds": 0.2331,
+      "stderr": "LibreSSL SSL_connect: SSL_ERROR_SYSCALL in connection to civitai.com:443",
+      "tool_chunk_id": "8e6247"
+    }
+  ]
+}

@@ -39,3 +39,16 @@ python src/v2/check_strictness.py --output /data/shaoshitong/ai_creator_game_202
 ```
 
 These finite-game calculations are not human behavioral experiments. In particular, the hypothetical two-account gain near 41.4% under square-root scoring follows largely from the scoring formula, not from a fitted real-world effect. The expanded public metadata do not identify actual impressions, economic ownership, cost shocks, or a deployed recommendation exponent.
+
+## V3: real logged exposure and held-out prediction
+
+`src/v3/README.md` gives the acquisition and analysis commands. V3 adds the official
+KuaiRand-Pure archive, the verified KuaiRec daily-feature CSV, and stable account IDs
+from the existing Civitai model-version snapshot. The Chinese V3 report and catalog
+are in `docs/`, with small numerical/source audits in `docs/V3_AUDIT/`.
+
+KuaiRand offers modest cross-entropy support for a concave conditional quantity
+score in one tab; total variation does not improve. KuaiRec does not replicate the
+concavity result. Historical exposure shares predict best in both. These are
+non-AI historical recommendation datasets, so no AI cost shock, economic-owner
+identity choice, or observed Nash equilibrium is identified.
