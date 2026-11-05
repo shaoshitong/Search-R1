@@ -52,3 +52,14 @@ score in one tab; total variation does not improve. KuaiRec does not replicate t
 concavity result. Historical exposure shares predict best in both. These are
 non-AI historical recommendation datasets, so no AI cost shock, economic-owner
 identity choice, or observed Nash equilibrium is identified.
+
+## V4: interpreting persistence and refining the game
+
+`docs/THEORY_REFINEMENT_HISTORY_V4.md` separates stable creator heterogeneity,
+account capital and old-item persistence. It audits the historical-share baseline's
+high-dimensional account information and explains why account fixed effects absorb
+the static-pool quantity exponent. It derives an optional weighted-account contest
+with cold-start disadvantage, including a heterogeneous-type/cost one-period
+equilibrium and conditional AI cost comparative statics. These are analytical model
+results, not new empirical estimates. Dynamic inventory, reputation and identity
+entry remain unsolved extensions. V3 data outputs and archived source remain frozen.
