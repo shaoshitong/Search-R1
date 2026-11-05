@@ -1,0 +1,90 @@
+{
+  "verified_utc": "2026-11-05T13:26:38.351410+00:00",
+  "local_harness_directly_invoked": true,
+  "configured_provider": "deepseek-account",
+  "configured_model": "deepseek-flash",
+  "runs": [
+    {
+      "receipt": {
+        "started_utc": "2026-11-05T12:43:46.250276+00:00",
+        "finished_utc": "2026-11-05T12:55:13.198947+00:00",
+        "command": [
+          "/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh",
+          "--profile",
+          "headless",
+          "--patch",
+          "/Users/shaoshitong/Documents/Codex/2026-11-04/cha-k/work/research-src/src/v8/dpsk_account_patch.json",
+          "--json",
+          "-"
+        ],
+        "cwd": "/Users/shaoshitong/Documents/Codex/2026-11-04/cha-k/work/research-src",
+        "prompt": "/Users/shaoshitong/Documents/Codex/2026-11-04/cha-k/work/research-src/src/v8/dpsk_editorial_prompt.txt",
+        "prompt_sha256": "680ad7547eee792ea56777b59578f95ff860b19aa3f1dd2f98a062db2d15d740",
+        "actual_exit_code": 0,
+        "event_bytes": 548428,
+        "stderr_bytes": 0
+      },
+      "tools": {
+        "bash": 48,
+        "read": 28,
+        "write": 1,
+        "edit": 22
+      },
+      "event_log_sha256": "1d3ef386be12a72902c9b39432450008f2367fd446eed1177d64d1bfe674782f",
+      "artifact": "V8_DPSK_EDITORIAL_BLUEPRINT.md",
+      "artifact_bytes": 89604,
+      "artifact_sha256": "59088c78fdf034950bfe435a18e7b92c8e6aaf4173d90b3e3a3c2d6f22607596"
+    },
+    {
+      "receipt": {
+        "started_utc": "2026-11-05T12:56:38.744556+00:00",
+        "finished_utc": "2026-11-05T13:06:56.573451+00:00",
+        "command": [
+          "/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh",
+          "--profile",
+          "headless",
+          "--patch",
+          "/Users/shaoshitong/Documents/Codex/2026-11-04/cha-k/work/research-src/src/v8/dpsk_account_patch.json",
+          "--json",
+          "-"
+        ],
+        "cwd": "/Users/shaoshitong/Documents/Codex/2026-11-04/cha-k/work/research-src",
+        "prompt": "/Users/shaoshitong/Documents/Codex/2026-11-04/cha-k/work/research-src/src/v8/dpsk_report_prompt.txt",
+        "prompt_sha256": "8d741aedf8b2595edcde2768d0a02801e601e078caba800d2d8ce7ebdc99811d",
+        "actual_exit_code": 0,
+        "event_bytes": 428722,
+        "stderr_bytes": 0
+      },
+      "tools": {
+        "bash": 39,
+        "read": 18,
+        "read_image": 2
+      },
+      "event_log_sha256": "6d74f37ee91808b585ff1389bad7f3b43045e2ec12be2ffc9f0f3404de110cb2",
+      "artifact": "V8_DPSK_RESEARCH_REPORT_DRAFT.md",
+      "artifact_bytes": 36872,
+      "artifact_sha256": "3ef55a6bd08dc187ea9b665d1e532cf188e36683dec5f93196baede30ba631e3"
+    }
+  ],
+  "new_experiments_run": false,
+  "original_research_preserved": true,
+  "final_markdown": {
+    "bytes": 31569,
+    "sha256": "3518dd47e1f308879f6e2aa8846ac1264409f157c5b0faab072a96dbf1cdb377"
+  },
+  "pdf": {
+    "pages": 8,
+    "bytes": 557760,
+    "sha256": "7da97f60763636637399d3dbe071faec33c475afe2770f1ddf3ba82e7b26b2a8"
+  },
+  "numeric_text_checks": {
+    "7.341395": true,
+    "6.626575": true,
+    "3.955176": true,
+    "0.0934049": true,
+    "710": true,
+    "1.718326": true
+  },
+  "replacement_characters": 0,
+  "review": "Scientific review passed after recorded corrections; visual review of all pages and page-scale spot checks."
+}
