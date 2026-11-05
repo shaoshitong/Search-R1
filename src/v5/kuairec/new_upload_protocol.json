@@ -1,0 +1,45 @@
+{
+  "study_id": "v5_kuairec_new_upload_first_day_supplement",
+  "protocol_frozen_utc": "2026-11-05T02:59:19.774591+00:00",
+  "source_sha256": "45943d63c44652b6403f3a4f78c7225e1afe7916bab17d9a674d7979245e085b",
+  "origin_start_indices": [
+    0,
+    14,
+    28,
+    35
+  ],
+  "training_days": 14,
+  "calibration_days": 7,
+  "test_days": 7,
+  "beta_grid": [
+    -1,
+    -0.5,
+    0,
+    0.5,
+    1
+  ],
+  "history_prior_item_days": [
+    1,
+    7,
+    28,
+    100,
+    "no_history"
+  ],
+  "duration_bins_milliseconds": [
+    7000,
+    18000,
+    30000,
+    60000
+  ],
+  "duration_prior_video_count": 20,
+  "bootstrap_repetitions": 2000,
+  "bootstrap_seed": 20261106,
+  "primary_increment": "history_quantity_flow minus history",
+  "grouping": "seen has at least one source row in training; unseen does not mean newly registered",
+  "catalogue_prefix_only": true,
+  "histories_frozen_within_origin": true,
+  "test_target_feedback_features": false,
+  "future_row_presence_survivor_filter": false,
+  "parent_primary_protocol_sha256": "0fe3c061f8d6a9f0ded8f6385e8204b944fb4254b0c236dc92181d590620f920",
+  "scope": "Conditional observed first-day new-work pool; no owner, AI-cost, causal alpha or equilibrium identification."
+}

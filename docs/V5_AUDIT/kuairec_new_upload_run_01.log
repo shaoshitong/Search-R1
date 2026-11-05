@@ -1,0 +1,11 @@
+{"stage": "first_day_source_ready", "utc": "2026-11-05T03:03:11.886657+00:00", "elapsed_seconds": 0.77, "source_rows": 343341, "observed_first_day_candidates": 9531, "model_grid_sizes": {"uniform_videos": 1, "duration_base": 1, "catalogue_stock_Q": 5, "publication_flow_F": 5, "stock_flow_QF": 25, "history_H": 5, "history_stock_flow_HQF": 125}}
+Traceback (most recent call last):
+  File "/data/shaoshitong/ai_creator_game_20261104/v5/kuairec/code/analyze_new_uploads.py", line 253, in <module>
+    main()
+  File "/data/shaoshitong/ai_creator_game_20261104/v5/kuairec/code/analyze_new_uploads.py", line 175, in main
+    cal_prob = probabilities(candidate_scores(cal_features,settings,model,mu),cal_features.date)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/shaoshitong/ai_creator_game_20261104/v5/kuairec/code/analyze_new_uploads.py", line 36, in candidate_scores
+    score *= (1+features.Q.to_numpy()) ** setting.get("beta_Q", 0)
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~^^~~~~~~~~~~~~~~~~~~~~~~~~~
+ValueError: Integers to negative integer powers are not allowed.

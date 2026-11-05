@@ -291,7 +291,7 @@ def main():
        'optimization':{'cells':len(cells),'failed_baseline_fits':sum(not c['baseline_fit']['success'] for c in cells),
             'failed_linear_fits':sum(not c['linear_fit']['success'] for c in cells),
             'at_bound_cells':sum(bool(c['baseline_fit']['at_bound']) for c in cells)},
-       'scope':'Historical non-AI, selected old videos and accounts; cross-item association, not account ownership, cold-start, causal feedback or AI cost effects.'}
+       'scope':'Historical 2022 data without observed AI adoption, selected old videos and accounts; cross-item association, not account ownership, cold-start, causal feedback or AI cost effects.'}
     (args.root/'results/summary.json').write_text(json.dumps(result,indent=2))
     (args.root/'results/cells.json').write_text(json.dumps(cells,indent=2))
     pd.DataFrame([{k:json.dumps(v) if isinstance(v,dict) else v for k,v in row.items()} for row in rows]).to_csv(args.root/'results/cell_metrics.csv',index=False)

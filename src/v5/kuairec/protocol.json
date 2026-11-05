@@ -1,0 +1,71 @@
+{
+  "study_id": "v5_kuairec_cross_work_transfer",
+  "source_sha256": "45943d63c44652b6403f3a4f78c7225e1afe7916bab17d9a674d7979245e085b",
+  "expected_common_videos": 925,
+  "expected_common_accounts": 867,
+  "expected_multi_item_accounts": 46,
+  "split_salt": "v5-kuairec|",
+  "origin_start_indices": [
+    0,
+    14,
+    28,
+    35
+  ],
+  "training_days": 14,
+  "calibration_days": 7,
+  "test_days": 7,
+  "history_prior_days": [
+    0.5,
+    2,
+    7,
+    14
+  ],
+  "demand_prior_exposures": 50,
+  "quantity_alpha_bounds": [
+    0.05,
+    2
+  ],
+  "demand_beta_bounds": [
+    0,
+    4
+  ],
+  "age_gamma_bounds": [
+    0,
+    2
+  ],
+  "demand_age_starts": [
+    [
+      1,
+      1,
+      0.5
+    ],
+    [
+      0.5,
+      1,
+      0
+    ],
+    [
+      1.5,
+      2,
+      1.5
+    ]
+  ],
+  "permutations": 999,
+  "permutation_seed": 20261104,
+  "bootstrap_repetitions": 2000,
+  "bootstrap_seed": 20261105,
+  "future_row_presence_used_for_cohort": true,
+  "within_origin_history_frozen": true,
+  "no_test_based_model_selection": true,
+  "scope": "Conditional predictive transfer in a retrospective selected historical non-AI item panel; no ownership, causal quality-versus-memory separation, cost or equilibrium identification.",
+  "protocol_frozen_utc": "2026-11-05T02:44:27.356914+00:00",
+  "secondary_amendment_utc": "2026-11-05T02:48:00.326545+00:00",
+  "secondary_residual_prior_mean_count_multipliers": [
+    0.01,
+    0.1,
+    1,
+    10
+  ],
+  "secondary_content_base_fit_segment": "A calibration only; demand proxy A+B training only",
+  "primary_remains": "raw A transfer versus same-capacity identity permutation"
+}

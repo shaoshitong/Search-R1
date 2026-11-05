@@ -63,3 +63,13 @@ with cold-start disadvantage, including a heterogeneous-type/cost one-period
 equilibrium and conditional AI cost comparative statics. These are analytical model
 results, not new empirical estimates. Dynamic inventory, reputation and identity
 entry remain unsolved extensions. V3 data outputs and archived source remain frozen.
+
+## V5: mechanism diagnostics and feasible integer games
+
+`src/v5/README.md` supplies the reproduction entry points. V5 tests cross-work
+history transfer at rolling origins, evaluates genuine newly uploaded works using
+only past catalogue/history features, and audits 176 integer creator-game
+conditions with minimum-content constraints. Shared history gains are weak and
+concentrated; first-day quantity features mainly correct seen/unseen group mass.
+Cold-start capital and AI cost effects remain unidentified. The Chinese main
+report, separate analyses, negative results and AI-based review are in `docs/V5_*`.

@@ -1,0 +1,98 @@
+{
+  "completed_utc": "2026-11-05T03:08:09.234796+00:00",
+  "acceptance": {
+    "exit_code": 0,
+    "cells": 60,
+    "source_code_sha_matches": true,
+    "all_reported_author_losses_reconstructed_from_saved_contributions": true
+  },
+  "fit_parameter_ranges": {
+    "alpha": {
+      "min": 0.05,
+      "median": 0.2845590974663855,
+      "max": 0.6386552807043449,
+      "boundary_cells": 1
+    },
+    "beta": {
+      "min": 1.1651735543097308,
+      "median": 2.154345692661589,
+      "max": 2.8354347392617907,
+      "boundary_cells": 0
+    },
+    "gamma": {
+      "min": 0.0,
+      "median": 0.0,
+      "max": 2.598340353595171,
+      "boundary_cells": 44
+    }
+  },
+  "calibration_power_counts": {
+    "A_account_transfer": {
+      "0.0": 0,
+      "0.5": 44,
+      "1.0": 16
+    },
+    "A_account_transfer_linear_quantity": {
+      "0.0": 0,
+      "0.5": 50,
+      "1.0": 10
+    },
+    "B_self_account_memory": {
+      "0.0": 0,
+      "0.5": 0,
+      "1.0": 60
+    },
+    "B_self_item_memory": {
+      "0.0": 0,
+      "0.5": 0,
+      "1.0": 60
+    }
+  },
+  "influence": {
+    "post_hoc": true,
+    "refitting_performed": false,
+    "accounts_with_test_exposure": 678,
+    "accounts_with_negative_paired_loss_numerator": 121,
+    "accounts_with_positive_paired_loss_numerator": 557,
+    "top_10_account_exposure_share": 0.16808169333698503,
+    "leave_one_account_out_delta_range": [
+      -0.041995620578297733,
+      -0.01921011739896145
+    ],
+    "drop_highest_exposure_accounts": {
+      "1": -0.01921011739896143,
+      "5": 0.01334689593964783,
+      "10": 0.013423042991571085
+    },
+    "daily_paired_loss_differences": {
+      "20220429": -0.05412008266003603,
+      "20220430": -0.02742881759395577,
+      "20220501": -0.04283341693585319,
+      "20220502": -0.03710266358686923,
+      "20220503": -0.04179073458023409,
+      "20220504": -0.04471327869302692,
+      "20220505": -0.04596049824417611,
+      "20220506": 5.383483051800445e-05,
+      "20220507": -0.030458998665887967
+    },
+    "interpretation": "Fixed predictions only. These diagnostics do not include model refitting or identify causal effects."
+  },
+  "source_files": {
+    "summary.json": {
+      "bytes": 9777,
+      "sha256": "b93c3f235a68caba1d3dc90534fa4661531dba52a5e9d5db35df66b838224765"
+    },
+    "cells.json": {
+      "bytes": 99842,
+      "sha256": "a851ee82b90bfa45f3f9bcc4ca34ba8c35ff8dfdbceddac8450d86330bdabddc"
+    },
+    "granular_account_contributions.npz": {
+      "bytes": 44505,
+      "sha256": "d79be7e9df082de6df8c7e6c5489da4bc0e65e8e1b56c597f60e7ea73a1954d4"
+    },
+    "daily_metrics.json": {
+      "bytes": 3284,
+      "sha256": "58a6a254999fb9ddb48604c5c7525329e3f9ef8508bbe516c555edb8b14da3aa"
+    }
+  }
+}

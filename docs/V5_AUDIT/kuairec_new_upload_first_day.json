@@ -1,0 +1,1843 @@
+{
+  "study_id": "v5_kuairec_new_upload_first_day_supplement",
+  "started_utc": "2026-11-05T03:05:21.323439+00:00",
+  "completed_utc": "2026-11-05T03:05:25.892505+00:00",
+  "protocol": {
+    "study_id": "v5_kuairec_new_upload_first_day_supplement",
+    "protocol_frozen_utc": "2026-11-05T02:59:19.774591+00:00",
+    "source_sha256": "45943d63c44652b6403f3a4f78c7225e1afe7916bab17d9a674d7979245e085b",
+    "origin_start_indices": [
+      0,
+      14,
+      28,
+      35
+    ],
+    "training_days": 14,
+    "calibration_days": 7,
+    "test_days": 7,
+    "beta_grid": [
+      -1,
+      -0.5,
+      0,
+      0.5,
+      1
+    ],
+    "history_prior_item_days": [
+      1,
+      7,
+      28,
+      100,
+      "no_history"
+    ],
+    "duration_bins_milliseconds": [
+      7000,
+      18000,
+      30000,
+      60000
+    ],
+    "duration_prior_video_count": 20,
+    "bootstrap_repetitions": 2000,
+    "bootstrap_seed": 20261106,
+    "primary_increment": "history_quantity_flow minus history",
+    "grouping": "seen has at least one source row in training; unseen does not mean newly registered",
+    "catalogue_prefix_only": true,
+    "histories_frozen_within_origin": true,
+    "test_target_feedback_features": false,
+    "future_row_presence_survivor_filter": false,
+    "parent_primary_protocol_sha256": "0fe3c061f8d6a9f0ded8f6385e8204b944fb4254b0c236dc92181d590620f920",
+    "scope": "Conditional observed first-day new-work pool; no owner, AI-cost, causal alpha or equilibrium identification."
+  },
+  "protocol_sha256": "c5fd85add198872f285d5240c34433b2929cb0ced2a61549449218eae5b45026",
+  "source_sha256": "45943d63c44652b6403f3a4f78c7225e1afe7916bab17d9a674d7979245e085b",
+  "origins": [
+    {
+      "origin": "R1",
+      "training_dates": [
+        20200705,
+        20200706,
+        20200707,
+        20200708,
+        20200709,
+        20200710,
+        20200711,
+        20200712,
+        20200713,
+        20200714,
+        20200715,
+        20200716,
+        20200717,
+        20200718
+      ],
+      "calibration_dates": [
+        20200719,
+        20200720,
+        20200721,
+        20200722,
+        20200723,
+        20200724,
+        20200725
+      ],
+      "test_dates": [
+        20200726,
+        20200727,
+        20200728,
+        20200729,
+        20200730,
+        20200731,
+        20200801
+      ],
+      "training_first_day_works": 2382,
+      "calibration_first_day_works": 654,
+      "test_first_day_works": 1209,
+      "test_group_counts": {
+        "seen": {
+          "test_works": 255,
+          "test_accounts": 179,
+          "without_old_work_history": 153
+        },
+        "unseen": {
+          "test_works": 954,
+          "test_accounts": 884,
+          "without_old_work_history": 954
+        }
+      },
+      "training_old_work_item_days": 15923,
+      "known_catalogue_items_at_train_end": 3551,
+      "training_duration_bucket_counts": {
+        "0": 698,
+        "1": 1383,
+        "2": 125,
+        "3": 100,
+        "4": 23,
+        "missing": 53
+      },
+      "models": [
+        {
+          "model": "uniform_videos",
+          "candidate_count": 1,
+          "selected_setting": {},
+          "calibration_joint_log_loss": 4.546811650655117,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 572405148.0,
+            "joint_log_loss": 5.1128679129002395,
+            "seen": {
+              "joint_exposures": 249346863.0,
+              "observed_group_exposure_mass": 0.43561254449095205,
+              "predicted_group_exposure_mass": 0.22814626504965507,
+              "joint_pool_log_loss_contribution_per_group_exposure": 5.044516307277542,
+              "within_group_conditional_exposures": 249346863.0,
+              "within_group_conditional_log_loss": 3.600825289580442,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 323058285.0,
+              "observed_group_exposure_mass": 0.5643874555090479,
+              "predicted_group_exposure_mass": 0.771853734950345,
+              "joint_pool_log_loss_contribution_per_group_exposure": 5.165623899155266,
+              "within_group_conditional_exposures": 323058285.0,
+              "within_group_conditional_log_loss": 4.919390392364007,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "duration_base",
+          "candidate_count": 1,
+          "selected_setting": {},
+          "calibration_joint_log_loss": 4.44207767857813,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 572405148.0,
+            "joint_log_loss": 4.980495548382506,
+            "seen": {
+              "joint_exposures": 249346863.0,
+              "observed_group_exposure_mass": 0.43561254449095205,
+              "predicted_group_exposure_mass": 0.24808006759332815,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.907893828598362,
+              "within_group_conditional_exposures": 249346863.0,
+              "within_group_conditional_log_loss": 3.5468896647374364,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 323058285.0,
+              "observed_group_exposure_mass": 0.5643874555090479,
+              "predicted_group_exposure_mass": 0.7519199324066718,
+              "joint_pool_log_loss_contribution_per_group_exposure": 5.036531910602969,
+              "within_group_conditional_exposures": 323058285.0,
+              "within_group_conditional_log_loss": 4.763771913900689,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "catalogue_stock_Q",
+          "candidate_count": 5,
+          "selected_setting": {
+            "beta_Q": 0.5
+          },
+          "calibration_joint_log_loss": 4.358071034425119,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 572405148.0,
+            "joint_log_loss": 4.88126768995062,
+            "seen": {
+              "joint_exposures": 249346863.0,
+              "observed_group_exposure_mass": 0.43561254449095205,
+              "predicted_group_exposure_mass": 0.37279912533250453,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.452539069888063,
+              "within_group_conditional_exposures": 249346863.0,
+              "within_group_conditional_log_loss": 3.496497187287676,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 323058285.0,
+              "observed_group_exposure_mass": 0.5643874555090479,
+              "predicted_group_exposure_mass": 0.6272008746674956,
+              "joint_pool_log_loss_contribution_per_group_exposure": 5.212174345048221,
+              "within_group_conditional_exposures": 323058285.0,
+              "within_group_conditional_log_loss": 4.763771913900689,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "publication_flow_F",
+          "candidate_count": 5,
+          "selected_setting": {
+            "beta_F": 0.5
+          },
+          "calibration_joint_log_loss": 4.369526422735629,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 572405148.0,
+            "joint_log_loss": 4.881768395065262,
+            "seen": {
+              "joint_exposures": 249346863.0,
+              "observed_group_exposure_mass": 0.43561254449095205,
+              "predicted_group_exposure_mass": 0.35275531754990225,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.495235982571464,
+              "within_group_conditional_exposures": 249346863.0,
+              "within_group_conditional_log_loss": 3.4868753675740956,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 323058285.0,
+              "observed_group_exposure_mass": 0.5643874555090479,
+              "predicted_group_exposure_mass": 0.6472446824500978,
+              "joint_pool_log_loss_contribution_per_group_exposure": 5.180106648495755,
+              "within_group_conditional_exposures": 323058285.0,
+              "within_group_conditional_log_loss": 4.763771913900689,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "stock_flow_QF",
+          "candidate_count": 25,
+          "selected_setting": {
+            "beta_Q": 1,
+            "beta_F": -0.5
+          },
+          "calibration_joint_log_loss": 4.356934814507628,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 572405148.0,
+            "joint_log_loss": 4.890801038552469,
+            "seen": {
+              "joint_exposures": 249346863.0,
+              "observed_group_exposure_mass": 0.43561254449095205,
+              "predicted_group_exposure_mass": 0.39821869890017864,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.419295728613723,
+              "within_group_conditional_exposures": 249346863.0,
+              "within_group_conditional_log_loss": 3.5252437464919066,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 323058285.0,
+              "observed_group_exposure_mass": 0.5643874555090479,
+              "predicted_group_exposure_mass": 0.6017813010998213,
+              "joint_pool_log_loss_contribution_per_group_exposure": 5.254724130390431,
+              "within_group_conditional_exposures": 323058285.0,
+              "within_group_conditional_log_loss": 4.763771913900689,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "history_H",
+          "candidate_count": 5,
+          "selected_setting": {
+            "history_prior_item_days": "no_history"
+          },
+          "calibration_joint_log_loss": 4.442077678578124,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 572405148.0,
+            "joint_log_loss": 4.980495548382506,
+            "seen": {
+              "joint_exposures": 249346863.0,
+              "observed_group_exposure_mass": 0.43561254449095205,
+              "predicted_group_exposure_mass": 0.24808006759332815,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.907893828598362,
+              "within_group_conditional_exposures": 249346863.0,
+              "within_group_conditional_log_loss": 3.5468896647374364,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 323058285.0,
+              "observed_group_exposure_mass": 0.5643874555090479,
+              "predicted_group_exposure_mass": 0.7519199324066718,
+              "joint_pool_log_loss_contribution_per_group_exposure": 5.036531910602969,
+              "within_group_conditional_exposures": 323058285.0,
+              "within_group_conditional_log_loss": 4.763771913900689,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "history_stock_flow_HQF",
+          "candidate_count": 125,
+          "selected_setting": {
+            "history_prior_item_days": "no_history",
+            "beta_Q": 1,
+            "beta_F": -0.5
+          },
+          "calibration_joint_log_loss": 4.356934814507628,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 572405148.0,
+            "joint_log_loss": 4.890801038552469,
+            "seen": {
+              "joint_exposures": 249346863.0,
+              "observed_group_exposure_mass": 0.43561254449095205,
+              "predicted_group_exposure_mass": 0.39821869890017864,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.419295728613723,
+              "within_group_conditional_exposures": 249346863.0,
+              "within_group_conditional_log_loss": 3.5252437464919066,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 323058285.0,
+              "observed_group_exposure_mass": 0.5643874555090479,
+              "predicted_group_exposure_mass": 0.6017813010998213,
+              "joint_pool_log_loss_contribution_per_group_exposure": 5.254724130390431,
+              "within_group_conditional_exposures": 323058285.0,
+              "within_group_conditional_log_loss": 4.763771913900689,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "origin": "R2",
+      "training_dates": [
+        20200719,
+        20200720,
+        20200721,
+        20200722,
+        20200723,
+        20200724,
+        20200725,
+        20200726,
+        20200727,
+        20200728,
+        20200729,
+        20200730,
+        20200731,
+        20200801
+      ],
+      "calibration_dates": [
+        20200802,
+        20200803,
+        20200804,
+        20200805,
+        20200806,
+        20200807,
+        20200808
+      ],
+      "test_dates": [
+        20200809,
+        20200810,
+        20200811,
+        20200812,
+        20200813,
+        20200814,
+        20200815
+      ],
+      "training_first_day_works": 1863,
+      "calibration_first_day_works": 1845,
+      "test_first_day_works": 735,
+      "test_group_counts": {
+        "seen": {
+          "test_works": 164,
+          "test_accounts": 146,
+          "without_old_work_history": 58
+        },
+        "unseen": {
+          "test_works": 571,
+          "test_accounts": 557,
+          "without_old_work_history": 571
+        }
+      },
+      "training_old_work_item_days": 44554,
+      "known_catalogue_items_at_train_end": 5424,
+      "training_duration_bucket_counts": {
+        "0": 440,
+        "1": 1177,
+        "2": 83,
+        "3": 53,
+        "4": 21,
+        "missing": 89
+      },
+      "models": [
+        {
+          "model": "uniform_videos",
+          "candidate_count": 1,
+          "selected_setting": {},
+          "calibration_joint_log_loss": 5.579027803777552,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 489266654.0,
+            "joint_log_loss": 4.427996719772648,
+            "seen": {
+              "joint_exposures": 251682274.0,
+              "observed_group_exposure_mass": 0.5144071682432705,
+              "predicted_group_exposure_mass": 0.2725825584345924,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.454290080045391,
+              "within_group_conditional_exposures": 251682274.0,
+              "within_group_conditional_log_loss": 3.1251303941644695,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 237584380.0,
+              "observed_group_exposure_mass": 0.4855928317567295,
+              "predicted_group_exposure_mass": 0.7274174415654076,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.400143151686459,
+              "within_group_conditional_exposures": 237584380.0,
+              "within_group_conditional_log_loss": 4.082468540623405,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "duration_base",
+          "candidate_count": 1,
+          "selected_setting": {},
+          "calibration_joint_log_loss": 5.330622641629341,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 489266654.0,
+            "joint_log_loss": 4.27570229627359,
+            "seen": {
+              "joint_exposures": 251682274.0,
+              "observed_group_exposure_mass": 0.5144071682432705,
+              "predicted_group_exposure_mass": 0.27563027792375167,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.35783756056139,
+              "within_group_conditional_exposures": 251682274.0,
+              "within_group_conditional_log_loss": 3.0583809759356244,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 237584380.0,
+              "observed_group_exposure_mass": 0.4855928317567295,
+              "predicted_group_exposure_mass": 0.7243697220762483,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.188693250933385,
+              "within_group_conditional_exposures": 237584380.0,
+              "within_group_conditional_log_loss": 3.870511147303902,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "catalogue_stock_Q",
+          "candidate_count": 5,
+          "selected_setting": {
+            "beta_Q": 1
+          },
+          "calibration_joint_log_loss": 5.084257404133154,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 489266654.0,
+            "joint_log_loss": 4.1330044489978786,
+            "seen": {
+              "joint_exposures": 251682274.0,
+              "observed_group_exposure_mass": 0.5144071682432705,
+              "predicted_group_exposure_mass": 0.573572223276902,
+              "joint_pool_log_loss_contribution_per_group_exposure": 3.5833566566606097,
+              "within_group_conditional_exposures": 251682274.0,
+              "within_group_conditional_log_loss": 3.0354026152209523,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 237584380.0,
+              "observed_group_exposure_mass": 0.4855928317567295,
+              "predicted_group_exposure_mass": 0.42642777672309784,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.715267501284919,
+              "within_group_conditional_exposures": 237584380.0,
+              "within_group_conditional_log_loss": 3.870511147303902,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "publication_flow_F",
+          "candidate_count": 5,
+          "selected_setting": {
+            "beta_F": 1
+          },
+          "calibration_joint_log_loss": 5.123900037830998,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 489266654.0,
+            "joint_log_loss": 4.15788612051491,
+            "seen": {
+              "joint_exposures": 251682274.0,
+              "observed_group_exposure_mass": 0.5144071682432705,
+              "predicted_group_exposure_mass": 0.48148914143328336,
+              "joint_pool_log_loss_contribution_per_group_exposure": 3.8144736730259035,
+              "within_group_conditional_exposures": 251682274.0,
+              "within_group_conditional_log_loss": 3.0799497635554136,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 237584380.0,
+              "observed_group_exposure_mass": 0.4855928317567295,
+              "predicted_group_exposure_mass": 0.5185108585667167,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.521676137787674,
+              "within_group_conditional_exposures": 237584380.0,
+              "within_group_conditional_log_loss": 3.870511147303902,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "stock_flow_QF",
+          "candidate_count": 25,
+          "selected_setting": {
+            "beta_Q": 1,
+            "beta_F": 0
+          },
+          "calibration_joint_log_loss": 5.084257404133154,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 489266654.0,
+            "joint_log_loss": 4.1330044489978786,
+            "seen": {
+              "joint_exposures": 251682274.0,
+              "observed_group_exposure_mass": 0.5144071682432705,
+              "predicted_group_exposure_mass": 0.573572223276902,
+              "joint_pool_log_loss_contribution_per_group_exposure": 3.5833566566606097,
+              "within_group_conditional_exposures": 251682274.0,
+              "within_group_conditional_log_loss": 3.0354026152209523,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 237584380.0,
+              "observed_group_exposure_mass": 0.4855928317567295,
+              "predicted_group_exposure_mass": 0.42642777672309784,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.715267501284919,
+              "within_group_conditional_exposures": 237584380.0,
+              "within_group_conditional_log_loss": 3.870511147303902,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "history_H",
+          "candidate_count": 5,
+          "selected_setting": {
+            "history_prior_item_days": 28
+          },
+          "calibration_joint_log_loss": 5.273240533486297,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 489266654.0,
+            "joint_log_loss": 4.22657483669409,
+            "seen": {
+              "joint_exposures": 251682274.0,
+              "observed_group_exposure_mass": 0.5144071682432705,
+              "predicted_group_exposure_mass": 0.31961104888598124,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.210123922033904,
+              "within_group_conditional_exposures": 251682274.0,
+              "within_group_conditional_log_loss": 3.0791439242350274,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 237584380.0,
+              "observed_group_exposure_mass": 0.4855928317567295,
+              "predicted_group_exposure_mass": 0.6803889511140186,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.244001923487658,
+              "within_group_conditional_exposures": 237584380.0,
+              "within_group_conditional_log_loss": 3.870511147303902,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "history_stock_flow_HQF",
+          "candidate_count": 125,
+          "selected_setting": {
+            "history_prior_item_days": 100,
+            "beta_Q": 0.5,
+            "beta_F": 0.5
+          },
+          "calibration_joint_log_loss": 5.076552489078733,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 489266654.0,
+            "joint_log_loss": 4.146849734980049,
+            "seen": {
+              "joint_exposures": 251682274.0,
+              "observed_group_exposure_mass": 0.5144071682432705,
+              "predicted_group_exposure_mass": 0.565953420967441,
+              "joint_pool_log_loss_contribution_per_group_exposure": 3.635027557067851,
+              "within_group_conditional_exposures": 251682274.0,
+              "within_group_conditional_log_loss": 3.08172665519562,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 237584380.0,
+              "observed_group_exposure_mass": 0.4855928317567295,
+              "predicted_group_exposure_mass": 0.4340465790325591,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.689042658692351,
+              "within_group_conditional_exposures": 237584380.0,
+              "within_group_conditional_log_loss": 3.870511147303902,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "origin": "R3",
+      "training_dates": [
+        20200802,
+        20200803,
+        20200804,
+        20200805,
+        20200806,
+        20200807,
+        20200808,
+        20200809,
+        20200810,
+        20200811,
+        20200812,
+        20200813,
+        20200814,
+        20200815
+      ],
+      "calibration_dates": [
+        20200816,
+        20200817,
+        20200818,
+        20200819,
+        20200820,
+        20200821,
+        20200822
+      ],
+      "test_dates": [
+        20200823,
+        20200824,
+        20200825,
+        20200826,
+        20200827,
+        20200828,
+        20200829
+      ],
+      "training_first_day_works": 2580,
+      "calibration_first_day_works": 335,
+      "test_first_day_works": 908,
+      "test_group_counts": {
+        "seen": {
+          "test_works": 166,
+          "test_accounts": 135,
+          "without_old_work_history": 32
+        },
+        "unseen": {
+          "test_works": 742,
+          "test_accounts": 725,
+          "without_old_work_history": 742
+        }
+      },
+      "training_old_work_item_days": 67390,
+      "known_catalogue_items_at_train_end": 8010,
+      "training_duration_bucket_counts": {
+        "0": 842,
+        "1": 1366,
+        "2": 139,
+        "3": 109,
+        "4": 36,
+        "missing": 88
+      },
+      "models": [
+        {
+          "model": "uniform_videos",
+          "candidate_count": 1,
+          "selected_setting": {},
+          "calibration_joint_log_loss": 3.8867030512265295,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 459363351.0,
+            "joint_log_loss": 4.841168689975854,
+            "seen": {
+              "joint_exposures": 275489904.0,
+              "observed_group_exposure_mass": 0.5997211214178904,
+              "predicted_group_exposure_mass": 0.22265864413346914,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.773313893425173,
+              "within_group_conditional_exposures": 275489904.0,
+              "within_group_conditional_log_loss": 3.23779552709639,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 183873447.0,
+              "observed_group_exposure_mass": 0.4002788785821096,
+              "predicted_group_exposure_mass": 0.7773413558665307,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.942832696892998,
+              "within_group_conditional_exposures": 183873447.0,
+              "within_group_conditional_log_loss": 4.713748687667593,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "duration_base",
+          "candidate_count": 1,
+          "selected_setting": {},
+          "calibration_joint_log_loss": 3.8237561355716543,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 459363351.0,
+            "joint_log_loss": 4.584282144492092,
+            "seen": {
+              "joint_exposures": 275489904.0,
+              "observed_group_exposure_mass": 0.5997211214178904,
+              "predicted_group_exposure_mass": 0.22012220656624432,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.6027687232165055,
+              "within_group_conditional_exposures": 275489904.0,
+              "within_group_conditional_log_loss": 3.081677066341395,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 183873447.0,
+              "observed_group_exposure_mass": 0.4002788785821096,
+              "predicted_group_exposure_mass": 0.7798777934337556,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.556584475898991,
+              "within_group_conditional_exposures": 183873447.0,
+              "within_group_conditional_log_loss": 4.329343119362126,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "catalogue_stock_Q",
+          "candidate_count": 5,
+          "selected_setting": {
+            "beta_Q": 0
+          },
+          "calibration_joint_log_loss": 3.823756135571657,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 459363351.0,
+            "joint_log_loss": 4.584282144492092,
+            "seen": {
+              "joint_exposures": 275489904.0,
+              "observed_group_exposure_mass": 0.5997211214178904,
+              "predicted_group_exposure_mass": 0.22012220656624432,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.6027687232165055,
+              "within_group_conditional_exposures": 275489904.0,
+              "within_group_conditional_log_loss": 3.081677066341395,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 183873447.0,
+              "observed_group_exposure_mass": 0.4002788785821096,
+              "predicted_group_exposure_mass": 0.7798777934337556,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.556584475898991,
+              "within_group_conditional_exposures": 183873447.0,
+              "within_group_conditional_log_loss": 4.329343119362126,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "publication_flow_F",
+          "candidate_count": 5,
+          "selected_setting": {
+            "beta_F": 0
+          },
+          "calibration_joint_log_loss": 3.823756135571657,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 459363351.0,
+            "joint_log_loss": 4.584282144492092,
+            "seen": {
+              "joint_exposures": 275489904.0,
+              "observed_group_exposure_mass": 0.5997211214178904,
+              "predicted_group_exposure_mass": 0.22012220656624432,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.6027687232165055,
+              "within_group_conditional_exposures": 275489904.0,
+              "within_group_conditional_log_loss": 3.081677066341395,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 183873447.0,
+              "observed_group_exposure_mass": 0.4002788785821096,
+              "predicted_group_exposure_mass": 0.7798777934337556,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.556584475898991,
+              "within_group_conditional_exposures": 183873447.0,
+              "within_group_conditional_log_loss": 4.329343119362126,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "stock_flow_QF",
+          "candidate_count": 25,
+          "selected_setting": {
+            "beta_Q": 0.5,
+            "beta_F": -0.5
+          },
+          "calibration_joint_log_loss": 3.8107935249961384,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 459363351.0,
+            "joint_log_loss": 4.493557421315391,
+            "seen": {
+              "joint_exposures": 275489904.0,
+              "observed_group_exposure_mass": 0.5997211214178904,
+              "predicted_group_exposure_mass": 0.29531902546757477,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.3849884950649365,
+              "within_group_conditional_exposures": 275489904.0,
+              "within_group_conditional_log_loss": 3.1637592084344917,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 183873447.0,
+              "observed_group_exposure_mass": 0.4002788785821096,
+              "predicted_group_exposure_mass": 0.7046809745324251,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.656221707856562,
+              "within_group_conditional_exposures": 183873447.0,
+              "within_group_conditional_log_loss": 4.330907262187571,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "history_H",
+          "candidate_count": 5,
+          "selected_setting": {
+            "history_prior_item_days": "no_history"
+          },
+          "calibration_joint_log_loss": 3.823756135571657,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 459363351.0,
+            "joint_log_loss": 4.584282144492092,
+            "seen": {
+              "joint_exposures": 275489904.0,
+              "observed_group_exposure_mass": 0.5997211214178904,
+              "predicted_group_exposure_mass": 0.22012220656624432,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.6027687232165055,
+              "within_group_conditional_exposures": 275489904.0,
+              "within_group_conditional_log_loss": 3.081677066341395,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 183873447.0,
+              "observed_group_exposure_mass": 0.4002788785821096,
+              "predicted_group_exposure_mass": 0.7798777934337556,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.556584475898991,
+              "within_group_conditional_exposures": 183873447.0,
+              "within_group_conditional_log_loss": 4.329343119362126,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "history_stock_flow_HQF",
+          "candidate_count": 125,
+          "selected_setting": {
+            "history_prior_item_days": "no_history",
+            "beta_Q": 0.5,
+            "beta_F": -0.5
+          },
+          "calibration_joint_log_loss": 3.8107935249961384,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 459363351.0,
+            "joint_log_loss": 4.493557421315391,
+            "seen": {
+              "joint_exposures": 275489904.0,
+              "observed_group_exposure_mass": 0.5997211214178904,
+              "predicted_group_exposure_mass": 0.29531902546757477,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.3849884950649365,
+              "within_group_conditional_exposures": 275489904.0,
+              "within_group_conditional_log_loss": 3.1637592084344917,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 183873447.0,
+              "observed_group_exposure_mass": 0.4002788785821096,
+              "predicted_group_exposure_mass": 0.7046809745324251,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.656221707856562,
+              "within_group_conditional_exposures": 183873447.0,
+              "within_group_conditional_log_loss": 4.330907262187571,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "origin": "R4",
+      "training_dates": [
+        20200809,
+        20200810,
+        20200811,
+        20200812,
+        20200813,
+        20200814,
+        20200815,
+        20200816,
+        20200817,
+        20200818,
+        20200819,
+        20200820,
+        20200821,
+        20200822
+      ],
+      "calibration_dates": [
+        20200823,
+        20200824,
+        20200825,
+        20200826,
+        20200827,
+        20200828,
+        20200829
+      ],
+      "test_dates": [
+        20200830,
+        20200831,
+        20200901,
+        20200902,
+        20200903,
+        20200904,
+        20200905
+      ],
+      "training_first_day_works": 1070,
+      "calibration_first_day_works": 908,
+      "test_first_day_works": 1463,
+      "test_group_counts": {
+        "seen": {
+          "test_works": 210,
+          "test_accounts": 166,
+          "without_old_work_history": 19
+        },
+        "unseen": {
+          "test_works": 1253,
+          "test_accounts": 1221,
+          "without_old_work_history": 1253
+        }
+      },
+      "training_old_work_item_days": 88402,
+      "known_catalogue_items_at_train_end": 8348,
+      "training_duration_bucket_counts": {
+        "0": 253,
+        "1": 642,
+        "2": 64,
+        "3": 54,
+        "4": 15,
+        "missing": 42
+      },
+      "models": [
+        {
+          "model": "uniform_videos",
+          "candidate_count": 1,
+          "selected_setting": {},
+          "calibration_joint_log_loss": 4.841168689975854,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 348409203.0,
+            "joint_log_loss": 5.359691611685473,
+            "seen": {
+              "joint_exposures": 253793368.0,
+              "observed_group_exposure_mass": 0.7284347422935323,
+              "predicted_group_exposure_mass": 0.14645028032945856,
+              "joint_pool_log_loss_contribution_per_group_exposure": 5.363834836006922,
+              "within_group_conditional_exposures": 253793368.0,
+              "within_group_conditional_log_loss": 3.417040110314216,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 94615835.0,
+              "observed_group_exposure_mass": 0.27156525770646767,
+              "predicted_group_exposure_mass": 0.8535497196705413,
+              "joint_pool_log_loss_contribution_per_group_exposure": 5.348578008397816,
+              "within_group_conditional_exposures": 94615835.0,
+              "within_group_conditional_log_loss": 5.184916834731455,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "duration_base",
+          "candidate_count": 1,
+          "selected_setting": {},
+          "calibration_joint_log_loss": 4.619048568464653,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 348409203.0,
+            "joint_log_loss": 5.1396646096832495,
+            "seen": {
+              "joint_exposures": 253793368.0,
+              "observed_group_exposure_mass": 0.7284347422935323,
+              "predicted_group_exposure_mass": 0.15424839381292266,
+              "joint_pool_log_loss_contribution_per_group_exposure": 5.190330801758025,
+              "within_group_conditional_exposures": 253793368.0,
+              "within_group_conditional_log_loss": 3.28883803503655,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 94615835.0,
+              "observed_group_exposure_mass": 0.27156525770646767,
+              "predicted_group_exposure_mass": 0.8457516061870772,
+              "joint_pool_log_loss_contribution_per_group_exposure": 5.003759837185161,
+              "within_group_conditional_exposures": 94615835.0,
+              "within_group_conditional_log_loss": 4.827366120228725,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "catalogue_stock_Q",
+          "candidate_count": 5,
+          "selected_setting": {
+            "beta_Q": 1
+          },
+          "calibration_joint_log_loss": 4.333269204937171,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 348409203.0,
+            "joint_log_loss": 4.291343598883138,
+            "seen": {
+              "joint_exposures": 253793368.0,
+              "observed_group_exposure_mass": 0.7284347422935323,
+              "predicted_group_exposure_mass": 0.499984845126217,
+              "joint_pool_log_loss_contribution_per_group_exposure": 3.8303486784287686,
+              "within_group_conditional_exposures": 253793368.0,
+              "within_group_conditional_log_loss": 3.130643286547843,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 94615835.0,
+              "observed_group_exposure_mass": 0.27156525770646767,
+              "predicted_group_exposure_mass": 0.500015154873783,
+              "joint_pool_log_loss_contribution_per_group_exposure": 5.527896164243963,
+              "within_group_conditional_exposures": 94615835.0,
+              "within_group_conditional_log_loss": 4.827265503629964,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "publication_flow_F",
+          "candidate_count": 5,
+          "selected_setting": {
+            "beta_F": 1
+          },
+          "calibration_joint_log_loss": 4.4687426228449,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 348409203.0,
+            "joint_log_loss": 4.905390879523086,
+            "seen": {
+              "joint_exposures": 253793368.0,
+              "observed_group_exposure_mass": 0.7284347422935323,
+              "predicted_group_exposure_mass": 0.24193307397924274,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.827198550936619,
+              "within_group_conditional_exposures": 253793368.0,
+              "within_group_conditional_log_loss": 3.386983018474835,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 94615835.0,
+              "observed_group_exposure_mass": 0.27156525770646767,
+              "predicted_group_exposure_mass": 0.7580669260207572,
+              "joint_pool_log_loss_contribution_per_group_exposure": 5.115130553899181,
+              "within_group_conditional_exposures": 94615835.0,
+              "within_group_conditional_log_loss": 4.827366120228725,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "stock_flow_QF",
+          "candidate_count": 25,
+          "selected_setting": {
+            "beta_Q": 1,
+            "beta_F": 0
+          },
+          "calibration_joint_log_loss": 4.333269204937171,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 348409203.0,
+            "joint_log_loss": 4.291343598883138,
+            "seen": {
+              "joint_exposures": 253793368.0,
+              "observed_group_exposure_mass": 0.7284347422935323,
+              "predicted_group_exposure_mass": 0.499984845126217,
+              "joint_pool_log_loss_contribution_per_group_exposure": 3.8303486784287686,
+              "within_group_conditional_exposures": 253793368.0,
+              "within_group_conditional_log_loss": 3.130643286547843,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 94615835.0,
+              "observed_group_exposure_mass": 0.27156525770646767,
+              "predicted_group_exposure_mass": 0.500015154873783,
+              "joint_pool_log_loss_contribution_per_group_exposure": 5.527896164243963,
+              "within_group_conditional_exposures": 94615835.0,
+              "within_group_conditional_log_loss": 4.827265503629964,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "history_H",
+          "candidate_count": 5,
+          "selected_setting": {
+            "history_prior_item_days": 28
+          },
+          "calibration_joint_log_loss": 4.379345316079358,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 348409203.0,
+            "joint_log_loss": 5.089281459108076,
+            "seen": {
+              "joint_exposures": 253793368.0,
+              "observed_group_exposure_mass": 0.7284347422935323,
+              "predicted_group_exposure_mass": 0.16977992153349003,
+              "joint_pool_log_loss_contribution_per_group_exposure": 5.112033698669002,
+              "within_group_conditional_exposures": 253793368.0,
+              "within_group_conditional_log_loss": 3.297927261658368,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 94615835.0,
+              "observed_group_exposure_mass": 0.27156525770646767,
+              "predicted_group_exposure_mass": 0.8302200784665101,
+              "joint_pool_log_loss_contribution_per_group_exposure": 5.028251849130949,
+              "within_group_conditional_exposures": 94615835.0,
+              "within_group_conditional_log_loss": 4.827366120228725,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        },
+        {
+          "model": "history_stock_flow_HQF",
+          "candidate_count": 125,
+          "selected_setting": {
+            "history_prior_item_days": 28,
+            "beta_Q": 0.5,
+            "beta_F": 0
+          },
+          "calibration_joint_log_loss": 4.242100679254954,
+          "test": {
+            "dates": 7,
+            "multi_candidate_dates": 7,
+            "singleton_dates": [],
+            "singleton_date_exposures": 0.0,
+            "zero_volume_dates": [],
+            "joint_exposures": 348409203.0,
+            "joint_log_loss": 4.621751501670536,
+            "seen": {
+              "joint_exposures": 253793368.0,
+              "observed_group_exposure_mass": 0.7284347422935323,
+              "predicted_group_exposure_mass": 0.33345359862490426,
+              "joint_pool_log_loss_contribution_per_group_exposure": 4.385098675040769,
+              "within_group_conditional_exposures": 253793368.0,
+              "within_group_conditional_log_loss": 3.2547896460174055,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            },
+            "unseen": {
+              "joint_exposures": 94615835.0,
+              "observed_group_exposure_mass": 0.27156525770646767,
+              "predicted_group_exposure_mass": 0.6665464013750958,
+              "joint_pool_log_loss_contribution_per_group_exposure": 5.256538669348003,
+              "within_group_conditional_exposures": 94615835.0,
+              "within_group_conditional_log_loss": 4.827078373336926,
+              "within_group_singleton_dates": [],
+              "within_group_singleton_exposures": 0.0
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "pooled_models": {
+    "uniform_videos": {
+      "dates": 28,
+      "multi_candidate_dates": 28,
+      "singleton_dates": [],
+      "singleton_date_exposures": 0.0,
+      "zero_volume_dates": [],
+      "joint_exposures": 1869444356.0,
+      "joint_log_loss": 4.912863214598382,
+      "seen": {
+        "joint_exposures": 1030312409.0,
+        "observed_group_exposure_mass": 0.5511329640238835,
+        "predicted_group_exposure_mass": 0.2232018823792301,
+        "joint_pool_log_loss_contribution_per_group_exposure": 4.906478485071761,
+        "within_group_conditional_exposures": 1030312409.0,
+        "within_group_conditional_log_loss": 3.3422838367822956,
+        "within_group_singleton_dates": [],
+        "within_group_singleton_exposures": 0.0
+      },
+      "unseen": {
+        "joint_exposures": 839131947.0,
+        "observed_group_exposure_mass": 0.44886703597611655,
+        "predicted_group_exposure_mass": 0.7767981176207699,
+        "joint_pool_log_loss_contribution_per_group_exposure": 4.920702584893964,
+        "within_group_conditional_exposures": 839131947.0,
+        "within_group_conditional_log_loss": 4.667310128895557,
+        "within_group_singleton_dates": [],
+        "within_group_singleton_exposures": 0.0
+      }
+    },
+    "duration_base": {
+      "dates": 28,
+      "multi_candidate_dates": 28,
+      "singleton_dates": [],
+      "singleton_date_exposures": 0.0,
+      "zero_volume_dates": [],
+      "joint_exposures": 1869444356.0,
+      "joint_log_loss": 4.728344803247798,
+      "seen": {
+        "joint_exposures": 1030312409.0,
+        "observed_group_exposure_mass": 0.5511329640238835,
+        "predicted_group_exposure_mass": 0.23093313509547844,
+        "joint_pool_log_loss_contribution_per_group_exposure": 4.761513307143127,
+        "within_group_conditional_exposures": 1030312409.0,
+        "within_group_conditional_log_loss": 3.2396021457362054,
+        "within_group_singleton_dates": [],
+        "within_group_singleton_exposures": 0.0
+      },
+      "unseen": {
+        "joint_exposures": 839131947.0,
+        "observed_group_exposure_mass": 0.44886703597611655,
+        "predicted_group_exposure_mass": 0.7690668649045215,
+        "joint_pool_log_loss_contribution_per_group_exposure": 4.687619478376664,
+        "within_group_conditional_exposures": 839131947.0,
+        "within_group_conditional_log_loss": 4.422838992173669,
+        "within_group_singleton_dates": [],
+        "within_group_singleton_exposures": 0.0
+      }
+    },
+    "catalogue_stock_Q": {
+      "dates": 28,
+      "multi_candidate_dates": 28,
+      "singleton_dates": [],
+      "singleton_date_exposures": 0.0,
+      "zero_volume_dates": [],
+      "joint_exposures": 1869444356.0,
+      "joint_log_loss": 4.502513699386883,
+      "seen": {
+        "joint_exposures": 1030312409.0,
+        "observed_group_exposure_mass": 0.5511329640238835,
+        "predicted_group_exposure_mass": 0.4115326002570474,
+        "joint_pool_log_loss_contribution_per_group_exposure": 4.12712432619921,
+        "within_group_conditional_exposures": 1030312409.0,
+        "within_group_conditional_log_loss": 3.182825939067012,
+        "within_group_singleton_dates": [],
+        "within_group_singleton_exposures": 0.0
+      },
+      "unseen": {
+        "joint_exposures": 839131947.0,
+        "observed_group_exposure_mass": 0.44886703597611655,
+        "predicted_group_exposure_mass": 0.5884673997429525,
+        "joint_pool_log_loss_contribution_per_group_exposure": 4.963428494473324,
+        "within_group_conditional_exposures": 839131947.0,
+        "within_group_conditional_log_loss": 4.422827647207552,
+        "within_group_singleton_dates": [],
+        "within_group_singleton_exposures": 0.0
+      }
+    },
+    "publication_flow_F": {
+      "dates": 28,
+      "multi_candidate_dates": 28,
+      "singleton_dates": [],
+      "singleton_date_exposures": 0.0,
+      "zero_volume_dates": [],
+      "joint_exposures": 1869444356.0,
+      "joint_log_loss": 4.623619257452713,
+      "seen": {
+        "joint_exposures": 1030312409.0,
+        "observed_group_exposure_mass": 0.5511329640238835,
+        "predicted_group_exposure_mass": 0.33320238863454366,
+        "joint_pool_log_loss_contribution_per_group_exposure": 4.439464817490372,
+        "within_group_conditional_exposures": 1030312409.0,
+        "within_group_conditional_log_loss": 3.2545225238152877,
+        "within_group_singleton_dates": [],
+        "within_group_singleton_exposures": 0.0
+      },
+      "unseen": {
+        "joint_exposures": 839131947.0,
+        "observed_group_exposure_mass": 0.44886703597611655,
+        "predicted_group_exposure_mass": 0.6667976113654562,
+        "joint_pool_log_loss_contribution_per_group_exposure": 4.849729829626705,
+        "within_group_conditional_exposures": 839131947.0,
+        "within_group_conditional_log_loss": 4.422838992173669,
+        "within_group_singleton_dates": [],
+        "within_group_singleton_exposures": 0.0
+      }
+    },
+    "stock_flow_QF": {
+      "dates": 28,
+      "multi_candidate_dates": 28,
+      "singleton_dates": [],
+      "singleton_date_exposures": 0.0,
+      "zero_volume_dates": [],
+      "joint_exposures": 1869444356.0,
+      "joint_log_loss": 4.483139667245528,
+      "seen": {
+        "joint_exposures": 1030312409.0,
+        "observed_group_exposure_mass": 0.5511329640238835,
+        "predicted_group_exposure_mass": 0.43779332169954044,
+        "joint_pool_log_loss_contribution_per_group_exposure": 4.060847945935824,
+        "within_group_conditional_exposures": 1030312409.0,
+        "within_group_conditional_log_loss": 3.211730439823113,
+        "within_group_singleton_dates": [],
+        "within_group_singleton_exposures": 0.0
+      },
+      "unseen": {
+        "joint_exposures": 839131947.0,
+        "observed_group_exposure_mass": 0.44886703597611655,
+        "predicted_group_exposure_mass": 0.5622066783004596,
+        "joint_pool_log_loss_contribution_per_group_exposure": 5.001642630026132,
+        "within_group_conditional_exposures": 839131947.0,
+        "within_group_conditional_log_loss": 4.423170387504764,
+        "within_group_singleton_dates": [],
+        "within_group_singleton_exposures": 0.0
+      }
+    },
+    "history_H": {
+      "dates": 28,
+      "multi_candidate_dates": 28,
+      "singleton_dates": [],
+      "singleton_date_exposures": 0.0,
+      "zero_volume_dates": [],
+      "joint_exposures": 1869444356.0,
+      "joint_log_loss": 4.706097347221078,
+      "seen": {
+        "joint_exposures": 1030312409.0,
+        "observed_group_exposure_mass": 0.5511329640238835,
+        "predicted_group_exposure_mass": 0.24533829872449728,
+        "joint_pool_log_loss_contribution_per_group_exposure": 4.706143509162737,
+        "within_group_conditional_exposures": 1030312409.0,
+        "within_group_conditional_log_loss": 3.246912987975906,
+        "within_group_singleton_dates": [],
+        "within_group_singleton_exposures": 0.0
+      },
+      "unseen": {
+        "joint_exposures": 839131947.0,
+        "observed_group_exposure_mass": 0.44886703597611655,
+        "predicted_group_exposure_mass": 0.7546617012755028,
+        "joint_pool_log_loss_contribution_per_group_exposure": 4.706040668147563,
+        "within_group_conditional_exposures": 839131947.0,
+        "within_group_conditional_log_loss": 4.422838992173669,
+        "within_group_singleton_dates": [],
+        "within_group_singleton_exposures": 0.0
+      }
+    },
+    "history_stock_flow_HQF": {
+      "dates": 28,
+      "multi_candidate_dates": 28,
+      "singleton_dates": [],
+      "singleton_date_exposures": 0.0,
+      "zero_volume_dates": [],
+      "joint_exposures": 1869444356.0,
+      "joint_log_loss": 4.548341496029581,
+      "seen": {
+        "joint_exposures": 1030312409.0,
+        "observed_group_exposure_mass": 0.5511329640238835,
+        "predicted_group_exposure_mass": 0.40476284150184233,
+        "joint_pool_log_loss_contribution_per_group_exposure": 4.210119679837915,
+        "within_group_conditional_exposures": 1030312409.0,
+        "within_group_conditional_log_loss": 3.2536269190262574,
+        "within_group_singleton_dates": [],
+        "within_group_singleton_exposures": 0.0
+      },
+      "unseen": {
+        "joint_exposures": 839131947.0,
+        "observed_group_exposure_mass": 0.44886703597611655,
+        "predicted_group_exposure_mass": 0.5952371584981577,
+        "joint_pool_log_loss_contribution_per_group_exposure": 4.9636208039651555,
+        "within_group_conditional_exposures": 839131947.0,
+        "within_group_conditional_log_loss": 4.423149287737328,
+        "within_group_singleton_dates": [],
+        "within_group_singleton_exposures": 0.0
+      }
+    }
+  },
+  "comparisons": [
+    {
+      "model": "history_stock_flow_HQF",
+      "baseline": "history_H",
+      "evaluation": "all",
+      "test_delta_log_loss": -0.15775585119149785,
+      "paired_date_bootstrap_95": [
+        -0.2513096892695356,
+        -0.07833897161382851
+      ],
+      "origin_block_bootstrap_95": [
+        -0.3438801082723566,
+        -0.08252214427615333
+      ]
+    },
+    {
+      "model": "history_stock_flow_HQF",
+      "baseline": "history_H",
+      "evaluation": "seen_joint",
+      "test_delta_log_loss": -0.4960238293248226,
+      "paired_date_bootstrap_95": [
+        -0.6106658513110726,
+        -0.38541394800439716
+      ],
+      "origin_block_bootstrap_95": [
+        -0.6681371818886439,
+        -0.30119160151833335
+      ]
+    },
+    {
+      "model": "history_stock_flow_HQF",
+      "baseline": "history_H",
+      "evaluation": "unseen_joint",
+      "test_delta_log_loss": 0.25758013581759276,
+      "paired_date_bootstrap_95": [
+        0.2002438250385563,
+        0.32698674264495853
+      ],
+      "origin_block_bootstrap_95": [
+        0.14334551447444427,
+        0.38330581833814525
+      ]
+    },
+    {
+      "model": "history_stock_flow_HQF",
+      "baseline": "history_H",
+      "evaluation": "seen_conditional",
+      "test_delta_log_loss": 0.006713931050351327,
+      "paired_date_bootstrap_95": [
+        -0.0620676392272584,
+        0.0777026850620378
+      ],
+      "origin_block_bootstrap_95": [
+        -0.03248673344963824,
+        0.058040621399375276
+      ]
+    },
+    {
+      "model": "history_stock_flow_HQF",
+      "baseline": "history_H",
+      "evaluation": "unseen_conditional",
+      "test_delta_log_loss": 0.0003102955636591366,
+      "paired_date_bootstrap_95": [
+        -8.637931765437563e-05,
+        0.0008470827323359701
+      ],
+      "origin_block_bootstrap_95": [
+        -0.0001345781151776195,
+        0.0010932689272962995
+      ]
+    },
+    {
+      "model": "history_H",
+      "baseline": "duration_base",
+      "evaluation": "all",
+      "test_delta_log_loss": -0.022247456026718945,
+      "paired_date_bootstrap_95": [
+        -0.0650693280566705,
+        0.015760055475702726
+      ],
+      "origin_block_bootstrap_95": [
+        -0.04964973116624981,
+        0.0
+      ]
+    },
+    {
+      "model": "history_H",
+      "baseline": "duration_base",
+      "evaluation": "seen_joint",
+      "test_delta_log_loss": -0.055369797980389164,
+      "paired_date_bootstrap_95": [
+        -0.12470619702569123,
+        0.01596333290408957
+      ],
+      "origin_block_bootstrap_95": [
+        -0.11286041344603127,
+        0.0
+      ]
+    },
+    {
+      "model": "history_H",
+      "baseline": "duration_base",
+      "evaluation": "unseen_joint",
+      "test_delta_log_loss": 0.018421189770898464,
+      "paired_date_bootstrap_95": [
+        0.007108439503705269,
+        0.03395501910739961
+      ],
+      "origin_block_bootstrap_95": [
+        0.0,
+        0.04653160395609772
+      ]
+    },
+    {
+      "model": "history_H",
+      "baseline": "duration_base",
+      "evaluation": "seen_conditional",
+      "test_delta_log_loss": 0.007310842239700414,
+      "paired_date_bootstrap_95": [
+        -0.03533573198844049,
+        0.055899548243345774
+      ],
+      "origin_block_bootstrap_95": [
+        0.0,
+        0.015608419649527043
+      ]
+    },
+    {
+      "model": "history_H",
+      "baseline": "duration_base",
+      "evaluation": "unseen_conditional",
+      "test_delta_log_loss": 0.0,
+      "paired_date_bootstrap_95": [
+        0.0,
+        0.0
+      ],
+      "origin_block_bootstrap_95": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "model": "stock_flow_QF",
+      "baseline": "duration_base",
+      "evaluation": "all",
+      "test_delta_log_loss": -0.24520513600227076,
+      "paired_date_bootstrap_95": [
+        -0.4234826605112349,
+        -0.10655402509365175
+      ],
+      "origin_block_bootstrap_95": [
+        -0.6170209574036393,
+        -0.09015318079704787
+      ]
+    },
+    {
+      "model": "stock_flow_QF",
+      "baseline": "duration_base",
+      "evaluation": "seen_joint",
+      "test_delta_log_loss": -0.7006653612073027,
+      "paired_date_bootstrap_95": [
+        -0.9396940956492219,
+        -0.48804786579276266
+      ],
+      "origin_block_bootstrap_95": [
+        -1.145011236251599,
+        -0.34644420718623964
+      ]
+    },
+    {
+      "model": "stock_flow_QF",
+      "baseline": "duration_base",
+      "evaluation": "unseen_joint",
+      "test_delta_log_loss": 0.3140231516494674,
+      "paired_date_bootstrap_95": [
+        0.24144750147283697,
+        0.4051642586648213
+      ],
+      "origin_block_bootstrap_95": [
+        0.1617884049054432,
+        0.5258798915353972
+      ]
+    },
+    {
+      "model": "stock_flow_QF",
+      "baseline": "duration_base",
+      "evaluation": "seen_conditional",
+      "test_delta_log_loss": -0.027871705913092848,
+      "paired_date_bootstrap_95": [
+        -0.12365345496776928,
+        0.08011409624136556
+      ],
+      "origin_block_bootstrap_95": [
+        -0.12450808178333948,
+        0.05755696698087261
+      ]
+    },
+    {
+      "model": "stock_flow_QF",
+      "baseline": "duration_base",
+      "evaluation": "unseen_conditional",
+      "test_delta_log_loss": 0.00033139533109490747,
+      "paired_date_bootstrap_95": [
+        -6.0382211465666754e-05,
+        0.0008796682092634174
+      ],
+      "origin_block_bootstrap_95": [
+        -4.7057996463845486e-05,
+        0.0010932689272962995
+      ]
+    },
+    {
+      "model": "duration_base",
+      "baseline": "uniform_videos",
+      "evaluation": "all",
+      "test_delta_log_loss": -0.18451841135058383,
+      "paired_date_bootstrap_95": [
+        -0.24349583613934847,
+        -0.12959104289773402
+      ],
+      "origin_block_bootstrap_95": [
+        -0.24098825319374387,
+        -0.14155335540420258
+      ]
+    },
+    {
+      "model": "duration_base",
+      "baseline": "uniform_videos",
+      "evaluation": "seen_joint",
+      "test_delta_log_loss": -0.14496517792863473,
+      "paired_date_bootstrap_95": [
+        -0.20699057490041017,
+        -0.08335872428688015
+      ],
+      "origin_block_bootstrap_95": [
+        -0.1719639569150501,
+        -0.11583632638971665
+      ]
+    },
+    {
+      "model": "duration_base",
+      "baseline": "uniform_videos",
+      "evaluation": "unseen_joint",
+      "test_delta_log_loss": -0.23308310651729947,
+      "paired_date_bootstrap_95": [
+        -0.3139462873709808,
+        -0.14994710818398418
+      ],
+      "origin_block_bootstrap_95": [
+        -0.37217249525690604,
+        -0.14827913983651586
+      ]
+    },
+    {
+      "model": "duration_base",
+      "baseline": "uniform_videos",
+      "evaluation": "seen_conditional",
+      "test_delta_log_loss": -0.1026816910460904,
+      "paired_date_bootstrap_95": [
+        -0.14962280670692038,
+        -0.0563776968523686
+      ],
+      "origin_block_bootstrap_95": [
+        -0.14273244637009816,
+        -0.060372385541643765
+      ]
+    },
+    {
+      "model": "duration_base",
+      "baseline": "uniform_videos",
+      "evaluation": "unseen_conditional",
+      "test_delta_log_loss": -0.24447113672188878,
+      "paired_date_bootstrap_95": [
+        -0.32453228828911546,
+        -0.16472613223873664
+      ],
+      "origin_block_bootstrap_95": [
+        -0.3752817183745073,
+        -0.1735787664277534
+      ]
+    }
+  ],
+  "models_share_the_same_observed_candidate_pools": true,
+  "test_target_feedback_used_as_feature": false,
+  "raw_first_day_source_works": 9531,
+  "all_test_works": 4315,
+  "test_seen_works": 795,
+  "test_unseen_works": 3520,
+  "limitations": [
+    "Conditional source-recorded first-day pool, not all platform releases.",
+    "Unseen in the training window is not newly registered.",
+    "Q/F are past-observed catalogue proxies; neither full production nor active inventory.",
+    "HQF has a larger global calibration grid and can overfit seven-day calibration windows.",
+    "Repeated accounts and four historical origins limit uncertainty interpretation.",
+    "No owner linkage, AI content label, exogenous cost, causal alpha, or equilibrium identified."
+  ]
+}

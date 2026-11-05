@@ -1,0 +1,1246 @@
+{
+  "study_id": "v5_kuairec_cross_work_transfer",
+  "started_utc": "2026-11-05T02:52:23.777782+00:00",
+  "completed_utc": "2026-11-05T02:52:25.360479+00:00",
+  "source_sha256": "45943d63c44652b6403f3a4f78c7225e1afe7916bab17d9a674d7979245e085b",
+  "protocol_sha256": "0fe3c061f8d6a9f0ded8f6385e8204b944fb4254b0c236dc92181d590620f920",
+  "protocol": {
+    "study_id": "v5_kuairec_cross_work_transfer",
+    "source_sha256": "45943d63c44652b6403f3a4f78c7225e1afe7916bab17d9a674d7979245e085b",
+    "expected_common_videos": 925,
+    "expected_common_accounts": 867,
+    "expected_multi_item_accounts": 46,
+    "split_salt": "v5-kuairec|",
+    "origin_start_indices": [
+      0,
+      14,
+      28,
+      35
+    ],
+    "training_days": 14,
+    "calibration_days": 7,
+    "test_days": 7,
+    "history_prior_days": [
+      0.5,
+      2,
+      7,
+      14
+    ],
+    "demand_prior_exposures": 50,
+    "quantity_alpha_bounds": [
+      0.05,
+      2
+    ],
+    "demand_beta_bounds": [
+      0,
+      4
+    ],
+    "age_gamma_bounds": [
+      0,
+      2
+    ],
+    "demand_age_starts": [
+      [
+        1,
+        1,
+        0.5
+      ],
+      [
+        0.5,
+        1,
+        0
+      ],
+      [
+        1.5,
+        2,
+        1.5
+      ]
+    ],
+    "permutations": 999,
+    "permutation_seed": 20261104,
+    "bootstrap_repetitions": 2000,
+    "bootstrap_seed": 20261105,
+    "future_row_presence_used_for_cohort": true,
+    "within_origin_history_frozen": true,
+    "no_test_based_model_selection": true,
+    "scope": "Conditional predictive transfer in a retrospective selected historical non-AI item panel; no ownership, causal quality-versus-memory separation, cost or equilibrium identification.",
+    "protocol_frozen_utc": "2026-11-05T02:44:27.356914+00:00",
+    "secondary_amendment_utc": "2026-11-05T02:48:00.326545+00:00",
+    "secondary_residual_prior_mean_count_multipliers": [
+      0.01,
+      0.1,
+      1,
+      10
+    ],
+    "secondary_content_base_fit_segment": "A calibration only; demand proxy A+B training only",
+    "primary_remains": "raw A transfer versus same-capacity identity permutation"
+  },
+  "sample": {
+    "common_old_items": 925,
+    "common_accounts": 867,
+    "matched_multi_item_accounts": 46,
+    "matched_items": 104,
+    "A_items": 56,
+    "B_items": 48,
+    "inventory_strata": [
+      {
+        "A_items": 1,
+        "B_items": 1,
+        "accounts": 36
+      },
+      {
+        "A_items": 2,
+        "B_items": 1,
+        "accounts": 8
+      },
+      {
+        "A_items": 2,
+        "B_items": 2,
+        "accounts": 2
+      }
+    ],
+    "permutable_accounts": 46,
+    "future_row_presence_used_for_selection": true,
+    "split_assignments_sha256": "a2fac16ce6ae42b039f60d0467b8bdcc0916f57471afa1f06aa25a3692139d69",
+    "identity_permutations_sha256": "ca206e6dd639ca1f0b059dd6d58a85682cc71ac2c43c8693f1b9a71ac7dfbde3"
+  },
+  "origins": [
+    {
+      "origin": "R1",
+      "training_dates": [
+        20200705,
+        20200706,
+        20200707,
+        20200708,
+        20200709,
+        20200710,
+        20200711,
+        20200712,
+        20200713,
+        20200714,
+        20200715,
+        20200716,
+        20200717,
+        20200718
+      ],
+      "calibration_dates": [
+        20200719,
+        20200720,
+        20200721,
+        20200722,
+        20200723,
+        20200724,
+        20200725
+      ],
+      "test_dates": [
+        20200726,
+        20200727,
+        20200728,
+        20200729,
+        20200730,
+        20200731,
+        20200801
+      ],
+      "models": [
+        {
+          "model": "A_transfer_history",
+          "calibration_log_loss": 3.770891279664151,
+          "test_log_loss": 3.7778939768069004,
+          "aggregate_share_total_variation": 0.49199639802414075,
+          "selected_prior_days": 14.0,
+          "information": "A training exposure history, metadata inventory, and global B calibration choice"
+        },
+        {
+          "model": "uniform_accounts",
+          "calibration_log_loss": 3.8286413964890955,
+          "test_log_loss": 3.8286413964890955,
+          "aggregate_share_total_variation": 0.5254578651213173
+        },
+        {
+          "model": "linear_quantity_B",
+          "calibration_log_loss": 3.8095695610104965,
+          "test_log_loss": 3.8458286377364446,
+          "aggregate_share_total_variation": 0.5257312075772237,
+          "parameters": [
+            1.0
+          ]
+        },
+        {
+          "model": "free_quantity_B",
+          "calibration_log_loss": 3.809369614425315,
+          "test_log_loss": 3.849339868142072,
+          "aggregate_share_total_variation": 0.5277610470414613,
+          "parameters": [
+            1.102351668214245
+          ],
+          "convergence": {
+            "success": true
+          },
+          "alpha_estimable": true
+        },
+        {
+          "model": "B_own_history",
+          "calibration_log_loss": 3.344088354344548,
+          "test_log_loss": 3.469307251131115,
+          "aggregate_share_total_variation": 0.3405147504023688,
+          "selected_prior_days": 0.5,
+          "information": "Richer-information memory benchmark using B training outcomes"
+        },
+        {
+          "model": "quantity_demand_age_B",
+          "calibration_log_loss": 3.728328169143712,
+          "test_log_loss": 3.721796420003713,
+          "aggregate_share_total_variation": 0.46622785333371874,
+          "parameters": [
+            0.9408519420488708,
+            0.9377949150704503,
+            0.32692187815840984
+          ],
+          "convergence": {
+            "success": true,
+            "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+            "calibration_loss": 3.728328169143712,
+            "bounds": [
+              [
+                0.05,
+                2
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                2
+              ]
+            ],
+            "alpha_estimable_from_quantity_variation": true,
+            "nominal_global_parameters": 3,
+            "converged_starts": 3,
+            "parameters_at_bound": []
+          },
+          "information": "B training feedback proxy; global parameters fitted on B calibration"
+        },
+        {
+          "model": "A_fitted_content_base_on_B",
+          "calibration_log_loss": 3.784916866412716,
+          "test_log_loss": 3.7018620401957962,
+          "aggregate_share_total_variation": 0.44663050577510105,
+          "parameters": [
+            0.6943404346258304,
+            1.2897530199492504,
+            1.3237135867853151
+          ],
+          "convergence": {
+            "success": true,
+            "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+            "calibration_loss": 3.5810394850960234,
+            "bounds": [
+              [
+                0.05,
+                2
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                2
+              ]
+            ],
+            "alpha_estimable_from_quantity_variation": true,
+            "nominal_global_parameters": 3,
+            "converged_starts": 3,
+            "parameters_at_bound": []
+          },
+          "information": "A calibration global fit; A+B training feedback for content proxies"
+        },
+        {
+          "model": "A_residual_transfer_secondary",
+          "calibration_log_loss": 3.499213831700101,
+          "test_log_loss": 3.53416280398205,
+          "aggregate_share_total_variation": 0.38781341190410584,
+          "selected_prior_count": 592326.5152173913,
+          "selected_prior_mean_count_multiplier": 0.1,
+          "information": "Secondary B-informed content base times shrunk source A actual/expected count residual"
+        }
+      ],
+      "zero_exposure_accounts_retained": {
+        "A": {
+          "training": 0,
+          "calibration": 0,
+          "test": 0
+        },
+        "B": {
+          "training": 0,
+          "calibration": 0,
+          "test": 0
+        }
+      },
+      "B_test_exposures": 32077747,
+      "raw_identity_reference_rank": 0.032,
+      "secondary_residual_identity_reference_rank": 0.001,
+      "A_content_fit": {
+        "success": true,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "calibration_loss": 3.5810394850960234,
+        "bounds": [
+          [
+            0.05,
+            2
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "alpha_estimable_from_quantity_variation": true,
+        "nominal_global_parameters": 3,
+        "converged_starts": 3,
+        "parameters_at_bound": []
+      },
+      "B_content_fit": {
+        "success": true,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "calibration_loss": 3.728328169143712,
+        "bounds": [
+          [
+            0.05,
+            2
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "alpha_estimable_from_quantity_variation": true,
+        "nominal_global_parameters": 3,
+        "converged_starts": 3,
+        "parameters_at_bound": []
+      }
+    },
+    {
+      "origin": "R2",
+      "training_dates": [
+        20200719,
+        20200720,
+        20200721,
+        20200722,
+        20200723,
+        20200724,
+        20200725,
+        20200726,
+        20200727,
+        20200728,
+        20200729,
+        20200730,
+        20200731,
+        20200801
+      ],
+      "calibration_dates": [
+        20200802,
+        20200803,
+        20200804,
+        20200805,
+        20200806,
+        20200807,
+        20200808
+      ],
+      "test_dates": [
+        20200809,
+        20200810,
+        20200811,
+        20200812,
+        20200813,
+        20200814,
+        20200815
+      ],
+      "models": [
+        {
+          "model": "A_transfer_history",
+          "calibration_log_loss": 4.067814105014492,
+          "test_log_loss": 3.9034853495916777,
+          "aggregate_share_total_variation": 0.6440105171929025,
+          "selected_prior_days": 14.0,
+          "information": "A training exposure history, metadata inventory, and global B calibration choice"
+        },
+        {
+          "model": "uniform_accounts",
+          "calibration_log_loss": 3.8286413964890946,
+          "test_log_loss": 3.828641396489095,
+          "aggregate_share_total_variation": 0.6627738675525187
+        },
+        {
+          "model": "linear_quantity_B",
+          "calibration_log_loss": 3.857473783551221,
+          "test_log_loss": 3.8001649871995467,
+          "aggregate_share_total_variation": 0.6500927081322289,
+          "parameters": [
+            1.0
+          ]
+        },
+        {
+          "model": "free_quantity_B",
+          "calibration_log_loss": 3.8294871184403343,
+          "test_log_loss": 3.82662167862275,
+          "aggregate_share_total_variation": 0.6623079383373034,
+          "parameters": [
+            0.05
+          ],
+          "convergence": {
+            "success": true
+          },
+          "alpha_estimable": true
+        },
+        {
+          "model": "B_own_history",
+          "calibration_log_loss": 3.287249352179148,
+          "test_log_loss": 2.9826874183297387,
+          "aggregate_share_total_variation": 0.4189814769143922,
+          "selected_prior_days": 2.0,
+          "information": "Richer-information memory benchmark using B training outcomes"
+        },
+        {
+          "model": "quantity_demand_age_B",
+          "calibration_log_loss": 3.739531632059876,
+          "test_log_loss": 3.7709644027487172,
+          "aggregate_share_total_variation": 0.652309715938256,
+          "parameters": [
+            0.05,
+            0.7716907444941237,
+            0.1057400160857563
+          ],
+          "convergence": {
+            "success": true,
+            "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+            "calibration_loss": 3.739531632059876,
+            "bounds": [
+              [
+                0.05,
+                2
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                2
+              ]
+            ],
+            "alpha_estimable_from_quantity_variation": true,
+            "nominal_global_parameters": 3,
+            "converged_starts": 3,
+            "parameters_at_bound": [
+              0
+            ]
+          },
+          "information": "B training feedback proxy; global parameters fitted on B calibration"
+        },
+        {
+          "model": "A_fitted_content_base_on_B",
+          "calibration_log_loss": 3.770962907977116,
+          "test_log_loss": 3.8082519578956786,
+          "aggregate_share_total_variation": 0.6605031635399138,
+          "parameters": [
+            0.11350364581996232,
+            0.5391109205928374,
+            1.2254009131668715
+          ],
+          "convergence": {
+            "success": true,
+            "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+            "calibration_loss": 3.730217836529961,
+            "bounds": [
+              [
+                0.05,
+                2
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                2
+              ]
+            ],
+            "alpha_estimable_from_quantity_variation": true,
+            "nominal_global_parameters": 3,
+            "converged_starts": 3,
+            "parameters_at_bound": []
+          },
+          "information": "A calibration global fit; A+B training feedback for content proxies"
+        },
+        {
+          "model": "A_residual_transfer_secondary",
+          "calibration_log_loss": 3.7722430103051434,
+          "test_log_loss": 3.77646304457077,
+          "aggregate_share_total_variation": 0.6531277063528171,
+          "selected_prior_count": 23315283.913043477,
+          "selected_prior_mean_count_multiplier": 10.0,
+          "information": "Secondary B-informed content base times shrunk source A actual/expected count residual"
+        }
+      ],
+      "zero_exposure_accounts_retained": {
+        "A": {
+          "training": 0,
+          "calibration": 0,
+          "test": 0
+        },
+        "B": {
+          "training": 0,
+          "calibration": 0,
+          "test": 0
+        }
+      },
+      "B_test_exposures": 5309225,
+      "raw_identity_reference_rank": 0.439,
+      "secondary_residual_identity_reference_rank": 0.134,
+      "A_content_fit": {
+        "success": true,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "calibration_loss": 3.730217836529961,
+        "bounds": [
+          [
+            0.05,
+            2
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "alpha_estimable_from_quantity_variation": true,
+        "nominal_global_parameters": 3,
+        "converged_starts": 3,
+        "parameters_at_bound": []
+      },
+      "B_content_fit": {
+        "success": true,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "calibration_loss": 3.739531632059876,
+        "bounds": [
+          [
+            0.05,
+            2
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "alpha_estimable_from_quantity_variation": true,
+        "nominal_global_parameters": 3,
+        "converged_starts": 3,
+        "parameters_at_bound": [
+          0
+        ]
+      }
+    },
+    {
+      "origin": "R3",
+      "training_dates": [
+        20200802,
+        20200803,
+        20200804,
+        20200805,
+        20200806,
+        20200807,
+        20200808,
+        20200809,
+        20200810,
+        20200811,
+        20200812,
+        20200813,
+        20200814,
+        20200815
+      ],
+      "calibration_dates": [
+        20200816,
+        20200817,
+        20200818,
+        20200819,
+        20200820,
+        20200821,
+        20200822
+      ],
+      "test_dates": [
+        20200823,
+        20200824,
+        20200825,
+        20200826,
+        20200827,
+        20200828,
+        20200829
+      ],
+      "models": [
+        {
+          "model": "A_transfer_history",
+          "calibration_log_loss": 4.002057633381176,
+          "test_log_loss": 4.009175996829707,
+          "aggregate_share_total_variation": 0.6985587038138232,
+          "selected_prior_days": 14.0,
+          "information": "A training exposure history, metadata inventory, and global B calibration choice"
+        },
+        {
+          "model": "uniform_accounts",
+          "calibration_log_loss": 3.828641396489095,
+          "test_log_loss": 3.8286413964890955,
+          "aggregate_share_total_variation": 0.6496979564216893
+        },
+        {
+          "model": "linear_quantity_B",
+          "calibration_log_loss": 3.808430609110267,
+          "test_log_loss": 3.7907260272143195,
+          "aggregate_share_total_variation": 0.638643648618266,
+          "parameters": [
+            1.0
+          ]
+        },
+        {
+          "model": "free_quantity_B",
+          "calibration_log_loss": 3.8080975162003177,
+          "test_log_loss": 3.7880670189771606,
+          "aggregate_share_total_variation": 0.6366731347400075,
+          "parameters": [
+            1.1313736376763246
+          ],
+          "convergence": {
+            "success": true
+          },
+          "alpha_estimable": true
+        },
+        {
+          "model": "B_own_history",
+          "calibration_log_loss": 2.6751599328051676,
+          "test_log_loss": 2.845549180894244,
+          "aggregate_share_total_variation": 0.29774287436514685,
+          "selected_prior_days": 0.5,
+          "information": "Richer-information memory benchmark using B training outcomes"
+        },
+        {
+          "model": "quantity_demand_age_B",
+          "calibration_log_loss": 3.629428918075517,
+          "test_log_loss": 3.5650312293765,
+          "aggregate_share_total_variation": 0.5700208182134674,
+          "parameters": [
+            1.46741226620744,
+            1.0627993445493087,
+            0.0
+          ],
+          "convergence": {
+            "success": true,
+            "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+            "calibration_loss": 3.629428918075517,
+            "bounds": [
+              [
+                0.05,
+                2
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                2
+              ]
+            ],
+            "alpha_estimable_from_quantity_variation": true,
+            "nominal_global_parameters": 3,
+            "converged_starts": 3,
+            "parameters_at_bound": [
+              2
+            ]
+          },
+          "information": "B training feedback proxy; global parameters fitted on B calibration"
+        },
+        {
+          "model": "A_fitted_content_base_on_B",
+          "calibration_log_loss": 3.6679556226711396,
+          "test_log_loss": 3.6197165964993205,
+          "aggregate_share_total_variation": 0.5793780634222874,
+          "parameters": [
+            1.6745533023162382,
+            0.5141282244060839,
+            0.004017040657470384
+          ],
+          "convergence": {
+            "success": true,
+            "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+            "calibration_loss": 3.5774469226078343,
+            "bounds": [
+              [
+                0.05,
+                2
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                2
+              ]
+            ],
+            "alpha_estimable_from_quantity_variation": true,
+            "nominal_global_parameters": 3,
+            "converged_starts": 3,
+            "parameters_at_bound": []
+          },
+          "information": "A calibration global fit; A+B training feedback for content proxies"
+        },
+        {
+          "model": "A_residual_transfer_secondary",
+          "calibration_log_loss": 3.6764578109979777,
+          "test_log_loss": 3.6325659468919382,
+          "aggregate_share_total_variation": 0.5851923429960524,
+          "selected_prior_count": 3893915.0,
+          "selected_prior_mean_count_multiplier": 10.0,
+          "information": "Secondary B-informed content base times shrunk source A actual/expected count residual"
+        }
+      ],
+      "zero_exposure_accounts_retained": {
+        "A": {
+          "training": 0,
+          "calibration": 0,
+          "test": 0
+        },
+        "B": {
+          "training": 0,
+          "calibration": 0,
+          "test": 0
+        }
+      },
+      "B_test_exposures": 3255764,
+      "raw_identity_reference_rank": 0.502,
+      "secondary_residual_identity_reference_rank": 0.469,
+      "A_content_fit": {
+        "success": true,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "calibration_loss": 3.5774469226078343,
+        "bounds": [
+          [
+            0.05,
+            2
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "alpha_estimable_from_quantity_variation": true,
+        "nominal_global_parameters": 3,
+        "converged_starts": 3,
+        "parameters_at_bound": []
+      },
+      "B_content_fit": {
+        "success": true,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "calibration_loss": 3.629428918075517,
+        "bounds": [
+          [
+            0.05,
+            2
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "alpha_estimable_from_quantity_variation": true,
+        "nominal_global_parameters": 3,
+        "converged_starts": 3,
+        "parameters_at_bound": [
+          2
+        ]
+      }
+    },
+    {
+      "origin": "R4",
+      "training_dates": [
+        20200809,
+        20200810,
+        20200811,
+        20200812,
+        20200813,
+        20200814,
+        20200815,
+        20200816,
+        20200817,
+        20200818,
+        20200819,
+        20200820,
+        20200821,
+        20200822
+      ],
+      "calibration_dates": [
+        20200823,
+        20200824,
+        20200825,
+        20200826,
+        20200827,
+        20200828,
+        20200829
+      ],
+      "test_dates": [
+        20200830,
+        20200831,
+        20200901,
+        20200902,
+        20200903,
+        20200904,
+        20200905
+      ],
+      "models": [
+        {
+          "model": "A_transfer_history",
+          "calibration_log_loss": 3.7898042056231227,
+          "test_log_loss": 3.8586332451013643,
+          "aggregate_share_total_variation": 0.6531391976034884,
+          "selected_prior_days": 14.0,
+          "information": "A training exposure history, metadata inventory, and global B calibration choice"
+        },
+        {
+          "model": "uniform_accounts",
+          "calibration_log_loss": 3.8286413964890955,
+          "test_log_loss": 3.828641396489095,
+          "aggregate_share_total_variation": 0.6605976269434124
+        },
+        {
+          "model": "linear_quantity_B",
+          "calibration_log_loss": 3.7907260272143195,
+          "test_log_loss": 3.7916766712112158,
+          "aggregate_share_total_variation": 0.6488222646245717,
+          "parameters": [
+            1.0
+          ]
+        },
+        {
+          "model": "free_quantity_B",
+          "calibration_log_loss": 3.784400503988669,
+          "test_log_loss": 3.785855871509715,
+          "aggregate_share_total_variation": 0.6392056697328302,
+          "parameters": [
+            1.530928008588976
+          ],
+          "convergence": {
+            "success": true
+          },
+          "alpha_estimable": true
+        },
+        {
+          "model": "B_own_history",
+          "calibration_log_loss": 2.725200374333732,
+          "test_log_loss": 2.6042757861978902,
+          "aggregate_share_total_variation": 0.24422601526788792,
+          "selected_prior_days": 0.5,
+          "information": "Richer-information memory benchmark using B training outcomes"
+        },
+        {
+          "model": "quantity_demand_age_B",
+          "calibration_log_loss": 3.201106323668816,
+          "test_log_loss": 3.231829895329479,
+          "aggregate_share_total_variation": 0.48942166555382044,
+          "parameters": [
+            1.3899303159567593,
+            1.9827169776334428,
+            0.0
+          ],
+          "convergence": {
+            "success": true,
+            "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+            "calibration_loss": 3.201106323668816,
+            "bounds": [
+              [
+                0.05,
+                2
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                2
+              ]
+            ],
+            "alpha_estimable_from_quantity_variation": true,
+            "nominal_global_parameters": 3,
+            "converged_starts": 3,
+            "parameters_at_bound": [
+              2
+            ]
+          },
+          "information": "B training feedback proxy; global parameters fitted on B calibration"
+        },
+        {
+          "model": "A_fitted_content_base_on_B",
+          "calibration_log_loss": 3.3091613037075382,
+          "test_log_loss": 3.3274589020469225,
+          "aggregate_share_total_variation": 0.5194646567824364,
+          "parameters": [
+            1.2650477642690539,
+            0.9454186485138564,
+            0.5346610942740406
+          ],
+          "convergence": {
+            "success": true,
+            "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+            "calibration_loss": 3.5108397849052073,
+            "bounds": [
+              [
+                0.05,
+                2
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                2
+              ]
+            ],
+            "alpha_estimable_from_quantity_variation": true,
+            "nominal_global_parameters": 3,
+            "converged_starts": 3,
+            "parameters_at_bound": []
+          },
+          "information": "A calibration global fit; A+B training feedback for content proxies"
+        },
+        {
+          "model": "A_residual_transfer_secondary",
+          "calibration_log_loss": 3.2963540790433536,
+          "test_log_loss": 3.3345836511975877,
+          "aggregate_share_total_variation": 0.5119112010210202,
+          "selected_prior_count": 2591679.130434783,
+          "selected_prior_mean_count_multiplier": 10.0,
+          "information": "Secondary B-informed content base times shrunk source A actual/expected count residual"
+        }
+      ],
+      "zero_exposure_accounts_retained": {
+        "A": {
+          "training": 0,
+          "calibration": 0,
+          "test": 0
+        },
+        "B": {
+          "training": 0,
+          "calibration": 0,
+          "test": 0
+        }
+      },
+      "B_test_exposures": 3184834,
+      "raw_identity_reference_rank": 0.243,
+      "secondary_residual_identity_reference_rank": 0.447,
+      "A_content_fit": {
+        "success": true,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "calibration_loss": 3.5108397849052073,
+        "bounds": [
+          [
+            0.05,
+            2
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "alpha_estimable_from_quantity_variation": true,
+        "nominal_global_parameters": 3,
+        "converged_starts": 3,
+        "parameters_at_bound": []
+      },
+      "B_content_fit": {
+        "success": true,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "calibration_loss": 3.201106323668816,
+        "bounds": [
+          [
+            0.05,
+            2
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "alpha_estimable_from_quantity_variation": true,
+        "nominal_global_parameters": 3,
+        "converged_starts": 3,
+        "parameters_at_bound": [
+          2
+        ]
+      }
+    }
+  ],
+  "pooled_test_log_losses": {
+    "A_transfer_history": 3.8161560501459,
+    "uniform_accounts": 3.8286413964890955,
+    "linear_quantity_B": 3.832268572352438,
+    "free_quantity_B": 3.8374228965378996,
+    "B_own_history": 3.3011627504850445,
+    "quantity_demand_age_B": 3.680502580816366,
+    "A_fitted_content_base_on_B": 3.6814408758092223,
+    "A_residual_transfer_secondary": 3.556321856686395
+  },
+  "primary_raw_identity_reference": {
+    "correct_mapping_test_log_loss": 3.8161560501459,
+    "permutation_test_loss_quantiles": {
+      "0": 3.6387766849180325,
+      "0.025": 3.765481549203995,
+      "0.5": 3.9800241361781983,
+      "0.975": 4.137314003019559,
+      "1": 4.205733250956999
+    },
+    "one_sided_conditional_reference_rank": 0.061
+  },
+  "secondary_residual_identity_reference": {
+    "correct_mapping_test_log_loss": 3.556321856686395,
+    "permutation_test_loss_quantiles": {
+      "0": 3.53053530148114,
+      "0.025": 3.6116862115042445,
+      "0.5": 3.6908924327074653,
+      "0.975": 3.726017722967578,
+      "1": 3.7508168312815626
+    },
+    "one_sided_conditional_reference_rank": 0.005
+  },
+  "comparisons": [
+    {
+      "model": "A_transfer_history",
+      "baseline": "uniform_accounts",
+      "pooled_test_delta_log_loss": -0.012485346343195496,
+      "paired_date_block_bootstrap_95": [
+        -0.07201700135478839,
+        0.07469097534651749
+      ],
+      "origin_block_bootstrap_95": [
+        -0.04418077931546125,
+        0.14331543184285273
+      ],
+      "interpretation": "Negative means lower loss; temporal conditional uncertainty, not causal identification."
+    },
+    {
+      "model": "A_transfer_history",
+      "baseline": "linear_quantity_B",
+      "pooled_test_delta_log_loss": -0.016112522206538447,
+      "paired_date_block_bootstrap_95": [
+        -0.07326437254749334,
+        0.07247458848063083
+      ],
+      "origin_block_bootstrap_95": [
+        -0.05898046189330056,
+        0.17790685286568364
+      ],
+      "interpretation": "Negative means lower loss; temporal conditional uncertainty, not causal identification."
+    },
+    {
+      "model": "A_transfer_history",
+      "baseline": "B_own_history",
+      "pooled_test_delta_log_loss": 0.5149932996608553,
+      "paired_date_block_bootstrap_95": [
+        0.4134665558494126,
+        0.7218891297093161
+      ],
+      "origin_block_bootstrap_95": [
+        0.338884262490781,
+        1.20849253128773
+      ],
+      "interpretation": "Negative means lower loss; temporal conditional uncertainty, not causal identification."
+    },
+    {
+      "model": "A_residual_transfer_secondary",
+      "baseline": "A_fitted_content_base_on_B",
+      "pooled_test_delta_log_loss": -0.1251190191228269,
+      "paired_date_block_bootstrap_95": [
+        -0.21800880053888377,
+        -0.01649068001625859
+      ],
+      "origin_block_bootstrap_95": [
+        -0.16179080855861072,
+        0.010018572152489745
+      ],
+      "interpretation": "Negative means lower loss; temporal conditional uncertainty, not causal identification."
+    }
+  ],
+  "unique_test_days": 28,
+  "test_exposures": 43827570,
+  "flow_stock_audit": {
+    "source_catalogue_items": 10728,
+    "source_account_ids": 8369,
+    "source_date_range": [
+      20200705,
+      20200905
+    ],
+    "new_catalogue_items_uploaded_in_observation_period": 9566,
+    "new_catalogue_accounts": 7515,
+    "new_items_per_account_quantiles": {
+      "0.0": 1.0,
+      "0.5": 1.0,
+      "0.9": 2.0,
+      "0.99": 6.0,
+      "1.0": 35.0
+    },
+    "new_item_first_seen_minus_upload_days_quantiles": {
+      "0.0": 0.0,
+      "0.5": 0.0,
+      "0.9": 0.0,
+      "0.99": 0.0,
+      "1.0": 2.0
+    },
+    "rows_before_upload_date": 0,
+    "new_items_without_row_on_upload_date": 35,
+    "new_items_first_seen_after_upload_date": 35,
+    "observed_pool_stock_on_first_date": 1386,
+    "observed_pool_stock_on_last_date": 10728,
+    "daily_catalogue_upload_flow": {
+      "20200705": 224,
+      "20200706": 273,
+      "20200707": 276,
+      "20200708": 224,
+      "20200709": 245,
+      "20200710": 201,
+      "20200711": 219,
+      "20200712": 153,
+      "20200713": 94,
+      "20200714": 96,
+      "20200715": 105,
+      "20200716": 91,
+      "20200717": 90,
+      "20200718": 100,
+      "20200719": 99,
+      "20200720": 96,
+      "20200721": 95,
+      "20200722": 94,
+      "20200723": 87,
+      "20200724": 98,
+      "20200725": 89,
+      "20200726": 102,
+      "20200727": 127,
+      "20200728": 130,
+      "20200729": 114,
+      "20200730": 165,
+      "20200731": 265,
+      "20200801": 311,
+      "20200802": 275,
+      "20200803": 289,
+      "20200804": 266,
+      "20200805": 234,
+      "20200806": 260,
+      "20200807": 288,
+      "20200808": 238,
+      "20200809": 259,
+      "20200810": 170,
+      "20200811": 80,
+      "20200812": 64,
+      "20200813": 60,
+      "20200814": 53,
+      "20200815": 50,
+      "20200816": 50,
+      "20200817": 49,
+      "20200818": 53,
+      "20200819": 52,
+      "20200820": 51,
+      "20200821": 39,
+      "20200822": 43,
+      "20200823": 48,
+      "20200824": 35,
+      "20200825": 43,
+      "20200826": 149,
+      "20200827": 218,
+      "20200828": 220,
+      "20200829": 201,
+      "20200830": 189,
+      "20200831": 225,
+      "20200901": 208,
+      "20200902": 219,
+      "20200903": 228,
+      "20200904": 254,
+      "20200905": 143
+    },
+    "new_upload_test_window_feasibility": [
+      {
+        "origin": "R1",
+        "new_catalogue_items_uploaded_in_test_window": 1214,
+        "new_items_with_any_test_row": 1213,
+        "new_items_from_accounts_seen_in_training": 255,
+        "new_items_from_accounts_not_seen_in_training": 959,
+        "observed_new_item_test_rows": 3913
+      },
+      {
+        "origin": "R2",
+        "new_catalogue_items_uploaded_in_test_window": 736,
+        "new_items_with_any_test_row": 735,
+        "new_items_from_accounts_seen_in_training": 164,
+        "new_items_from_accounts_not_seen_in_training": 572,
+        "observed_new_item_test_rows": 3694
+      },
+      {
+        "origin": "R3",
+        "new_catalogue_items_uploaded_in_test_window": 914,
+        "new_items_with_any_test_row": 913,
+        "new_items_from_accounts_seen_in_training": 166,
+        "new_items_from_accounts_not_seen_in_training": 748,
+        "observed_new_item_test_rows": 2632
+      },
+      {
+        "origin": "R4",
+        "new_catalogue_items_uploaded_in_test_window": 1466,
+        "new_items_with_any_test_row": 1466,
+        "new_items_from_accounts_seen_in_training": 210,
+        "new_items_from_accounts_not_seen_in_training": 1256,
+        "observed_new_item_test_rows": 5677
+      }
+    ],
+    "interpretation": "Upload dates support selected-catalogue publication flow and cumulative-stock proxies, not complete creator production or historical active inventory. Missing item-days remain unobserved. No new-upload prediction or cost response is fitted here."
+  },
+  "all_selected_content_fits_converged": true,
+  "no_test_based_selection": true,
+  "no_missing_item_days_imputed_zero": true,
+  "limitations": [
+    "Selected retrospective common-item cohort uses future row presence.",
+    "Only 46 multi-item accounts; most source accounts are excluded.",
+    "A raw transfer is coarse association, not source-content-adjusted.",
+    "Secondary demand proxy uses endogenous ordinary feedback, not intrinsic quality.",
+    "B self history is a richer-information memory benchmark.",
+    "Four rolling origins share accounts and some historical windows.",
+    "No economic owners, AI labels, cost shock, causal quality-versus-memory separation or equilibrium identified."
+  ]
+}
