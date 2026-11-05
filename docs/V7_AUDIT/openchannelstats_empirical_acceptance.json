@@ -1,0 +1,77 @@
+{
+  "accepted": true,
+  "checked_utc": "2026-11-05T12:07:42.881099+00:00",
+  "actual_process_exit_code": 0,
+  "protocol_before_fitting": true,
+  "source_and_execution_hashes_match": true,
+  "source_csv_files_verified": 21,
+  "probability_normalization_max_error": 6.661338147750939e-16,
+  "pooled_losses_reconstructed": {
+    "age_only": 2.328489449757808,
+    "age_times_memory": 1.818669023579719,
+    "previous_day_with_prior": 1.7183264206567435,
+    "uniform": 2.433985396189271
+  },
+  "test_video_days_per_model": 960,
+  "test_impressions_weight": 7824.0,
+  "channels_by_weight": [
+    {
+      "channel": "koura_yt_mfun",
+      "exposure_weight": 5761.0,
+      "delta_memory_minus_age": -0.5755404216779791
+    },
+    {
+      "channel": "theartharrison",
+      "exposure_weight": 1118.0,
+      "delta_memory_minus_age": -0.009488662263013925
+    },
+    {
+      "channel": "a-dventures-and-travels",
+      "exposure_weight": 546.0,
+      "delta_memory_minus_age": -0.05666577401695427
+    },
+    {
+      "channel": "breakwayyt",
+      "exposure_weight": 399.0,
+      "delta_memory_minus_age": -1.582954406283775
+    }
+  ],
+  "largest_channel_weight_share": 0.7363241308793456,
+  "leave_one_channel_scoring_only": [
+    {
+      "excluded_channel": "koura_yt_mfun",
+      "fixed_prediction_delta": -0.3262950291471317
+    },
+    {
+      "excluded_channel": "theartharrison",
+      "fixed_prediction_delta": -0.5932339233533136
+    },
+    {
+      "excluded_channel": "a-dventures-and-travels",
+      "fixed_prediction_delta": -0.5438163646337062
+    },
+    {
+      "excluded_channel": "breakwayyt",
+      "fixed_prediction_delta": -0.45215302441887467
+    }
+  ],
+  "results_manifest": {
+    "summary.json": {
+      "bytes": 18398,
+      "sha256": "2320d9d72afb7a6da7e61398dd28429d63da706b63856ade3dd63953dce08b13"
+    },
+    "daily_metrics.csv": {
+      "bytes": 7683,
+      "sha256": "0cbd946b66f4dd5ca927a591a9f45b014cc4e0a0d90abbfe19fbdb3cfbf5ab4d"
+    },
+    "test_predictions.parquet": {
+      "bytes": 29253,
+      "sha256": "8e58cf9d3f893b8f8f18e519084e17539501e3678700c9728f75ac30d8f718b5"
+    },
+    "progress.jsonl": {
+      "bytes": 3449,
+      "sha256": "ad4e9870e54657183224ae35cc8bdbb52027d3828d0aaabd9d316173b6315742"
+    }
+  },
+  "interpretation": "Fixed prediction reconstruction and leave-one-channel scoring only; no refit or causal effect."
+}

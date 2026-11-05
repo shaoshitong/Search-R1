@@ -1,0 +1,67 @@
+{
+  "study_id": "v7_kuairec_observed_state_prediction",
+  "frozen_utc": "2026-11-05T11:48:26.125637+00:00",
+  "source_sha256": "45943d63c44652b6403f3a4f78c7225e1afe7916bab17d9a674d7979245e085b",
+  "source_relative": "v3/kuairec/item_daily_features.csv",
+  "origin_start_indices": [
+    0,
+    14,
+    28,
+    35
+  ],
+  "training_days": 14,
+  "calibration_days": 7,
+  "test_days": 7,
+  "split_salt": "v7-kuairec-disjoint|",
+  "source_directions": [
+    0,
+    1
+  ],
+  "memory_half_life_days": 7,
+  "prior_item_days": 7,
+  "duration_bins_ms": [
+    7000,
+    18000,
+    30000,
+    60000
+  ],
+  "age_bins_days": [
+    1,
+    3,
+    7,
+    14,
+    30,
+    90,
+    365
+  ],
+  "baseline_prior_item_days": 50,
+  "alpha_grid": [
+    0.5,
+    0.75,
+    1.0
+  ],
+  "work_gamma_grid": [
+    0.0,
+    0.5,
+    1.0
+  ],
+  "account_beta_grid": [
+    0.0,
+    0.5,
+    1.0
+  ],
+  "primary_comparison": "dual_state minus work_only",
+  "bootstrap_repetitions": 1000,
+  "bootstrap_seed": 20261107,
+  "ridge_penalty_grid": [
+    0.1,
+    1.0,
+    10.0
+  ],
+  "forecast_scope": "one-day-ahead with observed past updated daily; conditional on source-observed candidate pool",
+  "test_new_work_feedback_features": false,
+  "future_survival_filter": false,
+  "qf_grid_search": false,
+  "state_proxy_not_structural_stock": true,
+  "causal_parameters_identified": false
+}

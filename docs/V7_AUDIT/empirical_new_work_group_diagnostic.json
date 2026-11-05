@@ -1,0 +1,179 @@
+{
+  "completed_utc": "2026-11-05T12:01:35.370197+00:00",
+  "post_hoc_fixed_prediction_diagnostic": true,
+  "model_refit": false,
+  "source_prediction_sha256": "b180578bfe46d7eeccdec920cf81b05138b31b64fe42d7d484f177da3a9f2a89",
+  "groups": [
+    {
+      "model": "account_only",
+      "group": "available",
+      "works": 710,
+      "exposures": 932456396.0,
+      "actual_new_exposure_mass": 0.498787991740579,
+      "predicted_new_exposure_mass": 0.2463782443740643,
+      "joint_in_new_pool_log_loss": 3.8546175589543363,
+      "within_group_conditional_log_loss": 2.4379217031866665,
+      "singleton_group_day_cells": 0,
+      "empty_group_day_cells": 0
+    },
+    {
+      "model": "account_only",
+      "group": "unavailable",
+      "works": 3605,
+      "exposures": 936987960.0,
+      "actual_new_exposure_mass": 0.501212008259421,
+      "predicted_new_exposure_mass": 0.7536217556259359,
+      "joint_in_new_pool_log_loss": 4.055248047616883,
+      "within_group_conditional_log_loss": 3.789188646841042,
+      "singleton_group_day_cells": 0,
+      "empty_group_day_cells": 0
+    },
+    {
+      "model": "no_state",
+      "group": "available",
+      "works": 710,
+      "exposures": 932456396.0,
+      "actual_new_exposure_mass": 0.498787991740579,
+      "predicted_new_exposure_mass": 0.2083735800423089,
+      "joint_in_new_pool_log_loss": 4.08887930683096,
+      "within_group_conditional_log_loss": 2.5260592611942205,
+      "singleton_group_day_cells": 0,
+      "empty_group_day_cells": 0
+    },
+    {
+      "model": "no_state",
+      "group": "unavailable",
+      "works": 3605,
+      "exposures": 936987960.0,
+      "actual_new_exposure_mass": 0.501212008259421,
+      "predicted_new_exposure_mass": 0.7916264199576911,
+      "joint_in_new_pool_log_loss": 4.008477417575788,
+      "within_group_conditional_log_loss": 3.789188646841042,
+      "singleton_group_day_cells": 0,
+      "empty_group_day_cells": 0
+    }
+  ],
+  "account_only_minus_no_state_new_pool_decomposition": {
+    "within_nll": -0.04396195555550684,
+    "between_nll": -0.049442989799056924,
+    "joint_in_new_pool_nll": -0.0934049453545639
+  },
+  "date_intervals": [
+    {
+      "group": "available",
+      "metric": "within_nll",
+      "delta": -0.08813755800755448,
+      "paired_whole_date_bootstrap_95": [
+        -0.16572742519412104,
+        -0.0026241899862043047
+      ],
+      "valid_draws": 1000,
+      "draws": 1000
+    },
+    {
+      "group": "available",
+      "metric": "joint_in_new_pool_nll",
+      "delta": -0.23426174787662363,
+      "paired_whole_date_bootstrap_95": [
+        -0.31757605093217084,
+        -0.13348313058725633
+      ],
+      "valid_draws": 1000,
+      "draws": 1000
+    },
+    {
+      "group": "available",
+      "metric": "between_nll",
+      "delta": -0.14612418986906917,
+      "paired_whole_date_bootstrap_95": [
+        -0.20113510412526403,
+        -0.0941796785736318
+      ],
+      "valid_draws": 1000,
+      "draws": 1000
+    },
+    {
+      "group": "unavailable",
+      "metric": "within_nll",
+      "delta": 7.951628958950367e-17,
+      "paired_whole_date_bootstrap_95": [
+        -1.7138004902972473e-16,
+        2.9511323029578023e-16
+      ],
+      "valid_draws": 1000,
+      "draws": 1000
+    },
+    {
+      "group": "unavailable",
+      "metric": "joint_in_new_pool_nll",
+      "delta": 0.046770630041094,
+      "paired_whole_date_bootstrap_95": [
+        0.028939290855183302,
+        0.06679257884054975
+      ],
+      "valid_draws": 1000,
+      "draws": 1000
+    },
+    {
+      "group": "unavailable",
+      "metric": "between_nll",
+      "delta": 0.04677063004109398,
+      "paired_whole_date_bootstrap_95": [
+        0.027802157847839563,
+        0.06672089979266914
+      ],
+      "valid_draws": 1000,
+      "draws": 1000
+    },
+    {
+      "group": "all",
+      "metric": "within_nll",
+      "delta": -0.04396195555550687,
+      "paired_whole_date_bootstrap_95": [
+        -0.08392669491896845,
+        -0.0029412765351678103
+      ],
+      "valid_draws": 1000,
+      "draws": 1000
+    },
+    {
+      "group": "all",
+      "metric": "joint_in_new_pool_nll",
+      "delta": -0.0934049453545639,
+      "paired_whole_date_bootstrap_95": [
+        -0.14181858650958393,
+        -0.04122058370106498
+      ],
+      "valid_draws": 1000,
+      "draws": 1000
+    },
+    {
+      "group": "all",
+      "metric": "between_nll",
+      "delta": -0.049442989799056904,
+      "paired_whole_date_bootstrap_95": [
+        -0.07801145763896315,
+        -0.02419545941167924
+      ],
+      "valid_draws": 1000,
+      "draws": 1000
+    }
+  ],
+  "influence": {
+    "accounts": 3747,
+    "improved": 1116,
+    "worse": 2631,
+    "top10_exposure_fraction": 0.21741745224750622,
+    "drop_top_scoring_only_delta": {
+      "1": -0.0789336282797452,
+      "5": -0.048130355783645266,
+      "10": -0.039968713172203116
+    }
+  },
+  "scope": "Joint here means conditional on the new-work pool, then split by source-history availability; differs from main all-candidate new joint contribution. Group mass weighted by actual new-pool volume, not a future input.",
+  "limitations": [
+    "Source availability is selected past catalogue coverage, not registration or owner capital.",
+    "Fixed prediction scores, no causal decomposition or refitting uncertainty.",
+    "Two hash directions reuse the same source, dates paired before bootstrap."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "recorded_utc": "2026-11-05T12:02:36.658883+00:00",
+  "first_pool_summary_exit_code": 1,
+  "reason": "One public channel had header-only CSVs; its empty date range raised KeyError after all downloads completed.",
+  "fix": "Read the completed channel audits without redownloading; retain empty entry and omit empty date ranges from range aggregation.",
+  "resumed_pool_summary_exit_code": 0,
+  "independent_verifier_exit_code": 0,
+  "independent_file_acceptance": true,
+  "local_remote_source_sha_matches": {
+    "collector": true,
+    "wrapper": true,
+    "verifier": true
+  },
+  "no_model_fitting_performed": true
+}

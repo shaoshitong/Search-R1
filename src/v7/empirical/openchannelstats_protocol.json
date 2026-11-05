@@ -1,0 +1,33 @@
+{
+  "study_id": "v7_optin_youtube_impressions_pilot",
+  "frozen_utc": "2026-11-05T12:03:34.602281+00:00",
+  "source_pool_audit_sha256": "6d34c1bb282cf1df6bf9cbedc1b783c4ad0c7062af2354023bb4904805e706d0",
+  "source_pool_audit_relative": "v7/source_discovery/audit/openchannelstats_public_pool.json",
+  "train_calendar_days": 14,
+  "calibration_calendar_days": 7,
+  "test_calendar_days": 7,
+  "age_bins_days": [
+    1,
+    3,
+    7,
+    14,
+    30,
+    90,
+    365
+  ],
+  "age_prior_video_days": 10,
+  "memory_prior_video_days": 7,
+  "memory_half_life_days": 7,
+  "gamma_grid": [
+    0,
+    0.5,
+    1
+  ],
+  "minimum_training_observed_dates": 7,
+  "minimum_calibration_multivideo_dates": 2,
+  "minimum_test_multivideo_dates": 2,
+  "bootstrap_seed": 20261109,
+  "bootstrap_repetitions": 1000,
+  "no_channel_capital_estimation": true,
+  "no_cross_channel_common_budget_assumption": true
+}

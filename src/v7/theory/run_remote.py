@@ -13,6 +13,8 @@ log = root / f"run_{attempt:02d}.log"
 env = os.environ.copy()
 env.update(OPENBLAS_NUM_THREADS="1", OMP_NUM_THREADS="1", MKL_NUM_THREADS="1")
 cmd = [sys.executable, "-u", str(Path(__file__).with_name("dynamic_game.py")), "--output", str(root)]
+if len(sys.argv) > 2:
+    cmd.extend(["--protocol", sys.argv[2]])
 started = datetime.now(timezone.utc).isoformat()
 with log.open("w") as stream:
     completed = subprocess.run(cmd, stdout=stream, stderr=subprocess.STDOUT, env=env)

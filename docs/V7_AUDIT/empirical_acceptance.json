@@ -1,0 +1,78 @@
+{
+  "accepted": true,
+  "checked_utc": "2026-11-05T11:56:21.224429+00:00",
+  "actual_process_exit_code": 0,
+  "source_protocol_code_hashes_match": true,
+  "protocol_frozen_before_fitting": true,
+  "rows_per_model": 190568,
+  "new_works_per_model": 4315,
+  "unique_test_dates": 28,
+  "public_source_state_is_common_within_target_account_day": true,
+  "new_work_memory_equals_prior": true,
+  "probabilities_sum_to_one_max_error": 3.808064974464287e-14,
+  "reconstructed_metrics": [
+    {
+      "model": "account_only",
+      "video_log_loss": 7.288812581531729,
+      "account_log_loss": 6.91662362832312,
+      "new_conditional_log_loss": 3.95517596909496
+    },
+    {
+      "model": "dual_state",
+      "video_log_loss": 6.626126894658126,
+      "account_log_loss": 6.29651940413677,
+      "new_conditional_log_loss": 4.017787306046707
+    },
+    {
+      "model": "no_state",
+      "video_log_loss": 7.341394895764277,
+      "account_log_loss": 6.969205942555669,
+      "new_conditional_log_loss": 4.048580914449524
+    },
+    {
+      "model": "work_only",
+      "video_log_loss": 6.626575301391978,
+      "account_log_loss": 6.296967810870624,
+      "new_conditional_log_loss": 4.0485809144495235
+    }
+  ],
+  "bootstrap_weights": {
+    "daily_and_origin_all_valid": true,
+    "minimum_daily_draw_weight": 439331766.0,
+    "account_valid_draws": 1000,
+    "account_total_draws": 1000,
+    "minimum_account_draw_weight": 12008329078.0,
+    "zero_weight_accounts_retained": 19
+  },
+  "results_manifest": {
+    "summary.json": {
+      "bytes": 183631,
+      "sha256": "9c06db57c49b0bd09cf343cff61f8ceb0a1d32f85207bdae48312e955e88f078"
+    },
+    "daily_metrics.csv": {
+      "bytes": 233866,
+      "sha256": "8d4285ac3d6e01f8427a715c4146e1556c22685acb5e5a44800be3bc51fe50c9"
+    },
+    "test_predictions.parquet": {
+      "bytes": 13509521,
+      "sha256": "b180578bfe46d7eeccdec920cf81b05138b31b64fe42d7d484f177da3a9f2a89"
+    },
+    "account_contributions.parquet": {
+      "bytes": 2000103,
+      "sha256": "684a91d1f649f1581bedd038092835105eb169b859b110e6a42ce08500036e55"
+    },
+    "artifact_manifest.json": {
+      "bytes": 811,
+      "sha256": "265f0ec1ae0c74c298803d90882d53a6f56f7bdec2684cfd62283ab1251b58ea"
+    },
+    "origins_progress.json": {
+      "bytes": 127911,
+      "sha256": "80b94d6bab1f585171add17a44102d89a9fe420ea7ff96b17bccfe8b4bcdc679"
+    },
+    "progress.jsonl": {
+      "bytes": 4772,
+      "sha256": "10a564e99ddae2ea3c183924e4cf185139961eea8afb3edf8e697c00ef976cdc"
+    }
+  },
+  "scope": "Reconstruction and provenance verification, no model refitting or new statistical claim."
+}

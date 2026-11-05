@@ -11,7 +11,6 @@ import itertools
 import json
 from pathlib import Path
 import time
-import warnings
 
 import numpy as np
 from scipy.optimize import linprog, minimize_scalar
@@ -181,7 +180,8 @@ def optimal_score(n, m, stock, weight, alpha, new_weight=1.):
 
 
 def gross_value(m, stock, weight, alpha, cost, rival, prize):
-    lower, upper = float(m), max(float(m), prize / cost)
+    # n=m is feasible and gives utility >-c*m; n>m+R/c is dominated.
+    lower, upper = float(m), float(m) + prize / cost
     def objective(n):
         score = optimal_score(n, m, stock, weight, alpha)
         return prize * score / (score + rival) - cost * n

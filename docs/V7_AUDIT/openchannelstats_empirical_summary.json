@@ -1,0 +1,560 @@
+{
+  "completed_utc": "2026-11-05T12:05:45.197868+00:00",
+  "protocol_sha256": "37bf3f0eab03b1e9e398de74750e25b54326c73b539e6486d505e0099bf1a00e",
+  "source_pool_audit_sha256": "6d34c1bb282cf1df6bf9cbedc1b783c4ad0c7062af2354023bb4904805e706d0",
+  "source_code_sha256": "e020dd076268098502ae67492bde76cd063129ed8e9fa60f448824ffbde65c8d",
+  "channels": [
+    {
+      "channel": "theartharrison",
+      "raw_video_days": 1486,
+      "metadata_videos": 53,
+      "missing_impression_rows": 14,
+      "negative_impression_rows": 0,
+      "prepublish_rows": 0,
+      "after_recorded_through_rows": 0,
+      "valid_video_days": 1472,
+      "recorded_through_values": [
+        "2026-11-02"
+      ],
+      "valid_date_range": [
+        "2026-09-12",
+        "2026-11-02"
+      ],
+      "training_window": [
+        "2026-10-06",
+        "2026-10-19"
+      ],
+      "calibration_window": [
+        "2026-10-20",
+        "2026-10-26"
+      ],
+      "test_window": [
+        "2026-10-27",
+        "2026-11-02"
+      ],
+      "training_observed_dates": 14,
+      "calibration_multivideo_dates": 7,
+      "test_multivideo_dates": 7,
+      "test_rows": 345,
+      "test_videos": 52,
+      "status": "analyzed",
+      "eligible": true,
+      "selected_gamma": 1,
+      "calibration_memory_losses": [
+        3.137090674752409,
+        3.0247802222410893,
+        2.9644781472932134
+      ],
+      "models": [
+        {
+          "model": "uniform",
+          "test_log_loss": 3.897594791874811,
+          "test_impressions_weight": 1118.0
+        },
+        {
+          "model": "age_only",
+          "test_log_loss": 3.4049810091118133,
+          "test_impressions_weight": 1118.0
+        },
+        {
+          "model": "age_times_memory",
+          "test_log_loss": 3.3954923468487994,
+          "test_impressions_weight": 1118.0
+        },
+        {
+          "model": "previous_day_with_prior",
+          "test_log_loss": 3.3683954626180332,
+          "test_impressions_weight": 1118.0
+        }
+      ],
+      "old_publication_association": [
+        {
+          "day_type": "publication_day",
+          "observed_dates": 6,
+          "old_video_days": 289,
+          "old_impressions": 899.0,
+          "impressions_per_observed_old_video_day": 3.110726643598616
+        },
+        {
+          "day_type": "no_publication_day",
+          "observed_dates": 1,
+          "old_video_days": 50,
+          "old_impressions": 106.0,
+          "impressions_per_observed_old_video_day": 2.12
+        },
+        {
+          "day_type": "unknown_publication",
+          "observed_dates": 0,
+          "old_video_days": 0,
+          "old_impressions": 0.0,
+          "impressions_per_observed_old_video_day": null
+        }
+      ]
+    },
+    {
+      "channel": "a-dventures-and-travels",
+      "raw_video_days": 4150,
+      "metadata_videos": 55,
+      "missing_impression_rows": 530,
+      "negative_impression_rows": 0,
+      "prepublish_rows": 0,
+      "after_recorded_through_rows": 0,
+      "valid_video_days": 3620,
+      "recorded_through_values": [
+        "2026-11-02"
+      ],
+      "valid_date_range": [
+        "2026-07-26",
+        "2026-11-02"
+      ],
+      "training_window": [
+        "2026-10-06",
+        "2026-10-19"
+      ],
+      "calibration_window": [
+        "2026-10-20",
+        "2026-10-26"
+      ],
+      "test_window": [
+        "2026-10-27",
+        "2026-11-02"
+      ],
+      "training_observed_dates": 14,
+      "calibration_multivideo_dates": 7,
+      "test_multivideo_dates": 7,
+      "test_rows": 343,
+      "test_videos": 55,
+      "status": "analyzed",
+      "eligible": true,
+      "selected_gamma": 1,
+      "calibration_memory_losses": [
+        3.710698676447974,
+        3.676852765840131,
+        3.6574231519055593
+      ],
+      "models": [
+        {
+          "model": "uniform",
+          "test_log_loss": 3.834140093788783,
+          "test_impressions_weight": 546.0
+        },
+        {
+          "model": "age_only",
+          "test_log_loss": 3.415888145783669,
+          "test_impressions_weight": 546.0
+        },
+        {
+          "model": "age_times_memory",
+          "test_log_loss": 3.3592223717667147,
+          "test_impressions_weight": 546.0
+        },
+        {
+          "model": "previous_day_with_prior",
+          "test_log_loss": 3.5571041448855842,
+          "test_impressions_weight": 546.0
+        }
+      ],
+      "old_publication_association": [
+        {
+          "day_type": "publication_day",
+          "observed_dates": 3,
+          "old_video_days": 137,
+          "old_impressions": 180.0,
+          "impressions_per_observed_old_video_day": 1.313868613138686
+        },
+        {
+          "day_type": "no_publication_day",
+          "observed_dates": 4,
+          "old_video_days": 203,
+          "old_impressions": 334.0,
+          "impressions_per_observed_old_video_day": 1.645320197044335
+        },
+        {
+          "day_type": "unknown_publication",
+          "observed_dates": 0,
+          "old_video_days": 0,
+          "old_impressions": 0.0,
+          "impressions_per_observed_old_video_day": null
+        }
+      ]
+    },
+    {
+      "channel": "art.harrison",
+      "raw_video_days": 40,
+      "metadata_videos": 6,
+      "missing_impression_rows": 3,
+      "negative_impression_rows": 0,
+      "prepublish_rows": 0,
+      "after_recorded_through_rows": 0,
+      "valid_video_days": 37,
+      "recorded_through_values": [
+        "2026-11-02"
+      ],
+      "valid_date_range": [
+        "2026-10-21",
+        "2026-11-02"
+      ],
+      "training_window": [
+        "2026-10-06",
+        "2026-10-19"
+      ],
+      "calibration_window": [
+        "2026-10-20",
+        "2026-10-26"
+      ],
+      "test_window": [
+        "2026-10-27",
+        "2026-11-02"
+      ],
+      "training_observed_dates": 0,
+      "calibration_multivideo_dates": 5,
+      "test_multivideo_dates": 7,
+      "test_rows": 23,
+      "test_videos": 5,
+      "status": "insufficient_prespecified_window",
+      "eligible": false
+    },
+    {
+      "channel": "braindelayclips",
+      "raw_video_days": 11,
+      "metadata_videos": 3,
+      "missing_impression_rows": 5,
+      "negative_impression_rows": 0,
+      "prepublish_rows": 0,
+      "after_recorded_through_rows": 0,
+      "valid_video_days": 6,
+      "recorded_through_values": [
+        "2026-11-05"
+      ],
+      "valid_date_range": [
+        "2026-08-06",
+        "2026-10-31"
+      ],
+      "training_window": [
+        "2026-10-04",
+        "2026-10-17"
+      ],
+      "calibration_window": [
+        "2026-10-18",
+        "2026-10-24"
+      ],
+      "test_window": [
+        "2026-10-25",
+        "2026-10-31"
+      ],
+      "training_observed_dates": 0,
+      "calibration_multivideo_dates": 0,
+      "test_multivideo_dates": 1,
+      "test_rows": 2,
+      "test_videos": 2,
+      "status": "insufficient_prespecified_window",
+      "eligible": false
+    },
+    {
+      "channel": "breakwayyt",
+      "raw_video_days": 3731,
+      "metadata_videos": 32,
+      "missing_impression_rows": 284,
+      "negative_impression_rows": 0,
+      "prepublish_rows": 0,
+      "after_recorded_through_rows": 0,
+      "valid_video_days": 3447,
+      "recorded_through_values": [
+        "2026-11-02"
+      ],
+      "valid_date_range": [
+        "2026-06-13",
+        "2026-11-02"
+      ],
+      "training_window": [
+        "2026-10-06",
+        "2026-10-19"
+      ],
+      "calibration_window": [
+        "2026-10-20",
+        "2026-10-26"
+      ],
+      "test_window": [
+        "2026-10-27",
+        "2026-11-02"
+      ],
+      "training_observed_dates": 14,
+      "calibration_multivideo_dates": 7,
+      "test_multivideo_dates": 7,
+      "test_rows": 223,
+      "test_videos": 32,
+      "status": "analyzed",
+      "eligible": true,
+      "selected_gamma": 1,
+      "calibration_memory_losses": [
+        3.4318279232434823,
+        2.723187464595427,
+        2.3401723869498845
+      ],
+      "models": [
+        {
+          "model": "uniform",
+          "test_log_loss": 3.464064918677907,
+          "test_impressions_weight": 399.0
+        },
+        {
+          "model": "age_only",
+          "test_log_loss": 3.4496616563622897,
+          "test_impressions_weight": 399.0
+        },
+        {
+          "model": "age_times_memory",
+          "test_log_loss": 1.8667072500785147,
+          "test_impressions_weight": 399.0
+        },
+        {
+          "model": "previous_day_with_prior",
+          "test_log_loss": 1.5861841990195713,
+          "test_impressions_weight": 399.0
+        }
+      ],
+      "old_publication_association": [
+        {
+          "day_type": "publication_day",
+          "observed_dates": 0,
+          "old_video_days": 0,
+          "old_impressions": 0.0,
+          "impressions_per_observed_old_video_day": null
+        },
+        {
+          "day_type": "no_publication_day",
+          "observed_dates": 7,
+          "old_video_days": 223,
+          "old_impressions": 399.0,
+          "impressions_per_observed_old_video_day": 1.789237668161435
+        },
+        {
+          "day_type": "unknown_publication",
+          "observed_dates": 0,
+          "old_video_days": 0,
+          "old_impressions": 0.0,
+          "impressions_per_observed_old_video_day": null
+        }
+      ]
+    },
+    {
+      "channel": "koura_yt_mfun",
+      "raw_video_days": 2739,
+      "metadata_videos": 7,
+      "missing_impression_rows": 2446,
+      "negative_impression_rows": 0,
+      "prepublish_rows": 0,
+      "after_recorded_through_rows": 0,
+      "valid_video_days": 293,
+      "recorded_through_values": [
+        "2026-11-02"
+      ],
+      "valid_date_range": [
+        "2026-09-20",
+        "2026-11-02"
+      ],
+      "training_window": [
+        "2026-10-06",
+        "2026-10-19"
+      ],
+      "calibration_window": [
+        "2026-10-20",
+        "2026-10-26"
+      ],
+      "test_window": [
+        "2026-10-27",
+        "2026-11-02"
+      ],
+      "training_observed_dates": 14,
+      "calibration_multivideo_dates": 7,
+      "test_multivideo_dates": 7,
+      "test_rows": 49,
+      "test_videos": 7,
+      "status": "analyzed",
+      "eligible": true,
+      "selected_gamma": 1,
+      "calibration_memory_losses": [
+        1.939098533641789,
+        1.633614911834349,
+        1.4249464698448606
+      ],
+      "models": [
+        {
+          "model": "uniform",
+          "test_log_loss": 1.9459101490553132,
+          "test_impressions_weight": 5761.0
+        },
+        {
+          "model": "age_only",
+          "test_log_loss": 1.9388722024356277,
+          "test_impressions_weight": 5761.0
+        },
+        {
+          "model": "age_times_memory",
+          "test_log_loss": 1.3633317807576486,
+          "test_impressions_weight": 5761.0
+        },
+        {
+          "model": "previous_day_with_prior",
+          "test_log_loss": 1.2329896596936403,
+          "test_impressions_weight": 5761.0
+        }
+      ],
+      "old_publication_association": [
+        {
+          "day_type": "publication_day",
+          "observed_dates": 0,
+          "old_video_days": 0,
+          "old_impressions": 0.0,
+          "impressions_per_observed_old_video_day": null
+        },
+        {
+          "day_type": "no_publication_day",
+          "observed_dates": 7,
+          "old_video_days": 49,
+          "old_impressions": 5761.0,
+          "impressions_per_observed_old_video_day": 117.57142857142857
+        },
+        {
+          "day_type": "unknown_publication",
+          "observed_dates": 0,
+          "old_video_days": 0,
+          "old_impressions": 0.0,
+          "impressions_per_observed_old_video_day": null
+        }
+      ]
+    },
+    {
+      "channel": "men-r3c",
+      "raw_video_days": 0,
+      "metadata_videos": 2,
+      "status": "empty_public_entry",
+      "eligible": false
+    }
+  ],
+  "eligible_channels": 4,
+  "pooled_within_channel_scores": [
+    {
+      "model": "age_only",
+      "test_log_loss": 2.328489449757808,
+      "impressions_weight": 7824.0
+    },
+    {
+      "model": "age_times_memory",
+      "test_log_loss": 1.8186690235797194,
+      "impressions_weight": 7824.0
+    },
+    {
+      "model": "previous_day_with_prior",
+      "test_log_loss": 1.7183264206567435,
+      "impressions_weight": 7824.0
+    },
+    {
+      "model": "uniform",
+      "test_log_loss": 2.433985396189271,
+      "impressions_weight": 7824.0
+    }
+  ],
+  "age_memory_minus_age": {
+    "delta": -0.5098204261780889,
+    "paired_date_bootstrap_95": [
+      -0.5693851105162543,
+      -0.44032544236932303
+    ],
+    "valid_draws": 1000,
+    "draws": 1000
+  },
+  "input_files": {
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/raw/openchannelstats/theartharrison/videos.csv": {
+      "bytes": 8058,
+      "sha256": "2ab2b3d259b2d61060f24cd35e9207ad6ded3dae4fa6497afeced49fa047308f"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/raw/openchannelstats/theartharrison/video_daily.csv": {
+      "bytes": 129296,
+      "sha256": "5172b85e12b14a35afa1680842e064abf0b69e5108c39a4daf8330f16d4bcc75"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/raw/openchannelstats/theartharrison/channel_daily.csv": {
+      "bytes": 5726,
+      "sha256": "f61450f17ebdffe224eeaf54e0cd6a87cc955aa7763422ebabd9afbff534ade8"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/public_pool/a-dventures-and-travels/raw/openchannelstats/a-dventures-and-travels/videos.csv": {
+      "bytes": 8465,
+      "sha256": "7cbc770ccf3a1877c6784576a0a7ffabfb89c86f077602822dcb68011bdfacc1"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/public_pool/a-dventures-and-travels/raw/openchannelstats/a-dventures-and-travels/video_daily.csv": {
+      "bytes": 372620,
+      "sha256": "b84d87cfe0287ea2a15012635c27d91ac1aa1b2c43a582cdfeca88ed40d590a3"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/public_pool/a-dventures-and-travels/raw/openchannelstats/a-dventures-and-travels/channel_daily.csv": {
+      "bytes": 27798,
+      "sha256": "13c378b76487dd80eb1c3cb2fd55ea0e62f26f72dc8fc102151fe07cc3740928"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/public_pool/art.harrison/raw/openchannelstats/art.harrison/videos.csv": {
+      "bytes": 1818,
+      "sha256": "0b707d12b0d78927cedd59c34df727dc92544178d8544651c89d4635b4c3e351"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/public_pool/art.harrison/raw/openchannelstats/art.harrison/video_daily.csv": {
+      "bytes": 3852,
+      "sha256": "a53f0b352643f8ff4970334eb920ec5f396109fe8342acfad2c3f6d91c32743f"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/public_pool/art.harrison/raw/openchannelstats/art.harrison/channel_daily.csv": {
+      "bytes": 1376,
+      "sha256": "fbe36098060190856b166b9567522b52d7896fa559187856ea4aa0c0ffba8880"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/public_pool/braindelayclips/raw/openchannelstats/braindelayclips/videos.csv": {
+      "bytes": 1477,
+      "sha256": "080f9371dbfa448222907ed7c8527f9ed3958d845bf09d59b1fd6ec09800b4e4"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/public_pool/braindelayclips/raw/openchannelstats/braindelayclips/video_daily.csv": {
+      "bytes": 1252,
+      "sha256": "ac9156397b8c1db579f4acc2a89eeb12768fd4d82d8c7597806119604d8a7929"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/public_pool/braindelayclips/raw/openchannelstats/braindelayclips/channel_daily.csv": {
+      "bytes": 5561,
+      "sha256": "abf056b0db620f85ef6c278f742dad439be2bc7d29219f4b35bd76d0611e3119"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/public_pool/breakwayyt/raw/openchannelstats/breakwayyt/videos.csv": {
+      "bytes": 4818,
+      "sha256": "cbaa847f07c95010f3148ef2f54ed870b723d435257847474aed70c59f564d67"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/public_pool/breakwayyt/raw/openchannelstats/breakwayyt/video_daily.csv": {
+      "bytes": 277251,
+      "sha256": "0b0fb2efaaf2c39785e972da13a63c9deb705d4e48016d51da48fcae18f72551"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/public_pool/breakwayyt/raw/openchannelstats/breakwayyt/channel_daily.csv": {
+      "bytes": 20001,
+      "sha256": "97649c5267ee1a1bad7f86c2e116836be7f655db1ef31b00fe42b215069b9852"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/public_pool/koura_yt_mfun/raw/openchannelstats/koura_yt_mfun/videos.csv": {
+      "bytes": 2186,
+      "sha256": "0910f2a539debc5069362db692b37558b78c056bf1ccdfc6ba94ea7e1ee0f81e"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/public_pool/koura_yt_mfun/raw/openchannelstats/koura_yt_mfun/video_daily.csv": {
+      "bytes": 245376,
+      "sha256": "672ca738d792a86f65b17259e8fcd4f8cd4d475835df332c71edb6af2566c4d0"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/public_pool/koura_yt_mfun/raw/openchannelstats/koura_yt_mfun/channel_daily.csv": {
+      "bytes": 44622,
+      "sha256": "8054edf519816b357c295143a6aea63edaaeaeed5965ea59acd7226f989536df"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/public_pool/men-r3c/raw/openchannelstats/men-r3c/videos.csv": {
+      "bytes": 1270,
+      "sha256": "a36f2134b9fda12d7584e3f6e48124bbfa08308456de21d3e71fe3bbf994d126"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/public_pool/men-r3c/raw/openchannelstats/men-r3c/video_daily.csv": {
+      "bytes": 213,
+      "sha256": "c851706d81b75ae5527cdb3810adbf470cb29029b480b525ff732a3e46c7652f"
+    },
+    "/data/shaoshitong/ai_creator_game_20261104/v7/source_discovery/public_pool/men-r3c/raw/openchannelstats/men-r3c/channel_daily.csv": {
+      "bytes": 226,
+      "sha256": "19cb866a18861f4b770f3d3fc37bcddd49fdfe0fdae4c8b40774d25dc6ad8bbc"
+    }
+  },
+  "limitations": [
+    "Public opt-in tiny channel sample, not random or complete platform market.",
+    "No estimation of common channel H beta: it cancels in within-channel daily shares.",
+    "Lifetime/peak/day1 metadata not used as predictive input.",
+    "Missing impressions remain missing; conditional observed pools and reporting cutoff respected.",
+    "Publication-day associations are descriptive, not causal cannibalization or AI-cost responses."
+  ]
+}

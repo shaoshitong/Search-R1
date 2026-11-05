@@ -1,0 +1,95 @@
+{
+  "scope": "Post-result exploratory alpha=1 benchmark, motivated by all eight KuaiRec calibrations choosing alpha=1. Fixed before this supplemental numerical run; does not replace original grid.",
+  "initial_state": [
+    [
+      [
+        2,
+        1
+      ]
+    ],
+    [
+      [
+        1,
+        0.25
+      ]
+    ]
+  ],
+  "periods": 2,
+  "maximum_accounts_per_creator": 2,
+  "capacity_per_period": 2,
+  "equilibrium_selection": "Pure NE if present: highest sum of stage payoffs, then lexicographic action indices; otherwise first feasible mixed support ordered by total support size and indices. All first-period deviations include selected valid continuation NE.",
+  "base_grid": [
+    {
+      "alpha": 1.0,
+      "beta": 0,
+      "rho": 0.5,
+      "opening": 0.25
+    },
+    {
+      "alpha": 1.0,
+      "beta": 0,
+      "rho": 0.5,
+      "opening": 0.75
+    },
+    {
+      "alpha": 1.0,
+      "beta": 0,
+      "rho": 0.9,
+      "opening": 0.25
+    },
+    {
+      "alpha": 1.0,
+      "beta": 0,
+      "rho": 0.9,
+      "opening": 0.75
+    },
+    {
+      "alpha": 1.0,
+      "beta": 0.5,
+      "rho": 0.5,
+      "opening": 0.25
+    },
+    {
+      "alpha": 1.0,
+      "beta": 0.5,
+      "rho": 0.5,
+      "opening": 0.75
+    },
+    {
+      "alpha": 1.0,
+      "beta": 0.5,
+      "rho": 0.9,
+      "opening": 0.25
+    },
+    {
+      "alpha": 1.0,
+      "beta": 0.5,
+      "rho": 0.9,
+      "opening": 0.75
+    }
+  ],
+  "cost_regimes": {
+    "baseline": [
+      1,
+      1
+    ],
+    "both_cost_half": [
+      0.5,
+      0.5
+    ],
+    "only_creator1_cost_half": [
+      0.5,
+      1
+    ]
+  },
+  "state_update": {
+    "B_next": "rho*B+production",
+    "H_next": ".8*H+account_exposure_share",
+    "capital_gain": 1
+  },
+  "limitations": [
+    "Transition coefficients are scenarios, not causally estimated from observational history.",
+    "No platform upper-level optimization.",
+    "Complete-information two-period model, not infinite-horizon equilibrium."
+  ]
+}

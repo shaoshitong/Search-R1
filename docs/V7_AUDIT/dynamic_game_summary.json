@@ -1,0 +1,6847 @@
+{
+  "utc": "2026-11-05T11:52:01.615889+00:00",
+  "protocol_sha256": "5f4e03663605fece5e65ca44c1adade4ac9040f1a970667fc85f8133186c76b5",
+  "source_sha256": "81ab5e4c58ceb1bc1fa5a2415d42b997f46f5eb64562cc336f892d7e86268e51",
+  "summary": {
+    "conditions": 48,
+    "maximum_regret": 0.0,
+    "terminal_subgames": 1728,
+    "terminal_mixed_subgames": 0,
+    "first_mixed_conditions": 0,
+    "foresight_changes_first_action": 34
+  },
+  "results": [
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          1.0,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        2.986687274557646,
+        3.1733127254423543
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 1.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 1,
+              "production": [
+                0,
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 0,
+      "regime": "baseline"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          0.5
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.189888075118798,
+        2.5301119248812025
+      ],
+      "first_actions": [
+        {
+          "production": 1.0,
+          "opened": 1.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 1,
+              "production": [
+                0,
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 1.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 1,
+              "production": [
+                0,
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 0,
+      "regime": "both_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.548093174876721,
+        2.1119068251232793
+      ],
+      "first_actions": [
+        {
+          "production": 1.0,
+          "opened": 1.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 1,
+              "production": [
+                0,
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 0,
+      "regime": "only_creator1_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          1.0,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.451976925964479,
+        3.148023074035523
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 1,
+      "regime": "baseline"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          0.5
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.631275214371371,
+        2.9687247856286287
+      ],
+      "first_actions": [
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 1,
+      "regime": "both_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.451976925964479,
+        3.148023074035523
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 1,
+      "regime": "only_creator1_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          1.0,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.451976925964479,
+        3.148023074035523
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 2,
+      "regime": "baseline"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          0.5
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.212537456015128,
+        2.5074625439848717
+      ],
+      "first_actions": [
+        {
+          "production": 1.0,
+          "opened": 1.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 1,
+              "production": [
+                0,
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 1.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 1,
+              "production": [
+                0,
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 2,
+      "regime": "both_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.451976925964479,
+        3.148023074035523
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 2,
+      "regime": "only_creator1_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          1.0,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.451976925964479,
+        3.148023074035523
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 3,
+      "regime": "baseline"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          0.5
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.775671232064946,
+        3.3243287679350546
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 3,
+      "regime": "both_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.451976925964479,
+        3.148023074035523
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 3,
+      "regime": "only_creator1_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0.5,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          1.0,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.866081605097809,
+        2.733918394902191
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 4,
+      "regime": "baseline"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0.5,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          0.5
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.5359416699760144,
+        2.624058330023985
+      ],
+      "first_actions": [
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 1.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 1,
+              "production": [
+                0,
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 4,
+      "regime": "both_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0.5,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.866081605097809,
+        2.733918394902191
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 4,
+      "regime": "only_creator1_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0.5,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          1.0,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.866081605097809,
+        2.733918394902191
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 5,
+      "regime": "baseline"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0.5,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          0.5
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.043220767693299,
+        2.5567792323067007
+      ],
+      "first_actions": [
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 5,
+      "regime": "both_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0.5,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.866081605097809,
+        2.733918394902191
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 5,
+      "regime": "only_creator1_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0.5,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          1.0,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.8660816050978095,
+        2.733918394902191
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 6,
+      "regime": "baseline"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0.5,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          0.5
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.6432097225092246,
+        3.016790277490776
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 1.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 1,
+              "production": [
+                0,
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 6,
+      "regime": "both_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0.5,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.8660816050978095,
+        2.733918394902191
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 6,
+      "regime": "only_creator1_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0.5,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          1.0,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.8660816050978095,
+        2.733918394902191
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 7,
+      "regime": "baseline"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0.5,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          0.5
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.172400183839728,
+        2.9275998161602725
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 7,
+      "regime": "both_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.5,
+        "beta": 0.5,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.8660816050978095,
+        2.733918394902191
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 7,
+      "regime": "only_creator1_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          1.0,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.5105981886977524,
+        3.0894018113022477
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 8,
+      "regime": "baseline"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          0.5
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.1601744544211474,
+        2.4398255455788522
+      ],
+      "first_actions": [
+        {
+          "production": 2.0,
+          "opened": 0.0,
+          "at_capacity_probability": 1.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                2
+              ]
+            }
+          ]
+        },
+        {
+          "production": 2.0,
+          "opened": 0.0,
+          "at_capacity_probability": 1.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                2
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 8,
+      "regime": "both_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.8277792172324236,
+        2.2722207827675764
+      ],
+      "first_actions": [
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 8,
+      "regime": "only_creator1_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          1.0,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.5105981886977524,
+        3.0894018113022477
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 9,
+      "regime": "baseline"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          0.5
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.1601744544211474,
+        2.4398255455788522
+      ],
+      "first_actions": [
+        {
+          "production": 2.0,
+          "opened": 0.0,
+          "at_capacity_probability": 1.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                2
+              ]
+            }
+          ]
+        },
+        {
+          "production": 2.0,
+          "opened": 0.0,
+          "at_capacity_probability": 1.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                2
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 9,
+      "regime": "both_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.8277792172324236,
+        2.2722207827675764
+      ],
+      "first_actions": [
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 9,
+      "regime": "only_creator1_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          1.0,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.761077668777037,
+        2.838922331222963
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 10,
+      "regime": "baseline"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          0.5
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.2747359089258303,
+        2.8252640910741693
+      ],
+      "first_actions": [
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "production": 2.0,
+          "opened": 0.0,
+          "at_capacity_probability": 1.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                2
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 10,
+      "regime": "both_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.891683235261409,
+        2.208316764738591
+      ],
+      "first_actions": [
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 10,
+      "regime": "only_creator1_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          1.0,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.761077668777037,
+        2.838922331222963
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 11,
+      "regime": "baseline"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          0.5
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.2747359089258303,
+        2.8252640910741693
+      ],
+      "first_actions": [
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "production": 2.0,
+          "opened": 0.0,
+          "at_capacity_probability": 1.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                2
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 11,
+      "regime": "both_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.891683235261409,
+        2.208316764738591
+      ],
+      "first_actions": [
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 11,
+      "regime": "only_creator1_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0.5,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          1.0,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.9052893692826776,
+        2.6947106307173216
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 12,
+      "regime": "baseline"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0.5,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          0.5
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.5740097399664976,
+        2.0259902600335025
+      ],
+      "first_actions": [
+        {
+          "production": 2.0,
+          "opened": 0.0,
+          "at_capacity_probability": 1.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                2
+              ]
+            }
+          ]
+        },
+        {
+          "production": 2.0,
+          "opened": 0.0,
+          "at_capacity_probability": 1.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                2
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 12,
+      "regime": "both_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0.5,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.2451257498769355,
+        1.8548742501230637
+      ],
+      "first_actions": [
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 12,
+      "regime": "only_creator1_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0.5,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          1.0,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.9052893692826776,
+        2.6947106307173216
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 13,
+      "regime": "baseline"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0.5,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          0.5
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.5740097399664976,
+        2.0259902600335025
+      ],
+      "first_actions": [
+        {
+          "production": 2.0,
+          "opened": 0.0,
+          "at_capacity_probability": 1.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                2
+              ]
+            }
+          ]
+        },
+        {
+          "production": 2.0,
+          "opened": 0.0,
+          "at_capacity_probability": 1.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                2
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 13,
+      "regime": "both_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0.5,
+        "rho": 0.5,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.2451257498769355,
+        1.8548742501230637
+      ],
+      "first_actions": [
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 13,
+      "regime": "only_creator1_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0.5,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          1.0,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.157879688053504,
+        2.4421203119464954
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 14,
+      "regime": "baseline"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0.5,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          0.5
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.6714701825464706,
+        2.42852981745353
+      ],
+      "first_actions": [
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "production": 2.0,
+          "opened": 0.0,
+          "at_capacity_probability": 1.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                2
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 14,
+      "regime": "both_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0.5,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.25,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        5.272837538335722,
+        1.8271624616642779
+      ],
+      "first_actions": [
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 14,
+      "regime": "only_creator1_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0.5,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          1.0,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        4.157879688053504,
+        2.4421203119464954
+      ],
+      "first_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 15,
+      "regime": "baseline"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0.5,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          0.5
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        3.6714701825464706,
+        2.42852981745353
+      ],
+      "first_actions": [
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "production": 2.0,
+          "opened": 0.0,
+          "at_capacity_probability": 1.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                2
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 15,
+      "regime": "both_cost_half"
+    },
+    {
+      "parameters": {
+        "alpha": 0.8,
+        "beta": 0.5,
+        "rho": 0.9,
+        "delta": 0.8,
+        "capital_gain": 1.0,
+        "prize": 4.0,
+        "discount": 0.9,
+        "opening": 0.75,
+        "maintenance": 0.1,
+        "costs": [
+          0.5,
+          1.0
+        ],
+        "capacity": 2
+      },
+      "initial_state": [
+        [
+          [
+            2,
+            1
+          ]
+        ],
+        [
+          [
+            1,
+            0.25
+          ]
+        ]
+      ],
+      "first_kind": "pure",
+      "first_pure_count": 1,
+      "first_regret": 0.0,
+      "value": [
+        5.272837538335722,
+        1.8271624616642779
+      ],
+      "first_actions": [
+        {
+          "production": 1.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "myopic_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0,
+          "at_capacity_probability": 0.0,
+          "support": [
+            {
+              "probability": 1.0,
+              "opened": 0,
+              "production": [
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "terminal_subgames": 36,
+      "terminal_mixed_subgames": 0,
+      "maximum_regret": 0.0,
+      "second_actions": [
+        {
+          "production": 0.0,
+          "opened": 0.0
+        },
+        {
+          "production": 0.0,
+          "opened": 0.0
+        }
+      ],
+      "cell": 15,
+      "regime": "only_creator1_cost_half"
+    }
+  ],
+  "cost_comparisons": [
+    {
+      "cell": 0,
+      "regime": "both_cost_half",
+      "production_change": [
+        1.0,
+        0.0
+      ],
+      "opening_change": [
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 0,
+      "regime": "only_creator1_cost_half",
+      "production_change": [
+        1.0,
+        -1.0
+      ],
+      "opening_change": [
+        1.0,
+        -1.0
+      ]
+    },
+    {
+      "cell": 1,
+      "regime": "both_cost_half",
+      "production_change": [
+        1.0,
+        1.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 1,
+      "regime": "only_creator1_cost_half",
+      "production_change": [
+        0.0,
+        0.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 2,
+      "regime": "both_cost_half",
+      "production_change": [
+        1.0,
+        1.0
+      ],
+      "opening_change": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "cell": 2,
+      "regime": "only_creator1_cost_half",
+      "production_change": [
+        0.0,
+        0.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 3,
+      "regime": "both_cost_half",
+      "production_change": [
+        0.0,
+        1.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 3,
+      "regime": "only_creator1_cost_half",
+      "production_change": [
+        0.0,
+        0.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 4,
+      "regime": "both_cost_half",
+      "production_change": [
+        1.0,
+        1.0
+      ],
+      "opening_change": [
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "cell": 4,
+      "regime": "only_creator1_cost_half",
+      "production_change": [
+        0.0,
+        0.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 5,
+      "regime": "both_cost_half",
+      "production_change": [
+        1.0,
+        1.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 5,
+      "regime": "only_creator1_cost_half",
+      "production_change": [
+        0.0,
+        0.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 6,
+      "regime": "both_cost_half",
+      "production_change": [
+        0.0,
+        1.0
+      ],
+      "opening_change": [
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "cell": 6,
+      "regime": "only_creator1_cost_half",
+      "production_change": [
+        0.0,
+        0.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 7,
+      "regime": "both_cost_half",
+      "production_change": [
+        0.0,
+        1.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 7,
+      "regime": "only_creator1_cost_half",
+      "production_change": [
+        0.0,
+        0.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 8,
+      "regime": "both_cost_half",
+      "production_change": [
+        2.0,
+        1.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 8,
+      "regime": "only_creator1_cost_half",
+      "production_change": [
+        1.0,
+        0.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 9,
+      "regime": "both_cost_half",
+      "production_change": [
+        2.0,
+        1.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 9,
+      "regime": "only_creator1_cost_half",
+      "production_change": [
+        1.0,
+        0.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 10,
+      "regime": "both_cost_half",
+      "production_change": [
+        1.0,
+        1.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 10,
+      "regime": "only_creator1_cost_half",
+      "production_change": [
+        1.0,
+        -1.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 11,
+      "regime": "both_cost_half",
+      "production_change": [
+        1.0,
+        1.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 11,
+      "regime": "only_creator1_cost_half",
+      "production_change": [
+        1.0,
+        -1.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 12,
+      "regime": "both_cost_half",
+      "production_change": [
+        2.0,
+        1.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 12,
+      "regime": "only_creator1_cost_half",
+      "production_change": [
+        1.0,
+        0.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 13,
+      "regime": "both_cost_half",
+      "production_change": [
+        2.0,
+        1.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 13,
+      "regime": "only_creator1_cost_half",
+      "production_change": [
+        1.0,
+        0.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 14,
+      "regime": "both_cost_half",
+      "production_change": [
+        1.0,
+        1.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 14,
+      "regime": "only_creator1_cost_half",
+      "production_change": [
+        1.0,
+        -1.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 15,
+      "regime": "both_cost_half",
+      "production_change": [
+        1.0,
+        1.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "cell": 15,
+      "regime": "only_creator1_cost_half",
+      "production_change": [
+        1.0,
+        -1.0
+      ],
+      "opening_change": [
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "threshold_audit": {
+    "conditions": 48,
+    "records": [
+      {
+        "stock": 0.25,
+        "capital": 0.0,
+        "alpha": 0.5,
+        "cost": 0.5,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.7500005938785053,
+        "threshold": 0.28156202517699036,
+        "threshold_all_m": 0.28156202517699036,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          0.28156202517699036,
+          0.11607142857147257,
+          -0.004629629629600303,
+          -0.08806818181815979,
+          -0.1480769230769055,
+          -0.19305555555554088,
+          -0.22794117647057568,
+          -0.2557565789473574,
+          -0.27843915343914366
+        ]
+      },
+      {
+        "stock": 0.25,
+        "capital": 0.0,
+        "alpha": 0.5,
+        "cost": 0.5,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.2663974004954059,
+        "threshold": 0.11528944692040266,
+        "threshold_all_m": 0.11528944692040266,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          0.11528944692040266,
+          0.031245391705930714,
+          -0.03643469612767014,
+          -0.08958092405653692,
+          -0.1320362562730933,
+          -0.16663004647653348,
+          -0.19532501469653774,
+          -0.21949634438120963,
+          -0.2401284378038736
+        ]
+      },
+      {
+        "stock": 0.25,
+        "capital": 0.0,
+        "alpha": 0.5,
+        "cost": 1.0,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.2338883805380019,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.007093695751096973,
+          -0.27497541930411984,
+          -0.43199419487999524,
+          -0.533591605755956,
+          -0.6044956622271425
+        ]
+      },
+      {
+        "stock": 0.25,
+        "capital": 0.0,
+        "alpha": 0.5,
+        "cost": 1.0,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.3535353535353536,
+          -0.45299145299145294,
+          -0.5259259259259259,
+          -0.5816993464052287,
+          -0.6257309941520468
+        ]
+      },
+      {
+        "stock": 0.25,
+        "capital": 0.0,
+        "alpha": 0.8,
+        "cost": 0.5,
+        "rival": 1.0,
+        "no_split_optimal_production": 1.3015987942445832,
+        "threshold": 0.12674675150361225,
+        "threshold_all_m": 0.12674675150361225,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          0.12674675150361225,
+          0.05084892299795474,
+          -0.04029011677883062,
+          -0.11188573490820664,
+          -0.16579607762490464,
+          -0.20712805423477154,
+          -0.23960796330235137,
+          -0.2657233464998982,
+          -0.28714254115597004
+        ]
+      },
+      {
+        "stock": 0.25,
+        "capital": 0.0,
+        "alpha": 0.8,
+        "cost": 0.5,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.7962411974753434,
+        "threshold": 0.08042238144585911,
+        "threshold_all_m": 0.08042238144585911,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          0.08042238144585911,
+          0.023514831657961144,
+          -0.03604069527350081,
+          -0.08651793916295561,
+          -0.1280391744365454,
+          -0.16236337763348446,
+          -0.191067209800153,
+          -0.21536700528023295,
+          -0.23617624828311787
+        ]
+      },
+      {
+        "stock": 0.25,
+        "capital": 0.0,
+        "alpha": 0.8,
+        "cost": 1.0,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.5431664029126413,
+        "threshold": 0.011186293391843849,
+        "threshold_all_m": 0.011186293391843849,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          0.011186293391843849,
+          -0.2366152207240656,
+          -0.39859954592684416,
+          -0.5056178067692167,
+          -0.5807817351137128
+        ]
+      },
+      {
+        "stock": 0.25,
+        "capital": 0.0,
+        "alpha": 0.8,
+        "cost": 1.0,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.3066903571853393,
+          -0.4162200755760624,
+          -0.4958639667628499,
+          -0.5563853927799673,
+          -0.6039331373301547
+        ]
+      },
+      {
+        "stock": 0.25,
+        "capital": 2.0,
+        "alpha": 0.5,
+        "cost": 0.5,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.6862020825143312,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.02699309112425219,
+          -0.09836168837728132,
+          -0.16136505022393832,
+          -0.21099043599395662,
+          -0.24892954093180703,
+          -0.2784308426293498,
+          -0.3018899251209737,
+          -0.32093759783111225,
+          -0.3366876566716883
+        ]
+      },
+      {
+        "stock": 0.25,
+        "capital": 2.0,
+        "alpha": 0.5,
+        "cost": 0.5,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.5563473359527293,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.037070770788414364,
+          -0.08451728802428271,
+          -0.12525731574815321,
+          -0.16158740688183226,
+          -0.19268697094713128,
+          -0.21903122738680722,
+          -0.24144218638553663,
+          -0.2606616409564413,
+          -0.27728970536371955
+        ]
+      },
+      {
+        "stock": 0.25,
+        "capital": 2.0,
+        "alpha": 0.5,
+        "cost": 1.0,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.24513905805436753,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.34772695308196644,
+          -0.4933601306330815,
+          -0.5913640117278051,
+          -0.6584896571218567,
+          -0.7069289178341271
+        ]
+      },
+      {
+        "stock": 0.25,
+        "capital": 2.0,
+        "alpha": 0.5,
+        "cost": 1.0,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.0643894362276528,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.4446222713551746,
+          -0.5236830570440046,
+          -0.583705172852088,
+          -0.6304232997097834,
+          -0.6677556852094921
+        ]
+      },
+      {
+        "stock": 0.25,
+        "capital": 2.0,
+        "alpha": 0.8,
+        "cost": 0.5,
+        "rival": 1.0,
+        "no_split_optimal_production": 1.118789238369659,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.13553152272695623,
+          -0.1590228580522195,
+          -0.1919661711477998,
+          -0.2297107932791962,
+          -0.2619175512333907,
+          -0.28819875133369327,
+          -0.30965089901170334,
+          -0.3273499218199664,
+          -0.3421407549486333
+        ]
+      },
+      {
+        "stock": 0.25,
+        "capital": 2.0,
+        "alpha": 0.8,
+        "cost": 0.5,
+        "rival": 4.0,
+        "no_split_optimal_production": 1.2491581140374826,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.12481965948099139,
+          -0.14262325525501873,
+          -0.16215484578610603,
+          -0.18500066698439316,
+          -0.20899499876976094,
+          -0.23114077896011273,
+          -0.25086366762365997,
+          -0.26825696403184784,
+          -0.28358609728236556
+        ]
+      },
+      {
+        "stock": 0.25,
+        "capital": 2.0,
+        "alpha": 0.8,
+        "cost": 1.0,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.5264124213708814,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.37014216588357685,
+          -0.46851048739387524,
+          -0.5640043486510274,
+          -0.633739426406617,
+          -0.6851404577353273
+        ]
+      },
+      {
+        "stock": 0.25,
+        "capital": 2.0,
+        "alpha": 0.8,
+        "cost": 1.0,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.2700839098646837,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.41870541597444366,
+          -0.49084187408755975,
+          -0.5533675851719814,
+          -0.6033894739587499,
+          -0.6437060443492463
+        ]
+      },
+      {
+        "stock": 2.0,
+        "capital": 0.0,
+        "alpha": 0.5,
+        "cost": 0.5,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.01471862576143046,
+          -0.12465471457578303,
+          -0.19398062518129291,
+          -0.2416901957845966,
+          -0.27653000745745127,
+          -0.30308863838427585,
+          -0.32400502829949324,
+          -0.3409045253807114,
+          -0.35484289036310024
+        ]
+      },
+      {
+        "stock": 2.0,
+        "capital": 0.0,
+        "alpha": 0.5,
+        "cost": 0.5,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.03927563037803017,
+          -0.10141632348675478,
+          -0.14878660634903462,
+          -0.1860933225525741,
+          -0.2162354620014501,
+          -0.24109609181601555,
+          -0.26195153359516377,
+          -0.2796975211104187,
+          -0.2949812185481103
+        ]
+      },
+      {
+        "stock": 2.0,
+        "capital": 0.0,
+        "alpha": 0.5,
+        "cost": 1.0,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.5147186257614305,
+          -0.624654714575783,
+          -0.6939806251812929,
+          -0.7416901957845966,
+          -0.7765300074574513
+        ]
+      },
+      {
+        "stock": 2.0,
+        "capital": 0.0,
+        "alpha": 0.5,
+        "cost": 1.0,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.5392756303780302,
+          -0.6014163234867548,
+          -0.6487866063490346,
+          -0.686093322552574,
+          -0.71623546200145
+        ]
+      },
+      {
+        "stock": 2.0,
+        "capital": 0.0,
+        "alpha": 0.8,
+        "cost": 0.5,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.10993634551135045,
+          -0.19220914334323602,
+          -0.24582095924229863,
+          -0.2835268230150608,
+          -0.3114909554356166,
+          -0.33305677898968805,
+          -0.3501948025910008,
+          -0.3641417150763622,
+          -0.3757128857407503
+        ]
+      },
+      {
+        "stock": 2.0,
+        "capital": 0.0,
+        "alpha": 0.8,
+        "cost": 0.5,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.08657765733339029,
+          -0.13998379890237467,
+          -0.18117039494830997,
+          -0.2139007404101096,
+          -0.2405366743072015,
+          -0.2626353959599044,
+          -0.2812652303581799,
+          -0.2971835157726229,
+          -0.3109420866205975
+        ]
+      },
+      {
+        "stock": 2.0,
+        "capital": 0.0,
+        "alpha": 0.8,
+        "cost": 1.0,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.6099363455113505,
+          -0.692209143343236,
+          -0.7458209592422986,
+          -0.7835268230150608,
+          -0.8114909554356167
+        ]
+      },
+      {
+        "stock": 2.0,
+        "capital": 0.0,
+        "alpha": 0.8,
+        "cost": 1.0,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.5865776573333903,
+          -0.6399837989023747,
+          -0.68117039494831,
+          -0.7139007404101096,
+          -0.7405366743072015
+        ]
+      },
+      {
+        "stock": 2.0,
+        "capital": 2.0,
+        "alpha": 0.5,
+        "cost": 0.5,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.23938769133981408,
+          -0.28721094103127665,
+          -0.3202041028867287,
+          -0.34433943340214446,
+          -0.36276191468047336,
+          -0.37728524758575954,
+          -0.38902885951657096,
+          -0.39872109410312767,
+          -0.40685627939902164
+        ]
+      },
+      {
+        "stock": 2.0,
+        "capital": 2.0,
+        "alpha": 0.5,
+        "cost": 0.5,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.16698169979356647,
+          -0.20639452948436143,
+          -0.23746556913916125,
+          -0.2625897079558106,
+          -0.28332515533186803,
+          -0.30072947062067223,
+          -0.31554568545040235,
+          -0.3283111406902127,
+          -0.3394240552374383
+        ]
+      },
+      {
+        "stock": 2.0,
+        "capital": 2.0,
+        "alpha": 0.5,
+        "cost": 1.0,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.7393876913398141,
+          -0.7872109410312766,
+          -0.8202041028867287,
+          -0.8443394334021445,
+          -0.8627619146804733
+        ]
+      },
+      {
+        "stock": 2.0,
+        "capital": 2.0,
+        "alpha": 0.5,
+        "cost": 1.0,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.6669816997935665,
+          -0.7063945294843614,
+          -0.7374655691391613,
+          -0.7625897079558106,
+          -0.7833251553318681
+        ]
+      },
+      {
+        "stock": 2.0,
+        "capital": 2.0,
+        "alpha": 0.8,
+        "cost": 0.5,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.3014033458822398,
+          -0.33441653790165016,
+          -0.3580184646792108,
+          -0.3757314488600605,
+          -0.38951505826248756,
+          -0.4005462603514431,
+          -0.40957464346185773,
+          -0.41710025912054166,
+          -0.42346948215193403
+        ]
+      },
+      {
+        "stock": 2.0,
+        "capital": 2.0,
+        "alpha": 0.8,
+        "cost": 0.5,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.2154816056104385,
+          -0.2470397945496109,
+          -0.27229622409470183,
+          -0.2929671101953722,
+          -0.3101973431413611,
+          -0.32477996355318245,
+          -0.3372816824351557,
+          -0.34811824562188054,
+          -0.3576015642188669
+        ]
+      },
+      {
+        "stock": 2.0,
+        "capital": 2.0,
+        "alpha": 0.8,
+        "cost": 1.0,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.8014033458822398,
+          -0.8344165379016502,
+          -0.8580184646792107,
+          -0.8757314488600605,
+          -0.8895150582624876
+        ]
+      },
+      {
+        "stock": 2.0,
+        "capital": 2.0,
+        "alpha": 0.8,
+        "cost": 1.0,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.7154816056104385,
+          -0.7470397945496109,
+          -0.7722962240947018,
+          -0.7929671101953721,
+          -0.8101973431413612
+        ]
+      },
+      {
+        "stock": 8.0,
+        "capital": 0.0,
+        "alpha": 0.5,
+        "cost": 0.5,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.28361162489122416,
+          -0.320738000580137,
+          -0.34699031259064644,
+          -0.36653570593354157,
+          -0.3816532678934014,
+          -0.3936945366136652,
+          -0.4035117946661662,
+          -0.4116691096089088,
+          -0.4185546684956019
+        ]
+      },
+      {
+        "stock": 8.0,
+        "capital": 0.0,
+        "alpha": 0.5,
+        "cost": 0.5,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.20068754384890708,
+          -0.23459080339013594,
+          -0.2615950425467362,
+          -0.2836116248912243,
+          -0.30190555127946495,
+          -0.31734738579231875,
+          -0.33055587382642215,
+          -0.34198285288145647,
+          -0.351965976654475
+        ]
+      },
+      {
+        "stock": 8.0,
+        "capital": 0.0,
+        "alpha": 0.5,
+        "cost": 1.0,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.7836116248912242,
+          -0.820738000580137,
+          -0.8469903125906465,
+          -0.8665357059335416,
+          -0.8816532678934014
+        ]
+      },
+      {
+        "stock": 8.0,
+        "capital": 0.0,
+        "alpha": 0.5,
+        "cost": 1.0,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.7006875438489071,
+          -0.7345908033901359,
+          -0.7615950425467363,
+          -0.7836116248912244,
+          -0.801905551279465
+        ]
+      },
+      {
+        "stock": 8.0,
+        "capital": 0.0,
+        "alpha": 0.8,
+        "cost": 0.5,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.4124567729828543,
+          -0.4230321405088051,
+          -0.43132785046669325,
+          -0.43800929998134475,
+          -0.4435058885688248,
+          -0.448107123772756,
+          -0.45201529914257776,
+          -0.45537603555617434,
+          -0.45829682833146645
+        ]
+      },
+      {
+        "stock": 8.0,
+        "capital": 0.0,
+        "alpha": 0.8,
+        "cost": 0.5,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.3322145941011967,
+          -0.34709178288808773,
+          -0.3595455883152751,
+          -0.37012354259796443,
+          -0.3792197864394519,
+          -0.38712526905541195,
+          -0.39405944472354276,
+          -0.4001909623330047,
+          -0.40565156332199137
+        ]
+      },
+      {
+        "stock": 8.0,
+        "capital": 0.0,
+        "alpha": 0.8,
+        "cost": 1.0,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.9124567729828543,
+          -0.9230321405088051,
+          -0.9313278504666932,
+          -0.9380092999813447,
+          -0.9435058885688248
+        ]
+      },
+      {
+        "stock": 8.0,
+        "capital": 0.0,
+        "alpha": 0.8,
+        "cost": 1.0,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.8322145941011967,
+          -0.8470917828880877,
+          -0.859545588315275,
+          -0.8701235425979644,
+          -0.879219786439452
+        ]
+      },
+      {
+        "stock": 8.0,
+        "capital": 2.0,
+        "alpha": 0.5,
+        "cost": 0.5,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.4017125083191222,
+          -0.4141555703451063,
+          -0.42380211799634315,
+          -0.4314996672351066,
+          -0.4377846898700798,
+          -0.44301331558587237,
+          -0.44743123752131647,
+          -0.45121344056243,
+          -0.45448793056926795
+        ]
+      },
+      {
+        "stock": 8.0,
+        "capital": 2.0,
+        "alpha": 0.5,
+        "cost": 0.5,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.3183692598055887,
+          -0.33503419072273966,
+          -0.3488980527016066,
+          -0.36061230866018623,
+          -0.3706409364083287,
+          -0.3793233474229214,
+          -0.38691356116504444,
+          -0.3936054705156383,
+          -0.3995496378671992
+        ]
+      },
+      {
+        "stock": 8.0,
+        "capital": 2.0,
+        "alpha": 0.5,
+        "cost": 1.0,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.9017125083191222,
+          -0.9141555703451063,
+          -0.9238021179963432,
+          -0.9314996672351066,
+          -0.9377846898700799
+        ]
+      },
+      {
+        "stock": 8.0,
+        "capital": 2.0,
+        "alpha": 0.5,
+        "cost": 1.0,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.8183692598055887,
+          -0.8350341907227397,
+          -0.8488980527016067,
+          -0.8606123086601862,
+          -0.8706409364083287
+        ]
+      },
+      {
+        "stock": 8.0,
+        "capital": 2.0,
+        "alpha": 0.8,
+        "cost": 0.5,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.46460124080524823,
+          -0.46751668199925933,
+          -0.46998843405089,
+          -0.4721106197480214,
+          -0.47395249755065666,
+          -0.47556616342673236,
+          -0.4769915568821368,
+          -0.47825981135850304,
+          -0.4793955544493664
+        ]
+      },
+      {
+        "stock": 8.0,
+        "capital": 2.0,
+        "alpha": 0.8,
+        "cost": 0.5,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.41390870735766105,
+          -0.41959437120122534,
+          -0.42457557121029826,
+          -0.4289755960222872,
+          -0.4328905509722831,
+          -0.436396458594418,
+          -0.43955424397124904,
+          -0.4424133052523583,
+          -0.4450141166322277
+        ]
+      },
+      {
+        "stock": 8.0,
+        "capital": 2.0,
+        "alpha": 0.8,
+        "cost": 1.0,
+        "rival": 1.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.9646012408052482,
+          -0.9675166819992593,
+          -0.9699884340508901,
+          -0.9721106197480214,
+          -0.9739524975506566
+        ]
+      },
+      {
+        "stock": 8.0,
+        "capital": 2.0,
+        "alpha": 0.8,
+        "cost": 1.0,
+        "rival": 4.0,
+        "no_split_optimal_production": 0.0,
+        "threshold": 0.0,
+        "threshold_all_m": 0.0,
+        "maximum_threshold_gap": 0.0,
+        "average_gains_by_extra_accounts": [
+          -0.913908707357661,
+          -0.9195943712012253,
+          -0.9245755712102982,
+          -0.9289755960222872,
+          -0.932890550972283
+        ]
+      }
+    ],
+    "max_two_account_threshold_gap": 0.0
+  }
+}
