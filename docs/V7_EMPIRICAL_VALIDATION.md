@@ -70,6 +70,6 @@ z_v=(e_v/\mu)m_v^\gamma,\quad T_a=\sum_{v\in a}z_v,\quad s_v=h_a^\beta T_a^{\alp
 
 协议 11:48:26 UTC 冻结，主程序 11:53:05—11:53:21 UTC、nice10 单线程 CPU、真实退出 0。实测先完成 R1，再完成四起点八方向及最终退出；独立程序从远端保存预测重构四族视频/账号与新作条件损失，误差 <10⁻¹⁰。概率和最大误差 3.81×10⁻¹⁴；所有 bootstrap 权重有效，账号 1000/1000 draws 有效且保留零曝光账号。理论代理只读审查也确认过去信息先写后更新与公共账号权重。
 
-原始、逐作品预测和贡献留 HKUST3；该节点 `/data` 是 ext4 本机盘而非共享挂载。另作 HKUST2 同集群副本及 SHA 验收，最终状态见复制审计。没有 GPU 作业、真人实验、私密账户或媒体下载。
+原始、逐作品预测和贡献留 HKUST3；该节点 `/data` 是 ext4 本机盘而非共享挂载。HKUST2 同集群独立副本已验收：55 文件、103,254,369 字节逐 SHA 一致，包括原 CSV、两项行级预测、公开输入及最新源码/审计；全程原始数据仅经本地内存管道，无 raw Mac 文件。详见[复制验收](V7_AUDIT/empirical_replica_verification.json)。没有 GPU 作业、真人实验、私密账户或媒体下载。
 
 可核对：[冻结协议](V7_AUDIT/empirical_protocol_freeze.json)、[完整小汇总](V7_AUDIT/empirical_summary.json)、[独立验收](V7_AUDIT/empirical_acceptance.json)、[新作分组诊断](V7_AUDIT/empirical_new_work_group_diagnostic.json)、[真实退出](V7_AUDIT/empirical_run_01_exit.json)。公开 YouTube impressions 独立小源见 [外部补充报告](V7_OPENCHANNELSTATS_VALIDATION.md)，它只检验作品持久性，不能校准账号资本。
