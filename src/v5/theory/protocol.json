@@ -1,0 +1,44 @@
+{
+  "protocol_version": "v5-weighted-integer-1",
+  "fixed_before_execution_utc": "2026-11-05T02:40:05Z",
+  "purpose": "Audit V4 continuous predictions against exact integer works/accounts and at least one work on every account; not empirical human validation or a general equilibrium proof.",
+  "R": 12.0,
+  "old_account_weight": 1.0,
+  "symmetric_grid": {
+    "alpha": [0.25, 0.5, 0.75, 1.0],
+    "new_to_old_weight_ratio": [1.0, 0.5, 0.25],
+    "tau": [0.5, 1.0, 2.0],
+    "common_c": [0.25, 0.5, 1.0, 2.0],
+    "theta": [1.0, 1.0]
+  },
+  "heterogeneous_grid": {
+    "alpha": [0.5],
+    "new_to_old_weight_ratio": [1.0, 0.5],
+    "tau": [0.5, 1.0],
+    "theta_pairs": [[0.5, 1.0], [2.0, 1.0]],
+    "c1": [0.25, 0.5, 1.0, 2.0],
+    "c2": 0.5
+  },
+  "expected_conditions": 176,
+  "enumeration": {
+    "actions": "For player i enumerate every integer 1<=k_i<=n_i<=floor(R/c_i+1). No rounding, pruning by continuous predictions, or post-result grid expansion.",
+    "bound_proof": "Action (n,k)=(1,1) guarantees payoff greater than -c_i. Any n_i>R/c_i+1 has payoff at most R-c_i*n_i<-c_i against every rival, so cannot be a best response.",
+    "allocation": "For given n,k enumerate old-account amount h=1..n-k+1. The k-1 identical new accounts share n-h works as evenly as possible. Maximize h^alpha+r*sum(new_count^alpha). For k=1 use n^alpha.",
+    "allocation_proof": "The new-account discrete marginal increments decrease for 0<alpha<=1; an exchange from a larger to a smaller count weakly increases their sum. Old-account count is exhaustively enumerated.",
+    "joint_deviations": "Payoff is increasing in own score; maximizing allocation for each n,k therefore covers deviations in production, account count and allocation simultaneously. Enumerate the full two-player payoff matrix, including asymmetric profiles.",
+    "pure_equilibrium_tolerance": 1e-10,
+    "no_pure": "Keep the no-pure result and the global minimum maximum unilateral gain on the enumerated action space; do not silently substitute a rounded continuous candidate.",
+    "strictness": "Exclude the current action and record the best distinct deviation and strict payoff margin for every reported equilibrium."
+  },
+  "predefined_comparisons": [
+    "V4 relaxed equilibrium and its old/new account contents, including n<k, per-account content below 1, and noninteger choices.",
+    "Whether continuous no-split and finite pure-equilibrium split statuses agree, without treating agreement as a general theorem.",
+    "Whether lower new-account weight reduces observed finite-equilibrium splitting in this fixed grid; retain exceptions or changes in existence.",
+    "Unilateral c1 changes in the heterogeneous grid compared with the V4 competition-balance prediction; mark crossings and boundary cases."
+  ],
+  "independent_checks": {
+    "allocation": "For n<=7, enumerate every positive integer composition over all k accounts and compare maximum scores with the optimized-old/balanced-new algorithm on every alpha/weight pair.",
+    "equilibria": "In a second pass recompute every reported equilibrium payoff and all distinct unilateral actions with scalar arithmetic; record numerical errors and actual run exit status."
+  },
+  "reporting": "All cases remain in the small JSON audit. Symmetric cases may list profiles once up to player exchange but give the full count. Heterogeneous cases retain labeled players. No costs, weights or AI adoption effects are estimated from platform data."
+}
