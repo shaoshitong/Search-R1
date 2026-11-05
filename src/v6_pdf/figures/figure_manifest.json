@@ -1,0 +1,400 @@
+{
+  "source_files": {
+    "kuairand_cross_item_summary.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-11-04/cha-k/outputs/V5_AUDIT/kuairand_cross_item_summary.json",
+      "sha256": "b93c3f235a68caba1d3dc90534fa4661531dba52a5e9d5db35df66b838224765"
+    },
+    "kuairand_diagnostics_and_acceptance.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-11-04/cha-k/outputs/V5_AUDIT/kuairand_diagnostics_and_acceptance.json",
+      "sha256": "948bd94e28672c21c3d298424ee71943b7830d43444f42f940015009a4d1de01"
+    },
+    "kuairec_new_upload_first_day.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-11-04/cha-k/outputs/V5_AUDIT/kuairec_new_upload_first_day.json",
+      "sha256": "7380d2b523802dcf9be139264c278cddbd494e794553715a629127fedea98614"
+    },
+    "weighted_integer_results.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-11-04/cha-k/outputs/V5_AUDIT/weighted_integer_results.json",
+      "sha256": "ceccdebd5cf305841622922166898df1f2c26f4c67d8fd0a0b520b51b17c3935"
+    }
+  },
+  "font": {
+    "family": "Hiragino Sans GB",
+    "path": "/System/Library/Fonts/Hiragino Sans GB.ttc"
+  },
+  "png_dpi": 300,
+  "generator": "Codex direct matplotlib after actual Claude Code login failure",
+  "figures": [
+    {
+      "name": "fig01_oldwork",
+      "semantic_name": "old_work_loss_and_intervals",
+      "files": {
+        "pdf": {
+          "name": "fig01_oldwork.pdf",
+          "bytes": 37341,
+          "sha256": "50166ffd723c9cbc41f6d1d0090864767dd405500678382af25cfcf33928c006"
+        },
+        "svg": {
+          "name": "fig01_oldwork.svg",
+          "bytes": 95860,
+          "sha256": "0873004ec2c1e1bfa5973bdef96fe1b739a030d4d7ca53e44bfde63594eb0dc4"
+        },
+        "png": {
+          "name": "fig01_oldwork.png",
+          "bytes": 150883,
+          "sha256": "e9eb24e7dbae24363b20b605b69e10dfcd936b953dd2146410667cca1f3840ea"
+        }
+      },
+      "size_inches_before_tight_crop": [
+        6.4,
+        3.8
+      ],
+      "caption_zh": "旧作品测试损失及真实配对区间。区间为条件账号bootstrap；B自身记忆使用更多信息，不能当作同信息机制比较。",
+      "source_names": [
+        "kuairand_cross_item_summary.json"
+      ],
+      "plotted_values": {
+        "losses": {
+          "uniform_author": 6.744059186311347,
+          "uniform_video_quantity": 6.759918384125571,
+          "source_fitted_quantity_demand_age": 6.534427459208917,
+          "A_account_transfer": 6.497898617495722,
+          "B_self_item_memory": 5.437401140460859
+        },
+        "comparisons": [
+          {
+            "model": "A_account_transfer",
+            "reference": "source_fitted_quantity_demand_age",
+            "test_delta_author_loss": -0.036528841713194635,
+            "conditional_account_bootstrap_95_interval": [
+              -0.09682136446700955,
+              0.02489542277923223
+            ]
+          },
+          {
+            "model": "A_account_transfer",
+            "reference": "A_account_transfer_linear_quantity",
+            "test_delta_author_loss": -0.005793831035135998,
+            "conditional_account_bootstrap_95_interval": [
+              -0.02246771969712205,
+              0.013109595909898379
+            ]
+          },
+          {
+            "model": "B_self_item_memory",
+            "reference": "A_account_transfer",
+            "test_delta_author_loss": -1.0604974770348632,
+            "conditional_account_bootstrap_95_interval": [
+              -1.2375734454906262,
+              -0.871808372927798
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "fig02_concentration",
+      "semantic_name": "cross_item_gain_concentration",
+      "files": {
+        "pdf": {
+          "name": "fig02_concentration.pdf",
+          "bytes": 29777,
+          "sha256": "da8cf9eab6c73f571df369b96e779cf2b68142bd4d108bc1e80ad43f55c78636"
+        },
+        "svg": {
+          "name": "fig02_concentration.svg",
+          "bytes": 86629,
+          "sha256": "2164d67a5be21ad2034dfb08b312ab1a9039873f1940cc68e86ff87b68c13e42"
+        },
+        "png": {
+          "name": "fig02_concentration.png",
+          "bytes": 133040,
+          "sha256": "3dbfc110d23cd4b3d06557eb6922abcde008e1ac69bda695aa29bff252ab1260"
+        }
+      },
+      "size_inches_before_tight_crop": [
+        6.4,
+        3.8
+      ],
+      "caption_zh": "事后、固定预测的集中度诊断；未重拟合。移除最高曝光账号后增益改变方向，不能据账号数量解读因果收益。",
+      "source_names": [
+        "kuairand_cross_item_summary.json",
+        "kuairand_diagnostics_and_acceptance.json"
+      ],
+      "plotted_values": {
+        "paired_deltas": [
+          -0.036528841713194635,
+          -0.01921011739896143,
+          0.01334689593964783,
+          0.013423042991571085
+        ],
+        "negative_positive_account_counts": [
+          121,
+          557
+        ],
+        "post_hoc": true
+      }
+    },
+    {
+      "name": "fig03_newwork",
+      "semantic_name": "new_work_loss_by_origin",
+      "files": {
+        "pdf": {
+          "name": "fig03_newwork.pdf",
+          "bytes": 23224,
+          "sha256": "9b7de15a0800a0f7e2627c676436240b30be1d33078ba8e94e719cbf4a36173f"
+        },
+        "svg": {
+          "name": "fig03_newwork.svg",
+          "bytes": 76101,
+          "sha256": "fdcf9b71528887ce6352911ab14dbda391e430bae37d9aa089e287365f4e2be3"
+        },
+        "png": {
+          "name": "fig03_newwork.png",
+          "bytes": 128988,
+          "sha256": "2469c8cb28cdede493a483fcf1c60bc2f190dee281046bf835fa5d4121ea0167"
+        }
+      },
+      "size_inches_before_tight_crop": [
+        6.4,
+        3.8
+      ],
+      "caption_zh": "新作首日联合池的汇总测试损失与各起点HQF-H差值，越低越好；点和条均为实际损失，没有人为构造误差条。",
+      "source_names": [
+        "kuairec_new_upload_first_day.json"
+      ],
+      "plotted_values": {
+        "pooled_losses": {
+          "duration_base": 4.728344803247798,
+          "history_H": 4.706097347221078,
+          "catalogue_stock_Q": 4.502513699386883,
+          "stock_flow_QF": 4.483139667245528,
+          "history_stock_flow_HQF": 4.548341496029581
+        },
+        "origins": [
+          "R1",
+          "R2",
+          "R3",
+          "R4"
+        ],
+        "origin_HQF_minus_H": [
+          -0.08969450983003657,
+          -0.07972510171404146,
+          -0.09072472317670144,
+          -0.4675299574375398
+        ]
+      }
+    },
+    {
+      "name": "fig04_group_mass",
+      "semantic_name": "new_work_seen_mass",
+      "files": {
+        "pdf": {
+          "name": "fig04_group_mass.pdf",
+          "bytes": 28080,
+          "sha256": "fde063e81a575830684b5cac436e3edec6ccee9f30b5e117fe647219397a9380"
+        },
+        "svg": {
+          "name": "fig04_group_mass.svg",
+          "bytes": 86523,
+          "sha256": "bc8603429eeb646cc9566a4436b79b062218e813f5ee654497ea3e292e187aea"
+        },
+        "png": {
+          "name": "fig04_group_mass.png",
+          "bytes": 136013,
+          "sha256": "dd3c27db1e63e5b2741ed9c4657390a404be6ba9a120c324fc7f2b13f787d963"
+        }
+      },
+      "size_inches_before_tight_crop": [
+        6.4,
+        3.8
+      ],
+      "caption_zh": "训练期见过账号的联合池曝光份额，及HQF-H损失差的精确恒等分解。分解没有新增CI或统计检验；组间份额改善不等于组内排序改善，unseen不代表新注册。",
+      "source_names": [
+        "kuairec_new_upload_first_day.json"
+      ],
+      "plotted_values": {
+        "predicted_mass": {
+          "history_H": 0.24533829872449728,
+          "catalogue_stock_Q": 0.4115326002570474,
+          "stock_flow_QF": 0.43779332169954044,
+          "history_stock_flow_HQF": 0.40476284150184233
+        },
+        "observed_seen_mass": 0.5511329640238835,
+        "decomposition_HQF_minus_H": {
+          "between_group": -0.161595401361466,
+          "within_group": 0.0038395501699683976,
+          "total": -0.1577558511914976,
+          "identity_error": 0.0
+        },
+        "seen_test_works": 795,
+        "unseen_test_works": 3520
+      }
+    },
+    {
+      "name": "fig05_minimum_content",
+      "semantic_name": "minimum_content_boundary",
+      "files": {
+        "pdf": {
+          "name": "fig05_minimum_content.pdf",
+          "bytes": 32679,
+          "sha256": "52419bc7f45de44a60d5271628031447e3af5d30378282bdb9f45a45bd081dac"
+        },
+        "svg": {
+          "name": "fig05_minimum_content.svg",
+          "bytes": 101851,
+          "sha256": "f197b656c9c4797a6e83fb903c5287812e78b39938e8c3813babc423d2d4acee"
+        },
+        "png": {
+          "name": "fig05_minimum_content.png",
+          "bytes": 169287,
+          "sha256": "c3cc744ff82c027df6716b899e397c48ec809c8836ab0e503392c03c15a0bb7c"
+        }
+      },
+      "size_inches_before_tight_crop": [
+        6.4,
+        3.7
+      ],
+      "caption_zh": "模型示例，参数完全来自预定case12：新号每号至少1件时，固定整数k的内点要求n≥k-1+1/eta。连续候选点属于松弛，不是整数观察。",
+      "source_names": [
+        "weighted_integer_results.json"
+      ],
+      "plotted_values": {
+        "case_id": 12,
+        "parameters": {
+          "case_id": 12,
+          "family": "symmetric",
+          "R": 12.0,
+          "alpha": 0.25,
+          "ratio": 0.5,
+          "tau": 0.5,
+          "c": [
+            0.25,
+            0.25
+          ],
+          "theta": [
+            1.0,
+            1.0
+          ]
+        },
+        "eta": 0.3968502629920499,
+        "boundary_k": [
+          2.0,
+          3.0,
+          4.0,
+          5.0,
+          6.0
+        ],
+        "boundary_n": [
+          3.519842099789746,
+          4.519842099789746,
+          5.519842099789746,
+          6.519842099789746,
+          7.519842099789746
+        ],
+        "continuous_point": {
+          "k": 2.980157900210254,
+          "n": 3.0
+        },
+        "finite_point": {
+          "n": 4,
+          "k": 3
+        }
+      }
+    },
+    {
+      "name": "fig06_integer_reversal",
+      "semantic_name": "cost_boundary_counterexample",
+      "files": {
+        "pdf": {
+          "name": "fig06_integer_reversal.pdf",
+          "bytes": 24122,
+          "sha256": "3d9b4713d48a5cf6d721fa0fcaec3fd8a273d3df3b19142986dd68d3ed85c097"
+        },
+        "svg": {
+          "name": "fig06_integer_reversal.svg",
+          "bytes": 69479,
+          "sha256": "d1d8d6ac84c45c0971ed0df5a3fcb15a8f2cdf8844b2012ece2595aa51a43fca"
+        },
+        "png": {
+          "name": "fig06_integer_reversal.png",
+          "bytes": 99648,
+          "sha256": "0cb454d89b0c4bd9aab516a0db1480b4b51ec2851cacf7556168e6c026057fc5"
+        }
+      },
+      "size_inches_before_tight_crop": [
+        6.4,
+        3.8
+      ],
+      "caption_zh": "预定case151→150：c1从2降至1，两个精确整数端点均为严格纯均衡。连续候选违反最低内容要求，不能将该反例称为对连续内点定理的推翻。",
+      "source_names": [
+        "weighted_integer_results.json"
+      ],
+      "plotted_values": {
+        "case_ids": [
+          151,
+          150
+        ],
+        "conditions": [
+          {
+            "case_id": 151,
+            "family": "heterogeneous",
+            "R": 12.0,
+            "alpha": 0.5,
+            "ratio": 1.0,
+            "tau": 0.5,
+            "c": [
+              2.0,
+              0.5
+            ],
+            "theta": [
+              2.0,
+              1.0
+            ]
+          },
+          {
+            "case_id": 150,
+            "family": "heterogeneous",
+            "R": 12.0,
+            "alpha": 0.5,
+            "ratio": 1.0,
+            "tau": 0.5,
+            "c": [
+              1.0,
+              0.5
+            ],
+            "theta": [
+              2.0,
+              1.0
+            ]
+          }
+        ],
+        "c1": [
+          2.0,
+          1.0
+        ],
+        "continuous_k": [
+          3.0,
+          2.911688245431422
+        ],
+        "finite_k1": [
+          1,
+          2
+        ],
+        "finite_k2": [
+          3,
+          3
+        ],
+        "strict_margins": [
+          [
+            0.44285714285714395,
+            0.1327767502175501
+          ],
+          [
+            0.35714285714285676,
+            0.11690858421277373
+          ]
+        ]
+      }
+    }
+  ]
+}

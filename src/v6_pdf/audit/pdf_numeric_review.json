@@ -1,0 +1,366 @@
+{
+  "checked_utc": "2026-11-05T04:02:17.859890+00:00",
+  "pdf_path": "/Users/shaoshitong/Documents/Codex/2026-11-04/cha-k/outputs/AI_CREATOR_GAME_RESEARCH_ZH.pdf",
+  "pdf_sha256": "b57742f4d698a83657d295f0924704b5e2e86761a94521db4f8abf4ad5d5b860",
+  "pdf_bytes": 775220,
+  "page_count": 14,
+  "source_pdf_unchanged_during_review": true,
+  "numerical_status": "PASS",
+  "delivery_status": "PASS",
+  "statistics_rerun": false,
+  "source_or_pdf_modified": false,
+  "methods": [
+    "pypdf layout extraction of all14 pages",
+    "fitz independent text confirmation on math pages",
+    "visual inspection of rendered final03-final11",
+    "read-only figure_manifest/source-to-audit scalar checks",
+    "Final PDF pypdf extraction all14 pages; final accepted03/08/10/11 visual confirmation; unchanged scalar token checks on pages4-7"
+  ],
+  "visual_pages": [
+    3,
+    8,
+    10,
+    11
+  ],
+  "checks": [
+    {
+      "id": "all_page_text",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "status": "PASS",
+      "finding": "pypdf extracted 14 pages; fitz independently confirms relevant formula glyphs. All headline counts, windows and reported scalar losses match saved audits."
+    },
+    {
+      "id": "quantity_CI_assignment",
+      "page": 4,
+      "figure": 1,
+      "status": "PASS",
+      "model": "A_account_transfer",
+      "reference": "A_account_transfer_linear_quantity",
+      "estimate": -0.005793831035135998,
+      "CI95": [
+        -0.02246771969712205,
+        0.013109595909898379
+      ],
+      "finding": "Table and right-panel second row use comparisons[1], not comparisons[0] or an absolute-model interval. Quantity CI is correctly assigned."
+    },
+    {
+      "id": "cross_work_main_CI",
+      "pages": [
+        4,
+        5
+      ],
+      "status": "PASS",
+      "finding": "KuaiRand transfer-content delta -.03653 CI[-.09682,+.02490], richer B own-item difference -1.06050 CI[-1.23757,-.87181], KuaiRec secondary origin CI[-.16179,+.01002] correctly labeled; 0.061 main rank and 73.19% R1 weight preserved."
+    },
+    {
+      "id": "concentration",
+      "page": 5,
+      "figure": 2,
+      "status": "PASS",
+      "finding": "121/557 of 678 exposed accounts, top10 16.81%, drop5 scoring-only delta +.01335 correct; explicitly no refit/renormalization or market counterfactual."
+    },
+    {
+      "id": "new_work_models",
+      "page": 6,
+      "figure": 3,
+      "status": "PASS",
+      "plotted_values": {
+        "pooled_losses": {
+          "duration_base": 4.728344803247798,
+          "history_H": 4.706097347221078,
+          "catalogue_stock_Q": 4.502513699386883,
+          "stock_flow_QF": 4.483139667245528,
+          "history_stock_flow_HQF": 4.548341496029581
+        },
+        "origins": [
+          "R1",
+          "R2",
+          "R3",
+          "R4"
+        ],
+        "origin_HQF_minus_H": [
+          -0.08969450983003657,
+          -0.07972510171404146,
+          -0.09072472317670144,
+          -0.4675299574375398
+        ]
+      },
+      "finding": "Printed six-model table correct; five plotted models match audit exactly. Origin deltas correctly ordered R1..R4. Overall -.15776 and origin CI[-.34388,-.08252] correct; QF beats HQF stated."
+    },
+    {
+      "id": "group_decomposition",
+      "page": 7,
+      "figure": 4,
+      "status": "PASS",
+      "plotted_values": {
+        "predicted_mass": {
+          "history_H": 0.24533829872449728,
+          "catalogue_stock_Q": 0.4115326002570474,
+          "stock_flow_QF": 0.43779332169954044,
+          "history_stock_flow_HQF": 0.40476284150184233
+        },
+        "observed_seen_mass": 0.5511329640238835,
+        "decomposition_HQF_minus_H": {
+          "between_group": -0.161595401361466,
+          "within_group": 0.0038395501699683976,
+          "total": -0.1577558511914976,
+          "identity_error": 0.0
+        },
+        "seen_test_works": 795,
+        "unseen_test_works": 3520
+      },
+      "finding": "All model seen-group masses and identity decomposition match saved metrics. No CI fabricated for decomposition. Seen/unseen not registration, history absent for262 seen works, candidates125vs5, natural day and sample selection qualified."
+    },
+    {
+      "id": "k1_alpha_domains",
+      "pages": [
+        9,
+        10
+      ],
+      "status": "PASS",
+      "finding": "Continuous derivation explicitly 0<alpha<1 and 0<r<=1; alpha=1 separately k=1, eta not used. Fixed-k>=2 boundary separated from k=1 n>=1 and n**alpha. Formula branches and theta multiplication correct apart from function-name glyph issue MATH02."
+    },
+    {
+      "id": "integer_counts_scopes",
+      "page": 11,
+      "status": "PASS",
+      "finding": "176 parameters=144+32;175/1 pure;19 containing single-account equilibrium, not necessarily unique;56 implementable candidates all included. Text does not turn finite grid into full-domain existence or monotonicity theorem."
+    },
+    {
+      "id": "strict_cost_reversal",
+      "page": 11,
+      "figure": 6,
+      "status": "PASS",
+      "plotted_values": {
+        "case_ids": [
+          151,
+          150
+        ],
+        "conditions": [
+          {
+            "case_id": 151,
+            "family": "heterogeneous",
+            "R": 12.0,
+            "alpha": 0.5,
+            "ratio": 1.0,
+            "tau": 0.5,
+            "c": [
+              2.0,
+              0.5
+            ],
+            "theta": [
+              2.0,
+              1.0
+            ]
+          },
+          {
+            "case_id": 150,
+            "family": "heterogeneous",
+            "R": 12.0,
+            "alpha": 0.5,
+            "ratio": 1.0,
+            "tau": 0.5,
+            "c": [
+              1.0,
+              0.5
+            ],
+            "theta": [
+              2.0,
+              1.0
+            ]
+          }
+        ],
+        "c1": [
+          2.0,
+          1.0
+        ],
+        "continuous_k": [
+          3.0,
+          2.911688245431422
+        ],
+        "finite_k1": [
+          1,
+          2
+        ],
+        "finite_k2": [
+          3,
+          3
+        ],
+        "strict_margins": [
+          [
+            0.44285714285714395,
+            0.1327767502175501
+          ],
+          [
+            0.35714285714285676,
+            0.11690858421277373
+          ]
+        ]
+      },
+      "finding": "Cases151->150, c1 2->1, relaxed k3->2.911688, finite k1 1->2/k2 3->3. Both finite endpoints strict, relaxed candidates violate minimum-content boundary; no claim of refuting unconstrained derivation."
+    },
+    {
+      "id": "source_and_identification_boundaries",
+      "pages": [
+        3,
+        6,
+        7,
+        8,
+        9,
+        12,
+        13,
+        14
+      ],
+      "status": "PASS",
+      "finding": "Same-platform historical datasets, exposure weights not independent sample size/quality, future-presence selection for old KuaiRec, selected first-day row pool, no target feedback features, no owner/registration/AI cost/causal policy identification retained."
+    }
+  ],
+  "issues": [],
+  "must_fix_count": 0,
+  "minor_or_clarity_notes": 0,
+  "summary_zh": "最终14页PDF数值与范围核验PASS：统计页4–7全部数值token与已核草稿相同；p8 lr字母、p10函数上横线、p3括号均已修正；case12全参数和case148独立条件均明确。原critical全部关闭，未重跑统计或修改源/PDF。",
+  "previous_draft_review": {
+    "pdf_path": "/Users/shaoshitong/Documents/Codex/2026-11-04/cha-k/work/pdf-v5/tex/final-draft.pdf",
+    "pdf_sha256": "7920975af60a56a1583b4b3acc5b372bd67ea8e61f0d9599ef3daa9029e97260",
+    "checked_utc": "2026-11-05T03:59:20.028034+00:00",
+    "delivery_status": "REQUIRES_FORMULA_RENDERING_FIXES",
+    "issues": [
+      {
+        "id": "MATH01",
+        "severity": "must_fix_before_delivery",
+        "page": 8,
+        "source": "work/pdf-v5/tex/report.typ:173",
+        "observed": "PDF prints theta_i followed by literal letters lr before the square bracket in S_i. Both pypdf/fitz and final-08.png confirm this.",
+        "expected": "S_i = theta_i [ x_iH^alpha + r sum_{a=1}^{k_i-1} x_ia^alpha ], with bracket sizing markup not printed as variables.",
+        "suggestion": "Use valid bracket sizing syntax or plain square brackets; ensure lr is not emitted."
+      },
+      {
+        "id": "MATH02",
+        "severity": "must_fix_before_delivery",
+        "page": 10,
+        "source": "work/pdf-v5/tex/report.typ:224",
+        "observed": "Left-hand function name prints |(S)(n,k), not S with an overbar; pypdf/fitz and final-10.png confirm.",
+        "expected": "An unambiguous function label such as overbar S(n,k), or plain S_phys(n,k), with existing correct branches retained.",
+        "suggestion": "Use the renderer-supported accent/math function or rename to an unambiguous plain subscripted function."
+      },
+      {
+        "id": "NOTE01",
+        "severity": "minor_cleanup",
+        "page": 3,
+        "observed": "Stray closing parenthesis ) appears below cross-work flow diagram.",
+        "suggestion": "Remove stray layout syntax from visible text."
+      },
+      {
+        "id": "NOTE02",
+        "severity": "clarity_recommended",
+        "page": 10,
+        "figure": 5,
+        "observed": "Printed caption gives general k/alpha/eta domain but omits concrete case12 values used by boundary and equilibrium markers.",
+        "expected_case12": {
+          "R": 12,
+          "alpha": 0.25,
+          "r": 0.5,
+          "tau": 0.5,
+          "c": [
+            0.25,
+            0.25
+          ],
+          "theta": [
+            1,
+            1
+          ],
+          "eta": 0.3968502629920499
+        },
+        "suggestion": "Add case12 parameter line, especially alpha=.25,r=.5; clarify continuous point is relaxation, finite marker is strict integer equilibrium. Manifest already correct."
+      },
+      {
+        "id": "NOTE03",
+        "severity": "clarity_recommended",
+        "page": 11,
+        "observed": "No-pure callout mentions case148 and regret but not its c1=.25; nearby figure instead uses c1 2->1.",
+        "expected_case148": {
+          "R": 12,
+          "alpha": 0.5,
+          "r": 1,
+          "tau": 0.5,
+          "theta": [
+            2,
+            1
+          ],
+          "c": [
+            0.25,
+            0.5
+          ],
+          "minimum_maximum_unilateral_gain": 0.0097249592048545,
+          "tolerance": 1e-10
+        },
+        "suggestion": "Add c1=.25 (other listed model parameters unchanged), so no-pure condition cannot be confused with figure6 endpoints."
+      }
+    ]
+  },
+  "final_acceptance": true,
+  "prior_draft_visual_pages": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "numeric_tokens_unchanged_on_statistical_pages": [
+    4,
+    5,
+    6,
+    7
+  ],
+  "resolution_checks": [
+    {
+      "id": "MATH01",
+      "page": 8,
+      "status": "RESOLVED",
+      "finding": "Score equation now has theta_i times correctly sized brackets, no literal lr; visually confirmed accepted-08.png."
+    },
+    {
+      "id": "MATH02",
+      "page": 10,
+      "status": "RESOLVED",
+      "finding": "S overbar now renders correctly, branch formulas unchanged; visually confirmed accepted-10.png."
+    },
+    {
+      "id": "NOTE01",
+      "page": 3,
+      "status": "RESOLVED",
+      "finding": "Stray closing parenthesis below flow removed; accepted-03.png and extracted text agree."
+    },
+    {
+      "id": "NOTE02",
+      "page": 10,
+      "status": "RESOLVED",
+      "finding": "Figure5 now states case12 R12,alpha.25,r.5,tau.5,c.25,theta1=theta2=1; numerical illustration remains correct."
+    },
+    {
+      "id": "NOTE03",
+      "page": 11,
+      "status": "RESOLVED",
+      "finding": "No-pure case148 explicitly c1=.25,c2=.5, other parameters same, not figure6 cost-path endpoint; accepted-11.png confirms."
+    }
+  ]
+}

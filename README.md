@@ -73,3 +73,10 @@ conditions with minimum-content constraints. Shared history gains are weak and
 concentrated; first-day quantity features mainly correct seen/unseen group mass.
 Cold-start capital and AI cost effects remain unidentified. The Chinese main
 report, separate analyses, negative results and AI-based review are in `docs/V5_*`.
+
+## 中文图文编译版
+
+`docs/AI_CREATOR_GAME_RESEARCH_ZH.pdf` 将V5结果整理为14页A4中文报告，含六张矢量图、
+公式推导、整数边界、识别限制与参考文献。排版/绘图源码和真实制作回执位于
+`src/v6_pdf/`，可使用已安装Typst重新编译。独立数值/视觉复核及确定性重编译通过；
+本次只制作文档，没有重新估计V5统计结果。

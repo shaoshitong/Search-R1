@@ -1,0 +1,1336 @@
+{
+  "checked_utc": "2026-11-05T03:45:38.892217+00:00",
+  "planning_date_Asia_Shanghai": "2026-11-05",
+  "status": "PASS_WITH_REQUIRED_SCOPE_NOTES",
+  "no_blocking_numeric_mismatch_found_in_source_report": true,
+  "analysis_rerun": false,
+  "downloads_or_remote_calls": false,
+  "scope": "Read-only editorial verification; generated only editorial files. Saved-score arithmetic reconstruction allowed, no model refit or new bootstrap.",
+  "source_files": {
+    "outputs/V5_RESEARCH_REPORT_ZH.md": {
+      "bytes": 17256,
+      "sha256": "0bb5136947e9b27c9b44152bf2f6b00e9f5b1c922d232b6dc2933888a1265335"
+    },
+    "outputs/V5_KUAIRAND_VALIDATION.md": {
+      "bytes": 7892,
+      "sha256": "f0db2dc9f59932aa258cc0bd7ce72d385ee165f2bd62ffd8a441cd232ce10cd2"
+    },
+    "outputs/V5_KUAIREC_VALIDATION.md": {
+      "bytes": 8744,
+      "sha256": "8522acf015cbc8057b91e94d29052304f60703c796e13be65897d0b020ef8e34"
+    },
+    "outputs/V5_KUAIREC_NEW_UPLOAD_SUPPLEMENT.md": {
+      "bytes": 10055,
+      "sha256": "ab6728911f251f355dd97de141bd214820276d9e71ebc4a770fc57fa2a5c6ad1"
+    },
+    "outputs/V5_THEORY_VALIDATION.md": {
+      "bytes": 9555,
+      "sha256": "5cbe674ac14fab0943bfcecb5bc2d0ed9e112dcbf3e38a20064cc51e14625a7c"
+    },
+    "outputs/V5_AUDIT/kuairand_cross_item_summary.json": {
+      "bytes": 9777,
+      "sha256": "b93c3f235a68caba1d3dc90534fa4661531dba52a5e9d5db35df66b838224765"
+    },
+    "outputs/V5_AUDIT/kuairand_diagnostics_and_acceptance.json": {
+      "bytes": 2714,
+      "sha256": "948bd94e28672c21c3d298424ee71943b7830d43444f42f940015009a4d1de01"
+    },
+    "outputs/V5_AUDIT/kuairec_cross_work_transfer.json": {
+      "bytes": 36096,
+      "sha256": "c8416e8f4307bace938a472928dd53574ddb8535f37761ed55a05af4c892ba32"
+    },
+    "outputs/V5_AUDIT/kuairec_new_upload_first_day.json": {
+      "bytes": 69296,
+      "sha256": "7380d2b523802dcf9be139264c278cddbd494e794553715a629127fedea98614"
+    },
+    "outputs/V5_AUDIT/kuairec_new_upload_daily_metrics.csv": {
+      "bytes": 47757,
+      "sha256": "d37089571c614740f1b5d7f57aa51fcdf22df027cf3deb77f8992a4bfbab518e"
+    },
+    "outputs/V5_AUDIT/weighted_integer_results.json": {
+      "bytes": 492112,
+      "sha256": "ceccdebd5cf305841622922166898df1f2c26f4c67d8fd0a0b520b51b17c3935"
+    },
+    "outputs/V5_AUDIT/weighted_integer_comparisons.json": {
+      "bytes": 114001,
+      "sha256": "e4f5fcaad3c1894036ff15d2a5af4760d221d3b740e26b5878c798d6e80e0b18"
+    },
+    "outputs/V5_AUDIT/weighted_integer_verification.json": {
+      "bytes": 664,
+      "sha256": "202cce962b2b635e964cfe824bd0d15458314f23c1b25569c2c37071445339d6"
+    }
+  },
+  "figure_units": [
+    {
+      "id": 1,
+      "kind": "table",
+      "title": "三个预测任务，三个不同分母",
+      "status": "verified",
+      "data": {
+        "kuairand": {
+          "pool_videos": 7583,
+          "eligible_videos": 1922,
+          "multi_item_authors": 849,
+          "split_seeds": 10,
+          "directions": 2,
+          "origins": 3,
+          "unique_test_exposures": 25559,
+          "exposure_evaluations_including_repeated_seed_predictions": 255590
+        },
+        "kuairec_old": {
+          "common_old_items": 925,
+          "common_accounts": 867,
+          "matched_multi_item_accounts": 46,
+          "matched_items": 104,
+          "A_items": 56,
+          "B_items": 48,
+          "inventory_strata": [
+            {
+              "A_items": 1,
+              "B_items": 1,
+              "accounts": 36
+            },
+            {
+              "A_items": 2,
+              "B_items": 1,
+              "accounts": 8
+            },
+            {
+              "A_items": 2,
+              "B_items": 2,
+              "accounts": 2
+            }
+          ],
+          "permutable_accounts": 46,
+          "future_row_presence_used_for_selection": true,
+          "split_assignments_sha256": "a2fac16ce6ae42b039f60d0467b8bdcc0916f57471afa1f06aa25a3692139d69",
+          "identity_permutations_sha256": "ca206e6dd639ca1f0b059dd6d58a85682cc71ac2c43c8693f1b9a71ac7dfbde3"
+        },
+        "kuairec_old_test_exposures": 43827570,
+        "kuairec_new_works": 4315,
+        "seen_works": 795,
+        "unseen_works": 3520,
+        "new_test_exposure_weight": 1869444356.0
+      },
+      "caveats": [
+        "Both datasets are Kuaishou, not independent platforms or AI environments.",
+        "Exposure weight is not independent sample size.",
+        "Old KuaiRec cohort uses future-row presence."
+      ]
+    },
+    {
+      "id": 2,
+      "kind": "two_panel_plot",
+      "title": "KuaiRand：跨作品改善小且集中",
+      "status": "verified",
+      "model_values": {
+        "linear_demand_age": 6.5546126454861975,
+        "source_fitted_quantity_demand_age": 6.534427459208917,
+        "A_account_transfer": 6.497898617495722,
+        "A_account_transfer_linear_quantity": 6.503692448530859,
+        "B_self_account_memory": 5.436150098319456,
+        "B_self_item_memory": 5.437401140460859
+      },
+      "comparisons": [
+        {
+          "model": "A_account_transfer",
+          "reference": "source_fitted_quantity_demand_age",
+          "test_delta_author_loss": -0.036528841713194635,
+          "conditional_account_bootstrap_95_interval": [
+            -0.09682136446700955,
+            0.02489542277923223
+          ]
+        },
+        {
+          "model": "A_account_transfer",
+          "reference": "A_account_transfer_linear_quantity",
+          "test_delta_author_loss": -0.005793831035135998,
+          "conditional_account_bootstrap_95_interval": [
+            -0.02246771969712205,
+            0.013109595909898379
+          ]
+        },
+        {
+          "model": "B_self_item_memory",
+          "reference": "A_account_transfer",
+          "test_delta_author_loss": -1.0604974770348632,
+          "conditional_account_bootstrap_95_interval": [
+            -1.2375734454906262,
+            -0.871808372927798
+          ]
+        }
+      ],
+      "influence": {
+        "post_hoc": true,
+        "refitting_performed": false,
+        "accounts_with_test_exposure": 678,
+        "accounts_with_negative_paired_loss_numerator": 121,
+        "accounts_with_positive_paired_loss_numerator": 557,
+        "top_10_account_exposure_share": 0.16808169333698503,
+        "leave_one_account_out_delta_range": [
+          -0.041995620578297733,
+          -0.01921011739896145
+        ],
+        "drop_highest_exposure_accounts": {
+          "1": -0.01921011739896143,
+          "5": 0.01334689593964783,
+          "10": 0.013423042991571085
+        },
+        "daily_paired_loss_differences": {
+          "20220429": -0.05412008266003603,
+          "20220430": -0.02742881759395577,
+          "20220501": -0.04283341693585319,
+          "20220502": -0.03710266358686923,
+          "20220503": -0.04179073458023409,
+          "20220504": -0.04471327869302692,
+          "20220505": -0.04596049824417611,
+          "20220506": 5.383483051800445e-05,
+          "20220507": -0.030458998665887967
+        },
+        "interpretation": "Fixed predictions only. These diagnostics do not include model refitting or identify causal effects."
+      },
+      "negative_control": {
+        "permutations": 200,
+        "mean_test_loss": 6.532154529553152,
+        "test_loss_quantiles": {
+          "0": 6.526590009654276,
+          "0.025": 6.528355653507203,
+          "0.5": 6.532429545302355,
+          "0.975": 6.534221607037398,
+          "1": 6.5350150219104375
+        },
+        "correct_mapping_loss": 6.497898617495722,
+        "fraction_null_loss_at_most_correct": 0.0,
+        "interpretation": "Matched observational negative controls; tail fraction is not a causal randomization p-value."
+      },
+      "ci_scope": "Fixed-prediction whole-account bootstrap. Not refit, time/viewer dependence, selection or causal uncertainty.",
+      "do_not": "Do not use difference intervals as absolute-loss intervals or observational tail fraction as causal p-value."
+    },
+    {
+      "id": 3,
+      "kind": "origin_lines",
+      "title": "KuaiRec旧作品：次级改善不稳定",
+      "status": "verified",
+      "rows": [
+        {
+          "origin": "R1",
+          "exposure_weight": 32077747,
+          "models": {
+            "A_transfer_history": 3.7778939768069004,
+            "uniform_accounts": 3.8286413964890955,
+            "linear_quantity_B": 3.8458286377364446,
+            "free_quantity_B": 3.849339868142072,
+            "B_own_history": 3.469307251131115,
+            "quantity_demand_age_B": 3.721796420003713,
+            "A_fitted_content_base_on_B": 3.7018620401957962,
+            "A_residual_transfer_secondary": 3.53416280398205
+          },
+          "raw_identity_reference_rank": 0.032,
+          "secondary_identity_reference_rank": 0.001
+        },
+        {
+          "origin": "R2",
+          "exposure_weight": 5309225,
+          "models": {
+            "A_transfer_history": 3.9034853495916777,
+            "uniform_accounts": 3.828641396489095,
+            "linear_quantity_B": 3.8001649871995467,
+            "free_quantity_B": 3.82662167862275,
+            "B_own_history": 2.9826874183297387,
+            "quantity_demand_age_B": 3.7709644027487172,
+            "A_fitted_content_base_on_B": 3.8082519578956786,
+            "A_residual_transfer_secondary": 3.77646304457077
+          },
+          "raw_identity_reference_rank": 0.439,
+          "secondary_identity_reference_rank": 0.134
+        },
+        {
+          "origin": "R3",
+          "exposure_weight": 3255764,
+          "models": {
+            "A_transfer_history": 4.009175996829707,
+            "uniform_accounts": 3.8286413964890955,
+            "linear_quantity_B": 3.7907260272143195,
+            "free_quantity_B": 3.7880670189771606,
+            "B_own_history": 2.845549180894244,
+            "quantity_demand_age_B": 3.5650312293765,
+            "A_fitted_content_base_on_B": 3.6197165964993205,
+            "A_residual_transfer_secondary": 3.6325659468919382
+          },
+          "raw_identity_reference_rank": 0.502,
+          "secondary_identity_reference_rank": 0.469
+        },
+        {
+          "origin": "R4",
+          "exposure_weight": 3184834,
+          "models": {
+            "A_transfer_history": 3.8586332451013643,
+            "uniform_accounts": 3.828641396489095,
+            "linear_quantity_B": 3.7916766712112158,
+            "free_quantity_B": 3.785855871509715,
+            "B_own_history": 2.6042757861978902,
+            "quantity_demand_age_B": 3.231829895329479,
+            "A_fitted_content_base_on_B": 3.3274589020469225,
+            "A_residual_transfer_secondary": 3.3345836511975877
+          },
+          "raw_identity_reference_rank": 0.243,
+          "secondary_identity_reference_rank": 0.447
+        }
+      ],
+      "pooled": {
+        "A_transfer_history": 3.8161560501459,
+        "uniform_accounts": 3.8286413964890955,
+        "linear_quantity_B": 3.832268572352438,
+        "free_quantity_B": 3.8374228965378996,
+        "B_own_history": 3.3011627504850445,
+        "quantity_demand_age_B": 3.680502580816366,
+        "A_fitted_content_base_on_B": 3.6814408758092223,
+        "A_residual_transfer_secondary": 3.556321856686395
+      },
+      "comparisons": [
+        {
+          "model": "A_transfer_history",
+          "baseline": "uniform_accounts",
+          "pooled_test_delta_log_loss": -0.012485346343195496,
+          "paired_date_block_bootstrap_95": [
+            -0.07201700135478839,
+            0.07469097534651749
+          ],
+          "origin_block_bootstrap_95": [
+            -0.04418077931546125,
+            0.14331543184285273
+          ],
+          "interpretation": "Negative means lower loss; temporal conditional uncertainty, not causal identification."
+        },
+        {
+          "model": "A_transfer_history",
+          "baseline": "linear_quantity_B",
+          "pooled_test_delta_log_loss": -0.016112522206538447,
+          "paired_date_block_bootstrap_95": [
+            -0.07326437254749334,
+            0.07247458848063083
+          ],
+          "origin_block_bootstrap_95": [
+            -0.05898046189330056,
+            0.17790685286568364
+          ],
+          "interpretation": "Negative means lower loss; temporal conditional uncertainty, not causal identification."
+        },
+        {
+          "model": "A_transfer_history",
+          "baseline": "B_own_history",
+          "pooled_test_delta_log_loss": 0.5149932996608553,
+          "paired_date_block_bootstrap_95": [
+            0.4134665558494126,
+            0.7218891297093161
+          ],
+          "origin_block_bootstrap_95": [
+            0.338884262490781,
+            1.20849253128773
+          ],
+          "interpretation": "Negative means lower loss; temporal conditional uncertainty, not causal identification."
+        },
+        {
+          "model": "A_residual_transfer_secondary",
+          "baseline": "A_fitted_content_base_on_B",
+          "pooled_test_delta_log_loss": -0.1251190191228269,
+          "paired_date_block_bootstrap_95": [
+            -0.21800880053888377,
+            -0.01649068001625859
+          ],
+          "origin_block_bootstrap_95": [
+            -0.16179080855861072,
+            0.010018572152489745
+          ],
+          "interpretation": "Negative means lower loss; temporal conditional uncertainty, not causal identification."
+        }
+      ],
+      "R1_weight": 0.7319079520037274,
+      "raw_pooled_rank": 0.061,
+      "secondary_pooled_rank": 0.005,
+      "do_not": "Do not replace the unstable primary with favorable pooled secondary. B own-history has richer information."
+    },
+    {
+      "id": 4,
+      "kind": "loss_and_increment_plot",
+      "title": "新作首日：目录变量有额外预测信息",
+      "status": "verified",
+      "pooled_loss": {
+        "uniform_videos": 4.912863214598382,
+        "duration_base": 4.728344803247798,
+        "catalogue_stock_Q": 4.502513699386883,
+        "publication_flow_F": 4.623619257452713,
+        "stock_flow_QF": 4.483139667245528,
+        "history_H": 4.706097347221078,
+        "history_stock_flow_HQF": 4.548341496029581
+      },
+      "HQF_minus_H_by_origin": [
+        {
+          "origin": "R1",
+          "test_works": 1209,
+          "delta": -0.08969450983003657
+        },
+        {
+          "origin": "R2",
+          "test_works": 735,
+          "delta": -0.07972510171404146
+        },
+        {
+          "origin": "R3",
+          "test_works": 908,
+          "delta": -0.09072472317670144
+        },
+        {
+          "origin": "R4",
+          "test_works": 1463,
+          "delta": -0.4675299574375398
+        }
+      ],
+      "comparisons": [
+        {
+          "model": "history_stock_flow_HQF",
+          "baseline": "history_H",
+          "evaluation": "all",
+          "test_delta_log_loss": -0.15775585119149785,
+          "paired_date_bootstrap_95": [
+            -0.2513096892695356,
+            -0.07833897161382851
+          ],
+          "origin_block_bootstrap_95": [
+            -0.3438801082723566,
+            -0.08252214427615333
+          ]
+        },
+        {
+          "model": "history_stock_flow_HQF",
+          "baseline": "history_H",
+          "evaluation": "seen_joint",
+          "test_delta_log_loss": -0.4960238293248226,
+          "paired_date_bootstrap_95": [
+            -0.6106658513110726,
+            -0.38541394800439716
+          ],
+          "origin_block_bootstrap_95": [
+            -0.6681371818886439,
+            -0.30119160151833335
+          ]
+        },
+        {
+          "model": "history_stock_flow_HQF",
+          "baseline": "history_H",
+          "evaluation": "unseen_joint",
+          "test_delta_log_loss": 0.25758013581759276,
+          "paired_date_bootstrap_95": [
+            0.2002438250385563,
+            0.32698674264495853
+          ],
+          "origin_block_bootstrap_95": [
+            0.14334551447444427,
+            0.38330581833814525
+          ]
+        },
+        {
+          "model": "history_stock_flow_HQF",
+          "baseline": "history_H",
+          "evaluation": "seen_conditional",
+          "test_delta_log_loss": 0.006713931050351327,
+          "paired_date_bootstrap_95": [
+            -0.0620676392272584,
+            0.0777026850620378
+          ],
+          "origin_block_bootstrap_95": [
+            -0.03248673344963824,
+            0.058040621399375276
+          ]
+        },
+        {
+          "model": "history_stock_flow_HQF",
+          "baseline": "history_H",
+          "evaluation": "unseen_conditional",
+          "test_delta_log_loss": 0.0003102955636591366,
+          "paired_date_bootstrap_95": [
+            -8.637931765437563e-05,
+            0.0008470827323359701
+          ],
+          "origin_block_bootstrap_95": [
+            -0.0001345781151776195,
+            0.0010932689272962995
+          ]
+        },
+        {
+          "model": "history_H",
+          "baseline": "duration_base",
+          "evaluation": "all",
+          "test_delta_log_loss": -0.022247456026718945,
+          "paired_date_bootstrap_95": [
+            -0.0650693280566705,
+            0.015760055475702726
+          ],
+          "origin_block_bootstrap_95": [
+            -0.04964973116624981,
+            0.0
+          ]
+        },
+        {
+          "model": "history_H",
+          "baseline": "duration_base",
+          "evaluation": "seen_joint",
+          "test_delta_log_loss": -0.055369797980389164,
+          "paired_date_bootstrap_95": [
+            -0.12470619702569123,
+            0.01596333290408957
+          ],
+          "origin_block_bootstrap_95": [
+            -0.11286041344603127,
+            0.0
+          ]
+        },
+        {
+          "model": "history_H",
+          "baseline": "duration_base",
+          "evaluation": "unseen_joint",
+          "test_delta_log_loss": 0.018421189770898464,
+          "paired_date_bootstrap_95": [
+            0.007108439503705269,
+            0.03395501910739961
+          ],
+          "origin_block_bootstrap_95": [
+            0.0,
+            0.04653160395609772
+          ]
+        },
+        {
+          "model": "history_H",
+          "baseline": "duration_base",
+          "evaluation": "seen_conditional",
+          "test_delta_log_loss": 0.007310842239700414,
+          "paired_date_bootstrap_95": [
+            -0.03533573198844049,
+            0.055899548243345774
+          ],
+          "origin_block_bootstrap_95": [
+            0.0,
+            0.015608419649527043
+          ]
+        },
+        {
+          "model": "history_H",
+          "baseline": "duration_base",
+          "evaluation": "unseen_conditional",
+          "test_delta_log_loss": 0.0,
+          "paired_date_bootstrap_95": [
+            0.0,
+            0.0
+          ],
+          "origin_block_bootstrap_95": [
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "model": "stock_flow_QF",
+          "baseline": "duration_base",
+          "evaluation": "all",
+          "test_delta_log_loss": -0.24520513600227076,
+          "paired_date_bootstrap_95": [
+            -0.4234826605112349,
+            -0.10655402509365175
+          ],
+          "origin_block_bootstrap_95": [
+            -0.6170209574036393,
+            -0.09015318079704787
+          ]
+        },
+        {
+          "model": "stock_flow_QF",
+          "baseline": "duration_base",
+          "evaluation": "seen_joint",
+          "test_delta_log_loss": -0.7006653612073027,
+          "paired_date_bootstrap_95": [
+            -0.9396940956492219,
+            -0.48804786579276266
+          ],
+          "origin_block_bootstrap_95": [
+            -1.145011236251599,
+            -0.34644420718623964
+          ]
+        },
+        {
+          "model": "stock_flow_QF",
+          "baseline": "duration_base",
+          "evaluation": "unseen_joint",
+          "test_delta_log_loss": 0.3140231516494674,
+          "paired_date_bootstrap_95": [
+            0.24144750147283697,
+            0.4051642586648213
+          ],
+          "origin_block_bootstrap_95": [
+            0.1617884049054432,
+            0.5258798915353972
+          ]
+        },
+        {
+          "model": "stock_flow_QF",
+          "baseline": "duration_base",
+          "evaluation": "seen_conditional",
+          "test_delta_log_loss": -0.027871705913092848,
+          "paired_date_bootstrap_95": [
+            -0.12365345496776928,
+            0.08011409624136556
+          ],
+          "origin_block_bootstrap_95": [
+            -0.12450808178333948,
+            0.05755696698087261
+          ]
+        },
+        {
+          "model": "stock_flow_QF",
+          "baseline": "duration_base",
+          "evaluation": "unseen_conditional",
+          "test_delta_log_loss": 0.00033139533109490747,
+          "paired_date_bootstrap_95": [
+            -6.0382211465666754e-05,
+            0.0008796682092634174
+          ],
+          "origin_block_bootstrap_95": [
+            -4.7057996463845486e-05,
+            0.0010932689272962995
+          ]
+        },
+        {
+          "model": "duration_base",
+          "baseline": "uniform_videos",
+          "evaluation": "all",
+          "test_delta_log_loss": -0.18451841135058383,
+          "paired_date_bootstrap_95": [
+            -0.24349583613934847,
+            -0.12959104289773402
+          ],
+          "origin_block_bootstrap_95": [
+            -0.24098825319374387,
+            -0.14155335540420258
+          ]
+        },
+        {
+          "model": "duration_base",
+          "baseline": "uniform_videos",
+          "evaluation": "seen_joint",
+          "test_delta_log_loss": -0.14496517792863473,
+          "paired_date_bootstrap_95": [
+            -0.20699057490041017,
+            -0.08335872428688015
+          ],
+          "origin_block_bootstrap_95": [
+            -0.1719639569150501,
+            -0.11583632638971665
+          ]
+        },
+        {
+          "model": "duration_base",
+          "baseline": "uniform_videos",
+          "evaluation": "unseen_joint",
+          "test_delta_log_loss": -0.23308310651729947,
+          "paired_date_bootstrap_95": [
+            -0.3139462873709808,
+            -0.14994710818398418
+          ],
+          "origin_block_bootstrap_95": [
+            -0.37217249525690604,
+            -0.14827913983651586
+          ]
+        },
+        {
+          "model": "duration_base",
+          "baseline": "uniform_videos",
+          "evaluation": "seen_conditional",
+          "test_delta_log_loss": -0.1026816910460904,
+          "paired_date_bootstrap_95": [
+            -0.14962280670692038,
+            -0.0563776968523686
+          ],
+          "origin_block_bootstrap_95": [
+            -0.14273244637009816,
+            -0.060372385541643765
+          ]
+        },
+        {
+          "model": "duration_base",
+          "baseline": "uniform_videos",
+          "evaluation": "unseen_conditional",
+          "test_delta_log_loss": -0.24447113672188878,
+          "paired_date_bootstrap_95": [
+            -0.32453228828911546,
+            -0.16472613223873664
+          ],
+          "origin_block_bootstrap_95": [
+            -0.3752817183745073,
+            -0.1735787664277534
+          ]
+        }
+      ],
+      "ci_scope": "Paired whole-date resampling and four-whole-origin resampling; not iid exposures or moving multi-day blocks.",
+      "candidate_counts": {
+        "HQF": 125,
+        "H": 5,
+        "QF": 25
+      },
+      "do_not": "No per-origin CIs were calculated. H is old-work exposure rate, not V3 same predictor. New work upload calendar day is not 24 hours."
+    },
+    {
+      "id": 5,
+      "kind": "mass_and_decomposition_plot",
+      "title": "新作增益主要来自组间份额校正",
+      "status": "verified",
+      "group_values": {
+        "seen": {
+          "H": {
+            "joint_exposures": 1030312409.0,
+            "observed_group_exposure_mass": 0.5511329640238835,
+            "predicted_group_exposure_mass": 0.24533829872449728,
+            "joint_pool_log_loss_contribution_per_group_exposure": 4.706143509162737,
+            "within_group_conditional_exposures": 1030312409.0,
+            "within_group_conditional_log_loss": 3.246912987975906,
+            "within_group_singleton_dates": [],
+            "within_group_singleton_exposures": 0.0
+          },
+          "HQF": {
+            "joint_exposures": 1030312409.0,
+            "observed_group_exposure_mass": 0.5511329640238835,
+            "predicted_group_exposure_mass": 0.40476284150184233,
+            "joint_pool_log_loss_contribution_per_group_exposure": 4.210119679837915,
+            "within_group_conditional_exposures": 1030312409.0,
+            "within_group_conditional_log_loss": 3.2536269190262574,
+            "within_group_singleton_dates": [],
+            "within_group_singleton_exposures": 0.0
+          }
+        },
+        "unseen": {
+          "H": {
+            "joint_exposures": 839131947.0,
+            "observed_group_exposure_mass": 0.44886703597611655,
+            "predicted_group_exposure_mass": 0.7546617012755028,
+            "joint_pool_log_loss_contribution_per_group_exposure": 4.706040668147563,
+            "within_group_conditional_exposures": 839131947.0,
+            "within_group_conditional_log_loss": 4.422838992173669,
+            "within_group_singleton_dates": [],
+            "within_group_singleton_exposures": 0.0
+          },
+          "HQF": {
+            "joint_exposures": 839131947.0,
+            "observed_group_exposure_mass": 0.44886703597611655,
+            "predicted_group_exposure_mass": 0.5952371584981577,
+            "joint_pool_log_loss_contribution_per_group_exposure": 4.9636208039651555,
+            "within_group_conditional_exposures": 839131947.0,
+            "within_group_conditional_log_loss": 4.423149287737328,
+            "within_group_singleton_dates": [],
+            "within_group_singleton_exposures": 0.0
+          }
+        }
+      },
+      "decomposition": {
+        "total_HQF_minus_H": -0.1577558511914976,
+        "between_group": -0.1615954013614658,
+        "exposure_weighted_within_group": 0.003839550169968196,
+        "identity_check_abs_error": 0.0
+      },
+      "seen_work_fraction": 0.1842410196987254,
+      "groups": {
+        "seen_works": 795,
+        "unseen_works": 3520,
+        "seen_without_old_work_history": 262,
+        "unseen_without_old_work_history": 3520
+      },
+      "ci_comparisons": [
+        {
+          "model": "history_stock_flow_HQF",
+          "baseline": "history_H",
+          "evaluation": "all",
+          "test_delta_log_loss": -0.15775585119149785,
+          "paired_date_bootstrap_95": [
+            -0.2513096892695356,
+            -0.07833897161382851
+          ],
+          "origin_block_bootstrap_95": [
+            -0.3438801082723566,
+            -0.08252214427615333
+          ]
+        },
+        {
+          "model": "history_stock_flow_HQF",
+          "baseline": "history_H",
+          "evaluation": "seen_joint",
+          "test_delta_log_loss": -0.4960238293248226,
+          "paired_date_bootstrap_95": [
+            -0.6106658513110726,
+            -0.38541394800439716
+          ],
+          "origin_block_bootstrap_95": [
+            -0.6681371818886439,
+            -0.30119160151833335
+          ]
+        },
+        {
+          "model": "history_stock_flow_HQF",
+          "baseline": "history_H",
+          "evaluation": "unseen_joint",
+          "test_delta_log_loss": 0.25758013581759276,
+          "paired_date_bootstrap_95": [
+            0.2002438250385563,
+            0.32698674264495853
+          ],
+          "origin_block_bootstrap_95": [
+            0.14334551447444427,
+            0.38330581833814525
+          ]
+        },
+        {
+          "model": "history_stock_flow_HQF",
+          "baseline": "history_H",
+          "evaluation": "seen_conditional",
+          "test_delta_log_loss": 0.006713931050351327,
+          "paired_date_bootstrap_95": [
+            -0.0620676392272584,
+            0.0777026850620378
+          ],
+          "origin_block_bootstrap_95": [
+            -0.03248673344963824,
+            0.058040621399375276
+          ]
+        },
+        {
+          "model": "history_stock_flow_HQF",
+          "baseline": "history_H",
+          "evaluation": "unseen_conditional",
+          "test_delta_log_loss": 0.0003102955636591366,
+          "paired_date_bootstrap_95": [
+            -8.637931765437563e-05,
+            0.0008470827323359701
+          ],
+          "origin_block_bootstrap_95": [
+            -0.0001345781151776195,
+            0.0010932689272962995
+          ]
+        }
+      ],
+      "derivation": "Arithmetic identity reconstructed only from saved pooled losses and conditional group losses; no model or bootstrap rerun. No CI was calculated for between/weighted-within decomposition terms.",
+      "do_not": "Do not calculate between entropy from already-averaged mass; not a causal contribution decomposition or quality measure."
+    },
+    {
+      "id": 6,
+      "kind": "formula_table",
+      "title": "最低内容的可实施边界",
+      "status": "verified_against_theory_report",
+      "domain": "fixed integer k>=2, 0<alpha<1, 0<r<=1",
+      "eta": "r**(1/(1-alpha))",
+      "interior_boundary": "n >= k-1+1/eta",
+      "binding_score_before_theta": "(n-k+1)**alpha + r*(k-1)",
+      "interior_score_before_theta": "n**alpha * (1+eta*(k-1))**(1-alpha)",
+      "special_cases": [
+        "k=1 only needs n>=1, score n**alpha",
+        "alpha=1 handled separately; no use of 1/(1-alpha)"
+      ],
+      "do_not": "Not a closed-form full constrained equilibrium. n is current production, not observed catalogue Q/F."
+    },
+    {
+      "id": 7,
+      "kind": "scope_table",
+      "title": "176条件整数审计：范围和包含关系",
+      "status": "verified",
+      "integer_summary": {
+        "conditions": 176,
+        "with_pure_equilibria": 175,
+        "no_pure_case_ids": [
+          148
+        ],
+        "continuous_split_but_finite_has_no_split_case_ids": [
+          3,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          14,
+          15,
+          39,
+          41,
+          43,
+          75,
+          153,
+          154,
+          156,
+          157,
+          158,
+          159
+        ],
+        "continuous_no_split_but_finite_has_split_case_ids": [],
+        "finite_equilibria_have_both_split_statuses_case_ids": [
+          6
+        ],
+        "continuous_has_total_content_below_accounts": 43,
+        "continuous_has_new_content_below_one": 22,
+        "profiles_enumerated": 62490740
+      },
+      "comparison_summary": {
+        "implementable_candidates": 56,
+        "implementable_candidates_missing_from_finite_NE": 0,
+        "weight_comparisons": 96,
+        "weight_strong_reversals": 0,
+        "weight_possible_reversals": 0,
+        "cost_comparisons": 24,
+        "cost_comparisons_without_both_pure_NE": 1,
+        "cost_comparisons_with_strict_direction_reversals": 2
+      },
+      "implementable_case_ids": [
+        16,
+        20,
+        24,
+        28,
+        32,
+        36,
+        37,
+        44,
+        45,
+        48,
+        49,
+        52,
+        53,
+        56,
+        57,
+        60,
+        61,
+        64,
+        65,
+        68,
+        69,
+        76,
+        80,
+        84,
+        88,
+        92,
+        96,
+        100,
+        104,
+        108,
+        109,
+        110,
+        112,
+        113,
+        114,
+        116,
+        117,
+        118,
+        120,
+        121,
+        122,
+        124,
+        125,
+        126,
+        128,
+        129,
+        130,
+        132,
+        133,
+        134,
+        136,
+        137,
+        138,
+        140,
+        141,
+        142
+      ],
+      "mixed_split_status_case_ids": [
+        6
+      ],
+      "independent_verification": {
+        "protocol_sha256": "e54b5c1a1eb82417fcebed6ac25ba1dada653dfd759e06c4cdb82f4619e21aeb",
+        "source_sha256": "8b3e99d08bc94a4343eefed8e1f2c6af348427fc801eb3088e2bdef7645e3f99",
+        "results_sha256": "ceccdebd5cf305841622922166898df1f2c26f4c67d8fd0a0b520b51b17c3935",
+        "allocation": {
+          "action_scores_checked": 336,
+          "maximum_exhaustive_composition_error": 0.0,
+          "n_upper_bound_for_independent_compositions": 7
+        },
+        "equilibria": {
+          "unilateral_actions_recomputed": 145042,
+          "maximum_positive_unilateral_gain": 0.0,
+          "maximum_payoff_recomputation_error": 1.7763568394002505e-15
+        },
+        "condition_count": 176,
+        "expected_condition_count": 176
+      },
+      "do_not": "19 is not 19 unique no-split equilibria; 56/176 is not accuracy; counts43/22 may overlap; parameter grid is not full parameter domain."
+    },
+    {
+      "id": 8,
+      "kind": "two_counterexample_cards",
+      "title": "严格方向反例与一个无纯均衡条件",
+      "status": "verified",
+      "cost_path": {
+        "before_case": 151,
+        "after_case": 150,
+        "before": {
+          "condition": {
+            "case_id": 151,
+            "family": "heterogeneous",
+            "R": 12.0,
+            "alpha": 0.5,
+            "ratio": 1.0,
+            "tau": 0.5,
+            "c": [
+              2.0,
+              0.5
+            ],
+            "theta": [
+              2.0,
+              1.0
+            ]
+          },
+          "maximum_n": [
+            7,
+            25
+          ],
+          "actions_per_player": [
+            28,
+            325
+          ],
+          "profiles_enumerated": 9100,
+          "continuous_benchmark": {
+            "n": [
+              0.75,
+              3.0
+            ],
+            "k": 3.0,
+            "shares": [
+              0.5,
+              0.5
+            ],
+            "M": 3.0,
+            "eta": 1.0,
+            "old_content": [
+              0.25,
+              1.0
+            ],
+            "new_content_per_account": [
+              0.25,
+              1.0
+            ],
+            "single_account_threshold": 1.5,
+            "split": true,
+            "physical_or_integer_violations": {
+              "total_content_below_account_count": true,
+              "old_account_content_below_one": true,
+              "new_account_content_below_one": true,
+              "noninteger_total_content_or_accounts": true,
+              "noninteger_account_allocation": true
+            }
+          },
+          "pure_count_including_player_exchange": 1,
+          "profiles_listed_up_to_exchange": false,
+          "pure_equilibria": [
+            {
+              "actions": [
+                {
+                  "n": 1,
+                  "k": 1
+                },
+                {
+                  "n": 3,
+                  "k": 3
+                }
+              ],
+              "allocation": [
+                {
+                  "old": 1,
+                  "new_accounts": 0,
+                  "new_base": 0,
+                  "new_extra": 0
+                },
+                {
+                  "old": 1,
+                  "new_accounts": 2,
+                  "new_base": 1,
+                  "new_extra": 0
+                }
+              ],
+              "payoffs": [
+                2.8000000000000007,
+                4.699999999999999
+              ],
+              "shares": [
+                0.4,
+                0.6
+              ],
+              "maximum_unilateral_gain": 0.0,
+              "difference_from_continuous": [
+                {
+                  "n": 0.25,
+                  "k": -2.0
+                },
+                {
+                  "n": 0.0,
+                  "k": 0.0
+                }
+              ],
+              "strict_margins": [
+                0.44285714285714395,
+                0.1327767502175501
+              ],
+              "strict": true,
+              "best_distinct_actions": [
+                {
+                  "n": 2,
+                  "k": 2
+                },
+                {
+                  "n": 4,
+                  "k": 3
+                }
+              ]
+            }
+          ],
+          "minimum_maximum_unilateral_gain": 0.0
+        },
+        "after": {
+          "condition": {
+            "case_id": 150,
+            "family": "heterogeneous",
+            "R": 12.0,
+            "alpha": 0.5,
+            "ratio": 1.0,
+            "tau": 0.5,
+            "c": [
+              1.0,
+              0.5
+            ],
+            "theta": [
+              2.0,
+              1.0
+            ]
+          },
+          "maximum_n": [
+            13,
+            25
+          ],
+          "actions_per_player": [
+            91,
+            325
+          ],
+          "profiles_enumerated": 29575,
+          "continuous_benchmark": {
+            "n": [
+              1.455844122715711,
+              2.911688245431422
+            ],
+            "k": 2.911688245431422,
+            "shares": [
+              0.585786437626905,
+              0.4142135623730951
+            ],
+            "M": 2.911688245431422,
+            "eta": 1.0,
+            "old_content": [
+              0.5,
+              1.0
+            ],
+            "new_content_per_account": [
+              0.5,
+              1.0
+            ],
+            "single_account_threshold": 1.455844122715711,
+            "split": true,
+            "physical_or_integer_violations": {
+              "total_content_below_account_count": true,
+              "old_account_content_below_one": true,
+              "new_account_content_below_one": true,
+              "noninteger_total_content_or_accounts": true,
+              "noninteger_account_allocation": true
+            }
+          },
+          "pure_count_including_player_exchange": 1,
+          "profiles_listed_up_to_exchange": false,
+          "pure_equilibria": [
+            {
+              "actions": [
+                {
+                  "n": 2,
+                  "k": 2
+                },
+                {
+                  "n": 3,
+                  "k": 3
+                }
+              ],
+              "allocation": [
+                {
+                  "old": 1,
+                  "new_accounts": 1,
+                  "new_base": 1,
+                  "new_extra": 0
+                },
+                {
+                  "old": 1,
+                  "new_accounts": 2,
+                  "new_base": 1,
+                  "new_extra": 0
+                }
+              ],
+              "payoffs": [
+                4.357142857142857,
+                2.6428571428571432
+              ],
+              "shares": [
+                0.5714285714285714,
+                0.4285714285714286
+              ],
+              "maximum_unilateral_gain": 0.0,
+              "difference_from_continuous": [
+                {
+                  "n": 0.5441558772842889,
+                  "k": -0.9116882454314221
+                },
+                {
+                  "n": 0.08831175456857787,
+                  "k": 0.08831175456857787
+                }
+              ],
+              "strict_margins": [
+                0.35714285714285676,
+                0.11690858421277373
+              ],
+              "strict": true,
+              "best_distinct_actions": [
+                {
+                  "n": 3,
+                  "k": 3
+                },
+                {
+                  "n": 4,
+                  "k": 3
+                }
+              ]
+            }
+          ],
+          "minimum_maximum_unilateral_gain": 0.0
+        }
+      },
+      "no_pure_case": {
+        "condition": {
+          "case_id": 148,
+          "family": "heterogeneous",
+          "R": 12.0,
+          "alpha": 0.5,
+          "ratio": 1.0,
+          "tau": 0.5,
+          "c": [
+            0.25,
+            0.5
+          ],
+          "theta": [
+            2.0,
+            1.0
+          ]
+        },
+        "maximum_n": [
+          49,
+          25
+        ],
+        "actions_per_player": [
+          1225,
+          325
+        ],
+        "profiles_enumerated": 398125,
+        "continuous_benchmark": {
+          "n": [
+            4.631433856024023,
+            2.3157169280120113
+          ],
+          "k": 2.3157169280120113,
+          "shares": [
+            0.7387961250362586,
+            0.2612038749637415
+          ],
+          "M": 2.3157169280120113,
+          "eta": 1.0,
+          "old_content": [
+            2.0,
+            1.0
+          ],
+          "new_content_per_account": [
+            2.0,
+            1.0
+          ],
+          "single_account_threshold": 1.1578584640060057,
+          "split": true,
+          "physical_or_integer_violations": {
+            "total_content_below_account_count": false,
+            "old_account_content_below_one": false,
+            "new_account_content_below_one": false,
+            "noninteger_total_content_or_accounts": true,
+            "noninteger_account_allocation": false
+          }
+        },
+        "pure_count_including_player_exchange": 0,
+        "profiles_listed_up_to_exchange": false,
+        "pure_equilibria": [],
+        "minimum_maximum_unilateral_gain": 0.0097249592048545,
+        "least_regret_profile": {
+          "actions": [
+            {
+              "n": 5,
+              "k": 2
+            },
+            {
+              "n": 2,
+              "k": 2
+            }
+          ],
+          "allocation": [
+            {
+              "old": 2,
+              "new_accounts": 1,
+              "new_base": 3,
+              "new_extra": 0
+            },
+            {
+              "old": 1,
+              "new_accounts": 1,
+              "new_base": 1,
+              "new_extra": 0
+            }
+          ],
+          "payoffs": [
+            7.355828541230249,
+            1.3941714587697511
+          ],
+          "shares": [
+            0.7588190451025207,
+            0.24118095489747926
+          ],
+          "maximum_unilateral_gain": 0.0097249592048545,
+          "difference_from_continuous": [
+            {
+              "n": 0.3685661439759773,
+              "k": -0.31571692801201134
+            },
+            {
+              "n": -0.31571692801201134,
+              "k": -0.31571692801201134
+            }
+          ]
+        }
+      },
+      "equilibrium_tolerance": 1e-10,
+      "do_not": "Case148 is not c1=2->1 endpoint. Least-regret profile is not equilibrium. No mixed equilibrium computed. Models were not calibrated by AI cost data."
+    }
+  ],
+  "global_constraints": [
+    "All predictive losses are nats; lower is better.",
+    "Negative model-minus-baseline loss means improvement.",
+    "Do not compare absolute cross entropy between different candidate pools.",
+    "Prediction memory is not causal history reward.",
+    "No owner, AI cost, alpha policy, theta-versus-H or true registration cold-start identification.",
+    "No source report or raw data changed; no git commit."
+  ],
+  "next_stage": "Audit compiled PDF extraction and captions against these values when parent supplies the PDF."
+}
