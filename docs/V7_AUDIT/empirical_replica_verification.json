@@ -1,0 +1,42 @@
+{
+  "accepted": true,
+  "checked_utc": "2026-11-05T12:22:34.914539+00:00",
+  "source_host": "hkust3",
+  "source_v7_root": "/data/shaoshitong/ai_creator_game_20261104/v7",
+  "replica_host": "hkust2",
+  "replica_root": "/data/shaoshitong/ai_creator_game_20261104/v7/empirical_backup_from_hkust3",
+  "storage": "Both /data mounts are node-local ext4, not shared NFS/CIFS; independent same-cluster replica.",
+  "source_and_replica_files": 55,
+  "verified_bytes": 103254369,
+  "all_files_byte_and_sha256_identical": true,
+  "source_csv": {
+    "bytes": 85855213,
+    "sha256": "45943d63c44652b6403f3a4f78c7225e1afe7916bab17d9a674d7979245e085b"
+  },
+  "main_predictions": {
+    "bytes": 13509521,
+    "sha256": "b180578bfe46d7eeccdec920cf81b05138b31b64fe42d7d484f177da3a9f2a89"
+  },
+  "pilot_predictions": {
+    "bytes": 29253,
+    "sha256": "8e58cf9d3f893b8f8f18e519084e17539501e3678700c9728f75ac30d8f718b5"
+  },
+  "actual_transfer_exit_codes": {
+    "first_code_audit": 0,
+    "first_results": 0,
+    "source_csv": 0,
+    "final_artifacts_and_public_inputs": 0
+  },
+  "measured_growth_bytes": [
+    0,
+    45101,
+    14890135,
+    16105716,
+    100646736
+  ],
+  "local_raw_data_written": false,
+  "streaming_route": "ssh hkust3 tar stdout through local pipe to ssh hkust2 tar; no raw Mac file",
+  "small_export_banner_failures": "Six concurrent small scp requests returned255 banner timeouts; later single-connection tar export completed0. Analyses not restarted.",
+  "primary_manifest_sha256": "2998645a289e39075336f53409b326ead285f3c181fcaa16c2be81c10e242908",
+  "replica_manifest_sha256": "7e7de19734bf1024eedb2b0fa719e1ecd414ce5b47a37a7837d389bd72088c28"
+}

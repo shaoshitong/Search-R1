@@ -1,6 +1,6 @@
 # V7 外部小源：公开 opt-in YouTube impressions
 
-2026-11-05。这是在来源采集完成后另冻方案、实际运行的小型补充，不改变 KuaiRec 主检验。数据来自 OpenChannelStats 公开自愿披露频道 CSV，含真实日报 impressions；没有登录、cookie、资料共享门禁或媒体下载。
+2026-11-05。这是在来源采集完成后另冻方案、实际运行的小型补充，不改变 KuaiRec 主检验。数据来自 [OpenChannelStats 公开数据入口](https://openchannelstats.com/data)与[公开频道 manifest](https://openchannelstats.com/channels-manifest.json)列出的自愿披露频道 CSV，来源称其为频道真实日报 impressions；没有登录、cookie、资料共享门禁或媒体下载。它是第三方公开记录，不是 YouTube 官方研究数据集；源 SHA 不能代替对上游采集完整性的独立验证。
 
 **在四个达到预定覆盖门槛的频道中，目标作品自己的过去 impressions 改善了年龄基准预测；这拓展了作品持久性的外部证据，不能识别账号资本。** 一频道同日公共账号权重在份额归一化中完全约掉；若几个频道并非完整同一市场，也不能据此估计共同预算下的 β、r 或 θ。
 
@@ -45,6 +45,6 @@ koura 占 73.63% 权重且其全来源 impressions 缺失重，不能省略这�
 
 独立协议 12:03:34 UTC 冻结；程序 12:05:44—45 UTC 完成，真实退出 0，单线程 nice CPU。实测完成首频道后继续完成其余入口；12:07:42 UTC 独立重构四模型损失，概率和最大误差 6.66×10⁻¹⁶，输入/协议/代码哈希及真实退出均一致。小数据运行不足一秒是实际规模所致，不是仅提交。
 
-源文件和行级预测留远端 `v7/source_discovery/`、`v7/openchannelstats_empirical/`，本地仅源码和聚合审计。CSV 是公开 opt-in 数据；来源声明其衍生表/说明 CC0，YouTube API 数字由频道所有者同意公开，仍需按源说明归属，不将公开导出视为平台全部数据授权。
+源文件和行级预测留远端 `v7/source_discovery/`、`v7/openchannelstats_empirical/`，本地仅源码和聚合审计。CSV 是公开 opt-in 数据；[来源条款](https://openchannelstats.com/terms)将其衍生表/说明的 CC0 与受 YouTube API 条款及频道主公开授权约束的原始数值分开，后者不因公开导出变成 CC0，不将本轮访问视为平台全部数据授权。
 
 可核对：[来源池审计](V7_AUDIT/openchannelstats_source_pool.json)、[冻结记录](V7_AUDIT/openchannelstats_empirical_protocol_freeze.json)、[完整小汇总](V7_AUDIT/openchannelstats_empirical_summary.json)、[独立验收](V7_AUDIT/openchannelstats_empirical_acceptance.json)、[真实退出](V7_AUDIT/openchannelstats_empirical_run_01_exit.json)。
