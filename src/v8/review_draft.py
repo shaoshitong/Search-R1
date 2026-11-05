@@ -216,6 +216,18 @@ text=re.sub(r'\| 有效结果是什么 \|.*?\|',
 text=text.replace('模型只有两期、有限动作、给定参数','理论分析只覆盖两期、给定参数与可行范围')
 text=text.replace('平台先承诺推荐规则，两位创作者同时行动；',
                   '平台先承诺推荐规则，假设双方知道规则、状态和成本；两位创作者同时行动；')
+text=text.replace('我们建立并求解了含旧作品存量与账号积累的两期生产博弈',
+                  '我们建立了含旧作品存量与账号积累的两期生产博弈，并求解若干给定情景')
+text=text.replace('分别写入一个可求解的两期博弈', '分别写入两期博弈的若干可求解情景')
+text=text.replace('建立并求解两期博弈 |', '建立两期博弈并求解给定情景 |')
+text=text.replace('### 5.4 允许新账号时，多出什么策略权衡\n\n',
+ '''### 5.4 允许新账号时，多出什么策略权衡
+
+允许开号的数值分析限定为两期、每位创作者最多两个账号、每期生产容量两个单位的有限动作情景，并采用预定的均衡选择规则；上一节的1.83来自另一个固定单号的连续生产切片。两者均不代表已求解任意账号数与任意参数下的动态博弈。
+
+''')
+text=text.replace('}.$$。', '}.$$')
+edits.append('Clarify the separate finite opening scenarios and continuous single-account example; remove an extra equation punctuation mark.')
 target=root/'docs/AI_CREATOR_RESEARCH_SUMMARY_ZH.md';target.write_text(text)
 receipt=dict(edited_utc=datetime.now(timezone.utc).isoformat(),
              dpsk_draft_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
